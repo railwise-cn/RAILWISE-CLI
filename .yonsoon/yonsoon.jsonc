@@ -1,0 +1,13 @@
+{
+  "$schema": "https://yonsoon.ai/config.json",
+  "provider": {
+    "yonsoon": {
+      "options": {},
+    },
+  },
+  "mcp": {},
+  "tools": {
+    "github-triage": false,
+    "github-pr-search": false,
+  },
+}

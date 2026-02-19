@@ -1,13 +1,13 @@
 ---
 title: SDK
-description: opencode 服务器的类型安全 JS 客户端。
+description: yonsoon 服务器的类型安全 JS 客户端。
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-opencode JS/TS SDK 提供了一个类型安全的客户端，用于与服务器进行交互。
-你可以用它来构建集成方案，并以编程方式控制 opencode。
+yonsoon JS/TS SDK 提供了一个类型安全的客户端，用于与服务器进行交互。
+你可以用它来构建集成方案，并以编程方式控制 yonsoon。
 
 [了解更多](/docs/server)关于服务器的工作原理。如需示例，请查看社区构建的[项目](/docs/ecosystem#projects)。
 
@@ -18,19 +18,19 @@ opencode JS/TS SDK 提供了一个类型安全的客户端，用于与服务器�
 从 npm 安装 SDK：
 
 ```bash
-npm install @opencode-ai/sdk
+npm install @yonsoon/sdk
 ```
 
 ---
 
 ## 创建客户端
 
-创建一个 opencode 实例：
+创建一个 yonsoon 实例：
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createYonsoon } from "@yonsoon/sdk"
 
-const { client } = await createOpencode()
+const { client } = await createYonsoon()
 ```
 
 这会同时启动服务器和客户端。
@@ -49,12 +49,12 @@ const { client } = await createOpencode()
 
 ## 配置
 
-你可以传入一个配置对象来自定义行为。实例仍然会读取你的 `opencode.json`，但你可以通过内联方式覆盖或添加配置：
+你可以传入一个配置对象来自定义行为。实例仍然会读取你的 `yonsoon.json`，但你可以通过内联方式覆盖或添加配置：
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createYonsoon } from "@yonsoon/sdk"
 
-const opencode = await createOpencode({
+const yonsoon = await createYonsoon({
   hostname: "127.0.0.1",
   port: 4096,
   config: {
@@ -62,19 +62,19 @@ const opencode = await createOpencode({
   },
 })
 
-console.log(`Server running at ${opencode.server.url}`)
+console.log(`Server running at ${yonsoon.server.url}`)
 
-opencode.server.close()
+yonsoon.server.close()
 ```
 
 ## 仅客户端模式
 
-如果你已经有一个正在运行的 opencode 实例，可以创建一个客户端实例来连接它：
+如果你已经有一个正在运行的 yonsoon 实例，可以创建一个客户端实例来连接它：
 
 ```javascript
-import { createOpencodeClient } from "@opencode-ai/sdk"
+import { createYonsoonClient } from "@yonsoon/sdk"
 
-const client = createOpencodeClient({
+const client = createYonsoonClient({
   baseUrl: "http://localhost:4096",
 })
 ```
@@ -96,7 +96,7 @@ const client = createOpencodeClient({
 SDK 包含所有 API 类型的 TypeScript 定义。你可以直接导入它们：
 
 ```typescript
-import type { Session, Message, Part } from "@opencode-ai/sdk"
+import type { Session, Message, Part } from "@yonsoon/sdk"
 ```
 
 所有类型均根据服务器的 OpenAPI 规范生成，可在<a href={typesUrl}>类型文件</a>中查看。
@@ -376,7 +376,7 @@ await client.session.prompt({
 ```javascript
 // Search and read files
 const textResults = await client.find.text({
-  query: { pattern: "function.*opencode" },
+  query: { pattern: "function.*yonsoon" },
 })
 
 const files = await client.find.files({

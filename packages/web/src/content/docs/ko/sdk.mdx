@@ -1,13 +1,13 @@
 ---
 title: SDK
-description: opencode 서버를 위한 타입 안전한 JS 클라이언트.
+description: yonsoon 서버를 위한 타입 안전한 JS 클라이언트.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-opencode JS/TS SDK는 서버와 상호 작용을 위한 유형 안전한 클라이언트를 제공합니다.
-통합 및 제어 opencode programmatically를 구축하는 데 사용됩니다.
+yonsoon JS/TS SDK는 서버와 상호 작용을 위한 유형 안전한 클라이언트를 제공합니다.
+통합 및 제어 yonsoon programmatically를 구축하는 데 사용됩니다.
 
 [Learn more](/docs/server) 서버가 어떻게 작동하나요? 예를 들어, 커뮤니티에 의해 구축 된 [projects](/docs/ecosystem#projects)를 확인하십시오.
 
@@ -18,19 +18,19 @@ opencode JS/TS SDK는 서버와 상호 작용을 위한 유형 안전한 클라�
 npm에서 SDK 설치:
 
 ```bash
-npm install @opencode-ai/sdk
+npm install @yonsoon/sdk
 ```
 
 ---
 
 ## 클라이언트 만들기
 
-opencode의 인스턴스 만들기:
+yonsoon의 인스턴스 만들기:
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createYonsoon } from "@yonsoon/sdk"
 
-const { client } = await createOpencode()
+const { client } = await createYonsoon()
 ```
 
 서버와 클라이언트 모두 시작
@@ -49,12 +49,12 @@ const { client } = await createOpencode()
 
 ## 구성
 
-구성 객체를 전달할 수 있습니다. 인스턴스는 여전히 `opencode.json`를 선택하지만 구성 인라인을 추가 할 수 있습니다.
+구성 객체를 전달할 수 있습니다. 인스턴스는 여전히 `yonsoon.json`를 선택하지만 구성 인라인을 추가 할 수 있습니다.
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createYonsoon } from "@yonsoon/sdk"
 
-const opencode = await createOpencode({
+const yonsoon = await createYonsoon({
   hostname: "127.0.0.1",
   port: 4096,
   config: {
@@ -62,19 +62,19 @@ const opencode = await createOpencode({
   },
 })
 
-console.log(`Server running at ${opencode.server.url}`)
+console.log(`Server running at ${yonsoon.server.url}`)
 
-opencode.server.close()
+yonsoon.server.close()
 ```
 
 ## 클라이언트만
 
-opencode의 실행 인스턴스가 이미 있다면 클라이언트 인스턴스를 만들 수 있습니다.
+yonsoon의 실행 인스턴스가 이미 있다면 클라이언트 인스턴스를 만들 수 있습니다.
 
 ```javascript
-import { createOpencodeClient } from "@opencode-ai/sdk"
+import { createYonsoonClient } from "@yonsoon/sdk"
 
-const client = createOpencodeClient({
+const client = createYonsoonClient({
   baseUrl: "http://localhost:4096",
 })
 ```
@@ -96,7 +96,7 @@ const client = createOpencodeClient({
 SDK에는 모든 API 유형의 TypeScript 정의가 포함되어 있습니다. 직접 가져 오기 :
 
 ```typescript
-import type { Session, Message, Part } from "@opencode-ai/sdk"
+import type { Session, Message, Part } from "@yonsoon/sdk"
 ```
 
 모든 유형은 서버의 OpenAPI 사양에서 생성되며 <a href={typesUrl}>types 파일</a>에서 사용할 수 있습니다.
@@ -304,7 +304,7 @@ await client.session.prompt({
 ```javascript
 // Search and read files
 const textResults = await client.find.text({
-  query: { pattern: "function.*opencode" },
+  query: { pattern: "function.*yonsoon" },
 })
 
 const files = await client.find.files({

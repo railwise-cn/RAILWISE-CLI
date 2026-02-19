@@ -15,7 +15,7 @@ description: 設定和使用專門的代理。
 
 ## 類型
 
-OpenCode 中有兩種類型的代理：主代理和子代理。
+YONSOON (甬算) 中有兩種類型的代理：主代理和子代理。
 
 ---
 
@@ -27,7 +27,7 @@ OpenCode 中有兩種類型的代理：主代理和子代理。
 您可以在工作階段期間使用 **Tab** 鍵在主代理之間切換。
 :::
 
-OpenCode 內建了兩個主代理：**Build** 和 **Plan**。我們將在下面介紹它們。
+YONSOON (甬算) 內建了兩個主代理：**Build** 和 **Plan**。我們將在下面介紹它們。
 
 ---
 
@@ -35,13 +35,13 @@ OpenCode 內建了兩個主代理：**Build** 和 **Plan**。我們將在下面�
 
 子代理是主代理可以呼叫來執行特定任務的專業助手。您也可以透過在訊息中 **@ 提及**它們來手動呼叫。
 
-OpenCode 內建了兩個子代理：**General** 和 **Explore**。我們將在下面介紹它們。
+YONSOON (甬算) 內建了兩個子代理：**General** 和 **Explore**。我們將在下面介紹它們。
 
 ---
 
 ## 內建代理
 
-OpenCode 內建了兩個主代理和兩個子代理。
+YONSOON (甬算) 內建了兩個主代理和兩個子代理。
 
 ---
 
@@ -135,11 +135,11 @@ _模式_：`primary`
 
 ### JSON
 
-在 `opencode.json` 設定檔中設定代理：
+在 `yonsoon.json` 設定檔中設定代理：
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "agent": {
     "build": {
       "mode": "primary",
@@ -180,10 +180,10 @@ _模式_：`primary`
 
 您還可以使用 Markdown 檔案定義代理。將它們放在：
 
-- 全域：`~/.config/opencode/agents/`
-- 專案級：`.opencode/agents/`
+- 全域：`~/.config/yonsoon/agents/`
+- 專案級：`.yonsoon/agents/`
 
-```markdown title="~/.config/opencode/agents/review.md"
+```markdown title="~/.config/yonsoon/agents/review.md"
 ---
 description: Reviews code for quality and best practices
 mode: subagent
@@ -219,7 +219,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 
 使用 `description` 選項提供代理的功能及使用場景的簡要描述。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "review": {
@@ -239,7 +239,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 
 較低的值使回應更加集中和確定，而較高的值則增加創造力和多樣性。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "plan": {
@@ -258,7 +258,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 - **0.3-0.5**：平衡的回應，兼顧一定創造力，適合一般開發任務
 - **0.6-1.0**：更有創造力和多樣性的回應，適合腦力激盪和探索
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "analyze": {
@@ -276,7 +276,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 }
 ```
 
-如果未指定溫度，OpenCode 將使用模型特定的預設值；大多數模型通常為 0，Qwen 模型為 0.55。
+如果未指定溫度，YONSOON (甬算) 將使用模型特定的預設值；大多數模型通常為 0，Qwen 模型為 0.55。
 
 ---
 
@@ -286,7 +286,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 
 如果未設定此選項，代理將持續迭代，直到模型選擇停止或使用者中斷工作階段。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "quick-thinker": {
@@ -310,7 +310,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 
 設為 `true` 以停用代理。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "review": {
@@ -326,7 +326,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 
 使用 `prompt` 設定為代理指定自訂系統提示詞檔案。提示詞檔案應包含針對代理用途的具體指令。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "review": {
@@ -336,7 +336,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 }
 ```
 
-此路徑相對於設定檔所在位置。因此它同時適用於全域 OpenCode 設定和專案級設定。
+此路徑相對於設定檔所在位置。因此它同時適用於全域 YONSOON (甬算) 設定和專案級設定。
 
 ---
 
@@ -348,7 +348,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 如果您不指定模型，主代理將使用[全域設定的模型](/docs/config#models)，而子代理將使用呼叫它的主代理所使用的模型。
 :::
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "plan": {
@@ -358,7 +358,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 }
 ```
 
-OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如果您使用 [OpenCode Zen](/docs/zen)，則可以使用 `opencode/gpt-5.1-codex` 來表示 GPT 5.1 Codex。
+YONSOON (甬算) 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如果您使用 [YONSOON (甬算) Zen](/docs/zen)，則可以使用 `yonsoon/gpt-5.1-codex` 來表示 GPT 5.1 Codex。
 
 ---
 
@@ -366,9 +366,9 @@ OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如�
 
 使用 `tools` 設定控制代理中可用的工具。您可以透過將特定工具設為 `true` 或 `false` 來啟用或停用它們。
 
-```json title="opencode.json" {3-6,9-12}
+```json title="yonsoon.json" {3-6,9-12}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "tools": {
     "write": true,
     "bash": true
@@ -390,9 +390,9 @@ OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如�
 
 您還可以使用萬用字元同時控制多個工具。例如，要停用 MCP 伺服器中的所有工具：
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "agent": {
     "readonly": {
       "tools": {
@@ -417,9 +417,9 @@ OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如�
 - `"allow"` — 允許所有操作，無需審批
 - `"deny"` — 停用該工具
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "deny"
   }
@@ -428,9 +428,9 @@ OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如�
 
 您可以按代理覆寫這些權限。
 
-```json title="opencode.json" {3-5,8-10}
+```json title="yonsoon.json" {3-5,8-10}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "deny"
   },
@@ -446,7 +446,7 @@ OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如�
 
 您還可以在 Markdown 代理中設定權限。
 
-```markdown title="~/.config/opencode/agents/review.md"
+```markdown title="~/.config/yonsoon/agents/review.md"
 ---
 description: Code review without edits
 mode: subagent
@@ -465,9 +465,9 @@ Only analyze code and suggest changes.
 
 您可以為特定的 bash 命令設定權限。
 
-```json title="opencode.json" {7}
+```json title="yonsoon.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -483,9 +483,9 @@ Only analyze code and suggest changes.
 
 這可以使用 glob 模式。
 
-```json title="opencode.json" {7}
+```json title="yonsoon.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -501,9 +501,9 @@ Only analyze code and suggest changes.
 您還可以使用 `*` 萬用字元來管理所有命令的權限。
 由於最後匹配的規則優先，請將 `*` 萬用字元放在前面，將具體規則放在後面。
 
-```json title="opencode.json" {8}
+```json title="yonsoon.json" {8}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -525,7 +525,7 @@ Only analyze code and suggest changes.
 
 使用 `mode` 設定控制代理的模式。`mode` 選項用於確定代理的使用方式。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "review": {
@@ -543,7 +543,7 @@ Only analyze code and suggest changes.
 
 使用 `hidden: true` 將子代理從 `@` 自動補全選單中隱藏。適用於只應由其他代理透過 Task 工具以程式化方式呼叫的內部子代理。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "internal-helper": {
@@ -566,7 +566,7 @@ Only analyze code and suggest changes.
 
 使用 `permission.task` 控制代理可以透過 Task 工具呼叫哪些子代理。使用 glob 模式進行靈活匹配。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "orchestrator": {
@@ -601,7 +601,7 @@ Only analyze code and suggest changes.
 
 使用有效的十六進位顏色（例如 `#FF5733`）或主題顏色：`primary`、`secondary`、`accent`、`success`、`warning`、`error`、`info`。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "creative": {
@@ -620,7 +620,7 @@ Only analyze code and suggest changes.
 
 使用 `top_p` 選項控制回應多樣性。這是控制隨機性的溫度替代方案。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "agent": {
     "brainstorm": {
@@ -640,7 +640,7 @@ Only analyze code and suggest changes.
 
 例如，使用 OpenAI 的推理模型時，您可以控制推理力度：
 
-```json title="opencode.json" {6,7}
+```json title="yonsoon.json" {6,7}
 {
   "agent": {
     "deep-thinker": {
@@ -656,7 +656,7 @@ Only analyze code and suggest changes.
 這些附加選項是模型和提供商特定的。請查閱您的提供商文件以取得可用參數。
 
 :::tip
-執行 `opencode models` 查看可用模型列表。
+執行 `yonsoon models` 查看可用模型列表。
 :::
 
 ---
@@ -666,7 +666,7 @@ Only analyze code and suggest changes.
 您可以使用以下命令建立新代理：
 
 ```bash
-opencode agent create
+yonsoon agent create
 ```
 
 此互動式命令將：
@@ -696,14 +696,14 @@ opencode agent create
 以下是一些您可能會覺得有用的範例代理。
 
 :::tip
-您有想要分享的代理嗎？[提交 PR](https://github.com/anomalyco/opencode)。
+您有想要分享的代理嗎？[提交 PR](https://github.com/anomalyco/yonsoon)。
 :::
 
 ---
 
 ### 文件代理
 
-```markdown title="~/.config/opencode/agents/docs-writer.md"
+```markdown title="~/.config/yonsoon/agents/docs-writer.md"
 ---
 description: Writes and maintains project documentation
 mode: subagent
@@ -725,7 +725,7 @@ Focus on:
 
 ### 安全稽核代理
 
-```markdown title="~/.config/opencode/agents/security-auditor.md"
+```markdown title="~/.config/yonsoon/agents/security-auditor.md"
 ---
 description: Performs security audits and identifies vulnerabilities
 mode: subagent

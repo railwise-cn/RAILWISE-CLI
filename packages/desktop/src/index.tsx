@@ -8,8 +8,8 @@ import {
   PlatformProvider,
   ServerConnection,
   useCommand,
-} from "@opencode-ai/app"
-import { Splash } from "@opencode-ai/ui/logo"
+} from "@yonsoon/app"
+import { Splash } from "@yonsoon/ui/logo"
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { readImage } from "@tauri-apps/plugin-clipboard-manager"
@@ -43,13 +43,13 @@ void initI18n()
 
 let update: Update | null = null
 
-const deepLinkEvent = "opencode:deep-link"
+const deepLinkEvent = "yonsoon:deep-link"
 
 const emitDeepLinks = (urls: string[]) => {
   if (urls.length === 0) return
-  window.__OPENCODE__ ??= {}
-  const pending = window.__OPENCODE__.deepLinks ?? []
-  window.__OPENCODE__.deepLinks = [...pending, ...urls]
+  window.__YONSOON__ ??= {}
+  const pending = window.__YONSOON__.deepLinks ?? []
+  window.__YONSOON__.deepLinks = [...pending, ...urls]
   window.dispatchEvent(new CustomEvent(deepLinkEvent, { detail: { urls } }))
 }
 
@@ -67,12 +67,12 @@ const createPlatform = (): Platform => {
   })()
 
   const wslHome = async () => {
-    if (os !== "windows" || !window.__OPENCODE__?.wsl) return undefined
+    if (os !== "windows" || !window.__YONSOON__?.wsl) return undefined
     return commands.wslPath("~", "windows").catch(() => undefined)
   }
 
   const handleWslPicker = async <T extends string | string[]>(result: T | null): Promise<T | null> => {
-    if (!result || !window.__OPENCODE__?.wsl) return result
+    if (!result || !window.__YONSOON__?.wsl) return result
     if (Array.isArray(result)) {
       return Promise.all(result.map((path) => commands.wslPath(path, "linux").catch(() => path))) as any
     }
@@ -120,7 +120,7 @@ const createPlatform = (): Platform => {
       if (os === "windows") {
         const resolvedApp = (app && (await commands.resolveAppPath(app))) || app
         const resolvedPath = await (async () => {
-          if (window.__OPENCODE__?.wsl) {
+          if (window.__YONSOON__?.wsl) {
             const converted = await commands.wslPath(path, "windows").catch(() => null)
             if (converted) return converted
           }
@@ -330,7 +330,7 @@ const createPlatform = (): Platform => {
         .then(() => {
           const notification = new Notification(title, {
             body: description ?? "",
-            icon: "https://opencode.ai/favicon-96x96-v3.png",
+            icon: "https://yonsoon.ai/favicon-96x96-v3.png",
           })
           notification.onclick = () => {
             const win = getCurrentWindow()
@@ -355,7 +355,7 @@ const createPlatform = (): Platform => {
     getWslEnabled: async () => {
       const next = await commands.getWslConfig().catch(() => null)
       if (next) return next.enabled
-      return window.__OPENCODE__!.wsl ?? false
+      return window.__YONSOON__!.wsl ?? false
     },
 
     setWslEnabled: async (enabled) => {
@@ -452,7 +452,7 @@ render(() => {
               variant: "base",
               http: {
                 url: data().url,
-                username: "opencode",
+                username: "yonsoon",
                 password: data().password ?? undefined,
               },
             }

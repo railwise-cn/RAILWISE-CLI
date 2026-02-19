@@ -1,15 +1,15 @@
 ---
 title: 簡介
-description: 開始使用 OpenCode。
+description: 開始使用 YONSOON (甬算)。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**OpenCode**](/) 是一個開源的 AI 編碼代理。它提供終端機介面、桌面應用程式和 IDE 擴充功能等多種使用方式。
+[**YONSOON (甬算)**](/) 是一個開源的 AI 編碼代理。它提供終端機介面、桌面應用程式和 IDE 擴充功能等多種使用方式。
 
-![使用 OpenCode 主題的 OpenCode TUI](../../../assets/lander/screenshot.png)
+![使用 YONSOON (甬算) 主題的 YONSOON (甬算) TUI](../../../assets/lander/screenshot.png)
 
 讓我們開始吧。
 
@@ -17,7 +17,7 @@ export const console = config.console
 
 #### 前提條件
 
-要在終端機中使用 OpenCode，您需要：
+要在終端機中使用 YONSOON (甬算)，您需要：
 
 1. 一款現代終端機模擬器，例如：
    - [WezTerm](https://wezterm.org)，跨平台
@@ -31,10 +31,10 @@ export const console = config.console
 
 ## 安裝
 
-安裝 OpenCode 最簡單的方法是透過安裝指令碼。
+安裝 YONSOON (甬算) 最簡單的方法是透過安裝指令碼。
 
 ```bash
-curl -fsSL https://opencode.ai/install | bash
+curl -fsSL https://yonsoon.ai/install | bash
 ```
 
 您也可以使用以下方式安裝：
@@ -45,28 +45,28 @@ curl -fsSL https://opencode.ai/install | bash
 
       <TabItem label="npm">
       ```bash
-      npm install -g opencode-ai
+      npm install -g yonsoon-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g opencode-ai
+        bun install -g yonsoon-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g opencode-ai
+        pnpm install -g yonsoon-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add opencode-ai
+        yarn global add yonsoon-ai
         ```
 
       </TabItem>
@@ -76,67 +76,67 @@ curl -fsSL https://opencode.ai/install | bash
 - **在 macOS 和 Linux 上使用 Homebrew**
 
   ```bash
-  brew install anomalyco/tap/opencode
+  brew install anomalyco/tap/yonsoon
   ```
 
-  > 我們推薦使用 OpenCode tap 以取得最新版本。官方的 `brew install opencode` formula 由 Homebrew 團隊維護，更新頻率較低。
+  > 我們推薦使用 YONSOON (甬算) tap 以取得最新版本。官方的 `brew install yonsoon` formula 由 Homebrew 團隊維護，更新頻率較低。
 
 - **在 Arch Linux 上安裝**
 
   ```bash
-  sudo pacman -S opencode           # Arch Linux (Stable)
-  paru -S opencode-bin              # Arch Linux (Latest from AUR)
+  sudo pacman -S yonsoon           # Arch Linux (Stable)
+  paru -S yonsoon-bin              # Arch Linux (Latest from AUR)
   ```
 
 #### Windows
 
 :::tip[推薦：使用 WSL]
-為了在 Windows 上獲得最佳體驗，我們推薦使用 [Windows Subsystem for Linux (WSL)](/docs/windows-wsl)。它提供更好的效能，並完全相容 OpenCode 的所有功能。
+為了在 Windows 上獲得最佳體驗，我們推薦使用 [Windows Subsystem for Linux (WSL)](/docs/windows-wsl)。它提供更好的效能，並完全相容 YONSOON (甬算) 的所有功能。
 :::
 
 - **使用 Chocolatey**
 
   ```bash
-  choco install opencode
+  choco install yonsoon
   ```
 
 - **使用 Scoop**
 
   ```bash
-  scoop install opencode
+  scoop install yonsoon
   ```
 
 - **使用 NPM**
 
   ```bash
-  npm install -g opencode-ai
+  npm install -g yonsoon-ai
   ```
 
 - **使用 Mise**
 
   ```bash
-  mise use -g github:anomalyco/opencode
+  mise use -g github:anomalyco/yonsoon
   ```
 
 - **使用 Docker**
 
   ```bash
-  docker run -it --rm ghcr.io/anomalyco/opencode
+  docker run -it --rm ghcr.io/anomalyco/yonsoon
   ```
 
-在 Windows 上透過 Bun 安裝 OpenCode 的支援目前正在開發中。
+在 Windows 上透過 Bun 安裝 YONSOON (甬算) 的支援目前正在開發中。
 
-您也可以從 [Releases](https://github.com/anomalyco/opencode/releases) 頁面直接下載二進位檔案。
+您也可以從 [Releases](https://github.com/anomalyco/yonsoon/releases) 頁面直接下載二進位檔案。
 
 ---
 
 ## 設定
 
-透過 OpenCode，您可以設定 API 金鑰來使用任意 LLM 供應商。
+透過 YONSOON (甬算)，您可以設定 API 金鑰來使用任意 LLM 供應商。
 
-如果您剛開始接觸 LLM 供應商，我們推薦使用 [OpenCode Zen](/docs/zen)。這是一組經過 OpenCode 團隊測試和驗證的精選模型。
+如果您剛開始接觸 LLM 供應商，我們推薦使用 [YONSOON (甬算) Zen](/docs/zen)。這是一組經過 YONSOON (甬算) 團隊測試和驗證的精選模型。
 
-1. 在 TUI 中執行 `/connect` 指令，選擇 opencode，然後前往 [opencode.ai/auth](https://opencode.ai/auth)。
+1. 在 TUI 中執行 `/connect` 指令，選擇 yonsoon，然後前往 [yonsoon.ai/auth](https://yonsoon.ai/auth)。
 
    ```txt
    /connect
@@ -165,31 +165,31 @@ curl -fsSL https://opencode.ai/install | bash
 cd /path/to/project
 ```
 
-然後執行 OpenCode。
+然後執行 YONSOON (甬算)。
 
 ```bash
-opencode
+yonsoon
 ```
 
-接下來，執行以下指令為專案初始化 OpenCode。
+接下來，執行以下指令為專案初始化 YONSOON (甬算)。
 
 ```bash frame="none"
 /init
 ```
 
-OpenCode 會分析您的專案並在專案根目錄建立一個 `AGENTS.md` 檔案。
+YONSOON (甬算) 會分析您的專案並在專案根目錄建立一個 `AGENTS.md` 檔案。
 
 :::tip
 您應該將專案的 `AGENTS.md` 檔案提交到 Git。
 :::
 
-這有助於 OpenCode 理解專案結構和編碼規範。
+這有助於 YONSOON (甬算) 理解專案結構和編碼規範。
 
 ---
 
 ## 使用
 
-現在您已經準備好使用 OpenCode 來處理專案了，儘管提問吧！
+現在您已經準備好使用 YONSOON (甬算) 來處理專案了，儘管提問吧！
 
 如果您是第一次使用 AI 編碼代理，以下範例可能會對您有所幫助。
 
@@ -197,7 +197,7 @@ OpenCode 會分析您的專案並在專案根目錄建立一個 `AGENTS.md` 檔�
 
 ### 提問
 
-您可以讓 OpenCode 為您講解程式碼庫。
+您可以讓 YONSOON (甬算) 為您講解程式碼庫。
 
 :::tip
 使用 `@` 鍵可以模糊搜尋專案中的檔案。
@@ -213,11 +213,11 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### 新增功能
 
-您可以讓 OpenCode 為專案新增新功能。不過我們建議先讓它制定一個計畫。
+您可以讓 YONSOON (甬算) 為專案新增新功能。不過我們建議先讓它制定一個計畫。
 
 1. **制定計畫**
 
-   OpenCode 有一個*計畫模式*，該模式下它不會進行任何修改，而是建議*如何*實作該功能。
+   YONSOON (甬算) 有一個*計畫模式*，該模式下它不會進行任何修改，而是建議*如何*實作該功能。
 
    使用 **Tab** 鍵切換到計畫模式。您會在右下角看到模式指示器。
 
@@ -233,10 +233,10 @@ How is authentication handled in @packages/functions/src/api/index.ts
    From this screen, the user can undelete a note or permanently delete it.
    ```
 
-   您需要提供足夠的細節，讓 OpenCode 理解您的需求。可以把它當作團隊中的一名初級開發者來溝通。
+   您需要提供足夠的細節，讓 YONSOON (甬算) 理解您的需求。可以把它當作團隊中的一名初級開發者來溝通。
 
    :::tip
-   為 OpenCode 提供充足的上下文和範例，幫助它理解您的需求。
+   為 YONSOON (甬算) 提供充足的上下文和範例，幫助它理解您的需求。
    :::
 
 2. **迭代計畫**
@@ -252,7 +252,7 @@ How is authentication handled in @packages/functions/src/api/index.ts
    將圖片拖放到終端機中即可將其新增到提示詞中。
    :::
 
-   OpenCode 可以掃描您提供的圖片並將其新增到提示詞中。只需將圖片拖放到終端機視窗即可。
+   YONSOON (甬算) 可以掃描您提供的圖片並將其新增到提示詞中。只需將圖片拖放到終端機視窗即可。
 
 3. **建置功能**
 
@@ -272,7 +272,7 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### 直接修改
 
-對於比較簡單的修改，您可以直接讓 OpenCode 實施，無需先審查計畫。
+對於比較簡單的修改，您可以直接讓 YONSOON (甬算) 實施，無需先審查計畫。
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
 We need to add authentication to the /settings route. Take a look at how this is
@@ -280,13 +280,13 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-請確保提供足夠的細節，以便 OpenCode 做出正確的修改。
+請確保提供足夠的細節，以便 YONSOON (甬算) 做出正確的修改。
 
 ---
 
 ### 復原修改
 
-假設您讓 OpenCode 做了一些修改。
+假設您讓 YONSOON (甬算) 做了一些修改。
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -298,13 +298,13 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 /undo
 ```
 
-OpenCode 會還原所做的修改，並重新顯示您之前的訊息。
+YONSOON (甬算) 會還原所做的修改，並重新顯示您之前的訊息。
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-您可以調整提示詞，讓 OpenCode 重新嘗試。
+您可以調整提示詞，讓 YONSOON (甬算) 重新嘗試。
 
 :::tip
 您可以多次執行 `/undo` 來復原多次修改。
@@ -320,7 +320,7 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 
 ## 分享
 
-您與 OpenCode 的對話可以[與團隊分享](/docs/share)。
+您與 YONSOON (甬算) 的對話可以[與團隊分享](/docs/share)。
 
 ```bash frame="none"
 /share
@@ -332,12 +332,12 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 對話預設不會被分享。
 :::
 
-這是一個與 OpenCode 的[範例對話](https://opencode.ai/s/4XP1fce5)。
+這是一個與 YONSOON (甬算) 的[範例對話](https://yonsoon.ai/s/4XP1fce5)。
 
 ---
 
 ## 個人化
 
-以上就是全部內容！您現在已經是 OpenCode 的使用高手了。
+以上就是全部內容！您現在已經是 YONSOON (甬算) 的使用高手了。
 
-要讓它更符合您的習慣，我們推薦[選擇一個主題](/docs/themes)、[自訂快捷鍵](/docs/keybinds)、[設定程式碼格式化器](/docs/formatters)、[建立自訂指令](/docs/commands)，或者探索 [OpenCode 設定](/docs/config)。
+要讓它更符合您的習慣，我們推薦[選擇一個主題](/docs/themes)、[自訂快捷鍵](/docs/keybinds)、[設定程式碼格式化器](/docs/formatters)、[建立自訂指令](/docs/commands)，或者探索 [YONSOON (甬算) 設定](/docs/config)。

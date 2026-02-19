@@ -1,6 +1,6 @@
-import type { Todo } from "@opencode-ai/sdk/v2"
-import { Checkbox } from "@opencode-ai/ui/checkbox"
-import { IconButton } from "@opencode-ai/ui/icon-button"
+import type { Todo } from "@yonsoon/sdk/v2"
+import { Checkbox } from "@yonsoon/ui/checkbox"
+import { IconButton } from "@yonsoon/ui/icon-button"
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
 

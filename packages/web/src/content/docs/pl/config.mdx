@@ -1,21 +1,21 @@
 ---
 title: Konfiguracja
-description: Ustawienia OpenCode w pliku JSON.
+description: Ustawienia YONSOON (甬算) w pliku JSON.
 ---
 
-Możesz dostosować OpenCode za pomocą pliku konfiguracyjnego JSON.
+Możesz dostosować YONSOON (甬算) za pomocą pliku konfiguracyjnego JSON.
 
 ---
 
 ## Format
 
-OpenCode obsługuje formaty **JSON** i **JSONC** (JSON z komentarzami).
+YONSOON (甬算) obsługuje formaty **JSON** i **JSONC** (JSON z komentarzami).
 
-```jsonc title="opencode.jsonc"
+```jsonc title="yonsoon.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   // Theme configuration
-  "theme": "opencode",
+  "theme": "yonsoon",
   "model": "anthropic/claude-sonnet-4-5",
   "autoupdate": true,
 }
@@ -33,7 +33,7 @@ Pliki konfiguracyjne są **łączone**, a nie nadpisywane.
 
 Pliki konfiguracyjne są łączone ze sobą. Ustawienia z lokalizacji o wyższym priorytecie nadpisują ustawienia z lokalizacji o niższym priorytecie tylko w przypadku konfliktów kluczy. Ustawienia niekolidujące ze wszystkich źródeł są zachowywane.
 
-Na przykład, jeśli konfiguracja globalna ustawi `theme: "opencode"` i `autoupdate: true`, a konfiguracja projektu ustawi `model: "anthropic/claude-sonnet-4-5"`, ostateczna konfiguracja będzie zawierać wszystkie trzy ustawienia.
+Na przykład, jeśli konfiguracja globalna ustawi `theme: "yonsoon"` i `autoupdate: true`, a konfiguracja projektu ustawi `model: "anthropic/claude-sonnet-4-5"`, ostateczna konfiguracja będzie zawierać wszystkie trzy ustawienia.
 
 ---
 
@@ -41,30 +41,30 @@ Na przykład, jeśli konfiguracja globalna ustawi `theme: "opencode"` i `autoupd
 
 Źródła konfiguracji są ładowane w następującej kolejności (źródła występujące później mają pierwszeństwo):
 
-1. **Konfiguracja zdalna** (z `.well-known/opencode`) – ustawienia wymuszane przez organizację
-2. **Konfiguracja globalna** (`~/.config/opencode/opencode.json`) – preferencje użytkownika
-3. **Konfiguracja niestandardowa** (zmienna `OPENCODE_CONFIG`) — jawne nadpisanie
-4. **Konfiguracja projektu** (`opencode.json` w projekcie) - ustawienia specyficzne dla projektu
-5. **Katalogi `.opencode`** - agenci, polecenia, umiejętności
-6. **Konfiguracja wbudowana** (zmienna `OPENCODE_CONFIG_CONTENT`) — nadpisanie środowiska uruchomieniowego
+1. **Konfiguracja zdalna** (z `.well-known/yonsoon`) – ustawienia wymuszane przez organizację
+2. **Konfiguracja globalna** (`~/.config/yonsoon/yonsoon.json`) – preferencje użytkownika
+3. **Konfiguracja niestandardowa** (zmienna `YONSOON_CONFIG`) — jawne nadpisanie
+4. **Konfiguracja projektu** (`yonsoon.json` w projekcie) - ustawienia specyficzne dla projektu
+5. **Katalogi `.yonsoon`** - agenci, polecenia, umiejętności
+6. **Konfiguracja wbudowana** (zmienna `YONSOON_CONFIG_CONTENT`) — nadpisanie środowiska uruchomieniowego
 
 Oznacza to, że konfiguracje projektu mogą nadpisywać konfiguracje globalne, a konfiguracje globalne mogą nadpisywać konfiguracje zdalne.
 
 :::note
-W katalogach `.opencode` i `~/.config/opencode` używane są **nazwy w liczbie mnogiej** dla podkatalogów: `agents/`, `commands/`, `modes/`, `plugins/`, `skills/`, `tools/` i `themes/`. Nazwy w liczbie pojedynczej (np. `agent/`) są również obsługiwane dla kompatybilności wstecznej.
+W katalogach `.yonsoon` i `~/.config/yonsoon` używane są **nazwy w liczbie mnogiej** dla podkatalogów: `agents/`, `commands/`, `modes/`, `plugins/`, `skills/`, `tools/` i `themes/`. Nazwy w liczbie pojedynczej (np. `agent/`) są również obsługiwane dla kompatybilności wstecznej.
 :::
 
 ---
 
 ### Zdalna
 
-Organizacje mogą publikować konfigurację pod adresem `.well-known/opencode`. Jest ona pobierana automatycznie po uwierzytelnieniu u dostawcy, który ją obsługuje.
+Organizacje mogą publikować konfigurację pod adresem `.well-known/yonsoon`. Jest ona pobierana automatycznie po uwierzytelnieniu u dostawcy, który ją obsługuje.
 
 Konfiguracja zdalna jest ładowana jako pierwsza i stanowi bazę. Wszystkie inne źródła konfiguracji (globalne, projektowe) mogą ją nadpisywać.
 
 Na przykład, jeśli Twoja organizacja udostępnia serwery MCP, które są domyślnie wyłączone:
 
-```json title="Remote config from .well-known/opencode"
+```json title="Remote config from .well-known/yonsoon"
 {
   "mcp": {
     "jira": {
@@ -78,7 +78,7 @@ Na przykład, jeśli Twoja organizacja udostępnia serwery MCP, które są domy�
 
 Możesz włączyć serwer w konfiguracji projektu:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "mcp": {
     "jira": {
@@ -94,7 +94,7 @@ Możesz włączyć serwer w konfiguracji projektu:
 
 ### Globalna
 
-Umieść swoją globalną konfigurację OpenCode w `~/.config/opencode/opencode.json`. Użyj jej do ustawień ogólnych dla użytkownika, takich jak motywy, domyślny dostawca lub skróty klawiszowe.
+Umieść swoją globalną konfigurację YONSOON (甬算) w `~/.config/yonsoon/yonsoon.json`. Użyj jej do ustawień ogólnych dla użytkownika, takich jak motywy, domyślny dostawca lub skróty klawiszowe.
 
 Konfiguracja globalna ma pierwszeństwo przed konfiguracją zdalną.
 
@@ -102,13 +102,13 @@ Konfiguracja globalna ma pierwszeństwo przed konfiguracją zdalną.
 
 ### Projekt
 
-Dodaj `opencode.json` w katalogu głównym projektu. Konfiguracja projektu ma najwyższy priorytet wśród plików konfiguracyjnych — nadpisuje konfiguracje globalne i zdalne.
+Dodaj `yonsoon.json` w katalogu głównym projektu. Konfiguracja projektu ma najwyższy priorytet wśród plików konfiguracyjnych — nadpisuje konfiguracje globalne i zdalne.
 
 :::tip
 Dodaj ten plik do kontroli wersji, aby udostępniać konfigurację zespołowi.
 :::
 
-Kiedy OpenCode się uruchamia, szuka pliku konfiguracyjnego w katalogu głównym repozytorium Git.
+Kiedy YONSOON (甬算) się uruchamia, szuka pliku konfiguracyjnego w katalogu głównym repozytorium Git.
 
 Może on być przechowywany w Git i mieć ten sam schemat, co konfiguracja globalna.
 
@@ -116,11 +116,11 @@ Może on być przechowywany w Git i mieć ten sam schemat, co konfiguracja globa
 
 ### Niestandardowa ścieżka
 
-Możesz załadować niestandardowy plik konfiguracyjny, ustawiając zmienną środowiskową `OPENCODE_CONFIG`.
+Możesz załadować niestandardowy plik konfiguracyjny, ustawiając zmienną środowiskową `YONSOON_CONFIG`.
 
 ```bash
-export OPENCODE_CONFIG=/path/to/my/custom-config.json
-opencode run "Hello world"
+export YONSOON_CONFIG=/path/to/my/custom-config.json
+yonsoon run "Hello world"
 ```
 
 Konfiguracja niestandardowa jest ładowana po konfiguracji globalnej i przed konfiguracją projektu w kolejności priorytetów.
@@ -129,20 +129,20 @@ Konfiguracja niestandardowa jest ładowana po konfiguracji globalnej i przed kon
 
 ### Niestandardowy katalog
 
-Możesz ustawić niestandardowy katalog konfiguracyjny za pomocą zmiennej środowiskowej `OPENCODE_CONFIG_DIR`. Katalog ten będzie przeszukiwany pod kątem agentów, poleceń, trybów i wtyczek, tak jak standardowy katalog `.opencode` i powinien zachować tę samą strukturę.
+Możesz ustawić niestandardowy katalog konfiguracyjny za pomocą zmiennej środowiskowej `YONSOON_CONFIG_DIR`. Katalog ten będzie przeszukiwany pod kątem agentów, poleceń, trybów i wtyczek, tak jak standardowy katalog `.yonsoon` i powinien zachować tę samą strukturę.
 
 ```bash
-export OPENCODE_CONFIG_DIR=/path/to/my/config-directory
-opencode run "Hello world"
+export YONSOON_CONFIG_DIR=/path/to/my/config-directory
+yonsoon run "Hello world"
 ```
 
-Katalog niestandardowy jest ładowany po globalnej konfiguracji i katalogach `.opencode`, więc **może być łączony** z ich zawartością.
+Katalog niestandardowy jest ładowany po globalnej konfiguracji i katalogach `.yonsoon`, więc **może być łączony** z ich zawartością.
 
 ---
 
 ## Schemat
 
-Plik konfiguracyjny ma schemat JSON dostępny pod adresem [**`opencode.ai/config.json`**](https://opencode.ai/config.json).
+Plik konfiguracyjny ma schemat JSON dostępny pod adresem [**`yonsoon.ai/config.json`**](https://yonsoon.ai/config.json).
 
 Twój edytor powinien zapewniać walidację i autouzupełnianie na podstawie tego schematu.
 
@@ -152,9 +152,9 @@ Twój edytor powinien zapewniać walidację i autouzupełnianie na podstawie teg
 
 Możesz skonfigurować zachowanie TUI za pomocą opcji `tui`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {
@@ -177,11 +177,11 @@ Dostępne opcje:
 
 ### Server (Serwer)
 
-Możesz skonfigurować serwer dla `opencode serve` i `opencode web` za pomocą opcji `server`.
+Możesz skonfigurować serwer dla `yonsoon serve` i `yonsoon web` za pomocą opcji `server`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "server": {
     "port": 4096,
     "hostname": "0.0.0.0",
@@ -196,8 +196,8 @@ Dostępne opcje:
 
 - `port` - Port do nasłuchiwania.
 - `hostname` — Nazwa hosta, z którą należy się powiązać. Gdy `mdns` jest włączone i nie ustawiono innej nazwy hosta, domyślnie jest to `0.0.0.0`.
-- `mdns` - Włącz wykrywanie usług mDNS. Dzięki temu inne urządzenia w sieci mogą łatwo znaleźć Twój serwer OpenCode.
-- `mdnsDomain` - Niestandardowa nazwa domeny dla usług mDNS. Domyślnie `opencode.local`. Przydatne do uruchamiania wielu instancji w tej samej sieci.
+- `mdns` - Włącz wykrywanie usług mDNS. Dzięki temu inne urządzenia w sieci mogą łatwo znaleźć Twój serwer YONSOON (甬算).
+- `mdnsDomain` - Niestandardowa nazwa domeny dla usług mDNS. Domyślnie `yonsoon.local`. Przydatne do uruchamiania wielu instancji w tej samej sieci.
 - `cors` - Dozwolone źródła CORS podczas korzystania z serwera HTTP z przeglądarki. Wartość musi być listą źródeł (schemat + host + opcjonalny port), np. `https://app.example.com`.
 
 [Dowiedz się więcej o serwerze](/docs/server).
@@ -208,9 +208,9 @@ Dostępne opcje:
 
 Kontroluj, które narzędzia są dostępne dla LLM, za pomocą opcji `tools`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "tools": {
     "write": false,
     "bash": false
@@ -226,22 +226,22 @@ Kontroluj, które narzędzia są dostępne dla LLM, za pomocą opcji `tools`.
 
 Możesz skonfigurować dostawców i modele, których chcesz używać, za pomocą opcji `provider`, `model` i `small_model`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "provider": {},
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4-5"
 }
 ```
 
-Opcja `small_model` konfiguruje oddzielny model do lżejszych zadań, takich jak generowanie tytułów. Domyślnie OpenCode wybiera tańszy model od tego samego dostawcy, jeśli jest dostępny, w przeciwnym razie powraca do modelu głównego.
+Opcja `small_model` konfiguruje oddzielny model do lżejszych zadań, takich jak generowanie tytułów. Domyślnie YONSOON (甬算) wybiera tańszy model od tego samego dostawcy, jeśli jest dostępny, w przeciwnym razie powraca do modelu głównego.
 
 Opcje dostawcy mogą zawierać `timeout` i `setCacheKey`:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -268,9 +268,9 @@ Niektórzy dostawcy obsługują dodatkowe opcje konfiguracji poza `timeout` i `a
 
 Amazon Bedrock umożliwia konfigurację połączenia z AWS:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -297,11 +297,11 @@ Token okaziciela (`AWS_BEARER_TOKEN_BEDROCK` lub `/connect`) ma pierwszeństwo p
 
 ### Theme (Motyw)
 
-Skonfiguruj motyw interfejsu OpenCode za pomocą opcji `theme`.
+Skonfiguruj motyw interfejsu YONSOON (甬算) za pomocą opcji `theme`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "theme": ""
 }
 ```
@@ -314,9 +314,9 @@ Skonfiguruj motyw interfejsu OpenCode za pomocą opcji `theme`.
 
 Możesz zdefiniować i skonfigurować agentów za pomocą opcji `agent`.
 
-```jsonc title="opencode.jsonc"
+```jsonc title="yonsoon.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "agent": {
     "code-reviewer": {
       "description": "Reviews code for best practices and potential issues",
@@ -332,7 +332,7 @@ Możesz zdefiniować i skonfigurować agentów za pomocą opcji `agent`.
 }
 ```
 
-Możesz także definiować agentów przy użyciu plików markdown w `~/.config/opencode/agents/` lub `.opencode/agents/`. [Dowiedz się więcej o agentach](/docs/agents).
+Możesz także definiować agentów przy użyciu plików markdown w `~/.config/yonsoon/agents/` lub `.yonsoon/agents/`. [Dowiedz się więcej o agentach](/docs/agents).
 
 ---
 
@@ -340,16 +340,16 @@ Możesz także definiować agentów przy użyciu plików markdown w `~/.config/o
 
 Domyślnego agenta można ustawić za pomocą opcji `default_agent`. Określa to agenta, który jest używany, jeśli nie wybrano żadnego innego.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "default_agent": "plan"
 }
 ```
 
-Agent domyślny musi być agentem typu `primary` (nie `subagent`). Może to być agent wbudowany, taki jak `"build"` lub `"plan"`, albo zdefiniowany przez Ciebie [agent niestandardowy](/docs/agents). Jeśli agent nie istnieje lub jest subagentem, OpenCode powróci do `"build"` z ostrzeżeniem.
+Agent domyślny musi być agentem typu `primary` (nie `subagent`). Może to być agent wbudowany, taki jak `"build"` lub `"plan"`, albo zdefiniowany przez Ciebie [agent niestandardowy](/docs/agents). Jeśli agent nie istnieje lub jest subagentem, YONSOON (甬算) powróci do `"build"` z ostrzeżeniem.
 
-Dotyczy to wszystkich interfejsów: TUI, CLI (`opencode run`), aplikacji desktopowej i GitHub Actions.
+Dotyczy to wszystkich interfejsów: TUI, CLI (`yonsoon run`), aplikacji desktopowej i GitHub Actions.
 
 ---
 
@@ -357,9 +357,9 @@ Dotyczy to wszystkich interfejsów: TUI, CLI (`opencode run`), aplikacji desktop
 
 Możesz skonfigurować [udostępnianie](/docs/share) za pomocą opcji `share`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "share": "manual"
 }
 ```
@@ -378,9 +378,9 @@ Domyślnie ustawiony jest tryb ręczny, w którym należy jawnie udostępniać r
 
 Możesz zdefiniować niestandardowe polecenia dla powtarzalnych zadań za pomocą opcji `command`.
 
-```jsonc title="opencode.jsonc"
+```jsonc title="yonsoon.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "command": {
     "test": {
       "template": "Run the full test suite with coverage report and show any failures.\nFocus on the failing tests and suggest fixes.",
@@ -396,7 +396,7 @@ Możesz zdefiniować niestandardowe polecenia dla powtarzalnych zadań za pomoc�
 }
 ```
 
-Możesz także definiować polecenia przy użyciu plików Markdown w `~/.config/opencode/commands/` lub `.opencode/commands/`. [Dowiedz się więcej o poleceniach](/docs/commands).
+Możesz także definiować polecenia przy użyciu plików Markdown w `~/.config/yonsoon/commands/` lub `.yonsoon/commands/`. [Dowiedz się więcej o poleceniach](/docs/commands).
 
 ---
 
@@ -404,9 +404,9 @@ Możesz także definiować polecenia przy użyciu plików Markdown w `~/.config/
 
 Możesz dostosować skróty klawiszowe za pomocą opcji `keybinds`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "keybinds": {}
 }
 ```
@@ -417,17 +417,17 @@ Możesz dostosować skróty klawiszowe za pomocą opcji `keybinds`.
 
 ### Autoupdate (Automatyczna aktualizacja)
 
-OpenCode może automatycznie pobierać nowe wersje. Możesz to kontrolować za pomocą opcji `autoupdate`.
+YONSOON (甬算) może automatycznie pobierać nowe wersje. Możesz to kontrolować za pomocą opcji `autoupdate`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "autoupdate": false
 }
 ```
 
 Jeśli nie chcesz automatycznych aktualizacji, ale chcesz być powiadamiany o nowych wersjach, ustaw `autoupdate` na `"notify"`.
-Działa to tylko wtedy, gdy OpenCode nie został zainstalowany przez menedżera pakietów, takiego jak Homebrew.
+Działa to tylko wtedy, gdy YONSOON (甬算) nie został zainstalowany przez menedżera pakietów, takiego jak Homebrew.
 
 ---
 
@@ -435,9 +435,9 @@ Działa to tylko wtedy, gdy OpenCode nie został zainstalowany przez menedżera 
 
 Możesz skonfigurować formatery kodu za pomocą opcji `formatter`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -459,13 +459,13 @@ Możesz skonfigurować formatery kodu za pomocą opcji `formatter`.
 
 ### Permissions (Uprawnienia)
 
-Domyślnie OpenCode **zezwala na wszystkie działania** bez konieczności zatwierdzania. Możesz to zmienić za pomocą opcji `permission`.
+Domyślnie YONSOON (甬算) **zezwala na wszystkie działania** bez konieczności zatwierdzania. Możesz to zmienić za pomocą opcji `permission`.
 
 Na przykład, aby wymagać zatwierdzenia dla narzędzi `edit` i `bash`:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "ask",
     "bash": "ask"
@@ -481,9 +481,9 @@ Na przykład, aby wymagać zatwierdzenia dla narzędzi `edit` i `bash`:
 
 Możesz kontrolować zachowanie kompaktowania kontekstu za pomocą opcji `compaction`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "compaction": {
     "auto": true,
     "prune": true
@@ -500,9 +500,9 @@ Możesz kontrolować zachowanie kompaktowania kontekstu za pomocą opcji `compac
 
 Skonfiguruj ignorowane wzorce plików dla obserwatora plików za pomocą `watcher`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   }
@@ -517,9 +517,9 @@ Wzorce są zgodne ze składnią glob. Użyj tej opcji, aby wykluczyć często zm
 
 Skonfiguruj serwery MCP, których chcesz używać, za pomocą opcji `mcp`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "mcp": {}
 }
 ```
@@ -530,14 +530,14 @@ Skonfiguruj serwery MCP, których chcesz używać, za pomocą opcji `mcp`.
 
 ### Plugins (Wtyczki)
 
-[Wtyczki](/docs/plugins) rozszerzają OpenCode o niestandardowe narzędzia, hooki i integracje.
+[Wtyczki](/docs/plugins) rozszerzają YONSOON (甬算) o niestandardowe narzędzia, hooki i integracje.
 
-Umieść pliki wtyczek w `.opencode/plugins/` lub `~/.config/opencode/plugins/`. Możesz także załadować wtyczkę z npm za pomocą opcji `plugin`.
+Umieść pliki wtyczek w `.yonsoon/plugins/` lub `~/.config/yonsoon/plugins/`. Możesz także załadować wtyczkę z npm za pomocą opcji `plugin`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-helicone-session", "@my-org/custom-plugin"]
+  "$schema": "https://yonsoon.ai/config.json",
+  "plugin": ["yonsoon-helicone-session", "@my-org/custom-plugin"]
 }
 ```
 
@@ -549,9 +549,9 @@ Umieść pliki wtyczek w `.opencode/plugins/` lub `~/.config/opencode/plugins/`.
 
 Określ pliki instrukcji dla modelu, używając opcji `instructions`.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -564,9 +564,9 @@ Załadowane pliki są dołączane do promptu systemowego. Obsługuje wzorce glob
 
 Zapobiegaj automatycznemu ładowaniu dostawców za pomocą opcji `disabled_providers`. Jest to przydatne, gdy chcesz wyłączyć niektórych dostawców, nawet jeśli masz dla nich dane uwierzytelniające.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "disabled_providers": ["openai", "gemini"]
 }
 ```
@@ -587,14 +587,14 @@ Opcja `disabled_providers` przyjmuje tablicę identyfikatorów dostawców. Gdy d
 
 Możesz określić listę dozwolonych dostawców za pomocą `enabled_providers`. Po ustawieniu, tylko wymienieni dostawcy będą ładowani.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "enabled_providers": ["anthropic", "openai"]
 }
 ```
 
-Jest to przydatne, gdy chcesz ograniczyć użycie OpenCode tylko do określonych dostawców.
+Jest to przydatne, gdy chcesz ograniczyć użycie YONSOON (甬算) tylko do określonych dostawców.
 
 :::note
 `disabled_providers` ma pierwszeństwo przed `enabled_providers`.
@@ -608,9 +608,9 @@ Jeśli dostawca jest wymieniony zarówno w `enabled_providers`, jak i `disabled_
 
 Klucz `experimental` zawiera opcje, które są we wczesnej fazie rozwoju.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "experimental": {}
 }
 ```
@@ -631,10 +631,10 @@ Możesz używać specjalnej składni w plikach konfiguracyjnych, aby odwoływać
 
 Użyj `{env:VARIABLE_NAME}`, aby wstawić wartość zmiennej środowiskowej:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
-  "model": "{env:OPENCODE_MODEL}",
+  "$schema": "https://yonsoon.ai/config.json",
+  "model": "{env:YONSOON_MODEL}",
   "provider": {
     "anthropic": {
       "models": {},
@@ -654,9 +654,9 @@ Jeśli zmienna środowiskowa nie jest ustawiona, zostanie zastąpiona pustym ci�
 
 Użyj `{file:path/to/file}`, aby wstawić zawartość pliku:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "instructions": ["./custom-instructions.md"],
   "provider": {
     "openai": {

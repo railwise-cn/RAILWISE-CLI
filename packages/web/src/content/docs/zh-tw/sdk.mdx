@@ -1,13 +1,13 @@
 ---
 title: SDK
-description: opencode 伺服器的型別安全 JS 用戶端。
+description: yonsoon 伺服器的型別安全 JS 用戶端。
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-opencode JS/TS SDK 提供了一個型別安全的用戶端，用於與伺服器進行互動。
-您可以用它來建構整合方案，並以程式化方式控制 opencode。
+yonsoon JS/TS SDK 提供了一個型別安全的用戶端，用於與伺服器進行互動。
+您可以用它來建構整合方案，並以程式化方式控制 yonsoon。
 
 [了解更多](/docs/server)關於伺服器的運作原理。如需範例，請查看社群建構的[專案](/docs/ecosystem#projects)。
 
@@ -18,19 +18,19 @@ opencode JS/TS SDK 提供了一個型別安全的用戶端，用於與伺服器�
 從 npm 安裝 SDK：
 
 ```bash
-npm install @opencode-ai/sdk
+npm install @yonsoon/sdk
 ```
 
 ---
 
 ## 建立用戶端
 
-建立一個 opencode 實例：
+建立一個 yonsoon 實例：
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createYonsoon } from "@yonsoon/sdk"
 
-const { client } = await createOpencode()
+const { client } = await createYonsoon()
 ```
 
 這會同時啟動伺服器和用戶端。
@@ -49,12 +49,12 @@ const { client } = await createOpencode()
 
 ## 設定
 
-您可以傳入一個設定物件來自訂行為。實例仍然會讀取您的 `opencode.json`，但您可以透過內嵌方式覆寫或新增設定：
+您可以傳入一個設定物件來自訂行為。實例仍然會讀取您的 `yonsoon.json`，但您可以透過內嵌方式覆寫或新增設定：
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createYonsoon } from "@yonsoon/sdk"
 
-const opencode = await createOpencode({
+const yonsoon = await createYonsoon({
   hostname: "127.0.0.1",
   port: 4096,
   config: {
@@ -62,19 +62,19 @@ const opencode = await createOpencode({
   },
 })
 
-console.log(`Server running at ${opencode.server.url}`)
+console.log(`Server running at ${yonsoon.server.url}`)
 
-opencode.server.close()
+yonsoon.server.close()
 ```
 
 ## 僅用戶端模式
 
-如果您已經有一個正在執行的 opencode 實例，可以建立一個用戶端實例來連線：
+如果您已經有一個正在執行的 yonsoon 實例，可以建立一個用戶端實例來連線：
 
 ```javascript
-import { createOpencodeClient } from "@opencode-ai/sdk"
+import { createYonsoonClient } from "@yonsoon/sdk"
 
-const client = createOpencodeClient({
+const client = createYonsoonClient({
   baseUrl: "http://localhost:4096",
 })
 ```
@@ -96,7 +96,7 @@ const client = createOpencodeClient({
 SDK 包含所有 API 型別的 TypeScript 定義。您可以直接匯入它們：
 
 ```typescript
-import type { Session, Message, Part } from "@opencode-ai/sdk"
+import type { Session, Message, Part } from "@yonsoon/sdk"
 ```
 
 所有型別均根據伺服器的 OpenAPI 規範產生，可在<a href={typesUrl}>型別檔案</a>中查看。
@@ -376,7 +376,7 @@ await client.session.prompt({
 ```javascript
 // 搜尋和讀取檔案
 const textResults = await client.find.text({
-  query: { pattern: "function.*opencode" },
+  query: { pattern: "function.*yonsoon" },
 })
 
 const files = await client.find.files({

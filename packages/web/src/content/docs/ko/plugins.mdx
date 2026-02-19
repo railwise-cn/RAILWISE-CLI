@@ -1,9 +1,9 @@
 ---
 title: 플러그인
-description: OpenCode를 확장하기 위해 자신만의 플러그인을 작성하세요.
+description: YONSOON (甬算)를 확장하기 위해 자신만의 플러그인을 작성하세요.
 ---
 
-플러그인은 다양한 이벤트와 사용자 정의 행동으로 후킹하여 opencode를 확장 할 수 있습니다. 플러그인을 만들 수 있습니다 새로운 기능을 추가, 외부 서비스와 통합, 또는 opencode의 기본 동작을 수정.
+플러그인은 다양한 이벤트와 사용자 정의 행동으로 후킹하여 yonsoon를 확장 할 수 있습니다. 플러그인을 만들 수 있습니다 새로운 기능을 추가, 외부 서비스와 통합, 또는 yonsoon의 기본 동작을 수정.
 
 예를 들어, 커뮤니티에 의해 생성 된 [plugins](/docs/ecosystem#plugins)를 확인하십시오.
 
@@ -19,8 +19,8 @@ description: OpenCode를 확장하기 위해 자신만의 플러그인을 작성
 
 플러그인 디렉토리에 JavaScript 또는 TypeScript 파일을 배치합니다.
 
-- `.opencode/plugins/` - 프로젝트 레벨 플러그인
-- `~/.config/opencode/plugins/` - 글로벌 플러그인
+- `.yonsoon/plugins/` - 프로젝트 레벨 플러그인
+- `~/.config/yonsoon/plugins/` - 글로벌 플러그인
 
 이 디렉토리의 파일은 자동으로 시작에로드됩니다.
 
@@ -30,10 +30,10 @@ description: OpenCode를 확장하기 위해 자신만의 플러그인을 작성
 
 config 파일에 npm 패키지를 지정합니다.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-helicone-session", "opencode-wakatime", "@my-org/custom-plugin"]
+  "$schema": "https://yonsoon.ai/config.json",
+  "plugin": ["yonsoon-helicone-session", "yonsoon-wakatime", "@my-org/custom-plugin"]
 }
 ```
 
@@ -45,7 +45,7 @@ config 파일에 npm 패키지를 지정합니다.
 
 ## 플러그인이 설치되는 방법
 
-**npm 플러그인**은 시작시 Bun을 사용하여 자동으로 설치됩니다. 패키지와 그들의 의존성은 `~/.cache/opencode/node_modules/`에서 캐시됩니다.
+**npm 플러그인**은 시작시 Bun을 사용하여 자동으로 설치됩니다. 패키지와 그들의 의존성은 `~/.cache/yonsoon/node_modules/`에서 캐시됩니다.
 
 **로컬 플러그인**은 플러그인 디렉토리에서 직접로드됩니다. 외부 패키지를 사용하려면 구성 디렉토리 내 `package.json`를 작성해야 합니다 ([Dependencies](#dependencies)), 또는 플러그인을 npm에 게시하고 [config에 추가](/docs/config#plugins).
 
@@ -55,10 +55,10 @@ config 파일에 npm 패키지를 지정합니다.
 
 플러그인은 모든 소스에서로드되며 모든 후크는 순서대로 실행됩니다. 로드 순서는 다음과 같습니다:
 
-1. 글로벌 구성 (`~/.config/opencode/opencode.json`)
-2. 프로젝트 구성 (`opencode.json`)
-3. 글로벌 플러그인 디렉토리 (`~/.config/opencode/plugins/`)
-4. 프로젝트 플러그인 디렉토리 (`.opencode/plugins/`)
+1. 글로벌 구성 (`~/.config/yonsoon/yonsoon.json`)
+2. 프로젝트 구성 (`yonsoon.json`)
+3. 글로벌 플러그인 디렉토리 (`~/.config/yonsoon/plugins/`)
+4. 프로젝트 플러그인 디렉토리 (`.yonsoon/plugins/`)
 
 중복 npm 패키지는 한 번만 로드됩니다. 하지만, 로컬 플러그인과 같은 이름과 npm 플러그인은 모두 별도로로드됩니다.
 
@@ -75,7 +75,7 @@ config 파일에 npm 패키지를 지정합니다.
 
 로컬 플러그인 및 사용자 정의 도구는 외부 npm 패키지를 사용할 수 있습니다. `package.json`를 config 디렉토리에 추가하면 필요한 의존도가 있습니다.
 
-```json title=".opencode/package.json"
+```json title=".yonsoon/package.json"
 {
   "dependencies": {
     "shescape": "^2.1.0"
@@ -83,9 +83,9 @@ config 파일에 npm 패키지를 지정합니다.
 }
 ```
 
-opencode는 `bun install`를 시작합니다. 플러그인 및 도구가 가져올 수 있습니다.
+yonsoon는 `bun install`를 시작합니다. 플러그인 및 도구가 가져올 수 있습니다.
 
-```ts title=".opencode/plugins/my-plugin.ts"
+```ts title=".yonsoon/plugins/my-plugin.ts"
 import { escape } from "shescape"
 
 export const MyPlugin = async (ctx) => {
@@ -103,7 +103,7 @@ export const MyPlugin = async (ctx) => {
 
 ### 기본 구조
 
-```js title=".opencode/plugins/example.js"
+```js title=".yonsoon/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
   console.log("Plugin initialized!")
 
@@ -118,7 +118,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 - `project`: 현재 프로젝트 정보.
 - `directory`: 현재 작업 디렉토리.
 - `worktree`: git worktree 경로.
-- `client`: AI와 상호 작용을 위한 opencode SDK 클라이언트.
+- `client`: AI와 상호 작용을 위한 yonsoon SDK 클라이언트.
 - `$`: Bun's [shell API](https://bun.com/docs/runtime/shell) 명령어를 실행합니다.
 
 ---
@@ -128,7 +128,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 TypeScript 플러그인의 경우 플러그인 패키지에서 유형을 가져올 수 있습니다.
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@yonsoon/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -211,7 +211,7 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ## 예제
 
-opencode를 확장하기 위해 사용할 수있는 플러그인의 몇 가지 예입니다.
+yonsoon를 확장하기 위해 사용할 수있는 플러그인의 몇 가지 예입니다.
 
 ---
 
@@ -219,13 +219,13 @@ opencode를 확장하기 위해 사용할 수있는 플러그인의 몇 가지 �
 
 특정 이벤트가 발생할 때 알림을 전송:
 
-```js title=".opencode/plugins/notification.js"
+```js title=".yonsoon/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
   return {
     event: async ({ event }) => {
       // Send notification on session completion
       if (event.type === "session.idle") {
-        await $`osascript -e 'display notification "Session completed!" with title "opencode"'`
+        await $`osascript -e 'display notification "Session completed!" with title "yonsoon"'`
       }
     },
   }
@@ -235,16 +235,16 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 macOS에서 AppleScript를 실행하려면 `osascript`를 사용하고 있습니다. 여기에 우리는 그것을 사용하여 알림을 보낼 수 있습니다.
 
 :::note
-opencode 데스크톱 앱을 사용하는 경우 응답이 준비되어 있거나 세션 오류가 있을 때 시스템 알림을 자동으로 보낼 수 있습니다.
+yonsoon 데스크톱 앱을 사용하는 경우 응답이 준비되어 있거나 세션 오류가 있을 때 시스템 알림을 자동으로 보낼 수 있습니다.
 :::
 
 ---
 
 ### .env 보호
 
-읽기 `.env` 파일에서 opencode를 방지하십시오:
+읽기 `.env` 파일에서 yonsoon를 방지하십시오:
 
-```javascript title=".opencode/plugins/env-protection.js"
+```javascript title=".yonsoon/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
   return {
     "tool.execute.before": async (input, output) => {
@@ -262,7 +262,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 환경 변수를 모든 shell 실행 (AI 도구 및 사용자 terminal)로 주사하십시오.
 
-```javascript title=".opencode/plugins/inject-env.js"
+```javascript title=".yonsoon/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
   return {
     "shell.env": async (input, output) => {
@@ -277,10 +277,10 @@ export const InjectEnvPlugin = async () => {
 
 ### 사용자 정의 도구
 
-플러그인은 opencode에 사용자 정의 도구를 추가 할 수 있습니다 :
+플러그인은 yonsoon에 사용자 정의 도구를 추가 할 수 있습니다 :
 
-```ts title=".opencode/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@opencode-ai/plugin"
+```ts title=".yonsoon/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@yonsoon/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,13 +300,13 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool` helper는 opencode가 호출 할 수있는 사용자 정의 도구를 만듭니다. Zod schema 기능을 가지고 도구 정의를 반환:
+`tool` helper는 yonsoon가 호출 할 수있는 사용자 정의 도구를 만듭니다. Zod schema 기능을 가지고 도구 정의를 반환:
 
 - `description`: 도구는 무엇을
 - `args`: 도구의 인수에 대한 Zod 스키마
 - `execute`: 도구가 호출될 때 실행되는 기능
 
-사용자 정의 도구는 내장 도구와 함께 opencode를 사용할 수 있습니다.
+사용자 정의 도구는 내장 도구와 함께 yonsoon를 사용할 수 있습니다.
 
 ---
 
@@ -314,7 +314,7 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 
 구조화된 로깅을 위해 `console.log` 대신 `client.app.log()`를 사용하십시오:
 
-```ts title=".opencode/plugins/my-plugin.ts"
+```ts title=".yonsoon/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
   await client.app.log({
     body: {
@@ -327,7 +327,7 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-레벨: `debug`, `info`, `warn`, `error`. [SDK 문서](https://opencode.ai/docs/sdk)를 참고하세요.
+레벨: `debug`, `info`, `warn`, `error`. [SDK 문서](https://yonsoon.ai/docs/sdk)를 참고하세요.
 
 ---
 
@@ -335,8 +335,8 @@ export const MyPlugin = async ({ client }) => {
 
 세션이 압축 될 때 포함 된 컨텍스트를 사용자 지정:
 
-```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+```ts title=".yonsoon/plugins/compaction.ts"
+import type { Plugin } from "@yonsoon/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,8 +359,8 @@ LLM이 압축 요약을 생성하기 전에 `experimental.session.compacting` �
 
 당신은 또한 `output.prompt`를 조정해서 조밀함을 전적으로 대체할 수 있습니다:
 
-```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+```ts title=".yonsoon/plugins/custom-compaction.ts"
+import type { Plugin } from "@yonsoon/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {

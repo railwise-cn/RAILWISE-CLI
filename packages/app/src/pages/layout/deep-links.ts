@@ -1,7 +1,7 @@
-export const deepLinkEvent = "opencode:deep-link"
+export const deepLinkEvent = "yonsoon:deep-link"
 
 export const parseDeepLink = (input: string) => {
-  if (!input.startsWith("opencode://")) return
+  if (!input.startsWith("yonsoon://")) return
   if (typeof URL.canParse === "function" && !URL.canParse(input)) return
   const url = (() => {
     try {
@@ -20,15 +20,15 @@ export const parseDeepLink = (input: string) => {
 export const collectOpenProjectDeepLinks = (urls: string[]) =>
   urls.map(parseDeepLink).filter((directory): directory is string => !!directory)
 
-type OpenCodeWindow = Window & {
-  __OPENCODE__?: {
+type YONSOON (甬算)Window = Window & {
+  __YONSOON__?: {
     deepLinks?: string[]
   }
 }
 
-export const drainPendingDeepLinks = (target: OpenCodeWindow) => {
-  const pending = target.__OPENCODE__?.deepLinks ?? []
+export const drainPendingDeepLinks = (target: YONSOON (甬算)Window) => {
+  const pending = target.__YONSOON__?.deepLinks ?? []
   if (pending.length === 0) return []
-  if (target.__OPENCODE__) target.__OPENCODE__.deepLinks = []
+  if (target.__YONSOON__) target.__YONSOON__.deepLinks = []
   return pending
 }

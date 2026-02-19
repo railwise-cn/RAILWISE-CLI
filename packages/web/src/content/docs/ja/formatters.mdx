@@ -1,15 +1,15 @@
 ---
 title: フォーマッタ
-description: OpenCode は言語固有のフォーマッタを使用します。
+description: YONSOON (甬算) は言語固有のフォーマッタを使用します。
 ---
 
-OpenCode は、言語固有のフォーマッタを使用してファイルを作成または編集した後、ファイルを自動的にフォーマットします。これにより、生成されるコードがプロジェクトのコードスタイルに従っていることが保証されます。
+YONSOON (甬算) は、言語固有のフォーマッタを使用してファイルを作成または編集した後、ファイルを自動的にフォーマットします。これにより、生成されるコードがプロジェクトのコードスタイルに従っていることが保証されます。
 
 ---
 
 ## 組み込み
 
-OpenCode には、一般的な言語およびフレームワーク用のいくつかの組み込みフォーマッタが付属しています。以下は、フォーマッタ、サポートされているファイル拡張子、および必要なコマンドまたは構成オプションのリストです。
+YONSOON (甬算) には、一般的な言語およびフレームワーク用のいくつかの組み込みフォーマッタが付属しています。以下は、フォーマッタ、サポートされているファイル拡張子、および必要なコマンドまたは構成オプションのリストです。
 
 | Formatter            | Extensions                                                                                               | Requirements                                                                                          |
 | -------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -39,13 +39,13 @@ OpenCode には、一般的な言語およびフレームワーク用のいく�
 | oxfmt (Experimental) | .js, .jsx, .ts, .tsx                                                                                     | `oxfmt` dependency in `package.json` and an [experimental env variable flag](/docs/cli/#experimental) |
 | ormolu               | .hs                                                                                                      | `ormolu` command available                                                                            |
 
-したがって、プロジェクトの `prettier` に `package.json` が含まれている場合、OpenCode は自動的にそれを使用します。
+したがって、プロジェクトの `prettier` に `package.json` が含まれている場合、YONSOON (甬算) は自動的にそれを使用します。
 
 ---
 
 ## 仕組み
 
-OpenCode がファイルを書き込んだり編集したりすると、次のことが行われます。
+YONSOON (甬算) がファイルを書き込んだり編集したりすると、次のことが行われます。
 
 1. 有効なすべてのフォーマッタに対してファイル拡張子をチェックします。
 2. ファイルに対して適切なフォーマッタコマンドを実行します。
@@ -57,11 +57,11 @@ OpenCode がファイルを書き込んだり編集したりすると、次の�
 
 ## 設定
 
-OpenCode 設定の `formatter` セクションを通じてフォーマッタをカスタマイズできます。
+YONSOON (甬算) 設定の `formatter` セクションを通じてフォーマッタをカスタマイズできます。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "formatter": {}
 }
 ```
@@ -83,18 +83,18 @@ OpenCode 設定の `formatter` セクションを通じてフォーマッタを�
 
 **すべて**のフォーマッタをグローバルに無効にするには、`formatter` を `false` に設定します。
 
-```json title="opencode.json" {3}
+```json title="yonsoon.json" {3}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "formatter": false
 }
 ```
 
 **特定**のフォーマッタを無効にするには、`disabled` を `true` に設定します。
 
-```json title="opencode.json" {5}
+```json title="yonsoon.json" {5}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -109,9 +109,9 @@ OpenCode 設定の `formatter` セクションを通じてフォーマッタを�
 
 コマンド、環境変数、ファイル拡張子を指定することで、組み込みフォーマッタをオーバーライドしたり、新しいフォーマッタを追加したりできます。
 
-```json title="opencode.json" {4-14}
+```json title="yonsoon.json" {4-14}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

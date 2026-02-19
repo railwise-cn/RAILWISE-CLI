@@ -1,9 +1,9 @@
 ---
 title: Custom Tools
-description: Create tools the LLM can call in OpenCode.
+description: Create tools the LLM can call in YONSOON (甬算).
 ---
 
-custom tool은 대화 중 LLM이 호출할 수 있도록 사용자가 직접 만든 함수입니다. `read`, `write`, `bash` 같은 OpenCode의 [built-in tools](/docs/tools)와 함께 동작합니다.
+custom tool은 대화 중 LLM이 호출할 수 있도록 사용자가 직접 만든 함수입니다. `read`, `write`, `bash` 같은 YONSOON (甬算)의 [built-in tools](/docs/tools)와 함께 동작합니다.
 
 ---
 
@@ -17,8 +17,8 @@ tool은 **TypeScript** 또는 **JavaScript** 파일로 정의합니다. 다만 t
 
 tool은 다음 위치에 둘 수 있습니다.
 
-- 프로젝트의 `.opencode/tools/` 디렉토리(로컬)
-- `~/.config/opencode/tools/` 디렉토리(전역)
+- 프로젝트의 `.yonsoon/tools/` 디렉토리(로컬)
+- `~/.config/yonsoon/tools/` 디렉토리(전역)
 
 ---
 
@@ -26,8 +26,8 @@ tool은 다음 위치에 둘 수 있습니다.
 
 tool을 가장 쉽게 만드는 방법은 타입 안정성과 validation을 제공하는 `tool()` helper를 사용하는 것입니다.
 
-```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+```ts title=".yonsoon/tools/database.ts" {1}
+import { tool } from "@yonsoon/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -49,8 +49,8 @@ export default tool({
 
 하나의 파일에서 여러 tool을 export할 수도 있습니다. 각 export는 **별도의 tool**이 되며 이름은 **`<filename>_<exportname>`** 형식을 사용합니다.
 
-```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+```ts title=".yonsoon/tools/math.ts"
+import { tool } from "@yonsoon/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -112,8 +112,8 @@ export default {
 
 tool은 현재 세션의 context 정보를 전달받습니다.
 
-```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+```ts title=".yonsoon/tools/project.ts" {8}
+import { tool } from "@yonsoon/plugin"
 
 export default tool({
   description: "Get project information",
@@ -139,7 +139,7 @@ tool은 원하는 언어로 작성할 수 있습니다. 아래는 Python으로 �
 
 먼저 Python 스크립트로 tool을 만듭니다.
 
-```python title=".opencode/tools/add.py"
+```python title=".yonsoon/tools/add.py"
 import sys
 
 a = int(sys.argv[1])
@@ -149,8 +149,8 @@ print(a + b)
 
 그다음 이 스크립트를 호출하는 tool 정의를 만듭니다.
 
-```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+```ts title=".yonsoon/tools/python-add.ts" {10}
+import { tool } from "@yonsoon/plugin"
 import path from "path"
 
 export default tool({
@@ -160,7 +160,7 @@ export default tool({
     b: tool.schema.number().describe("Second number"),
   },
   async execute(args, context) {
-    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const script = path.join(context.worktree, ".yonsoon/tools/add.py")
     const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
     return result.trim()
   },

@@ -8,7 +8,7 @@ import type {
   QuestionRequest,
   QuestionAnswer,
   ProviderListResponse,
-} from "@opencode-ai/sdk/v2"
+} from "@yonsoon/sdk/v2"
 import { createSimpleContext } from "./helper"
 import { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr"
 

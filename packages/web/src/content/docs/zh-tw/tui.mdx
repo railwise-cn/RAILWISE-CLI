@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: 使用 OpenCode 終端機使用者介面。
+description: 使用 YONSOON (甬算) 終端機使用者介面。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-OpenCode 提供了一個互動式終端機介面（TUI），用於配合 LLM 處理您的專案。
+YONSOON (甬算) 提供了一個互動式終端機介面（TUI），用於配合 LLM 處理您的專案。
 
-執行 OpenCode 即可啟動當前目錄的 TUI。
+執行 YONSOON (甬算) 即可啟動當前目錄的 TUI。
 
 ```bash
-opencode
+yonsoon
 ```
 
 或者您可以為指定的工作目錄啟動它。
 
 ```bash
-opencode /path/to/project
+yonsoon /path/to/project
 ```
 
 進入 TUI 後，您可以輸入訊息進行提示。
@@ -57,7 +57,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## 指令
 
-使用 OpenCode TUI 時，您可以輸入 `/` 後跟指令名稱來快速執行操作。例如：
+使用 YONSOON (甬算) TUI 時，您可以輸入 `/` 後跟指令名稱來快速執行操作。例如：
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### connect
 
-將供應商新增到 OpenCode。允許您從可用的供應商中選擇並新增其 API 金鑰。
+將供應商新增到 YONSOON (甬算)。允許您從可用的供應商中選擇並新增其 API 金鑰。
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### exit
 
-退出 OpenCode。_別名_：`/quit`、`/q`
+退出 YONSOON (甬算)。_別名_：`/quit`、`/q`
 
 ```bash frame="none"
 /exit
@@ -352,11 +352,11 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## 設定
 
-您可以透過 OpenCode 設定檔自訂 TUI 行為。
+您可以透過 YONSOON (甬算) 設定檔自訂 TUI 行為。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

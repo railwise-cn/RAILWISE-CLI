@@ -1,6 +1,6 @@
-# OpenCode Desktop
+# YONSOON (甬算) Desktop
 
-Native OpenCode desktop app, built with Tauri v2.
+Native YONSOON (甬算) desktop app, built with Tauri v2.
 
 ## Development
 

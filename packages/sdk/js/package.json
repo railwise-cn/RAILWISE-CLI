@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@opencode-ai/sdk",
+  "name": "@yonsoon/sdk",
   "version": "1.2.6",
   "type": "module",
   "license": "MIT",

@@ -1,15 +1,15 @@
 ---
 title: Wstęp
-description: Zacznij pracę z opencode.
+description: Zacznij pracę z yonsoon.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**opencode**](/) to agent kodujący AI typu open source. Jest dostępny jako interfejs terminalowy, aplikacja desktopowa i rozszerzenie IDE.
+[**yonsoon**](/) to agent kodujący AI typu open source. Jest dostępny jako interfejs terminalowy, aplikacja desktopowa i rozszerzenie IDE.
 
-![opencode TUI z motywem opencode](../../../assets/lander/screenshot.png)
+![yonsoon TUI z motywem yonsoon](../../../assets/lander/screenshot.png)
 
 Zacznijmy.
 
@@ -17,7 +17,7 @@ Zacznijmy.
 
 #### Warunki wstępne
 
-Aby uzyskać dostęp do opencode w swoim terminalu, będziesz potrzebować:
+Aby uzyskać dostęp do yonsoon w swoim terminalu, będziesz potrzebować:
 
 1. Nowoczesny emulator terminala, taki jak:
    - [WezTerm](https://wezterm.org), wieloplatformowy
@@ -31,10 +31,10 @@ Aby uzyskać dostęp do opencode w swoim terminalu, będziesz potrzebować:
 
 ## Instalacja
 
-Najłatwiej zainstalować opencode za pomocą skryptu instalacyjnego.
+Najłatwiej zainstalować yonsoon za pomocą skryptu instalacyjnego.
 
 ```bash
-curl -fsSL https://opencode.ai/install | bash
+curl -fsSL https://yonsoon.ai/install | bash
 ```
 
 Możesz też użyć poniższych metod instalacji:
@@ -45,28 +45,28 @@ Możesz też użyć poniższych metod instalacji:
 
       <TabItem label="npm">
       ```bash
-      npm install -g opencode-ai
+      npm install -g yonsoon-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g opencode-ai
+        bun install -g yonsoon-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g opencode-ai
+        pnpm install -g yonsoon-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add opencode-ai
+        yarn global add yonsoon-ai
         ```
 
       </TabItem>
@@ -76,68 +76,68 @@ Możesz też użyć poniższych metod instalacji:
 - **Korzystanie z Homebrew na macOS i Linux**
 
   ```bash
-  brew install anomalyco/tap/opencode
+  brew install anomalyco/tap/yonsoon
   ```
 
-  > W celu uzyskania najbardziej aktualnej wersji zalecamy korzystanie z opencode. Oficjalna formuła `brew install opencode` jest utrzymywana przez zespół Homebrew i jest aktualizowana.
+  > W celu uzyskania najbardziej aktualnej wersji zalecamy korzystanie z yonsoon. Oficjalna formuła `brew install yonsoon` jest utrzymywana przez zespół Homebrew i jest aktualizowana.
 
 - **Korzystanie z Paru na Arch Linux**
 
   ```bash
-  sudo pacman -S opencode           # Arch Linux (Stable)
-  paru -S opencode-bin              # Arch Linux (Latest from AUR)
+  sudo pacman -S yonsoon           # Arch Linux (Stable)
+  paru -S yonsoon-bin              # Arch Linux (Latest from AUR)
   ```
 
 #### Windows
 
 :::tip[Zalecane: Uruchamianie w WSL]
-Aby najlepiej wykorzystać działanie w systemie Windows, zalecamy włączenie [Podsystemu Windows dla systemu Linux (WSL)](/docs/windows-wsl). Zapewnia to pełną kompatybilność z funkcjami opencode.
+Aby najlepiej wykorzystać działanie w systemie Windows, zalecamy włączenie [Podsystemu Windows dla systemu Linux (WSL)](/docs/windows-wsl). Zapewnia to pełną kompatybilność z funkcjami yonsoon.
 :::
 
 - **Używając Chocolatey**
 
   ```bash
-  choco install opencode
+  choco install yonsoon
   ```
 
 - **Korzystanie z Scoop**
 
   ```bash
-  scoop install opencode
+  scoop install yonsoon
   ```
 
 - **Przy użyciu NPM**
 
   ```bash
-  npm install -g opencode-ai
+  npm install -g yonsoon-ai
   ```
 
 - **Używając Mise’a**
 
   ```bash
-  mise use -g github:anomalyco/opencode
+  mise use -g github:anomalyco/yonsoon
   ```
 
 - **Korzystanie z Dockera**
 
   ```bash
-  docker run -it --rm ghcr.io/anomalyco/opencode
+  docker run -it --rm ghcr.io/anomalyco/yonsoon
   ```
 
-Obecnie pracujemy nad instalacją opencode w systemie Windows za pomocą Bun.
+Obecnie pracujemy nad instalacją yonsoon w systemie Windows za pomocą Bun.
 
-Możesz także pobrać plik binarny z [Releases](https://github.com/anomalyco/opencode/releases).
+Możesz także pobrać plik binarny z [Releases](https://github.com/anomalyco/yonsoon/releases).
 
 ---
 
 ## Konfiguracja
 
-Dzięki opencode możesz korzystać z dowolnego dostawcy LLM, konfigurując jego klucze API.
+Dzięki yonsoon możesz korzystać z dowolnego dostawcy LLM, konfigurując jego klucze API.
 
-Jeśli będziesz korzystać z wielu dostawców LLM, zalecamy skorzystanie z [OpenCode Zen](/docs/zen).
-Aby uzyskać dostęp do wyselekcjonowanej listy modeli, które zostały zatwierdzone i zweryfikowane przez zespół opencode.
+Jeśli będziesz korzystać z wielu dostawców LLM, zalecamy skorzystanie z [YONSOON (甬算) Zen](/docs/zen).
+Aby uzyskać dostęp do wyselekcjonowanej listy modeli, które zostały zatwierdzone i zweryfikowane przez zespół yonsoon.
 
-1. Uruchom polecenie `/connect` w TUI, wybierz opencode i przejdź do [opencode.ai/auth](https://opencode.ai/auth).
+1. Uruchom polecenie `/connect` w TUI, wybierz yonsoon i przejdź do [yonsoon.ai/auth](https://yonsoon.ai/auth).
 
    ```txt
    /connect
@@ -166,25 +166,25 @@ Po skonfigurowaniu dostawcy możesz przejść do projektu, nad którym chcesz pr
 cd /path/to/project
 ```
 
-Uruchom opencode.
+Uruchom yonsoon.
 
 ```bash
-opencode
+yonsoon
 ```
 
-Następnie zainicjuj opencode dla projektu, uruchamiając odpowiednie polecenie.
+Następnie zainicjuj yonsoon dla projektu, uruchamiając odpowiednie polecenie.
 
 ```bash frame="none"
 /init
 ```
 
-Spowoduje to, że opencode przeanalizuje Twój projekt i utworzy plik `AGENTS.md` w katalogu głównym projektu.
+Spowoduje to, że yonsoon przeanalizuje Twój projekt i utworzy plik `AGENTS.md` w katalogu głównym projektu.
 
 :::tip
 Powinieneś zacommitować plik `AGENTS.md` swojego projektu w Git.
 :::
 
-Pomaga to opencode zrozumieć strukturę projektu i stosowane wzorce kodowania.
+Pomaga to yonsoon zrozumieć strukturę projektu i stosowane wzorce kodowania.
 
 ---
 
@@ -198,7 +198,7 @@ Jeśli dopiero zaczynasz korzystać z agenta kodującego AI, oto kilka wskazówe
 
 ### Zadawaj pytania
 
-Możesz poprosić opencode o wyjaśnienie bazy kodu.
+Możesz poprosić yonsoon o wyjaśnienie bazy kodu.
 
 :::tip
 Użyj `@` do wyszukiwania rozmytego plików w projekcie.
@@ -214,11 +214,11 @@ Jest to pomocne, jeśli istnieje część bazy kodu, nad którą nie pracowałe�
 
 ### Dodaj funkcje
 
-Możesz poprosić opencode o dodanie nowej funkcji do Twojego projektu. Najpierw zalecamy poproszenie o przygotowanie planu.
+Możesz poprosić yonsoon o dodanie nowej funkcji do Twojego projektu. Najpierw zalecamy poproszenie o przygotowanie planu.
 
 1. **Stwórz Plan**
 
-   opencode ma _Plan Mode_, który umożliwia wyłączenie zmian i
+   yonsoon ma _Plan Mode_, który umożliwia wyłączenie zmian i
    zamiast tego zasugeruje, jak zaimplementować tę funkcję.
 
    Przejdź do niego za pomocą klawisza **Tab**. Zobaczysz odpowiedni wskaźnik w prawym dolnym rogu.
@@ -235,11 +235,11 @@ Możesz poprosić opencode o dodanie nowej funkcji do Twojego projektu. Najpierw
    From this screen, the user can undelete a note or permanently delete it.
    ```
 
-   Wersja opencode jest bardzo inteligentna, aby zrozumieć, czego chcesz. To pomaga
+   Wersja yonsoon jest bardzo inteligentna, aby zrozumieć, czego chcesz. To pomaga
    rozmawiaj z nim tak, jakbyś rozmawiał z młodszym programistą w swoim zespole.
 
    :::tip
-   Podaj opencode kontekst, aby zrozumiał, czego chcesz.
+   Podaj yonsoon kontekst, aby zrozumiał, czego chcesz.
    :::
 
 2. **Udoskonalanie planu**
@@ -255,7 +255,7 @@ Możesz poprosić opencode o dodanie nowej funkcji do Twojego projektu. Najpierw
    Przeciągnij i upuść obrazy do terminala, aby dodać je do monitu.
    :::
 
-   opencode może zeskanować obrazy, które mu przekażesz i zrozumieć je. Możesz to zrobić, przeciągając i upuszczając obraz do terminala.
+   yonsoon może zeskanować obrazy, które mu przekażesz i zrozumieć je. Możesz to zrobić, przeciągając i upuszczając obraz do terminala.
 
 3. **Wprowadź zmiany**
 
@@ -275,7 +275,7 @@ Możesz poprosić opencode o dodanie nowej funkcji do Twojego projektu. Najpierw
 
 ### Wprowadź zmiany
 
-Aby wprowadzić kolejną zmianę, możesz poprosić opencode lub zrobić to bezpośrednio bez konieczności wcześniejszego przeglądania planu.
+Aby wprowadzić kolejną zmianę, możesz poprosić yonsoon lub zrobić to bezpośrednio bez konieczności wcześniejszego przeglądania planu.
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
 We need to add authentication to the /settings route. Take a look at how this is
@@ -283,13 +283,13 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-Musisz upewnić się, że dostarczyłeś odpowiednie pliki, aby opencode mógł wprowadzić zmiany.
+Musisz upewnić się, że dostarczyłeś odpowiednie pliki, aby yonsoon mógł wprowadzić zmiany.
 
 ---
 
 ### Cofnij zmiany
 
-Załóżmy, że prosisz opencode o wprowadzenie zmian.
+Załóżmy, że prosisz yonsoon o wprowadzenie zmian.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -302,13 +302,13 @@ za pomocą polecenia `/undo`.
 /undo
 ```
 
-opencode cofnie teraz zmiany i wyświetli wiadomość ponownie.
+yonsoon cofnie teraz zmiany i wyświetli wiadomość ponownie.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-Możesz edytować monit i poprosić opencode o ponowną próbę.
+Możesz edytować monit i poprosić yonsoon o ponowną próbę.
 
 :::tip
 Możesz użyć `/undo` wiele razy, aby cofnąć wiele zmian.
@@ -324,7 +324,7 @@ Możesz też **przywrócić** zmianę za pomocą polecenia `/redo`.
 
 ## Udostępnianie
 
-Rozmowy z opencode można [udostępniać swojemu zespołowi](/docs/share).
+Rozmowy z yonsoon można [udostępniać swojemu zespołowi](/docs/share).
 
 ```bash frame="none"
 /share
@@ -336,12 +336,12 @@ Spowoduje to, że link do bieżącej rozmowy zostanie skopiowany do schowka.
 Rozmowy nie są ogólnodostępne.
 :::
 
-Oto [przykładowa rozmowa](https://opencode.ai/s/4XP1fce5) z opencode.
+Oto [przykładowa rozmowa](https://yonsoon.ai/s/4XP1fce5) z yonsoon.
 
 ---
 
 ## Dostosuj
 
-To tyle! Jesteś teraz profesjonalistą w korzystaniu z opencode.
+To tyle! Jesteś teraz profesjonalistą w korzystaniu z yonsoon.
 
-Aby dostosować go do potrzeb, zalecamy [wybranie motywu](/docs/themes), [dostosowanie skrótów klawiaturowych](/docs/keybinds), [konfigurowanie programów formatujących kod](/docs/formatters), [tworzenie niestandardowych poleceń](/docs/commands) lub zabawę z [konfiguracją opencode](/docs/config).
+Aby dostosować go do potrzeb, zalecamy [wybranie motywu](/docs/themes), [dostosowanie skrótów klawiaturowych](/docs/keybinds), [konfigurowanie programów formatujących kod](/docs/formatters), [tworzenie niestandardowych poleceń](/docs/commands) lub zabawę z [konfiguracją yonsoon](/docs/config).

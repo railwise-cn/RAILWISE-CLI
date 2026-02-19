@@ -1,68 +1,68 @@
 ---
 title: GitLab
-description: Bruk opencode i GitLab-problemer og Merge Requests.
+description: Bruk yonsoon i GitLab-problemer og Merge Requests.
 ---
 
-OpenCode integreres med GitLab arbeidsflyten gjennom GitLab CI/CD pipeline eller med GitLab Duo.
+YONSOON (甬算) integreres med GitLab arbeidsflyten gjennom GitLab CI/CD pipeline eller med GitLab Duo.
 
-I begge tilfeller vil OpenCode kjøre på GitLab Runners.
+I begge tilfeller vil YONSOON (甬算) kjøre på GitLab Runners.
 
 ---
 
 ## GitLab CI
 
-OpenCode fungerer i en vanlig GitLab-pipeline. Du kan bygge den inn i en pipeline som en [CI-komponent](https://docs.gitlab.com/ee/ci/components/)
+YONSOON (甬算) fungerer i en vanlig GitLab-pipeline. Du kan bygge den inn i en pipeline som en [CI-komponent](https://docs.gitlab.com/ee/ci/components/)
 
-Her bruker vi en fellesskapsskapt CI/CD-komponent for OpenCode — [nagyv/gitlab-opencode](https://gitlab.com/nagyv/gitlab-opencode).
+Her bruker vi en fellesskapsskapt CI/CD-komponent for YONSOON (甬算) — [nagyv/gitlab-yonsoon](https://gitlab.com/nagyv/gitlab-yonsoon).
 
 ---
 
 ### Funksjoner
 
-- **Bruk tilpasset konfigurasjon per jobb**: Konfigurer OpenCode med en tilpasset konfigurasjonskatalog, for eksempel `./config/#custom-directory` for å aktivere eller deaktivere funksjonalitet per OpenCode-anrop.
-- **Minimalt oppsett**: CI-komponenten setter opp OpenCode i bakgrunnen, du trenger bare å lage OpenCode-konfigurasjonen og den første ledeteksten.
+- **Bruk tilpasset konfigurasjon per jobb**: Konfigurer YONSOON (甬算) med en tilpasset konfigurasjonskatalog, for eksempel `./config/#custom-directory` for å aktivere eller deaktivere funksjonalitet per YONSOON (甬算)-anrop.
+- **Minimalt oppsett**: CI-komponenten setter opp YONSOON (甬算) i bakgrunnen, du trenger bare å lage YONSOON (甬算)-konfigurasjonen og den første ledeteksten.
 - **Fleksibel**: CI-komponenten støtter flere innganger for å tilpasse virkemåten
 
 ---
 
 ### Oppsett
 
-1. Lagre OpenCode sin autentiserings-JSON som en CI-miljøvariabel av typen Fil under **Innstillinger** > **CI/CD** > **Variabler**. Sørg for å merke dem som "Masked and hidden".
+1. Lagre YONSOON (甬算) sin autentiserings-JSON som en CI-miljøvariabel av typen Fil under **Innstillinger** > **CI/CD** > **Variabler**. Sørg for å merke dem som "Masked and hidden".
 2. Legg til følgende i `.gitlab-ci.yml`-filen.
 
    ```yaml title=".gitlab-ci.yml"
    include:
-     - component: $CI_SERVER_FQDN/nagyv/gitlab-opencode/opencode@2
+     - component: $CI_SERVER_FQDN/nagyv/gitlab-yonsoon/yonsoon@2
        inputs:
-         config_dir: ${CI_PROJECT_DIR}/opencode-config
-         auth_json: $OPENCODE_AUTH_JSON # The variable name for your OpenCode authentication JSON
+         config_dir: ${CI_PROJECT_DIR}/yonsoon-config
+         auth_json: $YONSOON_AUTH_JSON # The variable name for your YONSOON (甬算) authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
 
-For flere inndata og brukstilfeller [sjekk ut dokumentene](https://gitlab.com/explore/catalog/nagyv/gitlab-opencode) for denne komponenten.
+For flere inndata og brukstilfeller [sjekk ut dokumentene](https://gitlab.com/explore/catalog/nagyv/gitlab-yonsoon) for denne komponenten.
 
 ---
 
 ## GitLab Duo
 
-OpenCode integreres med din GitLab arbeidsflyt.
-Nevn `@opencode` i en kommentar, og OpenCode vil utføre oppgaver innenfor din GitLab CI-pipeline.
+YONSOON (甬算) integreres med din GitLab arbeidsflyt.
+Nevn `@yonsoon` i en kommentar, og YONSOON (甬算) vil utføre oppgaver innenfor din GitLab CI-pipeline.
 
 ---
 
 ### Funksjoner
 
-- **Triage av saker**: Be OpenCode se på en sak og forklare den for deg.
-- **Fiks og implementer**: Be OpenCode om å fikse en sak eller implementere en funksjon.
+- **Triage av saker**: Be YONSOON (甬算) se på en sak og forklare den for deg.
+- **Fiks og implementer**: Be YONSOON (甬算) om å fikse en sak eller implementere en funksjon.
   Det vil opprette en ny gren og sende en Merge Request med endringene.
-- **Sikkert**: OpenCode kjører på GitLab Runners.
+- **Sikkert**: YONSOON (甬算) kjører på GitLab Runners.
 
 ---
 
 ### Oppsett
 
-OpenCode kjører i GitLab CI/CD pipeline, her er det du trenger for å sette den opp:
+YONSOON (甬算) kjører i GitLab CI/CD pipeline, her er det du trenger for å sette den opp:
 
 :::tip
 Sjekk ut [**GitLab-dokumentene**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) for oppdaterte instruksjoner.
@@ -82,19 +82,19 @@ Sjekk ut [**GitLab-dokumentene**](https://docs.gitlab.com/user/duo_agent_platfor
     ```yaml
     image: node:22-slim
     commands:
-      - echo "Installing opencode"
-      - npm install --global opencode-ai
+      - echo "Installing yonsoon"
+      - npm install --global yonsoon-ai
       - echo "Installing glab"
-      - export GITLAB_TOKEN=$GITLAB_TOKEN_OPENCODE
+      - export GITLAB_TOKEN=$GITLAB_TOKEN_YONSOON
       - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
       - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating OpenCode auth configuration"
-      - mkdir --parents ~/.local/share/opencode
+      - echo "Creating YONSOON (甬算) auth configuration"
+      - mkdir --parents ~/.local/share/yonsoon
       - |
-        cat > ~/.local/share/opencode/auth.json << EOF
+        cat > ~/.local/share/yonsoon/auth.json << EOF
         {
           "anthropic": {
             "type": "api",
@@ -103,13 +103,13 @@ Sjekk ut [**GitLab-dokumentene**](https://docs.gitlab.com/user/duo_agent_platfor
         }
         EOF
       - echo "Configuring git"
-      - git config --global user.email "opencode@gitlab.com"
-      - git config --global user.name "OpenCode"
+      - git config --global user.email "yonsoon@gitlab.com"
+      - git config --global user.name "YONSOON (甬算)"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running OpenCode"
+      - echo "Running YONSOON (甬算)"
       - |
-        opencode run "
+        yonsoon run "
         You are an AI assistant helping with GitLab operations.
 
         Context: $AI_FLOW_CONTEXT
@@ -146,7 +146,7 @@ Sjekk ut [**GitLab-dokumentene**](https://docs.gitlab.com/user/duo_agent_platfor
         fi
     variables:
       - ANTHROPIC_API_KEY
-      - GITLAB_TOKEN_OPENCODE
+      - GITLAB_TOKEN_YONSOON
       - GITLAB_HOST
     ```
 
@@ -158,10 +158,10 @@ Du kan se [GitLab CLI agents docs](https://docs.gitlab.com/user/duo_agent_platfo
 
 ### Eksempler
 
-Her er noen eksempler på hvordan du kan bruke OpenCode i GitLab.
+Her er noen eksempler på hvordan du kan bruke YONSOON (甬算) i GitLab.
 
 :::tip
-Du kan konfigurere til å bruke en annen triggerfrase enn `@opencode`.
+Du kan konfigurere til å bruke en annen triggerfrase enn `@yonsoon`.
 :::
 
 - **Forklar en sak**
@@ -169,27 +169,27 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@opencode`.
   Legg til denne kommentaren i en GitLab-sak.
 
   ```
-  @opencode explain this issue
+  @yonsoon explain this issue
   ```
 
-  OpenCode vil lese saken og svare med en klar forklaring.
+  YONSOON (甬算) vil lese saken og svare med en klar forklaring.
 
 - **Fiks en sak**
 
   I en GitLab-sak, si:
 
   ```
-  @opencode fix this
+  @yonsoon fix this
   ```
 
-  OpenCode vil opprette en ny gren, implementere endringene og åpne en Merge Request med endringene.
+  YONSOON (甬算) vil opprette en ny gren, implementere endringene og åpne en Merge Request med endringene.
 
 - **Review av Merge Requests**
 
   Legg igjen følgende kommentar på en GitLab Merge Request.
 
   ```
-  @opencode review this merge request
+  @yonsoon review this merge request
   ```
 
-  OpenCode vil gjennomgå Merge Request-en og gi tilbakemelding.
+  YONSOON (甬算) vil gjennomgå Merge Request-en og gi tilbakemelding.

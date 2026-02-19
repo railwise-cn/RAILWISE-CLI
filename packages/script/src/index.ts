@@ -17,30 +17,30 @@ if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {
 }
 
 const env = {
-  OPENCODE_CHANNEL: process.env["OPENCODE_CHANNEL"],
-  OPENCODE_BUMP: process.env["OPENCODE_BUMP"],
-  OPENCODE_VERSION: process.env["OPENCODE_VERSION"],
-  OPENCODE_RELEASE: process.env["OPENCODE_RELEASE"],
+  YONSOON_CHANNEL: process.env["YONSOON_CHANNEL"],
+  YONSOON_BUMP: process.env["YONSOON_BUMP"],
+  YONSOON_VERSION: process.env["YONSOON_VERSION"],
+  YONSOON_RELEASE: process.env["YONSOON_RELEASE"],
 }
 const CHANNEL = await (async () => {
-  if (env.OPENCODE_CHANNEL) return env.OPENCODE_CHANNEL
-  if (env.OPENCODE_BUMP) return "latest"
-  if (env.OPENCODE_VERSION && !env.OPENCODE_VERSION.startsWith("0.0.0-")) return "latest"
+  if (env.YONSOON_CHANNEL) return env.YONSOON_CHANNEL
+  if (env.YONSOON_BUMP) return "latest"
+  if (env.YONSOON_VERSION && !env.YONSOON_VERSION.startsWith("0.0.0-")) return "latest"
   return await $`git branch --show-current`.text().then((x) => x.trim())
 })()
 const IS_PREVIEW = CHANNEL !== "latest"
 
 const VERSION = await (async () => {
-  if (env.OPENCODE_VERSION) return env.OPENCODE_VERSION
+  if (env.YONSOON_VERSION) return env.YONSOON_VERSION
   if (IS_PREVIEW) return `0.0.0-${CHANNEL}-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "")}`
-  const version = await fetch("https://registry.npmjs.org/opencode-ai/latest")
+  const version = await fetch("https://registry.npmjs.org/yonsoon-ai/latest")
     .then((res) => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
     .then((data: any) => data.version)
   const [major, minor, patch] = version.split(".").map((x: string) => Number(x) || 0)
-  const t = env.OPENCODE_BUMP?.toLowerCase()
+  const t = env.YONSOON_BUMP?.toLowerCase()
   if (t === "major") return `${major + 1}.0.0`
   if (t === "minor") return `${major}.${minor + 1}.0`
   return `${major}.${minor}.${patch + 1}`
@@ -48,7 +48,7 @@ const VERSION = await (async () => {
 
 const team = [
   "actions-user",
-  "opencode",
+  "yonsoon",
   "rekram1-node",
   "thdxr",
   "kommander",
@@ -61,7 +61,7 @@ const team = [
   "nexxeln",
   "Hona",
   "jlongster",
-  "opencode-agent[bot]",
+  "yonsoon-agent[bot]",
   "R44VC0RP",
 ]
 
@@ -76,10 +76,10 @@ export const Script = {
     return IS_PREVIEW
   },
   get release(): boolean {
-    return !!env.OPENCODE_RELEASE
+    return !!env.YONSOON_RELEASE
   },
   get team() {
     return team
   },
 }
-console.log(`opencode script`, JSON.stringify(Script, null, 2))
+console.log(`yonsoon script`, JSON.stringify(Script, null, 2))

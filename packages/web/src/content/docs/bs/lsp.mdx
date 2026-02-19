@@ -1,13 +1,13 @@
 ---
 title: LSP serveri
-description: OpenCode se integriše sa vašim LSP serverima.
+description: YONSOON (甬算) se integriše sa vašim LSP serverima.
 ---
 
-OpenCode se integriše sa vašim Language Server Protocol (LSP) serverima kako bi pomogao LLM-u u interakciji s kodnom bazom. Koristi dijagnostiku za slanje povratnih informacija modelu.
+YONSOON (甬算) se integriše sa vašim Language Server Protocol (LSP) serverima kako bi pomogao LLM-u u interakciji s kodnom bazom. Koristi dijagnostiku za slanje povratnih informacija modelu.
 
 ## Ugrađeni
 
-OpenCode dolazi sa nekoliko ugrađenih LSP servera za popularne jezike:
+YONSOON (甬算) dolazi sa nekoliko ugrađenih LSP servera za popularne jezike:
 | LSP server | Ekstenzije | Zahtjevi
 |------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------ |
 | astro | .astro | Automatske instalacije za Astro projekte |
@@ -44,14 +44,14 @@ OpenCode dolazi sa nekoliko ugrađenih LSP servera za popularne jezike:
 | zls | .zig, .zon | `zig` komanda dostupna |
 LSP serveri su automatski omogućeni kada se otkrije jedna od gore navedenih ekstenzija datoteke i zahtjevi su ispunjeni.
 :::note
-Možete onemogućiti automatska preuzimanja LSP servera tako što ćete postaviti varijablu okruženja `OPENCODE_DISABLE_LSP_DOWNLOAD` na `true`.
+Možete onemogućiti automatska preuzimanja LSP servera tako što ćete postaviti varijablu okruženja `YONSOON_DISABLE_LSP_DOWNLOAD` na `true`.
 :::
 
 ---
 
 ## Kako radi
 
-Kada opencode otvori fajl, on:
+Kada yonsoon otvori fajl, on:
 
 1. Provjerava ekstenziju datoteke u odnosu na sve omogućene LSP servere.
 2. Pokreće odgovarajući LSP server ako već nije pokrenut.
@@ -60,11 +60,11 @@ Kada opencode otvori fajl, on:
 
 ## Konfiguracija
 
-Možete prilagoditi LSP servere kroz `lsp` odjeljak u vašoj opencode konfiguraciji.
+Možete prilagoditi LSP servere kroz `lsp` odjeljak u vašoj yonsoon konfiguraciji.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "lsp": {}
 }
 ```
@@ -85,9 +85,9 @@ Pogledajmo neke primjere.
 
 Koristite svojstvo `env` za postavljanje varijabli okruženja prilikom pokretanja LSP servera:
 
-```json title="opencode.json" {5-7}
+```json title="yonsoon.json" {5-7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "lsp": {
     "rust": {
       "env": {
@@ -104,9 +104,9 @@ Koristite svojstvo `env` za postavljanje varijabli okruženja prilikom pokretanj
 
 Koristite svojstvo `initialization` da prosledite opcije inicijalizacije na LSP server. Ovo su postavke specifične za server poslane tokom LSP `initialize` zahtjeva:
 
-```json title="opencode.json" {5-9}
+```json title="yonsoon.json" {5-9}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "lsp": {
     "typescript": {
       "initialization": {
@@ -129,18 +129,18 @@ Opcije inicijalizacije razlikuju se od LSP servera. Provjerite dokumentaciju va�
 
 Da biste onemogućili **sve** LSP servere globalno, postavite `lsp` na `false`:
 
-```json title="opencode.json" {3}
+```json title="yonsoon.json" {3}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "lsp": false
 }
 ```
 
 Da onemogućite **specifičan** LSP server, postavite `disabled` na `true`:
 
-```json title="opencode.json" {5}
+```json title="yonsoon.json" {5}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "lsp": {
     "typescript": {
       "disabled": true
@@ -155,9 +155,9 @@ Da onemogućite **specifičan** LSP server, postavite `disabled` na `true`:
 
 Možete dodati prilagođene LSP servere navodeći ekstenzije naredbe i datoteke:
 
-```json title="opencode.json" {4-7}
+```json title="yonsoon.json" {4-7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "lsp": {
     "custom-lsp": {
       "command": ["custom-lsp-server", "--stdio"],

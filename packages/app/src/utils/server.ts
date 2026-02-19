@@ -1,20 +1,20 @@
-import { createOpencodeClient } from "@opencode-ai/sdk/v2/client"
+import { createYonsoonClient } from "@yonsoon/sdk/v2/client"
 import type { ServerConnection } from "@/context/server"
 
 export function createSdkForServer({
   server,
   ...config
-}: Omit<NonNullable<Parameters<typeof createOpencodeClient>[0]>, "baseUrl"> & {
+}: Omit<NonNullable<Parameters<typeof createYonsoonClient>[0]>, "baseUrl"> & {
   server: ServerConnection.HttpBase
 }) {
   const auth = (() => {
     if (!server.password) return
     return {
-      Authorization: `Basic ${btoa(`${server.username ?? "opencode"}:${server.password}`)}`,
+      Authorization: `Basic ${btoa(`${server.username ?? "yonsoon"}:${server.password}`)}`,
     }
   })()
 
-  return createOpencodeClient({
+  return createYonsoonClient({
     ...config,
     headers: { ...config.headers, ...auth },
     baseUrl: server.url,

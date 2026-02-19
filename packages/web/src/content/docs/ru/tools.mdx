@@ -3,7 +3,7 @@ title: Инструменты
 description: Управляйте инструментами, которые может использовать LLM.
 ---
 
-Инструменты позволяют LLM выполнять действия в вашей кодовой базе. opencode поставляется с набором встроенных инструментов, но вы можете расширить его с помощью [пользовательских инструментов](/docs/custom-tools) или [MCP-серверов](/docs/mcp-servers).
+Инструменты позволяют LLM выполнять действия в вашей кодовой базе. yonsoon поставляется с набором встроенных инструментов, но вы можете расширить его с помощью [пользовательских инструментов](/docs/custom-tools) или [MCP-серверов](/docs/mcp-servers).
 
 По умолчанию все инструменты **включены** и не требуют разрешения для запуска. Вы можете контролировать поведение инструмента через [permissions](/docs/permissions).
 
@@ -13,9 +13,9 @@ description: Управляйте инструментами, которые м�
 
 Используйте поле `permission` для управления поведением инструмента. Вы можете разрешить, запретить или потребовать одобрения для каждого инструмента.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "deny",
     "bash": "ask",
@@ -26,9 +26,9 @@ description: Управляйте инструментами, которые м�
 
 Вы также можете использовать подстановочные знаки для одновременного управления несколькими инструментами. Например, чтобы потребовать одобрения всех инструментов с сервера MCP:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "mymcp_*": "ask"
   }
@@ -41,7 +41,7 @@ description: Управляйте инструментами, которые м�
 
 ## Встроенный
 
-Вот все встроенные инструменты, доступные в opencode.
+Вот все встроенные инструменты, доступные в yonsoon.
 
 ---
 
@@ -49,9 +49,9 @@ description: Управляйте инструментами, которые м�
 
 Выполняйте shell-команды в среде вашего проекта.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "bash": "allow"
   }
@@ -66,9 +66,9 @@ description: Управляйте инструментами, которые м�
 
 Измените существующие файлы, используя точную замену строк.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -83,9 +83,9 @@ description: Управляйте инструментами, которые м�
 
 Создавайте новые файлы или перезаписывайте существующие.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -104,9 +104,9 @@ description: Управляйте инструментами, которые м�
 
 Прочитайте содержимое файла из вашей кодовой базы.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "read": "allow"
   }
@@ -121,9 +121,9 @@ description: Управляйте инструментами, которые м�
 
 Поиск содержимого файла с помощью регулярных выражений.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "grep": "allow"
   }
@@ -138,9 +138,9 @@ description: Управляйте инструментами, которые м�
 
 Найдите файлы по шаблону.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "glob": "allow"
   }
@@ -155,9 +155,9 @@ description: Управляйте инструментами, которые м�
 
 Список файлов и каталогов по заданному пути.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "list": "allow"
   }
@@ -173,12 +173,12 @@ description: Управляйте инструментами, которые м�
 Взаимодействуйте с настроенными серверами LSP, чтобы получить функции анализа кода, такие как определения, ссылки, информация о наведении и иерархия вызовов.
 
 :::note
-Этот инструмент доступен только при `OPENCODE_EXPERIMENTAL_LSP_TOOL=true` (или `OPENCODE_EXPERIMENTAL=true`).
+Этот инструмент доступен только при `YONSOON_EXPERIMENTAL_LSP_TOOL=true` (или `YONSOON_EXPERIMENTAL=true`).
 :::
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "lsp": "allow"
   }
@@ -195,9 +195,9 @@ description: Управляйте инструментами, которые м�
 
 Применяйте патчи к файлам.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -216,9 +216,9 @@ description: Управляйте инструментами, которые м�
 
 Загрузите [skill](/docs/skills) (файл `SKILL.md`) и верните его содержимое в диалог.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "skill": "allow"
   }
@@ -231,9 +231,9 @@ description: Управляйте инструментами, которые м�
 
 Управляйте списками дел во время сеансов кодирования.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "todowrite": "allow"
   }
@@ -252,9 +252,9 @@ description: Управляйте инструментами, которые м�
 
 Прочтите существующие списки дел.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "todoread": "allow"
   }
@@ -273,9 +273,9 @@ description: Управляйте инструментами, которые м�
 
 Получить веб-контент.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "webfetch": "allow"
   }
@@ -291,19 +291,19 @@ description: Управляйте инструментами, которые м�
 Найдите информацию в Интернете.
 
 :::note
-Этот инструмент доступен только при использовании поставщика opencode или когда для переменной среды `OPENCODE_ENABLE_EXA` установлено любое истинное значение (например, `true` или `1`).
+Этот инструмент доступен только при использовании поставщика yonsoon или когда для переменной среды `YONSOON_ENABLE_EXA` установлено любое истинное значение (например, `true` или `1`).
 
-Чтобы включить при запуске opencode:
+Чтобы включить при запуске yonsoon:
 
 ```bash
-OPENCODE_ENABLE_EXA=1 opencode
+YONSOON_ENABLE_EXA=1 yonsoon
 ```
 
 :::
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "websearch": "allow"
   }
@@ -324,9 +324,9 @@ OPENCODE_ENABLE_EXA=1 opencode
 
 Задавайте вопросы пользователю во время выполнения.
 
-```json title="opencode.json" {4}
+```json title="yonsoon.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "question": "allow"
   }

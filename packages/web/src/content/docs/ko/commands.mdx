@@ -19,9 +19,9 @@ description: 반복적인 작업을 위한 커스텀 명령을 만드세요.
 
 커스텀 명령은 `commands/` 디렉터리에 Markdown 파일을 만들어 정의합니다.
 
-예: `.opencode/commands/test.md`
+예: `.yonsoon/commands/test.md`
 
-```md title=".opencode/commands/test.md"
+```md title=".yonsoon/commands/test.md"
 ---
 description: Run tests with coverage
 agent: build
@@ -44,17 +44,17 @@ Focus on the failing tests and suggest fixes.
 
 ## 구성
 
-커스텀 명령은 OpenCode 설정으로 추가하거나, `commands/` 디렉터리에 Markdown 파일을 만들어 추가할 수 있습니다.
+커스텀 명령은 YONSOON (甬算) 설정으로 추가하거나, `commands/` 디렉터리에 Markdown 파일을 만들어 추가할 수 있습니다.
 
 ---
 
 ### JSON
 
-OpenCode [config](/docs/config)의 `command` 옵션을 사용합니다.
+YONSOON (甬算) [config](/docs/config)의 `command` 옵션을 사용합니다.
 
-```json title="opencode.jsonc" {4-12}
+```json title="yonsoon.jsonc" {4-12}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "command": {
     // This becomes the name of the command
     "test": {
@@ -81,10 +81,10 @@ OpenCode [config](/docs/config)의 `command` 옵션을 사용합니다.
 
 Markdown 파일로도 명령을 정의할 수 있습니다. 아래 경로 중 하나에 두면 됩니다.
 
-- 전역: `~/.config/opencode/commands/`
-- 프로젝트별: `.opencode/commands/`
+- 전역: `~/.config/yonsoon/commands/`
+- 프로젝트별: `.yonsoon/commands/`
 
-```markdown title="~/.config/opencode/commands/test.md"
+```markdown title="~/.config/yonsoon/commands/test.md"
 ---
 description: Run tests with coverage
 agent: build
@@ -113,7 +113,7 @@ Markdown 파일명이 명령 이름이 됩니다. 예를 들어 `test.md`라면 
 
 `$ARGUMENTS` 플레이스홀더로 명령 인수를 전달할 수 있습니다.
 
-```md title=".opencode/commands/component.md"
+```md title=".yonsoon/commands/component.md"
 ---
 description: Create a new component
 ---
@@ -139,7 +139,7 @@ Include proper typing and basic structure.
 
 예시:
 
-```md title=".opencode/commands/create-file.md"
+```md title=".yonsoon/commands/create-file.md"
 ---
 description: Create a new file with content
 ---
@@ -168,7 +168,7 @@ _!`command`_ 문법으로 [bash 명령](/docs/tui#bash-commands)의 출력 결�
 
 예를 들어 테스트 커버리지 분석 명령을 만들면:
 
-```md title=".opencode/commands/analyze-coverage.md"
+```md title=".yonsoon/commands/analyze-coverage.md"
 ---
 description: Analyze test coverage
 ---
@@ -181,7 +181,7 @@ Based on these results, suggest improvements to increase coverage.
 
 최근 변경 리뷰용으로는:
 
-```md title=".opencode/commands/review-changes.md"
+```md title=".yonsoon/commands/review-changes.md"
 ---
 description: Review recent changes
 ---
@@ -200,7 +200,7 @@ Review these changes and suggest any improvements.
 
 `@` 뒤에 파일명을 붙여 명령에 파일을 포함할 수 있습니다.
 
-```md title=".opencode/commands/review-component.md"
+```md title=".yonsoon/commands/review-component.md"
 ---
 description: Review component
 ---
@@ -223,7 +223,7 @@ Check for performance issues and suggest improvements.
 
 `template` 옵션은 명령 실행 시 LLM에 전달할 프롬프트를 정의합니다.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "command": {
     "test": {
@@ -241,7 +241,7 @@ Check for performance issues and suggest improvements.
 
 `description` 옵션으로 명령의 짧은 설명을 추가할 수 있습니다.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "command": {
     "test": {
@@ -261,7 +261,7 @@ Check for performance issues and suggest improvements.
 지정한 값이 [subagent](/docs/agents/#subagents)면 기본적으로 subagent 호출이 실행됩니다.
 이 동작을 끄려면 `subtask`를 `false`로 설정하세요.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "command": {
     "review": {
@@ -280,7 +280,7 @@ Check for performance issues and suggest improvements.
 `subtask` 불리언(boolean)을 사용하면 명령이 [subagent](/docs/agents/#subagents) 호출을 강제로 트리거합니다.
 주 컨텍스트를 오염시키고 싶지 않을 때 유용하며, [agent](/docs/agents) 설정의 `mode`가 `primary`여도 subagent로 실행합니다.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "command": {
     "analyze": {
@@ -298,7 +298,7 @@ Check for performance issues and suggest improvements.
 
 `model` 설정으로 이 명령의 기본 모델을 오버라이드할 수 있습니다.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "command": {
     "analyze": {
@@ -314,7 +314,7 @@ Check for performance issues and suggest improvements.
 
 ## 내장 명령
 
-OpenCode는 `/init`, `/undo`, `/redo`, `/share`, `/help` 등 여러 내장 명령을 제공합니다. [더 알아보기](/docs/tui#commands).
+YONSOON (甬算)는 `/init`, `/undo`, `/redo`, `/share`, `/help` 등 여러 내장 명령을 제공합니다. [더 알아보기](/docs/tui#commands).
 
 :::note
 커스텀 명령은 내장 명령을 덮어쓸 수 있습니다.

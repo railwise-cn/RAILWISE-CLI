@@ -3,7 +3,7 @@ title: İzinler
 description: Hangi işlemlerin çalıştırılması için onay sürecini kontrol edin.
 ---
 
-opencode, belirli bir eylemin otomatik olarak mı çalıştırılacağına, size sorulacağına veya engelleneceğine karar vermek için `permission` yapılandırmasını kullanır.
+yonsoon, belirli bir eylemin otomatik olarak mı çalıştırılacağına, size sorulacağına veya engelleneceğine karar vermek için `permission` yapılandırmasını kullanır.
 
 `v1.1.1` itibarıyla eski `tools` boolean yapılandırması kullanımdan kaldırıldı ve `permission` ile birleştirildi. Eski `tools` yapılandırması geriye dönük uyumluluk açısından hâlâ desteklenmektedir.
 
@@ -23,9 +23,9 @@ Her izin kuralı şunlardan birine çözümlenir:
 
 İzinleri genel olarak (`*` ile) ayarlayabilir ve belirli araçları geçersiz kılabilirsiniz.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "*": "ask",
     "bash": "allow",
@@ -36,9 +36,9 @@ Her izin kuralı şunlardan birine çözümlenir:
 
 Ayrıca tüm izinleri aynı anda ayarlayabilirsiniz:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": "allow"
 }
 ```
@@ -49,9 +49,9 @@ Ayrıca tüm izinleri aynı anda ayarlayabilirsiniz:
 
 Çoğu izin için, araç girişine bağlı olarak farklı eylemleri uygulamak için bir nesneyi kullanabilirsiniz.
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "bash": {
       "*": "ask",
@@ -88,15 +88,15 @@ Ana dizininize referans vermek için bir modelin başlangıcında `~` veya `$HOM
 
 ### Harici Dizinler
 
-opencode'un başlatıldığı çalışma dizini dışındaki yollara dokunan araç çağrılarına izin vermek için `external_directory` kullanın. Bu, girdi olarak bir yolu alan tüm araçlar için geçerlidir (örneğin `read`, `edit`, `list`, `glob`, `grep` ve birçok `bash` komutu).
+yonsoon'un başlatıldığı çalışma dizini dışındaki yollara dokunan araç çağrılarına izin vermek için `external_directory` kullanın. Bu, girdi olarak bir yolu alan tüm araçlar için geçerlidir (örneğin `read`, `edit`, `list`, `glob`, `grep` ve birçok `bash` komutu).
 
 Ana sayfa genişletmesi (`~/...` gibi) yalnızca bir kalıbın nasıl yazıldığını etkiler. Geçerli çalışma alanının harici bir yolunu oluşturmaz, dolayısıyla çalışma dizini dışındaki yollara yine de `external_directory` aracılığıyla izin verilmesi gerekir.
 
 Örneğin bu, `~/projects/personal/` altındaki her şeye erişime izin verir:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "external_directory": {
       "~/projects/personal/**": "allow"
@@ -107,9 +107,9 @@ Ana sayfa genişletmesi (`~/...` gibi) yalnızca bir kalıbın nasıl yazıldı�
 
 Burada izin verilen herhangi bir dizin, geçerli çalışma alanıyla aynı varsayılanları devralır. [`read` defaults to `allow`](#defaults)'dan bu yana, geçersiz kılınmadığı sürece `external_directory` altındaki girişler için okumalara da izin verilir. Bir aracın bu yollarda kısıtlanması gerektiğinde (okumaları tutarken düzenlemeleri engellemek gibi) açık kurallar ekleyin:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "external_directory": {
       "~/projects/personal/**": "allow"
@@ -127,7 +127,7 @@ Listeyi güvenilir yollara odaklı tutun ve diğer araçlar için gereken ekstra
 
 ## Mevcut İzinler
 
-opencode izinleri araç adına ve birkaç güvenlik önlemine göre anahtarlanır:
+yonsoon izinleri araç adına ve birkaç güvenlik önlemine göre anahtarlanır:
 
 - `read` — bir dosyayı okumak (dosya yoluyla eşleşir)
 - `edit` — tüm dosya değişiklikleri (`edit`, `write`, `patch`, `multiedit`'yi kapsar)
@@ -148,13 +148,13 @@ opencode izinleri araç adına ve birkaç güvenlik önlemine göre anahtarlanı
 
 ## Varsayılanlar
 
-Hiçbir şey belirtmezseniz opencode izin verilen varsayılanlardan başlar:
+Hiçbir şey belirtmezseniz yonsoon izin verilen varsayılanlardan başlar:
 
 - Çoğu izin varsayılan olarak `"allow"` şeklindedir.
 - `doom_loop` ve `external_directory` varsayılan olarak `"ask"`'dir.
 - `read`, `"allow"`'dır, ancak `.env` dosyaları varsayılan olarak reddedilir:
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
   "permission": {
     "read": {
@@ -171,10 +171,10 @@ Hiçbir şey belirtmezseniz opencode izin verilen varsayılanlardan başlar:
 
 ## “Sor” Ne Yapar?
 
-opencode onay istediğinde kullanıcı arayüzü üç sonuç sunar:
+yonsoon onay istediğinde kullanıcı arayüzü üç sonuç sunar:
 
 - `once` — yalnızca bu isteği onayla
-- `always` — önerilen kalıplarla eşleşen gelecekteki istekleri onaylayın (geçerli opencode oturumunun geri kalanı için)
+- `always` — önerilen kalıplarla eşleşen gelecekteki istekleri onaylayın (geçerli yonsoon oturumunun geri kalanı için)
 - `reject` — isteği reddet
 
 `always`'ın onaylayacağı kalıp seti araç tarafından sağlanır (örneğin, bash onayları genellikle `git status*` gibi güvenli bir komut önekini beyaz listeye alır).
@@ -189,9 +189,9 @@ Agent bazında izinleri geçersiz kılabilirsiniz. Agent izinleri global yapıla
 Daha ayrıntılı desen eşleştirme örnekleri için yukarıdaki [Ayrıntılı kurallar (nesne söz dizimi)](#granular-rules-object-syntax) bölümüne bakın.
 :::
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "permission": {
     "bash": {
       "*": "ask",
@@ -219,7 +219,7 @@ Daha ayrıntılı desen eşleştirme örnekleri için yukarıdaki [Ayrıntılı 
 
 Agent izinlerini Markdown'da da yapılandırabilirsiniz:
 
-```markdown title="~/.config/opencode/agents/review.md"
+```markdown title="~/.config/yonsoon/agents/review.md"
 ---
 description: Code review without edits
 mode: subagent

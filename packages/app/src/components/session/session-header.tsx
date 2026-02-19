@@ -9,20 +9,20 @@ import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 import { useSync } from "@/context/sync"
 import { useGlobalSDK } from "@/context/global-sdk"
-import { getFilename } from "@opencode-ai/util/path"
+import { getFilename } from "@yonsoon/util/path"
 import { decode64 } from "@/utils/base64"
 import { Persist, persisted } from "@/utils/persist"
 
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Button } from "@opencode-ai/ui/button"
-import { AppIcon } from "@opencode-ai/ui/app-icon"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
-import { Popover } from "@opencode-ai/ui/popover"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { Keybind } from "@opencode-ai/ui/keybind"
-import { showToast } from "@opencode-ai/ui/toast"
+import { Icon } from "@yonsoon/ui/icon"
+import { IconButton } from "@yonsoon/ui/icon-button"
+import { Button } from "@yonsoon/ui/button"
+import { AppIcon } from "@yonsoon/ui/app-icon"
+import { DropdownMenu } from "@yonsoon/ui/dropdown-menu"
+import { Tooltip, TooltipKeybind } from "@yonsoon/ui/tooltip"
+import { Popover } from "@yonsoon/ui/popover"
+import { TextField } from "@yonsoon/ui/text-field"
+import { Keybind } from "@yonsoon/ui/keybind"
+import { showToast } from "@yonsoon/ui/toast"
 import { StatusPopover } from "../status-popover"
 
 const OPEN_APPS = [
@@ -296,8 +296,8 @@ export function SessionHeader() {
     platform,
   })
 
-  const centerMount = createMemo(() => document.getElementById("opencode-titlebar-center"))
-  const rightMount = createMemo(() => document.getElementById("opencode-titlebar-right"))
+  const centerMount = createMemo(() => document.getElementById("yonsoon-titlebar-center"))
+  const rightMount = createMemo(() => document.getElementById("yonsoon-titlebar-right"))
 
   return (
     <>

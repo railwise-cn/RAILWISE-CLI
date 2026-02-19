@@ -3,11 +3,11 @@ title: キーバインド
 description: キーバインドをカスタマイズします。
 ---
 
-OpenCode には、OpenCode 設定を通じてカスタマイズできるキーバインドのリストがあります。
+YONSOON (甬算) には、YONSOON (甬算) 設定を通じてカスタマイズできるキーバインドのリストがあります。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ OpenCode には、OpenCode 設定を通じてカスタマイズできるキー�
 
 ## リーダーキー
 
-OpenCode は、ほとんどのキーバインドに `leader` キーを使用します。これにより、ターミナルでの競合が回避されます。
+YONSOON (甬算) は、ほとんどのキーバインドに `leader` キーを使用します。これにより、ターミナルでの競合が回避されます。
 
 デフォルトでは、`ctrl+x` がリーダーキーであり、ほとんどの操作では、最初にリーダーキーを押してからショートカットを押す必要があります。たとえば、新しいセッションを開始するには、まず `ctrl+x` を押してから、`n` を押します。
 
@@ -119,9 +119,9 @@ OpenCode は、ほとんどのキーバインドに `leader` キーを使用し�
 
 キーバインドを無効にするには、値「none」を指定してキーを構成に追加します。
 
-```json title="opencode.json"
+```json title="yonsoon.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://yonsoon.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -132,7 +132,7 @@ OpenCode は、ほとんどのキーバインドに `leader` キーを使用し�
 
 ## デスクトッププロンプトのショートカット
 
-OpenCode デスクトップアプリのプロンプト入力は、テキストを編集するための一般的な Readline/Emacs スタイルのショートカットをサポートしています。これらは組み込みであり、現在 `opencode.json` を介して構成することはできません。
+YONSOON (甬算) デスクトップアプリのプロンプト入力は、テキストを編集するための一般的な Readline/Emacs スタイルのショートカットをサポートしています。これらは組み込みであり、現在 `yonsoon.json` を介して構成することはできません。
 
 | ショートカット | アクション                                        |
 | -------------- | ------------------------------------------------- |

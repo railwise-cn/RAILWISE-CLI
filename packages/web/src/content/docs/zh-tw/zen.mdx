@@ -1,19 +1,19 @@
 ---
 title: Zen
-description: 由 OpenCode 提供的精選模型列表。
+description: 由 YONSOON (甬算) 提供的精選模型列表。
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 export const email = `mailto:${config.email}`
 
-OpenCode Zen 是由 OpenCode 團隊提供的一組經過測試和驗證的模型列表。
+YONSOON (甬算) Zen 是由 YONSOON (甬算) 團隊提供的一組經過測試和驗證的模型列表。
 
 :::note
-OpenCode Zen 目前處於測試階段。
+YONSOON (甬算) Zen 目前處於測試階段。
 :::
 
-Zen 的工作方式與 OpenCode 中的任何其他供應商相同。你只需登入 OpenCode Zen 並取得你的 API 金鑰。它是**完全選用的**，你無需使用它也能正常使用 OpenCode。
+Zen 的工作方式與 YONSOON (甬算) 中的任何其他供應商相同。你只需登入 YONSOON (甬算) Zen 並取得你的 API 金鑰。它是**完全選用的**，你無需使用它也能正常使用 YONSOON (甬算)。
 
 ---
 
@@ -22,7 +22,7 @@ Zen 的工作方式與 OpenCode 中的任何其他供應商相同。你只需登
 市面上有大量的模型，但其中只有少數能夠很好地充當編碼代理。此外，大多數供應商的設定方式差異很大，因此你獲得的效能和品質也會截然不同。
 
 :::tip
-我們測試了一組與 OpenCode 配合良好的精選模型和供應商。
+我們測試了一組與 YONSOON (甬算) 配合良好的精選模型和供應商。
 :::
 
 所以如果你透過 OpenRouter 之類的服務使用模型，你永遠無法確定是否獲得了你想要的模型的最佳版本。
@@ -33,16 +33,16 @@ Zen 的工作方式與 OpenCode 中的任何其他供應商相同。你只需登
 2. 然後我們與幾家供應商合作，確保這些模型能被正確地提供服務。
 3. 最後，我們對模型與供應商的組合進行了基準測試，整理出了一份我們有信心推薦的列表。
 
-OpenCode Zen 是一個 AI 閘道，讓你可以存取這些模型。
+YONSOON (甬算) Zen 是一個 AI 閘道，讓你可以存取這些模型。
 
 ---
 
 ## 工作原理
 
-OpenCode Zen 的工作方式與 OpenCode 中的任何其他供應商相同。
+YONSOON (甬算) Zen 的工作方式與 YONSOON (甬算) 中的任何其他供應商相同。
 
-1. 登入 **<a href={console}>OpenCode Zen</a>**，新增你的帳單資訊，然後複製你的 API 金鑰。
-2. 在 TUI 中執行 `/connect` 指令，選擇 OpenCode Zen，然後貼上你的 API 金鑰。
+1. 登入 **<a href={console}>YONSOON (甬算) Zen</a>**，新增你的帳單資訊，然後複製你的 API 金鑰。
+2. 在 TUI 中執行 `/connect` 指令，選擇 YONSOON (甬算) Zen，然後貼上你的 API 金鑰。
 3. 在 TUI 中執行 `/models` 查看我們推薦的模型列表。
 
 你按請求付費，並且可以向你的帳戶中儲值。
@@ -55,38 +55,38 @@ OpenCode Zen 的工作方式與 OpenCode 中的任何其他供應商相同。
 
 | 模型               | 模型 ID            | 端點                                               | AI SDK 套件                 |
 | ------------------ | ------------------ | -------------------------------------------------- | --------------------------- |
-| GPT 5.2            | gpt-5.2            | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.2 Codex      | gpt-5.2-codex      | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1            | gpt-5.1            | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1 Codex      | gpt-5.1-codex      | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1 Codex Max  | gpt-5.1-codex-max  | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1 Codex Mini | gpt-5.1-codex-mini | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5              | gpt-5              | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5 Codex        | gpt-5-codex        | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5 Nano         | gpt-5-nano         | `https://opencode.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| Claude Sonnet 4.5  | claude-sonnet-4-5  | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Sonnet 4    | claude-sonnet-4    | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Haiku 4.5   | claude-haiku-4-5   | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Haiku 3.5   | claude-3-5-haiku   | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Opus 4.6    | claude-opus-4-6    | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Opus 4.5    | claude-opus-4-5    | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Opus 4.1    | claude-opus-4-1    | `https://opencode.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Gemini 3 Pro       | gemini-3-pro       | `https://opencode.ai/zen/v1/models/gemini-3-pro`   | `@ai-sdk/google`            |
-| Gemini 3 Flash     | gemini-3-flash     | `https://opencode.ai/zen/v1/models/gemini-3-flash` | `@ai-sdk/google`            |
-| MiniMax M2.5       | minimax-m2.5       | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| MiniMax M2.5 Free  | minimax-m2.5-free  | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| MiniMax M2.1       | minimax-m2.1       | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| GLM 5              | glm-5              | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| GLM 4.7            | glm-4.7            | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| GLM 4.6            | glm-4.6            | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2.5          | kimi-k2.5          | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2.5 Free     | kimi-k2.5-free     | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2 Thinking   | kimi-k2-thinking   | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2            | kimi-k2            | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Qwen3 Coder 480B   | qwen3-coder        | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Big Pickle         | big-pickle         | `https://opencode.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GPT 5.2            | gpt-5.2            | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.2 Codex      | gpt-5.2-codex      | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1            | gpt-5.1            | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1 Codex      | gpt-5.1-codex      | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1 Codex Max  | gpt-5.1-codex-max  | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1 Codex Mini | gpt-5.1-codex-mini | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5              | gpt-5              | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5 Codex        | gpt-5-codex        | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5 Nano         | gpt-5-nano         | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| Claude Sonnet 4.5  | claude-sonnet-4-5  | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Sonnet 4    | claude-sonnet-4    | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Haiku 4.5   | claude-haiku-4-5   | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Haiku 3.5   | claude-3-5-haiku   | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Opus 4.6    | claude-opus-4-6    | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Opus 4.5    | claude-opus-4-5    | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Opus 4.1    | claude-opus-4-1    | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Gemini 3 Pro       | gemini-3-pro       | `https://yonsoon.ai/zen/v1/models/gemini-3-pro`   | `@ai-sdk/google`            |
+| Gemini 3 Flash     | gemini-3-flash     | `https://yonsoon.ai/zen/v1/models/gemini-3-flash` | `@ai-sdk/google`            |
+| MiniMax M2.5       | minimax-m2.5       | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| MiniMax M2.5 Free  | minimax-m2.5-free  | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| MiniMax M2.1       | minimax-m2.1       | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GLM 5              | glm-5              | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GLM 4.7            | glm-4.7            | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GLM 4.6            | glm-4.6            | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2.5          | kimi-k2.5          | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2.5 Free     | kimi-k2.5-free     | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2 Thinking   | kimi-k2-thinking   | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2            | kimi-k2            | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Qwen3 Coder 480B   | qwen3-coder        | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Big Pickle         | big-pickle         | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 
-在 OpenCode 設定中，[模型 ID](/docs/config/#models) 使用 `opencode/<model-id>` 格式。例如，對於 GPT 5.2 Codex，你需要在設定中使用 `opencode/gpt-5.2-codex`。
+在 YONSOON (甬算) 設定中，[模型 ID](/docs/config/#models) 使用 `yonsoon/<model-id>` 格式。例如，對於 GPT 5.2 Codex，你需要在設定中使用 `yonsoon/gpt-5.2-codex`。
 
 ---
 
@@ -95,7 +95,7 @@ OpenCode Zen 的工作方式與 OpenCode 中的任何其他供應商相同。
 你可以從以下位址取得可用模型及其中繼資料的完整列表：
 
 ```
-https://opencode.ai/zen/v1/models
+https://yonsoon.ai/zen/v1/models
 ```
 
 ---
@@ -149,9 +149,9 @@ https://opencode.ai/zen/v1/models
 
 免費模型說明：
 
-- Kimi K2.5 Free 在 OpenCode 上限時免費提供。團隊正在利用這段時間收集回饋並改進模型。
-- MiniMax M2.5 Free 在 OpenCode 上限時免費提供。團隊正在利用這段時間收集回饋並改進模型。
-- Big Pickle 是一個隱身模型，在 OpenCode 上限時免費提供。團隊正在利用這段時間收集回饋並改進模型。
+- Kimi K2.5 Free 在 YONSOON (甬算) 上限時免費提供。團隊正在利用這段時間收集回饋並改進模型。
+- MiniMax M2.5 Free 在 YONSOON (甬算) 上限時免費提供。團隊正在利用這段時間收集回饋並改進模型。
+- Big Pickle 是一個隱身模型，在 YONSOON (甬算) 上限時免費提供。團隊正在利用這段時間收集回饋並改進模型。
 
 如有任何疑問，請<a href={email}>聯絡我們</a>。
 
@@ -228,9 +228,9 @@ Zen 也非常適合團隊使用。你可以邀請隊友、分配角色、管理�
 
 ## 目標
 
-我們建立 OpenCode Zen 的目的是：
+我們建立 YONSOON (甬算) Zen 的目的是：
 
 1. 為編碼代理**基準測試**最佳的模型和供應商組合。
 2. 提供**最高品質**的選項，不降低效能或路由到更廉價的供應商。
 3. 以成本價銷售來傳遞任何**降價優惠**；唯一的加價僅用於覆蓋我們的處理費用。
-4. **無鎖定**，允許你將其與任何其他編碼代理配合使用，同時也始終允許你在 OpenCode 中使用任何其他供應商。
+4. **無鎖定**，允許你將其與任何其他編碼代理配合使用，同時也始終允許你在 YONSOON (甬算) 中使用任何其他供應商。

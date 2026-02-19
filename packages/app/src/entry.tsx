@@ -10,7 +10,7 @@ import { handleNotificationClick } from "@/utils/notification-click"
 import pkg from "../package.json"
 import { ServerConnection } from "./context/server"
 
-const DEFAULT_SERVER_URL_KEY = "yonsoon.settings.dat:defaultServerUrl"
+const DEFAULT_SERVER_URL_KEY = "opencode.settings.dat:defaultServerUrl"
 
 const getLocale = () => {
   if (typeof navigator !== "object") return "en" as const
@@ -106,7 +106,7 @@ const platform: Platform = {
   forward,
   restart,
   notify,
-  getDefaultServerUrl: readDefaultServerUrl,
+  getDefaultServerUrl: async () => readDefaultServerUrl(),
   setDefaultServerUrl: writeDefaultServerUrl,
 }
 

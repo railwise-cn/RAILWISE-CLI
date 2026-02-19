@@ -33,7 +33,7 @@ const IS_PREVIEW = CHANNEL !== "latest"
 const VERSION = await (async () => {
   if (env.YONSOON_VERSION) return env.YONSOON_VERSION
   if (IS_PREVIEW) return `0.0.0-${CHANNEL}-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "")}`
-  const version = await fetch("https://registry.npmjs.org/yonsoon-ai/latest")
+  const version = await fetch("https://registry.npmjs.org/opencode-ai/latest")
     .then((res) => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
@@ -48,7 +48,7 @@ const VERSION = await (async () => {
 
 const team = [
   "actions-user",
-  "yonsoon",
+  "opencode",
   "rekram1-node",
   "thdxr",
   "kommander",
@@ -61,7 +61,7 @@ const team = [
   "nexxeln",
   "Hona",
   "jlongster",
-  "yonsoon-agent[bot]",
+  "opencode-agent[bot]",
   "R44VC0RP",
 ]
 
@@ -82,4 +82,4 @@ export const Script = {
     return team
   },
 }
-console.log(`yonsoon script`, JSON.stringify(Script, null, 2))
+console.log(`opencode script`, JSON.stringify(Script, null, 2))

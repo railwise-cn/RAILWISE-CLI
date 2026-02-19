@@ -1,12 +1,12 @@
 {
-  "name": "yonsoon",
-  "displayName": "yonsoon",
-  "description": "yonsoon for VS Code",
-  "version": "1.2.6",
+  "name": "opencode",
+  "displayName": "opencode",
+  "description": "opencode for VS Code",
+  "version": "1.2.8",
   "publisher": "sst-dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anomalyco/yonsoon"
+    "url": "https://github.com/anomalyco/opencode"
   },
   "license": "MIT",
   "icon": "images/icon.png",
@@ -25,54 +25,54 @@
   "contributes": {
     "commands": [
       {
-        "command": "yonsoon.openTerminal",
-        "title": "Open yonsoon",
+        "command": "opencode.openTerminal",
+        "title": "Open opencode",
         "icon": {
           "light": "images/button-dark.svg",
           "dark": "images/button-light.svg"
         }
       },
       {
-        "command": "yonsoon.openNewTerminal",
-        "title": "Open yonsoon in new tab",
+        "command": "opencode.openNewTerminal",
+        "title": "Open opencode in new tab",
         "icon": {
           "light": "images/button-dark.svg",
           "dark": "images/button-light.svg"
         }
       },
       {
-        "command": "yonsoon.addFilepathToTerminal",
+        "command": "opencode.addFilepathToTerminal",
         "title": "Add Filepath to Terminal"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "yonsoon.openNewTerminal",
+          "command": "opencode.openNewTerminal",
           "group": "navigation"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "yonsoon.openTerminal",
-        "title": "Run yonsoon",
+        "command": "opencode.openTerminal",
+        "title": "Run opencode",
         "key": "cmd+escape",
         "mac": "cmd+escape",
         "win": "ctrl+escape",
         "linux": "ctrl+escape"
       },
       {
-        "command": "yonsoon.openNewTerminal",
-        "title": "Run yonsoon",
+        "command": "opencode.openNewTerminal",
+        "title": "Run opencode",
         "key": "cmd+shift+escape",
         "mac": "cmd+shift+escape",
         "win": "ctrl+shift+escape",
         "linux": "ctrl+shift+escape"
       },
       {
-        "command": "yonsoon.addFilepathToTerminal",
-        "title": "yonsoon: Insert At-Mentioned",
+        "command": "opencode.addFilepathToTerminal",
+        "title": "opencode: Insert At-Mentioned",
         "key": "cmd+alt+k",
         "mac": "cmd+alt+k",
         "win": "ctrl+alt+K",

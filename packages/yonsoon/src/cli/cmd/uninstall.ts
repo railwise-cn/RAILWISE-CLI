@@ -55,7 +55,7 @@ export const UninstallCommand = {
     UI.empty()
     UI.println(UI.logo("  "))
     UI.empty()
-    prompts.intro("Uninstall YONSOON (甬算)")
+    prompts.intro("Uninstall YONSOON")
 
     const method = await Installation.method()
     prompts.log.info(`Installation method: ${method}`)
@@ -129,10 +129,10 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
 
   if (method !== "curl" && method !== "unknown") {
     const cmds: Record<string, string> = {
-      npm: "npm uninstall -g yonsoon",
-      pnpm: "pnpm uninstall -g yonsoon",
-      bun: "bun remove -g yonsoon",
-      yarn: "yarn global remove yonsoon",
+      npm: "npm uninstall -g yonsoon-ai",
+      pnpm: "pnpm uninstall -g yonsoon-ai",
+      bun: "bun remove -g yonsoon-ai",
+      yarn: "yarn global remove yonsoon-ai",
       brew: "brew uninstall yonsoon",
       choco: "choco uninstall yonsoon",
       scoop: "scoop uninstall yonsoon",
@@ -180,10 +180,10 @@ async function executeUninstall(method: Installation.Method, targets: RemovalTar
 
   if (method !== "curl" && method !== "unknown") {
     const cmds: Record<string, string[]> = {
-      npm: ["npm", "uninstall", "-g", "yonsoon"],
-      pnpm: ["pnpm", "uninstall", "-g", "yonsoon"],
-      bun: ["bun", "remove", "-g", "yonsoon"],
-      yarn: ["yarn", "global", "remove", "yonsoon"],
+      npm: ["npm", "uninstall", "-g", "yonsoon-ai"],
+      pnpm: ["pnpm", "uninstall", "-g", "yonsoon-ai"],
+      bun: ["bun", "remove", "-g", "yonsoon-ai"],
+      yarn: ["yarn", "global", "remove", "yonsoon-ai"],
       brew: ["brew", "uninstall", "yonsoon"],
       choco: ["choco", "uninstall", "yonsoon"],
       scoop: ["scoop", "uninstall", "yonsoon"],
@@ -218,7 +218,7 @@ async function executeUninstall(method: Installation.Method, targets: RemovalTar
     prompts.log.info(`  rm "${targets.binary}"`)
 
     const binDir = path.dirname(targets.binary)
-    if (binDir.includes(".yonsoon") || binDir.includes(".yonsoon")) {
+    if (binDir.includes(".yonsoon")) {
       prompts.log.info(`  rmdir "${binDir}" 2>/dev/null`)
     }
   }
@@ -269,7 +269,7 @@ async function getShellConfigFile(): Promise<string | null> {
     if (!exists) continue
 
     const content = await Filesystem.readText(file).catch(() => "")
-    if (content.includes("# yonsoon") || content.includes(".yonsoon/bin") || content.includes("# yonsoon") || content.includes(".yonsoon/bin")) {
+    if (content.includes("# yonsoon") || content.includes(".yonsoon/bin")) {
       return file
     }
   }
@@ -287,21 +287,21 @@ async function cleanShellConfig(file: string) {
   for (const line of lines) {
     const trimmed = line.trim()
 
-    if (trimmed === "# yonsoon" || trimmed === "# yonsoon") {
+    if (trimmed === "# yonsoon") {
       skip = true
       continue
     }
 
     if (skip) {
       skip = false
-      if (trimmed.includes(".yonsoon/bin") || trimmed.includes(".yonsoon/bin") || trimmed.includes("fish_add_path")) {
+      if (trimmed.includes(".yonsoon/bin") || trimmed.includes("fish_add_path")) {
         continue
       }
     }
 
     if (
-      (trimmed.startsWith("export PATH=") && (trimmed.includes(".yonsoon/bin") || trimmed.includes(".yonsoon/bin"))) ||
-      (trimmed.startsWith("fish_add_path") && (trimmed.includes(".yonsoon") || trimmed.includes(".yonsoon")))
+      (trimmed.startsWith("export PATH=") && trimmed.includes(".yonsoon/bin")) ||
+      (trimmed.startsWith("fish_add_path") && trimmed.includes(".yonsoon"))
     ) {
       continue
     }

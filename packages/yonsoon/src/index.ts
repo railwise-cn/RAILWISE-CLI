@@ -74,8 +74,7 @@ const cli = yargs(hideBin(process.argv))
     })
 
     process.env.AGENT = "1"
-    process.env.YONSOON = "1"
-    process.env.YONSOON = "1"
+    process.env.OPENCODE = "1"
 
     Log.Default.info("yonsoon", {
       version: Installation.VERSION,

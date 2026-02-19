@@ -4,6 +4,7 @@ import fs from "fs/promises"
 import path from "path"
 import { Instance } from "../../src/project/instance"
 import { Worktree } from "../../src/worktree"
+import { Filesystem } from "../../src/util/filesystem"
 import { tmpdir } from "../fixture/fixture"
 
 describe("Worktree.remove", () => {
@@ -11,7 +12,7 @@ describe("Worktree.remove", () => {
     await using tmp = await tmpdir({ git: true })
     const root = tmp.path
     const name = `remove-regression-${Date.now().toString(36)}`
-    const branch = `yonsoon/${name}`
+    const branch = `opencode/${name}`
     const dir = path.join(root, "..", name)
 
     await $`git worktree add --no-checkout -b ${branch} ${dir}`.cwd(root).quiet()
@@ -53,7 +54,7 @@ describe("Worktree.remove", () => {
     })()
 
     expect(ok).toBe(true)
-    expect(await Bun.file(dir).exists()).toBe(false)
+    expect(await Filesystem.exists(dir)).toBe(false)
 
     const list = await $`git worktree list --porcelain`.cwd(root).quiet().text()
     expect(list).not.toContain(`worktree ${dir}`)

@@ -19,7 +19,7 @@ jobs:
 
       - uses: ./.github/actions/setup-bun
 
-      - name: Install yonsoon
+      - name: Install opencode
         run: curl -fsSL https://yonsoon.ai/install | bash
 
       - name: Check duplicates and compliance
@@ -35,7 +35,7 @@ jobs:
               "webfetch": "deny"
             }
         run: |
-          yonsoon run -m yonsoon/claude-sonnet-4-6 "A new issue has been created:
+          opencode run -m opencode/claude-sonnet-4-6 "A new issue has been created:
 
           Issue number: ${{ github.event.issue.number }}
 
@@ -131,7 +131,7 @@ jobs:
 
       - uses: ./.github/actions/setup-bun
 
-      - name: Install yonsoon
+      - name: Install opencode
         run: curl -fsSL https://yonsoon.ai/install | bash
 
       - name: Recheck compliance
@@ -147,7 +147,7 @@ jobs:
               "webfetch": "deny"
             }
         run: |
-          yonsoon run -m yonsoon/claude-sonnet-4-6 "Issue #${{ github.event.issue.number }} was previously flagged as non-compliant and has been edited.
+          opencode run -m opencode/claude-sonnet-4-6 "Issue #${{ github.event.issue.number }} was previously flagged as non-compliant and has been edited.
 
           Lookup this issue with gh issue view ${{ github.event.issue.number }}.
 

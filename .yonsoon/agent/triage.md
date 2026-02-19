@@ -1,7 +1,7 @@
 ---
 mode: primary
 hidden: true
-model: yonsoon/minimax-m2.5
+model: opencode/minimax-m2.5
 color: "#44BA81"
 tools:
   "*": false
@@ -36,10 +36,10 @@ Performance-related issues:
 
 Desktop app issues:
 
-- `yonsoon web` command
+- `opencode web` command
 - The desktop app itself
 
-**Only** add if it's specifically about the Desktop application or `yonsoon web` view. **Do not** add for terminal, TUI, or general yonsoon issues.
+**Only** add if it's specifically about the Desktop application or `opencode web` view. **Do not** add for terminal, TUI, or general opencode issues.
 
 #### nix
 
@@ -51,13 +51,13 @@ If the issue mentions nix, assign to `rekram1-node`.
 
 #### zen
 
-**Only** add if the issue mentions "zen" or "yonsoon zen" or "yonsoon black".
+**Only** add if the issue mentions "zen" or "opencode zen" or "opencode black".
 
-If the issue doesn't have "zen" or "yonsoon black" in it then don't add zen label
+If the issue doesn't have "zen" or "opencode black" in it then don't add zen label
 
 #### core
 
-Use for core server issues in `packages/yonsoon/`, excluding `packages/yonsoon/src/cli/cmd/tui/`.
+Use for core server issues in `packages/opencode/`, excluding `packages/opencode/src/cli/cmd/tui/`.
 
 Examples:
 
@@ -104,16 +104,16 @@ ONLY assign if the issue will have the "zen" label.
 - fwang
 - MrMushrooooom
 
-TUI (`packages/yonsoon/src/cli/cmd/tui/...`):
+TUI (`packages/opencode/src/cli/cmd/tui/...`):
 
 - thdxr for TUI UX/UI product decisions and interaction flow
 - kommander for OpenTUI engine issues: rendering artifacts, keybind handling, terminal compatibility, SSH behavior, and low-level perf bottlenecks
 - rekram1-node for TUI bugs that are not clearly OpenTUI engine issues
 
-Core (`packages/yonsoon/...`, excluding TUI subtree):
+Core (`packages/opencode/...`, excluding TUI subtree):
 
 - thdxr for sqlite/snapshot/memory bugs and larger architectural core features
-- jlongster for yonsoon server + API feature work (tool currently remaps jlongster -> thdxr until assignable)
+- jlongster for opencode server + API feature work (tool currently remaps jlongster -> thdxr until assignable)
 - rekram1-node for harness issues, provider issues, and other bug-squashing
 
 For core bugs that do not clearly map, either thdxr or rekram1-node is acceptable.

@@ -33,7 +33,7 @@ permissions:
 jobs:
   version:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: github.repository == 'anomalyco/yonsoon'
+    if: github.repository == 'anomalyco/opencode'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -41,9 +41,9 @@ jobs:
 
       - uses: ./.github/actions/setup-bun
 
-      - name: Install YONSOON (甬算)
+      - name: Install OpenCode
         if: inputs.bump || inputs.version
-        run: bun i -g yonsoon-ai
+        run: bun i -g opencode-ai
 
       - id: version
         run: |
@@ -61,7 +61,7 @@ jobs:
   build-cli:
     needs: version
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: github.repository == 'anomalyco/yonsoon'
+    if: github.repository == 'anomalyco/opencode'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -72,7 +72,7 @@ jobs:
       - name: Build
         id: build
         run: |
-          ./packages/yonsoon/script/build.ts
+          ./packages/opencode/script/build.ts
         env:
           YONSOON_VERSION: ${{ needs.version.outputs.version }}
           YONSOON_RELEASE: ${{ needs.version.outputs.release }}
@@ -80,8 +80,8 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: yonsoon-cli
-          path: packages/yonsoon/dist
+          name: opencode-cli
+          path: packages/opencode/dist
 
     outputs:
       version: ${{ needs.version.outputs.version }}
@@ -201,7 +201,7 @@ jobs:
           releaseId: ${{ needs.version.outputs.release }}
           tagName: ${{ needs.version.outputs.tag }}
           releaseDraft: true
-          releaseAssetNamePattern: yonsoon-desktop-[platform]-[arch][ext]
+          releaseAssetNamePattern: opencode-desktop-[platform]-[arch][ext]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_BUNDLER_NEW_APPIMAGE_FORMAT: true
@@ -247,13 +247,13 @@ jobs:
         id: committer
         uses: ./.github/actions/setup-git-committer
         with:
-          yonsoon-app-id: ${{ vars.YONSOON_APP_ID }}
-          yonsoon-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
+          opencode-app-id: ${{ vars.YONSOON_APP_ID }}
+          opencode-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
 
       - uses: actions/download-artifact@v4
         with:
-          name: yonsoon-cli
-          path: packages/yonsoon/dist
+          name: opencode-cli
+          path: packages/opencode/dist
 
       - name: Cache apt packages (AUR)
         uses: actions/cache@v4
@@ -270,8 +270,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.AUR_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          git config --global user.email "yonsoon@sst.dev"
-          git config --global user.name "yonsoon"
+          git config --global user.email "opencode@sst.dev"
+          git config --global user.name "opencode"
           ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts || true
 
       - run: ./script/publish.ts

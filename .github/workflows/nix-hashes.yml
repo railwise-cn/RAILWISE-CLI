@@ -90,8 +90,8 @@ jobs:
       - name: Setup git committer
         uses: ./.github/actions/setup-git-committer
         with:
-          yonsoon-app-id: ${{ vars.YONSOON_APP_ID }}
-          yonsoon-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
+          opencode-app-id: ${{ vars.YONSOON_APP_ID }}
+          opencode-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
 
       - name: Pull latest changes
         run: |

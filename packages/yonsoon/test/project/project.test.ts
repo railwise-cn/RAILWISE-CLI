@@ -4,6 +4,7 @@ import { Log } from "../../src/util/log"
 import { $ } from "bun"
 import path from "path"
 import { tmpdir } from "../fixture/fixture"
+import { Filesystem } from "../../src/util/filesystem"
 import { GlobalBus } from "../../src/bus/global"
 
 Log.init({ print: false })
@@ -77,8 +78,8 @@ describe("Project.fromDirectory", () => {
     expect(project.vcs).toBe("git")
     expect(project.worktree).toBe(tmp.path)
 
-    const yonsoonFile = path.join(tmp.path, ".git", "yonsoon")
-    const fileExists = await Bun.file(yonsoonFile).exists()
+    const opencodeFile = path.join(tmp.path, ".git", "yonsoon")
+    const fileExists = await Filesystem.exists(opencodeFile)
     expect(fileExists).toBe(false)
   })
 
@@ -93,8 +94,8 @@ describe("Project.fromDirectory", () => {
     expect(project.vcs).toBe("git")
     expect(project.worktree).toBe(tmp.path)
 
-    const yonsoonFile = path.join(tmp.path, ".git", "yonsoon")
-    const fileExists = await Bun.file(yonsoonFile).exists()
+    const opencodeFile = path.join(tmp.path, ".git", "yonsoon")
+    const fileExists = await Filesystem.exists(opencodeFile)
     expect(fileExists).toBe(true)
   })
 

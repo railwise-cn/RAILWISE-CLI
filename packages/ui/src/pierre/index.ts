@@ -57,11 +57,11 @@ const unsafeCSS = `
   background-color: var(--diffs-bg-selection-text);
 }
 
-::highlight(yonsoon-find) {
+::highlight(opencode-find) {
   background-color: rgb(from var(--surface-warning-base) r g b / 0.35);
 }
 
-::highlight(yonsoon-find-current) {
+::highlight(opencode-find-current) {
   background-color: rgb(from var(--surface-warning-strong) r g b / 0.55);
 }
 
@@ -104,7 +104,8 @@ const unsafeCSS = `
 }
 
 [data-diff-header],
-[data-diff] {
+[data-diff],
+[data-file] {
   [data-separator] {
     height: 24px;
   }
@@ -122,12 +123,13 @@ const unsafeCSS = `
   }
   [data-code] {
     overflow-x: auto !important;
+    overflow-y: hidden !important;
   }
 }`
 
 export function createDefaultOptions<T>(style: FileDiffOptions<T>["diffStyle"]) {
   return {
-    theme: "YONSOON (甬算)",
+    theme: "YONSOON",
     themeType: "system",
     disableLineNumbers: false,
     overflow: "wrap",

@@ -264,11 +264,11 @@ export function Titlebar() {
             </div>
           </div>
         </div>
-        <div id="yonsoon-titlebar-left" class="flex items-center gap-3 min-w-0 px-2" />
+        <div id="opencode-titlebar-left" class="flex items-center gap-3 min-w-0 px-2" />
       </div>
 
       <div class="min-w-0 flex items-center justify-center pointer-events-none">
-        <div id="yonsoon-titlebar-center" class="pointer-events-auto w-full min-w-0 flex justify-center lg:w-fit" />
+        <div id="opencode-titlebar-center" class="pointer-events-auto w-full min-w-0 flex justify-center lg:w-fit" />
       </div>
 
       <div
@@ -278,7 +278,7 @@ export function Titlebar() {
         }}
         onMouseDown={drag}
       >
-        <div id="yonsoon-titlebar-right" class="flex items-center gap-1 shrink-0 justify-end" />
+        <div id="opencode-titlebar-right" class="flex items-center gap-1 shrink-0 justify-end" />
         <Show when={windows()}>
           <div class="w-6 shrink-0" />
           <div data-tauri-decorum-tb class="flex flex-row" />

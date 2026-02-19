@@ -28,6 +28,7 @@ import { constants, existsSync } from "fs"
 import { Bus } from "@/bus"
 import { GlobalBus } from "@/bus/global"
 import { Event } from "../server/event"
+import { Glob } from "../util/glob"
 import { PackageRegistry } from "@/bun/registry"
 import { proxied } from "@/util/proxied"
 import { iife } from "@/util/iife"
@@ -68,7 +69,7 @@ export namespace Config {
   export const state = Instance.state(async () => {
     const auth = await Auth.all()
 
-    // Config loading order (low -> high precedence):
+    // Config loading order (low -> high precedence): https://yonsoon.ai/docs/config#precedence-order
     // 1) Remote .well-known/yonsoon (org defaults)
     // 2) Global config (~/.config/yonsoon/yonsoon.json{,c})
     // 3) Custom config (YONSOON_CONFIG)
@@ -115,7 +116,7 @@ export namespace Config {
 
     // Project config overrides global and remote config.
     if (!Flag.YONSOON_DISABLE_PROJECT_CONFIG) {
-      for (const file of ["yonsoon.jsonc", "yonsoon.json", "yonsoon.jsonc", "yonsoon.json"]) {
+      for (const file of ["yonsoon.jsonc", "yonsoon.json"]) {
         const found = await Filesystem.findUp(file, Instance.directory, Instance.worktree)
         for (const resolved of found.toReversed()) {
           result = merge(result, await loadFile(resolved))
@@ -130,18 +131,19 @@ export namespace Config {
     const directories = [
       Global.Path.config,
       // Only scan project .yonsoon/ directories when project discovery is enabled
-       ...(!Flag.YONSOON_DISABLE_PROJECT_CONFIG
+      ...(!Flag.YONSOON_DISABLE_PROJECT_CONFIG
         ? await Array.fromAsync(
             Filesystem.up({
-              targets: [".yonsoon", ".yonsoon"],
+              targets: [".yonsoon"],
               start: Instance.directory,
               stop: Instance.worktree,
             }),
           )
         : []),
+      // Always scan ~/.yonsoon/ (user home directory)
       ...(await Array.fromAsync(
         Filesystem.up({
-          targets: [".yonsoon", ".yonsoon"],
+          targets: [".yonsoon"],
           start: Global.Path.home,
           stop: Global.Path.home,
         }),
@@ -157,8 +159,8 @@ export namespace Config {
     const deps = []
 
     for (const dir of unique(directories)) {
-      if (dir.endsWith(".yonsoon") || dir.endsWith(".yonsoon") || dir === Flag.YONSOON_CONFIG_DIR) {
-        for (const file of ["yonsoon.jsonc", "yonsoon.json", "yonsoon.jsonc", "yonsoon.json"]) {
+      if (dir.endsWith(".yonsoon") || dir === Flag.YONSOON_CONFIG_DIR) {
+        for (const file of ["yonsoon.jsonc", "yonsoon.json"]) {
           log.debug(`loading config from ${path.join(dir, file)}`)
           result = merge(result, await loadFile(path.join(dir, file)))
           // to satisfy the type checker
@@ -350,14 +352,13 @@ export namespace Config {
     return ext.length ? file.slice(0, -ext.length) : file
   }
 
-  const COMMAND_GLOB = new Bun.Glob("{command,commands}/**/*.md")
   async function loadCommand(dir: string) {
     const result: Record<string, Command> = {}
-    for await (const item of COMMAND_GLOB.scan({
-      absolute: true,
-      followSymlinks: true,
-      dot: true,
+    for (const item of await Glob.scan("{command,commands}/**/*.md", {
       cwd: dir,
+      absolute: true,
+      dot: true,
+      symlink: true,
     })) {
       const md = await ConfigMarkdown.parse(item).catch(async (err) => {
         const message = ConfigMarkdown.FrontmatterError.isInstance(err)
@@ -389,15 +390,14 @@ export namespace Config {
     return result
   }
 
-  const AGENT_GLOB = new Bun.Glob("{agent,agents}/**/*.md")
   async function loadAgent(dir: string) {
     const result: Record<string, Agent> = {}
 
-    for await (const item of AGENT_GLOB.scan({
-      absolute: true,
-      followSymlinks: true,
-      dot: true,
+    for (const item of await Glob.scan("{agent,agents}/**/*.md", {
       cwd: dir,
+      absolute: true,
+      dot: true,
+      symlink: true,
     })) {
       const md = await ConfigMarkdown.parse(item).catch(async (err) => {
         const message = ConfigMarkdown.FrontmatterError.isInstance(err)
@@ -429,14 +429,13 @@ export namespace Config {
     return result
   }
 
-  const MODE_GLOB = new Bun.Glob("{mode,modes}/*.md")
   async function loadMode(dir: string) {
     const result: Record<string, Agent> = {}
-    for await (const item of MODE_GLOB.scan({
-      absolute: true,
-      followSymlinks: true,
-      dot: true,
+    for (const item of await Glob.scan("{mode,modes}/*.md", {
       cwd: dir,
+      absolute: true,
+      dot: true,
+      symlink: true,
     })) {
       const md = await ConfigMarkdown.parse(item).catch(async (err) => {
         const message = ConfigMarkdown.FrontmatterError.isInstance(err)
@@ -466,15 +465,14 @@ export namespace Config {
     return result
   }
 
-  const PLUGIN_GLOB = new Bun.Glob("{plugin,plugins}/*.{ts,js}")
   async function loadPlugin(dir: string) {
     const plugins: string[] = []
 
-    for await (const item of PLUGIN_GLOB.scan({
-      absolute: true,
-      followSymlinks: true,
-      dot: true,
+    for (const item of await Glob.scan("{plugin,plugins}/*.{ts,js}", {
       cwd: dir,
+      absolute: true,
+      dot: true,
+      symlink: true,
     })) {
       plugins.push(pathToFileURL(item).href)
     }
@@ -488,7 +486,7 @@ export namespace Config {
    *
    * @example
    * getPluginName("file:///path/to/plugin/foo.js") // "foo"
-   * getPluginName("oh-my-yonsoon@2.4.3") // "oh-my-yonsoon"
+   * getPluginName("oh-my-opencode@2.4.3") // "oh-my-opencode"
    * getPluginName("@scope/pkg@1.0.0") // "@scope/pkg"
    */
   export function getPluginName(plugin: string): string {
@@ -515,11 +513,11 @@ export namespace Config {
    */
   export function deduplicatePlugins(plugins: string[]): string[] {
     // seenNames: canonical plugin names for duplicate detection
-    // e.g., "oh-my-yonsoon", "@scope/pkg"
+    // e.g., "oh-my-opencode", "@scope/pkg"
     const seenNames = new Set<string>()
 
     // uniqueSpecifiers: full plugin specifiers to return
-    // e.g., "oh-my-yonsoon@2.4.3", "file:///path/to/plugin.js"
+    // e.g., "oh-my-opencode@2.4.3", "file:///path/to/plugin.js"
     const uniqueSpecifiers: string[] = []
 
     for (const specifier of plugins.toReversed()) {
@@ -1217,8 +1215,6 @@ export namespace Config {
       mergeDeep(await loadFile(path.join(Global.Path.config, "config.json"))),
       mergeDeep(await loadFile(path.join(Global.Path.config, "yonsoon.json"))),
       mergeDeep(await loadFile(path.join(Global.Path.config, "yonsoon.jsonc"))),
-      mergeDeep(await loadFile(path.join(Global.Path.config, "yonsoon.json"))),
-      mergeDeep(await loadFile(path.join(Global.Path.config, "yonsoon.jsonc"))),
     )
 
     const legacy = path.join(Global.Path.config, "config")
@@ -1387,7 +1383,7 @@ export namespace Config {
   }
 
   function globalConfigFile() {
-    const candidates = ["yonsoon.jsonc", "yonsoon.json", "yonsoon.jsonc", "yonsoon.json", "config.json"].map((file) =>
+    const candidates = ["yonsoon.jsonc", "yonsoon.json", "config.json"].map((file) =>
       path.join(Global.Path.config, file),
     )
     for (const file of candidates) {

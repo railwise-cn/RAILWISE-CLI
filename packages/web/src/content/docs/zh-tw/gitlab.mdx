@@ -1,67 +1,67 @@
 ---
 title: GitLab
-description: 在 GitLab Issue 和合併請求中使用 YONSOON (甬算)。
+description: 在 GitLab Issue 和合併請求中使用 OpenCode。
 ---
 
-YONSOON (甬算) 透過 GitLab CI/CD 管線或 GitLab Duo 與您的 GitLab 工作流程整合。
+OpenCode 透過 GitLab CI/CD 管線或 GitLab Duo 與您的 GitLab 工作流程整合。
 
-在這兩種情況下，YONSOON (甬算) 都將在您的 GitLab Runner 上執行。
+在這兩種情況下，OpenCode 都將在您的 GitLab Runner 上執行。
 
 ---
 
 ## GitLab CI
 
-YONSOON (甬算) 可以在常規的 GitLab 管線中執行。您可以將其作為 [CI 元件](https://docs.gitlab.com/ee/ci/components/) 整合到管線中。
+OpenCode 可以在常規的 GitLab 管線中執行。您可以將其作為 [CI 元件](https://docs.gitlab.com/ee/ci/components/) 整合到管線中。
 
-這裡我們使用的是社群建立的 YONSOON (甬算) CI/CD 元件 — [nagyv/gitlab-yonsoon](https://gitlab.com/nagyv/gitlab-yonsoon)。
+這裡我們使用的是社群建立的 OpenCode CI/CD 元件 — [nagyv/gitlab-opencode](https://gitlab.com/nagyv/gitlab-opencode)。
 
 ---
 
 ### 功能特性
 
-- **按任務自訂設定**：使用自訂設定目錄來設定 YONSOON (甬算)，例如 `./config/#custom-directory`，以便為每次 YONSOON (甬算) 呼叫啟用或停用特定功能。
-- **最小化設定**：CI 元件會在背景完成 YONSOON (甬算) 的設定，您只需建立 YONSOON (甬算) 設定和初始提示詞即可。
+- **按任務自訂設定**：使用自訂設定目錄來設定 OpenCode，例如 `./config/#custom-directory`，以便為每次 OpenCode 呼叫啟用或停用特定功能。
+- **最小化設定**：CI 元件會在背景完成 OpenCode 的設定，您只需建立 OpenCode 設定和初始提示詞即可。
 - **靈活可自訂**：CI 元件支援多種輸入參數來自訂其行為。
 
 ---
 
 ### 設定
 
-1. 將您的 YONSOON (甬算) 身分驗證 JSON 作為檔案類型的 CI 環境變數儲存在 **Settings** > **CI/CD** > **Variables** 下。請確保將其標記為「Masked and hidden」。
+1. 將您的 OpenCode 身分驗證 JSON 作為檔案類型的 CI 環境變數儲存在 **Settings** > **CI/CD** > **Variables** 下。請確保將其標記為「Masked and hidden」。
 2. 將以下內容新增到您的 `.gitlab-ci.yml` 檔案中。
 
    ```yaml title=".gitlab-ci.yml"
    include:
-     - component: $CI_SERVER_FQDN/nagyv/gitlab-yonsoon/yonsoon@2
+     - component: $CI_SERVER_FQDN/nagyv/gitlab-opencode/opencode@2
        inputs:
-         config_dir: ${CI_PROJECT_DIR}/yonsoon-config
-         auth_json: $YONSOON_AUTH_JSON # The variable name for your YONSOON (甬算) authentication JSON
+         config_dir: ${CI_PROJECT_DIR}/opencode-config
+         auth_json: $YONSOON_AUTH_JSON # The variable name for your OpenCode authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
 
-有關更多輸入參數和使用情境，請[查看該元件的文件](https://gitlab.com/explore/catalog/nagyv/gitlab-yonsoon)。
+有關更多輸入參數和使用情境，請[查看該元件的文件](https://gitlab.com/explore/catalog/nagyv/gitlab-opencode)。
 
 ---
 
 ## GitLab Duo
 
-YONSOON (甬算) 與您的 GitLab 工作流程整合。
-在評論中提及 `@yonsoon`，YONSOON (甬算) 將在您的 GitLab CI 管線中執行任務。
+OpenCode 與您的 GitLab 工作流程整合。
+在評論中提及 `@opencode`，OpenCode 將在您的 GitLab CI 管線中執行任務。
 
 ---
 
 ### 功能特性
 
-- **Issue 分類**：讓 YONSOON (甬算) 調查某個 Issue 並為您解釋。
-- **修復與實作**：讓 YONSOON (甬算) 修復 Issue 或實作某個功能。它會建立一個新分支，並提交包含變更的合併請求。
-- **安全可靠**：YONSOON (甬算) 在您的 GitLab Runner 上執行。
+- **Issue 分類**：讓 OpenCode 調查某個 Issue 並為您解釋。
+- **修復與實作**：讓 OpenCode 修復 Issue 或實作某個功能。它會建立一個新分支，並提交包含變更的合併請求。
+- **安全可靠**：OpenCode 在您的 GitLab Runner 上執行。
 
 ---
 
 ### 設定
 
-YONSOON (甬算) 在您的 GitLab CI/CD 管線中執行，以下是設定所需的步驟：
+OpenCode 在您的 GitLab CI/CD 管線中執行，以下是設定所需的步驟：
 
 :::tip
 請查看 [**GitLab 文件**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) 取得最新說明。
@@ -81,19 +81,19 @@ YONSOON (甬算) 在您的 GitLab CI/CD 管線中執行，以下是設定所需�
     ```yaml
     image: node:22-slim
     commands:
-      - echo "Installing yonsoon"
-      - npm install --global yonsoon-ai
+      - echo "Installing opencode"
+      - npm install --global opencode-ai
       - echo "Installing glab"
-      - export GITLAB_TOKEN=$GITLAB_TOKEN_YONSOON
+      - export GITLAB_TOKEN=$GITLAB_TOKEN_OPENCODE
       - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
       - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating YONSOON (甬算) auth configuration"
-      - mkdir --parents ~/.local/share/yonsoon
+      - echo "Creating OpenCode auth configuration"
+      - mkdir --parents ~/.local/share/opencode
       - |
-        cat > ~/.local/share/yonsoon/auth.json << EOF
+        cat > ~/.local/share/opencode/auth.json << EOF
         {
           "anthropic": {
             "type": "api",
@@ -102,13 +102,13 @@ YONSOON (甬算) 在您的 GitLab CI/CD 管線中執行，以下是設定所需�
         }
         EOF
       - echo "Configuring git"
-      - git config --global user.email "yonsoon@gitlab.com"
-      - git config --global user.name "YONSOON (甬算)"
+      - git config --global user.email "opencode@gitlab.com"
+      - git config --global user.name "YONSOON"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running YONSOON (甬算)"
+      - echo "Running OpenCode"
       - |
-        yonsoon run "
+        opencode run "
         You are an AI assistant helping with GitLab operations.
 
         Context: $AI_FLOW_CONTEXT
@@ -145,7 +145,7 @@ YONSOON (甬算) 在您的 GitLab CI/CD 管線中執行，以下是設定所需�
         fi
     variables:
       - ANTHROPIC_API_KEY
-      - GITLAB_TOKEN_YONSOON
+      - GITLAB_TOKEN_OPENCODE
       - GITLAB_HOST
     ```
 
@@ -157,10 +157,10 @@ YONSOON (甬算) 在您的 GitLab CI/CD 管線中執行，以下是設定所需�
 
 ### 範例
 
-以下是在 GitLab 中使用 YONSOON (甬算) 的一些範例。
+以下是在 GitLab 中使用 OpenCode 的一些範例。
 
 :::tip
-您可以設定使用不同於 `@yonsoon` 的觸發詞。
+您可以設定使用不同於 `@opencode` 的觸發詞。
 :::
 
 - **解釋 Issue**
@@ -168,27 +168,27 @@ YONSOON (甬算) 在您的 GitLab CI/CD 管線中執行，以下是設定所需�
   在 GitLab Issue 中新增以下評論。
 
   ```
-  @yonsoon explain this issue
+  @opencode explain this issue
   ```
 
-  YONSOON (甬算) 會閱讀該 Issue 並回覆清晰的解釋。
+  OpenCode 會閱讀該 Issue 並回覆清晰的解釋。
 
 - **修復 Issue**
 
   在 GitLab Issue 中輸入：
 
   ```
-  @yonsoon fix this
+  @opencode fix this
   ```
 
-  YONSOON (甬算) 會建立一個新分支，實作變更，並提交包含變更的合併請求。
+  OpenCode 會建立一個新分支，實作變更，並提交包含變更的合併請求。
 
 - **審查合併請求**
 
   在 GitLab 合併請求中留下以下評論。
 
   ```
-  @yonsoon review this merge request
+  @opencode review this merge request
   ```
 
-  YONSOON (甬算) 會審查合併請求並提供回饋。
+  OpenCode 會審查合併請求並提供回饋。

@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: YONSOON (甬算) CLI 選項和指令。
+description: OpenCode CLI 選項和指令。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) CLI 在不帶任何參數執行時，預設啟動 [TUI](/docs/tui)。
+OpenCode CLI 在不帶任何參數執行時，預設啟動 [TUI](/docs/tui)。
 
 ```bash
-yonsoon
+opencode
 ```
 
-但它也接受本頁面中記錄的指令，使您可以透過程式方式與 YONSOON (甬算) 進行互動。
+但它也接受本頁面中記錄的指令，使您可以透過程式方式與 OpenCode 進行互動。
 
 ```bash
-yonsoon run "Explain how closures work in JavaScript"
+opencode run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-啟動 YONSOON (甬算) 終端機使用者介面。
+啟動 OpenCode 終端機使用者介面。
 
 ```bash
-yonsoon [project]
+opencode [project]
 ```
 
 #### 旗標
@@ -44,36 +44,36 @@ yonsoon [project]
 
 ## 指令
 
-YONSOON (甬算) CLI 還提供以下指令。
+OpenCode CLI 還提供以下指令。
 
 ---
 
 ### agent
 
-管理 YONSOON (甬算) 的代理。
+管理 OpenCode 的代理。
 
 ```bash
-yonsoon agent [command]
+opencode agent [command]
 ```
 
 ---
 
 ### attach
 
-將終端機連接到已透過 `serve` 或 `web` 指令啟動的 YONSOON (甬算) 後端伺服器。
+將終端機連接到已透過 `serve` 或 `web` 指令啟動的 OpenCode 後端伺服器。
 
 ```bash
-yonsoon attach [url]
+opencode attach [url]
 ```
 
-這允許將 TUI 與遠端 YONSOON (甬算) 後端搭配使用。例如：
+這允許將 TUI 與遠端 OpenCode 後端搭配使用。例如：
 
 ```bash
 # Start the backend server for web/mobile access
-yonsoon web --port 4096 --hostname 0.0.0.0
+opencode web --port 4096 --hostname 0.0.0.0
 
 # In another terminal, attach the TUI to the running backend
-yonsoon attach http://10.20.30.40:4096
+opencode attach http://10.20.30.40:4096
 ```
 
 #### 旗標
@@ -90,7 +90,7 @@ yonsoon attach http://10.20.30.40:4096
 使用自訂設定建立新的代理。
 
 ```bash
-yonsoon agent create
+opencode agent create
 ```
 
 此指令將引導您使用自訂系統提示詞和工具設定來建立新的代理。
@@ -102,7 +102,7 @@ yonsoon agent create
 列出所有可用的代理。
 
 ```bash
-yonsoon agent list
+opencode agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ yonsoon agent list
 管理供應商的憑證和登入資訊的指令。
 
 ```bash
-yonsoon auth [command]
+opencode auth [command]
 ```
 
 ---
 
 #### login
 
-YONSOON (甬算) 基於 [Models.dev](https://models.dev) 的供應商列表運作，因此您可以使用 `yonsoon auth login` 為任何想要使用的供應商設定 API 金鑰。金鑰儲存在 `~/.local/share/yonsoon/auth.json` 中。
+OpenCode 基於 [Models.dev](https://models.dev) 的供應商列表運作，因此您可以使用 `opencode auth login` 為任何想要使用的供應商設定 API 金鑰。金鑰儲存在 `~/.local/share/opencode/auth.json` 中。
 
 ```bash
-yonsoon auth login
+opencode auth login
 ```
 
-YONSOON (甬算) 啟動時會從憑證檔案載入供應商資訊，同時也會載入環境變數或專案中 `.env` 檔案中定義的金鑰。
+OpenCode 啟動時會從憑證檔案載入供應商資訊，同時也會載入環境變數或專案中 `.env` 檔案中定義的金鑰。
 
 ---
 
@@ -134,13 +134,13 @@ YONSOON (甬算) 啟動時會從憑證檔案載入供應商資訊，同時也會
 列出憑證檔案中儲存的所有已認證供應商。
 
 ```bash
-yonsoon auth list
+opencode auth list
 ```
 
 或使用簡寫版本。
 
 ```bash
-yonsoon auth ls
+opencode auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ yonsoon auth ls
 從憑證檔案中清除供應商資訊以完成登出。
 
 ```bash
-yonsoon auth logout
+opencode auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ yonsoon auth logout
 管理用於儲存庫自動化的 GitHub 代理。
 
 ```bash
-yonsoon github [command]
+opencode github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ yonsoon github [command]
 在您的儲存庫中安裝 GitHub 代理。
 
 ```bash
-yonsoon github install
+opencode github install
 ```
 
 此指令會設定必要的 GitHub Actions 工作流程並引導您完成設定過程。[了解更多](/docs/github)。
@@ -182,7 +182,7 @@ yonsoon github install
 執行 GitHub 代理。通常在 GitHub Actions 中使用。
 
 ```bash
-yonsoon github run
+opencode github run
 ```
 
 ##### 旗標
@@ -199,7 +199,7 @@ yonsoon github run
 管理 Model Context Protocol 伺服器。
 
 ```bash
-yonsoon mcp [command]
+opencode mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ yonsoon mcp [command]
 將 MCP 伺服器新增到您的設定中。
 
 ```bash
-yonsoon mcp add
+opencode mcp add
 ```
 
 此指令將引導您新增本地或遠端 MCP 伺服器。
@@ -221,13 +221,13 @@ yonsoon mcp add
 列出所有已設定的 MCP 伺服器及其連線狀態。
 
 ```bash
-yonsoon mcp list
+opencode mcp list
 ```
 
 或使用簡寫版本。
 
 ```bash
-yonsoon mcp ls
+opencode mcp ls
 ```
 
 ---
@@ -237,7 +237,7 @@ yonsoon mcp ls
 對支援 OAuth 的 MCP 伺服器進行認證。
 
 ```bash
-yonsoon mcp auth [name]
+opencode mcp auth [name]
 ```
 
 如果您不提供伺服器名稱，系統將提示您從可用的支援 OAuth 的伺服器中進行選擇。
@@ -245,13 +245,13 @@ yonsoon mcp auth [name]
 您還可以列出支援 OAuth 的伺服器及其認證狀態。
 
 ```bash
-yonsoon mcp auth list
+opencode mcp auth list
 ```
 
 或使用簡寫版本。
 
 ```bash
-yonsoon mcp auth ls
+opencode mcp auth ls
 ```
 
 ---
@@ -261,7 +261,7 @@ yonsoon mcp auth ls
 移除 MCP 伺服器的 OAuth 憑證。
 
 ```bash
-yonsoon mcp logout [name]
+opencode mcp logout [name]
 ```
 
 ---
@@ -271,7 +271,7 @@ yonsoon mcp logout [name]
 偵錯 MCP 伺服器的 OAuth 連線問題。
 
 ```bash
-yonsoon mcp debug <name>
+opencode mcp debug <name>
 ```
 
 ---
@@ -281,7 +281,7 @@ yonsoon mcp debug <name>
 列出已設定供應商的所有可用模型。
 
 ```bash
-yonsoon models [provider]
+opencode models [provider]
 ```
 
 此指令以 `provider/model` 的格式顯示所有已設定供應商中可用的模型。
@@ -291,7 +291,7 @@ yonsoon models [provider]
 您可以選擇傳入供應商 ID 來按供應商篩選模型。
 
 ```bash
-yonsoon models anthropic
+opencode models anthropic
 ```
 
 #### 旗標
@@ -301,36 +301,36 @@ yonsoon models anthropic
 | `--refresh` | 從 models.dev 重新整理模型快取             |
 | `--verbose` | 使用更詳細的模型輸出（包含費用等中繼資料） |
 
-使用 `--refresh` 旗標可以更新快取的模型列表。當供應商新增了模型並且您希望在 YONSOON (甬算) 中看到它們時，此功能非常有用。
+使用 `--refresh` 旗標可以更新快取的模型列表。當供應商新增了模型並且您希望在 OpenCode 中看到它們時，此功能非常有用。
 
 ```bash
-yonsoon models --refresh
+opencode models --refresh
 ```
 
 ---
 
 ### run
 
-以非互動模式執行 YONSOON (甬算)，直接傳入提示詞。
+以非互動模式執行 OpenCode，直接傳入提示詞。
 
 ```bash
-yonsoon run [message..]
+opencode run [message..]
 ```
 
 這對於指令碼編寫、自動化或無需啟動完整 TUI 即可快速取得答案的情境非常有用。例如：
 
-```bash "yonsoon run"
-yonsoon run Explain the use of context in Go
+```bash "opencode run"
+opencode run Explain the use of context in Go
 ```
 
-您還可以連接到正在執行的 `yonsoon serve` 實例，以避免每次執行時 MCP 伺服器的冷啟動時間：
+您還可以連接到正在執行的 `opencode serve` 實例，以避免每次執行時 MCP 伺服器的冷啟動時間：
 
 ```bash
 # Start a headless server in one terminal
-yonsoon serve
+opencode serve
 
 # In another terminal, run commands that attach to it
-yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
+opencode run --attach http://localhost:4096 "Explain async/await in JavaScript"
 ```
 
 #### 旗標
@@ -347,20 +347,20 @@ yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f` | 附加到訊息的檔案                                               |
 | `--format`   |      | 格式：default（格式化輸出）或 json（原始 JSON 事件）           |
 | `--title`    |      | 工作階段標題（未提供值時使用截斷的提示詞）                     |
-| `--attach`   |      | 連接到正在執行的 yonsoon 伺服器（例如 http://localhost:4096） |
+| `--attach`   |      | 連接到正在執行的 opencode 伺服器（例如 http://localhost:4096） |
 | `--port`     |      | 本地伺服器連接埠（預設為隨機連接埠）                           |
 
 ---
 
 ### serve
 
-啟動無介面的 YONSOON (甬算) 伺服器以提供 API 存取。查看[伺服器文件](/docs/server)了解完整的 HTTP 介面。
+啟動無介面的 OpenCode 伺服器以提供 API 存取。查看[伺服器文件](/docs/server)了解完整的 HTTP 介面。
 
 ```bash
-yonsoon serve
+opencode serve
 ```
 
-此指令啟動一個 HTTP 伺服器，提供對 YONSOON (甬算) 功能的 API 存取，無需 TUI 介面。設定 `YONSOON_SERVER_PASSWORD` 可啟用 HTTP 基本認證（使用者名稱預設為 `yonsoon`）。
+此指令啟動一個 HTTP 伺服器，提供對 OpenCode 功能的 API 存取，無需 TUI 介面。設定 `YONSOON_SERVER_PASSWORD` 可啟用 HTTP 基本認證（使用者名稱預設為 `opencode`）。
 
 #### 旗標
 
@@ -375,20 +375,20 @@ yonsoon serve
 
 ### session
 
-管理 YONSOON (甬算) 工作階段。
+管理 OpenCode 工作階段。
 
 ```bash
-yonsoon session [command]
+opencode session [command]
 ```
 
 ---
 
 #### list
 
-列出所有 YONSOON (甬算) 工作階段。
+列出所有 OpenCode 工作階段。
 
 ```bash
-yonsoon session list
+opencode session list
 ```
 
 ##### 旗標
@@ -402,10 +402,10 @@ yonsoon session list
 
 ### stats
 
-顯示 YONSOON (甬算) 工作階段的 Token 用量和費用統計資訊。
+顯示 OpenCode 工作階段的 Token 用量和費用統計資訊。
 
 ```bash
-yonsoon stats
+opencode stats
 ```
 
 #### 旗標
@@ -424,7 +424,7 @@ yonsoon stats
 將工作階段資料匯出為 JSON。
 
 ```bash
-yonsoon export [sessionID]
+opencode export [sessionID]
 ```
 
 如果您不提供工作階段 ID，系統將提示您從可用的工作階段中進行選擇。
@@ -433,30 +433,30 @@ yonsoon export [sessionID]
 
 ### import
 
-從 JSON 檔案或 YONSOON (甬算) 分享連結匯入工作階段資料。
+從 JSON 檔案或 OpenCode 分享連結匯入工作階段資料。
 
 ```bash
-yonsoon import <file>
+opencode import <file>
 ```
 
-您可以從本地檔案或 YONSOON (甬算) 分享連結匯入。
+您可以從本地檔案或 OpenCode 分享連結匯入。
 
 ```bash
-yonsoon import session.json
-yonsoon import https://opncd.ai/s/abc123
+opencode import session.json
+opencode import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-啟動帶有 Web 介面的無介面 YONSOON (甬算) 伺服器。
+啟動帶有 Web 介面的無介面 OpenCode 伺服器。
 
 ```bash
-yonsoon web
+opencode web
 ```
 
-此指令啟動一個 HTTP 伺服器並開啟瀏覽器，透過 Web 介面存取 YONSOON (甬算)。設定 `YONSOON_SERVER_PASSWORD` 可啟用 HTTP 基本認證（使用者名稱預設為 `yonsoon`）。
+此指令啟動一個 HTTP 伺服器並開啟瀏覽器，透過 Web 介面存取 OpenCode。設定 `YONSOON_SERVER_PASSWORD` 可啟用 HTTP 基本認證（使用者名稱預設為 `opencode`）。
 
 #### 旗標
 
@@ -474,7 +474,7 @@ yonsoon web
 啟動 ACP（Agent Client Protocol）伺服器。
 
 ```bash
-yonsoon acp
+opencode acp
 ```
 
 此指令啟動一個透過 stdin/stdout 使用 nd-JSON 進行通訊的 ACP 伺服器。
@@ -491,10 +491,10 @@ yonsoon acp
 
 ### uninstall
 
-解除安裝 YONSOON (甬算) 並刪除所有相關檔案。
+解除安裝 OpenCode 並刪除所有相關檔案。
 
 ```bash
-yonsoon uninstall
+opencode uninstall
 ```
 
 #### 旗標
@@ -510,22 +510,22 @@ yonsoon uninstall
 
 ### upgrade
 
-將 YONSOON (甬算) 更新到最新版本或指定版本。
+將 OpenCode 更新到最新版本或指定版本。
 
 ```bash
-yonsoon upgrade [target]
+opencode upgrade [target]
 ```
 
 更新到最新版本。
 
 ```bash
-yonsoon upgrade
+opencode upgrade
 ```
 
 更新到指定版本。
 
 ```bash
-yonsoon upgrade v0.1.48
+opencode upgrade v0.1.48
 ```
 
 #### 旗標
@@ -538,7 +538,7 @@ yonsoon upgrade v0.1.48
 
 ## 全域旗標
 
-YONSOON (甬算) CLI 接受以下全域旗標。
+OpenCode CLI 接受以下全域旗標。
 
 | 旗標           | 簡寫 | 說明                                 |
 | -------------- | ---- | ------------------------------------ |
@@ -551,7 +551,7 @@ YONSOON (甬算) CLI 接受以下全域旗標。
 
 ## 環境變數
 
-YONSOON (甬算) 可以透過環境變數進行設定。
+OpenCode 可以透過環境變數進行設定。
 
 | 變數                                  | 類型    | 說明                                        |
 | ------------------------------------- | ------- | ------------------------------------------- |
@@ -577,7 +577,7 @@ YONSOON (甬算) 可以透過環境變數進行設定。
 | `YONSOON_CLIENT`                     | string  | 用戶端識別碼（預設為 `cli`）                |
 | `YONSOON_ENABLE_EXA`                 | boolean | 啟用 Exa 網路搜尋工具                       |
 | `YONSOON_SERVER_PASSWORD`            | string  | 為 `serve`/`web` 啟用基本認證               |
-| `YONSOON_SERVER_USERNAME`            | string  | 覆寫基本認證使用者名稱（預設為 `yonsoon`） |
+| `YONSOON_SERVER_USERNAME`            | string  | 覆寫基本認證使用者名稱（預設為 `opencode`） |
 | `YONSOON_MODELS_URL`                 | string  | 自訂模型設定擷取 URL                        |
 
 ---

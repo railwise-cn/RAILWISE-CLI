@@ -38,7 +38,7 @@ impl CommandWrapper for WinCreationFlags {
 }
 
 const CLI_INSTALL_DIR: &str = ".yonsoon/bin";
-const CLI_BINARY_NAME: &str = "yonsoon";
+const CLI_BINARY_NAME: &str = "opencode";
 
 #[derive(serde::Deserialize, Debug)]
 pub struct ServerConfig {
@@ -111,7 +111,7 @@ pub fn get_sidecar_path(app: &tauri::AppHandle) -> std::path::PathBuf {
         .expect("Failed to get current binary")
         .parent()
         .expect("Failed to get parent dir")
-        .join("yonsoon-cli")
+        .join("opencode-cli")
 }
 
 fn is_cli_installed() -> bool {
@@ -134,7 +134,7 @@ pub fn install_cli(app: tauri::AppHandle) -> Result<String, String> {
         return Err("Sidecar binary not found".to_string());
     }
 
-    let temp_script = std::env::temp_dir().join("yonsoon-install.sh");
+    let temp_script = std::env::temp_dir().join("opencode-install.sh");
     std::fs::write(&temp_script, INSTALL_SCRIPT)
         .map_err(|e| format!("Failed to write install script: {}", e))?;
 
@@ -269,7 +269,7 @@ pub fn spawn_command(
             let version = app.package_info().version.to_string();
             let mut script = vec![
                 "set -e".to_string(),
-                "BIN=\"$HOME/.yonsoon/bin/yonsoon\"".to_string(),
+                "BIN=\"$HOME/.yonsoon/bin/opencode\"".to_string(),
                 "if [ ! -x \"$BIN\" ]; then".to_string(),
                 format!(
                     "  curl -fsSL https://yonsoon.ai/install | bash -s -- --version {} --no-modify-path",
@@ -428,7 +428,7 @@ pub fn serve(
     tracing::info!(port, "Spawning sidecar");
 
     let envs = [
-        ("YONSOON_SERVER_USERNAME", "yonsoon".to_string()),
+        ("YONSOON_SERVER_USERNAME", "opencode".to_string()),
         ("YONSOON_SERVER_PASSWORD", password.to_string()),
     ];
 
@@ -437,7 +437,7 @@ pub fn serve(
         format!("--print-logs --log-level WARN serve --hostname {hostname} --port {port}").as_str(),
         &envs,
     )
-    .expect("Failed to spawn yonsoon");
+    .expect("Failed to spawn opencode");
 
     let mut exit_tx = Some(exit_tx);
     tokio::spawn(

@@ -38,7 +38,7 @@ export class McpOAuthProvider implements OAuthClientProvider {
   get clientMetadata(): OAuthClientMetadata {
     return {
       redirect_uris: [this.redirectUrl],
-      client_name: "YONSOON (甬算)",
+      client_name: "YONSOON",
       client_uri: "https://yonsoon.ai",
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],

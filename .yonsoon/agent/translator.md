@@ -1,7 +1,7 @@
 ---
 description: Translate content for a specified locale while preserving technical terms
 mode: subagent
-model: yonsoon/gemini-3-pro
+model: opencode/gemini-3-pro
 ---
 
 You are a professional translator and localization specialist.
@@ -20,7 +20,7 @@ If the target locale is missing, ask the user to provide it.
 
 ---
 
-# Do-Not-Translate Terms (YONSOON (甬算) Docs)
+# Do-Not-Translate Terms (YONSOON Docs)
 
 Generated from: `packages/web/src/content/docs/*.mdx` (default English docs)
 Generated on: 2026-02-10
@@ -53,8 +53,8 @@ Neovim
 Node.js
 npm
 Obsidian
-yonsoon
-yonsoon-ai
+opencode
+opencode-ai
 Paru
 pnpm
 ripgrep
@@ -137,15 +137,15 @@ OAuth
 Ollama integration docs
 OpenAI's Data Policies
 OpenChamber
-YONSOON (甬算)
-YONSOON (甬算) config
-YONSOON (甬算) Config
-YONSOON (甬算) TUI with the yonsoon theme
-YONSOON (甬算) Web - Active Session
-YONSOON (甬算) Web - New Session
-YONSOON (甬算) Web - See Servers
-YONSOON (甬算) Zen
-YONSOON (甬算)-Obsidian
+YONSOON
+YONSOON config
+YONSOON Config
+YONSOON TUI with the opencode theme
+YONSOON Web - Active Session
+YONSOON Web - New Session
+YONSOON Web - See Servers
+YONSOON Zen
+YONSOON-Obsidian
 OpenRouter dashboard
 OpenWork
 OVHcloud panel
@@ -286,7 +286,7 @@ NoeFabris
 OpenAI
 OpenAPI
 OpenChamber
-YONSOON (甬算)
+YONSOON
 OpenRouter
 OpenTUI
 OpenWork
@@ -310,69 +310,69 @@ xAI
 ZenMux
 ```
 
-## YONSOON (甬算) CLI commands (as shown in docs)
+## YONSOON CLI commands (as shown in docs)
 
 ```text
-yonsoon
-yonsoon [project]
-yonsoon /path/to/project
-yonsoon acp
-yonsoon agent [command]
-yonsoon agent create
-yonsoon agent list
-yonsoon attach [url]
-yonsoon attach http://10.20.30.40:4096
-yonsoon attach http://localhost:4096
-yonsoon auth [command]
-yonsoon auth list
-yonsoon auth login
-yonsoon auth logout
-yonsoon auth ls
-yonsoon export [sessionID]
-yonsoon github [command]
-yonsoon github install
-yonsoon github run
-yonsoon import <file>
-yonsoon import https://opncd.ai/s/abc123
-yonsoon import session.json
-yonsoon mcp [command]
-yonsoon mcp add
-yonsoon mcp auth [name]
-yonsoon mcp auth list
-yonsoon mcp auth ls
-yonsoon mcp auth my-oauth-server
-yonsoon mcp auth sentry
-yonsoon mcp debug <name>
-yonsoon mcp debug my-oauth-server
-yonsoon mcp list
-yonsoon mcp logout [name]
-yonsoon mcp logout my-oauth-server
-yonsoon mcp ls
-yonsoon models --refresh
-yonsoon models [provider]
-yonsoon models anthropic
-yonsoon run [message..]
-yonsoon run Explain the use of context in Go
-yonsoon serve
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
-yonsoon serve --hostname 0.0.0.0 --port 4096
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
-yonsoon session [command]
-yonsoon session list
-yonsoon session delete <sessionID>
-yonsoon stats
-yonsoon uninstall
-yonsoon upgrade
-yonsoon upgrade [target]
-yonsoon upgrade v0.1.48
-yonsoon web
-yonsoon web --cors https://example.com
-yonsoon web --hostname 0.0.0.0
-yonsoon web --mdns
-yonsoon web --mdns --mdns-domain myproject.local
-yonsoon web --port 4096
-yonsoon web --port 4096 --hostname 0.0.0.0
-yonsoon.server.close()
+opencode
+opencode [project]
+opencode /path/to/project
+opencode acp
+opencode agent [command]
+opencode agent create
+opencode agent list
+opencode attach [url]
+opencode attach http://10.20.30.40:4096
+opencode attach http://localhost:4096
+opencode auth [command]
+opencode auth list
+opencode auth login
+opencode auth logout
+opencode auth ls
+opencode export [sessionID]
+opencode github [command]
+opencode github install
+opencode github run
+opencode import <file>
+opencode import https://opncd.ai/s/abc123
+opencode import session.json
+opencode mcp [command]
+opencode mcp add
+opencode mcp auth [name]
+opencode mcp auth list
+opencode mcp auth ls
+opencode mcp auth my-oauth-server
+opencode mcp auth sentry
+opencode mcp debug <name>
+opencode mcp debug my-oauth-server
+opencode mcp list
+opencode mcp logout [name]
+opencode mcp logout my-oauth-server
+opencode mcp ls
+opencode models --refresh
+opencode models [provider]
+opencode models anthropic
+opencode run [message..]
+opencode run Explain the use of context in Go
+opencode serve
+opencode serve --cors http://localhost:5173 --cors https://app.example.com
+opencode serve --hostname 0.0.0.0 --port 4096
+opencode serve [--port <number>] [--hostname <string>] [--cors <origin>]
+opencode session [command]
+opencode session list
+opencode session delete <sessionID>
+opencode stats
+opencode uninstall
+opencode upgrade
+opencode upgrade [target]
+opencode upgrade v0.1.48
+opencode web
+opencode web --cors https://example.com
+opencode web --hostname 0.0.0.0
+opencode web --mdns
+opencode web --mdns --mdns-domain myproject.local
+opencode web --port 4096
+opencode web --port 4096 --hostname 0.0.0.0
+opencode.server.close()
 ```
 
 ## Slash commands and routes
@@ -413,7 +413,7 @@ yonsoon.server.close()
 /mnt/d/
 /models
 /oc
-/yonsoon
+/opencode
 /path
 /project
 /project/current
@@ -551,7 +551,7 @@ GITLAB_HOST
 GITLAB_INSTANCE_URL
 GITLAB_OAUTH_CLIENT_ID
 GITLAB_TOKEN
-GITLAB_TOKEN_YONSOON
+GITLAB_TOKEN_OPENCODE
 GOOGLE_APPLICATION_CREDENTIALS
 GOOGLE_CLOUD_PROJECT
 HTTP_PROXY
@@ -635,71 +635,71 @@ zod
 @ai-sdk/openai-compatible
 @File#L37-42
 @modelcontextprotocol/server-everything
-@yonsoon
+@opencode
 ```
 
 ## GitHub owner/repo slugs referenced in docs
 
 ```text
-24601/yonsoon-zellij-namer
-angristan/yonsoon-wakatime
-anomalyco/yonsoon
-apps/yonsoon-agent
-athal7/yonsoon-devcontainers
-awesome-yonsoon/awesome-yonsoon
+24601/opencode-zellij-namer
+angristan/opencode-wakatime
+anomalyco/opencode
+apps/opencode-agent
+athal7/opencode-devcontainers
+awesome-opencode/awesome-opencode
 backnotprop/plannotator
-ben-vargas/ai-sdk-provider-yonsoon-sdk
+ben-vargas/ai-sdk-provider-opencode-sdk
 btriapitsyn/openchamber
 BurntSushi/ripgrep
 Cluster444/agentic
-code-yeongyu/oh-my-yonsoon
-darrenhinde/yonsoon-agents
-different-ai/yonsoon-scheduler
+code-yeongyu/oh-my-opencode
+darrenhinde/opencode-agents
+different-ai/opencode-scheduler
 different-ai/openwork
 features/copilot
 folke/tokyonight.nvim
-franlol/yonsoon-md-table-formatter
+franlol/opencode-md-table-formatter
 ggml-org/llama.cpp
-ghoulr/yonsoon-websearch-cited.git
-H2Shami/yonsoon-helicone-session
+ghoulr/opencode-websearch-cited.git
+H2Shami/opencode-helicone-session
 hosenur/portal
 jamesmurdza/daytona
-jenslys/yonsoon-gemini-auth
-JRedeker/yonsoon-morph-fast-apply
-JRedeker/yonsoon-shell-strategy
+jenslys/opencode-gemini-auth
+JRedeker/opencode-morph-fast-apply
+JRedeker/opencode-shell-strategy
 kdcokenny/ocx
-kdcokenny/yonsoon-background-agents
-kdcokenny/yonsoon-notify
-kdcokenny/yonsoon-workspace
-kdcokenny/yonsoon-worktree
+kdcokenny/opencode-background-agents
+kdcokenny/opencode-notify
+kdcokenny/opencode-workspace
+kdcokenny/opencode-worktree
 login/device
-mohak34/yonsoon-notifier
+mohak34/opencode-notifier
 morhetz/gruvbox
-mtymek/yonsoon-obsidian
+mtymek/opencode-obsidian
 NeuralNomadsAI/CodeNomad
-nick-vi/yonsoon-type-inject
-NickvanDyke/yonsoon.nvim
-NoeFabris/yonsoon-antigravity-auth
+nick-vi/opencode-type-inject
+NickvanDyke/opencode.nvim
+NoeFabris/opencode-antigravity-auth
 nordtheme/nord
-numman-ali/yonsoon-openai-codex-auth
+numman-ali/opencode-openai-codex-auth
 olimorris/codecompanion.nvim
-panta82/yonsoon-notificator
+panta82/opencode-notificator
 rebelot/kanagawa.nvim
 remorses/kimaki
 sainnhe/everforest
-shekohex/yonsoon-google-antigravity-auth
-shekohex/yonsoon-pty.git
+shekohex/opencode-google-antigravity-auth
+shekohex/opencode-pty.git
 spoons-and-mirrors/subtask2
-sudo-tee/yonsoon.nvim
-supermemoryai/yonsoon-supermemory
-Tarquinen/yonsoon-dynamic-context-pruning
+sudo-tee/opencode.nvim
+supermemoryai/opencode-supermemory
+Tarquinen/opencode-dynamic-context-pruning
 Th3Whit3Wolf/one-nvim
 upstash/context7
 vtemian/micode
 vtemian/octto
 yetone/avante.nvim
-zenobi-us/yonsoon-plugin-template
-zenobi-us/yonsoon-skillful
+zenobi-us/opencode-plugin-template
+zenobi-us/opencode-skillful
 ```
 
 ## Paths, filenames, globs, and URLs
@@ -717,14 +717,14 @@ zenobi-us/yonsoon-skillful
 .claude/skills/*/SKILL.md
 .claude/skills/<name>/SKILL.md
 .env
-.github/workflows/yonsoon.yml
+.github/workflows/opencode.yml
 .gitignore
 .gitlab-ci.yml
 .ignore
 .NET SDK
 .npmrc
 .ocamlformat
-.yonsoon
+.opencode
 .yonsoon/
 .yonsoon/agents/
 .yonsoon/commands/
@@ -740,11 +740,11 @@ zenobi-us/yonsoon-skillful
 {file:path/to/file}
 **/*.js
 %USERPROFILE%/intelephense/license.txt
-%USERPROFILE%\.cache\yonsoon
-%USERPROFILE%\.config\yonsoon\yonsoon.jsonc
-%USERPROFILE%\.config\yonsoon\plugins
-%USERPROFILE%\.local\share\yonsoon
-%USERPROFILE%\.local\share\yonsoon\log
+%USERPROFILE%\.cache\opencode
+%USERPROFILE%\.config\opencode\yonsoon.jsonc
+%USERPROFILE%\.config\opencode\plugins
+%USERPROFILE%\.local\share\opencode
+%USERPROFILE%\.local\share\opencode\log
 <project-root>/.yonsoon/themes/*.json
 <providerId>/<modelId>
 <your-project>/.yonsoon/plugins/
@@ -754,31 +754,31 @@ zenobi-us/yonsoon-skillful
 ~/.agents/skills/<name>/SKILL.md
 ~/.aws/credentials
 ~/.bashrc
-~/.cache/yonsoon
-~/.cache/yonsoon/node_modules/
+~/.cache/opencode
+~/.cache/opencode/node_modules/
 ~/.claude/CLAUDE.md
 ~/.claude/skills/
 ~/.claude/skills/*/SKILL.md
 ~/.claude/skills/<name>/SKILL.md
-~/.config/yonsoon
-~/.config/yonsoon/AGENTS.md
-~/.config/yonsoon/agents/
-~/.config/yonsoon/commands/
-~/.config/yonsoon/modes/
-~/.config/yonsoon/yonsoon.json
-~/.config/yonsoon/yonsoon.jsonc
-~/.config/yonsoon/plugins/
-~/.config/yonsoon/skills/*/SKILL.md
-~/.config/yonsoon/skills/<name>/SKILL.md
-~/.config/yonsoon/themes/*.json
-~/.config/yonsoon/tools/
+~/.config/opencode
+~/.config/opencode/AGENTS.md
+~/.config/opencode/agents/
+~/.config/opencode/commands/
+~/.config/opencode/modes/
+~/.config/opencode/yonsoon.json
+~/.config/opencode/yonsoon.jsonc
+~/.config/opencode/plugins/
+~/.config/opencode/skills/*/SKILL.md
+~/.config/opencode/skills/<name>/SKILL.md
+~/.config/opencode/themes/*.json
+~/.config/opencode/tools/
 ~/.config/zed/settings.json
 ~/.local/share
-~/.local/share/yonsoon/
-~/.local/share/yonsoon/auth.json
-~/.local/share/yonsoon/log/
-~/.local/share/yonsoon/mcp-auth.json
-~/.local/share/yonsoon/yonsoon.jsonc
+~/.local/share/opencode/
+~/.local/share/opencode/auth.json
+~/.local/share/opencode/log/
+~/.local/share/opencode/mcp-auth.json
+~/.local/share/opencode/yonsoon.jsonc
 ~/.npmrc
 ~/.zshrc
 ~/code/
@@ -788,7 +788,7 @@ zenobi-us/yonsoon-skillful
 ${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts
 $HOME/intelephense/license.txt
 $HOME/projects/*
-$XDG_CONFIG_HOME/yonsoon/themes/*.json
+$XDG_CONFIG_HOME/opencode/themes/*.json
 agent/
 agents/
 build/
@@ -814,10 +814,10 @@ modes/
 node_modules/
 openai/gpt-4.1
 yonsoon.ai/config.json
-yonsoon/<model-id>
-yonsoon/gpt-5.1-codex
-yonsoon/gpt-5.2-codex
-yonsoon/kimi-k2
+opencode/<model-id>
+opencode/gpt-5.1-codex
+opencode/gpt-5.2-codex
+opencode/kimi-k2
 openrouter/google/gemini-2.5-flash
 opncd.ai/s/<share-id>
 packages/*/AGENTS.md
@@ -826,7 +826,7 @@ project/
 provider_id/model_id
 provider/model
 provider/model-id
-rm -rf ~/.cache/yonsoon
+rm -rf ~/.cache/opencode
 skills/
 skills/*/SKILL.md
 src/**/*.ts
@@ -878,8 +878,8 @@ gitlab/duo-chat-haiku-4-5
 lmstudio/google/gemma-3n-e4b
 openai/gpt-4.1
 openai/gpt-5
-yonsoon/gpt-5.1-codex
-yonsoon/gpt-5.2-codex
-yonsoon/kimi-k2
+opencode/gpt-5.1-codex
+opencode/gpt-5.2-codex
+opencode/kimi-k2
 openrouter/google/gemini-2.5-flash
 ```

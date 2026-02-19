@@ -2,7 +2,7 @@
   "name": "@yonsoon/web",
   "type": "module",
   "license": "MIT",
-  "version": "1.2.6",
+  "version": "1.2.8",
   "scripts": {
     "dev": "astro dev",
     "dev:remote": "VITE_API_URL=https://api.yonsoon.ai astro dev",
@@ -35,7 +35,7 @@
     "vscode-languageserver-types": "3.17.5"
   },
   "devDependencies": {
-    "yonsoon": "workspace:*",
+    "opencode": "workspace:*",
     "@types/node": "catalog:",
     "@astrojs/check": "0.9.6",
     "typescript": "catalog:"

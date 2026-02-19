@@ -1,9 +1,9 @@
 ---
 title: 外掛
-description: 編寫自己的外掛來擴展 YONSOON (甬算)。
+description: 編寫自己的外掛來擴展 OpenCode。
 ---
 
-外掛允許您透過掛鉤各種事件和自訂行為來擴展 YONSOON (甬算)。您可以建立外掛來新增新功能、整合外部服務，或修改 YONSOON (甬算) 的預設行為。
+外掛允許您透過掛鉤各種事件和自訂行為來擴展 OpenCode。您可以建立外掛來新增新功能、整合外部服務，或修改 OpenCode 的預設行為。
 
 如需了解範例，請查看社群建立的[外掛](/docs/ecosystem#plugins)。
 
@@ -20,7 +20,7 @@ description: 編寫自己的外掛來擴展 YONSOON (甬算)。
 將 JavaScript 或 TypeScript 檔案放置在外掛目錄中。
 
 - `.yonsoon/plugins/` - 專案級外掛
-- `~/.config/yonsoon/plugins/` - 全域外掛
+- `~/.config/opencode/plugins/` - 全域外掛
 
 這些目錄中的檔案會在啟動時自動載入。
 
@@ -33,7 +33,7 @@ description: 編寫自己的外掛來擴展 YONSOON (甬算)。
 ```json title="yonsoon.json"
 {
   "$schema": "https://yonsoon.ai/config.json",
-  "plugin": ["yonsoon-helicone-session", "yonsoon-wakatime", "@my-org/custom-plugin"]
+  "plugin": ["opencode-helicone-session", "opencode-wakatime", "@my-org/custom-plugin"]
 }
 ```
 
@@ -45,7 +45,7 @@ description: 編寫自己的外掛來擴展 YONSOON (甬算)。
 
 ### 外掛的安裝方式
 
-**npm 外掛**在啟動時使用 Bun 自動安裝。套件及其相依套件會快取在 `~/.cache/yonsoon/node_modules/` 中。
+**npm 外掛**在啟動時使用 Bun 自動安裝。套件及其相依套件會快取在 `~/.cache/opencode/node_modules/` 中。
 
 **本地外掛**直接從外掛目錄載入。如果需要使用外部套件，您必須在設定目錄中建立 `package.json`（參見[相依套件](#dependencies)），或者將外掛發布到 npm 並[將其新增到設定中](/docs/config#plugins)。
 
@@ -55,9 +55,9 @@ description: 編寫自己的外掛來擴展 YONSOON (甬算)。
 
 外掛從所有來源載入，所有鉤子按順序執行。載入順序為：
 
-1. 全域設定 (`~/.config/yonsoon/yonsoon.json`)
+1. 全域設定 (`~/.config/opencode/yonsoon.json`)
 2. 專案設定 (`yonsoon.json`)
-3. 全域外掛目錄 (`~/.config/yonsoon/plugins/`)
+3. 全域外掛目錄 (`~/.config/opencode/plugins/`)
 4. 專案外掛目錄 (`.yonsoon/plugins/`)
 
 名稱和版本相同的重複 npm 套件只會載入一次。但本地外掛和名稱相似的 npm 外掛會分別獨立載入。
@@ -82,7 +82,7 @@ description: 編寫自己的外掛來擴展 YONSOON (甬算)。
 }
 ```
 
-YONSOON (甬算) 會在啟動時執行 `bun install` 來安裝這些相依套件。之後您的外掛和工具就可以匯入它們了。
+OpenCode 會在啟動時執行 `bun install` 來安裝這些相依套件。之後您的外掛和工具就可以匯入它們了。
 
 ```ts title=".yonsoon/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -117,7 +117,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 - `project`：當前專案資訊。
 - `directory`：當前工作目錄。
 - `worktree`：git 工作樹路徑。
-- `client`：用於與 AI 互動的 YONSOON (甬算) SDK 用戶端。
+- `client`：用於與 AI 互動的 OpenCode SDK 用戶端。
 - `$`：Bun 的 [Shell API](https://bun.com/docs/runtime/shell)，用於執行指令。
 
 ---
@@ -210,7 +210,7 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ## 範例
 
-以下是一些可用於擴展 YONSOON (甬算) 的外掛範例。
+以下是一些可用於擴展 OpenCode 的外掛範例。
 
 ---
 
@@ -224,7 +224,7 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
     event: async ({ event }) => {
       // Send notification on session completion
       if (event.type === "session.idle") {
-        await $`osascript -e 'display notification "Session completed!" with title "yonsoon"'`
+        await $`osascript -e 'display notification "Session completed!" with title "opencode"'`
       }
     },
   }
@@ -234,14 +234,14 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 這裡使用 `osascript` 在 macOS 上執行 AppleScript 來傳送通知。
 
 :::note
-如果您使用 YONSOON (甬算) 桌面應用程式，它可以在回應就緒或工作階段出錯時自動傳送系統通知。
+如果您使用 OpenCode 桌面應用程式，它可以在回應就緒或工作階段出錯時自動傳送系統通知。
 :::
 
 ---
 
 ### .env 保護
 
-阻止 YONSOON (甬算) 讀取 `.env` 檔案：
+阻止 OpenCode 讀取 `.env` 檔案：
 
 ```javascript title=".yonsoon/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
@@ -276,7 +276,7 @@ export const InjectEnvPlugin = async () => {
 
 ### 自訂工具
 
-外掛還可以為 YONSOON (甬算) 新增自訂工具：
+外掛還可以為 OpenCode 新增自訂工具：
 
 ```ts title=".yonsoon/plugins/custom-tools.ts"
 import { type Plugin, tool } from "@yonsoon/plugin"
@@ -299,13 +299,13 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool` 輔助函式用於建立 YONSOON (甬算) 可呼叫的自訂工具。它接受一個 Zod schema 函式，並回傳一個工具定義，包含：
+`tool` 輔助函式用於建立 OpenCode 可呼叫的自訂工具。它接受一個 Zod schema 函式，並回傳一個工具定義，包含：
 
 - `description`：工具的功能描述
 - `args`：工具參數的 Zod schema
 - `execute`：工具被呼叫時執行的函式
 
-您的自訂工具將與內建工具一起在 YONSOON (甬算) 中可用。
+您的自訂工具將與內建工具一起在 OpenCode 中可用。
 
 ---
 

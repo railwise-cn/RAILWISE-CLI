@@ -518,7 +518,7 @@ export namespace ACP {
           "terminal-auth": {
             command: "yonsoon",
             args: ["auth", "login"],
-            label: "YONSOON (甬算) Login",
+            label: "YONSOON Login",
           },
         }
       }
@@ -543,7 +543,7 @@ export namespace ACP {
         },
         authMethods: [authMethod],
         agentInfo: {
-          name: "YONSOON (甬算)",
+          name: "YONSOON",
           version: Installation.VERSION,
         },
       }
@@ -966,7 +966,7 @@ export namespace ACP {
           }
         } else if (part.type === "file") {
           // Replay file attachments as appropriate ACP content blocks.
-          // YONSOON (甬算) stores files internally as { type: "file", url, filename, mime }.
+          // YONSOON stores files internally as { type: "file", url, filename, mime }.
           // We convert these back to ACP blocks based on the URL scheme and MIME type:
           // - file:// URLs → resource_link
           // - data: URLs with image/* → image block

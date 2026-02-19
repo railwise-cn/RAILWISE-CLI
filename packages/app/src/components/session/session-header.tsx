@@ -296,8 +296,8 @@ export function SessionHeader() {
     platform,
   })
 
-  const centerMount = createMemo(() => document.getElementById("yonsoon-titlebar-center"))
-  const rightMount = createMemo(() => document.getElementById("yonsoon-titlebar-right"))
+  const centerMount = createMemo(() => document.getElementById("opencode-titlebar-center"))
+  const rightMount = createMemo(() => document.getElementById("opencode-titlebar-right"))
 
   return (
     <>

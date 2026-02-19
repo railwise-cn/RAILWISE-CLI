@@ -210,18 +210,12 @@ export namespace LLM {
       maxOutputTokens,
       abortSignal: input.abort,
       headers: {
-        ...(input.model.providerID.startsWith("yonsoon")
-          ? {
-              "x-yonsoon-project": Instance.project.id,
-              "x-yonsoon-session": input.sessionID,
-              "x-yonsoon-request": input.user.id,
-              "x-yonsoon-client": Flag.YONSOON_CLIENT,
-            }
-          : input.model.providerID !== "anthropic"
-            ? {
-                "User-Agent": `yonsoon/${Installation.VERSION}`,
-              }
-            : undefined),
+        ...(input.model.providerID.startsWith("yonsoon") && {
+          "x-yonsoon-project": Instance.project.id,
+          "x-yonsoon-session": input.sessionID,
+          "x-yonsoon-request": input.user.id,
+          "x-yonsoon-client": Flag.YONSOON_CLIENT,
+        }),
         ...input.model.headers,
         ...headers,
       },

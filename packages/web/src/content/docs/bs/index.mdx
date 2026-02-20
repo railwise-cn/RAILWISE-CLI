@@ -1,21 +1,21 @@
 ---
 title: Uvod
-description: Započnite sa YONSOON (甬算).
+description: Započnite sa RAILWISE (甬算).
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**YONSOON (甬算)**](/) je AI agent za kodiranje otvorenog koda. Dostupan je kao interfejs baziran na terminalu, desktop aplikacija ili IDE ekstenzija.
-![YONSOON (甬算) TUI sa yonsoon temom](../../../assets/lander/screenshot.png)
+[**RAILWISE (甬算)**](/) je AI agent za kodiranje otvorenog koda. Dostupan je kao interfejs baziran na terminalu, desktop aplikacija ili IDE ekstenzija.
+![RAILWISE (甬算) TUI sa railwise temom](../../../assets/lander/screenshot.png)
 Hajde da počnemo.
 
 ---
 
 #### Preduvjeti
 
-Da biste koristili YONSOON (甬算) u svom terminalu, trebat će vam:
+Da biste koristili RAILWISE (甬算) u svom terminalu, trebat će vam:
 
 1. Moderan emulator terminala kao što su:
    - [WezTerm](https://wezterm.org), više platformi
@@ -28,10 +28,10 @@ Da biste koristili YONSOON (甬算) u svom terminalu, trebat će vam:
 
 ## Instalacija
 
-Najlakši način za instaliranje YONSOON (甬算) je putem instalacijske skripte.
+Najlakši način za instaliranje RAILWISE (甬算) je putem instalacijske skripte.
 
 ```bash
-curl -fsSL https://yonsoon.ai/install | bash
+curl -fsSL https://railwise.ai/install | bash
 ```
 
 Također ga možete instalirati pomoću sljedećih naredbi:
@@ -42,28 +42,28 @@ Također ga možete instalirati pomoću sljedećih naredbi:
 
       <TabItem label="npm">
       ```bash
-      npm install -g yonsoon-ai
+      npm install -g railwise-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g yonsoon-ai
+        bun install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g yonsoon-ai
+        pnpm install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add yonsoon-ai
+        yarn global add railwise-ai
         ```
 
       </TabItem>
@@ -73,65 +73,65 @@ Također ga možete instalirati pomoću sljedećih naredbi:
 - **Korištenje Homebrew-a na macOS-u i Linux-u**
 
 ```bash
-  brew install anomalyco/tap/yonsoon
+  brew install anomalyco/tap/railwise
 ```
 
-> Preporučujemo korištenje YONSOON (甬算) tap za najnovija izdanja. Službenu formulu `brew install yonsoon` održava Homebrew tim i ažurira se rjeđe.
+> Preporučujemo korištenje RAILWISE (甬算) tap za najnovija izdanja. Službenu formulu `brew install railwise` održava Homebrew tim i ažurira se rjeđe.
 
 - **Korištenje Parua na Arch Linuxu**
 
 ```bash
-  paru -S yonsoon-bin
+  paru -S railwise-bin
 ```
 
 #### Windows
 
 :::tip[Preporučeno: Koristite WSL]
-Za najbolje iskustvo na Windows-u preporučujemo korištenje [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). Pruža bolje performanse i potpunu kompatibilnost sa YONSOON (甬算) funkcijama.
+Za najbolje iskustvo na Windows-u preporučujemo korištenje [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). Pruža bolje performanse i potpunu kompatibilnost sa RAILWISE (甬算) funkcijama.
 :::
 
 - **Korištenje Chocolatey-a**
 
 ```bash
-  choco install yonsoon
+  choco install railwise
 ```
 
 - **Korištenje Scoop-a**
 
 ```bash
-  scoop install yonsoon
+  scoop install railwise
 ```
 
 - **Korištenje NPM-a**
 
 ```bash
-  npm install -g yonsoon-ai
+  npm install -g railwise-ai
 ```
 
 - **Korištenje Mise**
 
 ```bash
-  mise use -g github:anomalyco/yonsoon
+  mise use -g github:anomalyco/railwise
 ```
 
 - **Korištenje Dockera**
 
 ```bash
-  docker run -it --rm ghcr.io/anomalyco/yonsoon
+  docker run -it --rm ghcr.io/anomalyco/railwise
 ```
 
-Podrška za instaliranje YONSOON (甬算) na Windows koristeći Bun je trenutno u toku.
-Također možete preuzeti binarnu datoteku iz [Releases](https://github.com/anomalyco/yonsoon/releases).
+Podrška za instaliranje RAILWISE (甬算) na Windows koristeći Bun je trenutno u toku.
+Također možete preuzeti binarnu datoteku iz [Releases](https://github.com/anomalyco/railwise/releases).
 
 ---
 
 ## Konfiguracija
 
-Uz YONSOON (甬算) možete koristiti bilo kojeg LLM provajdera tako što ćete konfigurirati njihove API ključeve.
-Ako ste tek počeli koristiti LLM provajdere, preporučujemo korištenje [YONSOON (甬算) Zen](/docs/zen).
-To je kurirana lista modela koji su testirani i verifikovani od strane YONSOON (甬算) tima.
+Uz RAILWISE (甬算) možete koristiti bilo kojeg LLM provajdera tako što ćete konfigurirati njihove API ključeve.
+Ako ste tek počeli koristiti LLM provajdere, preporučujemo korištenje [RAILWISE (甬算) Zen](/docs/zen).
+To je kurirana lista modela koji su testirani i verifikovani od strane RAILWISE (甬算) tima.
 
-1. Pokrenite naredbu `/connect` u TUI-u, odaberite yonsoon i idite na [yonsoon.ai/auth](https://yonsoon.ai/auth).
+1. Pokrenite naredbu `/connect` u TUI-u, odaberite railwise i idite na [railwise.ai/auth](https://railwise.ai/auth).
 
 ```txt
    /connect
@@ -159,36 +159,36 @@ Sada kada ste konfigurisali provajdera, možete se kretati do projekta na kojem 
 cd /path/to/project
 ```
 
-I pokrenite YONSOON (甬算).
+I pokrenite RAILWISE (甬算).
 
 ```bash
-yonsoon
+railwise
 ```
 
-Zatim inicijalizirajte YONSOON (甬算) za projekat pokretanjem sljedeće naredbe.
+Zatim inicijalizirajte RAILWISE (甬算) za projekat pokretanjem sljedeće naredbe.
 
 ```bash frame="none"
 /init
 ```
 
-Ovo će omogućiti YONSOON (甬算) da analizira vaš projekat i kreira `AGENTS.md` fajl u korijenu projekta.
+Ovo će omogućiti RAILWISE (甬算) da analizira vaš projekat i kreira `AGENTS.md` fajl u korijenu projekta.
 :::tip
 Trebali biste komitovati datoteku `AGENTS.md` vašeg projekta u Git.
 :::
-Ovo pomaže YONSOON (甬算) da razumije strukturu projekta i obrasce kodiranja koji se koriste.
+Ovo pomaže RAILWISE (甬算) da razumije strukturu projekta i obrasce kodiranja koji se koriste.
 
 ---
 
 ## Korištenje
 
-Sada ste spremni da koristite YONSOON (甬算) za rad na svom projektu. Slobodno pitajte bilo šta!
+Sada ste spremni da koristite RAILWISE (甬算) za rad na svom projektu. Slobodno pitajte bilo šta!
 Ako ste novi u korištenju agenta za AI kodiranje, evo nekoliko primjera koji bi mogli pomoći.
 
 ---
 
 ### Postavljanje pitanja
 
-Možete zamoliti YONSOON (甬算) da vam objasni kodnu bazu.
+Možete zamoliti RAILWISE (甬算) da vam objasni kodnu bazu.
 :::tip
 Koristite tipku `@` za nejasnu pretragu datoteka u projektu.
 :::
@@ -203,10 +203,10 @@ Ovo je korisno ako postoji dio kodne baze na kojem niste radili.
 
 ### Dodavanje funkcija
 
-Možete zamoliti YONSOON (甬算) da vašem projektu doda nove funkcije. Iako preporučujemo da ga prvo zamolite da napravi plan.
+Možete zamoliti RAILWISE (甬算) da vašem projektu doda nove funkcije. Iako preporučujemo da ga prvo zamolite da napravi plan.
 
 1. **Kreirajte plan**
-   YONSOON (甬算) ima _Plan mod_ koji onemogućuje njegovu sposobnost da pravi promjene i umjesto toga predlaže _kako_ će implementirati ovu funkciju.
+   RAILWISE (甬算) ima _Plan mod_ koji onemogućuje njegovu sposobnost da pravi promjene i umjesto toga predlaže _kako_ će implementirati ovu funkciju.
    Prebacite se na njega pomoću tipke **Tab**. Vidjet ćete indikator za ovo u donjem desnom uglu.
 
 ```bash frame="none" title="Switch to Plan mode"
@@ -221,9 +221,9 @@ Hajde sada da opišemo šta želimo da uradi.
     From this screen, the user can undelete a note or permanently delete it.
 ```
 
-Želite da date YONSOON (甬算) dovoljno detalja da razumije šta želite. Pomaže da razgovarate s njim kao da razgovarate sa mlađim programerom u svom timu.
+Želite da date RAILWISE (甬算) dovoljno detalja da razumije šta želite. Pomaže da razgovarate s njim kao da razgovarate sa mlađim programerom u svom timu.
 :::tip
-Dajte YONSOON (甬算) dosta konteksta i primjera koji će mu pomoći da razumije šta vi želite.
+Dajte RAILWISE (甬算) dosta konteksta i primjera koji će mu pomoći da razumije šta vi želite.
 :::
 
 2. **Ponovite plan**
@@ -237,7 +237,7 @@ Dajte YONSOON (甬算) dosta konteksta i primjera koji će mu pomoći da razumij
 :::tip
 Prevucite i ispustite slike u terminal da biste ih dodali u prompt.
 :::
-YONSOON (甬算) može skenirati sve slike koje mu date i dodati ih u prompt. Možete to učiniti povlačenjem i ispuštanjem slike u terminal.
+RAILWISE (甬算) može skenirati sve slike koje mu date i dodati ih u prompt. Možete to učiniti povlačenjem i ispuštanjem slike u terminal.
 
 3. **Izgradite funkciju**
    Kada se osjećate ugodno s planom, vratite se na _Build mode_ ponovnim pritiskom na taster **Tab**.
@@ -256,7 +256,7 @@ I tražeći od njega da napravi promjene.
 
 ### Pravljenje izmjena
 
-Za jednostavnije promjene, možete zamoliti YONSOON (甬算) da ga direktno izgradi bez potrebe da prvo pregledate plan.
+Za jednostavnije promjene, možete zamoliti RAILWISE (甬算) da ga direktno izgradi bez potrebe da prvo pregledate plan.
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
 We need to add authentication to the /settings route. Take a look at how this is
@@ -264,13 +264,13 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-Želite da budete sigurni da ste pružili dobru količinu detalja kako bi YONSOON (甬算) napravio ispravne promjene.
+Želite da budete sigurni da ste pružili dobru količinu detalja kako bi RAILWISE (甬算) napravio ispravne promjene.
 
 ---
 
 ### Poništavanje izmjena
 
-Recimo da tražite od YONSOON (甬算) da izvrši neke promjene.
+Recimo da tražite od RAILWISE (甬算) da izvrši neke promjene.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -282,13 +282,13 @@ Ali shvatate da to nije ono što ste željeli. Možete **poništiti** promjene k
 /undo
 ```
 
-YONSOON (甬算) će sada poništiti promjene koje ste napravili i ponovo prikazati vašu originalnu poruku.
+RAILWISE (甬算) će sada poništiti promjene koje ste napravili i ponovo prikazati vašu originalnu poruku.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-Odavde možete podesiti prompt i zamoliti YONSOON (甬算) da pokuša ponovo.
+Odavde možete podesiti prompt i zamoliti RAILWISE (甬算) da pokuša ponovo.
 :::tip
 Možete pokrenuti `/undo` više puta da poništite više promjena.
 :::
@@ -302,7 +302,7 @@ Ili **možete ponoviti** promjene koristeći naredbu `/redo`.
 
 ## Dijeljenje
 
-Razgovore koje imate sa YONSOON (甬算) možete [dijeliti sa vašim timom](/docs/share).
+Razgovore koje imate sa RAILWISE (甬算) možete [dijeliti sa vašim timom](/docs/share).
 
 ```bash frame="none"
 /share
@@ -312,11 +312,11 @@ Ovo će kreirati vezu do trenutnog razgovora i kopirati je u međuspremnik.
 :::note
 Razgovori se ne dijele prema zadanim postavkama.
 :::
-Evo [primjer razgovora](https://yonsoon.ai/s/4XP1fce5) sa YONSOON (甬算).
+Evo [primjer razgovora](https://railwise.ai/s/4XP1fce5) sa RAILWISE (甬算).
 
 ---
 
 ## Prilagođavanje
 
-I to je to! Sada ste profesionalac u korištenju YONSOON (甬算).
-Da biste to učinili svojim, preporučujemo [odabir teme](/docs/themes), [prilagođavanje povezivanja tipki](/docs/keybinds), [konfiguriranje formatera koda](/docs/formatters), [kreiranje prilagođenih komandi](/docs/commands), ili igranje sa [YONSOON (甬算) config](/docs/config).
+I to je to! Sada ste profesionalac u korištenju RAILWISE (甬算).
+Da biste to učinili svojim, preporučujemo [odabir teme](/docs/themes), [prilagođavanje povezivanja tipki](/docs/keybinds), [konfiguriranje formatera koda](/docs/formatters), [kreiranje prilagođenih komandi](/docs/commands), ili igranje sa [RAILWISE (甬算) config](/docs/config).

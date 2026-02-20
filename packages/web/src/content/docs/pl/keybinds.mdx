@@ -3,11 +3,11 @@ title: Skróty klawiszowe
 description: Dostosuj swoje skróty klawiszowe.
 ---
 
-yonsoon zawiera listę skrótów klawiszowych, które można zastosować poprzez yonsoon.
+railwise zawiera listę skrótów klawiszowych, które można zastosować poprzez railwise.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ yonsoon zawiera listę skrótów klawiszowych, które można zastosować poprzez
 
 ## Klucz lidera
 
-yonsoon używa klucza `leader` dla głównych skrótów klawiszowych. Rozwiązanie problemu konfliktów w terminalu.
+railwise używa klucza `leader` dla głównych skrótów klawiszowych. Rozwiązanie problemu konfliktów w terminalu.
 
 Domyślnie `ctrl+x` jest klawiszem głównym i główną akcją wymaga najpierw naciśnięcia klawisza lidera, a następnie skrótu. Na przykład, aby ponownie zastosować, następnie następuje `ctrl+x`, a następnie następuje `n`.
 
@@ -119,9 +119,9 @@ Nie musisz mieć klawisza wiodącego do skrótów klawiszowych, ale zalecamy to 
 
 Możesz podłączyć powiązanie klawiszy, dodając klucz do swojej konfiguracji z wartością „none”.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -132,7 +132,7 @@ Możesz podłączyć powiązanie klawiszy, dodając klucz do swojej konfiguracji
 
 ## Skróty monitów na pulpicie
 
-Pole sprawdzania aplikacji komputerowej yonsoon obsługuje popularne skróty w stylu Readline/Emacs do edycji tekstu. Są one dostępne i obecnie nie można ich skonfigurować za pomocą `yonsoon.json`.
+Pole sprawdzania aplikacji komputerowej railwise obsługuje popularne skróty w stylu Readline/Emacs do edycji tekstu. Są one dostępne i obecnie nie można ich skonfigurować za pomocą `railwise.json`.
 
 | Skrót    | Akcja                                                         |
 | -------- | ------------------------------------------------------------- |

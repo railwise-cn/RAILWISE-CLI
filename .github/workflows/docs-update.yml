@@ -10,7 +10,7 @@ env:
 
 jobs:
   update-docs:
-    if: github.repository == 'sst/yonsoon'
+    if: github.repository == 'sst/railwise'
     runs-on: blacksmith-4vcpu-ubuntu-2404
     permissions:
       id-token: write
@@ -41,13 +41,13 @@ jobs:
             } >> $GITHUB_OUTPUT
           fi
 
-      - name: Run yonsoon
+      - name: Run railwise
         if: steps.commits.outputs.has_commits == 'true'
-        uses: sst/yonsoon/github@latest
+        uses: sst/railwise/github@latest
         env:
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
         with:
-          model: yonsoon/gpt-5.2
+          model: railwise/gpt-5.2
           agent: docs
           prompt: |
             Review the following commits from the last ${{ env.LOOKBACK_HOURS }} hours and identify any new features that may need documentation.

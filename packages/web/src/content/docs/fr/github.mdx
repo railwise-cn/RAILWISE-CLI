@@ -1,17 +1,17 @@
 ---
 title: GitHub
-description: Utilisez YONSOON (甬算) dans les issues et les pull-requests GitHub.
+description: Utilisez RAILWISE (甬算) dans les issues et les pull-requests GitHub.
 ---
 
-YONSOON (甬算) s'intègre à votre flux de travail GitHub. Mentionnez `/yonsoon` ou `/oc` dans votre commentaire, et YONSOON (甬算) exécutera des tâches dans votre runner GitHub Actions.
+RAILWISE (甬算) s'intègre à votre flux de travail GitHub. Mentionnez `/railwise` ou `/oc` dans votre commentaire, et RAILWISE (甬算) exécutera des tâches dans votre runner GitHub Actions.
 
 ---
 
 ## Fonctionnalités
 
-- **Triage des issues** : demandez à YONSOON (甬算) d'examiner une issue et de vous l'expliquer.
-- **Correction et implémentation** : demandez à YONSOON (甬算) de résoudre un problème ou d'implémenter une fonctionnalité. Il travaillera dans une nouvelle branche et soumettra une PR avec tous les changements.
-- **Sécurisé** : YONSOON (甬算) s'exécute à l'intérieur de vos runners GitHub.
+- **Triage des issues** : demandez à RAILWISE (甬算) d'examiner une issue et de vous l'expliquer.
+- **Correction et implémentation** : demandez à RAILWISE (甬算) de résoudre un problème ou d'implémenter une fonctionnalité. Il travaillera dans une nouvelle branche et soumettra une PR avec tous les changements.
+- **Sécurisé** : RAILWISE (甬算) s'exécute à l'intérieur de vos runners GitHub.
 
 ---
 
@@ -20,7 +20,7 @@ YONSOON (甬算) s'intègre à votre flux de travail GitHub. Mentionnez `/yonsoo
 Exécutez la commande suivante dans un projet qui se trouve dans un dépôt GitHub :
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 Cela vous guidera dans l'installation de l'application GitHub, la création du workflow et la configuration des secrets.
@@ -33,14 +33,14 @@ Ou vous pouvez le configurer manuellement.
 
 1. **Installez l'application GitHub**
 
-Rendez-vous sur [**github.com/apps/yonsoon-agent**](https://github.com/apps/yonsoon-agent). Assurez-vous qu'il est installé sur le dépôt cible.
+Rendez-vous sur [**github.com/apps/railwise-agent**](https://github.com/apps/railwise-agent). Assurez-vous qu'il est installé sur le dépôt cible.
 
 2. **Ajouter le workflow**
 
-Ajoutez le fichier de workflow suivant à `.github/workflows/yonsoon.yml` dans votre dépôt. Assurez-vous de définir les clés `model` appropriées et les clés API requises dans `env`.
+Ajoutez le fichier de workflow suivant à `.github/workflows/railwise.yml` dans votre dépôt. Assurez-vous de définir les clés `model` appropriées et les clés API requises dans `env`.
 
-```yml title=".github/workflows/yonsoon.yml" {24,26}
-   name: yonsoon
+```yml title=".github/workflows/railwise.yml" {24,26}
+   name: railwise
 
    on:
      issue_comment:
@@ -49,10 +49,10 @@ Ajoutez le fichier de workflow suivant à `.github/workflows/yonsoon.yml` dans v
        types: [created]
 
    jobs:
-     yonsoon:
+     railwise:
        if: |
          contains(github.event.comment.body, '/oc') ||
-         contains(github.event.comment.body, '/yonsoon')
+         contains(github.event.comment.body, '/railwise')
        runs-on: ubuntu-latest
        permissions:
          id-token: write
@@ -63,8 +63,8 @@ Ajoutez le fichier de workflow suivant à `.github/workflows/yonsoon.yml` dans v
               fetch-depth: 1
               persist-credentials: false
 
-          - name: Run YONSOON (甬算)
-           uses: anomalyco/yonsoon/github@latest
+          - name: Run RAILWISE (甬算)
+           uses: anomalyco/railwise/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
            with:
@@ -81,13 +81,13 @@ Dans les **paramètres** de votre organisation ou de votre projet, développez *
 
 ## Configuration
 
-- `model` : Le modèle à utiliser avec YONSOON (甬算). Prend le format `provider/model`. Ceci est **obligatoire**.
+- `model` : Le modèle à utiliser avec RAILWISE (甬算). Prend le format `provider/model`. Ceci est **obligatoire**.
 - `agent` : l'agent à utiliser. Doit être un agent primaire. Revient à `default_agent` à partir de la configuration ou à `"build"` s'il n'est pas trouvé.
-- `share` : s'il faut partager la session YONSOON (甬算). La valeur par défaut est **true** pour les référentiels publics.
-- `prompt` : prompt personnalisé facultatif pour remplacer le comportement par défaut. Utilisez-le pour personnaliser la façon dont YONSOON (甬算) traite les demandes.
-- `token` : jeton d'accès GitHub facultatif pour effectuer des opérations telles que la création de commentaires, le commit de modifications et l'ouverture de pull requests. Par défaut, YONSOON (甬算) utilise le jeton d'accès à l'installation de l'application YONSOON (甬算) GitHub, de sorte que les commits, les commentaires et les pull requests apparaissent comme provenant de l'application.
+- `share` : s'il faut partager la session RAILWISE (甬算). La valeur par défaut est **true** pour les référentiels publics.
+- `prompt` : prompt personnalisé facultatif pour remplacer le comportement par défaut. Utilisez-le pour personnaliser la façon dont RAILWISE (甬算) traite les demandes.
+- `token` : jeton d'accès GitHub facultatif pour effectuer des opérations telles que la création de commentaires, le commit de modifications et l'ouverture de pull requests. Par défaut, RAILWISE (甬算) utilise le jeton d'accès à l'installation de l'application RAILWISE (甬算) GitHub, de sorte que les commits, les commentaires et les pull requests apparaissent comme provenant de l'application.
 
-Vous pouvez également utiliser le `GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) intégré du runner GitHub Actions sans installer l'application YONSOON (甬算) GitHub. Assurez-vous simplement d'accorder les autorisations requises dans votre workflow :
+Vous pouvez également utiliser le `GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) intégré du runner GitHub Actions sans installer l'application RAILWISE (甬算) GitHub. Assurez-vous simplement d'accorder les autorisations requises dans votre workflow :
 
 ```yaml
 permissions:
@@ -103,30 +103,30 @@ Vous pouvez également utiliser un [jeton d'accès personnel](https://docs.githu
 
 ## Événements supportés
 
-YONSOON (甬算) peut être déclenché par les événements GitHub suivants :
+RAILWISE (甬算) peut être déclenché par les événements GitHub suivants :
 
 | Type d'événement              | Déclenché par                                              | Détails                                                                                                                                                |
 | ----------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `issue_comment`               | Commentaire sur une issue ou une PR                        | Mentionnez `/yonsoon` ou `/oc` dans votre commentaire. YONSOON (甬算) lit le contexte et peut créer des branches, ouvrir des PR ou répondre.                |
-| `pull_request_review_comment` | Commentaire sur des lignes de code spécifiques dans une PR | Mentionnez `/yonsoon` ou `/oc` lors de la révision du code. YONSOON (甬算) reçoit le chemin du fichier, les numéros de ligne et le contexte de comparaison. |
-| `issues`                      | Issue ouverte ou modifiée                                  | Déclenchez automatiquement YONSOON (甬算) lorsque des issues sont créées ou modifiées. Nécessite une entrée `prompt`.                                        |
-| `pull_request`                | PR ouverte ou mise à jour                                  | Déclenchez automatiquement YONSOON (甬算) lorsque les PR sont ouvertes, synchronisées ou rouvertes. Utile pour les revues automatisées.                      |
-| `schedule`                    | Planification basée sur Cron                               | Exécutez YONSOON (甬算) selon un planning. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR (pas de commentaire sur les issues).           |
-| `workflow_dispatch`           | Déclenchement manuel depuis l'interface utilisateur GitHub | Déclenchez YONSOON (甬算) à la demande via l'onglet Actions. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR.                             |
+| `issue_comment`               | Commentaire sur une issue ou une PR                        | Mentionnez `/railwise` ou `/oc` dans votre commentaire. RAILWISE (甬算) lit le contexte et peut créer des branches, ouvrir des PR ou répondre.                |
+| `pull_request_review_comment` | Commentaire sur des lignes de code spécifiques dans une PR | Mentionnez `/railwise` ou `/oc` lors de la révision du code. RAILWISE (甬算) reçoit le chemin du fichier, les numéros de ligne et le contexte de comparaison. |
+| `issues`                      | Issue ouverte ou modifiée                                  | Déclenchez automatiquement RAILWISE (甬算) lorsque des issues sont créées ou modifiées. Nécessite une entrée `prompt`.                                        |
+| `pull_request`                | PR ouverte ou mise à jour                                  | Déclenchez automatiquement RAILWISE (甬算) lorsque les PR sont ouvertes, synchronisées ou rouvertes. Utile pour les revues automatisées.                      |
+| `schedule`                    | Planification basée sur Cron                               | Exécutez RAILWISE (甬算) selon un planning. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR (pas de commentaire sur les issues).           |
+| `workflow_dispatch`           | Déclenchement manuel depuis l'interface utilisateur GitHub | Déclenchez RAILWISE (甬算) à la demande via l'onglet Actions. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR.                             |
 
 ### Exemple de planification
 
-Exécutez YONSOON (甬算) selon un planning pour effectuer des tâches automatisées :
+Exécutez RAILWISE (甬算) selon un planning pour effectuer des tâches automatisées :
 
-```yaml title=".github/workflows/yonsoon-scheduled.yml"
-name: Scheduled YONSOON (甬算) Task
+```yaml title=".github/workflows/railwise-scheduled.yml"
+name: Scheduled RAILWISE (甬算) Task
 
 on:
   schedule:
     - cron: "0 9 * * 1" # Every Monday at 9am UTC
 
 jobs:
-  yonsoon:
+  railwise:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -139,8 +139,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run YONSOON (甬算)
-        uses: anomalyco/yonsoon/github@latest
+      - name: Run RAILWISE (甬算)
+        uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         with:
@@ -150,7 +150,7 @@ jobs:
             If you find issues worth addressing, open an issue to track them.
 ```
 
-Pour les événements planifiés, l'entrée `prompt` est **obligatoire** car il n'y a aucun commentaire pour extraire les instructions. Les workflows planifiés s'exécutent sans contexte utilisateur pour vérifier les autorisations. Le workflow doit donc accorder `contents: write` et `pull-requests: write` si vous vous attendez à ce que YONSOON (甬算) crée des branches ou des PR.
+Pour les événements planifiés, l'entrée `prompt` est **obligatoire** car il n'y a aucun commentaire pour extraire les instructions. Les workflows planifiés s'exécutent sans contexte utilisateur pour vérifier les autorisations. Le workflow doit donc accorder `contents: write` et `pull-requests: write` si vous vous attendez à ce que RAILWISE (甬算) crée des branches ou des PR.
 
 ---
 
@@ -158,8 +158,8 @@ Pour les événements planifiés, l'entrée `prompt` est **obligatoire** car il 
 
 Examinez automatiquement les PR lorsqu'ils sont ouverts ou mis à jour :
 
-```yaml title=".github/workflows/yonsoon-review.yml"
-name: yonsoon-review
+```yaml title=".github/workflows/railwise-review.yml"
+name: railwise-review
 
 on:
   pull_request:
@@ -177,7 +177,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: anomalyco/yonsoon/github@latest
+      - uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -191,7 +191,7 @@ jobs:
             - Suggest improvements
 ```
 
-Pour les événements `pull_request`, si aucun `prompt` n'est fourni, YONSOON (甬算) examine par défaut la pull request.
+Pour les événements `pull_request`, si aucun `prompt` n'est fourni, RAILWISE (甬算) examine par défaut la pull request.
 
 ---
 
@@ -199,7 +199,7 @@ Pour les événements `pull_request`, si aucun `prompt` n'est fourni, YONSOON (�
 
 Triez automatiquement les nouvelles issues. Cet exemple filtre les comptes datant de plus de 30 jours pour réduire le spam :
 
-```yaml title=".github/workflows/yonsoon-triage.yml"
+```yaml title=".github/workflows/railwise-triage.yml"
 name: Issue Triage
 
 on:
@@ -233,7 +233,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: anomalyco/yonsoon/github@latest
+      - uses: anomalyco/railwise/github@latest
         if: steps.check.outputs.result == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -252,10 +252,10 @@ Pour les événements `issues`, l'entrée `prompt` est **obligatoire** car il n'
 
 ## Invites personnalisées
 
-Remplacez l'invite par défaut pour personnaliser le comportement de YONSOON (甬算) pour votre workflow.
+Remplacez l'invite par défaut pour personnaliser le comportement de RAILWISE (甬算) pour votre workflow.
 
-```yaml title=".github/workflows/yonsoon.yml"
-- uses: anomalyco/yonsoon/github@latest
+```yaml title=".github/workflows/railwise.yml"
+- uses: anomalyco/railwise/github@latest
   with:
     model: anthropic/claude-sonnet-4-5
     prompt: |
@@ -271,27 +271,27 @@ Ceci est utile pour appliquer des critères d’évaluation spécifiques, des no
 
 ## Exemples
 
-Voici quelques exemples de la façon dont vous pouvez utiliser YONSOON (甬算) dans GitHub.
+Voici quelques exemples de la façon dont vous pouvez utiliser RAILWISE (甬算) dans GitHub.
 
 - **Expliquer une issue**
 
 Ajoutez ce commentaire dans une issue GitHub.
 
 ```
-  /yonsoon explain this issue
+  /railwise explain this issue
 ```
 
-YONSOON (甬算) lira l'intégralité du fil de discussion, y compris tous les commentaires, et répondra avec une explication claire.
+RAILWISE (甬算) lira l'intégralité du fil de discussion, y compris tous les commentaires, et répondra avec une explication claire.
 
 - **Résoudre une issue**
 
 Dans une issue GitHub, dites :
 
 ```
-  /yonsoon fix this
+  /railwise fix this
 ```
 
-Et YONSOON (甬算) créera une nouvelle branche, mettra en œuvre les modifications et ouvrira une PR avec les modifications.
+Et RAILWISE (甬算) créera une nouvelle branche, mettra en œuvre les modifications et ouvrira une PR avec les modifications.
 
 - **Examinez les PR et apportez des modifications**
 
@@ -301,18 +301,18 @@ Laissez le commentaire suivant sur une PR GitHub.
   Delete the attachment from S3 when the note is removed /oc
 ```
 
-YONSOON (甬算) mettra en œuvre la modification demandée et la validera dans la même PR.
+RAILWISE (甬算) mettra en œuvre la modification demandée et la validera dans la même PR.
 
 - **Revue de lignes de code spécifiques**
 
-Laissez un commentaire directement sur les lignes de code dans l'onglet "Fichiers" de la PR. YONSOON (甬算) détecte automatiquement le fichier, les numéros de ligne et le contexte de comparaison pour fournir des réponses précises.
+Laissez un commentaire directement sur les lignes de code dans l'onglet "Fichiers" de la PR. RAILWISE (甬算) détecte automatiquement le fichier, les numéros de ligne et le contexte de comparaison pour fournir des réponses précises.
 
 ```
   [Comment on specific lines in Files tab]
   /oc add error handling here
 ```
 
-Lorsqu'il commente des lignes spécifiques, YONSOON (甬算) reçoit :
+Lorsqu'il commente des lignes spécifiques, RAILWISE (甬算) reçoit :
 
 - Le fichier exact en cours d'examen
 - Les lignes de code spécifiques

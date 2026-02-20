@@ -1,4 +1,4 @@
-import { base64Decode } from "@yonsoon/util/encode"
+import { base64Decode } from "@railwise/util/encode"
 
 export function decode64(value: string | undefined) {
   if (value === undefined) return

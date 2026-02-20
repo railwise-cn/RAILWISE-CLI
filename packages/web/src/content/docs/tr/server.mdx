@@ -1,19 +1,19 @@
 ---
 title: Sunucu
-description: yonsoon sunucusuyla HTTP uzerinden etkilesin.
+description: railwise sunucusuyla HTTP uzerinden etkilesin.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-`yonsoon serve` komutu, yonsoon istemcisinin kullanabileceği bir OpenAPI endpoint'i açan headless bir HTTP sunucusu çalıştırır.
+`railwise serve` komutu, railwise istemcisinin kullanabileceği bir OpenAPI endpoint'i açan headless bir HTTP sunucusu çalıştırır.
 
 ---
 
 ### Kullanım
 
 ```bash
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
 ```
 
 #### Seçenekler
@@ -23,39 +23,39 @@ yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
 | `--port`        | Dinlenecek bağlantı noktası                    | `4096`           |
 | `--hostname`    | Dinlenecek ana bilgisayar adı                  | `127.0.0.1`      |
 | `--mdns`        | mDNS keşfini etkinleştir                       | `false`          |
-| `--mdns-domain` | mDNS hizmeti için özel alan adı                | `yonsoon.local` |
+| `--mdns-domain` | mDNS hizmeti için özel alan adı                | `railwise.local` |
 | `--cors`        | İzin verilecek ek tarayıcı kaynakları (origin) | `[]`             |
 
 `--cors` birden fazla kez geçilebilir:
 
 ```bash
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
 ```
 
 ---
 
 ### Kimlik Doğrulama
 
-Sunucuyu HTTP temel kimlik doğrulama (basic auth) ile korumak için `YONSOON_SERVER_PASSWORD` ayarlayın. Kullanıcı adı varsayılan olarak `yonsoon` değeridir; değiştirmek isterseniz `YONSOON_SERVER_USERNAME` ayarlayabilirsiniz. Bu ayar hem `yonsoon serve` hem de `yonsoon web` için geçerlidir.
+Sunucuyu HTTP temel kimlik doğrulama (basic auth) ile korumak için `RAILWISE_SERVER_PASSWORD` ayarlayın. Kullanıcı adı varsayılan olarak `railwise` değeridir; değiştirmek isterseniz `RAILWISE_SERVER_USERNAME` ayarlayabilirsiniz. Bu ayar hem `railwise serve` hem de `railwise web` için geçerlidir.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve
+RAILWISE_SERVER_PASSWORD=your-password railwise serve
 ```
 
 ---
 
 ### Nasıl çalışır
 
-`yonsoon` çalıştırdığınızda hem TUI hem de sunucu başlar. TUI, sunucuyla konuşan istemci tarafıdır.
+`railwise` çalıştırdığınızda hem TUI hem de sunucu başlar. TUI, sunucuyla konuşan istemci tarafıdır.
 Sunucu bir OpenAPI 3.1 spesifikasyon uç noktası açar. Bu uç nokta [SDK](/docs/sdk) üretiminde de kullanılır.
 
 :::tip
-yonsoon ile programatik etkileşim için yonsoon sunucusunu kullanın.
+railwise ile programatik etkileşim için railwise sunucusunu kullanın.
 :::
 
-Bu mimari, yonsoon'un birden fazla istemciyi desteklemesini ve programatik kullanımları mümkün kılmasını sağlar.
+Bu mimari, railwise'un birden fazla istemciyi desteklemesini ve programatik kullanımları mümkün kılmasını sağlar.
 
-`yonsoon serve` ile bağımsız bir sunucu başlatabilirsiniz. yonsoon TUI açıksa, `yonsoon serve` yeni bir sunucu başlatır.
+`railwise serve` ile bağımsız bir sunucu başlatabilirsiniz. railwise TUI açıksa, `railwise serve` yeni bir sunucu başlatır.
 
 ---
 
@@ -63,7 +63,7 @@ Bu mimari, yonsoon'un birden fazla istemciyi desteklemesini ve programatik kulla
 
 TUI başlarken rastgele bir port ve hostname atanır. Bunun yerine `--hostname` ve `--port` [bayraklarını](/docs/cli) verebilirsiniz.
 
-[`/tui`](#tui) uç noktası sunucu üzerinden TUI'yi sürmek için kullanılabilir. Örneğin bir istemi önceden doldurabilir veya çalıştırabilirsiniz. Bu kurulum yonsoon [IDE](/docs/ide) eklentileri tarafından kullanılır.
+[`/tui`](#tui) uç noktası sunucu üzerinden TUI'yi sürmek için kullanılabilir. Örneğin bir istemi önceden doldurabilir veya çalıştırabilirsiniz. Bu kurulum railwise [IDE](/docs/ide) eklentileri tarafından kullanılır.
 
 ---
 
@@ -81,7 +81,7 @@ http://<hostname>:<port>/doc
 
 ## API'ler
 
-yonsoon sunucusu aşağıdaki API'leri sunar.
+railwise sunucusu aşağıdaki API'leri sunar.
 
 ---
 

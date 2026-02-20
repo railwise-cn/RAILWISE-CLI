@@ -1,8 +1,8 @@
 import "./index.css"
 import { Title, Meta } from "@solidjs/meta"
 //import { HttpHeader } from "@solidjs/start"
-import video from "../asset/lander/yonsoon-min.mp4"
-import videoPoster from "../asset/lander/yonsoon-poster.png"
+import video from "../asset/lander/railwise-min.mp4"
+import videoPoster from "../asset/lander/railwise-poster.png"
 import { IconCopy, IconCheck } from "../component/icon"
 import { A, createAsync } from "@solidjs/router"
 import { EmailSignup } from "~/component/email-signup"
@@ -46,7 +46,7 @@ export default function Home() {
   }
 
   return (
-    <main data-page="yonsoon">
+    <main data-page="railwise">
       {/*<HttpHeader name="Cache-Control" value="public, max-age=1, s-maxage=3600, stale-while-revalidate=86400" />*/}
       <Title>{i18n.t("home.title")}</Title>
       <LocaleLinks path="/" />
@@ -118,7 +118,7 @@ export default function Home() {
                       <span data-slot="command-script">
                         <span>curl -fsSL </span>
                         <span data-slot="protocol">https://</span>
-                        <span data-slot="highlight">yonsoon.ai/install</span>
+                        <span data-slot="highlight">railwise.ai/install</span>
                         <span> | bash</span>
                       </span>
                       <CopyStatus />
@@ -128,7 +128,7 @@ export default function Home() {
                     <button data-copy data-slot="command" onClick={handleCopyClick}>
                       <span>
                         <span data-slot="protocol">npm i -g </span>
-                        <span data-slot="highlight">yonsoon-ai</span>
+                        <span data-slot="highlight">railwise-ai</span>
                       </span>
                       <CopyStatus />
                     </button>
@@ -137,7 +137,7 @@ export default function Home() {
                     <button data-copy data-slot="command" onClick={handleCopyClick}>
                       <span>
                         <span data-slot="protocol">bun add -g </span>
-                        <span data-slot="highlight">yonsoon-ai</span>
+                        <span data-slot="highlight">railwise-ai</span>
                       </span>
                       <CopyStatus />
                     </button>
@@ -146,7 +146,7 @@ export default function Home() {
                     <button data-copy data-slot="command" onClick={handleCopyClick}>
                       <span>
                         <span data-slot="protocol">brew install </span>
-                        <span data-slot="highlight">anomalyco/tap/yonsoon</span>
+                        <span data-slot="highlight">anomalyco/tap/railwise</span>
                       </span>
                       <CopyStatus />
                     </button>
@@ -155,7 +155,7 @@ export default function Home() {
                     <button data-copy data-slot="command" onClick={handleCopyClick}>
                       <span>
                         <span data-slot="protocol">paru -S </span>
-                        <span data-slot="highlight">yonsoon</span>
+                        <span data-slot="highlight">railwise</span>
                       </span>
                       <CopyStatus />
                     </button>

@@ -1,11 +1,11 @@
 ---
 title: ACP
-description: Używanie YONSOON (甬算) z protokołem Agent Client Protocol (ACP).
+description: Używanie RAILWISE (甬算) z protokołem Agent Client Protocol (ACP).
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) obsługuje [Agent Client Protocol](https://agentclientprotocol.com) (ACP), który umożliwia korzystanie z YONSOON (甬算) bezpośrednio w edytorach i środowiskach IDE.
+RAILWISE (甬算) obsługuje [Agent Client Protocol](https://agentclientprotocol.com) (ACP), który umożliwia korzystanie z RAILWISE (甬算) bezpośrednio w edytorach i środowiskach IDE.
 
 :::tip
 Listę edytorów i narzędzi obsługujących ACP znajdziesz w [raporcie postępu ACP](https://zed.dev/blog/acp-progress-report#available-now).
@@ -17,9 +17,9 @@ ACP to otwarty standard, który ujednolica komunikację między edytorami kodu a
 
 ## Konfiguracja
 
-Aby używać YONSOON (甬算) przez ACP, skonfiguruj swój edytor tak, aby uruchamiał polecenie `yonsoon acp`.
+Aby używać RAILWISE (甬算) przez ACP, skonfiguruj swój edytor tak, aby uruchamiał polecenie `railwise acp`.
 
-Uruchamia to YONSOON (甬算) jako podproces zgodny z ACP, który komunikuje się z edytorem za pomocą JSON-RPC przez stdio.
+Uruchamia to RAILWISE (甬算) jako podproces zgodny z ACP, który komunikuje się z edytorem za pomocą JSON-RPC przez stdio.
 
 Poniżej znajdują się przykłady dla edytorów obsługujących ACP.
 
@@ -32,8 +32,8 @@ Dodaj do konfiguracji [Zed](https://zed.dev) (`~/.config/zed/settings.json`):
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "railwise",
       "args": ["acp"]
     }
   }
@@ -53,9 +53,9 @@ Możesz także przypisać skrót klawiszowy, edytując `keymap.json`:
         {
           "agent": {
             "custom": {
-              "name": "YONSOON (甬算)",
+              "name": "RAILWISE (甬算)",
               "command": {
-                "command": "yonsoon",
+                "command": "railwise",
                 "args": ["acp"]
               }
             }
@@ -76,15 +76,15 @@ Dodaj do swojego [JetBrains IDE](https://www.jetbrains.com/) plik `acp.json` zgo
 ```json title="acp.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "/absolute/path/bin/yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
   }
 }
 ```
 
-Następnie wybierz „YONSOON (甬算)” w selektorze agentów AI Chat.
+Następnie wybierz „RAILWISE (甬算)” w selektorze agentów AI Chat.
 
 ---
 
@@ -95,8 +95,8 @@ Dodaj do konfiguracji [Avante.nvim](https://github.com/yetone/avante.nvim):
 ```lua
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" }
     }
   }
@@ -108,11 +108,11 @@ Jeśli potrzebujesz przekazać klucz API:
 ```lua {6-8}
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" },
       env = {
-        YONSOON_API_KEY = os.getenv("YONSOON_API_KEY")
+        RAILWISE_API_KEY = os.getenv("RAILWISE_API_KEY")
       }
     }
   }
@@ -123,14 +123,14 @@ Jeśli potrzebujesz przekazać klucz API:
 
 ### CodeCompanion.nvim
 
-Aby używać YONSOON (甬算) jako agenta ACP w [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), dodaj następującą konfigurację do Neovim:
+Aby używać RAILWISE (甬算) jako agenta ACP w [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), dodaj następującą konfigurację do Neovim:
 
 ```lua
 require("codecompanion").setup({
   interactions = {
     chat = {
       adapter = {
-        name = "yonsoon",
+        name = "railwise",
         model = "claude-sonnet-4",
       },
     },
@@ -138,13 +138,13 @@ require("codecompanion").setup({
 })
 ```
 
-Ta konfiguracja sprawia, że CodeCompanion używa YONSOON (甬算) jako agenta ACP do czatu.
+Ta konfiguracja sprawia, że CodeCompanion używa RAILWISE (甬算) jako agenta ACP do czatu.
 
-Jeśli wymagany jest `YONSOON_API_KEY`, zapoznaj się z sekcją [Konfigurowanie adapterów: Zmienne środowiskowe](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) w dokumentacji CodeCompanion.nvim, aby uzyskać szczegółowe informacje.
+Jeśli wymagany jest `RAILWISE_API_KEY`, zapoznaj się z sekcją [Konfigurowanie adapterów: Zmienne środowiskowe](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) w dokumentacji CodeCompanion.nvim, aby uzyskać szczegółowe informacje.
 
 ## Wsparcie
 
-YONSOON (甬算) działa przez ACP tak samo, jak w terminalu. Obsługiwane są wszystkie główne funkcje:
+RAILWISE (甬算) działa przez ACP tak samo, jak w terminalu. Obsługiwane są wszystkie główne funkcje:
 
 :::note
 Niektóre polecenia z ukośnikiem, takie jak `/undo` i `/redo`, nie są obecnie obsługiwane przez ACP.
@@ -152,7 +152,7 @@ Niektóre polecenia z ukośnikiem, takie jak `/undo` i `/redo`, nie są obecnie 
 
 - Narzędzia wbudowane (operacje na plikach, terminal itp.)
 - Niestandardowe narzędzia i polecenia z ukośnikiem
-- Serwery MCP zdefiniowane w konfiguracji YONSOON (甬算)
+- Serwery MCP zdefiniowane w konfiguracji RAILWISE (甬算)
 - Zasady projektu z `AGENTS.md`
 - Niestandardowe formatery i lintery
 - Agenci systemowi i uprawnienia

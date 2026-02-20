@@ -1,5 +1,5 @@
 import { createEffect, createMemo, on, onCleanup } from "solid-js"
-import { UserMessage } from "@yonsoon/sdk/v2"
+import { UserMessage } from "@railwise/sdk/v2"
 
 export const messageIdFromHash = (hash: string) => {
   const value = hash.startsWith("#") ? hash.slice(1) : hash

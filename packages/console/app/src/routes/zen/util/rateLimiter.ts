@@ -1,8 +1,8 @@
-import { Database, eq, and, sql, inArray } from "@yonsoon/console-core/drizzle/index.js"
-import { IpRateLimitTable } from "@yonsoon/console-core/schema/ip.sql.js"
+import { Database, eq, and, sql, inArray } from "@railwise/console-core/drizzle/index.js"
+import { IpRateLimitTable } from "@railwise/console-core/schema/ip.sql.js"
 import { FreeUsageLimitError } from "./error"
 import { logger } from "./logger"
-import { ZenData } from "@yonsoon/console-core/model.js"
+import { ZenData } from "@railwise/console-core/model.js"
 
 export function createRateLimiter(limit: ZenData.RateLimit | undefined, rawIp: string, headers: Headers) {
   if (!limit) return

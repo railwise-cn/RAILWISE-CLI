@@ -7,16 +7,16 @@ import { THEME_OPENAUTH } from "@openauthjs/openauth/ui/theme"
 import { GithubProvider } from "@openauthjs/openauth/provider/github"
 import { GoogleOidcProvider } from "@openauthjs/openauth/provider/google"
 import { CloudflareStorage } from "@openauthjs/openauth/storage/cloudflare"
-import { Account } from "@yonsoon/console-core/account.js"
-import { Workspace } from "@yonsoon/console-core/workspace.js"
-import { Actor } from "@yonsoon/console-core/actor.js"
-import { Resource } from "@yonsoon/console-resource"
-import { User } from "@yonsoon/console-core/user.js"
-import { and, Database, eq, isNull, or } from "@yonsoon/console-core/drizzle/index.js"
-import { WorkspaceTable } from "@yonsoon/console-core/schema/workspace.sql.js"
-import { UserTable } from "@yonsoon/console-core/schema/user.sql.js"
-import { AuthTable } from "@yonsoon/console-core/schema/auth.sql.js"
-import { Identifier } from "@yonsoon/console-core/identifier.js"
+import { Account } from "@railwise/console-core/account.js"
+import { Workspace } from "@railwise/console-core/workspace.js"
+import { Actor } from "@railwise/console-core/actor.js"
+import { Resource } from "@railwise/console-resource"
+import { User } from "@railwise/console-core/user.js"
+import { and, Database, eq, isNull, or } from "@railwise/console-core/drizzle/index.js"
+import { WorkspaceTable } from "@railwise/console-core/schema/workspace.sql.js"
+import { UserTable } from "@railwise/console-core/schema/user.sql.js"
+import { AuthTable } from "@railwise/console-core/schema/auth.sql.js"
+import { Identifier } from "@railwise/console-core/identifier.js"
 
 type Env = {
   AuthStorage: KVNamespace
@@ -35,7 +35,7 @@ export const subjects = createSubjects({
 
 const MY_THEME: Theme = {
   ...THEME_OPENAUTH,
-  logo: "https://yonsoon.ai/favicon-v3.svg",
+  logo: "https://railwise.ai/favicon-v3.svg",
 }
 
 export default {
@@ -111,14 +111,14 @@ export default {
           const emails = (await fetch("https://api.github.com/user/emails", {
             headers: {
               Authorization: `Bearer ${response.tokenset.access}`,
-              "User-Agent": "yonsoon",
+              "User-Agent": "railwise",
               Accept: "application/vnd.github+json",
             },
           }).then((x) => x.json())) as any
           const user = (await fetch("https://api.github.com/user", {
             headers: {
               Authorization: `Bearer ${response.tokenset.access}`,
-              "User-Agent": "yonsoon",
+              "User-Agent": "railwise",
               Accept: "application/vnd.github+json",
             },
           }).then((x) => x.json())) as any

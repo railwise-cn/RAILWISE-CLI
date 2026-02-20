@@ -2,10 +2,10 @@ export * from "./gen/types.gen.js"
 
 import { createClient } from "./gen/client/client.gen.js"
 import { type Config } from "./gen/client/types.gen.js"
-import { YonsoonClient } from "./gen/sdk.gen.js"
-export { type Config as YonsoonClientConfig, YonsoonClient }
+import { RailwiseClient } from "./gen/sdk.gen.js"
+export { type Config as RailwiseClientConfig, RailwiseClient }
 
-export function createYonsoonClient(config?: Config & { directory?: string }) {
+export function createRailwiseClient(config?: Config & { directory?: string }) {
   if (!config?.fetch) {
     const customFetch: any = (req: any) => {
       // @ts-ignore
@@ -21,10 +21,10 @@ export function createYonsoonClient(config?: Config & { directory?: string }) {
   if (config?.directory) {
     config.headers = {
       ...config.headers,
-      "x-yonsoon-directory": encodeURIComponent(config.directory),
+      "x-railwise-directory": encodeURIComponent(config.directory),
     }
   }
 
   const client = createClient(config)
-  return new YonsoonClient({ client })
+  return new RailwiseClient({ client })
 }

@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: yonsoon terminal arayuzunu kullanin.
+description: railwise terminal arayuzunu kullanin.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-yonsoon, projelerinizde LLM ile calismak icin etkilesimli bir terminal arayuzu (TUI) sunar.
+railwise, projelerinizde LLM ile calismak icin etkilesimli bir terminal arayuzu (TUI) sunar.
 
-yonsoon'u calistirdiginizda mevcut dizin icin TUI baslar.
+railwise'u calistirdiginizda mevcut dizin icin TUI baslar.
 
 ```bash
-yonsoon
+railwise
 ```
 
 Isterseniz belirli bir calisma dizini icin de baslatabilirsiniz.
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 TUI icinde bir mesaj yazarak istem gonderebilirsiniz.
@@ -57,7 +57,7 @@ Komut ciktiisi bir arac sonucu olarak konusmaya eklenir.
 
 ## Komutlar
 
-yonsoon TUI kullanirken `/` ve komut adini yazarak hizli eylemler calistirabilirsiniz. Ornek:
+railwise TUI kullanirken `/` ve komut adini yazarak hizli eylemler calistirabilirsiniz. Ornek:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ Mevcut slash komutlarinin tam listesi:
 
 ### connect
 
-yonsoon'a bir provider ekler. Mevcut provider'lari secip API anahtarlari eklemenizi saglar.
+railwise'a bir provider ekler. Mevcut provider'lari secip API anahtarlari eklemenizi saglar.
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ Mesaj yazmak icin harici editor acar. `EDITOR` ortam degiskeninde ayarli editoru
 
 ### exit
 
-yonsoon'dan cikar. _Takma adlar_: `/quit`, `/q`
+railwise'dan cikar. _Takma adlar_: `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -352,11 +352,11 @@ Bazi editorler bloklayici modda calismak icin komut satiri argumanlari ister. `-
 
 ## Yapilandirin
 
-TUI davranisini yonsoon config dosyanizdan ozellestirebilirsiniz.
+TUI davranisini railwise config dosyanizdan ozellestirebilirsiniz.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

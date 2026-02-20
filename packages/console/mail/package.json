@@ -1,5 +1,5 @@
 {
-  "name": "@yonsoon/console-mail",
+  "name": "@railwise/console-mail",
   "version": "1.2.8",
   "dependencies": {
     "@jsx-email/all": "2.2.3",

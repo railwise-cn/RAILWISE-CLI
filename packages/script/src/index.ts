@@ -17,21 +17,21 @@ if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {
 }
 
 const env = {
-  YONSOON_CHANNEL: process.env["YONSOON_CHANNEL"],
-  YONSOON_BUMP: process.env["YONSOON_BUMP"],
-  YONSOON_VERSION: process.env["YONSOON_VERSION"],
-  YONSOON_RELEASE: process.env["YONSOON_RELEASE"],
+  RAILWISE_CHANNEL: process.env["RAILWISE_CHANNEL"],
+  RAILWISE_BUMP: process.env["RAILWISE_BUMP"],
+  RAILWISE_VERSION: process.env["RAILWISE_VERSION"],
+  RAILWISE_RELEASE: process.env["RAILWISE_RELEASE"],
 }
 const CHANNEL = await (async () => {
-  if (env.YONSOON_CHANNEL) return env.YONSOON_CHANNEL
-  if (env.YONSOON_BUMP) return "latest"
-  if (env.YONSOON_VERSION && !env.YONSOON_VERSION.startsWith("0.0.0-")) return "latest"
+  if (env.RAILWISE_CHANNEL) return env.RAILWISE_CHANNEL
+  if (env.RAILWISE_BUMP) return "latest"
+  if (env.RAILWISE_VERSION && !env.RAILWISE_VERSION.startsWith("0.0.0-")) return "latest"
   return await $`git branch --show-current`.text().then((x) => x.trim())
 })()
 const IS_PREVIEW = CHANNEL !== "latest"
 
 const VERSION = await (async () => {
-  if (env.YONSOON_VERSION) return env.YONSOON_VERSION
+  if (env.RAILWISE_VERSION) return env.RAILWISE_VERSION
   if (IS_PREVIEW) return `0.0.0-${CHANNEL}-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "")}`
   const version = await fetch("https://registry.npmjs.org/opencode-ai/latest")
     .then((res) => {
@@ -40,7 +40,7 @@ const VERSION = await (async () => {
     })
     .then((data: any) => data.version)
   const [major, minor, patch] = version.split(".").map((x: string) => Number(x) || 0)
-  const t = env.YONSOON_BUMP?.toLowerCase()
+  const t = env.RAILWISE_BUMP?.toLowerCase()
   if (t === "major") return `${major + 1}.0.0`
   if (t === "minor") return `${major}.${minor + 1}.0`
   return `${major}.${minor}.${patch + 1}`
@@ -76,7 +76,7 @@ export const Script = {
     return IS_PREVIEW
   },
   get release(): boolean {
-    return !!env.YONSOON_RELEASE
+    return !!env.RAILWISE_RELEASE
   },
   get team() {
     return team

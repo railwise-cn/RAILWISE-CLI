@@ -20,10 +20,10 @@ body:
       required: false
 
   - type: input
-    id: yonsoon-version
+    id: railwise-version
     attributes:
-      label: YONSOON (甬算) version
-      description: What version of YONSOON (甬算) are you using?
+      label: RAILWISE (甬算) version
+      description: What version of RAILWISE (甬算) are you using?
     validations:
       required: false
 

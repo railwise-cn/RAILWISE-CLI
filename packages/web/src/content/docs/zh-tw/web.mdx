@@ -18,7 +18,7 @@ opencode web
 這會在 `127.0.0.1` 上啟動一個本地伺服器，使用隨機可用連接埠，並自動在預設瀏覽器中開啟 OpenCode。
 
 :::caution
-如果未設定 `YONSOON_SERVER_PASSWORD`，伺服器將沒有安全保護。本地使用沒有問題，但在網路存取時應當設定密碼。
+如果未設定 `RAILWISE_SERVER_PASSWORD`，伺服器將沒有安全保護。本地使用沒有問題，但在網路存取時應當設定密碼。
 :::
 
 :::tip[Windows 使用者]
@@ -62,7 +62,7 @@ opencode web --hostname 0.0.0.0
 opencode web --mdns
 ```
 
-這會自動將主機名稱設定為 `0.0.0.0`，並將伺服器廣播為 `yonsoon.local`。
+這會自動將主機名稱設定為 `0.0.0.0`，並將伺服器廣播為 `railwise.local`。
 
 你可以自訂 mDNS 網域名稱，以便在同一網路中執行多個實例：
 
@@ -80,13 +80,13 @@ opencode web --cors https://example.com
 
 ### 身分驗證
 
-要保護伺服器存取，可以透過 `YONSOON_SERVER_PASSWORD` 環境變數設定密碼：
+要保護伺服器存取，可以透過 `RAILWISE_SERVER_PASSWORD` 環境變數設定密碼：
 
 ```bash
-YONSOON_SERVER_PASSWORD=secret opencode web
+RAILWISE_SERVER_PASSWORD=secret opencode web
 ```
 
-使用者名稱預設為 `opencode`，可以透過 `YONSOON_SERVER_USERNAME` 進行更改。
+使用者名稱預設為 `opencode`，可以透過 `RAILWISE_SERVER_USERNAME` 進行更改。
 
 ---
 
@@ -126,7 +126,7 @@ opencode attach http://localhost:4096
 
 ## 設定檔
 
-你也可以在 `yonsoon.json` 設定檔中設定伺服器選項：
+你也可以在 `railwise.json` 設定檔中設定伺服器選項：
 
 ```json
 {

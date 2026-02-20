@@ -17,13 +17,13 @@ ts-dist
 /result
 refs
 Session.vim
-yonsoon.json
+railwise.json
 a.out
 target
 .scripts
 .direnv/
 
 # Local dev files
-yonsoon-dev
+railwise-dev
 logs/
 *.bun-build

@@ -20,7 +20,7 @@ If you need true isolation, run OpenCode inside a Docker container or VM.
 
 ### Server Mode
 
-Server mode is opt-in only. When enabled, set `YONSOON_SERVER_PASSWORD` to require HTTP Basic Auth. Without this, the server runs unauthenticated (with a warning). It is the end user's responsibility to secure the server - any functionality it provides is not a vulnerability.
+Server mode is opt-in only. When enabled, set `RAILWISE_SERVER_PASSWORD` to require HTTP Basic Auth. Without this, the server runs unauthenticated (with a warning). It is the end user's responsibility to secure the server - any functionality it provides is not a vulnerability.
 
 ### Out of Scope
 

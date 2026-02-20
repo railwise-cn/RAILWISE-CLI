@@ -1,4 +1,4 @@
-import { Resource, waitUntil } from "@yonsoon/console-resource"
+import { Resource, waitUntil } from "@railwise/console-resource"
 
 export function createDataDumper(sessionId: string, requestId: string, projectId: string) {
   if (Resource.App.stage !== "production") return

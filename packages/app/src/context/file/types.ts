@@ -1,4 +1,4 @@
-import type { FileContent } from "@yonsoon/sdk/v2"
+import type { FileContent } from "@railwise/sdk/v2"
 
 export type FileSelection = {
   startLine: number

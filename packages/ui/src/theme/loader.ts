@@ -2,7 +2,7 @@ import type { DesktopTheme, ResolvedTheme } from "./types"
 import { resolveThemeVariant, themeToCss } from "./resolve"
 
 let activeTheme: DesktopTheme | null = null
-const THEME_STYLE_ID = "yonsoon-theme"
+const THEME_STYLE_ID = "railwise-theme"
 
 function ensureLoaderStyleElement(): HTMLStyleElement {
   const existing = document.getElementById(THEME_STYLE_ID) as HTMLStyleElement | null

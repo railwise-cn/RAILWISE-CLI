@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js"
-import { Dialog } from "@yonsoon/ui/dialog"
-import { Button } from "@yonsoon/ui/button"
-import { useDialog } from "@yonsoon/ui/context/dialog"
+import { Dialog } from "@railwise/ui/dialog"
+import { Button } from "@railwise/ui/button"
+import { useDialog } from "@railwise/ui/context/dialog"
 import { useSettings } from "@/context/settings"
 
 export type Highlight = {

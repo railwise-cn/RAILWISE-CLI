@@ -1,4 +1,4 @@
-import { Resource } from "@yonsoon/console-resource"
+import { Resource } from "@railwise/console-resource"
 import type { TraceItem } from "@cloudflare/workers-types"
 
 export default {

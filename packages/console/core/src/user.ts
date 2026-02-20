@@ -138,15 +138,15 @@ export namespace User {
             .then((rows) => rows[0]),
         )
 
-        const { InviteEmail } = await import("@yonsoon/console-mail/InviteEmail.jsx")
+        const { InviteEmail } = await import("@railwise/console-mail/InviteEmail.jsx")
         await AWS.sendEmail({
           to: email,
-          subject: `You've been invited to join the ${emailInfo.workspaceName} workspace on YONSOON (甬算)`,
+          subject: `You've been invited to join the ${emailInfo.workspaceName} workspace on RAILWISE (甬算)`,
           body: render(
             // @ts-ignore
             InviteEmail({
               inviter: emailInfo.inviterEmail,
-              assetsUrl: `https://yonsoon.ai/email`,
+              assetsUrl: `https://railwise.ai/email`,
               workspaceID: workspaceID,
               workspaceName: emailInfo.workspaceName,
             }),

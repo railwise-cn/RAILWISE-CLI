@@ -1,15 +1,15 @@
 ---
 title: Введение
-description: Начните работу с yonsoon.
+description: Начните работу с railwise.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**yonsoon**](/) — это агент кодирования искусственного интеллекта с открытым исходным кодом. Он доступен в виде интерфейса на базе терминала, настольного приложения или расширения IDE.
+[**railwise**](/) — это агент кодирования искусственного интеллекта с открытым исходным кодом. Он доступен в виде интерфейса на базе терминала, настольного приложения или расширения IDE.
 
-![yonsoon TUI с темой yonsoon](../../../assets/lander/screenshot.png)
+![railwise TUI с темой railwise](../../../assets/lander/screenshot.png)
 
 Давайте начнем.
 
@@ -17,7 +17,7 @@ export const console = config.console
 
 #### Системные требования
 
-Чтобы использовать yonsoon в вашем терминале, вам понадобится:
+Чтобы использовать railwise в вашем терминале, вам понадобится:
 
 1. Современный эмулятор терминала, например:
    - [WezTerm](https://wezterm.org), кроссплатформенный
@@ -31,10 +31,10 @@ export const console = config.console
 
 ## Установка
 
-Самый простой способ установить yonsoon — через сценарий установки.
+Самый простой способ установить railwise — через сценарий установки.
 
 ```bash
-curl -fsSL https://yonsoon.ai/install | bash
+curl -fsSL https://railwise.ai/install | bash
 ```
 
 Вы также можете установить его с помощью следующих команд:
@@ -45,28 +45,28 @@ curl -fsSL https://yonsoon.ai/install | bash
 
       <TabItem label="npm">
       ```bash
-      npm install -g yonsoon-ai
+      npm install -g railwise-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g yonsoon-ai
+        bun install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g yonsoon-ai
+        pnpm install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add yonsoon-ai
+        yarn global add railwise-ai
         ```
 
       </TabItem>
@@ -76,69 +76,69 @@ curl -fsSL https://yonsoon.ai/install | bash
 - **Использование Homebrew в macOS и Linux**
 
   ```bash
-  brew install anomalyco/tap/yonsoon
+  brew install anomalyco/tap/railwise
   ```
 
-  > Мы рекомендуем использовать tap yonsoon для получения самых последних версий. Официальная формула `brew install yonsoon` поддерживается командой Homebrew и обновляется реже.
+  > Мы рекомендуем использовать tap railwise для получения самых последних версий. Официальная формула `brew install railwise` поддерживается командой Homebrew и обновляется реже.
 
 - **Использование Paru в Arch Linux**
 
   ```bash
-  sudo pacman -S yonsoon           # Arch Linux (Stable)
-  paru -S yonsoon-bin              # Arch Linux (Latest from AUR)
+  sudo pacman -S railwise           # Arch Linux (Stable)
+  paru -S railwise-bin              # Arch Linux (Latest from AUR)
   ```
 
 #### Windows
 
 :::tip[Рекомендуется: используйте WSL]
-Для наилучшей работы в Windows мы рекомендуем использовать [Подсистема Windows для Linux (WSL)](/docs/windows-wsl). Он обеспечивает лучшую производительность и полную совместимость с функциями yonsoon.
+Для наилучшей работы в Windows мы рекомендуем использовать [Подсистема Windows для Linux (WSL)](/docs/windows-wsl). Он обеспечивает лучшую производительность и полную совместимость с функциями railwise.
 :::
 
 - **Используя Chocolatey**
 
   ```bash
-  choco install yonsoon
+  choco install railwise
   ```
 
 - **Использование Scoop**
 
   ```bash
-  scoop install yonsoon
+  scoop install railwise
   ```
 
 - **Использование NPM**
 
   ```bash
-  npm install -g yonsoon-ai
+  npm install -g railwise-ai
   ```
 
 - **Использование Mise**
 
   ```bash
-  mise use -g github:anomalyco/yonsoon
+  mise use -g github:anomalyco/railwise
   ```
 
 - **Использование Docker**
 
   ```bash
-  docker run -it --rm ghcr.io/anomalyco/yonsoon
+  docker run -it --rm ghcr.io/anomalyco/railwise
   ```
 
-В настоящее время добавляется поддержка установки yonsoon в Windows с помощью Bun.
+В настоящее время добавляется поддержка установки railwise в Windows с помощью Bun.
 
-Вы также можете получить двоичный файл из файла [Releases](https://github.com/anomalyco/yonsoon/releases).
+Вы также можете получить двоичный файл из файла [Releases](https://github.com/anomalyco/railwise/releases).
 
 ---
 
 ## Настроить
 
-С yonsoon вы можете использовать любого поставщика LLM, настроив его ключи API.
+С railwise вы можете использовать любого поставщика LLM, настроив его ключи API.
 
-Если вы новичок в использовании поставщиков LLM, мы рекомендуем использовать [YONSOON (甬算) Zen](/docs/zen).
-Это тщательно подобранный список моделей, протестированных и проверенных yonsoon.
+Если вы новичок в использовании поставщиков LLM, мы рекомендуем использовать [RAILWISE (甬算) Zen](/docs/zen).
+Это тщательно подобранный список моделей, протестированных и проверенных railwise.
 команда.
 
-1. Запустите команду `/connect` в TUI, выберите yonsoon и перейдите по адресу [yonsoon.ai/auth](https://yonsoon.ai/auth).
+1. Запустите команду `/connect` в TUI, выберите railwise и перейдите по адресу [railwise.ai/auth](https://railwise.ai/auth).
 
    ```txt
    /connect
@@ -168,33 +168,33 @@ curl -fsSL https://yonsoon.ai/install | bash
 cd /path/to/project
 ```
 
-И запустите yonsoon.
+И запустите railwise.
 
 ```bash
-yonsoon
+railwise
 ```
 
-Затем инициализируйте yonsoon для проекта, выполнив следующую команду.
+Затем инициализируйте railwise для проекта, выполнив следующую команду.
 
 ```bash frame="none"
 /init
 ```
 
-Это позволит yonsoon проанализировать ваш проект и создать файл `AGENTS.md` в
+Это позволит railwise проанализировать ваш проект и создать файл `AGENTS.md` в
 корень проекта.
 
 :::tip
 Вам следует зафиксировать файл `AGENTS.md` вашего проекта в Git.
 :::
 
-Это помогает yonsoon понять структуру проекта и шаблоны кодирования.
+Это помогает railwise понять структуру проекта и шаблоны кодирования.
 использовал.
 
 ---
 
 ## Использование
 
-Теперь вы готовы использовать yonsoon для работы над своим проектом. Не стесняйтесь спрашивать о чем угодно!
+Теперь вы готовы использовать railwise для работы над своим проектом. Не стесняйтесь спрашивать о чем угодно!
 
 Если вы новичок в использовании агента кодирования ИИ, вот несколько примеров, которые могут вам помочь.
 помощь.
@@ -203,7 +203,7 @@ yonsoon
 
 ### Задавайте вопросы
 
-Вы можете попросить yonsoon объяснить вам кодовую базу.
+Вы можете попросить railwise объяснить вам кодовую базу.
 
 :::tip
 Используйте ключ `@` для нечеткого поиска файлов в проекте.
@@ -219,11 +219,11 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### Добавление функций
 
-Вы можете попросить yonsoon добавить новые функции в ваш проект. Хотя мы сначала рекомендуем попросить его создать план.
+Вы можете попросить railwise добавить новые функции в ваш проект. Хотя мы сначала рекомендуем попросить его создать план.
 
 1. **Составьте план**
 
-   yonsoon имеет _режим планирования_, который отключает возможность вносить изменения и
+   railwise имеет _режим планирования_, который отключает возможность вносить изменения и
    вместо этого предложите _как_ реализовать эту функцию.
 
    Переключитесь на него с помощью клавиши **Tab**. Вы увидите индикатор этого в правом нижнем углу.
@@ -240,11 +240,11 @@ How is authentication handled in @packages/functions/src/api/index.ts
    From this screen, the user can undelete a note or permanently delete it.
    ```
 
-   Вы хотите предоставить yonsoon достаточно подробностей, чтобы понять, чего вы хотите. Это помогает
+   Вы хотите предоставить railwise достаточно подробностей, чтобы понять, чего вы хотите. Это помогает
    поговорить с ним так, как будто вы разговариваете с младшим разработчиком в своей команде.
 
    :::tip
-   Дайте yonsoon много контекста и примеров, чтобы помочь ему понять, что вы
+   Дайте railwise много контекста и примеров, чтобы помочь ему понять, что вы
    хотеть.
    :::
 
@@ -261,7 +261,7 @@ How is authentication handled in @packages/functions/src/api/index.ts
    Перетащите изображения в терминал, чтобы добавить их в подсказку.
    :::
 
-   yonsoon может сканировать любые изображения, которые вы ему предоставляете, и добавлять их в командную строку. Ты можешь
+   railwise может сканировать любые изображения, которые вы ему предоставляете, и добавлять их в командную строку. Ты можешь
    сделайте это, перетащив изображение в терминал.
 
 3. **Создайте функцию**
@@ -283,7 +283,7 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### Внесение изменений
 
-Для более простых изменений вы можете попросить yonsoon создать его напрямую.
+Для более простых изменений вы можете попросить railwise создать его напрямую.
 без необходимости предварительного рассмотрения плана.
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
@@ -292,14 +292,14 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-Вы хотите убедиться, что вы предоставляете достаточно деталей, чтобы yonsoon сделал правильный выбор.
+Вы хотите убедиться, что вы предоставляете достаточно деталей, чтобы railwise сделал правильный выбор.
 изменения.
 
 ---
 
 ### Отмена изменений
 
-Допустим, вы просите yonsoon внести некоторые изменения.
+Допустим, вы просите railwise внести некоторые изменения.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -312,14 +312,14 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 /undo
 ```
 
-yonsoon теперь отменит внесенные вами изменения и покажет исходное сообщение.
+railwise теперь отменит внесенные вами изменения и покажет исходное сообщение.
 снова.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-Отсюда вы можете настроить подсказку и попросить yonsoon повторить попытку.
+Отсюда вы можете настроить подсказку и попросить railwise повторить попытку.
 
 :::tip
 Вы можете запустить `/undo` несколько раз, чтобы отменить несколько изменений.
@@ -335,7 +335,7 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 
 ## Общий доступ
 
-Разговоры, которые вы ведете с yonsoon, можно [поделиться с вашим
+Разговоры, которые вы ведете с railwise, можно [поделиться с вашим
 команда](/docs/share).
 
 ```bash frame="none"
@@ -348,12 +348,12 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 По умолчанию общий доступ к беседам не предоставляется.
 :::
 
-Вот [пример диалога](https://yonsoon.ai/s/4XP1fce5) с yonsoon.
+Вот [пример диалога](https://railwise.ai/s/4XP1fce5) с railwise.
 
 ---
 
 ## Настроить
 
-И все! Теперь вы профессионал в использовании yonsoon.
+И все! Теперь вы профессионал в использовании railwise.
 
-Чтобы создать свою собственную, мы рекомендуем [выбрать тему](/docs/themes), [настроить привязки клавиш](/docs/keybinds), [настроить средства форматирования кода](/docs/formatters), [создать собственные команды](/docs/commands) или поиграться с файлом [yonsoon config](/docs/config).
+Чтобы создать свою собственную, мы рекомендуем [выбрать тему](/docs/themes), [настроить привязки клавиш](/docs/keybinds), [настроить средства форматирования кода](/docs/formatters), [создать собственные команды](/docs/commands) или поиграться с файлом [railwise config](/docs/config).

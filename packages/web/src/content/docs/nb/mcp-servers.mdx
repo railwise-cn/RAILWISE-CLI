@@ -3,7 +3,7 @@ title: MCP-servere
 description: Legg til lokale og eksterne MCP-verktøy.
 ---
 
-Du kan legge til eksterne verktøy i YONSOON (甬算) ved å bruke _Model Context Protocol_ eller MCP. YONSOON (甬算) støtter både lokale og eksterne servere.
+Du kan legge til eksterne verktøy i RAILWISE (甬算) ved å bruke _Model Context Protocol_ eller MCP. RAILWISE (甬算) støtter både lokale og eksterne servere.
 
 Når de er lagt til, er MCP-verktøy automatisk tilgjengelige for LLM sammen med innebygde verktøy.
 
@@ -23,11 +23,11 @@ Enkelte MCP-servere, som GitHub MCP-serveren, har en tendens til å legge til ma
 
 ## Aktivering
 
-Du kan definere MCP-servere i [YONSOON (甬算) Config](https://yonsoon.ai/docs/config/) under `mcp`. Legg til hver MCP med et unikt navn. Du kan referere til den MCP ved navn når du spør LLM-en.
+Du kan definere MCP-servere i [RAILWISE (甬算) Config](https://railwise.ai/docs/config/) under `mcp`. Legg til hver MCP med et unikt navn. Du kan referere til den MCP ved navn når du spør LLM-en.
 
-```jsonc title="yonsoon.jsonc" {6}
+```jsonc title="railwise.jsonc" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "name-of-mcp-server": {
       // ...
@@ -46,13 +46,13 @@ Du kan også deaktivere en server ved å sette `enabled` til `false`. Dette er n
 
 ### Overstyring av fjernstandarder
 
-Organisasjoner kan tilby standard MCP-servere via deres `.well-known/yonsoon`-endepunkt. Disse serverne kan være deaktivert som standard, slik at brukere kan melde seg på de de trenger.
+Organisasjoner kan tilby standard MCP-servere via deres `.well-known/railwise`-endepunkt. Disse serverne kan være deaktivert som standard, slik at brukere kan melde seg på de de trenger.
 
 For å aktivere en spesifikk server fra organisasjonens eksterne konfigurasjon, legg den til i din lokale konfigurasjon med `enabled: true`:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "jira": {
       "type": "remote",
@@ -71,9 +71,9 @@ Dine lokale konfigurasjonsverdier overstyrer de eksterne standardinnstillingene.
 
 Legg til lokale MCP-servere ved å bruke `type` til `"local"` i MCP-objektet.
 
-```jsonc title="yonsoon.jsonc" {15}
+```jsonc title="railwise.jsonc" {15}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-local-mcp-server": {
       "type": "local",
@@ -92,9 +92,9 @@ Kommandoen er hvordan den lokale MCP-serveren startes. Du kan også sende inn en
 
 For eksempel, her er hvordan du kan legge til test [`@modelcontextprotocol/server-everything`](https://www.npmjs.com/package/@modelcontextprotocol/server-everything) MCP serveren.
 
-```jsonc title="yonsoon.jsonc"
+```jsonc title="railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "mcp_everything": {
       "type": "local",
@@ -130,9 +130,9 @@ Her er alle alternativene for å konfigurere en lokal MCP-server.
 
 Legg til eksterne MCP-servere ved å sette `type` til `"remote"`.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-remote-mcp": {
       "type": "remote",
@@ -165,7 +165,7 @@ Legg til eksterne MCP-servere ved å sette `type` til `"remote"`.
 
 ## OAuth
 
-YONSOON (甬算) håndterer automatisk OAuth-autentisering for eksterne MCP-servere. Når en server krever autentisering, vil YONSOON (甬算):
+RAILWISE (甬算) håndterer automatisk OAuth-autentisering for eksterne MCP-servere. Når en server krever autentisering, vil RAILWISE (甬算):
 
 1. Oppdag 401-svaret og start OAuth-flyten
 2. Bruk **Dynamisk klientregistrering (RFC 7591)** hvis det støttes av serveren
@@ -177,9 +177,9 @@ YONSOON (甬算) håndterer automatisk OAuth-autentisering for eksterne MCP-serv
 
 For de fleste OAuth-aktiverte MCP-servere er ingen spesiell konfigurasjon nødvendig. Bare konfigurer den eksterne serveren:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -189,7 +189,7 @@ For de fleste OAuth-aktiverte MCP-servere er ingen spesiell konfigurasjon nødve
 }
 ```
 
-Hvis serveren krever autentisering, vil YONSOON (甬算) be deg om å autentisere når du prøver å bruke den for første gang. Hvis ikke, kan du [utløse flyten manuelt](#authenticating) med `yonsoon mcp auth <server-name>`.
+Hvis serveren krever autentisering, vil RAILWISE (甬算) be deg om å autentisere når du prøver å bruke den for første gang. Hvis ikke, kan du [utløse flyten manuelt](#authenticating) med `railwise mcp auth <server-name>`.
 
 ---
 
@@ -197,9 +197,9 @@ Hvis serveren krever autentisering, vil YONSOON (甬算) be deg om å autentiser
 
 Hvis du har klientlegitimasjon fra MCP-serverleverandøren, kan du konfigurere dem:
 
-```json title="yonsoon.json" {7-11}
+```json title="railwise.json" {7-11}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -223,22 +223,22 @@ Du kan utløse autentisering manuelt eller administrere legitimasjon.
 Autentiser med en spesifikk MCP-server:
 
 ```bash
-yonsoon mcp auth my-oauth-server
+railwise mcp auth my-oauth-server
 ```
 
 Liste alle MCP-servere og deres autentiseringsstatus:
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 Fjern lagret legitimasjon:
 
 ```bash
-yonsoon mcp logout my-oauth-server
+railwise mcp logout my-oauth-server
 ```
 
-Kommandoen `mcp auth` åpner nettleseren din for autorisasjon. Etter at du har godkjent, vil YONSOON (甬算) lagre tokens sikkert i `~/.local/share/yonsoon/mcp-auth.json`.
+Kommandoen `mcp auth` åpner nettleseren din for autorisasjon. Etter at du har godkjent, vil RAILWISE (甬算) lagre tokens sikkert i `~/.local/share/railwise/mcp-auth.json`.
 
 ---
 
@@ -246,9 +246,9 @@ Kommandoen `mcp auth` åpner nettleseren din for autorisasjon. Etter at du har g
 
 Hvis du vil deaktivere automatisk OAuth for en server (f.eks. for servere som bruker API-nøkler i stedet), setter du `oauth` til `false`:
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-api-key-server": {
       "type": "remote",
@@ -279,10 +279,10 @@ Hvis en ekstern MCP-server ikke klarer å autentisere, kan du diagnostisere prob
 
 ```bash
 # View auth status for all OAuth-capable servers
-yonsoon mcp auth list
+railwise mcp auth list
 
 # Debug connection and OAuth flow for a specific server
-yonsoon mcp debug my-oauth-server
+railwise mcp debug my-oauth-server
 ```
 
 Kommandoen `mcp debug` viser gjeldende autentiseringsstatus, tester HTTP-tilkoblingen og forsøker OAuth-oppdagelsesflyten.
@@ -291,7 +291,7 @@ Kommandoen `mcp debug` viser gjeldende autentiseringsstatus, tester HTTP-tilkobl
 
 ## Administrering
 
-MCP-ene dine er tilgjengelige som verktøy i YONSOON (甬算), sammen med innebygde verktøy. Så du kan administrere dem gjennom YONSOON (甬算)-konfigurasjonen som alle andre verktøy.
+MCP-ene dine er tilgjengelige som verktøy i RAILWISE (甬算), sammen med innebygde verktøy. Så du kan administrere dem gjennom RAILWISE (甬算)-konfigurasjonen som alle andre verktøy.
 
 ---
 
@@ -299,9 +299,9 @@ MCP-ene dine er tilgjengelige som verktøy i YONSOON (甬算), sammen med inneby
 
 Dette betyr at du kan aktivere eller deaktivere dem globalt.
 
-```json title="yonsoon.json" {14}
+```json title="railwise.json" {14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -320,9 +320,9 @@ Dette betyr at du kan aktivere eller deaktivere dem globalt.
 
 Vi kan også bruke et globmønster for å deaktivere alle matchende MCP-er.
 
-```json title="yonsoon.json" {14}
+```json title="railwise.json" {14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -350,9 +350,9 @@ Hvis du har et stort antall MCP-servere, vil du kanskje bare aktivere dem per ag
 1. Deaktiver det som et verktøy globalt.
 2. Aktiver MCP-serveren som et verktøy i [agent config](/docs/agents#tools).
 
-```json title="yonsoon.json" {11, 14-18}
+```json title="railwise.json" {11, 14-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp": {
       "type": "local",
@@ -404,9 +404,9 @@ Nedenfor er eksempler på noen vanlige MCP-servere. Du kan sende inn en PR hvis 
 
 Legg til [Sentry MCP-serveren](https://mcp.sentry.dev) for å samhandle med Sentry-prosjektene og problemene dine.
 
-```json title="yonsoon.json" {4-8}
+```json title="railwise.json" {4-8}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "sentry": {
       "type": "remote",
@@ -420,10 +420,10 @@ Legg til [Sentry MCP-serveren](https://mcp.sentry.dev) for å samhandle med Sent
 Etter å ha lagt til konfigurasjonen, autentiser med Sentry:
 
 ```bash
-yonsoon mcp auth sentry
+railwise mcp auth sentry
 ```
 
-Dette åpner et nettleservindu for å fullføre OAuth-flyten og koble YONSOON (甬算) til Sentry-kontoen din.
+Dette åpner et nettleservindu for å fullføre OAuth-flyten og koble RAILWISE (甬算) til Sentry-kontoen din.
 
 Når du er autentisert, kan du bruke Sentry-verktøy i ledetekstene dine for å spørre etter problemer, prosjekter og feildata.
 
@@ -437,9 +437,9 @@ Show me the latest unresolved issues in my project. use sentry
 
 Legg til [Context7 MCP-serveren](https://github.com/upstash/context7) for å søke gjennom dokumenter.
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -451,9 +451,9 @@ Legg til [Context7 MCP-serveren](https://github.com/upstash/context7) for å sø
 
 Hvis du har registrert deg for en gratis konto, kan du bruke API-nøkkelen din og få høyere satsgrenser.
 
-```json title="yonsoon.json" {7-9}
+```json title="railwise.json" {7-9}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -486,9 +486,9 @@ When you need to search docs, use `context7` tools.
 
 Legg til [Grep by Vercel](https://grep.app) MCP-serveren for å søke gjennom kodebiter på GitHub.
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "gh_grep": {
       "type": "remote",
@@ -543,13 +543,13 @@ For flere leverandører og avanserte funksjoner som bufring og hastighetsbegrens
 
 #### Valgfrie konfigurasjoner
 
-I tilfelle du ser en funksjon eller modell fra Helicone som ikke konfigureres automatisk gjennom YONSOON (甬算), kan du alltid konfigurere den selv.
+I tilfelle du ser en funksjon eller modell fra Helicone som ikke konfigureres automatisk gjennom RAILWISE (甬算), kan du alltid konfigurere den selv.
 
 Her er [Helicone's Model Directory](https://helicone.ai/models), du trenger denne for å hente ID-ene til modellene du vil legge til.
 
-```jsonc title="~/.config/yonsoon/yonsoon.jsonc"
+```jsonc title="~/.config/railwise/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -575,9 +575,9 @@ Her er [Helicone's Model Directory](https://helicone.ai/models), du trenger denn
 
 Helicone støtter tilpassede headere for funksjoner som bufring, brukersporing og øktadministrasjon. Legg dem til leverandørkonfigurasjonen din ved å bruke `options.headers`:
 
-```jsonc title="~/.config/yonsoon/yonsoon.jsonc"
+```jsonc title="~/.config/railwise/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -586,7 +586,7 @@ Helicone støtter tilpassede headere for funksjoner som bufring, brukersporing o
         "baseURL": "https://ai-gateway.helicone.ai",
         "headers": {
           "Helicone-Cache-Enabled": "true",
-          "Helicone-User-Id": "yonsoon",
+          "Helicone-User-Id": "railwise",
         },
       },
     },
@@ -596,21 +596,21 @@ Helicone støtter tilpassede headere for funksjoner som bufring, brukersporing o
 
 ##### Sesjonssporing
 
-Helicones [Sessions](https://docs.helicone.ai/features/sessions) funksjon lar deg gruppere relaterte LLM forespørsler sammen. Bruk [yonsoon-helicone-session](https://github.com/H2Shami/yonsoon-helicone-session) plugin for automatisk å logge hver YONSOON (甬算)-samtale som en økt i Helicone.
+Helicones [Sessions](https://docs.helicone.ai/features/sessions) funksjon lar deg gruppere relaterte LLM forespørsler sammen. Bruk [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) plugin for automatisk å logge hver RAILWISE (甬算)-samtale som en økt i Helicone.
 
 ```bash
-npm install -g yonsoon-helicone-session
+npm install -g railwise-helicone-session
 ```
 
 Legg den til i konfigurasjonen din.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "plugin": ["yonsoon-helicone-session"]
+  "plugin": ["railwise-helicone-session"]
 }
 ```
 
-Programtillegget injiserer `Helicone-Session-Id` og `Helicone-Session-Name` overskrifter i forespørslene dine. På Helicones Sessions-side vil du se hver YONSOON (甬算)-samtale oppført som en separat økt.
+Programtillegget injiserer `Helicone-Session-Id` og `Helicone-Session-Name` overskrifter i forespørslene dine. På Helicones Sessions-side vil du se hver RAILWISE (甬算)-samtale oppført som en separat økt.
 
 ##### Vanlige Helicone-headere
 

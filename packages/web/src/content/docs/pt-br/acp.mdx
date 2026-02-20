@@ -1,9 +1,9 @@
 ---
 title: Suporte ACP
-description: Use o yonsoon em qualquer editor compatível com ACP.
+description: Use o railwise em qualquer editor compatível com ACP.
 ---
 
-O yonsoon suporta o [Agent Client Protocol](https://agentclientprotocol.com) ou (ACP), permitindo que você o utilize diretamente em editores e IDEs compatíveis.
+O railwise suporta o [Agent Client Protocol](https://agentclientprotocol.com) ou (ACP), permitindo que você o utilize diretamente em editores e IDEs compatíveis.
 
 :::tip
 Para uma lista de editores e ferramentas que suportam ACP, confira o [relatório de progresso do ACP](https://zed.dev/blog/acp-progress-report#available-now).
@@ -15,9 +15,9 @@ O ACP é um protocolo aberto que padroniza a comunicação entre editores de có
 
 ## Configuração
 
-Para usar yonsoon via ACP, configure seu editor para executar o comando `yonsoon acp`.
+Para usar railwise via ACP, configure seu editor para executar o comando `railwise acp`.
 
-Este comando inicia o yonsoon como um subprocesso compatível com ACP que se comunica com seu editor via JSON-RPC através do stdio.
+Este comando inicia o railwise como um subprocesso compatível com ACP que se comunica com seu editor via JSON-RPC através do stdio.
 
 Abaixo estão exemplos para editores populares que suportam ACP.
 
@@ -30,8 +30,8 @@ Adicione à sua configuração do [Zed](https://zed.dev) (`~/.config/zed/setting
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "railwise",
       "args": ["acp"]
     }
   }
@@ -51,9 +51,9 @@ Você também pode vincular um atalho de teclado editando seu `keymap.json`:
         {
           "agent": {
             "custom": {
-              "name": "YONSOON (甬算)",
+              "name": "RAILWISE (甬算)",
               "command": {
-                "command": "yonsoon",
+                "command": "railwise",
                 "args": ["acp"]
               }
             }
@@ -74,15 +74,15 @@ Adicione ao seu acp.json do [JetBrains IDE](https://www.jetbrains.com/) de acord
 ```json title="acp.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "/absolute/path/bin/yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
   }
 }
 ```
 
-Para abri-lo, use o novo agente 'yonsoon' no seletor de agentes do AI Chat.
+Para abri-lo, use o novo agente 'railwise' no seletor de agentes do AI Chat.
 
 ---
 
@@ -93,8 +93,8 @@ Adicione à sua configuração do [Avante.nvim](https://github.com/yetone/avante
 ```lua
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" }
     }
   }
@@ -106,11 +106,11 @@ Se você precisar passar variáveis de ambiente:
 ```lua {6-8}
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" },
       env = {
-        YONSOON_API_KEY = os.getenv("YONSOON_API_KEY")
+        RAILWISE_API_KEY = os.getenv("RAILWISE_API_KEY")
       }
     }
   }
@@ -121,14 +121,14 @@ Se você precisar passar variáveis de ambiente:
 
 ### CodeCompanion.nvim
 
-Para usar yonsoon como um agente ACP no [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), adicione o seguinte à sua configuração do Neovim:
+Para usar railwise como um agente ACP no [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), adicione o seguinte à sua configuração do Neovim:
 
 ```lua
 require("codecompanion").setup({
   interactions = {
     chat = {
       adapter = {
-        name = "yonsoon",
+        name = "railwise",
         model = "claude-sonnet-4",
       },
     },
@@ -136,13 +136,13 @@ require("codecompanion").setup({
 })
 ```
 
-Esta configuração configura o CodeCompanion para usar yonsoon como o agente ACP para chat.
+Esta configuração configura o CodeCompanion para usar railwise como o agente ACP para chat.
 
-Se você precisar passar variáveis de ambiente (como `YONSOON_API_KEY`), consulte [Configurando Adaptadores: Variáveis de Ambiente](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) na documentação do CodeCompanion.nvim para detalhes completos.
+Se você precisar passar variáveis de ambiente (como `RAILWISE_API_KEY`), consulte [Configurando Adaptadores: Variáveis de Ambiente](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) na documentação do CodeCompanion.nvim para detalhes completos.
 
 ## Suporte
 
-O yonsoon funciona da mesma forma via ACP como funciona no terminal. Todos os recursos são suportados:
+O railwise funciona da mesma forma via ACP como funciona no terminal. Todos os recursos são suportados:
 
 :::note
 Alguns comandos de barra integrados, como `/undo` e `/redo`, atualmente não são suportados.
@@ -150,7 +150,7 @@ Alguns comandos de barra integrados, como `/undo` e `/redo`, atualmente não sã
 
 - Ferramentas integradas (operações de arquivo, comandos de terminal, etc.)
 - Ferramentas personalizadas e comandos de barra
-- Servidores MCP configurados na sua configuração do yonsoon
+- Servidores MCP configurados na sua configuração do railwise
 - Regras específicas do projeto do `AGENTS.md`
 - Formatadores e linters personalizados
 - Sistema de agentes e permissões

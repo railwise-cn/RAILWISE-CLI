@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: Utilisation de l’interface utilisateur du terminal YONSOON (甬算).
+description: Utilisation de l’interface utilisateur du terminal RAILWISE (甬算).
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) fournit une interface de terminal interactif ou TUI pour travailler sur vos projets avec un LLM.
+RAILWISE (甬算) fournit une interface de terminal interactif ou TUI pour travailler sur vos projets avec un LLM.
 
-L’exécution de YONSOON (甬算) démarre le TUI pour le répertoire actuel.
+L’exécution de RAILWISE (甬算) démarre le TUI pour le répertoire actuel.
 
 ```bash
-yonsoon
+railwise
 ```
 
 Ou vous pouvez le démarrer pour un répertoire de travail spécifique.
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 Une fois que vous êtes dans le TUI, vous pouvez lui envoyer un message.
@@ -57,7 +57,7 @@ Le résultat de la commande est ajouté à la conversation en tant que résultat
 
 ## Commandes
 
-Lorsque vous utilisez le YONSOON (甬算) TUI, vous pouvez taper `/` suivi d'un nom de commande pour exécuter rapidement des actions. Par exemple:
+Lorsque vous utilisez le RAILWISE (甬算) TUI, vous pouvez taper `/` suivi d'un nom de commande pour exécuter rapidement des actions. Par exemple:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ Voici toutes les commandes slash disponibles :
 
 ### connect
 
-Ajoutez un fournisseur à YONSOON (甬算). Vous permet de sélectionner parmi les fournisseurs disponibles et d’ajouter leurs clés API.
+Ajoutez un fournisseur à RAILWISE (甬算). Vous permet de sélectionner parmi les fournisseurs disponibles et d’ajouter leurs clés API.
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ Ouvrez un éditeur externe pour rédiger des messages. Utilise l'éditeur défin
 
 ### exit
 
-Quittez YONSOON (甬算). *Alias* : `/quit`, `/q`
+Quittez RAILWISE (甬算). *Alias* : `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -355,11 +355,11 @@ Certains éditeurs ont besoin d'arguments de ligne de commande pour s'exécuter 
 
 ## Configurer
 
-Vous pouvez personnaliser le comportement de TUI via votre fichier de configuration YONSOON (甬算).
+Vous pouvez personnaliser le comportement de TUI via votre fichier de configuration RAILWISE (甬算).
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

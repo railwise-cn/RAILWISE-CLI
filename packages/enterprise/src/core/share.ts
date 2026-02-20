@@ -1,10 +1,10 @@
-import { FileDiff, Message, Model, Part, Session } from "@yonsoon/sdk/v2"
-import { fn } from "@yonsoon/util/fn"
-import { iife } from "@yonsoon/util/iife"
-import { Identifier } from "@yonsoon/util/identifier"
+import { FileDiff, Message, Model, Part, Session } from "@railwise/sdk/v2"
+import { fn } from "@railwise/util/fn"
+import { iife } from "@railwise/util/iife"
+import { Identifier } from "@railwise/util/identifier"
 import z from "zod"
 import { Storage } from "./storage"
-import { Binary } from "@yonsoon/util/binary"
+import { Binary } from "@railwise/util/binary"
 
 export namespace Share {
   export const Info = z.object({

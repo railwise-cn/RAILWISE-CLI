@@ -129,7 +129,7 @@ const unsafeCSS = `
 
 export function createDefaultOptions<T>(style: FileDiffOptions<T>["diffStyle"]) {
   return {
-    theme: "YONSOON",
+    theme: "RAILWISE",
     themeType: "system",
     disableLineNumbers: false,
     overflow: "wrap",

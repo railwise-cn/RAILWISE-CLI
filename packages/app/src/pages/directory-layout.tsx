@@ -5,10 +5,10 @@ import { SDKProvider, useSDK } from "@/context/sdk"
 import { SyncProvider, useSync } from "@/context/sync"
 import { LocalProvider } from "@/context/local"
 
-import { DataProvider } from "@yonsoon/ui/context"
-import type { QuestionAnswer } from "@yonsoon/sdk/v2"
+import { DataProvider } from "@railwise/ui/context"
+import type { QuestionAnswer } from "@railwise/sdk/v2"
 import { decode64 } from "@/utils/base64"
-import { showToast } from "@yonsoon/ui/toast"
+import { showToast } from "@railwise/ui/toast"
 import { useLanguage } from "@/context/language"
 
 function DirectoryDataProvider(props: ParentProps<{ directory: string }>) {

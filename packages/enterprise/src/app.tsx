@@ -1,16 +1,16 @@
 import { Router } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
-import { Font } from "@yonsoon/ui/font"
+import { Font } from "@railwise/ui/font"
 import { MetaProvider } from "@solidjs/meta"
-import { MarkedProvider } from "@yonsoon/ui/context/marked"
-import { DialogProvider } from "@yonsoon/ui/context/dialog"
-import { I18nProvider, type UiI18nParams } from "@yonsoon/ui/context"
-import { dict as uiEn } from "@yonsoon/ui/i18n/en"
-import { dict as uiZh } from "@yonsoon/ui/i18n/zh"
+import { MarkedProvider } from "@railwise/ui/context/marked"
+import { DialogProvider } from "@railwise/ui/context/dialog"
+import { I18nProvider, type UiI18nParams } from "@railwise/ui/context"
+import { dict as uiEn } from "@railwise/ui/i18n/en"
+import { dict as uiZh } from "@railwise/ui/i18n/zh"
 import { createEffect, createMemo, Suspense, type ParentProps } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
 import "./app.css"
-import { Favicon } from "@yonsoon/ui/favicon"
+import { Favicon } from "@railwise/ui/favicon"
 
 function resolveTemplate(text: string, params?: UiI18nParams) {
   if (!params) return text

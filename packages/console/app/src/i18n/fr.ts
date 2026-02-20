@@ -36,7 +36,7 @@ export const dict = {
   "email.subscribe": "S'abonner",
   "email.success": "Presque terminé - vérifiez votre boîte de réception et confirmez votre adresse e-mail",
 
-  "notFound.title": "Introuvable | YONSOON (甬算)",
+  "notFound.title": "Introuvable | RAILWISE (甬算)",
   "notFound.heading": "404 - Page introuvable",
   "notFound.home": "Accueil",
   "notFound.docs": "Documentation",
@@ -76,21 +76,21 @@ export const dict = {
   "error.reloadAmountMin": "Le montant de recharge doit être d'au moins {{amount}} $",
   "error.reloadTriggerMin": "Le seuil de déclenchement doit être d'au moins {{amount}} $",
 
-  "home.title": "YONSOON (甬算) | L'agent de code IA open source",
+  "home.title": "RAILWISE (甬算) | L'agent de code IA open source",
 
-  "temp.title": "YONSOON (甬算) | Agent de code IA conçu pour le terminal",
+  "temp.title": "RAILWISE (甬算) | Agent de code IA conçu pour le terminal",
   "temp.hero.title": "L'agent de code IA conçu pour le terminal",
-  "temp.zen": "YONSOON (甬算) Zen",
+  "temp.zen": "RAILWISE (甬算) Zen",
   "temp.getStarted": "Commencer",
   "temp.feature.native.title": "TUI Native",
   "temp.feature.native.body": "Une interface terminal native, réactive et thémable",
   "temp.feature.zen.beforeLink": "Une",
   "temp.feature.zen.link": "liste organisée de modèles",
-  "temp.feature.zen.afterLink": "fournie par YONSOON (甬算)",
+  "temp.feature.zen.afterLink": "fournie par RAILWISE (甬算)",
   "temp.feature.models.beforeLink": "Prend en charge plus de 75 fournisseurs LLM via",
   "temp.feature.models.afterLink": ", y compris les modèles locaux",
-  "temp.screenshot.caption": "YONSOON (甬算) TUI avec le thème tokyonight",
-  "temp.screenshot.alt": "YONSOON (甬算) TUI avec le thème tokyonight",
+  "temp.screenshot.caption": "RAILWISE (甬算) TUI avec le thème tokyonight",
+  "temp.screenshot.alt": "RAILWISE (甬算) TUI avec le thème tokyonight",
 
   "home.banner.badge": "Nouveau",
   "home.banner.text": "Application desktop disponible en bêta",
@@ -105,9 +105,9 @@ export const dict = {
 
   "home.install.ariaLabel": "Options d'installation",
 
-  "home.what.title": "Qu'est-ce que YONSOON (甬算) ?",
+  "home.what.title": "Qu'est-ce que RAILWISE (甬算) ?",
   "home.what.body":
-    "YONSOON (甬算) est un agent open source qui vous aide à écrire du code dans votre terminal, IDE ou desktop.",
+    "RAILWISE (甬算) est un agent open source qui vous aide à écrire du code dans votre terminal, IDE ou desktop.",
   "home.what.lsp.title": "LSP activé",
   "home.what.lsp.body": "Charge automatiquement les bons LSP pour le LLM",
   "home.what.multiSession.title": "Multi-session",
@@ -126,43 +126,43 @@ export const dict = {
 
   "home.growth.title": "L'agent de code IA open source",
   "home.growth.body":
-    "Avec plus de <strong>{{stars}}</strong> étoiles sur GitHub, <strong>{{contributors}}</strong> contributeurs et plus de <strong>{{commits}}</strong> commits, YONSOON (甬算) est utilisé et approuvé par plus de <strong>{{monthlyUsers}}</strong> développeurs chaque mois.",
+    "Avec plus de <strong>{{stars}}</strong> étoiles sur GitHub, <strong>{{contributors}}</strong> contributeurs et plus de <strong>{{commits}}</strong> commits, RAILWISE (甬算) est utilisé et approuvé par plus de <strong>{{monthlyUsers}}</strong> développeurs chaque mois.",
   "home.growth.githubStars": "Étoiles GitHub",
   "home.growth.contributors": "Contributeurs",
   "home.growth.monthlyDevs": "Devs mensuels",
 
   "home.privacy.title": "Conçu pour la confidentialité",
   "home.privacy.body":
-    "YONSOON (甬算) ne stocke ni votre code ni vos données de contexte, afin de pouvoir fonctionner dans des environnements sensibles à la confidentialité.",
+    "RAILWISE (甬算) ne stocke ni votre code ni vos données de contexte, afin de pouvoir fonctionner dans des environnements sensibles à la confidentialité.",
   "home.privacy.learnMore": "En savoir plus sur",
   "home.privacy.link": "la confidentialité",
 
-  "home.faq.q1": "Qu'est-ce que YONSOON (甬算) ?",
+  "home.faq.q1": "Qu'est-ce que RAILWISE (甬算) ?",
   "home.faq.a1":
-    "YONSOON (甬算) est un agent open source qui vous aide à écrire et exécuter du code avec n'importe quel modèle d'IA. Il est disponible en interface terminal, application desktop ou extension IDE.",
-  "home.faq.q2": "Comment utiliser YONSOON (甬算) ?",
+    "RAILWISE (甬算) est un agent open source qui vous aide à écrire et exécuter du code avec n'importe quel modèle d'IA. Il est disponible en interface terminal, application desktop ou extension IDE.",
+  "home.faq.q2": "Comment utiliser RAILWISE (甬算) ?",
   "home.faq.a2.before": "Le moyen le plus simple de commencer est de lire l'",
   "home.faq.a2.link": "intro",
-  "home.faq.q3": "Ai-je besoin d'abonnements IA supplémentaires pour utiliser YONSOON (甬算) ?",
+  "home.faq.q3": "Ai-je besoin d'abonnements IA supplémentaires pour utiliser RAILWISE (甬算) ?",
   "home.faq.a3.p1":
-    "Pas forcément : YONSOON (甬算) propose des modèles gratuits que vous pouvez utiliser sans créer de compte.",
+    "Pas forcément : RAILWISE (甬算) propose des modèles gratuits que vous pouvez utiliser sans créer de compte.",
   "home.faq.a3.p2.beforeZen": "En plus, vous pouvez utiliser des modèles populaires pour le code en créant un compte",
   "home.faq.a3.p2.afterZen": ".",
   "home.faq.a3.p3":
-    "Nous encourageons l'utilisation de Zen, mais YONSOON (甬算) fonctionne aussi avec les fournisseurs populaires comme OpenAI, Anthropic, xAI, etc.",
+    "Nous encourageons l'utilisation de Zen, mais RAILWISE (甬算) fonctionne aussi avec les fournisseurs populaires comme OpenAI, Anthropic, xAI, etc.",
   "home.faq.a3.p4.beforeLocal": "Vous pouvez même connecter vos",
   "home.faq.a3.p4.localLink": "modèles locaux",
-  "home.faq.q4": "Puis-je utiliser mes abonnements IA existants avec YONSOON (甬算) ?",
+  "home.faq.q4": "Puis-je utiliser mes abonnements IA existants avec RAILWISE (甬算) ?",
   "home.faq.a4.p1":
-    "Oui, YONSOON (甬算) prend en charge les abonnements des principaux fournisseurs. Vous pouvez utiliser Claude Pro/Max, ChatGPT Plus/Pro ou GitHub Copilot.",
-  "home.faq.q5": "Puis-je utiliser YONSOON (甬算) uniquement dans le terminal ?",
-  "home.faq.a5.beforeDesktop": "Plus maintenant ! YONSOON (甬算) est désormais disponible en application pour",
+    "Oui, RAILWISE (甬算) prend en charge les abonnements des principaux fournisseurs. Vous pouvez utiliser Claude Pro/Max, ChatGPT Plus/Pro ou GitHub Copilot.",
+  "home.faq.q5": "Puis-je utiliser RAILWISE (甬算) uniquement dans le terminal ?",
+  "home.faq.a5.beforeDesktop": "Plus maintenant ! RAILWISE (甬算) est désormais disponible en application pour",
   "home.faq.a5.desktop": "desktop",
   "home.faq.a5.and": "et",
   "home.faq.a5.web": "web",
-  "home.faq.q6": "Combien coûte YONSOON (甬算) ?",
+  "home.faq.q6": "Combien coûte RAILWISE (甬算) ?",
   "home.faq.a6":
-    "YONSOON (甬算) est 100% gratuit. Il inclut aussi des modèles gratuits. Des coûts supplémentaires peuvent s'appliquer si vous connectez un autre fournisseur.",
+    "RAILWISE (甬算) est 100% gratuit. Il inclut aussi des modèles gratuits. Des coûts supplémentaires peuvent s'appliquer si vous connectez un autre fournisseur.",
   "home.faq.q7": "Qu'en est-il des données et de la confidentialité ?",
   "home.faq.a7.p1":
     "Vos données ne sont stockées que lorsque vous utilisez nos modèles gratuits ou créez des liens partageables.",
@@ -170,8 +170,8 @@ export const dict = {
   "home.faq.a7.p2.modelsLink": "nos modèles",
   "home.faq.a7.p2.and": "et",
   "home.faq.a7.p2.shareLink": "les pages de partage",
-  "home.faq.q8": "YONSOON (甬算) est-il open source ?",
-  "home.faq.a8.p1": "Oui, YONSOON (甬算) est entièrement open source. Le code source est public sur",
+  "home.faq.q8": "RAILWISE (甬算) est-il open source ?",
+  "home.faq.a8.p1": "Oui, RAILWISE (甬算) est entièrement open source. Le code source est public sur",
   "home.faq.a8.p2": "sous la",
   "home.faq.a8.mitLicense": "Licence MIT",
   "home.faq.a8.p3":
@@ -179,23 +179,23 @@ export const dict = {
 
   "home.zenCta.title": "Accédez à des modèles fiables et optimisés pour les agents de code",
   "home.zenCta.body":
-    "Zen vous donne accès à un ensemble sélectionné de modèles d'IA que YONSOON (甬算) a testés et benchmarkés spécifiquement pour les agents de code. Plus besoin de vous soucier des variations de performance et de qualité selon les fournisseurs : utilisez des modèles validés qui fonctionnent.",
+    "Zen vous donne accès à un ensemble sélectionné de modèles d'IA que RAILWISE (甬算) a testés et benchmarkés spécifiquement pour les agents de code. Plus besoin de vous soucier des variations de performance et de qualité selon les fournisseurs : utilisez des modèles validés qui fonctionnent.",
   "home.zenCta.link": "En savoir plus sur Zen",
 
-  "zen.title": "YONSOON (甬算) Zen | Un ensemble sélectionné de modèles fiables et optimisés pour les agents de code",
+  "zen.title": "RAILWISE (甬算) Zen | Un ensemble sélectionné de modèles fiables et optimisés pour les agents de code",
   "zen.hero.title": "Modèles fiables et optimisés pour les agents de code",
   "zen.hero.body":
-    "Zen vous donne accès à un ensemble sélectionné de modèles d'IA que YONSOON (甬算) a testés et benchmarkés spécifiquement pour les agents de code. Plus besoin de vous soucier des variations de performance et de qualité selon les fournisseurs : utilisez des modèles validés qui fonctionnent.",
+    "Zen vous donne accès à un ensemble sélectionné de modèles d'IA que RAILWISE (甬算) a testés et benchmarkés spécifiquement pour les agents de code. Plus besoin de vous soucier des variations de performance et de qualité selon les fournisseurs : utilisez des modèles validés qui fonctionnent.",
 
-  "zen.faq.q1": "Qu'est-ce que YONSOON (甬算) Zen ?",
+  "zen.faq.q1": "Qu'est-ce que RAILWISE (甬算) Zen ?",
   "zen.faq.a1":
-    "Zen est un ensemble sélectionné de modèles d'IA testés et benchmarkés pour les agents de code, créé par l'équipe derrière YONSOON (甬算).",
+    "Zen est un ensemble sélectionné de modèles d'IA testés et benchmarkés pour les agents de code, créé par l'équipe derrière RAILWISE (甬算).",
   "zen.faq.q2": "Qu'est-ce qui rend Zen plus précis ?",
   "zen.faq.a2":
     "Zen ne propose que des modèles testés et benchmarkés spécifiquement pour les agents de code. Vous n'utiliseriez pas un couteau à beurre pour couper un steak ; n'utilisez pas de mauvais modèles pour coder.",
   "zen.faq.q3": "Zen est-il moins cher ?",
   "zen.faq.a3":
-    "Zen n'est pas à but lucratif. Zen vous facture au prix coûtant des fournisseurs de modèles. Plus Zen est utilisé, plus YONSOON (甬算) peut négocier de meilleurs tarifs et vous les répercuter.",
+    "Zen n'est pas à but lucratif. Zen vous facture au prix coûtant des fournisseurs de modèles. Plus Zen est utilisé, plus RAILWISE (甬算) peut négocier de meilleurs tarifs et vous les répercuter.",
   "zen.faq.q4": "Combien coûte Zen ?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "facture par requête",
@@ -204,7 +204,7 @@ export const dict = {
     "Votre coût total dépend de l'usage, et vous pouvez définir des limites de dépense mensuelles dans votre",
   "zen.faq.a4.p2.accountLink": "compte",
   "zen.faq.a4.p3":
-    "Pour couvrir les coûts, YONSOON (甬算) ajoute uniquement de petits frais de traitement de paiement de 1,23 $ par recharge de 20 $.",
+    "Pour couvrir les coûts, RAILWISE (甬算) ajoute uniquement de petits frais de traitement de paiement de 1,23 $ par recharge de 20 $.",
   "zen.faq.q5": "Et pour les données et la confidentialité ?",
   "zen.faq.a5.beforeExceptions":
     "Tous les modèles Zen sont hébergés aux États-Unis. Les fournisseurs appliquent une politique de rétention zéro et n'utilisent pas vos données pour l'entraînement des modèles, avec les",
@@ -215,7 +215,7 @@ export const dict = {
   "zen.faq.a7": "Oui, vous pouvez désactiver la facturation à tout moment et utiliser votre solde restant.",
   "zen.faq.q8": "Puis-je utiliser Zen avec d'autres agents de code ?",
   "zen.faq.a8":
-    "Zen fonctionne très bien avec YONSOON (甬算), mais vous pouvez utiliser Zen avec n'importe quel agent. Suivez les instructions de configuration dans votre agent préféré.",
+    "Zen fonctionne très bien avec RAILWISE (甬算), mais vous pouvez utiliser Zen avec n'importe quel agent. Suivez les instructions de configuration dans votre agent préféré.",
 
   "zen.cta.start": "Commencez avec Zen",
   "zen.pricing.title": "Ajoutez 20 $ de solde Pay as you go",
@@ -226,13 +226,13 @@ export const dict = {
   "zen.problem.body":
     "Il existe de nombreux modèles disponibles, mais seuls quelques-uns fonctionnent bien avec les agents de code. La plupart des fournisseurs les configurent différemment avec des résultats variables.",
   "zen.problem.subtitle":
-    "Nous résolvons ce problème pour tout le monde, pas seulement pour les utilisateurs de YONSOON (甬算).",
+    "Nous résolvons ce problème pour tout le monde, pas seulement pour les utilisateurs de RAILWISE (甬算).",
   "zen.problem.item1": "Test des modèles sélectionnés et consultation de leurs équipes",
   "zen.problem.item2": "Collaboration avec les fournisseurs pour garantir une livraison correcte",
   "zen.problem.item3": "Benchmark de toutes les combinaisons modèle-fournisseur que nous recommandons",
   "zen.how.title": "Comment fonctionne Zen",
   "zen.how.body":
-    "Bien que nous vous suggérions d'utiliser Zen avec YONSOON (甬算), vous pouvez utiliser Zen avec n'importe quel agent.",
+    "Bien que nous vous suggérions d'utiliser Zen avec RAILWISE (甬算), vous pouvez utiliser Zen avec n'importe quel agent.",
   "zen.how.step1.title": "Inscrivez-vous et ajoutez un solde de 20 $",
   "zen.how.step1.beforeLink": "suivez les",
   "zen.how.step1.link": "instructions de configuration",
@@ -246,11 +246,11 @@ export const dict = {
     "Tous les modèles Zen sont hébergés aux États-Unis. Les fournisseurs suivent une politique de rétention zéro et n'utilisent pas vos données pour l'entraînement des modèles, avec les",
   "zen.privacy.exceptionsLink": "exceptions suivantes",
 
-  "black.meta.title": "YONSOON (甬算) Black | Accédez aux meilleurs modèles de code au monde",
-  "black.meta.description": "Accédez à Claude, GPT, Gemini et plus avec les forfaits d'abonnement YONSOON (甬算) Black.",
+  "black.meta.title": "RAILWISE (甬算) Black | Accédez aux meilleurs modèles de code au monde",
+  "black.meta.description": "Accédez à Claude, GPT, Gemini et plus avec les forfaits d'abonnement RAILWISE (甬算) Black.",
   "black.hero.title": "Accédez aux meilleurs modèles de code au monde",
   "black.hero.subtitle": "Y compris Claude, GPT, Gemini et plus",
-  "black.title": "YONSOON (甬算) Black | Tarification",
+  "black.title": "RAILWISE (甬算) Black | Tarification",
   "black.plan.icon20": "Forfait Black 20",
   "black.plan.icon100": "Forfait Black 100",
   "black.plan.icon200": "Forfait Black 200",
@@ -269,10 +269,10 @@ export const dict = {
   "black.action.continue": "Continuer",
   "black.finePrint.beforeTerms": "Les prix affichés n'incluent pas les taxes applicables",
   "black.finePrint.terms": "Conditions d'utilisation",
-  "black.workspace.title": "YONSOON (甬算) Black | Sélectionner un espace de travail",
+  "black.workspace.title": "RAILWISE (甬算) Black | Sélectionner un espace de travail",
   "black.workspace.selectPlan": "Sélectionnez un espace de travail pour ce forfait",
   "black.workspace.name": "Espace de travail {{n}}",
-  "black.subscribe.title": "S'abonner à YONSOON (甬算) Black",
+  "black.subscribe.title": "S'abonner à RAILWISE (甬算) Black",
   "black.subscribe.paymentMethod": "Méthode de paiement",
   "black.subscribe.loadingPaymentForm": "Chargement du formulaire de paiement...",
   "black.subscribe.selectWorkspaceToContinue": "Sélectionnez un espace de travail pour continuer",
@@ -284,9 +284,9 @@ export const dict = {
   "black.subscribe.processing": "Traitement...",
   "black.subscribe.submit": "S'abonner ${{plan}}",
   "black.subscribe.form.chargeNotice": "Vous ne serez débité que lorsque votre abonnement sera activé",
-  "black.subscribe.success.title": "Vous êtes sur la liste d'attente YONSOON (甬算) Black",
+  "black.subscribe.success.title": "Vous êtes sur la liste d'attente RAILWISE (甬算) Black",
   "black.subscribe.success.subscriptionPlan": "Forfait d'abonnement",
-  "black.subscribe.success.planName": "YONSOON (甬算) Black {{plan}}",
+  "black.subscribe.success.planName": "RAILWISE (甬算) Black {{plan}}",
   "black.subscribe.success.amount": "Montant",
   "black.subscribe.success.amountValue": "{{plan}} $ par mois",
   "black.subscribe.success.paymentMethod": "Méthode de paiement",
@@ -312,15 +312,15 @@ export const dict = {
     "Accédez à des modèles configurés pour des performances optimales - pas de rétrogradation ni de routage vers des fournisseurs moins chers.",
   "workspace.newUser.feature.lockin.title": "Pas de verrouillage",
   "workspace.newUser.feature.lockin.body":
-    "Utilisez Zen avec n'importe quel agent de code et continuez à utiliser d'autres fournisseurs avec YONSOON (甬算) quand vous le souhaitez.",
+    "Utilisez Zen avec n'importe quel agent de code et continuez à utiliser d'autres fournisseurs avec RAILWISE (甬算) quand vous le souhaitez.",
   "workspace.newUser.copyApiKey": "Copier la clé API",
   "workspace.newUser.copyKey": "Copier la clé",
   "workspace.newUser.copied": "Copié !",
   "workspace.newUser.step.enableBilling": "Activer la facturation",
   "workspace.newUser.step.login.before": "Exécuter",
-  "workspace.newUser.step.login.after": "et sélectionnez YONSOON (甬算)",
+  "workspace.newUser.step.login.after": "et sélectionnez RAILWISE (甬算)",
   "workspace.newUser.step.pasteKey": "Collez votre clé API",
-  "workspace.newUser.step.models.before": "Démarrez YONSOON (甬算) et exécutez",
+  "workspace.newUser.step.models.before": "Démarrez RAILWISE (甬算) et exécutez",
   "workspace.newUser.step.models.after": "pour sélectionner un modèle",
 
   "workspace.models.title": "Modèles",
@@ -364,10 +364,10 @@ export const dict = {
   "workspace.cost.subscriptionShort": "abo",
 
   "workspace.keys.title": "Clés API",
-  "workspace.keys.subtitle": "Gérez vos clés API pour accéder aux services YONSOON (甬算).",
+  "workspace.keys.subtitle": "Gérez vos clés API pour accéder aux services RAILWISE (甬算).",
   "workspace.keys.create": "Créer une clé API",
   "workspace.keys.placeholder": "Entrez le nom de la clé",
-  "workspace.keys.empty": "Créer une clé API YONSOON (甬算) Gateway",
+  "workspace.keys.empty": "Créer une clé API RAILWISE (甬算) Gateway",
   "workspace.keys.table.name": "Nom",
   "workspace.keys.table.key": "Clé",
   "workspace.keys.table.createdBy": "Créé par",
@@ -472,7 +472,7 @@ export const dict = {
   "workspace.black.time.minutes": "minutes",
   "workspace.black.time.fewSeconds": "quelques secondes",
   "workspace.black.subscription.title": "Abonnement",
-  "workspace.black.subscription.message": "Vous êtes abonné à YONSOON (甬算) Black pour {{plan}} $ par mois.",
+  "workspace.black.subscription.message": "Vous êtes abonné à RAILWISE (甬算) Black pour {{plan}} $ par mois.",
   "workspace.black.subscription.manage": "Gérer l'abonnement",
   "workspace.black.subscription.rollingUsage": "Utilisation 5 heures",
   "workspace.black.subscription.weeklyUsage": "Utilisation hebdomadaire",
@@ -481,9 +481,9 @@ export const dict = {
     "Utilisez votre solde disponible après avoir atteint les limites d'utilisation",
   "workspace.black.waitlist.title": "Liste d'attente",
   "workspace.black.waitlist.joined":
-    "Vous êtes sur la liste d'attente pour le forfait YONSOON (甬算) Black à {{plan}} $ par mois.",
+    "Vous êtes sur la liste d'attente pour le forfait RAILWISE (甬算) Black à {{plan}} $ par mois.",
   "workspace.black.waitlist.ready":
-    "Nous sommes prêts à vous inscrire au forfait YONSOON (甬算) Black à {{plan}} $ par mois.",
+    "Nous sommes prêts à vous inscrire au forfait RAILWISE (甬算) Black à {{plan}} $ par mois.",
   "workspace.black.waitlist.leave": "Quitter la liste d'attente",
   "workspace.black.waitlist.leaving": "Sortie...",
   "workspace.black.waitlist.left": "Quitté",
@@ -493,15 +493,15 @@ export const dict = {
   "workspace.black.waitlist.enrollNote":
     "Lorsque vous cliquez sur S'inscrire, votre abonnement démarre immédiatement et votre carte sera débitée.",
 
-  "download.title": "YONSOON (甬算) | Téléchargement",
-  "download.meta.description": "Téléchargez YONSOON (甬算) pour macOS, Windows et Linux",
-  "download.hero.title": "Télécharger YONSOON (甬算)",
+  "download.title": "RAILWISE (甬算) | Téléchargement",
+  "download.meta.description": "Téléchargez RAILWISE (甬算) pour macOS, Windows et Linux",
+  "download.hero.title": "Télécharger RAILWISE (甬算)",
   "download.hero.subtitle": "Disponible en bêta pour macOS, Windows et Linux",
   "download.hero.button": "Télécharger pour {{os}}",
-  "download.section.terminal": "YONSOON (甬算) Terminal",
-  "download.section.desktop": "YONSOON (甬算) Desktop (Bêta)",
-  "download.section.extensions": "Extensions YONSOON (甬算)",
-  "download.section.integrations": "Intégrations YONSOON (甬算)",
+  "download.section.terminal": "RAILWISE (甬算) Terminal",
+  "download.section.desktop": "RAILWISE (甬算) Desktop (Bêta)",
+  "download.section.extensions": "Extensions RAILWISE (甬算)",
+  "download.section.integrations": "Intégrations RAILWISE (甬算)",
   "download.action.download": "Télécharger",
   "download.action.install": "Installer",
 
@@ -512,27 +512,27 @@ export const dict = {
   "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
-    "Pas forcément, mais probablement. Vous aurez besoin d'un abonnement IA si vous voulez connecter YONSOON (甬算) à un fournisseur payant, mais vous pouvez travailler avec des",
+    "Pas forcément, mais probablement. Vous aurez besoin d'un abonnement IA si vous voulez connecter RAILWISE (甬算) à un fournisseur payant, mais vous pouvez travailler avec des",
   "download.faq.a3.localLink": "modèles locaux",
   "download.faq.a3.afterLocal.beforeZen": "gratuitement. Même si nous encourageons les utilisateurs à utiliser",
   "download.faq.a3.afterZen":
-    ", YONSOON (甬算) fonctionne avec tous les fournisseurs populaires comme OpenAI, Anthropic, xAI, etc.",
+    ", RAILWISE (甬算) fonctionne avec tous les fournisseurs populaires comme OpenAI, Anthropic, xAI, etc.",
 
-  "download.faq.a5.p1": "YONSOON (甬算) est 100% gratuit à utiliser.",
+  "download.faq.a5.p1": "RAILWISE (甬算) est 100% gratuit à utiliser.",
   "download.faq.a5.p2.beforeZen":
-    "Les coûts supplémentaires viendront de votre abonnement à un fournisseur de modèle. Même si YONSOON (甬算) fonctionne avec n'importe quel fournisseur, nous recommandons d'utiliser",
+    "Les coûts supplémentaires viendront de votre abonnement à un fournisseur de modèle. Même si RAILWISE (甬算) fonctionne avec n'importe quel fournisseur, nous recommandons d'utiliser",
   "download.faq.a5.p2.afterZen": ".",
 
   "download.faq.a6.p1":
-    "Vos données et informations ne sont stockées que lorsque vous créez des liens partageables dans YONSOON (甬算).",
+    "Vos données et informations ne sont stockées que lorsque vous créez des liens partageables dans RAILWISE (甬算).",
   "download.faq.a6.p2.beforeShare": "En savoir plus sur",
   "download.faq.a6.shareLink": "les pages de partage",
 
-  "enterprise.title": "YONSOON (甬算) | Solutions entreprise pour votre organisation",
-  "enterprise.meta.description": "Contactez YONSOON (甬算) pour des solutions entreprise",
+  "enterprise.title": "RAILWISE (甬算) | Solutions entreprise pour votre organisation",
+  "enterprise.meta.description": "Contactez RAILWISE (甬算) pour des solutions entreprise",
   "enterprise.hero.title": "Votre code vous appartient",
   "enterprise.hero.body1":
-    "YONSOON (甬算) fonctionne de manière sécurisée au sein de votre organisation, sans stocker de données ni de contexte, et sans restrictions de licence ni revendications de propriété. Démarrez un essai avec votre équipe, puis déployez-le dans votre organisation en l'intégrant à votre SSO et à votre passerelle IA interne.",
+    "RAILWISE (甬算) fonctionne de manière sécurisée au sein de votre organisation, sans stocker de données ni de contexte, et sans restrictions de licence ni revendications de propriété. Démarrez un essai avec votre équipe, puis déployez-le dans votre organisation en l'intégrant à votre SSO et à votre passerelle IA interne.",
   "enterprise.hero.body2": "Dites-nous comment nous pouvons vous aider.",
   "enterprise.form.name.label": "Nom complet",
   "enterprise.form.name.placeholder": "Jeff Bezos",
@@ -546,29 +546,29 @@ export const dict = {
   "enterprise.form.sending": "Envoi...",
   "enterprise.form.success": "Message envoyé, nous vous contacterons bientôt.",
   "enterprise.faq.title": "FAQ",
-  "enterprise.faq.q1": "Qu'est-ce que YONSOON (甬算) Enterprise ?",
+  "enterprise.faq.q1": "Qu'est-ce que RAILWISE (甬算) Enterprise ?",
   "enterprise.faq.a1":
-    "YONSOON (甬算) Enterprise s'adresse aux organisations qui veulent s'assurer que leur code et leurs données ne quittent jamais leur infrastructure. Cela est possible grâce à une configuration centralisée qui s'intègre à votre SSO et à votre passerelle IA interne.",
-  "enterprise.faq.q2": "Comment démarrer avec YONSOON (甬算) Enterprise ?",
+    "RAILWISE (甬算) Enterprise s'adresse aux organisations qui veulent s'assurer que leur code et leurs données ne quittent jamais leur infrastructure. Cela est possible grâce à une configuration centralisée qui s'intègre à votre SSO et à votre passerelle IA interne.",
+  "enterprise.faq.q2": "Comment démarrer avec RAILWISE (甬算) Enterprise ?",
   "enterprise.faq.a2":
-    "Commencez simplement par un essai interne avec votre équipe. Par défaut, YONSOON (甬算) ne stocke pas votre code ni vos données de contexte, ce qui facilite la prise en main. Ensuite, contactez-nous pour discuter des tarifs et des options de mise en œuvre.",
+    "Commencez simplement par un essai interne avec votre équipe. Par défaut, RAILWISE (甬算) ne stocke pas votre code ni vos données de contexte, ce qui facilite la prise en main. Ensuite, contactez-nous pour discuter des tarifs et des options de mise en œuvre.",
   "enterprise.faq.q3": "Comment fonctionne la tarification entreprise ?",
   "enterprise.faq.a3":
     "Nous proposons une tarification entreprise par siège. Si vous avez votre propre passerelle LLM, nous ne facturons pas les tokens utilisés. Pour plus de détails, contactez-nous pour un devis sur mesure en fonction des besoins de votre organisation.",
-  "enterprise.faq.q4": "Mes données sont-elles sécurisées avec YONSOON (甬算) Enterprise ?",
+  "enterprise.faq.q4": "Mes données sont-elles sécurisées avec RAILWISE (甬算) Enterprise ?",
   "enterprise.faq.a4":
-    "Oui. YONSOON (甬算) ne stocke pas votre code ni vos données de contexte. Tout le traitement se fait localement ou via des appels API directs vers votre fournisseur d'IA. Avec une configuration centralisée et une intégration SSO, vos données restent sécurisées au sein de l'infrastructure de votre organisation.",
+    "Oui. RAILWISE (甬算) ne stocke pas votre code ni vos données de contexte. Tout le traitement se fait localement ou via des appels API directs vers votre fournisseur d'IA. Avec une configuration centralisée et une intégration SSO, vos données restent sécurisées au sein de l'infrastructure de votre organisation.",
 
-  "brand.title": "YONSOON (甬算) | Marque",
-  "brand.meta.description": "Guide de marque YONSOON (甬算)",
+  "brand.title": "RAILWISE (甬算) | Marque",
+  "brand.meta.description": "Guide de marque RAILWISE (甬算)",
   "brand.heading": "Guide de marque",
-  "brand.subtitle": "Ressources et éléments pour vous aider à travailler avec la marque YONSOON (甬算).",
+  "brand.subtitle": "Ressources et éléments pour vous aider à travailler avec la marque RAILWISE (甬算).",
   "brand.downloadAll": "Télécharger tous les assets",
 
-  "changelog.title": "YONSOON (甬算) | Changelog",
-  "changelog.meta.description": "Notes de version et changelog d'YONSOON (甬算)",
+  "changelog.title": "RAILWISE (甬算) | Changelog",
+  "changelog.meta.description": "Notes de version et changelog d'RAILWISE (甬算)",
   "changelog.hero.title": "Changelog",
-  "changelog.hero.subtitle": "Nouvelles mises à jour et améliorations pour YONSOON (甬算)",
+  "changelog.hero.subtitle": "Nouvelles mises à jour et améliorations pour RAILWISE (甬算)",
   "changelog.empty": "Aucune entrée de changelog trouvée.",
   "changelog.viewJson": "Voir le JSON",
 

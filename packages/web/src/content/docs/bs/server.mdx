@@ -1,19 +1,19 @@
 ---
 title: Server
-description: Komunicirajte s yonsoon serverom preko HTTP-a.
+description: Komunicirajte s railwise serverom preko HTTP-a.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-Komanda `yonsoon serve` pokrece headless HTTP server koji izlaže OpenAPI endpoint koji yonsoon klijent moze koristiti.
+Komanda `railwise serve` pokrece headless HTTP server koji izlaže OpenAPI endpoint koji railwise klijent moze koristiti.
 
 ---
 
 ### Korištenje
 
 ```bash
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
 ```
 
 #### Opcije
@@ -23,38 +23,38 @@ yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
 | `--port`        | Port na kojem slusa                 | `4096`           |
 | `--hostname`    | Hostname na kojem slusa             | `127.0.0.1`      |
 | `--mdns`        | Ukljuci mDNS otkrivanje             | `false`          |
-| `--mdns-domain` | Prilagodeni domen za mDNS servis    | `yonsoon.local` |
+| `--mdns-domain` | Prilagodeni domen za mDNS servis    | `railwise.local` |
 | `--cors`        | Dodatni browser origin-i koje dozv. | `[]`             |
 
 `--cors` mozete navesti vise puta:
 
 ```bash
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
 ```
 
 ---
 
 ### Autentifikacija
 
-Postavite `YONSOON_SERVER_PASSWORD` da zastitite server HTTP basic auth mehanizmom. Korisnicko ime je po defaultu `yonsoon`, ili postavite `YONSOON_SERVER_USERNAME` za nadjacavanje. Ovo vazi i za `yonsoon serve` i za `yonsoon web`.
+Postavite `RAILWISE_SERVER_PASSWORD` da zastitite server HTTP basic auth mehanizmom. Korisnicko ime je po defaultu `railwise`, ili postavite `RAILWISE_SERVER_USERNAME` za nadjacavanje. Ovo vazi i za `railwise serve` i za `railwise web`.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve
+RAILWISE_SERVER_PASSWORD=your-password railwise serve
 ```
 
 ---
 
 ### Kako radi
 
-Kada pokrenete `yonsoon`, pokrecu se TUI i server. TUI je klijent koji komunicira sa serverom. Server izlaže OpenAPI 3.1 spec endpoint koji se koristi i za generisanje [SDK-a](/docs/sdk).
+Kada pokrenete `railwise`, pokrecu se TUI i server. TUI je klijent koji komunicira sa serverom. Server izlaže OpenAPI 3.1 spec endpoint koji se koristi i za generisanje [SDK-a](/docs/sdk).
 
 :::tip
-Koristite yonsoon server za programsku interakciju sa yonsoon-om.
+Koristite railwise server za programsku interakciju sa railwise-om.
 :::
 
-Ova arhitektura omogucava yonsoon podrsku za vise klijenata i programsku interakciju.
+Ova arhitektura omogucava railwise podrsku za vise klijenata i programsku interakciju.
 
-Mozete pokrenuti `yonsoon serve` da startate standalone server. Ako je yonsoon TUI vec pokrenut, `yonsoon serve` ce pokrenuti novi server.
+Mozete pokrenuti `railwise serve` da startate standalone server. Ako je railwise TUI vec pokrenut, `railwise serve` ce pokrenuti novi server.
 
 ---
 
@@ -62,7 +62,7 @@ Mozete pokrenuti `yonsoon serve` da startate standalone server. Ako je yonsoon T
 
 Kada pokrenete TUI, port i hostname se nasumicno dodijele. Umjesto toga, mozete zadati `--hostname` i `--port` [zastave](/docs/cli), pa se povezati na taj server.
 
-Endpoint [`/tui`](#tui) mozete koristiti za upravljanje TUI-jem kroz server. Na primjer, mozete unaprijed popuniti ili pokrenuti prompt. Ovaj setup koriste YONSOON (甬算) [IDE](/docs/ide) pluginovi.
+Endpoint [`/tui`](#tui) mozete koristiti za upravljanje TUI-jem kroz server. Na primjer, mozete unaprijed popuniti ili pokrenuti prompt. Ovaj setup koriste RAILWISE (甬算) [IDE](/docs/ide) pluginovi.
 
 ---
 
@@ -80,7 +80,7 @@ Na primjer, `http://localhost:4096/doc`. Koristite specifikaciju da generisete k
 
 ## API-ji
 
-yonsoon server izlaže sljedece API-je.
+railwise server izlaže sljedece API-je.
 
 ---
 

@@ -1,7 +1,7 @@
 import { Component, For, Match, Show, Switch } from "solid-js"
-import { FileIcon } from "@yonsoon/ui/file-icon"
-import { Icon } from "@yonsoon/ui/icon"
-import { getDirectory, getFilename } from "@yonsoon/util/path"
+import { FileIcon } from "@railwise/ui/file-icon"
+import { Icon } from "@railwise/ui/icon"
+import { getDirectory, getFilename } from "@railwise/util/path"
 
 export type AtOption =
   | { type: "agent"; name: string; display: string }

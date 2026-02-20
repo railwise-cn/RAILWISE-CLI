@@ -42,18 +42,18 @@ beforeAll(async () => {
     useParams: () => ({}),
   }))
 
-  mock.module("@yonsoon/sdk/v2/client", () => ({
-    createYonsoonClient: (input: { directory: string }) => {
+  mock.module("@railwise/sdk/v2/client", () => ({
+    createRailwiseClient: (input: { directory: string }) => {
       createdClients.push(input.directory)
       return clientFor(input.directory)
     },
   }))
 
-  mock.module("@yonsoon/ui/toast", () => ({
+  mock.module("@railwise/ui/toast", () => ({
     showToast: () => 0,
   }))
 
-  mock.module("@yonsoon/util/encode", () => ({
+  mock.module("@railwise/util/encode", () => ({
     base64Encode: (value: string) => value,
   }))
 

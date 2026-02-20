@@ -1,15 +1,15 @@
 ---
 title: Formatierer
-description: YONSOON (甬算) verwendet sprachspezifische Formatierer.
+description: RAILWISE (甬算) verwendet sprachspezifische Formatierer.
 ---
 
-YONSOON (甬算) formatiert Dateien automatisch, nachdem sie mit sprachspezifischen Formatierern geschrieben oder bearbeitet wurden. Dadurch wird sichergestellt, dass der generierte Code dem Codestil Ihres Projekts entspricht.
+RAILWISE (甬算) formatiert Dateien automatisch, nachdem sie mit sprachspezifischen Formatierern geschrieben oder bearbeitet wurden. Dadurch wird sichergestellt, dass der generierte Code dem Codestil Ihres Projekts entspricht.
 
 ---
 
 ## Integriert
 
-YONSOON (甬算) verfügt über mehrere integrierte Formatierer für gängige Sprachen und Frameworks. Nachfolgend finden Sie eine Liste der Formatierer, unterstützten Dateierweiterungen und benötigten Befehle oder Konfigurationsoptionen.
+RAILWISE (甬算) verfügt über mehrere integrierte Formatierer für gängige Sprachen und Frameworks. Nachfolgend finden Sie eine Liste der Formatierer, unterstützten Dateierweiterungen und benötigten Befehle oder Konfigurationsoptionen.
 
 | Formatierer          | Erweiterungen                                                                                            | Anforderungen                                                                                              |
 | -------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -39,13 +39,13 @@ YONSOON (甬算) verfügt über mehrere integrierte Formatierer für gängige Sp
 | oxfmt (Experimental) | .js, .jsx, .ts, .tsx                                                                                     | `oxfmt`-Abhängigkeit in `package.json` und einer [experimental env variable flag](/docs/cli/#experimental) |
 | Ormolu               | .hs                                                                                                      | `ormolu`-Befehl verfügbar                                                                                  |
 
-Wenn Ihr Projekt auch `prettier` in Ihrem `package.json` hat, wird YONSOON (甬算) automatisch verwendet.
+Wenn Ihr Projekt auch `prettier` in Ihrem `package.json` hat, wird RAILWISE (甬算) automatisch verwendet.
 
 ---
 
 ## Funktionsweise
 
-Wenn YONSOON (甬算) eine Datei schreibt oder bearbeitet, geschieht Folgendes:
+Wenn RAILWISE (甬算) eine Datei schreibt oder bearbeitet, geschieht Folgendes:
 
 1. Überprüft die Dateierweiterung anhand aller aktivierten Formatierer.
 2. Führt den entsprechenden Formatierungsbefehl für die Datei aus.
@@ -57,11 +57,11 @@ Dieser Prozess findet im Hintergrund statt und stellt sicher, dass Ihr Codestile
 
 ## Konfiguration
 
-Sie können Formatierer über den Abschnitt `formatter` in Ihrer YONSOON (甬算)-Konfiguration anpassen.
+Sie können Formatierer über den Abschnitt `formatter` in Ihrer RAILWISE (甬算)-Konfiguration anpassen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {}
 }
 ```
@@ -83,18 +83,18 @@ Schauen wir uns einige Beispiele an.
 
 Um **alle** Formatierer global zu deaktivieren, setzen Sie `formatter` auf `false`:
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": false
 }
 ```
 
 Um einen **bestimmten** Formatierer zu deaktivieren, setzen Sie `disabled` auf `true`:
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -109,9 +109,9 @@ Um einen **bestimmten** Formatierer zu deaktivieren, setzen Sie `disabled` auf `
 
 Sie können den integrierten Formatierer überschreiben oder neu hinzufügen, indem Sie den Befehl, Umgebungsvariablen und Dateierweiterungen angeben:
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

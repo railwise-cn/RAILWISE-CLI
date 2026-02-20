@@ -1379,7 +1379,7 @@ export type KeybindsConfig = {
 export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR"
 
 /**
- * Server configuration for yonsoon serve and web commands
+ * Server configuration for railwise serve and web commands
  */
 export type ServerConfig = {
   /**
@@ -1395,7 +1395,7 @@ export type ServerConfig = {
    */
   mdns?: boolean
   /**
-   * Custom domain name for mDNS service (default: yonsoon.local)
+   * Custom domain name for mDNS service (default: railwise.local)
    */
   mdnsDomain?: string
   /**
@@ -1702,7 +1702,7 @@ export type Config = {
   }
   server?: ServerConfig
   /**
-   * Command configuration, see https://yonsoon.ai/docs/commands
+   * Command configuration, see https://railwise.ai/docs/commands
    */
   command?: {
     [key: string]: {
@@ -1776,7 +1776,7 @@ export type Config = {
     [key: string]: AgentConfig | undefined
   }
   /**
-   * Agent configuration, see https://yonsoon.ai/docs/agents
+   * Agent configuration, see https://railwise.ai/docs/agents
    */
   agent?: {
     plan?: AgentConfig

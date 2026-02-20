@@ -4,7 +4,7 @@
 // borrowed from https://github.com/skyline69/balatro-mod-manager
 #[cfg(target_os = "linux")]
 fn configure_display_backend() -> Option<String> {
-    use yonsoon_lib::linux_windowing::{Backend, SessionEnv, select_backend};
+    use railwise_lib::linux_windowing::{Backend, SessionEnv, select_backend};
     use std::env;
 
     let set_env_if_absent = |key: &str, value: &str| {
@@ -16,7 +16,7 @@ fn configure_display_backend() -> Option<String> {
     };
 
     let session = SessionEnv::capture();
-    let prefer_wayland = yonsoon_lib::linux_display::read_wayland().unwrap_or(false);
+    let prefer_wayland = railwise_lib::linux_display::read_wayland().unwrap_or(false);
     let decision = select_backend(&session, prefer_wayland)?;
 
     match decision.backend {
@@ -74,5 +74,5 @@ fn main() {
         }
     }
 
-    yonsoon_lib::run()
+    railwise_lib::run()
 }

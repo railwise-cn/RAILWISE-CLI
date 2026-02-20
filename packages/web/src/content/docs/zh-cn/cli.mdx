@@ -360,7 +360,7 @@ opencode run --attach http://localhost:4096 "Explain async/await in JavaScript"
 opencode serve
 ```
 
-此命令启动一个 HTTP 服务器，提供对 OpenCode 功能的 API 访问，无需 TUI 界面。设置 `YONSOON_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `opencode`）。
+此命令启动一个 HTTP 服务器，提供对 OpenCode 功能的 API 访问，无需 TUI 界面。设置 `RAILWISE_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `opencode`）。
 
 #### 标志
 
@@ -456,7 +456,7 @@ opencode import https://opncd.ai/s/abc123
 opencode web
 ```
 
-此命令启动一个 HTTP 服务器并打开浏览器，通过 Web 界面访问 OpenCode。设置 `YONSOON_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `opencode`）。
+此命令启动一个 HTTP 服务器并打开浏览器，通过 Web 界面访问 OpenCode。设置 `RAILWISE_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `opencode`）。
 
 #### 标志
 
@@ -555,30 +555,30 @@ OpenCode 可以通过环境变量进行配置。
 
 | 变量                                  | 类型    | 描述                                    |
 | ------------------------------------- | ------- | --------------------------------------- |
-| `YONSOON_AUTO_SHARE`                 | boolean | 自动分享会话                            |
-| `YONSOON_GIT_BASH_PATH`              | string  | Windows 上 Git Bash 可执行文件的路径    |
-| `YONSOON_CONFIG`                     | string  | 配置文件路径                            |
-| `YONSOON_CONFIG_DIR`                 | string  | 配置目录路径                            |
-| `YONSOON_CONFIG_CONTENT`             | string  | 内联 JSON 配置内容                      |
-| `YONSOON_DISABLE_AUTOUPDATE`         | boolean | 禁用自动更新检查                        |
-| `YONSOON_DISABLE_PRUNE`              | boolean | 禁用旧数据清理                          |
-| `YONSOON_DISABLE_TERMINAL_TITLE`     | boolean | 禁用自动终端标题更新                    |
-| `YONSOON_PERMISSION`                 | string  | 内联 JSON 权限配置                      |
-| `YONSOON_DISABLE_DEFAULT_PLUGINS`    | boolean | 禁用默认插件                            |
-| `YONSOON_DISABLE_LSP_DOWNLOAD`       | boolean | 禁用 LSP 服务器自动下载                 |
-| `YONSOON_ENABLE_EXPERIMENTAL_MODELS` | boolean | 启用实验性模型                          |
-| `YONSOON_DISABLE_AUTOCOMPACT`        | boolean | 禁用自动上下文压缩                      |
-| `YONSOON_DISABLE_CLAUDE_CODE`        | boolean | 禁用读取 `.claude`（提示词 + 技能）     |
-| `YONSOON_DISABLE_CLAUDE_CODE_PROMPT` | boolean | 禁用读取 `~/.claude/CLAUDE.md`          |
-| `YONSOON_DISABLE_CLAUDE_CODE_SKILLS` | boolean | 禁用加载 `.claude/skills`               |
-| `YONSOON_DISABLE_MODELS_FETCH`       | boolean | 禁用从远程源获取模型                    |
-| `YONSOON_FAKE_VCS`                   | string  | 用于测试目的的模拟 VCS 提供商           |
-| `YONSOON_DISABLE_FILETIME_CHECK`     | boolean | 禁用文件时间检查优化                    |
-| `YONSOON_CLIENT`                     | string  | 客户端标识符（默认为 `cli`）            |
-| `YONSOON_ENABLE_EXA`                 | boolean | 启用 Exa 网络搜索工具                   |
-| `YONSOON_SERVER_PASSWORD`            | string  | 为 `serve`/`web` 启用基本认证           |
-| `YONSOON_SERVER_USERNAME`            | string  | 覆盖基本认证用户名（默认为 `opencode`） |
-| `YONSOON_MODELS_URL`                 | string  | 自定义模型配置获取 URL                  |
+| `RAILWISE_AUTO_SHARE`                 | boolean | 自动分享会话                            |
+| `RAILWISE_GIT_BASH_PATH`              | string  | Windows 上 Git Bash 可执行文件的路径    |
+| `RAILWISE_CONFIG`                     | string  | 配置文件路径                            |
+| `RAILWISE_CONFIG_DIR`                 | string  | 配置目录路径                            |
+| `RAILWISE_CONFIG_CONTENT`             | string  | 内联 JSON 配置内容                      |
+| `RAILWISE_DISABLE_AUTOUPDATE`         | boolean | 禁用自动更新检查                        |
+| `RAILWISE_DISABLE_PRUNE`              | boolean | 禁用旧数据清理                          |
+| `RAILWISE_DISABLE_TERMINAL_TITLE`     | boolean | 禁用自动终端标题更新                    |
+| `RAILWISE_PERMISSION`                 | string  | 内联 JSON 权限配置                      |
+| `RAILWISE_DISABLE_DEFAULT_PLUGINS`    | boolean | 禁用默认插件                            |
+| `RAILWISE_DISABLE_LSP_DOWNLOAD`       | boolean | 禁用 LSP 服务器自动下载                 |
+| `RAILWISE_ENABLE_EXPERIMENTAL_MODELS` | boolean | 启用实验性模型                          |
+| `RAILWISE_DISABLE_AUTOCOMPACT`        | boolean | 禁用自动上下文压缩                      |
+| `RAILWISE_DISABLE_CLAUDE_CODE`        | boolean | 禁用读取 `.claude`（提示词 + 技能）     |
+| `RAILWISE_DISABLE_CLAUDE_CODE_PROMPT` | boolean | 禁用读取 `~/.claude/CLAUDE.md`          |
+| `RAILWISE_DISABLE_CLAUDE_CODE_SKILLS` | boolean | 禁用加载 `.claude/skills`               |
+| `RAILWISE_DISABLE_MODELS_FETCH`       | boolean | 禁用从远程源获取模型                    |
+| `RAILWISE_FAKE_VCS`                   | string  | 用于测试目的的模拟 VCS 提供商           |
+| `RAILWISE_DISABLE_FILETIME_CHECK`     | boolean | 禁用文件时间检查优化                    |
+| `RAILWISE_CLIENT`                     | string  | 客户端标识符（默认为 `cli`）            |
+| `RAILWISE_ENABLE_EXA`                 | boolean | 启用 Exa 网络搜索工具                   |
+| `RAILWISE_SERVER_PASSWORD`            | string  | 为 `serve`/`web` 启用基本认证           |
+| `RAILWISE_SERVER_USERNAME`            | string  | 覆盖基本认证用户名（默认为 `opencode`） |
+| `RAILWISE_MODELS_URL`                 | string  | 自定义模型配置获取 URL                  |
 
 ---
 
@@ -588,16 +588,16 @@ OpenCode 可以通过环境变量进行配置。
 
 | 变量                                            | 类型    | 描述                            |
 | ----------------------------------------------- | ------- | ------------------------------- |
-| `YONSOON_EXPERIMENTAL`                         | boolean | 启用所有实验性功能              |
-| `YONSOON_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | 启用图标发现                    |
-| `YONSOON_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | 禁用 TUI 中的选中即复制         |
-| `YONSOON_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | bash 命令的默认超时时间（毫秒） |
-| `YONSOON_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | LLM 响应的最大输出 Token 数     |
-| `YONSOON_EXPERIMENTAL_FILEWATCHER`             | boolean | 启用整个目录的文件监听器        |
-| `YONSOON_EXPERIMENTAL_OXFMT`                   | boolean | 启用 oxfmt 格式化器             |
-| `YONSOON_EXPERIMENTAL_LSP_TOOL`                | boolean | 启用实验性 LSP 工具             |
-| `YONSOON_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | 禁用文件监听器                  |
-| `YONSOON_EXPERIMENTAL_EXA`                     | boolean | 启用实验性 Exa 功能             |
-| `YONSOON_EXPERIMENTAL_LSP_TY`                  | boolean | 启用实验性 LSP 类型检查         |
-| `YONSOON_EXPERIMENTAL_MARKDOWN`                | boolean | 启用实验性 Markdown 功能        |
-| `YONSOON_EXPERIMENTAL_PLAN_MODE`               | boolean | 启用计划模式                    |
+| `RAILWISE_EXPERIMENTAL`                         | boolean | 启用所有实验性功能              |
+| `RAILWISE_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | 启用图标发现                    |
+| `RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | 禁用 TUI 中的选中即复制         |
+| `RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | bash 命令的默认超时时间（毫秒） |
+| `RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | LLM 响应的最大输出 Token 数     |
+| `RAILWISE_EXPERIMENTAL_FILEWATCHER`             | boolean | 启用整个目录的文件监听器        |
+| `RAILWISE_EXPERIMENTAL_OXFMT`                   | boolean | 启用 oxfmt 格式化器             |
+| `RAILWISE_EXPERIMENTAL_LSP_TOOL`                | boolean | 启用实验性 LSP 工具             |
+| `RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | 禁用文件监听器                  |
+| `RAILWISE_EXPERIMENTAL_EXA`                     | boolean | 启用实验性 Exa 功能             |
+| `RAILWISE_EXPERIMENTAL_LSP_TY`                  | boolean | 启用实验性 LSP 类型检查         |
+| `RAILWISE_EXPERIMENTAL_MARKDOWN`                | boolean | 启用实验性 Markdown 功能        |
+| `RAILWISE_EXPERIMENTAL_PLAN_MODE`               | boolean | 启用计划模式                    |

@@ -77,9 +77,9 @@ opencode 還支援從多個位置讀取 `AGENTS.md` 檔案，不同的位置有�
 要停用 Claude Code 相容性，請設定以下環境變數之一：
 
 ```bash
-export YONSOON_DISABLE_CLAUDE_CODE=1        # Disable all .claude support
-export YONSOON_DISABLE_CLAUDE_CODE_PROMPT=1 # Disable only ~/.claude/CLAUDE.md
-export YONSOON_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
+export RAILWISE_DISABLE_CLAUDE_CODE=1        # Disable all .claude support
+export RAILWISE_DISABLE_CLAUDE_CODE_PROMPT=1 # Disable only ~/.claude/CLAUDE.md
+export RAILWISE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 ```
 
 ---
@@ -98,22 +98,22 @@ export YONSOON_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 ## 自訂指令
 
-您可以在 `yonsoon.json` 或全域設定檔 `~/.config/opencode/yonsoon.json` 中指定自訂指令檔案。這允許您和團隊複用現有規則，而無需將它們複製到 AGENTS.md 中。
+您可以在 `railwise.json` 或全域設定檔 `~/.config/opencode/railwise.json` 中指定自訂指令檔案。這允許您和團隊複用現有規則，而無需將它們複製到 AGENTS.md 中。
 
 範例：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
 
 您還可以使用遠端 URL 從網路載入指令。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["https://raw.githubusercontent.com/my-org/shared-rules/main/style.md"]
 }
 ```
@@ -128,13 +128,13 @@ export YONSOON_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 雖然 opencode 不會自動解析 `AGENTS.md` 中的檔案參照，但您可以透過以下兩種方式實現類似的功能：
 
-### 使用 yonsoon.json
+### 使用 railwise.json
 
-建議的方式是使用 `yonsoon.json` 中的 `instructions` 欄位：
+建議的方式是使用 `railwise.json` 中的 `instructions` 欄位：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["docs/development-standards.md", "test/testing-guidelines.md", "packages/*/AGENTS.md"]
 }
 ```
@@ -176,5 +176,5 @@ Read the following file immediately as it's relevant to all workflows: @rules/ge
 - 確保 opencode 僅在特定任務需要時才載入檔案
 
 :::tip
-對於 monorepo 或具有共享標準的專案，使用 `yonsoon.json` 搭配 glob 模式（如 `packages/*/AGENTS.md`）比手動指定指令更易於維護。
+對於 monorepo 或具有共享標準的專案，使用 `railwise.json` 搭配 glob 模式（如 `packages/*/AGENTS.md`）比手動指定指令更易於維護。
 :::

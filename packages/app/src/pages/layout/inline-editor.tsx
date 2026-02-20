@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store"
 import { onCleanup, Show, type Accessor } from "solid-js"
-import { InlineInput } from "@yonsoon/ui/inline-input"
+import { InlineInput } from "@railwise/ui/inline-input"
 
 export function createInlineEditorController() {
   // This controller intentionally supports one active inline editor at a time.

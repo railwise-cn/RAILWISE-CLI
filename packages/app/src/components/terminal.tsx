@@ -1,5 +1,5 @@
-import { type HexColor, resolveThemeVariant, useTheme, withAlpha } from "@yonsoon/ui/theme"
-import { showToast } from "@yonsoon/ui/toast"
+import { type HexColor, resolveThemeVariant, useTheme, withAlpha } from "@railwise/ui/theme"
+import { showToast } from "@railwise/ui/toast"
 import type { FitAddon, Ghostty, Terminal as Term } from "ghostty-web"
 import { type ComponentProps, createEffect, createSignal, onCleanup, onMount, splitProps } from "solid-js"
 import { SerializeAddon } from "@/addons/serialize"

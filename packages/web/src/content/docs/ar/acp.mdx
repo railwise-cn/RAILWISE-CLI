@@ -1,9 +1,9 @@
 ---
 title: دعم ACP
-description: استخدم YONSOON (甬算) في أي محرر متوافق مع ACP.
+description: استخدم RAILWISE (甬算) في أي محرر متوافق مع ACP.
 ---
 
-يدعم YONSOON (甬算) بروتوكول [Agent Client Protocol](https://agentclientprotocol.com) أو (ACP)، مما يتيح لك استخدامه مباشرة في المحررات وبيئات التطوير المتكاملة (IDEs) المتوافقة.
+يدعم RAILWISE (甬算) بروتوكول [Agent Client Protocol](https://agentclientprotocol.com) أو (ACP)، مما يتيح لك استخدامه مباشرة في المحررات وبيئات التطوير المتكاملة (IDEs) المتوافقة.
 
 :::tip
 للاطلاع على قائمة بالمحررات والأدوات التي تدعم ACP، راجع [ACP progress report](https://zed.dev/blog/acp-progress-report#available-now).
@@ -15,9 +15,9 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
 
 ## الإعداد
 
-لاستخدام YONSOON (甬算) عبر ACP، اضبط محررك ليشغّل الأمر `yonsoon acp`.
+لاستخدام RAILWISE (甬算) عبر ACP، اضبط محررك ليشغّل الأمر `railwise acp`.
 
-يشغّل هذا الأمر YONSOON (甬算) كعملية فرعية متوافقة مع ACP تتواصل مع محررك عبر JSON-RPC باستخدام stdio.
+يشغّل هذا الأمر RAILWISE (甬算) كعملية فرعية متوافقة مع ACP تتواصل مع محررك عبر JSON-RPC باستخدام stdio.
 
 فيما يلي أمثلة لمحررات شائعة تدعم ACP.
 
@@ -30,8 +30,8 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "railwise",
       "args": ["acp"]
     }
   }
@@ -51,9 +51,9 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
         {
           "agent": {
             "custom": {
-              "name": "YONSOON (甬算)",
+              "name": "RAILWISE (甬算)",
               "command": {
-                "command": "yonsoon",
+                "command": "railwise",
                 "args": ["acp"]
               }
             }
@@ -74,15 +74,15 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
 ```json title="acp.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "/absolute/path/bin/yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
   }
 }
 ```
 
-لفتحه، اختر الوكيل الجديد 'YONSOON (甬算)' من محدد الوكلاء في AI Chat.
+لفتحه، اختر الوكيل الجديد 'RAILWISE (甬算)' من محدد الوكلاء في AI Chat.
 
 ---
 
@@ -93,8 +93,8 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
 ```lua
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" }
     }
   }
@@ -106,11 +106,11 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
 ```lua {6-8}
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" },
       env = {
-        YONSOON_API_KEY = os.getenv("YONSOON_API_KEY")
+        RAILWISE_API_KEY = os.getenv("RAILWISE_API_KEY")
       }
     }
   }
@@ -121,14 +121,14 @@ ACP بروتوكول مفتوح يوحّد آلية التواصل بين محر
 
 ### CodeCompanion.nvim
 
-لاستخدام YONSOON (甬算) كوكيل ACP في [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim)، أضف التالي إلى إعدادات Neovim:
+لاستخدام RAILWISE (甬算) كوكيل ACP في [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim)، أضف التالي إلى إعدادات Neovim:
 
 ```lua
 require("codecompanion").setup({
   interactions = {
     chat = {
       adapter = {
-        name = "yonsoon",
+        name = "railwise",
         model = "claude-sonnet-4",
       },
     },
@@ -136,13 +136,13 @@ require("codecompanion").setup({
 })
 ```
 
-يضبط هذا الإعداد CodeCompanion لاستخدام YONSOON (甬算) كوكيل ACP للدردشة.
+يضبط هذا الإعداد CodeCompanion لاستخدام RAILWISE (甬算) كوكيل ACP للدردشة.
 
-إذا احتجت إلى تمرير متغيرات البيئة (مثل `YONSOON_API_KEY`)، فارجع إلى [Configuring Adapters: Environment Variables](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) ضمن توثيق CodeCompanion.nvim للاطلاع على التفاصيل كاملة.
+إذا احتجت إلى تمرير متغيرات البيئة (مثل `RAILWISE_API_KEY`)، فارجع إلى [Configuring Adapters: Environment Variables](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) ضمن توثيق CodeCompanion.nvim للاطلاع على التفاصيل كاملة.
 
 ## الدعم
 
-يعمل YONSOON (甬算) عبر ACP بالطريقة نفسها التي يعمل بها في terminal. جميع الميزات مدعومة:
+يعمل RAILWISE (甬算) عبر ACP بالطريقة نفسها التي يعمل بها في terminal. جميع الميزات مدعومة:
 
 :::note
 بعض أوامر الشرطة المائلة المضمنة مثل `/undo` و`/redo` غير مدعومة حاليا.
@@ -150,7 +150,7 @@ require("codecompanion").setup({
 
 - الأدوات المضمنة (عمليات الملفات، أوامر terminal، إلخ.)
 - الأدوات المخصصة وأوامر الشرطة المائلة
-- خوادم MCP المضبوطة في إعدادات YONSOON (甬算)
+- خوادم MCP المضبوطة في إعدادات RAILWISE (甬算)
 - قواعد خاصة بالمشروع من `AGENTS.md`
 - المنسقات (formatters) والمدققات (linters) المخصصة
 - نظام الوكلاء والأذونات

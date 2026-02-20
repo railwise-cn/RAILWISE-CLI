@@ -20,13 +20,13 @@ jobs:
       - uses: ./.github/actions/setup-bun
 
       - name: Install opencode
-        run: curl -fsSL https://yonsoon.ai/install | bash
+        run: curl -fsSL https://railwise.ai/install | bash
 
       - name: Check duplicates and compliance
         env:
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          YONSOON_PERMISSION: |
+          RAILWISE_PERMISSION: |
             {
               "bash": {
                 "*": "deny",
@@ -132,13 +132,13 @@ jobs:
       - uses: ./.github/actions/setup-bun
 
       - name: Install opencode
-        run: curl -fsSL https://yonsoon.ai/install | bash
+        run: curl -fsSL https://railwise.ai/install | bash
 
       - name: Recheck compliance
         env:
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          YONSOON_PERMISSION: |
+          RAILWISE_PERMISSION: |
             {
               "bash": {
                 "*": "deny",

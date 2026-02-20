@@ -32,7 +32,7 @@ Build 是啟用了所有工具的**預設**模式。這是進行開發工作的�
 Plan 是一種為規劃和分析設計的受限模式。在 plan 模式下，以下工具預設被停用：
 
 - `write` - 無法建立新檔案
-- `edit` - 無法修改現有檔案，但位於 `.yonsoon/plans/*.md` 的檔案除外，用於詳細說明計畫本身
+- `edit` - 無法修改現有檔案，但位於 `.railwise/plans/*.md` 的檔案除外，用於詳細說明計畫本身
 - `patch` - 無法套用補丁
 - `bash` - 無法執行 shell 指令
 
@@ -54,11 +54,11 @@ Plan 是一種為規劃和分析設計的受限模式。在 plan 模式下，以
 
 ### JSON 設定
 
-在 `yonsoon.json` 設定檔中設定模式：
+在 `railwise.json` 設定檔中設定模式：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "build": {
       "model": "anthropic/claude-sonnet-4-20250514",
@@ -86,7 +86,7 @@ Plan 是一種為規劃和分析設計的受限模式。在 plan 模式下，以
 您還可以使用 Markdown 檔案定義模式。將檔案放置在以下位置：
 
 - 全域：`~/.config/opencode/modes/`
-- 專案：`.yonsoon/modes/`
+- 專案：`.railwise/modes/`
 
 ```markdown title="~/.config/opencode/modes/review.md"
 ---
@@ -118,7 +118,7 @@ Markdown 檔案名稱即為模式名稱（例如，`review.md` 建立一個名�
 
 使用 `model` 設定可以覆寫該模式的預設模型。這對於針對不同任務使用不同模型非常有用。例如，規劃時使用更快的模型，實作時使用更強大的模型。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -134,7 +134,7 @@ Markdown 檔案名稱即為模式名稱（例如，`review.md` 建立一個名�
 
 使用 `temperature` 設定控制 AI 回應的隨機性和創造性。較低的值使回應更加集中和確定性，較高的值則增加創造性和多樣性。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -153,7 +153,7 @@ Markdown 檔案名稱即為模式名稱（例如，`review.md` 建立一個名�
 - **0.3-0.5**：兼顧穩定性與創造力的平衡型回應，適合一般開發任務
 - **0.6-1.0**：更具創造性和多樣性的回應，適合腦力激盪和探索性工作
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "analyze": {
@@ -179,7 +179,7 @@ Markdown 檔案名稱即為模式名稱（例如，`review.md` 建立一個名�
 
 使用 `prompt` 設定為模式指定自訂系統提示詞檔案。提示詞檔案應包含針對該模式用途的具體指令。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "review": {
@@ -244,9 +244,9 @@ Markdown 檔案名稱即為模式名稱（例如，`review.md` 建立一個名�
 
 ### 使用 JSON 設定
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "docs": {
       "prompt": "{file:./prompts/documentation.txt}",
@@ -265,9 +265,9 @@ Markdown 檔案名稱即為模式名稱（例如，`review.md` 建立一個名�
 
 ### 使用 Markdown 檔案
 
-在 `.yonsoon/modes/` 中建立專案特定的模式檔案，或在 `~/.config/opencode/modes/` 中建立全域模式檔案：
+在 `.railwise/modes/` 中建立專案特定的模式檔案，或在 `~/.config/opencode/modes/` 中建立全域模式檔案：
 
-```markdown title=".yonsoon/modes/debug.md"
+```markdown title=".railwise/modes/debug.md"
 ---
 temperature: 0.1
 tools:

@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: YONSOON (甬算) CLI のオプションとコマンド。
+description: RAILWISE (甬算) CLI のオプションとコマンド。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) CLI は、引数なしで実行すると、デフォルトで [TUI](/docs/tui) を開始します。
+RAILWISE (甬算) CLI は、引数なしで実行すると、デフォルトで [TUI](/docs/tui) を開始します。
 
 ```bash
-yonsoon
+railwise
 ```
 
-ただし、このページに記載されているようにコマンドも受け入れます。これにより、YONSOON (甬算) をプログラム的に操作できるようになります。
+ただし、このページに記載されているようにコマンドも受け入れます。これにより、RAILWISE (甬算) をプログラム的に操作できるようになります。
 
 ```bash
-yonsoon run "Explain how closures work in JavaScript"
+railwise run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-YONSOON (甬算) ターミナルユーザーインターフェイスを開始します。
+RAILWISE (甬算) ターミナルユーザーインターフェイスを開始します。
 
 ```bash
-yonsoon [project]
+railwise [project]
 ```
 
 #### フラグ
@@ -44,36 +44,36 @@ yonsoon [project]
 
 ## コマンド
 
-YONSOON (甬算) CLI には次のコマンドもあります。
+RAILWISE (甬算) CLI には次のコマンドもあります。
 
 ---
 
 ### agent
 
-YONSOON (甬算) のエージェントを管理します。
+RAILWISE (甬算) のエージェントを管理します。
 
 ```bash
-yonsoon agent [command]
+railwise agent [command]
 ```
 
 ---
 
 ### attach
 
-`serve` または `web` コマンドを使用して起動された、すでに実行中の YONSOON (甬算) バックエンドサーバーにターミナルを接続します。
+`serve` または `web` コマンドを使用して起動された、すでに実行中の RAILWISE (甬算) バックエンドサーバーにターミナルを接続します。
 
 ```bash
-yonsoon attach [url]
+railwise attach [url]
 ```
 
-これにより、リモート YONSOON (甬算) バックエンドで TUI を使用できるようになります。例えば：
+これにより、リモート RAILWISE (甬算) バックエンドで TUI を使用できるようになります。例えば：
 
 ```bash
 # Start the backend server for web/mobile access
-yonsoon web --port 4096 --hostname 0.0.0.0
+railwise web --port 4096 --hostname 0.0.0.0
 
 # In another terminal, attach the TUI to the running backend
-yonsoon attach http://10.20.30.40:4096
+railwise attach http://10.20.30.40:4096
 ```
 
 #### フラグ
@@ -90,7 +90,7 @@ yonsoon attach http://10.20.30.40:4096
 カスタム構成で新しいエージェントを作成します。
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 このコマンドは、カスタムシステムプロンプトとツール構成を使用して新しいエージェントを作成する手順を示します。
@@ -102,7 +102,7 @@ yonsoon agent create
 利用可能なエージェントをすべてリストします。
 
 ```bash
-yonsoon agent list
+railwise agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ yonsoon agent list
 プロバイダーの資格情報とログインを管理するコマンド。
 
 ```bash
-yonsoon auth [command]
+railwise auth [command]
 ```
 
 ---
 
 #### login
 
-YONSOON (甬算) は [Models.dev](https://models.dev) のプロバイダーリストを利用しているため、`yonsoon auth login` を使用して、使用したいプロバイダーの API キーを構成できます。これは `~/.local/share/yonsoon/auth.json` に保存されます。
+RAILWISE (甬算) は [Models.dev](https://models.dev) のプロバイダーリストを利用しているため、`railwise auth login` を使用して、使用したいプロバイダーの API キーを構成できます。これは `~/.local/share/railwise/auth.json` に保存されます。
 
 ```bash
-yonsoon auth login
+railwise auth login
 ```
 
-YONSOON (甬算) が起動すると、認証情報ファイルからプロバイダーがロードされます。また、環境またはプロジェクト内の `.env` ファイルで定義されたキーがあるかどうかも確認します。
+RAILWISE (甬算) が起動すると、認証情報ファイルからプロバイダーがロードされます。また、環境またはプロジェクト内の `.env` ファイルで定義されたキーがあるかどうかも確認します。
 
 ---
 
@@ -134,13 +134,13 @@ YONSOON (甬算) が起動すると、認証情報ファイルからプロバイ
 認証情報ファイルに保存されているすべての認証されたプロバイダーをリストします。
 
 ```bash
-yonsoon auth list
+railwise auth list
 ```
 
 またはショートバージョン。
 
 ```bash
-yonsoon auth ls
+railwise auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ yonsoon auth ls
 資格情報ファイルからプロバイダーをクリアすることで、プロバイダーからログアウトします。
 
 ```bash
-yonsoon auth logout
+railwise auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ yonsoon auth logout
 リポジトリ自動化のための GitHub エージェントを管理します。
 
 ```bash
-yonsoon github [command]
+railwise github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ yonsoon github [command]
 GitHub エージェントをリポジトリにインストールします。
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 これにより、必要な GitHub Actions ワークフローが設定され、構成プロセスがガイドされます。 [詳細はこちら](/docs/github)。
@@ -182,7 +182,7 @@ yonsoon github install
 GitHub エージェントを実行します。これは通常、GitHub Actions で使用されます。
 
 ```bash
-yonsoon github run
+railwise github run
 ```
 
 ##### フラグ
@@ -199,7 +199,7 @@ yonsoon github run
 モデルコンテキストプロトコルサーバーを管理します。
 
 ```bash
-yonsoon mcp [command]
+railwise mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ yonsoon mcp [command]
 MCP サーバーを構成に追加します。
 
 ```bash
-yonsoon mcp add
+railwise mcp add
 ```
 
 このコマンドは、ローカルまたはリモートの MCP サーバーを追加する手順を示します。
@@ -221,13 +221,13 @@ yonsoon mcp add
 構成されているすべての MCP サーバーとその接続ステータスをリストします。
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 または、短いバージョンを使用してください。
 
 ```bash
-yonsoon mcp ls
+railwise mcp ls
 ```
 
 ---
@@ -237,7 +237,7 @@ yonsoon mcp ls
 OAuth 対応の MCP サーバーで認証します。
 
 ```bash
-yonsoon mcp auth [name]
+railwise mcp auth [name]
 ```
 
 サーバー名を指定しない場合は、利用可能な OAuth 対応サーバーから選択するように求められます。
@@ -245,13 +245,13 @@ yonsoon mcp auth [name]
 OAuth 対応サーバーとその認証ステータスを一覧表示することもできます。
 
 ```bash
-yonsoon mcp auth list
+railwise mcp auth list
 ```
 
 または、短いバージョンを使用してください。
 
 ```bash
-yonsoon mcp auth ls
+railwise mcp auth ls
 ```
 
 ---
@@ -261,7 +261,7 @@ yonsoon mcp auth ls
 MCP サーバーの OAuth 資格情報を削除します。
 
 ```bash
-yonsoon mcp logout [name]
+railwise mcp logout [name]
 ```
 
 ---
@@ -271,7 +271,7 @@ yonsoon mcp logout [name]
 MCP サーバーの OAuth 接続の問題をデバッグします。
 
 ```bash
-yonsoon mcp debug <name>
+railwise mcp debug <name>
 ```
 
 ---
@@ -281,7 +281,7 @@ yonsoon mcp debug <name>
 構成されたプロバイダーから利用可能なすべてのモデルをリストします。
 
 ```bash
-yonsoon models [provider]
+railwise models [provider]
 ```
 
 このコマンドは、構成されたプロバイダー全体で利用可能なすべてのモデルを `provider/model` の形式で表示します。
@@ -291,7 +291,7 @@ yonsoon models [provider]
 オプションでプロバイダー ID を渡して、そのプロバイダーによってモデルをフィルターできます。
 
 ```bash
-yonsoon models anthropic
+railwise models anthropic
 ```
 
 #### フラグ
@@ -301,36 +301,36 @@ yonsoon models anthropic
 | `--refresh` | models.dev からモデルキャッシュを更新します。                   |
 | `--verbose` | より詳細なモデル出力を使用します (コストなどのメタデータを含む) |
 
-`--refresh` フラグを使用して、キャッシュされたモデルリストを更新します。これは、新しいモデルがプロバイダーに追加され、それを YONSOON (甬算) で確認したい場合に便利です。
+`--refresh` フラグを使用して、キャッシュされたモデルリストを更新します。これは、新しいモデルがプロバイダーに追加され、それを RAILWISE (甬算) で確認したい場合に便利です。
 
 ```bash
-yonsoon models --refresh
+railwise models --refresh
 ```
 
 ---
 
 ### run
 
-プロンプトを直接渡して、非対話モードで yonsoon を実行します。
+プロンプトを直接渡して、非対話モードで railwise を実行します。
 
 ```bash
-yonsoon run [message..]
+railwise run [message..]
 ```
 
 これは、スクリプト作成、自動化、または完全な TUI を起動せずに迅速な回答が必要な場合に便利です。例えば。
 
-```bash "yonsoon run"
-yonsoon run Explain the use of context in Go
+```bash "railwise run"
+railwise run Explain the use of context in Go
 ```
 
-実行中の `yonsoon serve` インスタンスにアタッチして、実行ごとの MCP サーバーのコールドブート時間を回避することもできます。
+実行中の `railwise serve` インスタンスにアタッチして、実行ごとの MCP サーバーのコールドブート時間を回避することもできます。
 
 ```bash
 # Start a headless server in one terminal
-yonsoon serve
+railwise serve
 
 # In another terminal, run commands that attach to it
-yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
+railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 ```
 
 #### フラグ
@@ -347,20 +347,20 @@ yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f`        | メッセージに添付するファイル                                                              |
 | `--format`   |             | 形式: デフォルト (フォーマット済み) または json (生の JSON イベント)                      |
 | `--title`    |             | セッションのタイトル (値が指定されていない場合は、切り詰められたプロンプトが使用されます) |
-| `--attach`   |             | 実行中の yonsoon サーバー (http://localhost:4096 など) に接続します。                    |
+| `--attach`   |             | 実行中の railwise サーバー (http://localhost:4096 など) に接続します。                    |
 | `--port`     |             | ローカルサーバーのポート (デフォルトはランダムポート)                                     |
 
 ---
 
 ### serve
 
-API アクセスのためにヘッドレス YONSOON (甬算) サーバーを起動します。完全な HTTP インターフェイスについては、[サーバーのドキュメント](/docs/server) を確認してください。
+API アクセスのためにヘッドレス RAILWISE (甬算) サーバーを起動します。完全な HTTP インターフェイスについては、[サーバーのドキュメント](/docs/server) を確認してください。
 
 ```bash
-yonsoon serve
+railwise serve
 ```
 
-これにより、TUI インターフェイスを使用せずに yonsoon 機能への API アクセスを提供する HTTP サーバーが起動します。 `YONSOON_SERVER_PASSWORD` を設定して HTTP 基本認証を有効にします (ユーザー名のデフォルトは `yonsoon`)。
+これにより、TUI インターフェイスを使用せずに railwise 機能への API アクセスを提供する HTTP サーバーが起動します。 `RAILWISE_SERVER_PASSWORD` を設定して HTTP 基本認証を有効にします (ユーザー名のデフォルトは `railwise`)。
 
 #### フラグ
 
@@ -375,20 +375,20 @@ yonsoon serve
 
 ### session
 
-YONSOON (甬算) セッションを管理します。
+RAILWISE (甬算) セッションを管理します。
 
 ```bash
-yonsoon session [command]
+railwise session [command]
 ```
 
 ---
 
 #### list
 
-すべての YONSOON (甬算) セッションをリストします。
+すべての RAILWISE (甬算) セッションをリストします。
 
 ```bash
-yonsoon session list
+railwise session list
 ```
 
 ##### フラグ
@@ -402,10 +402,10 @@ yonsoon session list
 
 ### stats
 
-YONSOON (甬算) セッションのトークンの使用状況とコストの統計を表示します。
+RAILWISE (甬算) セッションのトークンの使用状況とコストの統計を表示します。
 
 ```bash
-yonsoon stats
+railwise stats
 ```
 
 #### フラグ
@@ -424,7 +424,7 @@ yonsoon stats
 セッションデータを JSON としてエクスポートします。
 
 ```bash
-yonsoon export [sessionID]
+railwise export [sessionID]
 ```
 
 セッション ID を指定しない場合は、利用可能なセッションから選択するように求められます。
@@ -433,30 +433,30 @@ yonsoon export [sessionID]
 
 ### import
 
-JSON ファイルまたは YONSOON (甬算) 共有 URL からセッションデータをインポートします。
+JSON ファイルまたは RAILWISE (甬算) 共有 URL からセッションデータをインポートします。
 
 ```bash
-yonsoon import <file>
+railwise import <file>
 ```
 
-ローカルファイルまたは YONSOON (甬算) 共有 URL からインポートできます。
+ローカルファイルまたは RAILWISE (甬算) 共有 URL からインポートできます。
 
 ```bash
-yonsoon import session.json
-yonsoon import https://opncd.ai/s/abc123
+railwise import session.json
+railwise import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-Web インターフェイスを使用してヘッドレス YONSOON (甬算) サーバーを起動します。
+Web インターフェイスを使用してヘッドレス RAILWISE (甬算) サーバーを起動します。
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-これにより、HTTP サーバーが起動し、Web ブラウザが開き、Web インターフェイスを通じて YONSOON (甬算) にアクセスします。 `YONSOON_SERVER_PASSWORD` を設定して HTTP 基本認証を有効にします (ユーザー名のデフォルトは `yonsoon`)。
+これにより、HTTP サーバーが起動し、Web ブラウザが開き、Web インターフェイスを通じて RAILWISE (甬算) にアクセスします。 `RAILWISE_SERVER_PASSWORD` を設定して HTTP 基本認証を有効にします (ユーザー名のデフォルトは `railwise`)。
 
 #### フラグ
 
@@ -474,7 +474,7 @@ yonsoon web
 ACP (エージェントクライアントプロトコル) サーバーを起動します。
 
 ```bash
-yonsoon acp
+railwise acp
 ```
 
 このコマンドは、nd-JSON を使用して stdin/stdout 経由で通信する ACP サーバーを起動します。
@@ -491,10 +491,10 @@ yonsoon acp
 
 ### uninstall
 
-YONSOON (甬算) をアンインストールし、関連ファイルをすべて削除します。
+RAILWISE (甬算) をアンインストールし、関連ファイルをすべて削除します。
 
 ```bash
-yonsoon uninstall
+railwise uninstall
 ```
 
 #### フラグ
@@ -510,22 +510,22 @@ yonsoon uninstall
 
 ### upgrade
 
-yonsoon を最新バージョンまたは特定のバージョンに更新します。
+railwise を最新バージョンまたは特定のバージョンに更新します。
 
 ```bash
-yonsoon upgrade [target]
+railwise upgrade [target]
 ```
 
 最新バージョンにアップグレードするには。
 
 ```bash
-yonsoon upgrade
+railwise upgrade
 ```
 
 特定のバージョンにアップグレードするには。
 
 ```bash
-yonsoon upgrade v0.1.48
+railwise upgrade v0.1.48
 ```
 
 #### フラグ
@@ -538,7 +538,7 @@ yonsoon upgrade v0.1.48
 
 ## グローバルフラグ
 
-yonsoon CLI は次のグローバルフラグを受け取ります。
+railwise CLI は次のグローバルフラグを受け取ります。
 
 | フラグ         | ショート | 説明                                  |
 | -------------- | -------- | ------------------------------------- |
@@ -551,34 +551,34 @@ yonsoon CLI は次のグローバルフラグを受け取ります。
 
 ## 環境変数
 
-YONSOON (甬算) は環境変数を使用して構成できます。
+RAILWISE (甬算) は環境変数を使用して構成できます。
 
 | 変数                                  | タイプ   | 説明                                                                |
 | ------------------------------------- | -------- | ------------------------------------------------------------------- |
-| `YONSOON_AUTO_SHARE`                 | ブール値 | セッションを自動的に共有する                                        |
-| `YONSOON_GIT_BASH_PATH`              | 文字列   | Windows 上で実行可能な Git Bash へのパス                            |
-| `YONSOON_CONFIG`                     | 文字列   | 構成ファイルへのパス                                                |
-| `YONSOON_CONFIG_DIR`                 | 文字列   | config ディレクトリへのパス                                         |
-| `YONSOON_CONFIG_CONTENT`             | 文字列   | インライン JSON 構成コンテンツ                                      |
-| `YONSOON_DISABLE_AUTOUPDATE`         | ブール値 | 自動更新チェックを無効にする                                        |
-| `YONSOON_DISABLE_PRUNE`              | ブール値 | 古いデータのプルーニングを無効にする                                |
-| `YONSOON_DISABLE_TERMINAL_TITLE`     | ブール値 | ターミナルタイトルの自動更新を無効にする                            |
-| `YONSOON_PERMISSION`                 | 文字列   | インライン化された json 権限設定                                    |
-| `YONSOON_DISABLE_DEFAULT_PLUGINS`    | ブール値 | デフォルトのプラグインを無効にする                                  |
-| `YONSOON_DISABLE_LSP_DOWNLOAD`       | ブール値 | LSP サーバーの自動ダウンロードを無効にする                          |
-| `YONSOON_ENABLE_EXPERIMENTAL_MODELS` | ブール値 | 実験モデルを有効にする                                              |
-| `YONSOON_DISABLE_AUTOCOMPACT`        | ブール値 | 自動コンテキスト圧縮を無効にする                                    |
-| `YONSOON_DISABLE_CLAUDE_CODE`        | ブール値 | `.claude` からの読み取りを無効にする (プロンプト + スキル)          |
-| `YONSOON_DISABLE_CLAUDE_CODE_PROMPT` | ブール値 | `~/.claude/CLAUDE.md` の読み取りを無効にする                        |
-| `YONSOON_DISABLE_CLAUDE_CODE_SKILLS` | ブール値 | `.claude/skills` のロードを無効にする                               |
-| `YONSOON_DISABLE_MODELS_FETCH`       | ブール値 | リモートソースからのモデルの取得を無効にする                        |
-| `YONSOON_FAKE_VCS`                   | 文字列   | テスト目的の偽の VCS プロバイダー                                   |
-| `YONSOON_DISABLE_FILETIME_CHECK`     | ブール値 | 最適化のためにファイル時間チェックを無効にする                      |
-| `YONSOON_CLIENT`                     | 文字列   | クライアント識別子 (デフォルトは `cli`)                             |
-| `YONSOON_ENABLE_EXA`                 | ブール値 | Exa Web 検索ツールを有効にする                                      |
-| `YONSOON_SERVER_PASSWORD`            | 文字列   | `serve`/`web` の基本認証を有効にする                                |
-| `YONSOON_SERVER_USERNAME`            | 文字列   | 基本認証ユーザー名 (デフォルト `yonsoon`) をオーバーライドします。 |
-| `YONSOON_MODELS_URL`                 | 文字列   | モデル設定を取得するためのカスタム URL                              |
+| `RAILWISE_AUTO_SHARE`                 | ブール値 | セッションを自動的に共有する                                        |
+| `RAILWISE_GIT_BASH_PATH`              | 文字列   | Windows 上で実行可能な Git Bash へのパス                            |
+| `RAILWISE_CONFIG`                     | 文字列   | 構成ファイルへのパス                                                |
+| `RAILWISE_CONFIG_DIR`                 | 文字列   | config ディレクトリへのパス                                         |
+| `RAILWISE_CONFIG_CONTENT`             | 文字列   | インライン JSON 構成コンテンツ                                      |
+| `RAILWISE_DISABLE_AUTOUPDATE`         | ブール値 | 自動更新チェックを無効にする                                        |
+| `RAILWISE_DISABLE_PRUNE`              | ブール値 | 古いデータのプルーニングを無効にする                                |
+| `RAILWISE_DISABLE_TERMINAL_TITLE`     | ブール値 | ターミナルタイトルの自動更新を無効にする                            |
+| `RAILWISE_PERMISSION`                 | 文字列   | インライン化された json 権限設定                                    |
+| `RAILWISE_DISABLE_DEFAULT_PLUGINS`    | ブール値 | デフォルトのプラグインを無効にする                                  |
+| `RAILWISE_DISABLE_LSP_DOWNLOAD`       | ブール値 | LSP サーバーの自動ダウンロードを無効にする                          |
+| `RAILWISE_ENABLE_EXPERIMENTAL_MODELS` | ブール値 | 実験モデルを有効にする                                              |
+| `RAILWISE_DISABLE_AUTOCOMPACT`        | ブール値 | 自動コンテキスト圧縮を無効にする                                    |
+| `RAILWISE_DISABLE_CLAUDE_CODE`        | ブール値 | `.claude` からの読み取りを無効にする (プロンプト + スキル)          |
+| `RAILWISE_DISABLE_CLAUDE_CODE_PROMPT` | ブール値 | `~/.claude/CLAUDE.md` の読み取りを無効にする                        |
+| `RAILWISE_DISABLE_CLAUDE_CODE_SKILLS` | ブール値 | `.claude/skills` のロードを無効にする                               |
+| `RAILWISE_DISABLE_MODELS_FETCH`       | ブール値 | リモートソースからのモデルの取得を無効にする                        |
+| `RAILWISE_FAKE_VCS`                   | 文字列   | テスト目的の偽の VCS プロバイダー                                   |
+| `RAILWISE_DISABLE_FILETIME_CHECK`     | ブール値 | 最適化のためにファイル時間チェックを無効にする                      |
+| `RAILWISE_CLIENT`                     | 文字列   | クライアント識別子 (デフォルトは `cli`)                             |
+| `RAILWISE_ENABLE_EXA`                 | ブール値 | Exa Web 検索ツールを有効にする                                      |
+| `RAILWISE_SERVER_PASSWORD`            | 文字列   | `serve`/`web` の基本認証を有効にする                                |
+| `RAILWISE_SERVER_USERNAME`            | 文字列   | 基本認証ユーザー名 (デフォルト `railwise`) をオーバーライドします。 |
+| `RAILWISE_MODELS_URL`                 | 文字列   | モデル設定を取得するためのカスタム URL                              |
 
 ---
 
@@ -588,16 +588,16 @@ YONSOON (甬算) は環境変数を使用して構成できます。
 
 | 変数                                            | タイプ   | 説明                                             |
 | ----------------------------------------------- | -------- | ------------------------------------------------ |
-| `YONSOON_EXPERIMENTAL`                         | ブール値 | すべての実験的機能を有効にする                   |
-| `YONSOON_EXPERIMENTAL_ICON_DISCOVERY`          | ブール値 | アイコン検出を有効にする                         |
-| `YONSOON_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | ブール値 | TUI で選択時のコピーを無効にする                 |
-| `YONSOON_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | 数値     | bash コマンドのデフォルトのタイムアウト (ミリ秒) |
-| `YONSOON_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | 数値     | LLM 応答の最大出力トークン                       |
-| `YONSOON_EXPERIMENTAL_FILEWATCHER`             | ブール値 | ディレクトリ全体のファイル監視を有効にする       |
-| `YONSOON_EXPERIMENTAL_OXFMT`                   | ブール値 | oxfmt フォーマッタを有効にする                   |
-| `YONSOON_EXPERIMENTAL_LSP_TOOL`                | ブール値 | 実験的な LSP ツールを有効にする                  |
-| `YONSOON_EXPERIMENTAL_DISABLE_FILEWATCHER`     | ブール値 | ファイルウォッチャーを無効にする                 |
-| `YONSOON_EXPERIMENTAL_EXA`                     | ブール値 | 実験的な Exa 機能を有効にする                    |
-| `YONSOON_EXPERIMENTAL_LSP_TY`                  | ブール値 | 実験的な LSP タイプチェックを有効にする          |
-| `YONSOON_EXPERIMENTAL_MARKDOWN`                | ブール値 | 試験的な Markdown 機能を有効にする               |
-| `YONSOON_EXPERIMENTAL_PLAN_MODE`               | ブール値 | プランモードを有効にする                         |
+| `RAILWISE_EXPERIMENTAL`                         | ブール値 | すべての実験的機能を有効にする                   |
+| `RAILWISE_EXPERIMENTAL_ICON_DISCOVERY`          | ブール値 | アイコン検出を有効にする                         |
+| `RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | ブール値 | TUI で選択時のコピーを無効にする                 |
+| `RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | 数値     | bash コマンドのデフォルトのタイムアウト (ミリ秒) |
+| `RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | 数値     | LLM 応答の最大出力トークン                       |
+| `RAILWISE_EXPERIMENTAL_FILEWATCHER`             | ブール値 | ディレクトリ全体のファイル監視を有効にする       |
+| `RAILWISE_EXPERIMENTAL_OXFMT`                   | ブール値 | oxfmt フォーマッタを有効にする                   |
+| `RAILWISE_EXPERIMENTAL_LSP_TOOL`                | ブール値 | 実験的な LSP ツールを有効にする                  |
+| `RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | ブール値 | ファイルウォッチャーを無効にする                 |
+| `RAILWISE_EXPERIMENTAL_EXA`                     | ブール値 | 実験的な Exa 機能を有効にする                    |
+| `RAILWISE_EXPERIMENTAL_LSP_TY`                  | ブール値 | 実験的な LSP タイプチェックを有効にする          |
+| `RAILWISE_EXPERIMENTAL_MARKDOWN`                | ブール値 | 試験的な Markdown 機能を有効にする               |
+| `RAILWISE_EXPERIMENTAL_PLAN_MODE`               | ブール値 | プランモードを有効にする                         |

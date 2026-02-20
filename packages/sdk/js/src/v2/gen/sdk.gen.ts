@@ -209,7 +209,7 @@ class HeyApiRegistry<T> {
   get(key?: string): T {
     const instance = this.instances.get(key ?? this.defaultKey)
     if (!instance) {
-      throw new Error(`No SDK client found. Create one with "new YonsoonClient()" to fix this error.`)
+      throw new Error(`No SDK client found. Create one with "new RailwiseClient()" to fix this error.`)
     }
     return instance
   }
@@ -223,7 +223,7 @@ export class Config extends HeyApiClient {
   /**
    * Get global configuration
    *
-   * Retrieve the current global YONSOON (甬算) configuration settings and preferences.
+   * Retrieve the current global RAILWISE (甬算) configuration settings and preferences.
    */
   public get<ThrowOnError extends boolean = false>(options?: Options<never, ThrowOnError>) {
     return (options?.client ?? this.client).get<GlobalConfigGetResponses, unknown, ThrowOnError>({
@@ -235,7 +235,7 @@ export class Config extends HeyApiClient {
   /**
    * Update global configuration
    *
-   * Update global YONSOON (甬算) configuration settings and preferences.
+   * Update global RAILWISE (甬算) configuration settings and preferences.
    */
   public update<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -261,7 +261,7 @@ export class Global extends HeyApiClient {
   /**
    * Get health
    *
-   * Get health information about the YONSOON (甬算) server.
+   * Get health information about the RAILWISE (甬算) server.
    */
   public health<ThrowOnError extends boolean = false>(options?: Options<never, ThrowOnError>) {
     return (options?.client ?? this.client).get<GlobalHealthResponses, unknown, ThrowOnError>({
@@ -273,7 +273,7 @@ export class Global extends HeyApiClient {
   /**
    * Get global events
    *
-   * Subscribe to global events from the YONSOON (甬算) system using server-sent events.
+   * Subscribe to global events from the RAILWISE (甬算) system using server-sent events.
    */
   public event<ThrowOnError extends boolean = false>(options?: Options<never, ThrowOnError>) {
     return (options?.client ?? this.client).sse.get<GlobalEventResponses, unknown, ThrowOnError>({
@@ -285,7 +285,7 @@ export class Global extends HeyApiClient {
   /**
    * Dispose instance
    *
-   * Clean up and dispose all YONSOON (甬算) instances, releasing all resources.
+   * Clean up and dispose all RAILWISE (甬算) instances, releasing all resources.
    */
   public dispose<ThrowOnError extends boolean = false>(options?: Options<never, ThrowOnError>) {
     return (options?.client ?? this.client).post<GlobalDisposeResponses, unknown, ThrowOnError>({
@@ -360,7 +360,7 @@ export class Project extends HeyApiClient {
   /**
    * List all projects
    *
-   * Get a list of projects that have been opened with YONSOON (甬算).
+   * Get a list of projects that have been opened with RAILWISE (甬算).
    */
   public list<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -379,7 +379,7 @@ export class Project extends HeyApiClient {
   /**
    * Get current project
    *
-   * Retrieve the currently active project that YONSOON (甬算) is working with.
+   * Retrieve the currently active project that RAILWISE (甬算) is working with.
    */
   public current<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -450,7 +450,7 @@ export class Pty extends HeyApiClient {
   /**
    * List PTY sessions
    *
-   * Get a list of all active pseudo-terminal (PTY) sessions managed by YONSOON (甬算).
+   * Get a list of all active pseudo-terminal (PTY) sessions managed by RAILWISE (甬算).
    */
   public list<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -648,7 +648,7 @@ export class Config2 extends HeyApiClient {
   /**
    * Get configuration
    *
-   * Retrieve the current YONSOON (甬算) configuration settings and preferences.
+   * Retrieve the current RAILWISE (甬算) configuration settings and preferences.
    */
   public get<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -667,7 +667,7 @@ export class Config2 extends HeyApiClient {
   /**
    * Update configuration
    *
-   * Update YONSOON (甬算) configuration settings and preferences.
+   * Update RAILWISE (甬算) configuration settings and preferences.
    */
   public update<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -930,7 +930,7 @@ export class Session extends HeyApiClient {
   /**
    * List sessions
    *
-   * Get a list of all YONSOON (甬算) sessions, sorted by most recently updated.
+   * Get a list of all RAILWISE (甬算) sessions, sorted by most recently updated.
    */
   public list<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -966,7 +966,7 @@ export class Session extends HeyApiClient {
   /**
    * Create session
    *
-   * Create a new YONSOON (甬算) session for interacting with AI assistants and managing conversations.
+   * Create a new RAILWISE (甬算) session for interacting with AI assistants and managing conversations.
    */
   public create<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -1054,7 +1054,7 @@ export class Session extends HeyApiClient {
   /**
    * Get session
    *
-   * Retrieve detailed information about a specific YONSOON (甬算) session.
+   * Retrieve detailed information about a specific RAILWISE (甬算) session.
    */
   public get<ThrowOnError extends boolean = false>(
     parameters: {
@@ -2957,7 +2957,7 @@ export class Instance extends HeyApiClient {
   /**
    * Dispose instance
    *
-   * Clean up and dispose the current YONSOON (甬算) instance, releasing all resources.
+   * Clean up and dispose the current RAILWISE (甬算) instance, releasing all resources.
    */
   public dispose<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -2978,7 +2978,7 @@ export class Path extends HeyApiClient {
   /**
    * Get paths
    *
-   * Retrieve the current working directory and related path information for the YONSOON (甬算) instance.
+   * Retrieve the current working directory and related path information for the RAILWISE (甬算) instance.
    */
   public get<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -3020,7 +3020,7 @@ export class Command extends HeyApiClient {
   /**
    * List commands
    *
-   * Get a list of all available commands in the YONSOON (甬算) system.
+   * Get a list of all available commands in the RAILWISE (甬算) system.
    */
   public list<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -3084,7 +3084,7 @@ export class App extends HeyApiClient {
   /**
    * List agents
    *
-   * Get a list of all available AI agents in the YONSOON (甬算) system.
+   * Get a list of all available AI agents in the RAILWISE (甬算) system.
    */
   public agents<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -3103,7 +3103,7 @@ export class App extends HeyApiClient {
   /**
    * List skills
    *
-   * Get a list of all available skills in the YONSOON (甬算) system.
+   * Get a list of all available skills in the RAILWISE (甬算) system.
    */
   public skills<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -3183,12 +3183,12 @@ export class Event extends HeyApiClient {
   }
 }
 
-export class YonsoonClient extends HeyApiClient {
-  public static readonly __registry = new HeyApiRegistry<YonsoonClient>()
+export class RailwiseClient extends HeyApiClient {
+  public static readonly __registry = new HeyApiRegistry<RailwiseClient>()
 
   constructor(args?: { client?: Client; key?: string }) {
     super(args)
-    YonsoonClient.__registry.set(this, args?.key)
+    RailwiseClient.__registry.set(this, args?.key)
   }
 
   private _global?: Global

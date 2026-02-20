@@ -1,28 +1,28 @@
 ---
 title: Web
-description: Using YONSOON (甬算) in your browser.
+description: Using RAILWISE (甬算) in your browser.
 ---
 
-YONSOON (甬算) can run as a web application in your browser, providing the same powerful AI coding experience without needing a terminal.
+RAILWISE (甬算) can run as a web application in your browser, providing the same powerful AI coding experience without needing a terminal.
 
-![YONSOON (甬算) Web - New Session](../../assets/web/web-homepage-new-session.png)
+![RAILWISE (甬算) Web - New Session](../../assets/web/web-homepage-new-session.png)
 
 ## Getting Started
 
 Start the web interface by running:
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-This starts a local server on `127.0.0.1` with a random available port and automatically opens YONSOON (甬算) in your default browser.
+This starts a local server on `127.0.0.1` with a random available port and automatically opens RAILWISE (甬算) in your default browser.
 
 :::caution
-If `YONSOON_SERVER_PASSWORD` is not set, the server will be unsecured. This is fine for local use but should be set for network access.
+If `RAILWISE_SERVER_PASSWORD` is not set, the server will be unsecured. This is fine for local use but should be set for network access.
 :::
 
 :::tip[Windows Users]
-For the best experience, run `yonsoon web` from [WSL](/docs/windows-wsl) rather than PowerShell. This ensures proper file system access and terminal integration.
+For the best experience, run `railwise web` from [WSL](/docs/windows-wsl) rather than PowerShell. This ensures proper file system access and terminal integration.
 :::
 
 ---
@@ -33,21 +33,21 @@ You can configure the web server using command line flags or in your [config fil
 
 ### Port
 
-By default, YONSOON (甬算) picks an available port. You can specify a port:
+By default, RAILWISE (甬算) picks an available port. You can specify a port:
 
 ```bash
-yonsoon web --port 4096
+railwise web --port 4096
 ```
 
 ### Hostname
 
-By default, the server binds to `127.0.0.1` (localhost only). To make YONSOON (甬算) accessible on your network:
+By default, the server binds to `127.0.0.1` (localhost only). To make RAILWISE (甬算) accessible on your network:
 
 ```bash
-yonsoon web --hostname 0.0.0.0
+railwise web --hostname 0.0.0.0
 ```
 
-When using `0.0.0.0`, YONSOON (甬算) will display both local and network addresses:
+When using `0.0.0.0`, RAILWISE (甬算) will display both local and network addresses:
 
 ```
   Local access:       http://localhost:4096
@@ -59,15 +59,15 @@ When using `0.0.0.0`, YONSOON (甬算) will display both local and network addre
 Enable mDNS to make your server discoverable on the local network:
 
 ```bash
-yonsoon web --mdns
+railwise web --mdns
 ```
 
-This automatically sets the hostname to `0.0.0.0` and advertises the server as `yonsoon.local`.
+This automatically sets the hostname to `0.0.0.0` and advertises the server as `railwise.local`.
 
 You can customize the mDNS domain name to run multiple instances on the same network:
 
 ```bash
-yonsoon web --mdns --mdns-domain myproject.local
+railwise web --mdns --mdns-domain myproject.local
 ```
 
 ### CORS
@@ -75,36 +75,36 @@ yonsoon web --mdns --mdns-domain myproject.local
 To allow additional domains for CORS (useful for custom frontends):
 
 ```bash
-yonsoon web --cors https://example.com
+railwise web --cors https://example.com
 ```
 
 ### Authentication
 
-To protect access, set a password using the `YONSOON_SERVER_PASSWORD` environment variable:
+To protect access, set a password using the `RAILWISE_SERVER_PASSWORD` environment variable:
 
 ```bash
-YONSOON_SERVER_PASSWORD=secret yonsoon web
+RAILWISE_SERVER_PASSWORD=secret railwise web
 ```
 
-The username defaults to `yonsoon` but can be changed with `YONSOON_SERVER_USERNAME`.
+The username defaults to `railwise` but can be changed with `RAILWISE_SERVER_USERNAME`.
 
 ---
 
 ## Using the Web Interface
 
-Once started, the web interface provides access to your YONSOON (甬算) sessions.
+Once started, the web interface provides access to your RAILWISE (甬算) sessions.
 
 ### Sessions
 
 View and manage your sessions from the homepage. You can see active sessions and start new ones.
 
-![YONSOON (甬算) Web - Active Session](../../assets/web/web-homepage-active-session.png)
+![RAILWISE (甬算) Web - Active Session](../../assets/web/web-homepage-active-session.png)
 
 ### Server Status
 
 Click "See Servers" to view connected servers and their status.
 
-![YONSOON (甬算) Web - See Servers](../../assets/web/web-homepage-see-servers.png)
+![RAILWISE (甬算) Web - See Servers](../../assets/web/web-homepage-see-servers.png)
 
 ---
 
@@ -114,10 +114,10 @@ You can attach a terminal TUI to a running web server:
 
 ```bash
 # Start the web server
-yonsoon web --port 4096
+railwise web --port 4096
 
 # In another terminal, attach the TUI
-yonsoon attach http://localhost:4096
+railwise attach http://localhost:4096
 ```
 
 This allows you to use both the web interface and terminal simultaneously, sharing the same sessions and state.
@@ -126,7 +126,7 @@ This allows you to use both the web interface and terminal simultaneously, shari
 
 ## Config File
 
-You can also configure server settings in your `yonsoon.json` config file:
+You can also configure server settings in your `railwise.json` config file:
 
 ```json
 {

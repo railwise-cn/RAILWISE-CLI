@@ -1,4 +1,4 @@
-import { Tooltip } from "@yonsoon/ui/tooltip"
+import { Tooltip } from "@railwise/ui/tooltip"
 import {
   createEffect,
   createMemo,

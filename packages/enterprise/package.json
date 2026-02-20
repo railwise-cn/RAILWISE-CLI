@@ -1,5 +1,5 @@
 {
-  "name": "@yonsoon/enterprise",
+  "name": "@railwise/enterprise",
   "version": "1.2.8",
   "private": true,
   "type": "module",
@@ -8,13 +8,13 @@
     "typecheck": "tsgo --noEmit",
     "dev": "vite dev",
     "build": "vite build",
-    "build:cloudflare": "YONSOON_DEPLOYMENT_TARGET=cloudflare vite build",
+    "build:cloudflare": "RAILWISE_DEPLOYMENT_TARGET=cloudflare vite build",
     "start": "vite start",
     "shell-prod": "sst shell --target Teams --stage production"
   },
   "dependencies": {
-    "@yonsoon/util": "workspace:*",
-    "@yonsoon/ui": "workspace:*",
+    "@railwise/util": "workspace:*",
+    "@railwise/ui": "workspace:*",
     "aws4fetch": "^1.0.20",
     "@pierre/diffs": "catalog:",
     "@solidjs/router": "catalog:",

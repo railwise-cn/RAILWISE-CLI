@@ -1,19 +1,19 @@
 ---
 title: الخادم
-description: تفاعل مع خادم yonsoon عبر HTTP.
+description: تفاعل مع خادم railwise عبر HTTP.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-يشغّل الأمر `yonsoon serve` خادما HTTP دون واجهة ويعرض نقطة نهاية OpenAPI يمكن لعميل yonsoon استخدامها.
+يشغّل الأمر `railwise serve` خادما HTTP دون واجهة ويعرض نقطة نهاية OpenAPI يمكن لعميل railwise استخدامها.
 
 ---
 
 ### الاستخدام
 
 ```bash
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
 ```
 
 #### الخيارات
@@ -23,41 +23,41 @@ yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
 | `--port`        | المنفذ الذي يستمع عليه                | `4096`           |
 | `--hostname`    | اسم المضيف الذي يستمع عليه            | `127.0.0.1`      |
 | `--mdns`        | تفعيل اكتشاف mDNS                     | `false`          |
-| `--mdns-domain` | اسم نطاق مخصص لخدمة mDNS              | `yonsoon.local` |
+| `--mdns-domain` | اسم نطاق مخصص لخدمة mDNS              | `railwise.local` |
 | `--cors`        | أصول (Origins) متصفح إضافية مسموح بها | `[]`             |
 
 يمكن تمرير `--cors` عدة مرات:
 
 ```bash
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
 ```
 
 ---
 
 ### المصادقة
 
-عيّن `YONSOON_SERVER_PASSWORD` لحماية الخادم باستخدام مصادقة HTTP الأساسية. اسم المستخدم افتراضيا هو `yonsoon`، أو عيّن `YONSOON_SERVER_USERNAME` لتغييره. ينطبق ذلك على كل من `yonsoon serve` و `yonsoon web`.
+عيّن `RAILWISE_SERVER_PASSWORD` لحماية الخادم باستخدام مصادقة HTTP الأساسية. اسم المستخدم افتراضيا هو `railwise`، أو عيّن `RAILWISE_SERVER_USERNAME` لتغييره. ينطبق ذلك على كل من `railwise serve` و `railwise web`.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve
+RAILWISE_SERVER_PASSWORD=your-password railwise serve
 ```
 
 ---
 
 ### كيف يعمل
 
-عند تشغيل `yonsoon` يبدأ تشغيل واجهة terminal تفاعلية (TUI) وخادما. تكون الـ TUI هي
+عند تشغيل `railwise` يبدأ تشغيل واجهة terminal تفاعلية (TUI) وخادما. تكون الـ TUI هي
 العميل الذي يتحدث إلى الخادم. يوفّر الخادم نقطة نهاية لمواصفة OpenAPI 3.1.
 وتُستخدم هذه النقطة أيضا لتوليد [SDK](/docs/sdk).
 
 :::tip
-استخدم خادم yonsoon للتفاعل مع yonsoon برمجيا.
+استخدم خادم railwise للتفاعل مع railwise برمجيا.
 :::
 
-تتيح هذه البنية لـ yonsoon دعم عدة عملاء وتمكّنك من التفاعل مع yonsoon برمجيا.
+تتيح هذه البنية لـ railwise دعم عدة عملاء وتمكّنك من التفاعل مع railwise برمجيا.
 
-يمكنك تشغيل `yonsoon serve` لبدء خادم مستقل. إذا كانت واجهة yonsoon في terminal (TUI)
-قيد التشغيل، فسيبدأ `yonsoon serve` خادما جديدا.
+يمكنك تشغيل `railwise serve` لبدء خادم مستقل. إذا كانت واجهة railwise في terminal (TUI)
+قيد التشغيل، فسيبدأ `railwise serve` خادما جديدا.
 
 ---
 
@@ -65,7 +65,7 @@ YONSOON_SERVER_PASSWORD=your-password yonsoon serve
 
 عند بدء الـ TUI تقوم بتعيين منفذ واسم مضيف عشوائيا. يمكنك بدلا من ذلك تمرير [الخيارات](/docs/cli) `--hostname` و `--port`، ثم استخدامهما للاتصال بخادمها.
 
-يمكن استخدام نقطة النهاية [`/tui`](#tui) للتحكم في الـ TUI عبر الخادم. على سبيل المثال، يمكنك تعبئة الموجّه مسبقا أو تشغيله. يُستخدم هذا الإعداد بواسطة ملحقات YONSOON (甬算) لـ [IDE](/docs/ide).
+يمكن استخدام نقطة النهاية [`/tui`](#tui) للتحكم في الـ TUI عبر الخادم. على سبيل المثال، يمكنك تعبئة الموجّه مسبقا أو تشغيله. يُستخدم هذا الإعداد بواسطة ملحقات RAILWISE (甬算) لـ [IDE](/docs/ide).
 
 ---
 
@@ -83,7 +83,7 @@ http://<hostname>:<port>/doc
 
 ## واجهات API
 
-يعرض خادم yonsoon واجهات API التالية.
+يعرض خادم railwise واجهات API التالية.
 
 ---
 

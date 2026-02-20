@@ -24,8 +24,8 @@ export default defineConfig({
     reuseExistingServer: reuse,
     timeout: 120_000,
     env: {
-      VITE_YONSOON_SERVER_HOST: serverHost,
-      VITE_YONSOON_SERVER_PORT: serverPort,
+      VITE_RAILWISE_SERVER_HOST: serverHost,
+      VITE_RAILWISE_SERVER_PORT: serverPort,
     },
   },
   use: {

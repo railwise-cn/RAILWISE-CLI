@@ -1,25 +1,25 @@
 ---
 title: Regeln
-description: Lege eigene Anweisungen fuer yonsoon fest.
+description: Lege eigene Anweisungen fuer railwise fest.
 ---
 
-Du kannst yonsoon ueber eine `AGENTS.md`-Datei mit eigenen Anweisungen steuern.
+Du kannst railwise ueber eine `AGENTS.md`-Datei mit eigenen Anweisungen steuern.
 Das ist aehnlich zu den Regeln in Cursor und wird direkt in den LLM-Kontext geladen.
 
 ---
 
 ## Initialisierung
 
-Um eine neue `AGENTS.md` zu erstellen, fuehre in yonsoon den Befehl `/init` aus.
+Um eine neue `AGENTS.md` zu erstellen, fuehre in railwise den Befehl `/init` aus.
 
 :::tip
 Du solltest die `AGENTS.md` deines Projekts in Git committen.
 :::
 
 Der Befehl scannt dein Projekt und erzeugt daraus eine passende `AGENTS.md`.
-So kann yonsoon sich in deinem Code besser orientieren.
+So kann railwise sich in deinem Code besser orientieren.
 
-Wenn bereits eine `AGENTS.md` existiert, versucht yonsoon sie zu erweitern.
+Wenn bereits eine `AGENTS.md` existiert, versucht railwise sie zu erweitern.
 
 ---
 
@@ -57,7 +57,7 @@ Hier hinterlegst du projektspezifische Regeln, die dein Team gemeinsam nutzt.
 
 ## Typen
 
-yonsoon kann `AGENTS.md` aus mehreren Orten lesen.
+railwise kann `AGENTS.md` aus mehreren Orten lesen.
 Die Orte haben unterschiedliche Zwecke.
 
 ### Projekt
@@ -67,35 +67,35 @@ Diese gelten nur in diesem Verzeichnis und seinen Unterordnern.
 
 ### Global
 
-Du kannst auch globale Regeln in `~/.config/yonsoon/AGENTS.md` speichern.
-Diese gelten in allen yonsoon-Sitzungen.
+Du kannst auch globale Regeln in `~/.config/railwise/AGENTS.md` speichern.
+Diese gelten in allen railwise-Sitzungen.
 
 Da diese Datei nicht in Git landet und nicht mit dem Team geteilt wird, eignet sie sich fuer persoenliche Regeln.
 
 ### Claude Code-Kompatibilität
 
-Wenn du von Claude Code kommst, unterstuetzt YONSOON (甬算) dessen Dateikonventionen als Fallback:
+Wenn du von Claude Code kommst, unterstuetzt RAILWISE (甬算) dessen Dateikonventionen als Fallback:
 
 - **Projektregeln**: `CLAUDE.md` im Projekt (wenn keine `AGENTS.md` existiert)
-- **Globale Regeln**: `~/.claude/CLAUDE.md` (wenn keine `~/.config/yonsoon/AGENTS.md` existiert)
+- **Globale Regeln**: `~/.claude/CLAUDE.md` (wenn keine `~/.config/railwise/AGENTS.md` existiert)
 - **Skills**: `~/.claude/skills/` - siehe [Agent Skills](/docs/skills/) fuer Details
 
 Um die Claude-Code-Kompatibilitaet zu deaktivieren, setze eine dieser Umgebungsvariablen:
 
 ```bash
-export YONSOON_DISABLE_CLAUDE_CODE=1        # Disable all .claude support
-export YONSOON_DISABLE_CLAUDE_CODE_PROMPT=1 # Disable only ~/.claude/CLAUDE.md
-export YONSOON_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
+export RAILWISE_DISABLE_CLAUDE_CODE=1        # Disable all .claude support
+export RAILWISE_DISABLE_CLAUDE_CODE_PROMPT=1 # Disable only ~/.claude/CLAUDE.md
+export RAILWISE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 ```
 
 ---
 
 ## Rangfolge
 
-Beim Start sucht yonsoon in dieser Reihenfolge nach Regeldateien:
+Beim Start sucht railwise in dieser Reihenfolge nach Regeldateien:
 
 1. **Lokale Dateien** beim Hochlaufen ab dem aktuellen Verzeichnis (`AGENTS.md`, `CLAUDE.md`)
-2. **Globale Datei** unter `~/.config/yonsoon/AGENTS.md`
+2. **Globale Datei** unter `~/.config/railwise/AGENTS.md`
 3. **Claude-Code-Datei** unter `~/.claude/CLAUDE.md` (falls nicht deaktiviert)
 
 Pro Kategorie gewinnt die zuerst passende Datei.
@@ -105,23 +105,23 @@ Wenn sowohl `AGENTS.md` als auch `CLAUDE.md` existieren, wird nur `AGENTS.md` ve
 
 ## Eigene Anweisungen
 
-Du kannst zusaetzliche Anweisungsdateien in deiner `yonsoon.json` oder in `~/.config/yonsoon/yonsoon.json` angeben.
+Du kannst zusaetzliche Anweisungsdateien in deiner `railwise.json` oder in `~/.config/railwise/railwise.json` angeben.
 So kann dein Team bestehende Regeln wiederverwenden, statt Inhalte in `AGENTS.md` zu duplizieren.
 
 Beispiel:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
 
 Du kannst auch Remote-URLs nutzen, um Regeln aus dem Web zu laden.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["https://raw.githubusercontent.com/my-org/shared-rules/main/style.md"]
 }
 ```
@@ -134,23 +134,23 @@ Alle Anweisungsdateien werden mit deinen `AGENTS.md`-Dateien kombiniert.
 
 ## Externe Dateien referenzieren
 
-yonsoon parst Datei-Referenzen in `AGENTS.md` nicht automatisch.
+railwise parst Datei-Referenzen in `AGENTS.md` nicht automatisch.
 Du erreichst aehnliches Verhalten auf zwei Wegen.
 
-### Mit yonsoon.json
+### Mit railwise.json
 
-Empfohlen ist das `instructions`-Feld in der `yonsoon.json`:
+Empfohlen ist das `instructions`-Feld in der `railwise.json`:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["docs/development-standards.md", "test/testing-guidelines.md", "packages/*/AGENTS.md"]
 }
 ```
 
 ### Manuelle Anweisungen in AGENTS.md
 
-Du kannst yonsoon explizit anweisen, externe Dateien zu lesen.
+Du kannst railwise explizit anweisen, externe Dateien zu lesen.
 Hier ein praxisnahes Beispiel:
 
 ```markdown title="AGENTS.md"
@@ -186,5 +186,5 @@ Damit kannst du:
 - Sicherstellen, dass Dateien nur bei Bedarf geladen werden
 
 :::tip
-Fuer Monorepos oder gemeinsame Standards ist `yonsoon.json` mit Glob-Mustern (z. B. `packages/*/AGENTS.md`) oft wartbarer als manuelle Anweisungen.
+Fuer Monorepos oder gemeinsame Standards ist `railwise.json` mit Glob-Mustern (z. B. `packages/*/AGENTS.md`) oft wartbarer als manuelle Anweisungen.
 :::

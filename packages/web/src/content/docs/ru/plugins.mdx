@@ -1,9 +1,9 @@
 ---
 title: Плагины
-description: Напишите свои собственные плагины для расширения yonsoon.
+description: Напишите свои собственные плагины для расширения railwise.
 ---
 
-Плагины позволяют расширять yonsoon, подключаясь к различным событиям и настраивая поведение. Вы можете создавать плагины для добавления новых функций, интеграции с внешними сервисами или изменения поведения yonsoon по умолчанию.
+Плагины позволяют расширять railwise, подключаясь к различным событиям и настраивая поведение. Вы можете создавать плагины для добавления новых функций, интеграции с внешними сервисами или изменения поведения railwise по умолчанию.
 
 Для примера ознакомьтесь с [plugins](/docs/ecosystem#plugins), созданными сообществом.
 
@@ -19,8 +19,8 @@ description: Напишите свои собственные плагины д�
 
 Поместите файлы JavaScript или TypeScript в каталог плагина.
 
-- `.yonsoon/plugins/` – плагины уровня проекта.
-- `~/.config/yonsoon/plugins/` — глобальные плагины
+- `.railwise/plugins/` – плагины уровня проекта.
+- `~/.config/railwise/plugins/` — глобальные плагины
 
 Файлы в этих каталогах автоматически загружаются при запуске.
 
@@ -30,10 +30,10 @@ description: Напишите свои собственные плагины д�
 
 Укажите пакеты npm в файле конфигурации.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
-  "plugin": ["yonsoon-helicone-session", "yonsoon-wakatime", "@my-org/custom-plugin"]
+  "$schema": "https://railwise.ai/config.json",
+  "plugin": ["railwise-helicone-session", "railwise-wakatime", "@my-org/custom-plugin"]
 }
 ```
 
@@ -45,7 +45,7 @@ description: Напишите свои собственные плагины д�
 
 ### Как устанавливаются плагины
 
-**Плагины npm** устанавливаются автоматически с помощью Bun при запуске. Пакеты и их зависимости кэшируются в `~/.cache/yonsoon/node_modules/`.
+**Плагины npm** устанавливаются автоматически с помощью Bun при запуске. Пакеты и их зависимости кэшируются в `~/.cache/railwise/node_modules/`.
 
 **Локальные плагины** загружаются непосредственно из каталога плагинов. Чтобы использовать внешние пакеты, вы должны создать `package.json` в своем каталоге конфигурации (см. [Зависимости](#dependencies)) или опубликовать плагин в npm и [добавить его в свой config](/docs/config#plugins).
 
@@ -55,10 +55,10 @@ description: Напишите свои собственные плагины д�
 
 Плагины загружаются из всех источников, и все хуки запускаются последовательно. Порядок загрузки следующий:
 
-1. Глобальная конфигурация (`~/.config/yonsoon/yonsoon.json`)
-2. Конфигурация проекта (`yonsoon.json`)
-3. Глобальный каталог плагинов (`~/.config/yonsoon/plugins/`)
-4. Каталог плагинов проекта (`.yonsoon/plugins/`)
+1. Глобальная конфигурация (`~/.config/railwise/railwise.json`)
+2. Конфигурация проекта (`railwise.json`)
+3. Глобальный каталог плагинов (`~/.config/railwise/plugins/`)
+4. Каталог плагинов проекта (`.railwise/plugins/`)
 
 Дубликаты пакетов npm с тем же именем и версией загружаются один раз. Однако локальный плагин и плагин npm со схожими именами загружаются отдельно.
 
@@ -75,7 +75,7 @@ description: Напишите свои собственные плагины д�
 
 Локальные плагины и специальные инструменты могут использовать внешние пакеты npm. Добавьте `package.json` в каталог конфигурации с необходимыми вам зависимостями.
 
-```json title=".yonsoon/package.json"
+```json title=".railwise/package.json"
 {
   "dependencies": {
     "shescape": "^2.1.0"
@@ -83,9 +83,9 @@ description: Напишите свои собственные плагины д�
 }
 ```
 
-yonsoon запускает `bun install` при запуске для их установки. Затем ваши плагины и инструменты смогут импортировать их.
+railwise запускает `bun install` при запуске для их установки. Затем ваши плагины и инструменты смогут импортировать их.
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
 
 export const MyPlugin = async (ctx) => {
@@ -103,7 +103,7 @@ export const MyPlugin = async (ctx) => {
 
 ### Базовая структура
 
-```js title=".yonsoon/plugins/example.js"
+```js title=".railwise/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
   console.log("Plugin initialized!")
 
@@ -128,7 +128,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 Для плагинов TypeScript вы можете импортировать типы из пакета плагина:
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@yonsoon/plugin"
+import type { Plugin } from "@railwise/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -211,7 +211,7 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ## Примеры
 
-Вот несколько примеров плагинов, которые вы можете использовать для расширения yonsoon.
+Вот несколько примеров плагинов, которые вы можете использовать для расширения railwise.
 
 ---
 
@@ -219,13 +219,13 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 Отправляйте уведомления при возникновении определенных событий:
 
-```js title=".yonsoon/plugins/notification.js"
+```js title=".railwise/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
   return {
     event: async ({ event }) => {
       // Send notification on session completion
       if (event.type === "session.idle") {
-        await $`osascript -e 'display notification "Session completed!" with title "yonsoon"'`
+        await $`osascript -e 'display notification "Session completed!" with title "railwise"'`
       }
     },
   }
@@ -235,7 +235,7 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 Мы используем `osascript` для запуска AppleScript на macOS. Здесь мы используем его для отправки уведомлений.
 
 :::note
-Если вы используете настольное приложение yonsoon, оно может автоматически отправлять системные уведомления, когда ответ готов или когда возникает ошибка сеанса.
+Если вы используете настольное приложение railwise, оно может автоматически отправлять системные уведомления, когда ответ готов или когда возникает ошибка сеанса.
 :::
 
 ---
@@ -244,7 +244,7 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 
 Запретите открытому коду читать файлы `.env`:
 
-```javascript title=".yonsoon/plugins/env-protection.js"
+```javascript title=".railwise/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
   return {
     "tool.execute.before": async (input, output) => {
@@ -262,7 +262,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 Внедряйте переменные среды во все shell-процессы выполнения (инструменты искусственного интеллекта и пользовательские terminal):
 
-```javascript title=".yonsoon/plugins/inject-env.js"
+```javascript title=".railwise/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
   return {
     "shell.env": async (input, output) => {
@@ -277,10 +277,10 @@ export const InjectEnvPlugin = async () => {
 
 ### Пользовательские инструменты
 
-Плагины также могут добавлять в yonsoon собственные инструменты:
+Плагины также могут добавлять в railwise собственные инструменты:
 
-```ts title=".yonsoon/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@railwise/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,7 +300,7 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-Помощник `tool` создает собственный инструмент, который может вызывать yonsoon. Он принимает функцию схемы Zod и возвращает определение инструмента:
+Помощник `tool` создает собственный инструмент, который может вызывать railwise. Он принимает функцию схемы Zod и возвращает определение инструмента:
 
 - `description`: Что делает инструмент
 - `args`: схема Zod для аргументов инструмента.
@@ -314,7 +314,7 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 
 Используйте `client.app.log()` вместо `console.log` для структурированного ведения журнала:
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
   await client.app.log({
     body: {
@@ -327,7 +327,7 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-Уровни: `debug`, `info`, `warn`, `error`. Подробности см. в документации SDK](https://yonsoon.ai/docs/sdk).
+Уровни: `debug`, `info`, `warn`, `error`. Подробности см. в документации SDK](https://railwise.ai/docs/sdk).
 
 ---
 
@@ -335,8 +335,8 @@ export const MyPlugin = async ({ client }) => {
 
 Настройте контекст, включаемый при сжатии сеанса:
 
-```ts title=".yonsoon/plugins/compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,8 +359,8 @@ Include any state that should persist across compaction:
 
 Вы также можете полностью заменить запрос на уплотнение, установив `output.prompt`:
 
-```ts title=".yonsoon/plugins/custom-compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {

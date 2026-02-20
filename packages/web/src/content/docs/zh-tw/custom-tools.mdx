@@ -17,7 +17,7 @@ description: 建立 LLM 可在 OpenCode 中呼叫的工具。
 
 工具可以在以下位置定義：
 
-- 本地定義：將工具檔案放在專案的 `.yonsoon/tools/` 目錄中。
+- 本地定義：將工具檔案放在專案的 `.railwise/tools/` 目錄中。
 - 全域定義：將工具檔案放在 `~/.config/opencode/tools/` 中。
 
 ---
@@ -26,8 +26,8 @@ description: 建立 LLM 可在 OpenCode 中呼叫的工具。
 
 建立工具最簡單的方式是使用 `tool()` 輔助函式，它提供型別安全和參數校驗。
 
-```ts title=".yonsoon/tools/database.ts" {1}
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/database.ts" {1}
+import { tool } from "@railwise/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -49,8 +49,8 @@ export default tool({
 
 您也可以從單個檔案中匯出多個工具。每個匯出都會成為**一個獨立的工具**，命名格式為 **`<filename>_<exportname>`**：
 
-```ts title=".yonsoon/tools/math.ts"
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/math.ts"
+import { tool } from "@railwise/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -112,8 +112,8 @@ export default {
 
 工具會接收當前工作階段的上下文資訊：
 
-```ts title=".yonsoon/tools/project.ts" {8}
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/project.ts" {8}
+import { tool } from "@railwise/plugin"
 
 export default tool({
   description: "Get project information",
@@ -139,7 +139,7 @@ export default tool({
 
 首先，建立一個 Python 指令碼作為工具：
 
-```python title=".yonsoon/tools/add.py"
+```python title=".railwise/tools/add.py"
 import sys
 
 a = int(sys.argv[1])
@@ -149,8 +149,8 @@ print(a + b)
 
 然後建立呼叫該指令碼的工具定義：
 
-```ts title=".yonsoon/tools/python-add.ts" {10}
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/python-add.ts" {10}
+import { tool } from "@railwise/plugin"
 import path from "path"
 
 export default tool({
@@ -160,7 +160,7 @@ export default tool({
     b: tool.schema.number().describe("Second number"),
   },
   async execute(args, context) {
-    const script = path.join(context.worktree, ".yonsoon/tools/add.py")
+    const script = path.join(context.worktree, ".railwise/tools/add.py")
     const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
     return result.trim()
   },

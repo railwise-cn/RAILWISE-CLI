@@ -1,4 +1,4 @@
-import { ZenData } from "@yonsoon/console-core/model.js"
+import { ZenData } from "@railwise/console-core/model.js"
 import {
   fromAnthropicChunk,
   fromAnthropicRequest,

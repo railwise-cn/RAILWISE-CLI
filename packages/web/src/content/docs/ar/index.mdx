@@ -1,15 +1,15 @@
 ---
 title: مقدمة
-description: ابدأ باستخدام YONSOON (甬算).
+description: ابدأ باستخدام RAILWISE (甬算).
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**YONSOON (甬算)**](/) هو وكيل ترميز بالذكاء الاصطناعي مفتوح المصدر. يتوفر كواجهة terminal، وتطبيق لسطح المكتب، أو إضافة لبيئة تطوير متكاملة (IDE).
+[**RAILWISE (甬算)**](/) هو وكيل ترميز بالذكاء الاصطناعي مفتوح المصدر. يتوفر كواجهة terminal، وتطبيق لسطح المكتب، أو إضافة لبيئة تطوير متكاملة (IDE).
 
-![واجهة YONSOON (甬算) في terminal مع سمة yonsoon](../../../assets/lander/screenshot.png)
+![واجهة RAILWISE (甬算) في terminal مع سمة railwise](../../../assets/lander/screenshot.png)
 
 لنبدأ.
 
@@ -17,7 +17,7 @@ export const console = config.console
 
 #### المتطلبات
 
-لاستخدام YONSOON (甬算) في terminal، ستحتاج إلى:
+لاستخدام RAILWISE (甬算) في terminal، ستحتاج إلى:
 
 1. محاكي terminal حديث مثل:
    - [WezTerm](https://wezterm.org) متعدد المنصات
@@ -31,10 +31,10 @@ export const console = config.console
 
 ## التثبيت
 
-أسهل طريقة لتثبيت YONSOON (甬算) هي عبر سكربت التثبيت.
+أسهل طريقة لتثبيت RAILWISE (甬算) هي عبر سكربت التثبيت.
 
 ```bash
-curl -fsSL https://yonsoon.ai/install | bash
+curl -fsSL https://railwise.ai/install | bash
 ```
 
 يمكنك أيضا تثبيته عبر الأوامر التالية:
@@ -45,28 +45,28 @@ curl -fsSL https://yonsoon.ai/install | bash
 
       <TabItem label="npm">
       ```bash
-      npm install -g yonsoon-ai
+      npm install -g railwise-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g yonsoon-ai
+        bun install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g yonsoon-ai
+        pnpm install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add yonsoon-ai
+        yarn global add railwise-ai
         ```
 
       </TabItem>
@@ -76,68 +76,68 @@ curl -fsSL https://yonsoon.ai/install | bash
 - **باستخدام Homebrew على macOS وLinux**
 
   ```bash
-  brew install anomalyco/tap/yonsoon
+  brew install anomalyco/tap/railwise
   ```
 
-  > نوصي باستخدام tap الخاص بـ YONSOON (甬算) للحصول على أحدث الإصدارات. صيغة `brew install yonsoon` الرسمية تُدار بواسطة فريق Homebrew ويتم تحديثها بوتيرة أقل.
+  > نوصي باستخدام tap الخاص بـ RAILWISE (甬算) للحصول على أحدث الإصدارات. صيغة `brew install railwise` الرسمية تُدار بواسطة فريق Homebrew ويتم تحديثها بوتيرة أقل.
 
 - **باستخدام Paru على Arch Linux**
 
   ```bash
-  sudo pacman -S yonsoon           # Arch Linux (Stable)
-  paru -S yonsoon-bin              # Arch Linux (Latest from AUR)
+  sudo pacman -S railwise           # Arch Linux (Stable)
+  paru -S railwise-bin              # Arch Linux (Latest from AUR)
   ```
 
 #### Windows
 
 :::tip[موصى به: استخدم WSL]
-لأفضل تجربة على Windows، نوصي باستخدام [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). يوفر أداء أفضل وتوافقا كاملا مع ميزات YONSOON (甬算).
+لأفضل تجربة على Windows، نوصي باستخدام [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). يوفر أداء أفضل وتوافقا كاملا مع ميزات RAILWISE (甬算).
 :::
 
 - **باستخدام Chocolatey**
 
   ```bash
-  choco install yonsoon
+  choco install railwise
   ```
 
 - **باستخدام Scoop**
 
   ```bash
-  scoop install yonsoon
+  scoop install railwise
   ```
 
 - **باستخدام NPM**
 
   ```bash
-  npm install -g yonsoon-ai
+  npm install -g railwise-ai
   ```
 
 - **باستخدام Mise**
 
   ```bash
-  mise use -g github:anomalyco/yonsoon
+  mise use -g github:anomalyco/railwise
   ```
 
 - **باستخدام Docker**
 
   ```bash
-  docker run -it --rm ghcr.io/anomalyco/yonsoon
+  docker run -it --rm ghcr.io/anomalyco/railwise
   ```
 
-دعم تثبيت YONSOON (甬算) على Windows باستخدام Bun قيد العمل حاليا.
+دعم تثبيت RAILWISE (甬算) على Windows باستخدام Bun قيد العمل حاليا.
 
-يمكنك أيضا تنزيل الملف التنفيذي من صفحة [Releases](https://github.com/anomalyco/yonsoon/releases).
+يمكنك أيضا تنزيل الملف التنفيذي من صفحة [Releases](https://github.com/anomalyco/railwise/releases).
 
 ---
 
 ## الإعداد
 
-مع YONSOON (甬算) يمكنك استخدام أي مزود LLM عبر إعداد مفاتيح API الخاصة به.
+مع RAILWISE (甬算) يمكنك استخدام أي مزود LLM عبر إعداد مفاتيح API الخاصة به.
 
-إذا كنت جديدا على استخدام مزوّدي LLM، فنوصي باستخدام [YONSOON (甬算) Zen](/docs/zen).
-إنها قائمة منتقاة من النماذج تم اختبارها والتحقق منها بواسطة فريق YONSOON (甬算).
+إذا كنت جديدا على استخدام مزوّدي LLM، فنوصي باستخدام [RAILWISE (甬算) Zen](/docs/zen).
+إنها قائمة منتقاة من النماذج تم اختبارها والتحقق منها بواسطة فريق RAILWISE (甬算).
 
-1. شغّل الأمر `/connect` في واجهة TUI، واختر yonsoon، ثم انتقل إلى [yonsoon.ai/auth](https://yonsoon.ai/auth).
+1. شغّل الأمر `/connect` في واجهة TUI، واختر railwise، ثم انتقل إلى [railwise.ai/auth](https://railwise.ai/auth).
 
    ```txt
    /connect
@@ -166,31 +166,31 @@ curl -fsSL https://yonsoon.ai/install | bash
 cd /path/to/project
 ```
 
-ثم شغّل YONSOON (甬算).
+ثم شغّل RAILWISE (甬算).
 
 ```bash
-yonsoon
+railwise
 ```
 
-بعد ذلك، هيّئ YONSOON (甬算) للمشروع عبر تشغيل الأمر التالي.
+بعد ذلك، هيّئ RAILWISE (甬算) للمشروع عبر تشغيل الأمر التالي.
 
 ```bash frame="none"
 /init
 ```
 
-سيجعل هذا YONSOON (甬算) يحلل مشروعك ويُنشئ ملف `AGENTS.md` في جذر المشروع.
+سيجعل هذا RAILWISE (甬算) يحلل مشروعك ويُنشئ ملف `AGENTS.md` في جذر المشروع.
 
 :::tip
 يستحسن أن تقوم بعمل commit لملف `AGENTS.md` الخاص بمشروعك إلى Git.
 :::
 
-يساعد هذا YONSOON (甬算) على فهم بنية المشروع وأنماط الترميز المستخدمة.
+يساعد هذا RAILWISE (甬算) على فهم بنية المشروع وأنماط الترميز المستخدمة.
 
 ---
 
 ## الاستخدام
 
-أصبحت الآن جاهزا لاستخدام YONSOON (甬算) للعمل على مشروعك. لا تتردد في سؤاله أي شيء!
+أصبحت الآن جاهزا لاستخدام RAILWISE (甬算) للعمل على مشروعك. لا تتردد في سؤاله أي شيء!
 
 إذا كنت جديدا على استخدام وكيل ترميز بالذكاء الاصطناعي، فإليك بعض الأمثلة التي قد تساعد.
 
@@ -198,7 +198,7 @@ yonsoon
 
 ### اطرح أسئلة
 
-يمكنك أن تطلب من YONSOON (甬算) شرح قاعدة الشيفرة لك.
+يمكنك أن تطلب من RAILWISE (甬算) شرح قاعدة الشيفرة لك.
 
 :::tip
 استخدم المفتاح `@` للبحث التقريبي عن الملفات داخل المشروع.
@@ -214,11 +214,11 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### أضف ميزات
 
-يمكنك أن تطلب من YONSOON (甬算) إضافة ميزات جديدة إلى مشروعك، لكننا نوصي أولا بطلب إنشاء خطة.
+يمكنك أن تطلب من RAILWISE (甬算) إضافة ميزات جديدة إلى مشروعك، لكننا نوصي أولا بطلب إنشاء خطة.
 
 1. **أنشئ خطة**
 
-   لدى YONSOON (甬算) _وضع Plan_ يعطل قدرته على إجراء التغييرات، ويقترح بدلا من ذلك _كيف_ سينفّذ الميزة.
+   لدى RAILWISE (甬算) _وضع Plan_ يعطل قدرته على إجراء التغييرات، ويقترح بدلا من ذلك _كيف_ سينفّذ الميزة.
 
    انتقل إليه باستخدام مفتاح **Tab**. سترى مؤشرا لذلك في الزاوية السفلية اليمنى.
 
@@ -234,10 +234,10 @@ How is authentication handled in @packages/functions/src/api/index.ts
    From this screen, the user can undelete a note or permanently delete it.
    ```
 
-   احرص على تزويد YONSOON (甬算) بتفاصيل كافية ليفهم ما تريد. يساعد أن تتحدث إليه كما لو كنت تتحدث إلى مطور مبتدئ ضمن فريقك.
+   احرص على تزويد RAILWISE (甬算) بتفاصيل كافية ليفهم ما تريد. يساعد أن تتحدث إليه كما لو كنت تتحدث إلى مطور مبتدئ ضمن فريقك.
 
    :::tip
-   أعطِ YONSOON (甬算) سياقا وأمثلة كافية لمساعدته على فهم ما تريد.
+   أعطِ RAILWISE (甬算) سياقا وأمثلة كافية لمساعدته على فهم ما تريد.
    :::
 
 2. **حسّن الخطة**
@@ -253,7 +253,7 @@ How is authentication handled in @packages/functions/src/api/index.ts
    اسحب الصور وأفلِتها داخل terminal لإضافتها إلى الطلب.
    :::
 
-   يستطيع YONSOON (甬算) فحص أي صور تزوده بها وإضافتها إلى الطلب. يمكنك فعل ذلك عبر سحب الصورة وإفلاتها داخل terminal.
+   يستطيع RAILWISE (甬算) فحص أي صور تزوده بها وإضافتها إلى الطلب. يمكنك فعل ذلك عبر سحب الصورة وإفلاتها داخل terminal.
 
 3. **ابنِ الميزة**
 
@@ -273,7 +273,7 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### نفّذ تغييرات
 
-للتغييرات الأبسط، يمكنك أن تطلب من YONSOON (甬算) تنفيذها مباشرة دون الحاجة لمراجعة خطة أولا.
+للتغييرات الأبسط، يمكنك أن تطلب من RAILWISE (甬算) تنفيذها مباشرة دون الحاجة لمراجعة خطة أولا.
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
 We need to add authentication to the /settings route. Take a look at how this is
@@ -281,13 +281,13 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-تأكد من تقديم قدر مناسب من التفاصيل لكي يجري YONSOON (甬算) التغييرات الصحيحة.
+تأكد من تقديم قدر مناسب من التفاصيل لكي يجري RAILWISE (甬算) التغييرات الصحيحة.
 
 ---
 
 ### تراجع عن التغييرات
 
-لنفترض أنك طلبت من YONSOON (甬算) إجراء بعض التغييرات.
+لنفترض أنك طلبت من RAILWISE (甬算) إجراء بعض التغييرات.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -299,7 +299,7 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 /undo
 ```
 
-سيقوم YONSOON (甬算) الآن بعكس التغييرات التي أُجريت ويعرض رسالتك الأصلية مجددا.
+سيقوم RAILWISE (甬算) الآن بعكس التغييرات التي أُجريت ويعرض رسالتك الأصلية مجددا.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -321,7 +321,7 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 
 ## المشاركة
 
-يمكن [مشاركة المحادثات](/docs/share) التي تجريها مع YONSOON (甬算) مع فريقك.
+يمكن [مشاركة المحادثات](/docs/share) التي تجريها مع RAILWISE (甬算) مع فريقك.
 
 ```bash frame="none"
 /share
@@ -333,12 +333,12 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 لا تتم مشاركة المحادثات افتراضيا.
 :::
 
-إليك [مثالا لمحادثة](https://yonsoon.ai/s/4XP1fce5) مع YONSOON (甬算).
+إليك [مثالا لمحادثة](https://railwise.ai/s/4XP1fce5) مع RAILWISE (甬算).
 
 ---
 
 ## التخصيص
 
-وهذا كل شيء! أصبحت الآن محترفا في استخدام YONSOON (甬算).
+وهذا كل شيء! أصبحت الآن محترفا في استخدام RAILWISE (甬算).
 
-لتجعله مناسبا لك، نوصي بـ [اختيار سمة](/docs/themes)، و[تخصيص اختصارات لوحة المفاتيح](/docs/keybinds)، و[إعداد منسقات الشيفرة](/docs/formatters)، و[إنشاء أوامر مخصصة](/docs/commands)، أو التجربة مع [إعدادات YONSOON (甬算)](/docs/config).
+لتجعله مناسبا لك، نوصي بـ [اختيار سمة](/docs/themes)، و[تخصيص اختصارات لوحة المفاتيح](/docs/keybinds)، و[إعداد منسقات الشيفرة](/docs/formatters)، و[إنشاء أوامر مخصصة](/docs/commands)، أو التجربة مع [إعدادات RAILWISE (甬算)](/docs/config).

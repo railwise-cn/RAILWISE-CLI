@@ -8,10 +8,10 @@ import { createSimpleContext } from "../context/helper"
 export type ColorScheme = "light" | "dark" | "system"
 
 const STORAGE_KEYS = {
-  THEME_ID: "yonsoon-theme-id",
-  COLOR_SCHEME: "yonsoon-color-scheme",
-  THEME_CSS_LIGHT: "yonsoon-theme-css-light",
-  THEME_CSS_DARK: "yonsoon-theme-css-dark",
+  THEME_ID: "railwise-theme-id",
+  COLOR_SCHEME: "railwise-color-scheme",
+  THEME_CSS_LIGHT: "railwise-theme-css-light",
+  THEME_CSS_DARK: "railwise-theme-css-dark",
 } as const
 
 const THEME_STYLE_ID = "oc-theme"

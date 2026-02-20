@@ -3,11 +3,11 @@ title: Prečice tipki
 description: Prilagodite svoje veze tipki.
 ---
 
-YONSOON (甬算) ima listu veza tipki koje možete prilagoditi preko YONSOON (甬算) konfiguracije.
+RAILWISE (甬算) ima listu veza tipki koje možete prilagoditi preko RAILWISE (甬算) konfiguracije.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ YONSOON (甬算) ima listu veza tipki koje možete prilagoditi preko YONSOON (�
 
 ## Leader tipka
 
-YONSOON (甬算) koristi `leader` (vodeću) tipku za većinu povezivanja tipki. Ovo izbjegava sukobe u vašem terminalu.
+RAILWISE (甬算) koristi `leader` (vodeću) tipku za većinu povezivanja tipki. Ovo izbjegava sukobe u vašem terminalu.
 Prema zadanim postavkama, `ctrl+x` je vodeća tipka i većina radnji zahtijeva da prvo pritisnete vodeću tipku, a zatim i prečicu. Na primjer, da biste započeli novu sesiju, prvo pritisnite `ctrl+x`, a zatim pritisnite `n`.
 Ne morate koristiti vodeću tipku za svoje veze tipki, ali preporučujemo da to učinite.
 
@@ -117,9 +117,9 @@ Ne morate koristiti vodeću tipku za svoje veze tipki, ali preporučujemo da to 
 
 Možete onemogućiti spajanje tipki dodavanjem ključa u svoju konfiguraciju s vrijednošću "none".
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -130,7 +130,7 @@ Možete onemogućiti spajanje tipki dodavanjem ključa u svoju konfiguraciju s v
 
 ## Prečice za radnu površinu
 
-Unos prompta aplikacije YONSOON (甬算) za desktop podržava uobičajene prečice u stilu Readline/Emacs za uređivanje teksta. One su ugrađene i trenutno se ne mogu konfigurirati putem `yonsoon.json`.
+Unos prompta aplikacije RAILWISE (甬算) za desktop podržava uobičajene prečice u stilu Readline/Emacs za uređivanje teksta. One su ugrađene i trenutno se ne mogu konfigurirati putem `railwise.json`.
 
 | Prečica  | Akcija                                           |
 | -------- | ------------------------------------------------ |

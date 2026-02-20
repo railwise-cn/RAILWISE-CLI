@@ -1,5 +1,5 @@
-import { getFilename } from "@yonsoon/util/path"
-import { type Session } from "@yonsoon/sdk/v2/client"
+import { getFilename } from "@railwise/util/path"
+import { type Session } from "@railwise/sdk/v2/client"
 
 export const workspaceKey = (directory: string) => {
   const drive = directory.match(/^([A-Za-z]:)[\\/]+$/)

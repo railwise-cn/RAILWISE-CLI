@@ -1,4 +1,4 @@
-import type { Project, ProviderListResponse } from "@yonsoon/sdk/v2/client"
+import type { Project, ProviderListResponse } from "@railwise/sdk/v2/client"
 
 export const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 

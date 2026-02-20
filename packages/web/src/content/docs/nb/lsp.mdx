@@ -1,15 +1,15 @@
 ---
 title: LSP-servere
-description: yonsoon integreres med LSP-serverne dine.
+description: railwise integreres med LSP-serverne dine.
 ---
 
-YONSOON (甬算) integreres med din Language Server Protocol (LSP) for å hjelpe LLM med å samhandle med kodebasen din. Den bruker diagnostikk for å gi tilbakemelding til LLM.
+RAILWISE (甬算) integreres med din Language Server Protocol (LSP) for å hjelpe LLM med å samhandle med kodebasen din. Den bruker diagnostikk for å gi tilbakemelding til LLM.
 
 ---
 
 ## Innebygde servere
 
-YONSOON (甬算) kommer med flere innebygde LSP-servere for populære språk:
+RAILWISE (甬算) kommer med flere innebygde LSP-servere for populære språk:
 
 | LSP Server         | Filendelser                                                         | Krav                                                                    |
 | ------------------ | ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
@@ -49,14 +49,14 @@ YONSOON (甬算) kommer med flere innebygde LSP-servere for populære språk:
 LSP-servere aktiveres automatisk når en av filtypene ovenfor oppdages og kravene oppfylles.
 
 :::note
-Du kan deaktivere automatiske LSP-servernedlastinger ved å sette miljøvariabelen `YONSOON_DISABLE_LSP_DOWNLOAD` til `true`.
+Du kan deaktivere automatiske LSP-servernedlastinger ved å sette miljøvariabelen `RAILWISE_DISABLE_LSP_DOWNLOAD` til `true`.
 :::
 
 ---
 
 ## Slik fungerer det
 
-Når yonsoon åpner en fil, gjør den:
+Når railwise åpner en fil, gjør den:
 
 1. Kontrollerer filtypen mot alle aktiverte LSP-servere.
 2. Starter den riktige LSP-serveren hvis den ikke allerede kjører.
@@ -65,11 +65,11 @@ Når yonsoon åpner en fil, gjør den:
 
 ## Konfigurasjon
 
-Du kan tilpasse LSP-servere gjennom `lsp`-delen i YONSOON (甬算)-konfigurasjonen.
+Du kan tilpasse LSP-servere gjennom `lsp`-delen i RAILWISE (甬算)-konfigurasjonen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {}
 }
 ```
@@ -92,9 +92,9 @@ La oss se på noen eksempler.
 
 Bruk egenskapen `env` til å angi miljøvariabler når du starter LSP-serveren:
 
-```json title="yonsoon.json" {5-7}
+```json title="railwise.json" {5-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "rust": {
       "env": {
@@ -111,9 +111,9 @@ Bruk egenskapen `env` til å angi miljøvariabler når du starter LSP-serveren:
 
 Bruk egenskapen `initialization` til å sende initialiseringsalternativer til LSP-serveren. Dette er serverspesifikke innstillinger sendt under LSP `initialize`-forespørselen:
 
-```json title="yonsoon.json" {5-9}
+```json title="railwise.json" {5-9}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "typescript": {
       "initialization": {
@@ -136,18 +136,18 @@ Initialiseringsalternativer varierer etter LSP-server. Sjekk dokumentasjonen til
 
 For å deaktivere **alle** LSP-servere globalt, sett `lsp` til `false`:
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": false
 }
 ```
 
 For å deaktivere en **spesifikk** LSP-server, sett `disabled` til `true`:
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "typescript": {
       "disabled": true
@@ -162,9 +162,9 @@ For å deaktivere en **spesifikk** LSP-server, sett `disabled` til `true`:
 
 Du kan legge til egendefinerte LSP-servere ved å spesifisere kommandoen og filtypene:
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "custom-lsp": {
       "command": ["custom-lsp-server", "--stdio"],

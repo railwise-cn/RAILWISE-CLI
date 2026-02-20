@@ -1,6 +1,6 @@
 use tauri_plugin_window_state::StateFlags;
 
-pub const SETTINGS_STORE: &str = "yonsoon.settings.dat";
+pub const SETTINGS_STORE: &str = "railwise.settings.dat";
 pub const DEFAULT_SERVER_URL_KEY: &str = "defaultServerUrl";
 pub const WSL_ENABLED_KEY: &str = "wslEnabled";
 pub const UPDATER_ENABLED: bool = option_env!("TAURI_SIGNING_PRIVATE_KEY").is_some();

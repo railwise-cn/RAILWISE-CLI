@@ -1,11 +1,11 @@
-import { Resource } from "@yonsoon/console-resource"
-import { Actor } from "@yonsoon/console-core/actor.js"
+import { Resource } from "@railwise/console-resource"
+import { Actor } from "@railwise/console-core/actor.js"
 import { action, json, query } from "@solidjs/router"
 import { withActor } from "~/context/auth.withActor"
-import { Billing } from "@yonsoon/console-core/billing.js"
-import { and, Database, desc, eq, isNull } from "@yonsoon/console-core/drizzle/index.js"
-import { WorkspaceTable } from "@yonsoon/console-core/schema/workspace.sql.js"
-import { UserTable } from "@yonsoon/console-core/schema/user.sql.js"
+import { Billing } from "@railwise/console-core/billing.js"
+import { and, Database, desc, eq, isNull } from "@railwise/console-core/drizzle/index.js"
+import { WorkspaceTable } from "@railwise/console-core/schema/workspace.sql.js"
+import { UserTable } from "@railwise/console-core/schema/user.sql.js"
 
 export function formatDateForTable(date: Date) {
   const options: Intl.DateTimeFormatOptions = {

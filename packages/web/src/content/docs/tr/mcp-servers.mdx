@@ -3,7 +3,7 @@ title: MCP sunucuları
 description: Yerel ve uzak MCP araçlarını ekleyin.
 ---
 
-_Model Bağlam Protokolü_ veya MCP kullanarak yonsoon'a harici araçlar ekleyebilirsiniz. yonsoon hem yerel hem de uzak sunucuları destekler.
+_Model Bağlam Protokolü_ veya MCP kullanarak railwise'a harici araçlar ekleyebilirsiniz. railwise hem yerel hem de uzak sunucuları destekler.
 
 MCP araçları eklendikten sonra yerleşik araçların yanı sıra LLM tarafından otomatik olarak kullanılabilir.
 
@@ -23,11 +23,11 @@ GitHub MCP sunucusu gibi belirli MCP sunucuları çok sayıda belirteç ekleme e
 
 ## Etkinleştirme
 
-MCP sunucularını [yonsoon Config](https://yonsoon.ai/docs/config/)'nizde `mcp` altında tanımlayabilirsiniz. Her MCP'ü benzersiz bir adla ekleyin. LLM isteminde bulunurken bu MCP adına başvurabilirsiniz.
+MCP sunucularını [railwise Config](https://railwise.ai/docs/config/)'nizde `mcp` altında tanımlayabilirsiniz. Her MCP'ü benzersiz bir adla ekleyin. LLM isteminde bulunurken bu MCP adına başvurabilirsiniz.
 
-```jsonc title="yonsoon.jsonc" {6}
+```jsonc title="railwise.jsonc" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "name-of-mcp-server": {
       // ...
@@ -46,13 +46,13 @@ Ayrıca `enabled` öğesini `false` olarak ayarlayarak bir sunucuyu devre dış�
 
 ### Uzak varsayılanları geçersiz kılma
 
-Kuruluşlar, `.well-known/yonsoon` uç noktaları aracılığıyla varsayılan MCP sunucularını sağlayabilir. Bu sunucular varsayılan olarak devre dışı bırakılarak kullanıcıların ihtiyaç duydukları sunucuları seçmelerine olanak tanınabilir.
+Kuruluşlar, `.well-known/railwise` uç noktaları aracılığıyla varsayılan MCP sunucularını sağlayabilir. Bu sunucular varsayılan olarak devre dışı bırakılarak kullanıcıların ihtiyaç duydukları sunucuları seçmelerine olanak tanınabilir.
 
 Kuruluşunuzun uzak yapılandırmasından belirli bir sunucuyu etkinleştirmek için onu `enabled: true` ile yerel yapılandırmanıza ekleyin:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "jira": {
       "type": "remote",
@@ -71,9 +71,9 @@ Yerel yapılandırma değerleriniz uzak varsayılanları geçersiz kılar. Daha 
 
 `type` kullanarak yerel MCP sunucularını MCP nesnesi içindeki `"local"`'ye ekleyin.
 
-```jsonc title="yonsoon.jsonc" {15}
+```jsonc title="railwise.jsonc" {15}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-local-mcp-server": {
       "type": "local",
@@ -92,9 +92,9 @@ Komut, yerel MCP sunucusunun nasıl başlatıldığıdır. Ayrıca ortam değiş
 
 Örneğin, [`@modelcontextprotocol/server-everything`](https://www.npmjs.com/package/@modelcontextprotocol/server-everything) MCP test sunucusunu şu şekilde görebilirsiniz.
 
-```jsonc title="yonsoon.jsonc"
+```jsonc title="railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "mcp_everything": {
       "type": "local",
@@ -130,9 +130,9 @@ Yerel bir MCP sunucusunu yapılandırmak için tüm seçenekler burada verilmiş
 
 `type`'yi `"remote"` olarak ayarlayarak uzak MCP sunucularını ekleyin.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-remote-mcp": {
       "type": "remote",
@@ -165,7 +165,7 @@ Yerel bir MCP sunucusunu yapılandırmak için tüm seçenekler burada verilmiş
 
 ## OAuth
 
-yonsoon, uzak MCP sunucuları için OAuth kimlik doğrulamasını otomatik olarak yönetir. Bir sunucu kimlik doğrulaması gerektirdiğinde yonsoon şunları yapar:
+railwise, uzak MCP sunucuları için OAuth kimlik doğrulamasını otomatik olarak yönetir. Bir sunucu kimlik doğrulaması gerektirdiğinde railwise şunları yapar:
 
 1. 401 yanıtını tespit edin ve OAuth akışını başlatın
 2. Sunucu tarafından destekleniyorsa **Dinamik İstemci Kaydı (RFC 7591)** kullanın
@@ -177,9 +177,9 @@ yonsoon, uzak MCP sunucuları için OAuth kimlik doğrulamasını otomatik olara
 
 OAuth'un etkin olduğu çoğu MCP sunucusu için özel bir yapılandırmaya gerek yoktur. Uzak sunucuyu yapılandırmanız yeterli:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -189,7 +189,7 @@ OAuth'un etkin olduğu çoğu MCP sunucusu için özel bir yapılandırmaya gere
 }
 ```
 
-Sunucu kimlik doğrulama gerektiriyorsa yonsoon, onu ilk kez kullanmaya çalıştığınızda kimlik doğrulamanızı isteyecektir. Değilse, `yonsoon mcp auth <server-name>` ile [manually trigger the flow](#authenticating) yapabilirsiniz.
+Sunucu kimlik doğrulama gerektiriyorsa railwise, onu ilk kez kullanmaya çalıştığınızda kimlik doğrulamanızı isteyecektir. Değilse, `railwise mcp auth <server-name>` ile [manually trigger the flow](#authenticating) yapabilirsiniz.
 
 ---
 
@@ -197,9 +197,9 @@ Sunucu kimlik doğrulama gerektiriyorsa yonsoon, onu ilk kez kullanmaya çalış
 
 MCP sunucu sağlayıcısından istemci kimlik bilgileriniz varsa, bunları yapılandırabilirsiniz:
 
-```json title="yonsoon.json" {7-11}
+```json title="railwise.json" {7-11}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -223,22 +223,22 @@ Kimlik doğrulamayı manuel olarak tetikleyebilir veya kimlik bilgilerini yönet
 Belirli bir MCP sunucusuyla kimlik doğrulaması yapın:
 
 ```bash
-yonsoon mcp auth my-oauth-server
+railwise mcp auth my-oauth-server
 ```
 
 Tüm MCP sunucularını ve kimlik doğrulama durumlarını listeleyin:
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 Remove stored credentials:
 
 ```bash
-yonsoon mcp logout my-oauth-server
+railwise mcp logout my-oauth-server
 ```
 
-`mcp auth` komutu tarayıcınızı yetkilendirme için açacaktır. Yetkilendirmenizin ardından yonsoon, belirteçleri `~/.local/share/yonsoon/mcp-auth.json`'de güvenli bir şekilde saklar.
+`mcp auth` komutu tarayıcınızı yetkilendirme için açacaktır. Yetkilendirmenizin ardından railwise, belirteçleri `~/.local/share/railwise/mcp-auth.json`'de güvenli bir şekilde saklar.
 
 ---
 
@@ -246,9 +246,9 @@ yonsoon mcp logout my-oauth-server
 
 Bir sunucu için otomatik OAuth'u devre dışı bırakmak istiyorsanız (örneğin, bunun yerine API anahtarlarını kullanan sunucular için), `oauth`'yi `false` olarak ayarlayın:
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-api-key-server": {
       "type": "remote",
@@ -279,10 +279,10 @@ Uzak bir MCP sunucusunun kimlik doğrulaması başarısız olursa aşağıdakile
 
 ```bash
 # View auth status for all OAuth-capable servers
-yonsoon mcp auth list
+railwise mcp auth list
 
 # Debug connection and OAuth flow for a specific server
-yonsoon mcp debug my-oauth-server
+railwise mcp debug my-oauth-server
 ```
 
 `mcp debug` komutu mevcut kimlik doğrulama durumunu gösterir, HTTP bağlantısını test eder ve OAuth bulma akışını dener.
@@ -291,7 +291,7 @@ yonsoon mcp debug my-oauth-server
 
 ## Yönetim
 
-MCP'leriniz yerleşik araçların yanı sıra yonsoon'da araç olarak mevcuttur. Böylece bunları diğer araçlar gibi yonsoon yapılandırması aracılığıyla yönetebilirsiniz.
+MCP'leriniz yerleşik araçların yanı sıra railwise'da araç olarak mevcuttur. Böylece bunları diğer araçlar gibi railwise yapılandırması aracılığıyla yönetebilirsiniz.
 
 ---
 
@@ -299,9 +299,9 @@ MCP'leriniz yerleşik araçların yanı sıra yonsoon'da araç olarak mevcuttur.
 
 Bu, bunları global olarak etkinleştirebileceğiniz veya devre dışı bırakabileceğiniz anlamına gelir.
 
-```json title="yonsoon.json" {14}
+```json title="railwise.json" {14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -320,9 +320,9 @@ Bu, bunları global olarak etkinleştirebileceğiniz veya devre dışı bırakab
 
 Eşleşen tüm MCP'leri devre dışı bırakmak için bir glob modeli de kullanabiliriz.
 
-```json title="yonsoon.json" {14}
+```json title="railwise.json" {14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -350,9 +350,9 @@ Burada tüm MCP'leri devre dışı bırakmak için `my-mcp*` glob modelini kulla
 1. Global olarak bir araç olarak devre dışı bırakın.
 2. [agent config](/docs/agents#tools)'nizde, MCP sunucusunu bir araç olarak etkinleştirin.
 
-```json title="yonsoon.json" {11, 14-18}
+```json title="railwise.json" {11, 14-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp": {
       "type": "local",
@@ -404,9 +404,9 @@ Aşağıda bazı yaygın MCP sunucularının örnekleri verilmiştir. Diğer sun
 
 Sentry projelerinizle ve sorunlarınızla etkileşimde bulunmak için [Sentry MCP server](https://mcp.sentry.dev) ekleyin.
 
-```json title="yonsoon.json" {4-8}
+```json title="railwise.json" {4-8}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "sentry": {
       "type": "remote",
@@ -420,10 +420,10 @@ Sentry projelerinizle ve sorunlarınızla etkileşimde bulunmak için [Sentry MC
 Yapılandırmayı ekledikten sonra Sentry ile kimlik doğrulaması yapın:
 
 ```bash
-yonsoon mcp auth sentry
+railwise mcp auth sentry
 ```
 
-Bu, OAuth akışını tamamlamak ve yonsoon'u Sentry hesabınıza bağlamak için bir tarayıcı penceresi açacaktır.
+Bu, OAuth akışını tamamlamak ve railwise'u Sentry hesabınıza bağlamak için bir tarayıcı penceresi açacaktır.
 
 Kimlik doğrulaması yapıldıktan sonra sorunları, projeleri ve hata verilerini sorgulamak için istemlerinizde Sentry araçlarını kullanabilirsiniz.
 
@@ -437,9 +437,9 @@ Show me the latest unresolved issues in my project. use sentry
 
 Dokumanlar arasında arama yapmak için [Context7 MCP server](https://github.com/upstash/context7) ekleyin.
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -451,9 +451,9 @@ Dokumanlar arasında arama yapmak için [Context7 MCP server](https://github.com
 
 Ücretsiz bir hesaba kaydolduysanız API anahtarınızı kullanarak daha yüksek ücret limitleri elde edebilirsiniz.
 
-```json title="yonsoon.json" {7-9}
+```json title="railwise.json" {7-9}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -486,9 +486,9 @@ When you need to search docs, use `context7` tools.
 
 GitHub'daki kod parçacıkları arasında arama yapmak için [Grep by Vercel](https://grep.app) MCP sunucusunu ekleyin.
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "gh_grep": {
       "type": "remote",

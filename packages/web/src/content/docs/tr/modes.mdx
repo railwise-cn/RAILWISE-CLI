@@ -4,14 +4,14 @@ description: farklı kullanım durumları için farklı modlar.
 ---
 
 :::caution
-Modlar artık yonsoon yapılandırmasındaki `agent` seçeneği aracılığıyla yapılandırılıyor.
+Modlar artık railwise yapılandırmasındaki `agent` seçeneği aracılığıyla yapılandırılıyor.
 `mode` seçeneği artık kullanımdan kaldırıldı. [Daha fazla bilgi](/docs/agents).
 :::
 
-yonsoon'daki modlar, farklı kullanım durumları için davranışı, araçları ve istemleri özelleştirmenize olanak tanır.
+railwise'daki modlar, farklı kullanım durumları için davranışı, araçları ve istemleri özelleştirmenize olanak tanır.
 
 İki yerleşik modla birlikte gelir: **build** ve **plan**. Kişiselleştirebilirsiniz
-bunları veya yonsoon yapılandırması aracılığıyla kendinizinkini yapılandırın.
+bunları veya railwise yapılandırması aracılığıyla kendinizinkini yapılandırın.
 
 Bir oturum sırasında modlar arasında geçiş yapabilir veya bunları yapılandırma dosyanızda yapılandırabilirsiniz.
 
@@ -19,7 +19,7 @@ Bir oturum sırasında modlar arasında geçiş yapabilir veya bunları yapılan
 
 ## Yerleşik
 
-yonsoon iki yerleşik modla birlikte gelir.
+railwise iki yerleşik modla birlikte gelir.
 
 ---
 
@@ -34,7 +34,7 @@ Derleme, tüm araçların etkin olduğu **varsayılan** moddur. Bu, dosya işlem
 Planlama ve analiz için tasarlanmış sınırlı bir mod. Plan modunda aşağıdaki araçlar varsayılan olarak devre dışıdır:
 
 - `write` - Yeni dosyalar oluşturulamıyor
-- `edit` - Planın kendisini detaylandırmak için `.yonsoon/plans/*.md` adresinde bulunan dosyalar dışında mevcut dosyalar değiştirilemez
+- `edit` - Planın kendisini detaylandırmak için `.railwise/plans/*.md` adresinde bulunan dosyalar dışında mevcut dosyalar değiştirilemez
 - `patch` - Yamalar uygulanamaz
 - `bash` - Kabuk komutları yürütülemiyor
 
@@ -56,11 +56,11 @@ Yerleşik modları özelleştirebilir veya yapılandırma aracılığıyla kendi
 
 ### JSON Yapılandırması
 
-`yonsoon.json` yapılandırma dosyanızdaki modları yapılandırın:
+`railwise.json` yapılandırma dosyanızdaki modları yapılandırın:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "build": {
       "model": "anthropic/claude-sonnet-4-20250514",
@@ -87,10 +87,10 @@ Yerleşik modları özelleştirebilir veya yapılandırma aracılığıyla kendi
 
 Markdown dosyalarını kullanarak modları da tanımlayabilirsiniz. Bunları şuraya yerleştirin:
 
-- Global: `~/.config/yonsoon/modes/`
-- Project: `.yonsoon/modes/`
+- Global: `~/.config/railwise/modes/`
+- Project: `.railwise/modes/`
 
-```markdown title="~/.config/yonsoon/modes/review.md"
+```markdown title="~/.config/railwise/modes/review.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.1
@@ -120,7 +120,7 @@ Bu yapılandırma seçeneklerine ayrıntılı olarak bakalım.
 
 Bu modun varsayılan modelini geçersiz kılmak için `model` ayarını kullanın. Farklı bölümler için optimize edilmiş farklı modelleri kullanmak için kullanışlıdır. Örneğin planlama için daha hızlı bir model, uygulama için daha yetenekli bir model.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -136,7 +136,7 @@ Bu modun varsayılan modelini geçersiz kılmak için `model` ayarını kullanı
 
 `temperature` yapılandırmasıyla yapay zekanın yanıtlarının rastgeleliğini ve yaratıcılığını kontrol edin. Düşük değerler yanıtları daha odaklı ve belirleyici hale getirirken, yüksek değerler yaratıcılığı ve değişkenliği artırır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -155,7 +155,7 @@ Sıcaklık değerleri tipik olarak 0,0 ila 1,0 arasındadır:
 - **0,3-0,5**: Biraz yaratıcılık içeren dengeli yanıtlar, genel gelişim görevleri için iyi
 - **0,6-1,0**: Daha yaratıcı ve çeşitli yanıtlar, beyin fırtınası ve keşif için yararlı
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "analyze": {
@@ -173,7 +173,7 @@ Sıcaklık değerleri tipik olarak 0,0 ila 1,0 arasındadır:
 }
 ```
 
-Sıcaklık belirtilmezse, yonsoon modele özgü varsayılanları kullanır (çoğu model için genellikle 0, Qwen modelleri için 0,55).
+Sıcaklık belirtilmezse, railwise modele özgü varsayılanları kullanır (çoğu model için genellikle 0, Qwen modelleri için 0,55).
 
 ---
 
@@ -181,7 +181,7 @@ Sıcaklık belirtilmezse, yonsoon modele özgü varsayılanları kullanır (ço�
 
 `prompt` yapılandırmasıyla bu mod için özel bir sistem bilgi istemi dosyası belirtin. Bilgi istemi dosyası, modun amacına özel talimatlar içermelidir.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "review": {
@@ -192,7 +192,7 @@ Sıcaklık belirtilmezse, yonsoon modele özgü varsayılanları kullanır (ço�
 ```
 
 Bu yol, yapılandırma dosyasının bulunduğu yere göredir. Yani bu işe yarıyor
-hem global yonsoon yapılandırması hem de projeye özel yapılandırma.
+hem global railwise yapılandırması hem de projeye özel yapılandırma.
 
 ---
 
@@ -247,9 +247,9 @@ Yapılandırmaya ekleyerek kendi özel modlarınızı oluşturabilirsiniz. Her i
 
 ### JSON yapılandırması kullanma
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "docs": {
       "prompt": "{file:./prompts/documentation.txt}",
@@ -268,9 +268,9 @@ Yapılandırmaya ekleyerek kendi özel modlarınızı oluşturabilirsiniz. Her i
 
 ### Markdown dosyaları kullanma
 
-Projeye özel modlar için `.yonsoon/modes/` veya genel modlar için `~/.config/yonsoon/modes/`'de mod dosyaları oluşturun:
+Projeye özel modlar için `.railwise/modes/` veya genel modlar için `~/.config/railwise/modes/`'de mod dosyaları oluşturun:
 
-```markdown title=".yonsoon/modes/debug.md"
+```markdown title=".railwise/modes/debug.md"
 ---
 temperature: 0.1
 tools:
@@ -294,7 +294,7 @@ Focus on:
 Do not make any changes to files. Only investigate and report.
 ```
 
-```markdown title="~/.config/yonsoon/modes/refactor.md"
+```markdown title="~/.config/railwise/modes/refactor.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.2

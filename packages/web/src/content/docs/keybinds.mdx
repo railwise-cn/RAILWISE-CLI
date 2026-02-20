@@ -3,11 +3,11 @@ title: Keybinds
 description: Customize your keybinds.
 ---
 
-YONSOON (甬算) has a list of keybinds that you can customize through the YONSOON (甬算) config.
+RAILWISE (甬算) has a list of keybinds that you can customize through the RAILWISE (甬算) config.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ YONSOON (甬算) has a list of keybinds that you can customize through the YONSO
 
 ## Leader key
 
-YONSOON (甬算) uses a `leader` key for most keybinds. This avoids conflicts in your terminal.
+RAILWISE (甬算) uses a `leader` key for most keybinds. This avoids conflicts in your terminal.
 
 By default, `ctrl+x` is the leader key and most actions require you to first press the leader key and then the shortcut. For example, to start a new session you first press `ctrl+x` and then press `n`.
 
@@ -119,9 +119,9 @@ You don't need to use a leader key for your keybinds but we recommend doing so.
 
 You can disable a keybind by adding the key to your config with a value of "none".
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -132,7 +132,7 @@ You can disable a keybind by adding the key to your config with a value of "none
 
 ## Desktop prompt shortcuts
 
-The YONSOON (甬算) desktop app prompt input supports common Readline/Emacs-style shortcuts for editing text. These are built-in and currently not configurable via `yonsoon.json`.
+The RAILWISE (甬算) desktop app prompt input supports common Readline/Emacs-style shortcuts for editing text. These are built-in and currently not configurable via `railwise.json`.
 
 | Shortcut | Action                                   |
 | -------- | ---------------------------------------- |

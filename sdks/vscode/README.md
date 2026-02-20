@@ -1,21 +1,21 @@
-# yonsoon VS Code Extension
+# railwise VS Code Extension
 
-A Visual Studio Code extension that integrates [yonsoon](https://yonsoon.ai) directly into your development workflow.
+A Visual Studio Code extension that integrates [railwise](https://railwise.ai) directly into your development workflow.
 
 ## Prerequisites
 
-This extension requires the [yonsoon CLI](https://yonsoon.ai) to be installed on your system. Visit [yonsoon.ai](https://yonsoon.ai) for installation instructions.
+This extension requires the [railwise CLI](https://railwise.ai) to be installed on your system. Visit [railwise.ai](https://railwise.ai) for installation instructions.
 
 ## Features
 
-- **Quick Launch**: Use `Cmd+Esc` (Mac) or `Ctrl+Esc` (Windows/Linux) to open yonsoon in a split terminal view, or focus an existing terminal session if one is already running.
-- **New Session**: Use `Cmd+Shift+Esc` (Mac) or `Ctrl+Shift+Esc` (Windows/Linux) to start a new yonsoon terminal session, even if one is already open. You can also click the yonsoon button in the UI.
-- **Context Awareness**: Automatically share your current selection or tab with yonsoon.
+- **Quick Launch**: Use `Cmd+Esc` (Mac) or `Ctrl+Esc` (Windows/Linux) to open railwise in a split terminal view, or focus an existing terminal session if one is already running.
+- **New Session**: Use `Cmd+Shift+Esc` (Mac) or `Ctrl+Shift+Esc` (Windows/Linux) to start a new railwise terminal session, even if one is already open. You can also click the railwise button in the UI.
+- **Context Awareness**: Automatically share your current selection or tab with railwise.
 - **File Reference Shortcuts**: Use `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Linux/Windows) to insert file references. For example, `@File#L37-42`.
 
 ## Support
 
-This is an early release. If you encounter issues or have feedback, please create an issue at https://github.com/anomalyco/yonsoon/issues.
+This is an early release. If you encounter issues or have feedback, please create an issue at https://github.com/anomalyco/railwise/issues.
 
 ## Development
 

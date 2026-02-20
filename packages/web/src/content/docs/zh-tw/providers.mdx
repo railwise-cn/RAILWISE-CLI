@@ -32,9 +32,9 @@ OpenCode 使用 [AI SDK](https://ai-sdk.dev/) 和 [Models.dev](https://models.de
 
 您可以透過設定 `baseURL` 選項來自訂任何提供商的 Base URL。這在使用代理服務或自訂端點時非常有用。
 
-```json title="yonsoon.json" {6}
+```json title="railwise.json" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -55,7 +55,7 @@ OpenCode Zen 是由 OpenCode 團隊提供的模型列表，這些模型已經過
 如果您是新使用者，我們建議從 OpenCode Zen 開始。
 :::
 
-1. 在 TUI 中執行 `/connect` 指令，選擇 opencode，然後前往 [yonsoon.ai/auth](https://yonsoon.ai/auth)。
+1. 在 TUI 中執行 `/connect` 指令，選擇 opencode，然後前往 [railwise.ai/auth](https://railwise.ai/auth)。
 
    ```txt
    /connect
@@ -155,11 +155,11 @@ OpenCode Zen 是由 OpenCode 團隊提供的模型列表，這些模型已經過
 
    #### 設定檔（推薦）
 
-   如需專案級別或持久化的設定，請使用 `yonsoon.json`：
+   如需專案級別或持久化的設定，請使用 `railwise.json`：
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "amazon-bedrock": {
          "options": {
@@ -184,9 +184,9 @@ OpenCode Zen 是由 OpenCode 團隊提供的模型列表，這些模型已經過
 
    如果您使用 Bedrock 的 VPC 端點：
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "amazon-bedrock": {
          "options": {
@@ -228,9 +228,9 @@ OpenCode Zen 是由 OpenCode 團隊提供的模型列表，這些模型已經過
 :::note
 對於自訂推理設定檔，請在 key 中使用模型名稱和提供商名稱，並將 `id` 屬性設定為 ARN。這可以確保正確的快取行為：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       // ...
@@ -479,9 +479,9 @@ Cloudflare AI Gateway 允許您透過統一端點存取來自 OpenAI、Anthropic
 
    您也可以透過 OpenCode 設定新增模型。
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "cloudflare-ai-gateway": {
          "models": {
@@ -679,11 +679,11 @@ GitLab Duo 透過 GitLab 的 Anthropic 代理提供具有原生工具呼叫能�
 ##### 自架 GitLab
 
 :::note[合規說明]
-OpenCode 會使用一個小模型來執行部分 AI 任務，例如產生工作階段標題。預設情況下使用由 Zen 託管的 gpt-5-nano。如果您需要讓 OpenCode 僅使用您自己的 GitLab 託管實例，請在 `yonsoon.json` 檔案中新增以下內容。同時建議停用工作階段分享。
+OpenCode 會使用一個小模型來執行部分 AI 任務，例如產生工作階段標題。預設情況下使用由 Zen 託管的 gpt-5-nano。如果您需要讓 OpenCode 僅使用您自己的 GitLab 託管實例，請在 `railwise.json` 檔案中新增以下內容。同時建議停用工作階段分享。
 
 ```json
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "small_model": "gitlab/duo-chat-haiku-4-5",
   "share": "disabled"
 }
@@ -739,11 +739,11 @@ export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 
 ##### 設定
 
-透過 `yonsoon.json` 進行自訂設定：
+透過 `railwise.json` 進行自訂設定：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "gitlab": {
       "options": {
@@ -762,9 +762,9 @@ export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 
 要存取 GitLab 工具（合併請求、Issue、流水線、CI/CD 等）：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": ["@gitlab/opencode-gitlab-plugin"]
 }
 ```
@@ -941,9 +941,9 @@ export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 
 [Helicone 模型目錄](https://helicone.ai/models)中可以找到您需要新增的模型 ID。
 
-```jsonc title="~/.config/opencode/yonsoon.jsonc"
+```jsonc title="~/.config/opencode/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -969,9 +969,9 @@ export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 
 Helicone 支援用於快取、使用者追蹤和工作階段管理等功能的自訂請求標頭。使用 `options.headers` 將它們新增到提供商設定中：
 
-```jsonc title="~/.config/opencode/yonsoon.jsonc"
+```jsonc title="~/.config/opencode/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -998,7 +998,7 @@ npm install -g opencode-helicone-session
 
 將其新增到設定中。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "plugin": ["opencode-helicone-session"]
 }
@@ -1023,9 +1023,9 @@ npm install -g opencode-helicone-session
 
 您可以透過 [llama.cpp](https://github.com/ggml-org/llama.cpp) 的 llama-server 工具設定 OpenCode 使用本地模型。
 
-```json title="yonsoon.json" "llama.cpp" {5, 6, 8, 10-15}
+```json title="railwise.json" "llama.cpp" {5, 6, 8, 10-15}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1090,9 +1090,9 @@ IO.NET 提供 17 個針對不同使用情境最佳化的模型：
 
 您可以透過 LM Studio 設定 OpenCode 使用本地模型。
 
-```json title="yonsoon.json" "lmstudio" {5, 6, 8, 10-14}
+```json title="railwise.json" "lmstudio" {5, 6, 8, 10-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1211,9 +1211,9 @@ IO.NET 提供 17 個針對不同使用情境最佳化的模型：
 Ollama 可以自動為 OpenCode 進行設定。詳見 [Ollama 整合文件](https://docs.ollama.com/integrations/opencode)。
 :::
 
-```json title="yonsoon.json" "ollama" {5, 6, 8, 10-14}
+```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1372,9 +1372,9 @@ OpenCode Zen 是由 OpenCode 團隊提供的經過測試和驗證的模型列表
 
    您也可以透過 OpenCode 設定新增更多模型。
 
-   ```json title="yonsoon.json" {6}
+   ```json title="railwise.json" {6}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "openrouter": {
          "models": {
@@ -1387,9 +1387,9 @@ OpenCode Zen 是由 OpenCode 團隊提供的經過測試和驗證的模型列表
 
 5. 您還可以透過 OpenCode 設定自訂模型。以下是指定提供商的範例：
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "openrouter": {
          "models": {
@@ -1636,9 +1636,9 @@ Vercel AI Gateway 允許您透過統一端點存取來自 OpenAI、Anthropic、G
 
 您也可以透過 OpenCode 設定自訂模型。以下是指定提供商路由順序的範例。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "vercel": {
       "models": {
@@ -1746,9 +1746,9 @@ Vercel AI Gateway 允許您透過統一端點存取來自 OpenAI、Anthropic、G
 
    您也可以透過 OpenCode 設定新增更多模型。
 
-   ```json title="yonsoon.json" {6}
+   ```json title="railwise.json" {6}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "zenmux": {
          "models": {
@@ -1805,18 +1805,18 @@ Vercel AI Gateway 允許您透過統一端點存取來自 OpenAI、Anthropic、G
 
    ┌  Add credential
    │
-   ▲  This only stores a credential for myprovider - you will need to configure it in yonsoon.json, check the docs for examples.
+   ▲  This only stores a credential for myprovider - you will need to configure it in railwise.json, check the docs for examples.
    │
    ◇  Enter your API key
    │  sk-...
    └
    ```
 
-4. 在專案目錄中建立或更新 `yonsoon.json` 檔案：
+4. 在專案目錄中建立或更新 `railwise.json` 檔案：
 
-   ```json title="yonsoon.json" ""myprovider"" {5-15}
+   ```json title="railwise.json" ""myprovider"" {5-15}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "myprovider": {
          "npm": "@ai-sdk/openai-compatible",
@@ -1852,9 +1852,9 @@ Vercel AI Gateway 允許您透過統一端點存取來自 OpenAI、Anthropic、G
 
 以下是設定 `apiKey`、`headers` 和模型 `limit` 選項的範例。
 
-```json title="yonsoon.json" {9,11,17-20}
+```json title="railwise.json" {9,11,17-20}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "myprovider": {
       "npm": "@ai-sdk/openai-compatible",

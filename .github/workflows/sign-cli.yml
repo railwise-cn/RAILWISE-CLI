@@ -13,7 +13,7 @@ permissions:
 jobs:
   sign-cli:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: github.repository == 'anomalyco/yonsoon'
+    if: github.repository == 'anomalyco/railwise'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -23,14 +23,14 @@ jobs:
 
       - name: Build
         run: |
-          ./packages/yonsoon/script/build.ts
+          ./packages/railwise/script/build.ts
 
       - name: Upload unsigned Windows CLI
         id: upload_unsigned_windows_cli
         uses: actions/upload-artifact@v4
         with:
-          name: unsigned-yonsoon-windows-cli
-          path: packages/yonsoon/dist/yonsoon-windows-x64/bin/yonsoon.exe
+          name: unsigned-railwise-windows-cli
+          path: packages/railwise/dist/railwise-windows-x64/bin/railwise.exe
           if-no-files-found: error
 
       - name: Submit SignPath signing request
@@ -44,11 +44,11 @@ jobs:
           artifact-configuration-slug: ${{ secrets.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
           github-artifact-id: ${{ steps.upload_unsigned_windows_cli.outputs.artifact-id }}
           wait-for-completion: true
-          output-artifact-directory: signed-yonsoon-cli
+          output-artifact-directory: signed-railwise-cli
 
       - name: Upload signed Windows CLI
         uses: actions/upload-artifact@v4
         with:
-          name: signed-yonsoon-windows-cli
-          path: signed-yonsoon-cli/*.exe
+          name: signed-railwise-windows-cli
+          path: signed-railwise-cli/*.exe
           if-no-files-found: error

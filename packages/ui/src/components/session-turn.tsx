@@ -1,9 +1,9 @@
-import { AssistantMessage, type FileDiff, Message as MessageType, Part as PartType } from "@yonsoon/sdk/v2/client"
+import { AssistantMessage, type FileDiff, Message as MessageType, Part as PartType } from "@railwise/sdk/v2/client"
 import { useData } from "../context"
 import { useDiffComponent } from "../context/diff"
 
-import { Binary } from "@yonsoon/util/binary"
-import { getDirectory, getFilename } from "@yonsoon/util/path"
+import { Binary } from "@railwise/util/binary"
+import { getDirectory, getFilename } from "@railwise/util/path"
 import { createEffect, createMemo, createSignal, For, on, ParentProps, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { AssistantParts, Message } from "./message-part"

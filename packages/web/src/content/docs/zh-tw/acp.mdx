@@ -30,7 +30,7 @@ ACP 是一個開放協議，用於標準化程式碼編輯器與 AI 編碼代理
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "YONSOON": {
+    "RAILWISE": {
       "command": "opencode",
       "args": ["acp"]
     }
@@ -51,7 +51,7 @@ ACP 是一個開放協議，用於標準化程式碼編輯器與 AI 編碼代理
         {
           "agent": {
             "custom": {
-              "name": "YONSOON",
+              "name": "RAILWISE",
               "command": {
                 "command": "opencode",
                 "args": ["acp"]
@@ -74,7 +74,7 @@ ACP 是一個開放協議，用於標準化程式碼編輯器與 AI 編碼代理
 ```json title="acp.json"
 {
   "agent_servers": {
-    "YONSOON": {
+    "RAILWISE": {
       "command": "/absolute/path/bin/opencode",
       "args": ["acp"]
     }
@@ -82,7 +82,7 @@ ACP 是一個開放協議，用於標準化程式碼編輯器與 AI 編碼代理
 }
 ```
 
-開啟方式：在 AI Chat 代理選擇器中選擇新的 'YONSOON' 代理。
+開啟方式：在 AI Chat 代理選擇器中選擇新的 'RAILWISE' 代理。
 
 ---
 
@@ -110,7 +110,7 @@ ACP 是一個開放協議，用於標準化程式碼編輯器與 AI 編碼代理
       command = "opencode",
       args = { "acp" },
       env = {
-        YONSOON_API_KEY = os.getenv("YONSOON_API_KEY")
+        RAILWISE_API_KEY = os.getenv("RAILWISE_API_KEY")
       }
     }
   }
@@ -138,7 +138,7 @@ require("codecompanion").setup({
 
 此設定將 CodeCompanion 設為使用 OpenCode 作為聊天的 ACP 代理。
 
-如果需要傳遞環境變數（如 `YONSOON_API_KEY`），請參閱 CodeCompanion.nvim 文件中的[設定適配器：環境變數](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key)了解詳細資訊。
+如果需要傳遞環境變數（如 `RAILWISE_API_KEY`），請參閱 CodeCompanion.nvim 文件中的[設定適配器：環境變數](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key)了解詳細資訊。
 
 ## 支援
 

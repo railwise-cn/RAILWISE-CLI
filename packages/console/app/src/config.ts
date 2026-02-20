@@ -3,11 +3,11 @@
  */
 export const config = {
   // Base URL
-  baseUrl: "https://yonsoon.ai",
+  baseUrl: "https://railwise.ai",
 
   // GitHub
   github: {
-    repoUrl: "https://github.com/anomalyco/yonsoon",
+    repoUrl: "https://github.com/anomalyco/railwise",
     starsFormatted: {
       compact: "100K",
       full: "100,000",
@@ -16,8 +16,8 @@ export const config = {
 
   // Social links
   social: {
-    twitter: "https://x.com/yonsoon",
-    discord: "https://discord.gg/yonsoon",
+    twitter: "https://x.com/railwise",
+    discord: "https://discord.gg/railwise",
   },
 
   // Static stats (used on landing page)

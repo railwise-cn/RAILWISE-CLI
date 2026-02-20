@@ -4,14 +4,14 @@ description: Różne tryby dla różnych zastosowań.
 ---
 
 :::caution
-Tryby są teraz konfigurowane za pomocą opcji `agent` w konfiguracji yonsoon.
+Tryby są teraz konfigurowane za pomocą opcji `agent` w konfiguracji railwise.
 Opcja `mode` jest obecnie przestarzała. [Dowiedz się więcej](/docs/agents).
 :::
 
 Tryb udostępniania możliwości stosowania, narzędzie i podpowiedzi do różnych zastosowań.
 
 Posiadanie dwa tryby: **Build** i **Plan**. Można dostosować
-te lub skonfiguruj własne za pomocą konfiguracji yonsoon.
+te lub skonfiguruj własne za pomocą konfiguracji railwise.
 
 Można przełączać się między trybami podczas sesji lub konfigurować je w pliku konfiguracyjnym.
 
@@ -19,7 +19,7 @@ Można przełączać się między trybami podczas sesji lub konfigurować je w p
 
 ## Wbudowane
 
-yonsoon ma dwa puste tryby.
+railwise ma dwa puste tryby.
 
 ---
 
@@ -34,7 +34,7 @@ Build jest trybem **domyślnym** z dostępnymi narzędziami. Jest to standardowy
 Tryb ograniczony do analizy. W urządzeniu planowym narzędzia są przydatne:
 
 - `write` - Nie można stworzyć nowych plików
-- `edit` — Nie można zastosować naruszenia plików, z naruszeniem praw autorskich w `.yonsoon/plans/*.md` w celu uszczegółowienia samego planu
+- `edit` — Nie można zastosować naruszenia plików, z naruszeniem praw autorskich w `.railwise/plans/*.md` w celu uszczegółowienia samego planu
 - `patch` - Nie można zastosować poprawek
 - `bash` - Nie można wykonać poleceń shell
 
@@ -56,11 +56,11 @@ Możliwość dostosowania alternatywnego trybu lub konfiguracji poprzez własną
 
 ### Konfiguracja JSON
 
-Skonfiguruj tryb w pliku konfiguracyjnym `yonsoon.json`:
+Skonfiguruj tryb w pliku konfiguracyjnym `railwise.json`:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "build": {
       "model": "anthropic/claude-sonnet-4-20250514",
@@ -87,10 +87,10 @@ Skonfiguruj tryb w pliku konfiguracyjnym `yonsoon.json`:
 
 Można także definiować tryby za pomocą plików przecen. Trzymaj je w:
 
-- Globalnie: `~/.config/yonsoon/modes/`
-- Projekt: `.yonsoon/modes/`
+- Globalnie: `~/.config/railwise/modes/`
+- Projekt: `.railwise/modes/`
 
-```markdown title="~/.config/yonsoon/modes/review.md"
+```markdown title="~/.config/railwise/modes/review.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.1
@@ -120,7 +120,7 @@ Przyjrzyjmy się szczegółowo tym opcjom konfiguracji.
 
 Zastosowanie konstrukcji `model`, aby zastosować domyślny model dla tego trybu. Przydatne przy wykorzystaniu różnych modeli dostępnych w różnych zadaniach. Na przykład zastosowanie modelu, skuteczniejsze wykonanie modelu.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -136,7 +136,7 @@ Zastosowanie konstrukcji `model`, aby zastosować domyślny model dla tego trybu
 
 Kontroluj losowość i kreatywność reakcji AI za pomocą konstrukcji `temperature`. Niższe wartości, że odpowiedzi są bardziej skupione i deterministyczne, podczas gdy najwyższa wartość jest innowacyjna i złożona.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -155,7 +155,7 @@ Wartości temperatury zazwyczaj wahają się od 0,0 do 1,0:
 - **0,3-0,5**: Zrównoważona odpowiedź z chwilą powstania, dobre do ogólnych zadań rozwojowych
 - **0,6–1,0**: Bardziej kreatywne i odpowiedzi, rozstrzygnięte podczas burzy mózgów i eksploracji
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "analyze": {
@@ -173,7 +173,7 @@ Wartości temperatury zazwyczaj wahają się od 0,0 do 1,0:
 }
 ```
 
-Jeśli nie ma wpływu na temperaturę, yonsoon stosuje się narzędzia badawcze dla modelu (zwykle 0 dla największych modeli, 0,55 dla modeli Qwen).
+Jeśli nie ma wpływu na temperaturę, railwise stosuje się narzędzia badawcze dla modelu (zwykle 0 dla największych modeli, 0,55 dla modeli Qwen).
 
 ---
 
@@ -181,7 +181,7 @@ Jeśli nie ma wpływu na temperaturę, yonsoon stosuje się narzędzia badawcze 
 
 niestandardowy plik podpowiedzi systemowych dla tej procedury za pomocą konfiguracji `prompt`. Plik informacyjny powinien zawierać instrukcje dotyczące przeznaczenia trybu.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "review": {
@@ -192,7 +192,7 @@ niestandardowy plik podpowiedzi systemowych dla tej procedury za pomocą konfigu
 ```
 
 Ścieżka ta zależy od miejsca, w którym znajduje się plik konfiguracyjny. Więc to dla działa
-zarówno globalna yonsoon, jak i specjalna dla projektu.
+zarówno globalna railwise, jak i specjalna dla projektu.
 
 ---
 
@@ -247,9 +247,9 @@ Możesz stworzyć własny tryb prywatny, dodając je do konfiguracji. Oto zastos
 
 ### Korzystanie z konfiguracji JSON
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "docs": {
       "prompt": "{file:./prompts/documentation.txt}",
@@ -268,9 +268,9 @@ Możesz stworzyć własny tryb prywatny, dodając je do konfiguracji. Oto zastos
 
 ### Korzystanie z plików Markdown
 
-Utwórz pliki trybów w `.yonsoon/modes/` dla trybów zapisanych dla projektu lub `~/.config/yonsoon/modes/` dla trybów globalnych:
+Utwórz pliki trybów w `.railwise/modes/` dla trybów zapisanych dla projektu lub `~/.config/railwise/modes/` dla trybów globalnych:
 
-```markdown title=".yonsoon/modes/debug.md"
+```markdown title=".railwise/modes/debug.md"
 ---
 temperature: 0.1
 tools:
@@ -294,7 +294,7 @@ Focus on:
 Do not make any changes to files. Only investigate and report.
 ```
 
-```markdown title="~/.config/yonsoon/modes/refactor.md"
+```markdown title="~/.config/railwise/modes/refactor.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.2

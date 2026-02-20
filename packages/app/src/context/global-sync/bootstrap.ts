@@ -1,6 +1,6 @@
 import type {
   Config,
-  YonsoonClient,
+  RailwiseClient,
   Path,
   PermissionRequest,
   Project,
@@ -8,10 +8,10 @@ import type {
   ProviderListResponse,
   QuestionRequest,
   Todo,
-} from "@yonsoon/sdk/v2/client"
-import { showToast } from "@yonsoon/ui/toast"
-import { getFilename } from "@yonsoon/util/path"
-import { retry } from "@yonsoon/util/retry"
+} from "@railwise/sdk/v2/client"
+import { showToast } from "@railwise/ui/toast"
+import { getFilename } from "@railwise/util/path"
+import { retry } from "@railwise/util/retry"
 import { batch } from "solid-js"
 import { reconcile, type SetStoreFunction, type Store } from "solid-js/store"
 import type { State, VcsCache } from "./types"
@@ -31,7 +31,7 @@ type GlobalStore = {
 }
 
 export async function bootstrapGlobal(input: {
-  globalSDK: YonsoonClient
+  globalSDK: RailwiseClient
   connectErrorTitle: string
   connectErrorDescription: string
   requestFailedTitle: string
@@ -110,7 +110,7 @@ function groupBySession<T extends { id: string; sessionID: string }>(input: T[])
 
 export async function bootstrapDirectory(input: {
   directory: string
-  sdk: YonsoonClient
+  sdk: RailwiseClient
   store: Store<State>
   setStore: SetStoreFunction<State>
   vcsCache: VcsCache

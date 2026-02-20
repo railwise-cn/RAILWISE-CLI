@@ -1,6 +1,6 @@
-# YONSOON (甬算) Desktop
+# RAILWISE (甬算) Desktop
 
-Native YONSOON (甬算) desktop app, built with Tauri v2.
+Native RAILWISE (甬算) desktop app, built with Tauri v2.
 
 ## Development
 

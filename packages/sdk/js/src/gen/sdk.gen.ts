@@ -1154,7 +1154,7 @@ class Event extends _HeyApiClient {
   }
 }
 
-export class YonsoonClient extends _HeyApiClient {
+export class RailwiseClient extends _HeyApiClient {
   /**
    * Respond to a permission request
    */

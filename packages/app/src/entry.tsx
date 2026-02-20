@@ -1,6 +1,6 @@
 // @refresh reload
 
-import { iife } from "@yonsoon/util/iife"
+import { iife } from "@railwise/util/iife"
 import { render } from "solid-js/web"
 import { AppBaseProviders, AppInterface } from "@/app"
 import { type Platform, PlatformProvider } from "@/context/platform"
@@ -68,7 +68,7 @@ const notify: Platform["notify"] = async (title, description, href) => {
 
   const notification = new Notification(title, {
     body: description ?? "",
-    icon: "https://yonsoon.ai/favicon-96x96-v3.png",
+    icon: "https://railwise.ai/favicon-96x96-v3.png",
   })
 
   notification.onclick = () => {
@@ -113,9 +113,9 @@ const platform: Platform = {
 const defaultUrl = iife(() => {
   const lsDefault = readDefaultServerUrl()
   if (lsDefault) return lsDefault
-  if (location.hostname.includes("yonsoon.ai")) return "http://localhost:4096"
+  if (location.hostname.includes("railwise.ai")) return "http://localhost:4096"
   if (import.meta.env.DEV)
-    return `http://${import.meta.env.VITE_YONSOON_SERVER_HOST ?? "localhost"}:${import.meta.env.VITE_YONSOON_SERVER_PORT ?? "4096"}`
+    return `http://${import.meta.env.VITE_RAILWISE_SERVER_HOST ?? "localhost"}:${import.meta.env.VITE_RAILWISE_SERVER_PORT ?? "4096"}`
   return location.origin
 })
 

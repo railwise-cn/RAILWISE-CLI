@@ -21,11 +21,11 @@
   openssl,
   webkitgtk_4_1,
   gst_all_1,
-  yonsoon,
+  railwise,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
-  pname = "yonsoon-desktop";
-  inherit (yonsoon)
+  pname = "railwise-desktop";
+  inherit (railwise)
     version
     src
     node_modules
@@ -72,7 +72,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     patchShebangs packages/desktop/node_modules
 
     mkdir -p packages/desktop/src-tauri/sidecars
-    cp ${yonsoon}/bin/yonsoon packages/desktop/src-tauri/sidecars/yonsoon-cli-${stdenv.hostPlatform.rust.rustcTarget}
+    cp ${railwise}/bin/railwise packages/desktop/src-tauri/sidecars/railwise-cli-${stdenv.hostPlatform.rust.rustcTarget}
   '';
 
   # see publish-tauri job in .github/workflows/publish.yml
@@ -86,15 +86,15 @@ rustPlatform.buildRustPackage (finalAttrs: {
   # should be removed once binary is renamed or decided otherwise
   # darwin output is a .app bundle so no conflict
   postFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
-    mv $out/bin/YONSOON (甬算) $out/bin/yonsoon-desktop
-    sed -i 's|^Exec=YONSOON (甬算)$|Exec=yonsoon-desktop|' $out/share/applications/YONSOON (甬算).desktop
+    mv $out/bin/RAILWISE (甬算) $out/bin/railwise-desktop
+    sed -i 's|^Exec=RAILWISE (甬算)$|Exec=railwise-desktop|' $out/share/applications/RAILWISE (甬算).desktop
   '';
 
   meta = {
-    description = "YONSOON (甬算) Desktop App";
-    homepage = "https://yonsoon.ai";
+    description = "RAILWISE (甬算) Desktop App";
+    homepage = "https://railwise.ai";
     license = lib.licenses.mit;
-    mainProgram = "yonsoon-desktop";
-    inherit (yonsoon.meta) platforms;
+    mainProgram = "railwise-desktop";
+    inherit (railwise.meta) platforms;
   };
 })

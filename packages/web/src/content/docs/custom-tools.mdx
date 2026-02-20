@@ -1,9 +1,9 @@
 ---
 title: Custom Tools
-description: Create tools the LLM can call in yonsoon.
+description: Create tools the LLM can call in railwise.
 ---
 
-Custom tools are functions you create that the LLM can call during conversations. They work alongside yonsoon's [built-in tools](/docs/tools) like `read`, `write`, and `bash`.
+Custom tools are functions you create that the LLM can call during conversations. They work alongside railwise's [built-in tools](/docs/tools) like `read`, `write`, and `bash`.
 
 ---
 
@@ -17,8 +17,8 @@ Tools are defined as **TypeScript** or **JavaScript** files. However, the tool d
 
 They can be defined:
 
-- Locally by placing them in the `.yonsoon/tools/` directory of your project.
-- Or globally, by placing them in `~/.config/yonsoon/tools/`.
+- Locally by placing them in the `.railwise/tools/` directory of your project.
+- Or globally, by placing them in `~/.config/railwise/tools/`.
 
 ---
 
@@ -26,8 +26,8 @@ They can be defined:
 
 The easiest way to create tools is using the `tool()` helper which provides type-safety and validation.
 
-```ts title=".yonsoon/tools/database.ts" {1}
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/database.ts" {1}
+import { tool } from "@railwise/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -49,8 +49,8 @@ The **filename** becomes the **tool name**. The above creates a `database` tool.
 
 You can also export multiple tools from a single file. Each export becomes **a separate tool** with the name **`<filename>_<exportname>`**:
 
-```ts title=".yonsoon/tools/math.ts"
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/math.ts"
+import { tool } from "@railwise/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -112,8 +112,8 @@ export default {
 
 Tools receive context about the current session:
 
-```ts title=".yonsoon/tools/project.ts" {8}
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/project.ts" {8}
+import { tool } from "@railwise/plugin"
 
 export default tool({
   description: "Get project information",
@@ -139,7 +139,7 @@ You can write your tools in any language you want. Here's an example that adds t
 
 First, create the tool as a Python script:
 
-```python title=".yonsoon/tools/add.py"
+```python title=".railwise/tools/add.py"
 import sys
 
 a = int(sys.argv[1])
@@ -149,8 +149,8 @@ print(a + b)
 
 Then create the tool definition that invokes it:
 
-```ts title=".yonsoon/tools/python-add.ts" {10}
-import { tool } from "@yonsoon/plugin"
+```ts title=".railwise/tools/python-add.ts" {10}
+import { tool } from "@railwise/plugin"
 import path from "path"
 
 export default tool({
@@ -160,7 +160,7 @@ export default tool({
     b: tool.schema.number().describe("Second number"),
   },
   async execute(args, context) {
-    const script = path.join(context.worktree, ".yonsoon/tools/add.py")
+    const script = path.join(context.worktree, ".railwise/tools/add.py")
     const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
     return result.trim()
   },

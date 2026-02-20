@@ -1,21 +1,21 @@
 ---
 title: Config
-description: Using the YONSOON (甬算) JSON config.
+description: Using the RAILWISE (甬算) JSON config.
 ---
 
-JSON config 파일로 YONSOON (甬算)를 설정할 수 있습니다.
+JSON config 파일로 RAILWISE (甬算)를 설정할 수 있습니다.
 
 ---
 
 ## 형식
 
-YONSOON (甬算)는 **JSON**과 **JSONC**(주석이 포함된 JSON) 형식을 모두 지원합니다.
+RAILWISE (甬算)는 **JSON**과 **JSONC**(주석이 포함된 JSON) 형식을 모두 지원합니다.
 
-```jsonc title="yonsoon.jsonc"
+```jsonc title="railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   // Theme configuration
-  "theme": "yonsoon",
+  "theme": "railwise",
   "model": "anthropic/claude-sonnet-4-5",
   "autoupdate": true,
 }
@@ -33,7 +33,7 @@ config 파일은 **교체되지 않고 병합**됩니다.
 
 config 파일은 서로 대체되는 방식이 아니라 병합됩니다. 아래 config 위치의 설정이 결합되며, 충돌하는 key에 대해서만 나중에 로드된 config가 앞선 값을 override합니다. 충돌하지 않는 설정은 모두 유지됩니다.
 
-예를 들어, 전역 config에 `theme: "yonsoon"`와 `autoupdate: true`가 있고 프로젝트 config에 `model: "anthropic/claude-sonnet-4-5"`가 있으면 최종 config에는 이 세 설정이 모두 포함됩니다.
+예를 들어, 전역 config에 `theme: "railwise"`와 `autoupdate: true`가 있고 프로젝트 config에 `model: "anthropic/claude-sonnet-4-5"`가 있으면 최종 config에는 이 세 설정이 모두 포함됩니다.
 
 ---
 
@@ -41,30 +41,30 @@ config 파일은 서로 대체되는 방식이 아니라 병합됩니다. 아래
 
 config source는 다음 순서로 로드됩니다(나중 source가 앞선 source를 override).
 
-1. **Remote config**(`.well-known/yonsoon`) - 조직 기본값
-2. **Global config**(`~/.config/yonsoon/yonsoon.json`) - 사용자 기본 설정
-3. **Custom config**(`YONSOON_CONFIG` env var) - custom override
-4. **Project config**(프로젝트의 `yonsoon.json`) - 프로젝트별 설정
-5. **`.yonsoon` directories** - agents, commands, plugins
-6. **Inline config**(`YONSOON_CONFIG_CONTENT` env var) - 런타임 override
+1. **Remote config**(`.well-known/railwise`) - 조직 기본값
+2. **Global config**(`~/.config/railwise/railwise.json`) - 사용자 기본 설정
+3. **Custom config**(`RAILWISE_CONFIG` env var) - custom override
+4. **Project config**(프로젝트의 `railwise.json`) - 프로젝트별 설정
+5. **`.railwise` directories** - agents, commands, plugins
+6. **Inline config**(`RAILWISE_CONFIG_CONTENT` env var) - 런타임 override
 
 즉, 프로젝트 config는 전역 기본값을 override할 수 있고, 전역 config는 조직의 Remote 기본값을 override할 수 있습니다.
 
 :::note
-`.yonsoon` 및 `~/.config/yonsoon` 디렉토리는 하위 디렉토리에 **복수형 이름**을 사용합니다: `agents/`, `commands/`, `modes/`, `plugins/`, `skills/`, `tools/`, `themes/`. 단수형 이름(예: `agent/`)도 하위 호환성을 위해 지원합니다.
+`.railwise` 및 `~/.config/railwise` 디렉토리는 하위 디렉토리에 **복수형 이름**을 사용합니다: `agents/`, `commands/`, `modes/`, `plugins/`, `skills/`, `tools/`, `themes/`. 단수형 이름(예: `agent/`)도 하위 호환성을 위해 지원합니다.
 :::
 
 ---
 
 ### Remote
 
-조직은 `.well-known/yonsoon` endpoint로 기본 config를 제공할 수 있습니다. 이를 지원하는 provider로 인증하면 자동으로 가져옵니다.
+조직은 `.well-known/railwise` endpoint로 기본 config를 제공할 수 있습니다. 이를 지원하는 provider로 인증하면 자동으로 가져옵니다.
 
 Remote config는 가장 먼저 로드되어 기본 레이어 역할을 합니다. 이후의 모든 config source(전역, 프로젝트)는 이 기본값을 override할 수 있습니다.
 
 예를 들어, 조직에서 기본 비활성화된 MCP 서버를 제공하는 경우:
 
-```json title="Remote config from .well-known/yonsoon"
+```json title="Remote config from .well-known/railwise"
 {
   "mcp": {
     "jira": {
@@ -78,7 +78,7 @@ Remote config는 가장 먼저 로드되어 기본 레이어 역할을 합니다
 
 로컬 config에서 특정 서버를 활성화할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mcp": {
     "jira": {
@@ -94,7 +94,7 @@ Remote config는 가장 먼저 로드되어 기본 레이어 역할을 합니다
 
 ### Global
 
-전역 YONSOON (甬算) config는 `~/.config/yonsoon/yonsoon.json`에 두세요. theme, provider, keybind 같은 사용자 전체 기본 설정은 전역 config로 관리하세요.
+전역 RAILWISE (甬算) config는 `~/.config/railwise/railwise.json`에 두세요. theme, provider, keybind 같은 사용자 전체 기본 설정은 전역 config로 관리하세요.
 
 전역 config는 조직의 Remote 기본값을 override합니다.
 
@@ -102,13 +102,13 @@ Remote config는 가장 먼저 로드되어 기본 레이어 역할을 합니다
 
 ### Per project
 
-프로젝트 루트에 `yonsoon.json`을 추가하세요. 프로젝트 config는 표준 config 파일 중 우선순위가 가장 높아 전역 및 Remote config를 모두 override합니다.
+프로젝트 루트에 `railwise.json`을 추가하세요. 프로젝트 config는 표준 config 파일 중 우선순위가 가장 높아 전역 및 Remote config를 모두 override합니다.
 
 :::tip
 프로젝트별 config는 프로젝트 루트에 두세요.
 :::
 
-YONSOON (甬算) 시작 시 현재 디렉토리에서 config 파일을 찾고, 없으면 가장 가까운 Git 디렉토리까지 상위로 탐색합니다.
+RAILWISE (甬算) 시작 시 현재 디렉토리에서 config 파일을 찾고, 없으면 가장 가까운 Git 디렉토리까지 상위로 탐색합니다.
 
 이 파일은 Git에 커밋해도 안전하며 전역 config와 동일한 schema를 사용합니다.
 
@@ -116,11 +116,11 @@ YONSOON (甬算) 시작 시 현재 디렉토리에서 config 파일을 찾고, �
 
 ### Custom path
 
-`YONSOON_CONFIG` 환경 변수로 custom config 파일 경로를 지정하세요.
+`RAILWISE_CONFIG` 환경 변수로 custom config 파일 경로를 지정하세요.
 
 ```bash
-export YONSOON_CONFIG=/path/to/my/custom-config.json
-yonsoon run "Hello world"
+export RAILWISE_CONFIG=/path/to/my/custom-config.json
+railwise run "Hello world"
 ```
 
 Custom config는 우선순위상 전역 config와 프로젝트 config 사이에서 로드됩니다.
@@ -129,20 +129,20 @@ Custom config는 우선순위상 전역 config와 프로젝트 config 사이에�
 
 ### Custom directory
 
-`YONSOON_CONFIG_DIR` 환경 변수로 custom config 디렉토리를 지정할 수 있습니다. 이 디렉토리는 표준 `.yonsoon` 디렉토리와 동일하게 agents, commands, modes, plugins를 검색하며, 동일한 구조를 따라야 합니다.
+`RAILWISE_CONFIG_DIR` 환경 변수로 custom config 디렉토리를 지정할 수 있습니다. 이 디렉토리는 표준 `.railwise` 디렉토리와 동일하게 agents, commands, modes, plugins를 검색하며, 동일한 구조를 따라야 합니다.
 
 ```bash
-export YONSOON_CONFIG_DIR=/path/to/my/config-directory
-yonsoon run "Hello world"
+export RAILWISE_CONFIG_DIR=/path/to/my/config-directory
+railwise run "Hello world"
 ```
 
-custom 디렉토리는 전역 config와 `.yonsoon` 디렉토리 뒤에 로드되므로 해당 설정을 **override할 수 있습니다**.
+custom 디렉토리는 전역 config와 `.railwise` 디렉토리 뒤에 로드되므로 해당 설정을 **override할 수 있습니다**.
 
 ---
 
 ## Schema
 
-config 파일의 schema는 [**`yonsoon.ai/config.json`**](https://yonsoon.ai/config.json)에 정의되어 있습니다.
+config 파일의 schema는 [**`railwise.ai/config.json`**](https://railwise.ai/config.json)에 정의되어 있습니다.
 
 편집기에서 이 schema를 기반으로 validation과 autocomplete를 사용할 수 있습니다.
 
@@ -152,9 +152,9 @@ config 파일의 schema는 [**`yonsoon.ai/config.json`**](https://yonsoon.ai/con
 
 `tui` 옵션으로 TUI 관련 설정을 구성할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {
@@ -177,11 +177,11 @@ config 파일의 schema는 [**`yonsoon.ai/config.json`**](https://yonsoon.ai/con
 
 ### Server
 
-`server` 옵션으로 `yonsoon serve`와 `yonsoon web` 명령의 server 설정을 구성할 수 있습니다.
+`server` 옵션으로 `railwise serve`와 `railwise web` 명령의 server 설정을 구성할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "server": {
     "port": 4096,
     "hostname": "0.0.0.0",
@@ -196,8 +196,8 @@ config 파일의 schema는 [**`yonsoon.ai/config.json`**](https://yonsoon.ai/con
 
 - `port` - 수신할 포트입니다.
 - `hostname` - 수신할 호스트명입니다. `mdns`가 활성화되어 있고 hostname이 없으면 기본값은 `0.0.0.0`입니다.
-- `mdns` - mDNS service discovery를 활성화합니다. 네트워크 내 다른 기기에서 YONSOON (甬算) server를 찾을 수 있습니다.
-- `mdnsDomain` - mDNS service의 custom 도메인 이름입니다. 기본값은 `yonsoon.local`입니다. 같은 네트워크에서 여러 인스턴스를 실행할 때 유용합니다.
+- `mdns` - mDNS service discovery를 활성화합니다. 네트워크 내 다른 기기에서 RAILWISE (甬算) server를 찾을 수 있습니다.
+- `mdnsDomain` - mDNS service의 custom 도메인 이름입니다. 기본값은 `railwise.local`입니다. 같은 네트워크에서 여러 인스턴스를 실행할 때 유용합니다.
 - `cors` - 브라우저 기반 client에서 HTTP server를 사용할 때 허용할 추가 CORS origin입니다. 값은 전체 origin(scheme + host + optional port) 형식이어야 하며, 예: `https://app.example.com`.
 
 [server에 대해 더 알아보기](/docs/server).
@@ -208,9 +208,9 @@ config 파일의 schema는 [**`yonsoon.ai/config.json`**](https://yonsoon.ai/con
 
 `tools` 옵션으로 LLM이 사용할 수 있는 tool을 관리할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tools": {
     "write": false,
     "bash": false
@@ -224,24 +224,24 @@ config 파일의 schema는 [**`yonsoon.ai/config.json`**](https://yonsoon.ai/con
 
 ### Models
 
-YONSOON (甬算) config의 `provider`, `model`, `small_model` 옵션으로 사용할 provider와 model을 설정할 수 있습니다.
+RAILWISE (甬算) config의 `provider`, `model`, `small_model` 옵션으로 사용할 provider와 model을 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {},
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4-5"
 }
 ```
 
-`small_model`은 제목 생성 같은 경량 작업에 사용할 별도 model을 설정합니다. 기본적으로 YONSOON (甬算)는 provider에서 더 저렴한 model을 사용할 수 있으면 우선 사용하고, 없으면 메인 model로 fallback합니다.
+`small_model`은 제목 생성 같은 경량 작업에 사용할 별도 model을 설정합니다. 기본적으로 RAILWISE (甬算)는 provider에서 더 저렴한 model을 사용할 수 있으면 우선 사용하고, 없으면 메인 model로 fallback합니다.
 
 provider 옵션에는 `timeout`, `setCacheKey`를 포함할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -268,9 +268,9 @@ provider 옵션에는 `timeout`, `setCacheKey`를 포함할 수 있습니다.
 
 Amazon Bedrock은 AWS 전용 config를 지원합니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -297,11 +297,11 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 ### Themes
 
-`theme` 옵션으로 YONSOON (甬算) config에서 사용할 theme를 설정할 수 있습니다.
+`theme` 옵션으로 RAILWISE (甬算) config에서 사용할 theme를 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "theme": ""
 }
 ```
@@ -314,9 +314,9 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 `agent` 옵션으로 특정 작업용 전문 agent를 구성할 수 있습니다.
 
-```jsonc title="yonsoon.jsonc"
+```jsonc title="railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "code-reviewer": {
       "description": "Reviews code for best practices and potential issues",
@@ -332,7 +332,7 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 }
 ```
 
-`~/.config/yonsoon/agents/` 또는 `.yonsoon/agents/`의 Markdown 파일로 agent를 정의할 수도 있습니다. [더 알아보기](/docs/agents).
+`~/.config/railwise/agents/` 또는 `.railwise/agents/`의 Markdown 파일로 agent를 정의할 수도 있습니다. [더 알아보기](/docs/agents).
 
 ---
 
@@ -340,16 +340,16 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 `default_agent` 옵션으로 기본 agent를 설정할 수 있습니다. 별도 지정이 없을 때 어떤 agent를 사용할지 결정합니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "default_agent": "plan"
 }
 ```
 
-기본 agent는 primary agent여야 합니다(subagent 불가). `"build"`, `"plan"` 같은 내장 agent나 직접 정의한 [custom agent](/docs/agents)를 지정할 수 있습니다. 지정한 agent가 없거나 subagent이면 YONSOON (甬算)는 경고와 함께 `"build"`로 fallback합니다.
+기본 agent는 primary agent여야 합니다(subagent 불가). `"build"`, `"plan"` 같은 내장 agent나 직접 정의한 [custom agent](/docs/agents)를 지정할 수 있습니다. 지정한 agent가 없거나 subagent이면 RAILWISE (甬算)는 경고와 함께 `"build"`로 fallback합니다.
 
-이 설정은 TUI, CLI(`yonsoon run`), 데스크톱 앱, GitHub Action 등 모든 인터페이스에 적용됩니다.
+이 설정은 TUI, CLI(`railwise run`), 데스크톱 앱, GitHub Action 등 모든 인터페이스에 적용됩니다.
 
 ---
 
@@ -357,9 +357,9 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 `share` 옵션으로 [share](/docs/share) 기능을 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "share": "manual"
 }
 ```
@@ -378,9 +378,9 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 `command` 옵션으로 반복 작업용 custom command를 구성할 수 있습니다.
 
-```jsonc title="yonsoon.jsonc"
+```jsonc title="railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "command": {
     "test": {
       "template": "Run the full test suite with coverage report and show any failures.\nFocus on the failing tests and suggest fixes.",
@@ -396,7 +396,7 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 }
 ```
 
-`~/.config/yonsoon/commands/` 또는 `.yonsoon/commands/`의 Markdown 파일로 command를 정의할 수도 있습니다. [더 알아보기](/docs/commands).
+`~/.config/railwise/commands/` 또는 `.railwise/commands/`의 Markdown 파일로 command를 정의할 수도 있습니다. [더 알아보기](/docs/commands).
 
 ---
 
@@ -404,9 +404,9 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 `keybinds` 옵션으로 keybind를 커스터마이즈할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {}
 }
 ```
@@ -417,11 +417,11 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 ### Autoupdate
 
-YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합니다. `autoupdate` 옵션으로 비활성화할 수 있습니다.
+RAILWISE (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합니다. `autoupdate` 옵션으로 비활성화할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "autoupdate": false
 }
 ```
@@ -435,9 +435,9 @@ YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합�
 
 `formatter` 옵션으로 코드 formatter를 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -459,13 +459,13 @@ YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합�
 
 ### Permissions
 
-기본적으로 YONSOON (甬算)는 **명시적 승인 없이 모든 작업을 허용**합니다. `permission` 옵션으로 이 동작을 바꿀 수 있습니다.
+기본적으로 RAILWISE (甬算)는 **명시적 승인 없이 모든 작업을 허용**합니다. `permission` 옵션으로 이 동작을 바꿀 수 있습니다.
 
 예를 들어 `edit`, `bash` tool이 사용자 승인을 요구하게 하려면:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "ask",
     "bash": "ask"
@@ -481,9 +481,9 @@ YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합�
 
 `compaction` 옵션으로 context compaction 동작을 제어할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "compaction": {
     "auto": true,
     "prune": true,
@@ -502,9 +502,9 @@ YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합�
 
 `watcher` 옵션으로 파일 watcher ignore 패턴을 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   }
@@ -519,9 +519,9 @@ YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합�
 
 `mcp` 옵션으로 사용할 MCP server를 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {}
 }
 ```
@@ -532,14 +532,14 @@ YONSOON (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합�
 
 ### Plugins
 
-[Plugins](/docs/plugins)는 custom tool, hook, integration으로 YONSOON (甬算)를 확장합니다.
+[Plugins](/docs/plugins)는 custom tool, hook, integration으로 RAILWISE (甬算)를 확장합니다.
 
-plugin 파일은 `.yonsoon/plugins/` 또는 `~/.config/yonsoon/plugins/`에 두세요. `plugin` 옵션으로 npm plugin을 로드할 수도 있습니다.
+plugin 파일은 `.railwise/plugins/` 또는 `~/.config/railwise/plugins/`에 두세요. `plugin` 옵션으로 npm plugin을 로드할 수도 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
-  "plugin": ["yonsoon-helicone-session", "@my-org/custom-plugin"]
+  "$schema": "https://railwise.ai/config.json",
+  "plugin": ["railwise-helicone-session", "@my-org/custom-plugin"]
 }
 ```
 
@@ -551,9 +551,9 @@ plugin 파일은 `.yonsoon/plugins/` 또는 `~/.config/yonsoon/plugins/`에 두�
 
 `instructions` 옵션으로 사용 중인 model에 제공할 지침 파일을 설정할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -566,9 +566,9 @@ plugin 파일은 `.yonsoon/plugins/` 또는 `~/.config/yonsoon/plugins/`에 두�
 
 `disabled_providers` 옵션으로 자동 로드되는 provider를 비활성화할 수 있습니다. credential이 있어도 특정 provider를 로드하지 않게 하고 싶을 때 유용합니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "disabled_providers": ["openai", "gemini"]
 }
 ```
@@ -589,14 +589,14 @@ plugin 파일은 `.yonsoon/plugins/` 또는 `~/.config/yonsoon/plugins/`에 두�
 
 `enabled_providers` 옵션으로 provider allowlist를 지정할 수 있습니다. 이 값을 설정하면 지정한 provider만 활성화되고 나머지는 무시됩니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "enabled_providers": ["anthropic", "openai"]
 }
 ```
 
-provider를 하나씩 비활성화하는 대신, YONSOON (甬算)가 특정 provider만 사용하도록 제한하고 싶을 때 유용합니다.
+provider를 하나씩 비활성화하는 대신, RAILWISE (甬算)가 특정 provider만 사용하도록 제한하고 싶을 때 유용합니다.
 
 :::note
 `disabled_providers`는 `enabled_providers`보다 우선합니다.
@@ -610,9 +610,9 @@ provider를 하나씩 비활성화하는 대신, YONSOON (甬算)가 특정 prov
 
 `experimental` key에는 현재 활발히 개발 중인 옵션이 포함됩니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "experimental": {}
 }
 ```
@@ -633,10 +633,10 @@ config 파일에서 환경 변수와 파일 내용을 참조할 수 있도록 �
 
 `{env:VARIABLE_NAME}` 형식으로 환경 변수를 치환할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
-  "model": "{env:YONSOON_MODEL}",
+  "$schema": "https://railwise.ai/config.json",
+  "model": "{env:RAILWISE_MODEL}",
   "provider": {
     "anthropic": {
       "models": {},
@@ -656,9 +656,9 @@ config 파일에서 환경 변수와 파일 내용을 참조할 수 있도록 �
 
 `{file:path/to/file}` 형식으로 파일 내용을 치환할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "instructions": ["./custom-instructions.md"],
   "provider": {
     "openai": {

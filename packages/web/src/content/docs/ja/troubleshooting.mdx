@@ -3,7 +3,7 @@ title: トラブルシューティング
 description: よくある問題とその解決方法。
 ---
 
-YONSOON (甬算) の問題をデバッグするには、まず、ディスク上に保存されているログとローカルデータを確認します。
+RAILWISE (甬算) の問題をデバッグするには、まず、ディスク上に保存されているログとローカルデータを確認します。
 
 ---
 
@@ -11,21 +11,21 @@ YONSOON (甬算) の問題をデバッグするには、まず、ディスク上
 
 ログファイルは次の場所に書き込まれます。
 
-- **macOS/Linux**: `~/.local/share/yonsoon/log/`
-- **Windows**: `WIN+R` を押して `%USERPROFILE%\.local\share\yonsoon\log` を貼り付けます
+- **macOS/Linux**: `~/.local/share/railwise/log/`
+- **Windows**: `WIN+R` を押して `%USERPROFILE%\.local\share\railwise\log` を貼り付けます
 
 ログファイルにはタイムスタンプ付きの名前が付けられ (例: `2025-01-09T123456.log`)、最新の 10 個のログファイルが保存されます。
 
-`--log-level` コマンドラインオプションを使用してログレベルを設定すると、より詳細なデバッグ情報を取得できます。たとえば、`yonsoon --log-level DEBUG`。
+`--log-level` コマンドラインオプションを使用してログレベルを設定すると、より詳細なデバッグ情報を取得できます。たとえば、`railwise --log-level DEBUG`。
 
 ---
 
 ## ストレージ
 
-YONSOON (甬算) は、セッションデータとその他のアプリケーションデータをディスク上の次の場所に保存します。
+RAILWISE (甬算) は、セッションデータとその他のアプリケーションデータをディスク上の次の場所に保存します。
 
-- **macOS/Linux**: `~/.local/share/yonsoon/`
-- **Windows**: `WIN+R` を押して `%USERPROFILE%\.local\share\yonsoon` を貼り付けます
+- **macOS/Linux**: `~/.local/share/railwise/`
+- **Windows**: `WIN+R` を押して `%USERPROFILE%\.local\share\railwise` を貼り付けます
 
 このディレクトリには次のものが含まれます。
 
@@ -39,13 +39,13 @@ YONSOON (甬算) は、セッションデータとその他のアプリケーシ
 
 ## デスクトップアプリ
 
-YONSOON (甬算) Desktop は、ローカル YONSOON (甬算) サーバー (`yonsoon-cli` サイドカー) をバックグラウンドで実行します。ほとんどの問題は、誤動作しているプラグイン、破損したキャッシュ、または不正なサーバー設定によって発生します。
+RAILWISE (甬算) Desktop は、ローカル RAILWISE (甬算) サーバー (`railwise-cli` サイドカー) をバックグラウンドで実行します。ほとんどの問題は、誤動作しているプラグイン、破損したキャッシュ、または不正なサーバー設定によって発生します。
 
 ### クイックチェック
 
 - アプリを完全に終了して再起動します。
 - アプリにエラー画面が表示された場合は、**再起動** をクリックしてエラーの詳細をコピーします。
-- macOS のみ: `YONSOON (甬算)` メニュー -> **Webview をリロード** (UI が空白またはフリーズしている場合に役立ちます)。
+- macOS のみ: `RAILWISE (甬算)` メニュー -> **Webview をリロード** (UI が空白またはフリーズしている場合に役立ちます)。
 
 ---
 
@@ -57,28 +57,28 @@ YONSOON (甬算) Desktop は、ローカル YONSOON (甬算) サーバー (`yons
 
 グローバル設定ファイルを開き、`plugin` キーを探します。
 
-- **macOS/Linux**: `~/.config/yonsoon/yonsoon.jsonc` (または `~/.config/yonsoon/yonsoon.json`)
-- **macOS/Linux** (古いインストール): `~/.local/share/yonsoon/yonsoon.jsonc`
-- **Windows**: `WIN+R` を押して `%USERPROFILE%\.config\yonsoon\yonsoon.jsonc` を貼り付けます
+- **macOS/Linux**: `~/.config/railwise/railwise.jsonc` (または `~/.config/railwise/railwise.json`)
+- **macOS/Linux** (古いインストール): `~/.local/share/railwise/railwise.jsonc`
+- **Windows**: `WIN+R` を押して `%USERPROFILE%\.config\railwise\railwise.jsonc` を貼り付けます
 
 プラグインを構成している場合は、キーを削除するか空の配列に設定して、プラグインを一時的に無効にします。
 
 ```jsonc
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": [],
 }
 ```
 
 #### プラグインディレクトリの確認
 
-YONSOON (甬算) はディスクからローカルプラグインをロードすることもできます。これらを一時的に邪魔にならない場所に移動し (またはフォルダーの名前を変更し)、デスクトップアプリを再起動します。
+RAILWISE (甬算) はディスクからローカルプラグインをロードすることもできます。これらを一時的に邪魔にならない場所に移動し (またはフォルダーの名前を変更し)、デスクトップアプリを再起動します。
 
 - **グローバルプラグイン**
-  - **macOS/Linux**: `~/.config/yonsoon/plugins/`
-  - **Windows**: `WIN+R` を押して `%USERPROFILE%\.config\yonsoon\plugins` を貼り付けます
+  - **macOS/Linux**: `~/.config/railwise/plugins/`
+  - **Windows**: `WIN+R` を押して `%USERPROFILE%\.config\railwise\plugins` を貼り付けます
 - **プロジェクトプラグイン** (プロジェクトごとの構成を使用する場合のみ)
-  - `<your-project>/.yonsoon/plugins/`
+  - `<your-project>/.railwise/plugins/`
 
 アプリが再び動作し始めた場合は、プラグインを 1 つずつ再度有効にして、問題の原因となっているプラ​​グインを特定します。
 
@@ -86,22 +86,22 @@ YONSOON (甬算) はディスクからローカルプラグインをロードす
 
 ### キャッシュをクリアする
 
-プラグインを無効にしても解決しない場合 (またはプラグインのインストールが停止した場合)、YONSOON (甬算) がキャッシュを再構築できるようにキャッシュをクリアします。
+プラグインを無効にしても解決しない場合 (またはプラグインのインストールが停止した場合)、RAILWISE (甬算) がキャッシュを再構築できるようにキャッシュをクリアします。
 
-1. YONSOON (甬算) Desktop を完全に終了します。
+1. RAILWISE (甬算) Desktop を完全に終了します。
 2. キャッシュディレクトリを削除します。
 
-- **macOS**: Finder -> `Cmd+Shift+G` -> `~/.cache/yonsoon` を貼り付け
-- **Linux**: `~/.cache/yonsoon` を削除します (または `rm -rf ~/.cache/yonsoon` を実行します)。
-- **Windows**: `WIN+R` を押して `%USERPROFILE%\.cache\yonsoon` を貼り付けます
+- **macOS**: Finder -> `Cmd+Shift+G` -> `~/.cache/railwise` を貼り付け
+- **Linux**: `~/.cache/railwise` を削除します (または `rm -rf ~/.cache/railwise` を実行します)。
+- **Windows**: `WIN+R` を押して `%USERPROFILE%\.cache\railwise` を貼り付けます
 
-3. YONSOON (甬算) デスクトップを再起動します。
+3. RAILWISE (甬算) デスクトップを再起動します。
 
 ---
 
 ### サーバー接続の問題の修正
 
-YONSOON (甬算) Desktop は、独自のローカルサーバー (デフォルト) を起動することも、構成したサーバー URL に接続することもできます。
+RAILWISE (甬算) Desktop は、独自のローカルサーバー (デフォルト) を起動することも、構成したサーバー URL に接続することもできます。
 
 **「接続に失敗しました」** ダイアログが表示された場合 (またはアプリがスプラッシュ画面を通過できない場合)、カスタムサーバー URL を確認してください。
 
@@ -111,13 +111,13 @@ YONSOON (甬算) Desktop は、独自のローカルサーバー (デフォル�
 
 #### 設定から `server.port` / `server.hostname` を削除します
 
-`yonsoon.json(c)` に `server` セクションが含まれている場合は、それを一時的に削除し、デスクトップアプリを再起動します。
+`railwise.json(c)` に `server` セクションが含まれている場合は、それを一時的に削除し、デスクトップアプリを再起動します。
 
 #### 環境変数を確認する
 
-環境に `YONSOON_PORT` が設定されている場合、デスクトップアプリはローカルサーバーにそのポートを使用しようとします。
+環境に `RAILWISE_PORT` が設定されている場合、デスクトップアプリはローカルサーバーにそのポートを使用しようとします。
 
-- `YONSOON_PORT` の設定を解除して (または空きポートを選択して)、再起動します。
+- `RAILWISE_PORT` の設定を解除して (または空きポートを選択して)、再起動します。
 
 ---
 
@@ -132,21 +132,21 @@ Linux では、一部の Wayland セットアップにより、空白のウィ�
 
 ### Windows: WebView2 ランタイム
 
-Windows では、YONSOON (甬算) Desktop には Microsoft Edge **WebView2 ランタイム**が必要です。アプリが空白のウィンドウで開くか、起動しない場合は、WebView2 をインストールまたは更新して、もう一度試してください。
+Windows では、RAILWISE (甬算) Desktop には Microsoft Edge **WebView2 ランタイム**が必要です。アプリが空白のウィンドウで開くか、起動しない場合は、WebView2 をインストールまたは更新して、もう一度試してください。
 
 ---
 
 ### Windows: 一般的なパフォーマンスの問題
 
-Windows でパフォーマンスの低下、ファイルアクセスの問題、またはターミナルの問題が発生している場合は、[WSL (Windows Subsystem for Linux)](/docs/windows-wsl) を使用してみてください。 WSL は、YONSOON (甬算) の機能とよりシームレスに連携する Linux 環境を提供します。
+Windows でパフォーマンスの低下、ファイルアクセスの問題、またはターミナルの問題が発生している場合は、[WSL (Windows Subsystem for Linux)](/docs/windows-wsl) を使用してみてください。 WSL は、RAILWISE (甬算) の機能とよりシームレスに連携する Linux 環境を提供します。
 
 ---
 
 ### 通知が表示されない
 
-YONSOON (甬算) Desktop では、次の場合にのみシステム通知が表示されます。
+RAILWISE (甬算) Desktop では、次の場合にのみシステム通知が表示されます。
 
-- OS 設定で YONSOON (甬算) の通知が有効になっており、
+- OS 設定で RAILWISE (甬算) の通知が有効になっており、
 - アプリウィンドウにフォーカスがありません。
 
 ---
@@ -155,11 +155,11 @@ YONSOON (甬算) Desktop では、次の場合にのみシステム通知が表�
 
 アプリが起動せず、UI 内から設定をクリアできない場合は、デスクトップアプリの保存された状態をリセットします。
 
-1. YONSOON (甬算) デスクトップを終了します。
-2. これらのファイルを見つけて削除します (これらのファイルは YONSOON (甬算) デスクトップアプリのデータディレクトリにあります)。
+1. RAILWISE (甬算) デスクトップを終了します。
+2. これらのファイルを見つけて削除します (これらのファイルは RAILWISE (甬算) デスクトップアプリのデータディレクトリにあります)。
 
-- `yonsoon.settings.dat` (デスクトップのデフォルトサーバー URL)
-- `yonsoon.global.dat` および `yonsoon.workspace.*.dat` (最近のサーバー/プロジェクトなどの UI 状態)
+- `railwise.settings.dat` (デスクトップのデフォルトサーバー URL)
+- `railwise.global.dat` および `railwise.workspace.*.dat` (最近のサーバー/プロジェクトなどの UI 状態)
 
 ディレクトリをすばやく見つけるには:
 
@@ -171,13 +171,13 @@ YONSOON (甬算) Desktop では、次の場合にのみシステム通知が表�
 
 ## ヘルプを求める
 
-YONSOON (甬算) で問題が発生している場合:
+RAILWISE (甬算) で問題が発生している場合:
 
 1. **GitHub で問題を報告してください**
 
 バグを報告したり、機能をリクエストしたりする最良の方法は、GitHub リポジトリを使用することです。
 
-[**github.com/anomalyco/yonsoon/issues**](https://github.com/anomalyco/yonsoon/issues)
+[**github.com/anomalyco/railwise/issues**](https://github.com/anomalyco/railwise/issues)
 
 新しい問題を作成する前に、既存の問題を検索して、問題がすでに報告されているかどうかを確認してください。
 
@@ -185,7 +185,7 @@ YONSOON (甬算) で問題が発生している場合:
 
 リアルタイムのヘルプやコミュニティのディスカッションについては、Discord サーバーに参加してください。
 
-[**yonsoon.ai/discord**](https://yonsoon.ai/discord)
+[**railwise.ai/discord**](https://railwise.ai/discord)
 
 ---
 
@@ -195,11 +195,11 @@ YONSOON (甬算) で問題が発生している場合:
 
 ---
 
-### YONSOON (甬算) が起動しない
+### RAILWISE (甬算) が起動しない
 
 1. ログでエラーメッセージを確認する
 2. `--print-logs` で実行して、ターミナルに出力を確認してください。
-3. `yonsoon upgrade` を含む最新バージョンを使用していることを確認してください
+3. `railwise upgrade` を含む最新バージョンを使用していることを確認してください
 
 ---
 
@@ -225,9 +225,9 @@ YONSOON (甬算) で問題が発生している場合:
 
 - `openai/gpt-4.1`
 - `openrouter/google/gemini-2.5-flash`
-- `yonsoon/kimi-k2`
+- `railwise/kimi-k2`
 
-どのモデルにアクセスできるかを確認するには、`yonsoon models` を実行します。
+どのモデルにアクセスできるかを確認するには、`railwise models` を実行します。
 
 ---
 
@@ -241,10 +241,10 @@ ProviderInitError が発生した場合は、構成が無効または破損し�
 2. 問題が解決しない場合は、保存されている構成をクリアしてみてください。
 
    ```bash
-   rm -rf ~/.local/share/yonsoon
+   rm -rf ~/.local/share/railwise
    ```
 
-   Windows では、`WIN+R` を押して、`%USERPROFILE%\.local\share\yonsoon` を削除します。
+   Windows では、`WIN+R` を押して、`%USERPROFILE%\.local\share\railwise` を削除します。
 
 3. TUI の `/connect` コマンドを使用して、プロバイダーで再認証します。
 
@@ -252,21 +252,21 @@ ProviderInitError が発生した場合は、構成が無効または破損し�
 
 ### AI_APICallError とプロバイダーパッケージの問題
 
-API 呼び出しエラーが発生した場合は、プロバイダーパッケージが古いことが原因である可能性があります。 YONSOON (甬算) は、必要に応じてプロバイダーパッケージ (OpenAI、Anthropic、Google など) を動的にインストールし、ローカルにキャッシュします。
+API 呼び出しエラーが発生した場合は、プロバイダーパッケージが古いことが原因である可能性があります。 RAILWISE (甬算) は、必要に応じてプロバイダーパッケージ (OpenAI、Anthropic、Google など) を動的にインストールし、ローカルにキャッシュします。
 
 プロバイダーパッケージの問題を解決するには:
 
 1. プロバイダーパッケージのキャッシュをクリアします。
 
    ```bash
-   rm -rf ~/.cache/yonsoon
+   rm -rf ~/.cache/railwise
    ```
 
-   Windows では、`WIN+R` を押して、`%USERPROFILE%\.cache\yonsoon` を削除します。
+   Windows では、`WIN+R` を押して、`%USERPROFILE%\.cache\railwise` を削除します。
 
-2. YONSOON (甬算) を再起動して最新のプロバイダーパッケージを再インストールします
+2. RAILWISE (甬算) を再起動して最新のプロバイダーパッケージを再インストールします
 
-これにより、YONSOON (甬算) はプロバイダーパッケージの最新バージョンを強制的にダウンロードすることになり、多くの場合、モデルパラメーターや API の変更に関する互換性の問題が解決されます。
+これにより、RAILWISE (甬算) はプロバイダーパッケージの最新バージョンを強制的にダウンロードすることになり、多くの場合、モデルパラメーターや API の変更に関する互換性の問題が解決されます。
 
 ---
 
@@ -297,4 +297,4 @@ Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 export DISPLAY=:99.0
 ```
 
-YONSOON (甬算) は、Wayland を使用していて `wl-clipboard` を優先しているかどうかを検出します。そうでない場合は、`xclip` および `xsel` の順序でクリップボードツールを検索しようとします。
+RAILWISE (甬算) は、Wayland を使用していて `wl-clipboard` を優先しているかどうかを検出します。そうでない場合は、`xclip` および `xsel` の順序でクリップボードツールを検索しようとします。

@@ -1,5 +1,5 @@
 import { defineConfig } from "vite"
-import appPlugin from "@yonsoon/app/vite"
+import appPlugin from "@railwise/app/vite"
 
 const host = process.env.TAURI_DEV_HOST
 

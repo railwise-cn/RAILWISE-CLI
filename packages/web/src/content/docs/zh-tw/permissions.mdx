@@ -23,9 +23,9 @@ OpenCode 使用 `permission` 設定來決定某個操作是否應自動執行、
 
 您可以全域設定權限（使用 `*`），並覆寫特定工具的權限。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "*": "ask",
     "bash": "allow",
@@ -36,9 +36,9 @@ OpenCode 使用 `permission` 設定來決定某個操作是否應自動執行、
 
 您還可以一次性設定所有權限：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": "allow"
 }
 ```
@@ -49,9 +49,9 @@ OpenCode 使用 `permission` 設定來決定某個操作是否應自動執行、
 
 對於大多數權限，您可以使用物件來根據工具輸入套用不同的操作。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "bash": {
       "*": "ask",
@@ -94,9 +94,9 @@ OpenCode 使用 `permission` 設定來決定某個操作是否應自動執行、
 
 例如，以下設定允許存取 `~/projects/personal/` 下的所有內容：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "external_directory": {
       "~/projects/personal/**": "allow"
@@ -107,9 +107,9 @@ OpenCode 使用 `permission` 設定來決定某個操作是否應自動執行、
 
 此處允許的任何目錄都會繼承與當前工作空間相同的預設值。由於 [`read` 預設為 `allow`](#預設值)，`external_directory` 下的項目也允許讀取，除非另行覆寫。當需要在這些路徑中限制某個工具時，請新增顯式規則，例如在保留讀取的同時阻止編輯：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "external_directory": {
       "~/projects/personal/**": "allow"
@@ -154,7 +154,7 @@ OpenCode 的權限以工具名稱為鍵，外加幾個安全防護項：
 - `doom_loop` 和 `external_directory` 預設為 `"ask"`。
 - `read` 為 `"allow"`，但 `.env` 檔案預設被拒絕：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "permission": {
     "read": {
@@ -189,9 +189,9 @@ OpenCode 的權限以工具名稱為鍵，外加幾個安全防護項：
 有關更詳細的模式比對範例，請參閱上方的[細粒度規則（物件語法）](#細粒度規則物件語法)部分。
 :::
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "bash": {
       "*": "ask",

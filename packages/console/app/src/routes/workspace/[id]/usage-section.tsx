@@ -1,4 +1,4 @@
-import { Billing } from "@yonsoon/console-core/billing.js"
+import { Billing } from "@railwise/console-core/billing.js"
 import { createAsync, query, useParams } from "@solidjs/router"
 import { createMemo, For, Show, createEffect, createSignal } from "solid-js"
 import { formatDateUTC, formatDateForTable } from "../common"

@@ -35,7 +35,7 @@ OpenCode 可以在常规的 GitLab 流水线中运行。你可以将其作为 [C
      - component: $CI_SERVER_FQDN/nagyv/gitlab-opencode/opencode@2
        inputs:
          config_dir: ${CI_PROJECT_DIR}/opencode-config
-         auth_json: $YONSOON_AUTH_JSON # The variable name for your OpenCode authentication JSON
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your OpenCode authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
@@ -103,7 +103,7 @@ OpenCode 在你的 GitLab CI/CD 流水线中运行，以下是设置所需的步
         EOF
       - echo "Configuring git"
       - git config --global user.email "opencode@gitlab.com"
-      - git config --global user.name "YONSOON"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
       - echo "Running OpenCode"

@@ -1,10 +1,10 @@
-import { createYonsoonClient } from "@yonsoon/sdk/v2/client"
+import { createRailwiseClient } from "@railwise/sdk/v2/client"
 import type { ServerConnection } from "@/context/server"
 
 export function createSdkForServer({
   server,
   ...config
-}: Omit<NonNullable<Parameters<typeof createYonsoonClient>[0]>, "baseUrl"> & {
+}: Omit<NonNullable<Parameters<typeof createRailwiseClient>[0]>, "baseUrl"> & {
   server: ServerConnection.HttpBase
 }) {
   const auth = (() => {
@@ -14,7 +14,7 @@ export function createSdkForServer({
     }
   })()
 
-  return createYonsoonClient({
+  return createRailwiseClient({
     ...config,
     headers: { ...config.headers, ...auth },
     baseUrl: server.url,

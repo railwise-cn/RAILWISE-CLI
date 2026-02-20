@@ -60,9 +60,9 @@ OpenCode가 파일을 write하거나 edit할 때 다음 순서로 동작합니�
 
 OpenCode config의 `formatter` 섹션에서 포매터를 커스터마이즈할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {}
 }
 ```
@@ -84,18 +84,18 @@ OpenCode config의 `formatter` 섹션에서 포매터를 커스터마이즈할 �
 
 전체 포매터를 전역에서 비활성화하려면 `formatter`를 `false`로 설정하세요.
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": false
 }
 ```
 
 특정 포매터만 비활성화하려면 `disabled`를 `true`로 설정하세요.
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -110,9 +110,9 @@ OpenCode config의 `formatter` 섹션에서 포매터를 커스터마이즈할 �
 
 명령, 환경 변수, 파일 확장자를 지정해 내장 포매터를 override하거나 새 포매터를 추가할 수 있습니다.
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

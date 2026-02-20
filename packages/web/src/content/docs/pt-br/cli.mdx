@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: Opções e comandos da CLI do yonsoon.
+description: Opções e comandos da CLI do railwise.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-A CLI do yonsoon, por padrão, inicia o [TUI](/docs/tui) quando executada sem argumentos.
+A CLI do railwise, por padrão, inicia o [TUI](/docs/tui) quando executada sem argumentos.
 
 ```bash
-yonsoon
+railwise
 ```
 
-Mas também aceita comandos conforme documentado nesta página. Isso permite que você interaja com o yonsoon programaticamente.
+Mas também aceita comandos conforme documentado nesta página. Isso permite que você interaja com o railwise programaticamente.
 
 ```bash
-yonsoon run "Explain how closures work in JavaScript"
+railwise run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-Inicie a interface de usuário do terminal do yonsoon.
+Inicie a interface de usuário do terminal do railwise.
 
 ```bash
-yonsoon [project]
+railwise [project]
 ```
 
 #### Opções
@@ -44,36 +44,36 @@ yonsoon [project]
 
 ## Comandos
 
-A CLI do yonsoon também possui os seguintes comandos.
+A CLI do railwise também possui os seguintes comandos.
 
 ---
 
 ### agent
 
-Gerencie agentes para o yonsoon.
+Gerencie agentes para o railwise.
 
 ```bash
-yonsoon agent [command]
+railwise agent [command]
 ```
 
 ---
 
 ### attach
 
-Anexe um terminal a um servidor backend do yonsoon já em execução, iniciado via comandos `serve` ou `web`.
+Anexe um terminal a um servidor backend do railwise já em execução, iniciado via comandos `serve` ou `web`.
 
 ```bash
-yonsoon attach [url]
+railwise attach [url]
 ```
 
-Isso permite usar o TUI com um backend yonsoon remoto. Por exemplo:
+Isso permite usar o TUI com um backend railwise remoto. Por exemplo:
 
 ```bash
 # Inicie o servidor backend para acesso web/mobile
-yonsoon web --port 4096 --hostname 0.0.0.0
+railwise web --port 4096 --hostname 0.0.0.0
 
 # Em outro terminal, anexe o TUI ao backend em execução
-yonsoon attach http://10.20.30.40:4096
+railwise attach http://10.20.30.40:4096
 ```
 
 #### Opções
@@ -90,7 +90,7 @@ yonsoon attach http://10.20.30.40:4096
 Crie um novo agente com configuração personalizada.
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 Este comando irá guiá-lo na criação de um novo agente com um prompt de sistema personalizado e configuração de ferramentas.
@@ -102,7 +102,7 @@ Este comando irá guiá-lo na criação de um novo agente com um prompt de siste
 Liste todos os agentes disponíveis.
 
 ```bash
-yonsoon agent list
+railwise agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ yonsoon agent list
 Comando para gerenciar credenciais e login para provedores.
 
 ```bash
-yonsoon auth [command]
+railwise auth [command]
 ```
 
 ---
 
 #### login
 
-O yonsoon é alimentado pela lista de provedores em [Models.dev](https://models.dev), então você pode usar `yonsoon auth login` para configurar chaves de API para qualquer provedor que você gostaria de usar. Isso é armazenado em `~/.local/share/yonsoon/auth.json`.
+O railwise é alimentado pela lista de provedores em [Models.dev](https://models.dev), então você pode usar `railwise auth login` para configurar chaves de API para qualquer provedor que você gostaria de usar. Isso é armazenado em `~/.local/share/railwise/auth.json`.
 
 ```bash
-yonsoon auth login
+railwise auth login
 ```
 
-Quando o yonsoon é iniciado, ele carrega os provedores do arquivo de credenciais. E se houver chaves definidas em seus ambientes ou em um arquivo `.env` em seu projeto.
+Quando o railwise é iniciado, ele carrega os provedores do arquivo de credenciais. E se houver chaves definidas em seus ambientes ou em um arquivo `.env` em seu projeto.
 
 ---
 
@@ -134,13 +134,13 @@ Quando o yonsoon é iniciado, ele carrega os provedores do arquivo de credenciai
 Lista todos os provedores autenticados conforme armazenado no arquivo de credenciais.
 
 ```bash
-yonsoon auth list
+railwise auth list
 ```
 
 Ou a versão curta.
 
 ```bash
-yonsoon auth ls
+railwise auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ yonsoon auth ls
 Desconecta você de um provedor limpando-o do arquivo de credenciais.
 
 ```bash
-yonsoon auth logout
+railwise auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ yonsoon auth logout
 Gerencie o agente do GitHub para automação de repositórios.
 
 ```bash
-yonsoon github [command]
+railwise github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ yonsoon github [command]
 Instale o agente do GitHub em seu repositório.
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 Isso configura o fluxo de trabalho necessário do GitHub Actions e o guia pelo processo de configuração. [Saiba mais](/docs/github).
@@ -182,7 +182,7 @@ Isso configura o fluxo de trabalho necessário do GitHub Actions e o guia pelo p
 Execute o agente do GitHub. Isso é tipicamente usado em GitHub Actions.
 
 ```bash
-yonsoon github run
+railwise github run
 ```
 
 ##### Opções
@@ -199,7 +199,7 @@ yonsoon github run
 Gerencie servidores do Model Context Protocol.
 
 ```bash
-yonsoon mcp [command]
+railwise mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ yonsoon mcp [command]
 Adicione um servidor MCP à sua configuração.
 
 ```bash
-yonsoon mcp add
+railwise mcp add
 ```
 
 Este comando irá guiá-lo na adição de um servidor MCP local ou remoto.
@@ -221,13 +221,13 @@ Este comando irá guiá-lo na adição de um servidor MCP local ou remoto.
 Liste todos os servidores MCP configurados e seu status de conexão.
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 Ou use a versão curta.
 
 ```bash
-yonsoon mcp ls
+railwise mcp ls
 ```
 
 ---
@@ -237,7 +237,7 @@ yonsoon mcp ls
 Autentique-se com um servidor MCP habilitado para OAuth.
 
 ```bash
-yonsoon mcp auth [name]
+railwise mcp auth [name]
 ```
 
 Se você não fornecer um nome de servidor, será solicitado que você selecione entre os servidores disponíveis habilitados para OAuth.
@@ -245,13 +245,13 @@ Se você não fornecer um nome de servidor, será solicitado que você selecione
 Você também pode listar servidores habilitados para OAuth e seu status de autenticação.
 
 ```bash
-yonsoon mcp auth list
+railwise mcp auth list
 ```
 
 Ou use a versão curta.
 
 ```bash
-yonsoon mcp auth ls
+railwise mcp auth ls
 ```
 
 ---
@@ -261,7 +261,7 @@ yonsoon mcp auth ls
 Remova credenciais OAuth para um servidor MCP.
 
 ```bash
-yonsoon mcp logout [name]
+railwise mcp logout [name]
 ```
 
 ---
@@ -271,7 +271,7 @@ yonsoon mcp logout [name]
 Depure problemas de conexão OAuth para um servidor MCP.
 
 ```bash
-yonsoon mcp debug <name>
+railwise mcp debug <name>
 ```
 
 ---
@@ -281,7 +281,7 @@ yonsoon mcp debug <name>
 Liste todos os modelos disponíveis dos provedores configurados.
 
 ```bash
-yonsoon models [provider]
+railwise models [provider]
 ```
 
 Este comando exibe todos os modelos disponíveis entre seus provedores configurados no formato `provider/model`.
@@ -291,7 +291,7 @@ Isso é útil para descobrir o nome exato do modelo a ser usado em [sua configur
 Você pode opcionalmente passar um ID de provedor para filtrar modelos por esse provedor.
 
 ```bash
-yonsoon models anthropic
+railwise models anthropic
 ```
 
 #### Opções
@@ -301,36 +301,36 @@ yonsoon models anthropic
 | `--refresh` | Atualiza o cache de modelos a partir do models.dev                    |
 | `--verbose` | Use uma saída de modelo mais detalhada (inclui metadados como custos) |
 
-Use a flag `--refresh` para atualizar a lista de modelos em cache. Isso é útil quando novos modelos foram adicionados a um provedor e você deseja vê-los no yonsoon.
+Use a flag `--refresh` para atualizar a lista de modelos em cache. Isso é útil quando novos modelos foram adicionados a um provedor e você deseja vê-los no railwise.
 
 ```bash
-yonsoon models --refresh
+railwise models --refresh
 ```
 
 ---
 
 ### run
 
-Execute o yonsoon em modo não interativo passando um prompt diretamente.
+Execute o railwise em modo não interativo passando um prompt diretamente.
 
 ```bash
-yonsoon run [message..]
+railwise run [message..]
 ```
 
 Isso é útil para scripts, automação ou quando você deseja uma resposta rápida sem iniciar o TUI completo. Por exemplo.
 
-```bash "yonsoon run"
-yonsoon run Explique o uso de context em Go
+```bash "railwise run"
+railwise run Explique o uso de context em Go
 ```
 
-Você também pode se anexar a uma instância em execução do `yonsoon serve` para evitar tempos de inicialização a frio do servidor MCP em cada execução:
+Você também pode se anexar a uma instância em execução do `railwise serve` para evitar tempos de inicialização a frio do servidor MCP em cada execução:
 
 ```bash
 # Inicie um servidor sem cabeça em um terminal
-yonsoon serve
+railwise serve
 
 # Em outro terminal, execute comandos que se anexam a ele
-yonsoon run --attach http://localhost:4096 "Explique async/await em JavaScript"
+railwise run --attach http://localhost:4096 "Explique async/await em JavaScript"
 ```
 
 #### Opções
@@ -347,20 +347,20 @@ yonsoon run --attach http://localhost:4096 "Explique async/await em JavaScript"
 | `--file`     | `-f`  | Arquivo(s) a serem anexados à mensagem                                        |
 | `--format`   |       | Formato: padrão (formatado) ou json (eventos JSON brutos)                     |
 | `--title`    |       | Título para a sessão (usa o prompt truncado se nenhum valor for fornecido)    |
-| `--attach`   |       | Anexe a um servidor yonsoon em execução (por exemplo, http://localhost:4096) |
+| `--attach`   |       | Anexe a um servidor railwise em execução (por exemplo, http://localhost:4096) |
 | `--port`     |       | Porta para o servidor local (padrão para porta aleatória)                     |
 
 ---
 
 ### serve
 
-Inicie um servidor yonsoon sem cabeça para acesso à API. Confira a [documentação do servidor](/docs/server) para a interface HTTP completa.
+Inicie um servidor railwise sem cabeça para acesso à API. Confira a [documentação do servidor](/docs/server) para a interface HTTP completa.
 
 ```bash
-yonsoon serve
+railwise serve
 ```
 
-Isso inicia um servidor HTTP que fornece acesso à funcionalidade do yonsoon sem a interface TUI. Defina `YONSOON_SERVER_PASSWORD` para habilitar a autenticação básica HTTP (o nome de usuário padrão é `yonsoon`).
+Isso inicia um servidor HTTP que fornece acesso à funcionalidade do railwise sem a interface TUI. Defina `RAILWISE_SERVER_PASSWORD` para habilitar a autenticação básica HTTP (o nome de usuário padrão é `railwise`).
 
 #### Opções
 
@@ -375,20 +375,20 @@ Isso inicia um servidor HTTP que fornece acesso à funcionalidade do yonsoon sem
 
 ### session
 
-Gerencie sessões do yonsoon.
+Gerencie sessões do railwise.
 
 ```bash
-yonsoon session [command]
+railwise session [command]
 ```
 
 ---
 
 #### list
 
-Liste todas as sessões do yonsoon.
+Liste todas as sessões do railwise.
 
 ```bash
-yonsoon session list
+railwise session list
 ```
 
 ##### Opções
@@ -402,10 +402,10 @@ yonsoon session list
 
 ### stats
 
-Mostre o uso de tokens e estatísticas de custo para suas sessões do yonsoon.
+Mostre o uso de tokens e estatísticas de custo para suas sessões do railwise.
 
 ```bash
-yonsoon stats
+railwise stats
 ```
 
 #### Opções
@@ -424,7 +424,7 @@ yonsoon stats
 Exporte dados da sessão como JSON.
 
 ```bash
-yonsoon export [sessionID]
+railwise export [sessionID]
 ```
 
 Se você não fornecer um ID de sessão, será solicitado que você selecione entre as sessões disponíveis.
@@ -433,30 +433,30 @@ Se você não fornecer um ID de sessão, será solicitado que você selecione en
 
 ### import
 
-Importe dados da sessão de um arquivo JSON ou URL de compartilhamento do yonsoon.
+Importe dados da sessão de um arquivo JSON ou URL de compartilhamento do railwise.
 
 ```bash
-yonsoon import <file>
+railwise import <file>
 ```
 
-Você pode importar de um arquivo local ou de uma URL de compartilhamento do yonsoon.
+Você pode importar de um arquivo local ou de uma URL de compartilhamento do railwise.
 
 ```bash
-yonsoon import session.json
-yonsoon import https://opncd.ai/s/abc123
+railwise import session.json
+railwise import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-Inicie um servidor yonsoon sem cabeça com uma interface web.
+Inicie um servidor railwise sem cabeça com uma interface web.
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-Isso inicia um servidor HTTP e abre um navegador para acessar o yonsoon através de uma interface web. Defina `YONSOON_SERVER_PASSWORD` para habilitar a autenticação básica HTTP (o nome de usuário padrão é `yonsoon`).
+Isso inicia um servidor HTTP e abre um navegador para acessar o railwise através de uma interface web. Defina `RAILWISE_SERVER_PASSWORD` para habilitar a autenticação básica HTTP (o nome de usuário padrão é `railwise`).
 
 #### Opções
 
@@ -474,7 +474,7 @@ Isso inicia um servidor HTTP e abre um navegador para acessar o yonsoon através
 Inicie um servidor ACP (Agent Client Protocol).
 
 ```bash
-yonsoon acp
+railwise acp
 ```
 
 Este comando inicia um servidor ACP que se comunica via stdin/stdout usando nd-JSON.
@@ -491,10 +491,10 @@ Este comando inicia um servidor ACP que se comunica via stdin/stdout usando nd-J
 
 ### uninstall
 
-Desinstale o yonsoon e remova todos os arquivos relacionados.
+Desinstale o railwise e remova todos os arquivos relacionados.
 
 ```bash
-yonsoon uninstall
+railwise uninstall
 ```
 
 #### Opções
@@ -510,22 +510,22 @@ yonsoon uninstall
 
 ### upgrade
 
-Atualiza o yonsoon para a versão mais recente ou uma versão específica.
+Atualiza o railwise para a versão mais recente ou uma versão específica.
 
 ```bash
-yonsoon upgrade [target]
+railwise upgrade [target]
 ```
 
 Para atualizar para a versão mais recente.
 
 ```bash
-yonsoon upgrade
+railwise upgrade
 ```
 
 Para atualizar para uma versão específica.
 
 ```bash
-yonsoon upgrade v0.1.48
+railwise upgrade v0.1.48
 ```
 
 #### Opções
@@ -538,7 +538,7 @@ yonsoon upgrade v0.1.48
 
 ## Opções Globais
 
-A CLI do yonsoon aceita as seguintes flags globais.
+A CLI do railwise aceita as seguintes flags globais.
 
 | Flag           | Curto | Descrição                               |
 | -------------- | ----- | --------------------------------------- |
@@ -551,34 +551,34 @@ A CLI do yonsoon aceita as seguintes flags globais.
 
 ## Variáveis de ambiente
 
-O yonsoon pode ser configurado usando variáveis de ambiente.
+O railwise pode ser configurado usando variáveis de ambiente.
 
 | Variável                              | Tipo    | Descrição                                                             |
 | ------------------------------------- | ------- | --------------------------------------------------------------------- |
-| `YONSOON_AUTO_SHARE`                 | boolean | Compartilhar sessões automaticamente                                  |
-| `YONSOON_GIT_BASH_PATH`              | string  | Caminho para o executável do Git Bash no Windows                      |
-| `YONSOON_CONFIG`                     | string  | Caminho para o arquivo de configuração                                |
-| `YONSOON_CONFIG_DIR`                 | string  | Caminho para o diretório de configuração                              |
-| `YONSOON_CONFIG_CONTENT`             | string  | Conteúdo de configuração json inline                                  |
-| `YONSOON_DISABLE_AUTOUPDATE`         | boolean | Desabilitar verificações de atualização automática                    |
-| `YONSOON_DISABLE_PRUNE`              | boolean | Desabilitar a poda de dados antigos                                   |
-| `YONSOON_DISABLE_TERMINAL_TITLE`     | boolean | Desabilitar atualizações automáticas do título do terminal            |
-| `YONSOON_PERMISSION`                 | string  | Configuração de permissões json inline                                |
-| `YONSOON_DISABLE_DEFAULT_PLUGINS`    | boolean | Desabilitar plugins padrão                                            |
-| `YONSOON_DISABLE_LSP_DOWNLOAD`       | boolean | Desabilitar downloads automáticos do servidor LSP                     |
-| `YONSOON_ENABLE_EXPERIMENTAL_MODELS` | boolean | Habilitar modelos experimentais                                       |
-| `YONSOON_DISABLE_AUTOCOMPACT`        | boolean | Desabilitar compactação automática de contexto                        |
-| `YONSOON_DISABLE_CLAUDE_CODE`        | boolean | Desabilitar leitura de `.claude` (prompt + habilidades)               |
-| `YONSOON_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Desabilitar leitura de `~/.claude/CLAUDE.md`                          |
-| `YONSOON_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Desabilitar carregamento de `.claude/skills`                          |
-| `YONSOON_DISABLE_MODELS_FETCH`       | boolean | Desabilitar busca de modelos de fontes remotas                        |
-| `YONSOON_FAKE_VCS`                   | string  | Provedor VCS falso para fins de teste                                 |
-| `YONSOON_DISABLE_FILETIME_CHECK`     | boolean | Desabilitar verificação de tempo de arquivo para otimização           |
-| `YONSOON_CLIENT`                     | string  | Identificador do cliente (padrão é `cli`)                             |
-| `YONSOON_ENABLE_EXA`                 | boolean | Habilitar ferramentas de busca web Exa                                |
-| `YONSOON_SERVER_PASSWORD`            | string  | Habilitar autenticação básica para `serve`/`web`                      |
-| `YONSOON_SERVER_USERNAME`            | string  | Substituir nome de usuário de autenticação básica (padrão `yonsoon`) |
-| `YONSOON_MODELS_URL`                 | string  | URL personalizada para buscar configuração de modelos                 |
+| `RAILWISE_AUTO_SHARE`                 | boolean | Compartilhar sessões automaticamente                                  |
+| `RAILWISE_GIT_BASH_PATH`              | string  | Caminho para o executável do Git Bash no Windows                      |
+| `RAILWISE_CONFIG`                     | string  | Caminho para o arquivo de configuração                                |
+| `RAILWISE_CONFIG_DIR`                 | string  | Caminho para o diretório de configuração                              |
+| `RAILWISE_CONFIG_CONTENT`             | string  | Conteúdo de configuração json inline                                  |
+| `RAILWISE_DISABLE_AUTOUPDATE`         | boolean | Desabilitar verificações de atualização automática                    |
+| `RAILWISE_DISABLE_PRUNE`              | boolean | Desabilitar a poda de dados antigos                                   |
+| `RAILWISE_DISABLE_TERMINAL_TITLE`     | boolean | Desabilitar atualizações automáticas do título do terminal            |
+| `RAILWISE_PERMISSION`                 | string  | Configuração de permissões json inline                                |
+| `RAILWISE_DISABLE_DEFAULT_PLUGINS`    | boolean | Desabilitar plugins padrão                                            |
+| `RAILWISE_DISABLE_LSP_DOWNLOAD`       | boolean | Desabilitar downloads automáticos do servidor LSP                     |
+| `RAILWISE_ENABLE_EXPERIMENTAL_MODELS` | boolean | Habilitar modelos experimentais                                       |
+| `RAILWISE_DISABLE_AUTOCOMPACT`        | boolean | Desabilitar compactação automática de contexto                        |
+| `RAILWISE_DISABLE_CLAUDE_CODE`        | boolean | Desabilitar leitura de `.claude` (prompt + habilidades)               |
+| `RAILWISE_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Desabilitar leitura de `~/.claude/CLAUDE.md`                          |
+| `RAILWISE_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Desabilitar carregamento de `.claude/skills`                          |
+| `RAILWISE_DISABLE_MODELS_FETCH`       | boolean | Desabilitar busca de modelos de fontes remotas                        |
+| `RAILWISE_FAKE_VCS`                   | string  | Provedor VCS falso para fins de teste                                 |
+| `RAILWISE_DISABLE_FILETIME_CHECK`     | boolean | Desabilitar verificação de tempo de arquivo para otimização           |
+| `RAILWISE_CLIENT`                     | string  | Identificador do cliente (padrão é `cli`)                             |
+| `RAILWISE_ENABLE_EXA`                 | boolean | Habilitar ferramentas de busca web Exa                                |
+| `RAILWISE_SERVER_PASSWORD`            | string  | Habilitar autenticação básica para `serve`/`web`                      |
+| `RAILWISE_SERVER_USERNAME`            | string  | Substituir nome de usuário de autenticação básica (padrão `railwise`) |
+| `RAILWISE_MODELS_URL`                 | string  | URL personalizada para buscar configuração de modelos                 |
 
 ---
 
@@ -588,16 +588,16 @@ Essas variáveis de ambiente habilitam recursos experimentais que podem mudar ou
 
 | Variável                                        | Tipo    | Descrição                                                 |
 | ----------------------------------------------- | ------- | --------------------------------------------------------- |
-| `YONSOON_EXPERIMENTAL`                         | boolean | Habilitar todos os recursos experimentais                 |
-| `YONSOON_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Habilitar descoberta de ícones                            |
-| `YONSOON_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Desabilitar cópia ao selecionar no TUI                    |
-| `YONSOON_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | Tempo limite padrão para comandos bash em ms              |
-| `YONSOON_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | Máximo de tokens de saída para respostas LLM              |
-| `YONSOON_EXPERIMENTAL_FILEWATCHER`             | boolean | Habilitar monitoramento de arquivos para todo o diretório |
-| `YONSOON_EXPERIMENTAL_OXFMT`                   | boolean | Habilitar formatador oxfmt                                |
-| `YONSOON_EXPERIMENTAL_LSP_TOOL`                | boolean | Habilitar ferramenta LSP experimental                     |
-| `YONSOON_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Desabilitar monitoramento de arquivos                     |
-| `YONSOON_EXPERIMENTAL_EXA`                     | boolean | Habilitar recursos experimentais do Exa                   |
-| `YONSOON_EXPERIMENTAL_LSP_TY`                  | boolean | Habilitar verificação de tipo LSP experimental            |
-| `YONSOON_EXPERIMENTAL_MARKDOWN`                | boolean | Habilitar recursos experimentais de markdown              |
-| `YONSOON_EXPERIMENTAL_PLAN_MODE`               | boolean | Habilitar modo de plano                                   |
+| `RAILWISE_EXPERIMENTAL`                         | boolean | Habilitar todos os recursos experimentais                 |
+| `RAILWISE_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Habilitar descoberta de ícones                            |
+| `RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Desabilitar cópia ao selecionar no TUI                    |
+| `RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | Tempo limite padrão para comandos bash em ms              |
+| `RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | Máximo de tokens de saída para respostas LLM              |
+| `RAILWISE_EXPERIMENTAL_FILEWATCHER`             | boolean | Habilitar monitoramento de arquivos para todo o diretório |
+| `RAILWISE_EXPERIMENTAL_OXFMT`                   | boolean | Habilitar formatador oxfmt                                |
+| `RAILWISE_EXPERIMENTAL_LSP_TOOL`                | boolean | Habilitar ferramenta LSP experimental                     |
+| `RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Desabilitar monitoramento de arquivos                     |
+| `RAILWISE_EXPERIMENTAL_EXA`                     | boolean | Habilitar recursos experimentais do Exa                   |
+| `RAILWISE_EXPERIMENTAL_LSP_TY`                  | boolean | Habilitar verificação de tipo LSP experimental            |
+| `RAILWISE_EXPERIMENTAL_MARKDOWN`                | boolean | Habilitar recursos experimentais de markdown              |
+| `RAILWISE_EXPERIMENTAL_PLAN_MODE`               | boolean | Habilitar modo de plano                                   |

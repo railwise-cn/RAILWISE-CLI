@@ -1,13 +1,13 @@
 ---
 title: SDK
-description: Typesikker JS-klient for YONSOON (甬算)-server.
+description: Typesikker JS-klient for RAILWISE (甬算)-server.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-YONSOON (甬算) JS/TS SDK gir en typesikker klient for samhandling med serveren.
-Bruk den til å bygge integrasjoner og kontrollere YONSOON (甬算) programmatisk.
+RAILWISE (甬算) JS/TS SDK gir en typesikker klient for samhandling med serveren.
+Bruk den til å bygge integrasjoner og kontrollere RAILWISE (甬算) programmatisk.
 
 [Finn ut mer](/docs/server) om hvordan serveren fungerer. For eksempler, sjekk ut [prosjektene](/docs/ecosystem#projects) bygget av fellesskapet.
 
@@ -18,19 +18,19 @@ Bruk den til å bygge integrasjoner og kontrollere YONSOON (甬算) programmatis
 Installer SDK fra npm:
 
 ```bash
-npm install @yonsoon/sdk
+npm install @railwise/sdk
 ```
 
 ---
 
 ## Opprette klient
 
-Opprett en forekomst av YONSOON (甬算):
+Opprett en forekomst av RAILWISE (甬算):
 
 ```javascript
-import { createYonsoon } from "@yonsoon/sdk"
+import { createRailwise } from "@railwise/sdk"
 
-const { client } = await createYonsoon()
+const { client } = await createRailwise()
 ```
 
 Dette starter både en server og en klient
@@ -49,12 +49,12 @@ Dette starter både en server og en klient
 
 ## Konfigurasjon
 
-Du kan sende et konfigurasjonsobjekt for å tilpasse virkemåten. Forekomsten henter fortsatt din `yonsoon.json`, men du kan overstyre eller legge til konfigurasjon inline:
+Du kan sende et konfigurasjonsobjekt for å tilpasse virkemåten. Forekomsten henter fortsatt din `railwise.json`, men du kan overstyre eller legge til konfigurasjon inline:
 
 ```javascript
-import { createYonsoon } from "@yonsoon/sdk"
+import { createRailwise } from "@railwise/sdk"
 
-const yonsoon = await createYonsoon({
+const railwise = await createRailwise({
   hostname: "127.0.0.1",
   port: 4096,
   config: {
@@ -62,19 +62,19 @@ const yonsoon = await createYonsoon({
   },
 })
 
-console.log(`Server running at ${yonsoon.server.url}`)
+console.log(`Server running at ${railwise.server.url}`)
 
-yonsoon.server.close()
+railwise.server.close()
 ```
 
 ## Kun klient
 
-Hvis du allerede har en kjørende forekomst av YONSOON (甬算), kan du opprette en klientforekomst for å koble til den:
+Hvis du allerede har en kjørende forekomst av RAILWISE (甬算), kan du opprette en klientforekomst for å koble til den:
 
 ```javascript
-import { createYonsoonClient } from "@yonsoon/sdk"
+import { createRailwiseClient } from "@railwise/sdk"
 
-const client = createYonsoonClient({
+const client = createRailwiseClient({
   baseUrl: "http://localhost:4096",
 })
 ```
@@ -96,7 +96,7 @@ const client = createYonsoonClient({
 SDK inkluderer TypeScript-definisjoner for alle API-typer. Importer dem direkte:
 
 ```typescript
-import type { Session, Message, Part } from "@yonsoon/sdk"
+import type { Session, Message, Part } from "@railwise/sdk"
 ```
 
 Alle typer er generert fra serverens OpenAPI-spesifikasjon og tilgjengelig i <a href={typesUrl}>type-filen</a>.
@@ -304,7 +304,7 @@ await client.session.prompt({
 ```javascript
 // Search and read files
 const textResults = await client.find.text({
-  query: { pattern: "function.*yonsoon" },
+  query: { pattern: "function.*railwise" },
 })
 
 const files = await client.find.files({

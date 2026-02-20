@@ -24,8 +24,8 @@ jobs:
 
       - name: Configure git identity
         run: |
-          git config --global user.email "bot@yonsoon.ai"
-          git config --global user.name "yonsoon"
+          git config --global user.email "bot@railwise.ai"
+          git config --global user.name "railwise"
 
       - name: Run unit tests
         run: bun turbo test

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railwise.ai/config.json",
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "https://api.jiekou.ai/anthropic",
+        "apiKey": "YOUR_API_KEY_HERE",
+      },
+    },
+  },
+  "model": "anthropic/claude-opus-4-1-20250805",
+  "mcp": {},
+}

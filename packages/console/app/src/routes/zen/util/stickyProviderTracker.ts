@@ -1,4 +1,4 @@
-import { Resource } from "@yonsoon/console-resource"
+import { Resource } from "@railwise/console-resource"
 
 export function createStickyTracker(stickyProvider: "strict" | "prefer" | undefined, session: string) {
   if (!stickyProvider) return

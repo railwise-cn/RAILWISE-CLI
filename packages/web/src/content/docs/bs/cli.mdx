@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: YONSOON (甬算) CLI opcije i naredbe.
+description: RAILWISE (甬算) CLI opcije i naredbe.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) CLI po defaultu pokreće [TUI](/docs/tui) kada se pokrene bez ikakvih argumenata.
+RAILWISE (甬算) CLI po defaultu pokreće [TUI](/docs/tui) kada se pokrene bez ikakvih argumenata.
 
 ```bash
-yonsoon
+railwise
 ```
 
-Ali takođe prihvata naredbe kao što je dokumentovano na ovoj stranici. Ovo vam omogućava programsku interakciju sa YONSOON (甬算).
+Ali takođe prihvata naredbe kao što je dokumentovano na ovoj stranici. Ovo vam omogućava programsku interakciju sa RAILWISE (甬算).
 
 ```bash
-yonsoon run "Explain how closures work in JavaScript"
+railwise run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-Pokrenite YONSOON (甬算) terminalski korisnički interfejs.
+Pokrenite RAILWISE (甬算) terminalski korisnički interfejs.
 
 ```bash
-yonsoon [project]
+railwise [project]
 ```
 
 #### Opcije
@@ -44,36 +44,36 @@ yonsoon [project]
 
 ## Naredbe
 
-YONSOON (甬算) CLI takođe ima sljedeće naredbe.
+RAILWISE (甬算) CLI takođe ima sljedeće naredbe.
 
 ---
 
 ### agent
 
-Upravljajte YONSOON (甬算) agentima.
+Upravljajte RAILWISE (甬算) agentima.
 
 ```bash
-yonsoon agent [command]
+railwise agent [command]
 ```
 
 ---
 
 ### attach
 
-Priključite terminal na već pokrenut YONSOON (甬算) backend server pokrenut putem `serve` ili `web` naredbi.
+Priključite terminal na već pokrenut RAILWISE (甬算) backend server pokrenut putem `serve` ili `web` naredbi.
 
 ```bash
-yonsoon attach [url]
+railwise attach [url]
 ```
 
-Ovo omogućava korištenje TUI-ja sa udaljenim YONSOON (甬算) backend-om. Na primjer:
+Ovo omogućava korištenje TUI-ja sa udaljenim RAILWISE (甬算) backend-om. Na primjer:
 
 ```bash
 # Start the backend server for web/mobile access
-yonsoon web --port 4096 --hostname 0.0.0.0
+railwise web --port 4096 --hostname 0.0.0.0
 
 # In another terminal, attach the TUI to the running backend
-yonsoon attach http://10.20.30.40:4096
+railwise attach http://10.20.30.40:4096
 ```
 
 #### Opcije
@@ -90,7 +90,7 @@ yonsoon attach http://10.20.30.40:4096
 Kreirajte novog agenta s prilagođenom konfiguracijom.
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 Ova naredba će vas voditi kroz kreiranje novog agenta sa prilagođenim sistemskim promptom i konfiguracijom alata.
@@ -102,7 +102,7 @@ Ova naredba će vas voditi kroz kreiranje novog agenta sa prilagođenim sistemsk
 Navedite sve dostupne agente.
 
 ```bash
-yonsoon agent list
+railwise agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ yonsoon agent list
 Naredba za upravljanje vjerodajnicama i prijavom za provajdere.
 
 ```bash
-yonsoon auth [command]
+railwise auth [command]
 ```
 
 ---
 
 #### login
 
-YONSOON (甬算) pokreće lista provajdera na [Models.dev](https://models.dev), tako da možete koristiti `yonsoon auth login` da konfigurirate API ključeve za bilo kojeg provajdera kojeg želite koristiti. Ovo je pohranjeno u `~/.local/share/yonsoon/auth.json`.
+RAILWISE (甬算) pokreće lista provajdera na [Models.dev](https://models.dev), tako da možete koristiti `railwise auth login` da konfigurirate API ključeve za bilo kojeg provajdera kojeg želite koristiti. Ovo je pohranjeno u `~/.local/share/railwise/auth.json`.
 
 ```bash
-yonsoon auth login
+railwise auth login
 ```
 
-Kada se YONSOON (甬算) pokrene, učitava dobavljače iz datoteke vjerodajnica. I ako postoje neki ključevi definirani u vašim okruženjima ili `.env` fajl u vašem projektu.
+Kada se RAILWISE (甬算) pokrene, učitava dobavljače iz datoteke vjerodajnica. I ako postoje neki ključevi definirani u vašim okruženjima ili `.env` fajl u vašem projektu.
 
 ---
 
@@ -134,13 +134,13 @@ Kada se YONSOON (甬算) pokrene, učitava dobavljače iz datoteke vjerodajnica.
 Navodi sve autentifikovane dobavljače pohranjene u datoteci vjerodajnica.
 
 ```bash
-yonsoon auth list
+railwise auth list
 ```
 
 Ili kratka verzija.
 
 ```bash
-yonsoon auth ls
+railwise auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ yonsoon auth ls
 Odjavljuje vas s provajdera tako što ga briše iz datoteke vjerodajnica.
 
 ```bash
-yonsoon auth logout
+railwise auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ yonsoon auth logout
 Upravljajte GitHub agentom za automatizaciju repozitorija.
 
 ```bash
-yonsoon github [command]
+railwise github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ yonsoon github [command]
 Instalirajte GitHub agenta u svoj repozitorij.
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 Ovo postavlja neophodni tok rada GitHub Actions i vodi vas kroz proces konfiguracije. [Saznajte više](/docs/github).
@@ -182,7 +182,7 @@ Ovo postavlja neophodni tok rada GitHub Actions i vodi vas kroz proces konfigura
 Pokrenite GitHub agent. Ovo se obično koristi u GitHub Actions.
 
 ```bash
-yonsoon github run
+railwise github run
 ```
 
 ##### Opcije
@@ -199,7 +199,7 @@ yonsoon github run
 Upravljajte Model Context Protocol (MCP) serverima.
 
 ```bash
-yonsoon mcp [command]
+railwise mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ yonsoon mcp [command]
 Dodajte MCP server svojoj konfiguraciji.
 
 ```bash
-yonsoon mcp add
+railwise mcp add
 ```
 
 Ova naredba će vas voditi kroz dodavanje lokalnog ili udaljenog MCP servera.
@@ -221,13 +221,13 @@ Ova naredba će vas voditi kroz dodavanje lokalnog ili udaljenog MCP servera.
 Navedite sve konfigurirane MCP servere i njihov status veze.
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 Ili koristite kratku verziju.
 
 ```bash
-yonsoon mcp ls
+railwise mcp ls
 ```
 
 ---
@@ -237,20 +237,20 @@ yonsoon mcp ls
 Autentifikujte se sa MCP serverom koji je omogućen za OAuth.
 
 ```bash
-yonsoon mcp auth [name]
+railwise mcp auth [name]
 ```
 
 Ako ne navedete ime servera, od vas će biti zatraženo da izaberete neki od dostupnih servera koji podržavaju OAuth.
 Također možete navesti servere koji podržavaju OAuth i njihov status autentifikacije.
 
 ```bash
-yonsoon mcp auth list
+railwise mcp auth list
 ```
 
 Ili koristite kratku verziju.
 
 ```bash
-yonsoon mcp auth ls
+railwise mcp auth ls
 ```
 
 ---
@@ -260,7 +260,7 @@ yonsoon mcp auth ls
 Uklonite OAuth vjerodajnice za MCP server.
 
 ```bash
-yonsoon mcp logout [name]
+railwise mcp logout [name]
 ```
 
 ---
@@ -270,7 +270,7 @@ yonsoon mcp logout [name]
 Otklanjanje grešaka (debug) OAuth veze sa MCP serverom.
 
 ```bash
-yonsoon mcp debug <name>
+railwise mcp debug <name>
 ```
 
 ---
@@ -280,7 +280,7 @@ yonsoon mcp debug <name>
 Navedite sve dostupne modele konfiguriranih provajdera.
 
 ```bash
-yonsoon models [provider]
+railwise models [provider]
 ```
 
 Ova naredba prikazuje sve modele dostupne kod vaših konfiguriranih provajdera u formatu `provider/model`.
@@ -288,7 +288,7 @@ Ovo je korisno za pronalaženje tačnog naziva modela za korištenje u [vašoj k
 Opciono možete proslijediti ID provajdera za filtriranje modela po tom dobavljaču.
 
 ```bash
-yonsoon models anthropic
+railwise models anthropic
 ```
 
 #### Opcije
@@ -298,36 +298,36 @@ yonsoon models anthropic
 | `--refresh` | Osvježite keš modela sa models.dev                                       |
 | `--verbose` | Koristite detaljniji izlaz modela (uključuje metapodatke poput troškova) |
 
-Koristite `--refresh` zastavicu da ažurirate keširanu listu modela. Ovo je korisno kada su novi modeli dodani provajderu i želite da ih vidite u YONSOON (甬算).
+Koristite `--refresh` zastavicu da ažurirate keširanu listu modela. Ovo je korisno kada su novi modeli dodani provajderu i želite da ih vidite u RAILWISE (甬算).
 
 ```bash
-yonsoon models --refresh
+railwise models --refresh
 ```
 
 ---
 
 ### run
 
-Pokrenite YONSOON (甬算) u neinteraktivnom modu tako što ćete direktno proslijediti prompt.
+Pokrenite RAILWISE (甬算) u neinteraktivnom modu tako što ćete direktno proslijediti prompt.
 
 ```bash
-yonsoon run [message..]
+railwise run [message..]
 ```
 
 Ovo je korisno za skriptiranje, automatizaciju ili kada želite brz odgovor bez pokretanja punog TUI-ja. Na primjer:
 
-```bash "yonsoon run"
-yonsoon run Explain the use of context in Go
+```bash "railwise run"
+railwise run Explain the use of context in Go
 ```
 
-Također možete priključiti pokrenutu `yonsoon serve` instancu kako biste izbjegli vrijeme hladnog pokretanja MCP servera pri svakom pokretanju:
+Također možete priključiti pokrenutu `railwise serve` instancu kako biste izbjegli vrijeme hladnog pokretanja MCP servera pri svakom pokretanju:
 
 ```bash
 # Start a headless server in one terminal
-yonsoon serve
+railwise serve
 
 # In another terminal, run commands that attach to it
-yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
+railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 ```
 
 #### Opcije
@@ -344,20 +344,20 @@ yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f`   | Fajlovi koje treba priložiti poruci                                      |
 | `--format`   |        | Format: default (formatiran) ili json (sirovi JSON događaji)             |
 | `--title`    |        | Naslov sesije (koristi skraćeni prompt ako nije navedena vrijednost)     |
-| `--attach`   |        | Priključite na pokrenuti YONSOON (甬算) server (npr. http://localhost:4096)    |
+| `--attach`   |        | Priključite na pokrenuti RAILWISE (甬算) server (npr. http://localhost:4096)    |
 | `--port`     |        | Port za lokalni server (zadano na nasumični port)                        |
 
 ---
 
 ### serve
 
-Pokrenite YONSOON (甬算) headless server za API pristup. Pogledajte [server docs](/docs/server) za kompletan HTTP interfejs.
+Pokrenite RAILWISE (甬算) headless server za API pristup. Pogledajte [server docs](/docs/server) za kompletan HTTP interfejs.
 
 ```bash
-yonsoon serve
+railwise serve
 ```
 
-Ovo pokreće HTTP server koji pruža API pristup funkcionalnosti YONSOON (甬算)-a bez TUI interfejsa. Postavite `YONSOON_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `yonsoon`).
+Ovo pokreće HTTP server koji pruža API pristup funkcionalnosti RAILWISE (甬算)-a bez TUI interfejsa. Postavite `RAILWISE_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `railwise`).
 
 #### Opcije
 
@@ -372,20 +372,20 @@ Ovo pokreće HTTP server koji pruža API pristup funkcionalnosti YONSOON (甬算
 
 ### session
 
-Upravljajte YONSOON (甬算) sesijama.
+Upravljajte RAILWISE (甬算) sesijama.
 
 ```bash
-yonsoon session [command]
+railwise session [command]
 ```
 
 ---
 
 #### list
 
-Navedite sve YONSOON (甬算) sesije.
+Navedite sve RAILWISE (甬算) sesije.
 
 ```bash
-yonsoon session list
+railwise session list
 ```
 
 ##### Opcije
@@ -399,10 +399,10 @@ yonsoon session list
 
 ### stats
 
-Prikaži statistiku upotrebe tokena i troškova za vaše YONSOON (甬算) sesije.
+Prikaži statistiku upotrebe tokena i troškova za vaše RAILWISE (甬算) sesije.
 
 ```bash
-yonsoon stats
+railwise stats
 ```
 
 #### Opcije
@@ -421,7 +421,7 @@ yonsoon stats
 Izvezite podatke sesije kao JSON.
 
 ```bash
-yonsoon export [sessionID]
+railwise export [sessionID]
 ```
 
 Ako ne unesete ID sesije, od vas će biti zatraženo da odaberete neku od dostupnih sesija.
@@ -430,30 +430,30 @@ Ako ne unesete ID sesije, od vas će biti zatraženo da odaberete neku od dostup
 
 ### import
 
-Uvezite podatke sesije iz JSON datoteke ili YONSOON (甬算) dijeljenog URL-a.
+Uvezite podatke sesije iz JSON datoteke ili RAILWISE (甬算) dijeljenog URL-a.
 
 ```bash
-yonsoon import <file>
+railwise import <file>
 ```
 
-Možete uvesti iz lokalne datoteke ili YONSOON (甬算) dijeljenog URL-a.
+Možete uvesti iz lokalne datoteke ili RAILWISE (甬算) dijeljenog URL-a.
 
 ```bash
-yonsoon import session.json
-yonsoon import https://opncd.ai/s/abc123
+railwise import session.json
+railwise import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-Pokrenite YONSOON (甬算) headless server sa web interfejsom.
+Pokrenite RAILWISE (甬算) headless server sa web interfejsom.
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-Ovo pokreće HTTP server i otvara web pretraživač za pristup YONSOON (甬算)-u preko web interfejsa. Postavite `YONSOON_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `yonsoon`).
+Ovo pokreće HTTP server i otvara web pretraživač za pristup RAILWISE (甬算)-u preko web interfejsa. Postavite `RAILWISE_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `railwise`).
 
 #### Opcije
 
@@ -471,7 +471,7 @@ Ovo pokreće HTTP server i otvara web pretraživač za pristup YONSOON (甬算)-
 Pokrenite ACP (Agent Client Protocol) server.
 
 ```bash
-yonsoon acp
+railwise acp
 ```
 
 Ova naredba pokreće ACP server koji komunicira preko stdin/stdout koristeći nd-JSON.
@@ -488,10 +488,10 @@ Ova naredba pokreće ACP server koji komunicira preko stdin/stdout koristeći nd
 
 ### uninstall
 
-Deinstalirajte YONSOON (甬算) i uklonite sve povezane datoteke.
+Deinstalirajte RAILWISE (甬算) i uklonite sve povezane datoteke.
 
 ```bash
-yonsoon uninstall
+railwise uninstall
 ```
 
 #### Opcije
@@ -507,22 +507,22 @@ yonsoon uninstall
 
 ### upgrade
 
-Ažurira YONSOON (甬算) na najnoviju verziju ili određenu verziju.
+Ažurira RAILWISE (甬算) na najnoviju verziju ili određenu verziju.
 
 ```bash
-yonsoon upgrade [target]
+railwise upgrade [target]
 ```
 
 Za nadogradnju na najnoviju verziju.
 
 ```bash
-yonsoon upgrade
+railwise upgrade
 ```
 
 Za nadogradnju na određenu verziju.
 
 ```bash
-yonsoon upgrade v0.1.48
+railwise upgrade v0.1.48
 ```
 
 #### Opcije
@@ -535,7 +535,7 @@ yonsoon upgrade v0.1.48
 
 ## Globalne opcije
 
-YONSOON (甬算) CLI prihvata sljedeće globalne zastavice.
+RAILWISE (甬算) CLI prihvata sljedeće globalne zastavice.
 
 | Opcija         | Kratko | Opis                                      |
 | -------------- | ------ | ----------------------------------------- |
@@ -548,34 +548,34 @@ YONSOON (甬算) CLI prihvata sljedeće globalne zastavice.
 
 ## Varijable okruženja
 
-YONSOON (甬算) se može konfigurirati pomoću varijabli okruženja.
+RAILWISE (甬算) se može konfigurirati pomoću varijabli okruženja.
 
 | Varijabla                             | Tip     | Opis                                                               |
 | ------------------------------------- | ------- | ------------------------------------------------------------------ |
-| `YONSOON_AUTO_SHARE`                 | boolean | Automatski dijeli sesije                                           |
-| `YONSOON_GIT_BASH_PATH`              | string  | Putanja do Git Bash izvršne datoteke na Windows-u                  |
-| `YONSOON_CONFIG`                     | string  | Putanja do konfiguracijskog fajla                                  |
-| `YONSOON_CONFIG_DIR`                 | string  | Putanja do konfiguracijskog direktorija                            |
-| `YONSOON_CONFIG_CONTENT`             | string  | Inline json konfiguracijski sadržaj                                |
-| `YONSOON_DISABLE_AUTOUPDATE`         | boolean | Onemogući automatske provjere ažuriranja                           |
-| `YONSOON_DISABLE_PRUNE`              | boolean | Onemogući brisanje (pruning) starih podataka                       |
-| `YONSOON_DISABLE_TERMINAL_TITLE`     | boolean | Onemogući automatsko ažuriranje naslova terminala                  |
-| `YONSOON_PERMISSION`                 | string  | Inline json konfiguracija dozvola                                  |
-| `YONSOON_DISABLE_DEFAULT_PLUGINS`    | boolean | Onemogući podrazumijevane dodatke (plugins)                        |
-| `YONSOON_DISABLE_LSP_DOWNLOAD`       | boolean | Onemogući automatsko preuzimanje LSP servera                       |
-| `YONSOON_ENABLE_EXPERIMENTAL_MODELS` | boolean | Omogući eksperimentalne modele                                     |
-| `YONSOON_DISABLE_AUTOCOMPACT`        | boolean | Onemogući automatsko sažimanje konteksta                           |
-| `YONSOON_DISABLE_CLAUDE_CODE`        | boolean | Onemogući čitanje iz `.claude` (prompt + vještine)                 |
-| `YONSOON_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Onemogući čitanje `~/.claude/CLAUDE.md`                            |
-| `YONSOON_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Onemogući učitavanje `.claude/skills`                              |
-| `YONSOON_DISABLE_MODELS_FETCH`       | boolean | Onemogući dohvaćanje modela iz udaljenih izvora                    |
-| `YONSOON_FAKE_VCS`                   | string  | Lažni VCS provajder za potrebe testiranja                          |
-| `YONSOON_DISABLE_FILETIME_CHECK`     | boolean | Onemogući provjeru vremena datoteke radi optimizacije              |
-| `YONSOON_CLIENT`                     | string  | Identifikator klijenta (zadano na `cli`)                           |
-| `YONSOON_ENABLE_EXA`                 | boolean | Omogući Exa alate za web pretraživanje                             |
-| `YONSOON_SERVER_PASSWORD`            | string  | Omogući osnovnu autentifikaciju za `serve`/`web`                   |
-| `YONSOON_SERVER_USERNAME`            | string  | Poništi osnovno korisničko ime autentifikacije (zadano `yonsoon`) |
-| `YONSOON_MODELS_URL`                 | string  | Prilagođeni URL za dohvaćanje konfiguracije modela                 |
+| `RAILWISE_AUTO_SHARE`                 | boolean | Automatski dijeli sesije                                           |
+| `RAILWISE_GIT_BASH_PATH`              | string  | Putanja do Git Bash izvršne datoteke na Windows-u                  |
+| `RAILWISE_CONFIG`                     | string  | Putanja do konfiguracijskog fajla                                  |
+| `RAILWISE_CONFIG_DIR`                 | string  | Putanja do konfiguracijskog direktorija                            |
+| `RAILWISE_CONFIG_CONTENT`             | string  | Inline json konfiguracijski sadržaj                                |
+| `RAILWISE_DISABLE_AUTOUPDATE`         | boolean | Onemogući automatske provjere ažuriranja                           |
+| `RAILWISE_DISABLE_PRUNE`              | boolean | Onemogući brisanje (pruning) starih podataka                       |
+| `RAILWISE_DISABLE_TERMINAL_TITLE`     | boolean | Onemogući automatsko ažuriranje naslova terminala                  |
+| `RAILWISE_PERMISSION`                 | string  | Inline json konfiguracija dozvola                                  |
+| `RAILWISE_DISABLE_DEFAULT_PLUGINS`    | boolean | Onemogući podrazumijevane dodatke (plugins)                        |
+| `RAILWISE_DISABLE_LSP_DOWNLOAD`       | boolean | Onemogući automatsko preuzimanje LSP servera                       |
+| `RAILWISE_ENABLE_EXPERIMENTAL_MODELS` | boolean | Omogući eksperimentalne modele                                     |
+| `RAILWISE_DISABLE_AUTOCOMPACT`        | boolean | Onemogući automatsko sažimanje konteksta                           |
+| `RAILWISE_DISABLE_CLAUDE_CODE`        | boolean | Onemogući čitanje iz `.claude` (prompt + vještine)                 |
+| `RAILWISE_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Onemogući čitanje `~/.claude/CLAUDE.md`                            |
+| `RAILWISE_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Onemogući učitavanje `.claude/skills`                              |
+| `RAILWISE_DISABLE_MODELS_FETCH`       | boolean | Onemogući dohvaćanje modela iz udaljenih izvora                    |
+| `RAILWISE_FAKE_VCS`                   | string  | Lažni VCS provajder za potrebe testiranja                          |
+| `RAILWISE_DISABLE_FILETIME_CHECK`     | boolean | Onemogući provjeru vremena datoteke radi optimizacije              |
+| `RAILWISE_CLIENT`                     | string  | Identifikator klijenta (zadano na `cli`)                           |
+| `RAILWISE_ENABLE_EXA`                 | boolean | Omogući Exa alate za web pretraživanje                             |
+| `RAILWISE_SERVER_PASSWORD`            | string  | Omogući osnovnu autentifikaciju za `serve`/`web`                   |
+| `RAILWISE_SERVER_USERNAME`            | string  | Poništi osnovno korisničko ime autentifikacije (zadano `railwise`) |
+| `RAILWISE_MODELS_URL`                 | string  | Prilagođeni URL za dohvaćanje konfiguracije modela                 |
 
 ---
 
@@ -585,16 +585,16 @@ Ove varijable okruženja omogućavaju eksperimentalne karakteristike koje se mog
 
 | Varijabla                                       | Tip     | Opis                                              |
 | ----------------------------------------------- | ------- | ------------------------------------------------- |
-| `YONSOON_EXPERIMENTAL`                         | boolean | Omogući sve eksperimentalne funkcije              |
-| `YONSOON_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Omogući otkrivanje ikona                          |
-| `YONSOON_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Onemogući kopiranje pri odabiru u TUI             |
-| `YONSOON_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | Zadano vremensko ograničenje za bash naredbe u ms |
-| `YONSOON_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | Maksimalni izlazni tokeni za LLM odgovore         |
-| `YONSOON_EXPERIMENTAL_FILEWATCHER`             | boolean | Omogući praćenje datoteka za cijeli direktorij    |
-| `YONSOON_EXPERIMENTAL_OXFMT`                   | boolean | Omogući oxfmt formatter                           |
-| `YONSOON_EXPERIMENTAL_LSP_TOOL`                | boolean | Omogući eksperimentalni LSP alat                  |
-| `YONSOON_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Onemogući praćenje datoteka                       |
-| `YONSOON_EXPERIMENTAL_EXA`                     | boolean | Omogući eksperimentalne Exa funkcije              |
-| `YONSOON_EXPERIMENTAL_LSP_TY`                  | boolean | Omogući eksperimentalnu provjeru tipa LSP         |
-| `YONSOON_EXPERIMENTAL_MARKDOWN`                | boolean | Omogući eksperimentalne Markdown funkcije         |
-| `YONSOON_EXPERIMENTAL_PLAN_MODE`               | boolean | Omogući Plan mod                                  |
+| `RAILWISE_EXPERIMENTAL`                         | boolean | Omogući sve eksperimentalne funkcije              |
+| `RAILWISE_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Omogući otkrivanje ikona                          |
+| `RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Onemogući kopiranje pri odabiru u TUI             |
+| `RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | Zadano vremensko ograničenje za bash naredbe u ms |
+| `RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | Maksimalni izlazni tokeni za LLM odgovore         |
+| `RAILWISE_EXPERIMENTAL_FILEWATCHER`             | boolean | Omogući praćenje datoteka za cijeli direktorij    |
+| `RAILWISE_EXPERIMENTAL_OXFMT`                   | boolean | Omogući oxfmt formatter                           |
+| `RAILWISE_EXPERIMENTAL_LSP_TOOL`                | boolean | Omogući eksperimentalni LSP alat                  |
+| `RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Onemogući praćenje datoteka                       |
+| `RAILWISE_EXPERIMENTAL_EXA`                     | boolean | Omogući eksperimentalne Exa funkcije              |
+| `RAILWISE_EXPERIMENTAL_LSP_TY`                  | boolean | Omogući eksperimentalnu provjeru tipa LSP         |
+| `RAILWISE_EXPERIMENTAL_MARKDOWN`                | boolean | Omogući eksperimentalne Markdown funkcije         |
+| `RAILWISE_EXPERIMENTAL_PLAN_MODE`               | boolean | Omogući Plan mod                                  |

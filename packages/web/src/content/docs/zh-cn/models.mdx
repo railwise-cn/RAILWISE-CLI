@@ -50,9 +50,9 @@ OpenCode 使用 [AI SDK](https://ai-sdk.dev/) 和 [Models.dev](https://models.de
 
 要将某个模型设为默认模型，可以在 OpenCode 配置中设置 `model` 字段。
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "model": "lmstudio/google/gemma-3n-e4b"
 }
 ```
@@ -67,9 +67,9 @@ OpenCode 使用 [AI SDK](https://ai-sdk.dev/) 和 [Models.dev](https://models.de
 
 你可以通过配置文件全局配置模型的选项。
 
-```jsonc title="yonsoon.jsonc" {7-12,19-24}
+```jsonc title="railwise.jsonc" {7-12,19-24}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -106,9 +106,9 @@ OpenCode 使用 [AI SDK](https://ai-sdk.dev/) 和 [Models.dev](https://models.de
 
 你也可以定义扩展内置变体的自定义变体。变体允许你为同一个模型配置不同的设置，而无需创建重复的条目：
 
-```jsonc title="yonsoon.jsonc" {6-21}
+```jsonc title="railwise.jsonc" {6-21}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "opencode": {
       "models": {
@@ -171,9 +171,9 @@ OpenCode 为许多提供商提供了默认变体：
 
 你可以覆盖现有变体或添加自己的变体：
 
-```jsonc title="yonsoon.jsonc" {7-18}
+```jsonc title="railwise.jsonc" {7-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -208,9 +208,9 @@ OpenCode 启动时，会按以下优先顺序加载模型：
 
 2. OpenCode 配置中的 model 字段。
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "model": "anthropic/claude-sonnet-4-20250514"
    }
    ```

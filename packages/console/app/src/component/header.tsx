@@ -9,10 +9,10 @@ import copyBrandAssetsDark from "../asset/lander/brand-assets-dark.svg"
 
 // SVG files for copying (separate from button icons)
 // Replace these with your actual SVG files for copying
-import copyLogoSvgLight from "../asset/lander/yonsoon-logo-light.svg"
-import copyLogoSvgDark from "../asset/lander/yonsoon-logo-dark.svg"
-import copyWordmarkSvgLight from "../asset/lander/yonsoon-wordmark-light.svg"
-import copyWordmarkSvgDark from "../asset/lander/yonsoon-wordmark-dark.svg"
+import copyLogoSvgLight from "../asset/lander/railwise-logo-light.svg"
+import copyLogoSvgDark from "../asset/lander/railwise-logo-dark.svg"
+import copyWordmarkSvgLight from "../asset/lander/railwise-wordmark-light.svg"
+import copyWordmarkSvgDark from "../asset/lander/railwise-wordmark-dark.svg"
 import { A, createAsync, useNavigate } from "@solidjs/router"
 import { createMemo, Match, Show, Switch } from "solid-js"
 import { createStore } from "solid-js/store"
@@ -124,8 +124,8 @@ export function Header(props: { zen?: boolean; hideGetStarted?: boolean }) {
     <section data-component="top">
       <div onContextMenu={handleLogoContextMenu}>
         <A href={language.route("/")}>
-          <img data-slot="logo light" src={logoLight} alt="YONSOON (甬算)" width="189" height="34" />
-          <img data-slot="logo dark" src={logoDark} alt="YONSOON (甬算)" width="189" height="34" />
+          <img data-slot="logo light" src={logoLight} alt="RAILWISE (甬算)" width="189" height="34" />
+          <img data-slot="logo dark" src={logoDark} alt="RAILWISE (甬算)" width="189" height="34" />
         </A>
       </div>
 

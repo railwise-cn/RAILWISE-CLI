@@ -1,5 +1,5 @@
 import { createStore, produce, reconcile } from "solid-js/store"
-import type { FileNode } from "@yonsoon/sdk/v2"
+import type { FileNode } from "@railwise/sdk/v2"
 
 type DirectoryState = {
   expanded: boolean

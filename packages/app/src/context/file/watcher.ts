@@ -1,4 +1,4 @@
-import type { FileNode } from "@yonsoon/sdk/v2"
+import type { FileNode } from "@railwise/sdk/v2"
 
 type WatcherEvent = {
   type: string

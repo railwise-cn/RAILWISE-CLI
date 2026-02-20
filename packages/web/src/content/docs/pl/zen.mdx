@@ -1,21 +1,21 @@
 ---
 title: Zen
-description: Wyselekcjonowana lista modeli dostarczonych przez yonsoon.
+description: Wyselekcjonowana lista modeli dostarczonych przez railwise.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 export const email = `mailto:${config.email}`
 
-YONSOON (甬算) Zen to lista przetestowanych i zweryfikowanych modeli udostępniona przez zespół yonsoon.
+RAILWISE (甬算) Zen to lista przetestowanych i zweryfikowanych modeli udostępniona przez zespół railwise.
 
 :::note
-YONSOON (甬算) Zen is currently in beta.
+RAILWISE (甬算) Zen is currently in beta.
 :::
 
-Zen działa jak każdy inny dostawca yonsoon. Logujesz się do YONSOON (甬算) Zen i dostajesz
+Zen działa jak każdy inny dostawca railwise. Logujesz się do RAILWISE (甬算) Zen i dostajesz
 Twój klucz API. Jest **całkowicie opcjonalny** i nie musisz go używać, aby z niego korzystać
-yonsoon.
+railwise.
 
 ---
 
@@ -26,7 +26,7 @@ działa dobrze jako agenci kodujący. Dodatkowo większość dostawców jest
 skonfigurowana bardzo różnie; więc otrzymujesz zupełnie inną wydajność i jakość.
 
 :::tip
-Przetestowaliśmy wybraną grupę modeli i dostawców, którzy dobrze współpracują z yonsoon.
+Przetestowaliśmy wybraną grupę modeli i dostawców, którzy dobrze współpracują z railwise.
 :::
 
 Jeśli więc używasz modelu za pośrednictwem czegoś takiego jak OpenRouter, nigdy nie będzie to możliwe
@@ -41,17 +41,17 @@ Aby to naprawić, zrobiliśmy kilka rzeczy:
 3. Na koniec porównaliśmy kombinację modelu/dostawcy i otrzymaliśmy wynik
    z listą, którą z przyjemnością polecamy.
 
-YONSOON (甬算) Zen to brama AI, która zapewnia dostęp do tych modeli.
+RAILWISE (甬算) Zen to brama AI, która zapewnia dostęp do tych modeli.
 
 ---
 
 ## Jak to działa
 
-YONSOON (甬算) Zen działa jak każdy inny dostawca yonsoon.
+RAILWISE (甬算) Zen działa jak każdy inny dostawca railwise.
 
-1. Logujesz się do **<a href={console}>YONSOON (甬算) Zen</a>**, dodajesz swoje rozliczenia
+1. Logujesz się do **<a href={console}>RAILWISE (甬算) Zen</a>**, dodajesz swoje rozliczenia
    szczegóły i skopiuj klucz API.
-2. Uruchamiasz polecenie `/connect` w TUI, wybierasz YONSOON (甬算) Zen i wklejasz klucz API.
+2. Uruchamiasz polecenie `/connect` w TUI, wybierasz RAILWISE (甬算) Zen i wklejasz klucz API.
 3. Uruchom `/models` w TUI, aby zobaczyć listę zalecanych przez nas modeli.
 
 Opłata jest pobierana za każde żądanie i możesz dodać kredyty do swojego konta.
@@ -64,39 +64,39 @@ Dostęp do naszych modeli można również uzyskać za pośrednictwem następuj�
 
 | Modelka            | Identyfikator modelu | Punkt końcowy                                      | Pakiet SDK AI               |
 | ------------------ | -------------------- | -------------------------------------------------- | --------------------------- |
-| GPT 5.2            | gpt-5.2              | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.2 Codex      | gpt-5.2-codex        | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1            | gpt-5.1              | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1 Codex      | gpt-5.1-codex        | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1 Codex Max  | gpt-5.1-codex-max    | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5.1 Codex Mini | gpt-5.1-codex-mini   | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5              | gpt-5                | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5 Codex        | gpt-5-codex          | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| GPT 5 Nano         | gpt-5-nano           | `https://yonsoon.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
-| Claude Sonnet 4.5  | claude-sonnet-4-5    | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Sonnet 4    | claude-sonnet-4      | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Haiku 4.5   | claude-haiku-4-5     | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Haiku 3.5   | claude-3-5-haiku     | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Opus 4.6    | claude-opus-4-6      | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Opus 4.5    | claude-opus-4-5      | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Claude Opus 4.1    | claude-opus-4-1      | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| Gemini 3 Pro       | gemini-3-pro         | `https://yonsoon.ai/zen/v1/models/gemini-3-pro`   | `@ai-sdk/google`            |
-| Gemini 3 Flash     | gemini-3-flash       | `https://yonsoon.ai/zen/v1/models/gemini-3-flash` | `@ai-sdk/google`            |
-| MiniMax M2.1       | minimax-m2.1         | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| MiniMax M2.1 Free  | minimax-m2.1-free    | `https://yonsoon.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
-| GLM 4.7            | glm-4.7              | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| GLM 4.7 Free       | glm-4.7-free         | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| GLM 4.6            | glm-4.6              | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2.5          | kimi-k2.5            | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2.5 Free     | kimi-k2.5-free       | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2 Thinking   | kimi-k2-thinking     | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Kimi K2            | kimi-k2              | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Qwen3 Coder 480B   | qwen3-coder          | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
-| Big Pickle         | big-pickle           | `https://yonsoon.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GPT 5.2            | gpt-5.2              | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.2 Codex      | gpt-5.2-codex        | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1            | gpt-5.1              | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1 Codex      | gpt-5.1-codex        | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1 Codex Max  | gpt-5.1-codex-max    | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5.1 Codex Mini | gpt-5.1-codex-mini   | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5              | gpt-5                | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5 Codex        | gpt-5-codex          | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| GPT 5 Nano         | gpt-5-nano           | `https://railwise.ai/zen/v1/responses`             | `@ai-sdk/openai`            |
+| Claude Sonnet 4.5  | claude-sonnet-4-5    | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Sonnet 4    | claude-sonnet-4      | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Haiku 4.5   | claude-haiku-4-5     | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Haiku 3.5   | claude-3-5-haiku     | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Opus 4.6    | claude-opus-4-6      | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Opus 4.5    | claude-opus-4-5      | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Claude Opus 4.1    | claude-opus-4-1      | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| Gemini 3 Pro       | gemini-3-pro         | `https://railwise.ai/zen/v1/models/gemini-3-pro`   | `@ai-sdk/google`            |
+| Gemini 3 Flash     | gemini-3-flash       | `https://railwise.ai/zen/v1/models/gemini-3-flash` | `@ai-sdk/google`            |
+| MiniMax M2.1       | minimax-m2.1         | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| MiniMax M2.1 Free  | minimax-m2.1-free    | `https://railwise.ai/zen/v1/messages`              | `@ai-sdk/anthropic`         |
+| GLM 4.7            | glm-4.7              | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GLM 4.7 Free       | glm-4.7-free         | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| GLM 4.6            | glm-4.6              | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2.5          | kimi-k2.5            | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2.5 Free     | kimi-k2.5-free       | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2 Thinking   | kimi-k2-thinking     | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Kimi K2            | kimi-k2              | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Qwen3 Coder 480B   | qwen3-coder          | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
+| Big Pickle         | big-pickle           | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 
-[Identyfikator modelu](/docs/config/#models) w konfiguracji yonsoon
-używa formatu `yonsoon/<model-id>`. Na przykład w przypadku Kodeksu GPT 5.2 zrobiłbyś to
-użyj `yonsoon/gpt-5.2-codex` w swojej konfiguracji.
+[Identyfikator modelu](/docs/config/#models) w konfiguracji railwise
+używa formatu `railwise/<model-id>`. Na przykład w przypadku Kodeksu GPT 5.2 zrobiłbyś to
+użyj `railwise/gpt-5.2-codex` w swojej konfiguracji.
 
 ---
 
@@ -105,7 +105,7 @@ użyj `yonsoon/gpt-5.2-codex` w swojej konfiguracji.
 Pełną listę dostępnych modeli i ich metadane możesz pobrać z:
 
 ```
-https://yonsoon.ai/zen/v1/models
+https://railwise.ai/zen/v1/models
 ```
 
 ---
@@ -158,10 +158,10 @@ Opłaty za karty kredytowe są przenoszone na koszt (4,4% + 0,30 USD za transakc
 
 Darmowe modele:
 
-- GLM 4.7 Free jest dostępny na platformie yonsoon przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
-- Kimi K2.5 Free jest dostępny na yonsoon przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
-- MiniMax M2.1 Free jest dostępny na platformie yonsoon przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
-- Big Pickle to ukryty model, który jest bezpłatny w yonsoon przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
+- GLM 4.7 Free jest dostępny na platformie railwise przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
+- Kimi K2.5 Free jest dostępny na railwise przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
+- MiniMax M2.1 Free jest dostępny na platformie railwise przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
+- Big Pickle to ukryty model, który jest bezpłatny w railwise przez ograniczony czas. Zespół wykorzystuje ten czas na zbieranie opinii i ulepszanie modelu.
 
 <a href={email}>Skontaktuj się z nami</a>, jeśli masz jakieś pytania.
 
@@ -246,9 +246,9 @@ i chcesz go używać zamiast tego, który zapewnia Zen.
 
 ## Cele
 
-Stworzyliśmy YONSOON (甬算) Zen, aby:
+Stworzyliśmy RAILWISE (甬算) Zen, aby:
 
 1. **Testować** (Benchmark) najlepsze modele/dostawców dla agentów kodujących.
 2. Miej dostęp do opcji **najwyższej jakości**, a nie obniżaj wydajności ani nie kieruj się do tańszych dostawców.
 3. Przekaż wszelkie **obniżki cen**, sprzedając po kosztach; więc jedyną marżą jest pokrycie naszych opłat manipulacyjnych.
-4. Nie **nie blokuj**, umożliwiając używanie go z dowolnym innym agentem kodującym. I zawsze pozwalaj na korzystanie z yonsoon dowolnego innego dostawcy.
+4. Nie **nie blokuj**, umożliwiając używanie go z dowolnym innym agentem kodującym. I zawsze pozwalaj na korzystanie z railwise dowolnego innego dostawcy.

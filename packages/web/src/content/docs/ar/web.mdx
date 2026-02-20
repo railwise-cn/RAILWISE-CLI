@@ -1,28 +1,28 @@
 ---
 title: الويب
-description: استخدام YONSOON (甬算) في متصفحك.
+description: استخدام RAILWISE (甬算) في متصفحك.
 ---
 
-يمكن تشغيل YONSOON (甬算) كتطبيق ويب داخل متصفحك، ليمنحك تجربة البرمجة القوية بالذكاء الاصطناعي نفسها دون الحاجة إلى terminal.
+يمكن تشغيل RAILWISE (甬算) كتطبيق ويب داخل متصفحك، ليمنحك تجربة البرمجة القوية بالذكاء الاصطناعي نفسها دون الحاجة إلى terminal.
 
-![YONSOON (甬算) Web - جلسة جديدة](../../../assets/web/web-homepage-new-session.png)
+![RAILWISE (甬算) Web - جلسة جديدة](../../../assets/web/web-homepage-new-session.png)
 
 ## البدء
 
 ابدأ تشغيل واجهة الويب عبر تنفيذ:
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-يؤدي ذلك إلى تشغيل خادم محلي على `127.0.0.1` بمنفذ عشوائي متاح، ويفتح YONSOON (甬算) تلقائيا في المتصفح الافتراضي لديك.
+يؤدي ذلك إلى تشغيل خادم محلي على `127.0.0.1` بمنفذ عشوائي متاح، ويفتح RAILWISE (甬算) تلقائيا في المتصفح الافتراضي لديك.
 
 :::caution
-إذا لم يتم تعيين `YONSOON_SERVER_PASSWORD` فسيكون الخادم دون حماية. هذا مناسب للاستخدام المحلي، لكنه يجب أن يكون مُعينا عند إتاحة الوصول عبر الشبكة.
+إذا لم يتم تعيين `RAILWISE_SERVER_PASSWORD` فسيكون الخادم دون حماية. هذا مناسب للاستخدام المحلي، لكنه يجب أن يكون مُعينا عند إتاحة الوصول عبر الشبكة.
 :::
 
 :::tip[مستخدمو Windows]
-لأفضل تجربة، شغّل `yonsoon web` من [WSL](/docs/windows-wsl) بدلا من PowerShell. يضمن ذلك وصولا صحيحا إلى نظام الملفات وتكاملا أفضل مع terminal.
+لأفضل تجربة، شغّل `railwise web` من [WSL](/docs/windows-wsl) بدلا من PowerShell. يضمن ذلك وصولا صحيحا إلى نظام الملفات وتكاملا أفضل مع terminal.
 :::
 
 ---
@@ -33,21 +33,21 @@ yonsoon web
 
 ### المنفذ
 
-افتراضيا، يختار YONSOON (甬算) منفذا متاحا. يمكنك تحديد منفذ:
+افتراضيا، يختار RAILWISE (甬算) منفذا متاحا. يمكنك تحديد منفذ:
 
 ```bash
-yonsoon web --port 4096
+railwise web --port 4096
 ```
 
 ### اسم المضيف
 
-افتراضيا، يرتبط الخادم بـ `127.0.0.1` (للاستخدام المحلي فقط). لجعل YONSOON (甬算) متاحا على شبكتك:
+افتراضيا، يرتبط الخادم بـ `127.0.0.1` (للاستخدام المحلي فقط). لجعل RAILWISE (甬算) متاحا على شبكتك:
 
 ```bash
-yonsoon web --hostname 0.0.0.0
+railwise web --hostname 0.0.0.0
 ```
 
-عند استخدام `0.0.0.0` سيعرض YONSOON (甬算) كلا من عناوين الوصول المحلي وعناوين الشبكة:
+عند استخدام `0.0.0.0` سيعرض RAILWISE (甬算) كلا من عناوين الوصول المحلي وعناوين الشبكة:
 
 ```
   Local access:       http://localhost:4096
@@ -59,15 +59,15 @@ yonsoon web --hostname 0.0.0.0
 فعّل mDNS لجعل خادمك قابلا للاكتشاف على الشبكة المحلية:
 
 ```bash
-yonsoon web --mdns
+railwise web --mdns
 ```
 
-يضبط ذلك تلقائيا اسم المضيف إلى `0.0.0.0` ويعلن عن الخادم باسم `yonsoon.local`.
+يضبط ذلك تلقائيا اسم المضيف إلى `0.0.0.0` ويعلن عن الخادم باسم `railwise.local`.
 
 يمكنك تخصيص اسم نطاق mDNS لتشغيل عدة نسخ على الشبكة نفسها:
 
 ```bash
-yonsoon web --mdns --mdns-domain myproject.local
+railwise web --mdns --mdns-domain myproject.local
 ```
 
 ### CORS
@@ -75,36 +75,36 @@ yonsoon web --mdns --mdns-domain myproject.local
 للسماح بنطاقات إضافية عبر CORS (مفيد للواجهات الأمامية المخصصة):
 
 ```bash
-yonsoon web --cors https://example.com
+railwise web --cors https://example.com
 ```
 
 ### المصادقة
 
-لحماية الوصول، عيّن كلمة مرور عبر متغير البيئة `YONSOON_SERVER_PASSWORD`:
+لحماية الوصول، عيّن كلمة مرور عبر متغير البيئة `RAILWISE_SERVER_PASSWORD`:
 
 ```bash
-YONSOON_SERVER_PASSWORD=secret yonsoon web
+RAILWISE_SERVER_PASSWORD=secret railwise web
 ```
 
-اسم المستخدم الافتراضي هو `yonsoon`، ويمكن تغييره عبر `YONSOON_SERVER_USERNAME`.
+اسم المستخدم الافتراضي هو `railwise`، ويمكن تغييره عبر `RAILWISE_SERVER_USERNAME`.
 
 ---
 
 ## استخدام واجهة الويب
 
-بعد التشغيل، تتيح لك واجهة الويب الوصول إلى جلسات YONSOON (甬算) الخاصة بك.
+بعد التشغيل، تتيح لك واجهة الويب الوصول إلى جلسات RAILWISE (甬算) الخاصة بك.
 
 ### الجلسات
 
 اعرض جلساتك وأدرها من الصفحة الرئيسية. يمكنك رؤية الجلسات النشطة وبدء جلسات جديدة.
 
-![YONSOON (甬算) Web - جلسة نشطة](../../../assets/web/web-homepage-active-session.png)
+![RAILWISE (甬算) Web - جلسة نشطة](../../../assets/web/web-homepage-active-session.png)
 
 ### حالة الخادم
 
 انقر على "See Servers" لعرض الخوادم المتصلة وحالتها.
 
-![YONSOON (甬算) Web - See Servers (عرض الخوادم)](../../../assets/web/web-homepage-see-servers.png)
+![RAILWISE (甬算) Web - See Servers (عرض الخوادم)](../../../assets/web/web-homepage-see-servers.png)
 
 ---
 
@@ -114,10 +114,10 @@ YONSOON_SERVER_PASSWORD=secret yonsoon web
 
 ```bash
 # ابدأ خادم الويب
-yonsoon web --port 4096
+railwise web --port 4096
 
 # في محطة طرفية أخرى، اربط TUI
-yonsoon attach http://localhost:4096
+railwise attach http://localhost:4096
 ```
 
 يتيح لك ذلك استخدام واجهة الويب وterminal في الوقت نفسه، مع مشاركة الجلسات والحالة نفسها.
@@ -126,7 +126,7 @@ yonsoon attach http://localhost:4096
 
 ## ملف الإعدادات
 
-يمكنك أيضا ضبط إعدادات الخادم داخل ملف الإعدادات `yonsoon.json`:
+يمكنك أيضا ضبط إعدادات الخادم داخل ملف الإعدادات `railwise.json`:
 
 ```json
 {

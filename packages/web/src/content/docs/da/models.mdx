@@ -3,13 +3,13 @@ title: Modeller
 description: Konfiguration af en LLM udbyder og model.
 ---
 
-YONSOON (甬算) bruger [AI SDK](https://ai-sdk.dev/) og [Models.dev](https://models.dev) til at understøtte **75+ LLM udbydere** og det understøtter at køre lokale modeller.
+RAILWISE (甬算) bruger [AI SDK](https://ai-sdk.dev/) og [Models.dev](https://models.dev) til at understøtte **75+ LLM udbydere** og det understøtter at køre lokale modeller.
 
 ---
 
 ## Udbydere
 
-De fleste populære udbydere er forudindlæst som standard. Hvis du har tilføjet legitimationsoplysningerne for en udbyder gennem kommandoen `/connect`, vil de være tilgængelige, når du starter YONSOON (甬算).
+De fleste populære udbydere er forudindlæst som standard. Hvis du har tilføjet legitimationsoplysningerne for en udbyder gennem kommandoen `/connect`, vil de være tilgængelige, når du starter RAILWISE (甬算).
 
 Få mere at vide om [providers](/docs/providers).
 
@@ -35,7 +35,7 @@ Overvej at bruge en af ​​de modeller, vi anbefaler.
 
 Der er dog kun få af dem, der er gode til både at generere kode og værktøjsopkald.
 
-Her er flere modeller, der fungerer godt med YONSOON (甬算), uden bestemt rækkefølge. (Dette er ikke en udtømmende liste og er heller ikke nødvendigvis opdateret):
+Her er flere modeller, der fungerer godt med RAILWISE (甬算), uden bestemt rækkefølge. (Dette er ikke en udtømmende liste og er heller ikke nødvendigvis opdateret):
 
 - GPT 5.2
 - GPT 5.1 Codex
@@ -49,16 +49,16 @@ Her er flere modeller, der fungerer godt med YONSOON (甬算), uden bestemt ræk
 ## Indstil en standard
 
 For at indstille en af ​​disse som standardmodellen kan du indstille `model`-nøglen i din
-YONSOON (甬算) konfig.
+RAILWISE (甬算) konfig.
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "model": "lmstudio/google/gemma-3n-e4b"
 }
 ```
 
-Her er det fulde ID `provider_id/model_id`. For eksempel, hvis du bruger [YONSOON (甬算) Zen](/docs/zen), vil du bruge `yonsoon/gpt-5.1-codex` til GPT 5.1 Codex.
+Her er det fulde ID `provider_id/model_id`. For eksempel, hvis du bruger [RAILWISE (甬算) Zen](/docs/zen), vil du bruge `railwise/gpt-5.1-codex` til GPT 5.1 Codex.
 
 Hvis du har konfigureret en [custom provider](/docs/providers#custom), er `provider_id` nøglen fra `provider` delen af ​​din konfiguration, og `model_id` er nøglen fra `provider.models`.
 
@@ -68,9 +68,9 @@ Hvis du har konfigureret en [custom provider](/docs/providers#custom), er `provi
 
 Du kan konfigurere en models muligheder globalt gennem konfigurationen.
 
-```jsonc title="yonsoon.jsonc" {7-12,19-24}
+```jsonc title="railwise.jsonc" {7-12,19-24}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -107,11 +107,11 @@ Du kan også konfigurere disse indstillinger for alle agenter, du bruger. Agentk
 
 Du kan også definere brugerdefinerede varianter, der udvider de indbyggede. Varianter giver dig mulighed for at konfigurere forskellige indstillinger for den samme model uden at oprette duplikerede poster:
 
-```jsonc title="yonsoon.jsonc" {6-21}
+```jsonc title="railwise.jsonc" {6-21}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
-    "yonsoon": {
+    "railwise": {
       "models": {
         "gpt-5": {
           "variants": {
@@ -137,11 +137,11 @@ Du kan også definere brugerdefinerede varianter, der udvider de indbyggede. Var
 
 ## Varianter
 
-Mange modeller understøtter flere varianter med forskellige konfigurationer. YONSOON (甬算) leveres med indbyggede standardvarianter til populære udbydere.
+Mange modeller understøtter flere varianter med forskellige konfigurationer. RAILWISE (甬算) leveres med indbyggede standardvarianter til populære udbydere.
 
 ### Indbyggede varianter
 
-YONSOON (甬算) leveres med standardvarianter for mange udbydere:
+RAILWISE (甬算) leveres med standardvarianter for mange udbydere:
 
 **Anthropic**:
 
@@ -172,9 +172,9 @@ Denne liste er ikke udtømmende. Mange andre udbydere har også indbyggede stand
 
 Du kan tilsidesætte eksisterende varianter eller tilføje dine egne:
 
-```jsonc title="yonsoon.jsonc" {7-18}
+```jsonc title="railwise.jsonc" {7-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -203,15 +203,15 @@ Brug tastebindingen `variant_cycle` til hurtigt at skifte mellem varianter. [Lea
 
 ## Indlæsning af modeller
 
-Når YONSOON (甬算) starter op, søger den efter modeller i følgende prioriterede rækkefølge:
+Når RAILWISE (甬算) starter op, søger den efter modeller i følgende prioriterede rækkefølge:
 
 1. Kommandolinjeflaget `--model` eller `-m`. Formatet er det samme som i konfigurationsfilen: `provider_id/model_id`.
 
-2. Modellisten i YONSOON (甬算)-konfigurationen.
+2. Modellisten i RAILWISE (甬算)-konfigurationen.
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "model": "anthropic/claude-sonnet-4-20250514"
    }
    ```

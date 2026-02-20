@@ -231,8 +231,8 @@ export function Code<T>(props: CodeProps<T>) {
   const clearHighlightFind = () => {
     const api = (globalThis as { CSS?: { highlights?: { delete: (name: string) => void } } }).CSS?.highlights
     if (!api) return
-    api.delete("yonsoon-find")
-    api.delete("yonsoon-find-current")
+    api.delete("railwise-find")
+    api.delete("railwise-find-current")
   }
 
   const clearOverlayScroll = () => {
@@ -413,14 +413,14 @@ export function Code<T>(props: CodeProps<T>) {
     const Highlight = (globalThis as unknown as { Highlight?: any }).Highlight
     if (!api || typeof Highlight !== "function") return false
 
-    api.delete("yonsoon-find")
-    api.delete("yonsoon-find-current")
+    api.delete("railwise-find")
+    api.delete("railwise-find-current")
 
     const active = ranges[index]
-    if (active) api.set("yonsoon-find-current", new Highlight(active))
+    if (active) api.set("railwise-find-current", new Highlight(active))
 
     const rest = ranges.filter((_, i) => i !== index)
-    if (rest.length > 0) api.set("yonsoon-find", new Highlight(...rest))
+    if (rest.length > 0) api.set("railwise-find", new Highlight(...rest))
     return true
   }
 

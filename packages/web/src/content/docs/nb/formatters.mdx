@@ -1,15 +1,15 @@
 ---
 title: Formattere
-description: YONSOON (甬算) bruker språkspesifikke formattere.
+description: RAILWISE (甬算) bruker språkspesifikke formattere.
 ---
 
-YONSOON (甬算) formaterer automatisk filer etter at de er skrevet eller redigert ved hjelp av språkspesifikke formattere. Dette sikrer at koden som genereres følger kodestilene til prosjektet ditt.
+RAILWISE (甬算) formaterer automatisk filer etter at de er skrevet eller redigert ved hjelp av språkspesifikke formattere. Dette sikrer at koden som genereres følger kodestilene til prosjektet ditt.
 
 ---
 
 ## Innebygde formattere
 
-YONSOON (甬算) kommer med flere innebygde formattere for populære språk og rammeverk. Nedenfor er en liste over formattere, støttede filendelser og kommandoer eller konfigurasjonsalternativer den krever.
+RAILWISE (甬算) kommer med flere innebygde formattere for populære språk og rammeverk. Nedenfor er en liste over formattere, støttede filendelser og kommandoer eller konfigurasjonsalternativer den krever.
 
 | Formatter              | Filendelser                                                                                             | Krav                                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -39,13 +39,13 @@ YONSOON (甬算) kommer med flere innebygde formattere for populære språk og r
 | oxfmt (Eksperimentell) | .js, .jsx, .ts, .tsx                                                                                    | `oxfmt` avhengighet i `package.json` og et [eksperimentelt env variabel flagg](/docs/cli/#experimental) |
 | ormolu                 | .hs                                                                                                     | `ormolu` kommando tilgjengelig                                                                          |
 
-Så hvis prosjektet ditt har `prettier` i `package.json`, vil YONSOON (甬算) automatisk bruke det.
+Så hvis prosjektet ditt har `prettier` i `package.json`, vil RAILWISE (甬算) automatisk bruke det.
 
 ---
 
 ## Slik fungerer det
 
-Når YONSOON (甬算) skriver eller redigerer en fil, gjør den:
+Når RAILWISE (甬算) skriver eller redigerer en fil, gjør den:
 
 1. Kontrollerer filtypen mot alle aktiverte formattere.
 2. Kjører riktig formateringskommando på filen.
@@ -57,11 +57,11 @@ Denne prosessen skjer i bakgrunnen, og sikrer at kodestilene dine opprettholdes 
 
 ## Konfigurasjon
 
-Du kan tilpasse formattere gjennom `formatter`-delen i YONSOON (甬算)-konfigurasjonen.
+Du kan tilpasse formattere gjennom `formatter`-delen i RAILWISE (甬算)-konfigurasjonen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {}
 }
 ```
@@ -83,18 +83,18 @@ La oss se på noen eksempler.
 
 For å deaktivere **alle** formattere globalt, sett `formatter` til `false`:
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": false
 }
 ```
 
 For å deaktivere en **spesifikk** formatter, sett `disabled` til `true`:
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -109,9 +109,9 @@ For å deaktivere en **spesifikk** formatter, sett `disabled` til `true`:
 
 Du kan overstyre de innebygde formatterne eller legge til nye ved å spesifisere kommandoen, miljøvariablene og filtypene:
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

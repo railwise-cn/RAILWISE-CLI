@@ -2,12 +2,12 @@ import { For, Show, onMount, Suspense, onCleanup, createMemo, createSignal, Susp
 import { DateTime } from "luxon"
 import { createStore, reconcile } from "solid-js/store"
 import { IconArrowDown } from "./icons"
-import { IconYonsoon } from "./icons/custom"
+import { IconRailwise } from "./icons/custom"
 import { ShareI18nProvider, formatCurrency, formatNumber, normalizeLocale } from "./share/common"
 import styles from "./share.module.css"
-import type { MessageV2 } from "yonsoon/session/message-v2"
-import type { Message } from "yonsoon/session/message"
-import type { Session } from "yonsoon/session/index"
+import type { MessageV2 } from "railwise/session/message-v2"
+import type { Message } from "railwise/session/message"
+import type { Session } from "railwise/session/index"
 import { Part, ProviderIcon } from "./share/part"
 
 type MessageWithParts = MessageV2.Info & { parts: MessageV2.Part[] }
@@ -303,9 +303,9 @@ export default function Share(props: {
             <h1 data-component="header-title">{store.info?.title}</h1>
             <div data-component="header-details">
               <ul data-component="header-stats">
-                <li title={props.messages.yonsoon_version} data-slot="item">
-                  <div data-slot="icon" title={props.messages.yonsoon_name}>
-                    <IconYonsoon width={16} height={16} />
+                <li title={props.messages.railwise_version} data-slot="item">
+                  <div data-slot="icon" title={props.messages.railwise_name}>
+                    <IconRailwise width={16} height={16} />
                   </div>
                   <Show when={store.info?.version} fallback="v0.0.1">
                     <span>v{store.info?.version}</span>

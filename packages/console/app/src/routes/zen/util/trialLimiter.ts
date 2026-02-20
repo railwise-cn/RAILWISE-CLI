@@ -1,7 +1,7 @@
-import { Database, eq, sql } from "@yonsoon/console-core/drizzle/index.js"
-import { IpTable } from "@yonsoon/console-core/schema/ip.sql.js"
+import { Database, eq, sql } from "@railwise/console-core/drizzle/index.js"
+import { IpTable } from "@railwise/console-core/schema/ip.sql.js"
 import { UsageInfo } from "./provider/provider"
-import { ZenData } from "@yonsoon/console-core/model.js"
+import { ZenData } from "@railwise/console-core/model.js"
 
 export function createTrialLimiter(trial: ZenData.Trial | undefined, ip: string, client: string) {
   if (!trial) return

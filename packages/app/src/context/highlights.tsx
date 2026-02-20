@@ -1,13 +1,13 @@
 import { createEffect, createSignal, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
-import { createSimpleContext } from "@yonsoon/ui/context"
-import { useDialog } from "@yonsoon/ui/context/dialog"
+import { createSimpleContext } from "@railwise/ui/context"
+import { useDialog } from "@railwise/ui/context/dialog"
 import { usePlatform } from "@/context/platform"
 import { useSettings } from "@/context/settings"
 import { persisted } from "@/utils/persist"
 import { DialogReleaseNotes, type Highlight } from "@/components/dialog-release-notes"
 
-const CHANGELOG_URL = "https://yonsoon.ai/changelog.json"
+const CHANGELOG_URL = "https://railwise.ai/changelog.json"
 
 type Store = {
   version?: string

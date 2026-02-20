@@ -1,18 +1,18 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": ["CI", "YONSOON_DISABLE_SHARE"],
-  "globalPassThroughEnv": ["CI", "YONSOON_DISABLE_SHARE"],
+  "globalEnv": ["CI", "RAILWISE_DISABLE_SHARE"],
+  "globalPassThroughEnv": ["CI", "RAILWISE_DISABLE_SHARE"],
   "tasks": {
     "typecheck": {},
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "yonsoon#test": {
+    "railwise#test": {
       "dependsOn": ["^build"],
       "outputs": []
     },
-    "@yonsoon/app#test": {
+    "@railwise/app#test": {
       "dependsOn": ["^build"],
       "outputs": []
     }

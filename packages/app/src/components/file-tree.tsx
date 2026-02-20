@@ -1,9 +1,9 @@
 import { useFile } from "@/context/file"
 import { encodeFilePath } from "@/context/file/path"
-import { Collapsible } from "@yonsoon/ui/collapsible"
-import { FileIcon } from "@yonsoon/ui/file-icon"
-import { Icon } from "@yonsoon/ui/icon"
-import { Tooltip } from "@yonsoon/ui/tooltip"
+import { Collapsible } from "@railwise/ui/collapsible"
+import { FileIcon } from "@railwise/ui/file-icon"
+import { Icon } from "@railwise/ui/icon"
+import { Tooltip } from "@railwise/ui/tooltip"
 import {
   createEffect,
   createMemo,
@@ -19,7 +19,7 @@ import {
   type ParentProps,
 } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import type { FileNode } from "@yonsoon/sdk/v2"
+import type { FileNode } from "@railwise/sdk/v2"
 
 const MAX_DEPTH = 128
 

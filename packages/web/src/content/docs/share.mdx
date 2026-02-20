@@ -1,9 +1,9 @@
 ---
 title: Share
-description: Share your YONSOON (甬算) conversations.
+description: Share your RAILWISE (甬算) conversations.
 ---
 
-YONSOON (甬算)'s share feature allows you to create public links to your YONSOON (甬算) conversations, so you can collaborate with teammates or get help from others.
+RAILWISE (甬算)'s share feature allows you to create public links to your RAILWISE (甬算) conversations, so you can collaborate with teammates or get help from others.
 
 :::note
 Shared conversations are publicly accessible to anyone with the link.
@@ -13,7 +13,7 @@ Shared conversations are publicly accessible to anyone with the link.
 
 ## How it works
 
-When you share a conversation, YONSOON (甬算):
+When you share a conversation, RAILWISE (甬算):
 
 1. Creates a unique public URL for your session
 2. Syncs your conversation history to our servers
@@ -23,13 +23,13 @@ When you share a conversation, YONSOON (甬算):
 
 ## Sharing
 
-YONSOON (甬算) supports three sharing modes that control how conversations are shared:
+RAILWISE (甬算) supports three sharing modes that control how conversations are shared:
 
 ---
 
 ### Manual (default)
 
-By default, YONSOON (甬算) uses manual sharing mode. Sessions are not shared automatically, but you can manually share them using the `/share` command:
+By default, RAILWISE (甬算) uses manual sharing mode. Sessions are not shared automatically, but you can manually share them using the `/share` command:
 
 ```
 /share
@@ -39,7 +39,7 @@ This will generate a unique URL that'll be copied to your clipboard.
 
 To explicitly set manual mode in your [config file](/docs/config):
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "$schema": "https://opncd.ai/config.json",
   "share": "manual"
@@ -52,7 +52,7 @@ To explicitly set manual mode in your [config file](/docs/config):
 
 You can enable automatic sharing for all new conversations by setting the `share` option to `"auto"` in your [config file](/docs/config):
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "$schema": "https://opncd.ai/config.json",
   "share": "auto"
@@ -67,14 +67,14 @@ With auto-share enabled, every new conversation will automatically be shared and
 
 You can disable sharing entirely by setting the `share` option to `"disabled"` in your [config file](/docs/config):
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "$schema": "https://opncd.ai/config.json",
   "share": "disabled"
 }
 ```
 
-To enforce this across your team for a given project, add it to the `yonsoon.json` in your project and check into Git.
+To enforce this across your team for a given project, add it to the `railwise.json` in your project and check into Git.
 
 ---
 
@@ -125,4 +125,4 @@ For enterprise deployments, the share feature can be:
 - **Restricted** to users authenticated through SSO only
 - **Self-hosted** on your own infrastructure
 
-[Learn more](/docs/enterprise) about using yonsoon in your organization.
+[Learn more](/docs/enterprise) about using railwise in your organization.

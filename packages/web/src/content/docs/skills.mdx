@@ -3,7 +3,7 @@ title: "Agent Skills"
 description: "Define reusable behavior via SKILL.md definitions"
 ---
 
-Agent skills let YONSOON (甬算) discover reusable instructions from your repo or home directory.
+Agent skills let RAILWISE (甬算) discover reusable instructions from your repo or home directory.
 Skills are loaded on-demand via the native `skill` tool—agents see available skills and can load the full content when needed.
 
 ---
@@ -11,10 +11,10 @@ Skills are loaded on-demand via the native `skill` tool—agents see available s
 ## Place files
 
 Create one folder per skill name and put a `SKILL.md` inside it.
-YONSOON (甬算) searches these locations:
+RAILWISE (甬算) searches these locations:
 
-- Project config: `.yonsoon/skills/<name>/SKILL.md`
-- Global config: `~/.config/yonsoon/skills/<name>/SKILL.md`
+- Project config: `.railwise/skills/<name>/SKILL.md`
+- Global config: `~/.config/railwise/skills/<name>/SKILL.md`
 - Project Claude-compatible: `.claude/skills/<name>/SKILL.md`
 - Global Claude-compatible: `~/.claude/skills/<name>/SKILL.md`
 - Project agent-compatible: `.agents/skills/<name>/SKILL.md`
@@ -24,10 +24,10 @@ YONSOON (甬算) searches these locations:
 
 ## Understand discovery
 
-For project-local paths, YONSOON (甬算) walks up from your current working directory until it reaches the git worktree.
-It loads any matching `skills/*/SKILL.md` in `.yonsoon/` and any matching `.claude/skills/*/SKILL.md` or `.agents/skills/*/SKILL.md` along the way.
+For project-local paths, RAILWISE (甬算) walks up from your current working directory until it reaches the git worktree.
+It loads any matching `skills/*/SKILL.md` in `.railwise/` and any matching `.claude/skills/*/SKILL.md` or `.agents/skills/*/SKILL.md` along the way.
 
-Global definitions are also loaded from `~/.config/yonsoon/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md`, and `~/.agents/skills/*/SKILL.md`.
+Global definitions are also loaded from `~/.config/railwise/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md`, and `~/.agents/skills/*/SKILL.md`.
 
 ---
 
@@ -73,14 +73,14 @@ Keep it specific enough for the agent to choose correctly.
 
 ## Use an example
 
-Create `.yonsoon/skills/git-release/SKILL.md` like this:
+Create `.railwise/skills/git-release/SKILL.md` like this:
 
 ```markdown
 ---
 name: git-release
 description: Create consistent releases and changelogs
 license: MIT
-compatibility: yonsoon
+compatibility: railwise
 metadata:
   audience: maintainers
   workflow: github
@@ -102,7 +102,7 @@ Ask clarifying questions if the target versioning scheme is unclear.
 
 ## Recognize tool description
 
-YONSOON (甬算) lists available skills in the `skill` tool description.
+RAILWISE (甬算) lists available skills in the `skill` tool description.
 Each entry includes the skill name and description:
 
 ```xml
@@ -124,7 +124,7 @@ skill({ name: "git-release" })
 
 ## Configure permissions
 
-Control which skills agents can access using pattern-based permissions in `yonsoon.json`:
+Control which skills agents can access using pattern-based permissions in `railwise.json`:
 
 ```json
 {
@@ -163,7 +163,7 @@ permission:
 ---
 ```
 
-**For built-in agents** (in `yonsoon.json`):
+**For built-in agents** (in `railwise.json`):
 
 ```json
 {

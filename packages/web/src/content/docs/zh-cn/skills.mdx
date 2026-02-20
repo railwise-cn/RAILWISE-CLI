@@ -13,7 +13,7 @@ description: "通过 SKILL.md 定义可复用的行为"
 为每个技能名称创建一个文件夹，并在其中放入 `SKILL.md`。
 OpenCode 会搜索以下位置：
 
-- 项目配置：`.yonsoon/skills/<name>/SKILL.md`
+- 项目配置：`.railwise/skills/<name>/SKILL.md`
 - 全局配置：`~/.config/opencode/skills/<name>/SKILL.md`
 - 项目 Claude 兼容：`.claude/skills/<name>/SKILL.md`
 - 全局 Claude 兼容：`~/.claude/skills/<name>/SKILL.md`
@@ -25,7 +25,7 @@ OpenCode 会搜索以下位置：
 ## 了解发现机制
 
 对于项目本地路径，OpenCode 会从当前工作目录向上遍历，直到到达 git 工作树根目录。
-在此过程中，它会加载 `.yonsoon/` 中所有匹配的 `skills/*/SKILL.md`，以及匹配的 `.claude/skills/*/SKILL.md` 或 `.agents/skills/*/SKILL.md`。
+在此过程中，它会加载 `.railwise/` 中所有匹配的 `skills/*/SKILL.md`，以及匹配的 `.claude/skills/*/SKILL.md` 或 `.agents/skills/*/SKILL.md`。
 
 全局定义也会从 `~/.config/opencode/skills/*/SKILL.md`、`~/.claude/skills/*/SKILL.md` 和 `~/.agents/skills/*/SKILL.md` 中加载。
 
@@ -73,7 +73,7 @@ OpenCode 会搜索以下位置：
 
 ## 使用示例
 
-创建 `.yonsoon/skills/git-release/SKILL.md`，内容如下：
+创建 `.railwise/skills/git-release/SKILL.md`，内容如下：
 
 ```markdown
 ---
@@ -124,7 +124,7 @@ skill({ name: "git-release" })
 
 ## 配置权限
 
-在 `yonsoon.json` 中使用基于模式的权限来控制代理可以访问哪些技能：
+在 `railwise.json` 中使用基于模式的权限来控制代理可以访问哪些技能：
 
 ```json
 {
@@ -163,7 +163,7 @@ permission:
 ---
 ```
 
-**内置代理**（在 `yonsoon.json` 中）：
+**内置代理**（在 `railwise.json` 中）：
 
 ```json
 {

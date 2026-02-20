@@ -49,7 +49,7 @@ OpenCode 内置了多种适用于主流语言的 LSP 服务器：
 当检测到上述文件扩展名且满足相应要求时，LSP 服务器会自动启用。
 
 :::note
-你可以将 `YONSOON_DISABLE_LSP_DOWNLOAD` 环境变量设置为 `true` 来禁用 LSP 服务器的自动下载。
+你可以将 `RAILWISE_DISABLE_LSP_DOWNLOAD` 环境变量设置为 `true` 来禁用 LSP 服务器的自动下载。
 :::
 
 ---
@@ -67,9 +67,9 @@ OpenCode 内置了多种适用于主流语言的 LSP 服务器：
 
 你可以通过 opencode 配置文件中的 `lsp` 部分来自定义 LSP 服务器。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {}
 }
 ```
@@ -92,9 +92,9 @@ OpenCode 内置了多种适用于主流语言的 LSP 服务器：
 
 使用 `env` 属性在启动 LSP 服务器时设置环境变量：
 
-```json title="yonsoon.json" {5-7}
+```json title="railwise.json" {5-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "rust": {
       "env": {
@@ -111,9 +111,9 @@ OpenCode 内置了多种适用于主流语言的 LSP 服务器：
 
 使用 `initialization` 属性向 LSP 服务器传递初始化选项。这些是在 LSP `initialize` 请求期间发送的服务器特定设置：
 
-```json title="yonsoon.json" {5-9}
+```json title="railwise.json" {5-9}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "typescript": {
       "initialization": {
@@ -136,18 +136,18 @@ OpenCode 内置了多种适用于主流语言的 LSP 服务器：
 
 要全局禁用**所有** LSP 服务器，将 `lsp` 设置为 `false`：
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": false
 }
 ```
 
 要禁用**特定的** LSP 服务器，将 `disabled` 设置为 `true`：
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "typescript": {
       "disabled": true
@@ -162,9 +162,9 @@ OpenCode 内置了多种适用于主流语言的 LSP 服务器：
 
 你可以通过指定命令和文件扩展名来添加自定义 LSP 服务器：
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "lsp": {
     "custom-lsp": {
       "command": ["custom-lsp-server", "--stdio"],

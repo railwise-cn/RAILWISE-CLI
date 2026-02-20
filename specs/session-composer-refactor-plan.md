@@ -41,7 +41,7 @@ Proposed implementation:
 - Add a guarded e2e route in backend (enabled only when a dedicated env flag is set by e2e-local runner).
   - New route file: `packages/opencode/src/server/routes/e2e.ts`
   - Mount from: `packages/opencode/src/server/server.ts`
-  - Gate behind env flag (for example `YONSOON_E2E=1`) so this route is never exposed in normal runs.
+  - Gate behind env flag (for example `RAILWISE_E2E=1`) so this route is never exposed in normal runs.
 - Add seed helpers in app e2e layer:
   - `packages/app/e2e/actions.ts` (or `fixtures.ts`) helpers to:
     - seed question request for a session

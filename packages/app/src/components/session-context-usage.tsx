@@ -1,7 +1,7 @@
 import { Match, Show, Switch, createMemo } from "solid-js"
-import { Tooltip, type TooltipProps } from "@yonsoon/ui/tooltip"
-import { ProgressCircle } from "@yonsoon/ui/progress-circle"
-import { Button } from "@yonsoon/ui/button"
+import { Tooltip, type TooltipProps } from "@railwise/ui/tooltip"
+import { ProgressCircle } from "@railwise/ui/progress-circle"
+import { Button } from "@railwise/ui/button"
 import { useParams } from "@solidjs/router"
 
 import { useLayout } from "@/context/layout"

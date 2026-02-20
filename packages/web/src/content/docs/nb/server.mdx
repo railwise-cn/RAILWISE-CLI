@@ -1,19 +1,19 @@
 ---
 title: Tjener
-description: Samhandle med YONSOON (甬算)-tjener over HTTP.
+description: Samhandle med RAILWISE (甬算)-tjener over HTTP.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-Kommandoen `yonsoon serve` kjører en hodeløs HTTP-server som eksponerer et OpenAPI-endepunkt som en YONSOON (甬算)-klient kan bruke.
+Kommandoen `railwise serve` kjører en hodeløs HTTP-server som eksponerer et OpenAPI-endepunkt som en RAILWISE (甬算)-klient kan bruke.
 
 ---
 
 ### Bruk
 
 ```bash
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
 ```
 
 #### Alternativer
@@ -23,41 +23,41 @@ yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
 | `--port`        | Port å lytte på                               | `4096`           |
 | `--hostname`    | Vertsnavn å lytte på                          | `127.0.0.1`      |
 | `--mdns`        | Aktiver mDNS-oppdagelse                       | `false`          |
-| `--mdns-domain` | Egendefinert domenenavn for mDNS-tjeneste     | `yonsoon.local` |
+| `--mdns-domain` | Egendefinert domenenavn for mDNS-tjeneste     | `railwise.local` |
 | `--cors`        | Ytterligere nettleseropprinnelse som tillates | `[]`             |
 
 `--cors` kan angis flere ganger:
 
 ```bash
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
 ```
 
 ---
 
 ### Autentisering
 
-Sett `YONSOON_SERVER_PASSWORD` for å beskytte serveren med HTTP grunnleggende autentisering. Brukernavnet er satt til `yonsoon` som standard, eller sett `YONSOON_SERVER_USERNAME` for å overstyre det. Dette gjelder både `yonsoon serve` og `yonsoon web`.
+Sett `RAILWISE_SERVER_PASSWORD` for å beskytte serveren med HTTP grunnleggende autentisering. Brukernavnet er satt til `railwise` som standard, eller sett `RAILWISE_SERVER_USERNAME` for å overstyre det. Dette gjelder både `railwise serve` og `railwise web`.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve
+RAILWISE_SERVER_PASSWORD=your-password railwise serve
 ```
 
 ---
 
 ### Slik fungerer det
 
-Når du kjører `yonsoon` starter den en TUI og en server. Der TUI er
+Når du kjører `railwise` starter den en TUI og en server. Der TUI er
 klient som snakker med serveren. Serveren viser en OpenAPI 3.1-spesifikasjon
 endepunkt. Dette endepunktet brukes også til å generere en [SDK](/docs/sdk).
 
 :::tip
-Bruk YONSOON (甬算)-serveren til å samhandle med YONSOON (甬算) programmatisk.
+Bruk RAILWISE (甬算)-serveren til å samhandle med RAILWISE (甬算) programmatisk.
 :::
 
-Denne arkitekturen lar YONSOON (甬算) støtte flere klienter og lar deg samhandle med YONSOON (甬算) programmatisk.
+Denne arkitekturen lar RAILWISE (甬算) støtte flere klienter og lar deg samhandle med RAILWISE (甬算) programmatisk.
 
-Du kan kjøre `yonsoon serve` for å starte en frittstående server. Hvis du har
-YONSOON (甬算) TUI kjører, vil `yonsoon serve` starte en ny server.
+Du kan kjøre `railwise serve` for å starte en frittstående server. Hvis du har
+RAILWISE (甬算) TUI kjører, vil `railwise serve` starte en ny server.
 
 ---
 
@@ -65,7 +65,7 @@ YONSOON (甬算) TUI kjører, vil `yonsoon serve` starte en ny server.
 
 Når du starter TUI, tildeler den tilfeldig en port og vertsnavn. Du kan i stedet sende inn `--hostname` og `--port` [flagg](/docs/cli). Bruk deretter denne til å koble til serveren.
 
-[`/tui`](#tui) endepunktet kan brukes til å kjøre TUI gjennom serveren. Du kan for eksempel forhåndsutfylle eller kjøre en forespørsel. Dette oppsettet brukes av YONSOON (甬算) [IDE](/docs/ide) plugins.
+[`/tui`](#tui) endepunktet kan brukes til å kjøre TUI gjennom serveren. Du kan for eksempel forhåndsutfylle eller kjøre en forespørsel. Dette oppsettet brukes av RAILWISE (甬算) [IDE](/docs/ide) plugins.
 
 ---
 
@@ -83,7 +83,7 @@ For eksempel `http://localhost:4096/doc`. Bruk spesifikasjonen til å generere k
 
 ## APIer
 
-yonsoon-serveren viser følgende APIer.
+railwise-serveren viser følgende APIer.
 
 ---
 

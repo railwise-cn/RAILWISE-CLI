@@ -9,7 +9,7 @@ on:
 
 jobs:
   sync-locales:
-    if: github.actor != 'yonsoon-agent[bot]'
+    if: github.actor != 'railwise-agent[bot]'
     runs-on: blacksmith-4vcpu-ubuntu-2404
     permissions:
       id-token: write
@@ -27,8 +27,8 @@ jobs:
         id: committer
         uses: ./.github/actions/setup-git-committer
         with:
-          yonsoon-app-id: ${{ vars.YONSOON_APP_ID }}
-          yonsoon-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
+          railwise-app-id: ${{ vars.RAILWISE_APP_ID }}
+          railwise-app-secret: ${{ secrets.RAILWISE_APP_SECRET }}
 
       - name: Compute changed English docs
         id: changes
@@ -46,13 +46,13 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Sync locale docs with YONSOON (甬算)
+      - name: Sync locale docs with RAILWISE (甬算)
         if: steps.changes.outputs.has_changes == 'true'
-        uses: sst/yonsoon/github@latest
+        uses: sst/railwise/github@latest
         env:
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
         with:
-          model: yonsoon/gpt-5.2
+          model: railwise/gpt-5.2
           agent: docs
           prompt: |
             Update localized docs to match the latest English docs changes.
@@ -64,7 +64,7 @@ jobs:
 
             Requirements:
             1. Update all relevant locale docs under packages/web/src/content/docs/<locale>/ so they reflect these English page changes.
-            2. You MUST use the Task tool for translation work and launch subagents with subagent_type `translator` (defined in .yonsoon/agent/translator.md).
+            2. You MUST use the Task tool for translation work and launch subagents with subagent_type `translator` (defined in .railwise/agent/translator.md).
             3. Do not translate directly in the primary agent. Use translator subagent output as the source for locale text updates.
             4. Run translator subagent Task calls in parallel whenever file/locale translation work is independent.
             5. Preserve frontmatter keys, internal links, code blocks, and existing locale-specific metadata unless the English change requires an update.

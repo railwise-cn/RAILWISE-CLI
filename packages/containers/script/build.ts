@@ -22,11 +22,11 @@ const images = ["base", "bun-node", "rust", "tauri-linux", "publish"]
 const setup = async () => {
   if (!push) return
   const list = await $`docker buildx ls`.text()
-  if (list.includes("yonsoon")) {
-    await $`docker buildx use yonsoon`
+  if (list.includes("railwise")) {
+    await $`docker buildx use railwise`
     return
   }
-  await $`docker buildx create --name yonsoon --use`
+  await $`docker buildx create --name railwise --use`
 }
 
 await setup()

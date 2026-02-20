@@ -39,10 +39,10 @@ export type ChangelogData = {
 }
 
 export async function loadChangelog(): Promise<ChangelogData> {
-  const response = await fetch("https://api.github.com/repos/anomalyco/yonsoon/releases?per_page=20", {
+  const response = await fetch("https://api.github.com/repos/anomalyco/railwise/releases?per_page=20", {
     headers: {
       Accept: "application/vnd.github.v3+json",
-      "User-Agent": "YONSOON (甬算)-Console",
+      "User-Agent": "RAILWISE (甬算)-Console",
     },
     cf: {
       // best-effort edge caching (ignored outside Cloudflare)

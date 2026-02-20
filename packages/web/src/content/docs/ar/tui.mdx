@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: استخدام واجهة المستخدم TUI في YONSOON (甬算).
+description: استخدام واجهة المستخدم TUI في RAILWISE (甬算).
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-يوفّر YONSOON (甬算) واجهة terminal تفاعلية (TUI) للعمل على مشاريعك باستخدام LLM.
+يوفّر RAILWISE (甬算) واجهة terminal تفاعلية (TUI) للعمل على مشاريعك باستخدام LLM.
 
-يؤدي تشغيل YONSOON (甬算) إلى بدء واجهة TUI للدليل الحالي.
+يؤدي تشغيل RAILWISE (甬算) إلى بدء واجهة TUI للدليل الحالي.
 
 ```bash
-yonsoon
+railwise
 ```
 
 أو يمكنك تشغيلها لدليل عمل محدد.
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 بعد الدخول إلى واجهة TUI، يمكنك إرسال رسالة كطلب.
@@ -57,7 +57,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## الأوامر
 
-عند استخدام واجهة YONSOON (甬算) في terminal، يمكنك كتابة `/` متبوعة باسم أمر لتنفيذ الإجراءات بسرعة. مثلا:
+عند استخدام واجهة RAILWISE (甬算) في terminal، يمكنك كتابة `/` متبوعة باسم أمر لتنفيذ الإجراءات بسرعة. مثلا:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### connect
 
-أضف موفّرا إلى YONSOON (甬算). يتيح لك اختيار أحد الموفّرين المتاحين وإضافة مفاتيح API الخاصة بهم.
+أضف موفّرا إلى RAILWISE (甬算). يتيح لك اختيار أحد الموفّرين المتاحين وإضافة مفاتيح API الخاصة بهم.
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### exit
 
-اخرج من YONSOON (甬算). _الأسماء المستعارة_: `/quit`, `/q`
+اخرج من RAILWISE (甬算). _الأسماء المستعارة_: `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -352,11 +352,11 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## الإعداد
 
-يمكنك تخصيص سلوك واجهة TUI عبر ملف إعدادات YONSOON (甬算).
+يمكنك تخصيص سلوك واجهة TUI عبر ملف إعدادات RAILWISE (甬算).
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

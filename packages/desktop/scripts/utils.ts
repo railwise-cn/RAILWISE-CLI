@@ -3,27 +3,27 @@ import { $ } from "bun"
 export const SIDECAR_BINARIES: Array<{ rustTarget: string; ocBinary: string; assetExt: string }> = [
   {
     rustTarget: "aarch64-apple-darwin",
-    ocBinary: "yonsoon-darwin-arm64",
+    ocBinary: "railwise-darwin-arm64",
     assetExt: "zip",
   },
   {
     rustTarget: "x86_64-apple-darwin",
-    ocBinary: "yonsoon-darwin-x64-baseline",
+    ocBinary: "railwise-darwin-x64-baseline",
     assetExt: "zip",
   },
   {
     rustTarget: "x86_64-pc-windows-msvc",
-    ocBinary: "yonsoon-windows-x64-baseline",
+    ocBinary: "railwise-windows-x64-baseline",
     assetExt: "zip",
   },
   {
     rustTarget: "x86_64-unknown-linux-gnu",
-    ocBinary: "yonsoon-linux-x64-baseline",
+    ocBinary: "railwise-linux-x64-baseline",
     assetExt: "tar.gz",
   },
   {
     rustTarget: "aarch64-unknown-linux-gnu",
-    ocBinary: "yonsoon-linux-arm64",
+    ocBinary: "railwise-linux-arm64",
     assetExt: "tar.gz",
   },
 ]
@@ -41,7 +41,7 @@ export function getCurrentSidecar(target = RUST_TARGET) {
 
 export async function copyBinaryToSidecarFolder(source: string, target = RUST_TARGET) {
   await $`mkdir -p src-tauri/sidecars`
-  const dest = windowsify(`src-tauri/sidecars/yonsoon-cli-${target}`)
+  const dest = windowsify(`src-tauri/sidecars/railwise-cli-${target}`)
   await $`cp ${source} ${dest}`
 
   console.log(`Copied ${source} to ${dest}`)

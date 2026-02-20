@@ -1,19 +1,19 @@
 ---
 title: Serveur
-description: Interagissez avec le serveur yonsoon via HTTP.
+description: Interagissez avec le serveur railwise via HTTP.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-La commande `yonsoon serve` exécute un serveur HTTP sans tête qui expose un point de terminaison OpenAPI qu'un client yonsoon peut utiliser.
+La commande `railwise serve` exécute un serveur HTTP sans tête qui expose un point de terminaison OpenAPI qu'un client railwise peut utiliser.
 
 ---
 
 ### Usage
 
 ```bash
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
 ```
 
 #### Options
@@ -23,41 +23,41 @@ yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
 | `--port`        | Port à écouter sur                                 | `4096`           |
 | `--hostname`    | Nom d'hôte sur lequel écouter                      | `127.0.0.1`      |
 | `--mdns`        | Activer la découverte mDNS                         | `false`          |
-| `--mdns-domain` | Nom de domaine personnalisé pour le service mDNS   | `yonsoon.local` |
+| `--mdns-domain` | Nom de domaine personnalisé pour le service mDNS   | `railwise.local` |
 | `--cors`        | Origines de navigateur supplémentaires à autoriser | `[]`             |
 
 `--cors` peut être transmis plusieurs fois :
 
 ```bash
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
 ```
 
 ---
 
 ### Authentification
 
-Définissez `YONSOON_SERVER_PASSWORD` pour protéger le serveur avec l'authentification de base HTTP. Le nom d'utilisateur est par défaut `yonsoon`, ou définissez `YONSOON_SERVER_USERNAME` pour le remplacer. Cela s’applique à la fois à `yonsoon serve` et à `yonsoon web`.
+Définissez `RAILWISE_SERVER_PASSWORD` pour protéger le serveur avec l'authentification de base HTTP. Le nom d'utilisateur est par défaut `railwise`, ou définissez `RAILWISE_SERVER_USERNAME` pour le remplacer. Cela s’applique à la fois à `railwise serve` et à `railwise web`.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve
+RAILWISE_SERVER_PASSWORD=your-password railwise serve
 ```
 
 ---
 
 ### Comment ça marche
 
-Lorsque vous exécutez `yonsoon`, il démarre un TUI et un serveur. Où le TUI est le
+Lorsque vous exécutez `railwise`, il démarre un TUI et un serveur. Où le TUI est le
 client qui parle au serveur. Le serveur expose une spécification OpenAPI 3.1
 point final. Ce point de terminaison est également utilisé pour générer un [SDK](/docs/sdk).
 
 :::tip
-Utilisez le serveur yonsoon pour interagir avec yonsoon par programmation.
+Utilisez le serveur railwise pour interagir avec railwise par programmation.
 :::
 
-Cette architecture permet à yonsoon de prendre en charge plusieurs clients et vous permet d'interagir avec yonsoon par programme.
+Cette architecture permet à railwise de prendre en charge plusieurs clients et vous permet d'interagir avec railwise par programme.
 
-Vous pouvez exécuter `yonsoon serve` pour démarrer un serveur autonome. Si vous avez le
-yonsoon TUI en cours d'exécution, `yonsoon serve` démarrera un nouveau serveur.
+Vous pouvez exécuter `railwise serve` pour démarrer un serveur autonome. Si vous avez le
+railwise TUI en cours d'exécution, `railwise serve` démarrera un nouveau serveur.
 
 ---
 
@@ -65,7 +65,7 @@ yonsoon TUI en cours d'exécution, `yonsoon serve` démarrera un nouveau serveur
 
 Lorsque vous démarrez le TUI, il attribue de manière aléatoire un port et un nom d'hôte. Vous pouvez à la place transmettre les `--hostname` et `--port` [flags](/docs/cli). Utilisez-le ensuite pour vous connecter à son serveur.
 
-Le point de terminaison [`/tui`](#tui) peut être utilisé pour piloter le TUI via le serveur. Par exemple, vous pouvez pré-remplir ou exécuter une invite. Cette configuration est utilisée par les plugins YONSOON (甬算) [IDE](/docs/ide).
+Le point de terminaison [`/tui`](#tui) peut être utilisé pour piloter le TUI via le serveur. Par exemple, vous pouvez pré-remplir ou exécuter une invite. Cette configuration est utilisée par les plugins RAILWISE (甬算) [IDE](/docs/ide).
 
 ---
 
@@ -83,7 +83,7 @@ Par exemple, `http://localhost:4096/doc`. Utilisez la spécification pour géné
 
 ## APIs
 
-Le serveur yonsoon expose les API suivantes.
+Le serveur railwise expose les API suivantes.
 
 ---
 

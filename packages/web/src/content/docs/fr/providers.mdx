@@ -1,30 +1,30 @@
 ---
 title: Fournisseurs
-description: Utiliser n’importe quel fournisseur LLM en YONSOON (甬算).
+description: Utiliser n’importe quel fournisseur LLM en RAILWISE (甬算).
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 
-YONSOON (甬算) utilise [AI SDK](https://ai-sdk.dev/) et [Models.dev](https://models.dev) pour prendre en charge **75+ fournisseurs LLM** et prend en charge l'exécution de modèles locaux.
+RAILWISE (甬算) utilise [AI SDK](https://ai-sdk.dev/) et [Models.dev](https://models.dev) pour prendre en charge **75+ fournisseurs LLM** et prend en charge l'exécution de modèles locaux.
 
 Pour ajouter un fournisseur, vous devez :
 
 1. Ajoutez les clés API pour le fournisseur à l'aide de la commande `/connect`.
-2. Configurez le fournisseur dans votre configuration YONSOON (甬算).
+2. Configurez le fournisseur dans votre configuration RAILWISE (甬算).
 
 ---
 
 ### Informations d'identification
 
 Lorsque vous ajoutez les clés API d'un fournisseur avec la commande `/connect`, elles sont stockées
-en `~/.local/share/yonsoon/auth.json`.
+en `~/.local/share/railwise/auth.json`.
 
 ---
 
 ### Configuration
 
-Vous pouvez personnaliser les fournisseurs via la section `provider` de votre YONSOON (甬算)
+Vous pouvez personnaliser les fournisseurs via la section `provider` de votre RAILWISE (甬算)
 configuration.
 
 ---
@@ -33,9 +33,9 @@ configuration.
 
 Vous pouvez personnaliser la base URL pour n'importe quel fournisseur en définissant l'option `baseURL`. Ceci est utile lors de l'utilisation de services proxy ou de points de terminaison personnalisés.
 
-```json title="yonsoon.json" {6}
+```json title="railwise.json" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -48,16 +48,16 @@ Vous pouvez personnaliser la base URL pour n'importe quel fournisseur en défini
 
 ---
 
-## YONSOON (甬算) Zen
+## RAILWISE (甬算) Zen
 
-YONSOON (甬算) Zen est une liste de modèles fournis par l'équipe YONSOON (甬算) qui ont été
-testé et vérifié pour fonctionner correctement avec YONSOON (甬算). [En savoir plus](/docs/zen).
+RAILWISE (甬算) Zen est une liste de modèles fournis par l'équipe RAILWISE (甬算) qui ont été
+testé et vérifié pour fonctionner correctement avec RAILWISE (甬算). [En savoir plus](/docs/zen).
 
 :::tip
-Si vous êtes nouveau, nous vous recommandons de commencer par YONSOON (甬算) Zen.
+Si vous êtes nouveau, nous vous recommandons de commencer par RAILWISE (甬算) Zen.
 :::
 
-1. Exécutez la commande `/connect` dans le TUI, sélectionnez yonsoon et dirigez-vous vers [yonsoon.ai/auth](https://yonsoon.ai/auth).
+1. Exécutez la commande `/connect` dans le TUI, sélectionnez railwise et dirigez-vous vers [railwise.ai/auth](https://railwise.ai/auth).
 
    ```txt
    /connect
@@ -80,7 +80,7 @@ Si vous êtes nouveau, nous vous recommandons de commencer par YONSOON (甬算) 
    /models
    ```
 
-Il fonctionne comme n’importe quel autre fournisseur dans YONSOON (甬算) et son utilisation est totalement facultative.
+Il fonctionne comme n’importe quel autre fournisseur dans RAILWISE (甬算) et son utilisation est totalement facultative.
 
 ---
 
@@ -124,7 +124,7 @@ Vous ne voyez pas de fournisseur ici ? Soumettez un PR.
 
 ### Amazon Bedrock
 
-Pour utiliser Amazon Bedrock avec YONSOON (甬算) :
+Pour utiliser Amazon Bedrock avec RAILWISE (甬算) :
 
 1. Rendez-vous sur le **Catalogue de modèles** dans la console Amazon Bedrock et demandez
    accédez aux modèles que vous souhaitez.
@@ -137,17 +137,17 @@ Pour utiliser Amazon Bedrock avec YONSOON (甬算) :
 
    #### Variables d'environnement (démarrage rapide)
 
-Définissez l'une de ces variables d'environnement lors de l'exécution de yonsoon :
+Définissez l'une de ces variables d'environnement lors de l'exécution de railwise :
 
 ```bash
    # Option 1: Using AWS access keys
-   AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=YYY yonsoon
+   AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=YYY railwise
 
    # Option 2: Using named AWS profile
-   AWS_PROFILE=my-profile yonsoon
+   AWS_PROFILE=my-profile railwise
 
    # Option 3: Using Bedrock bearer token
-   AWS_BEARER_TOKEN_BEDROCK=XXX yonsoon
+   AWS_BEARER_TOKEN_BEDROCK=XXX railwise
 ```
 
 Ou ajoutez-les à votre profil bash :
@@ -159,11 +159,11 @@ Ou ajoutez-les à votre profil bash :
 
 #### Fichier de configuration (recommandé)
 
-Pour une configuration spécifique au projet ou persistante, utilisez `yonsoon.json` :
+Pour une configuration spécifique au projet ou persistante, utilisez `railwise.json` :
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -189,9 +189,9 @@ Les options du fichier de configuration sont prioritaires sur les variables d'en
 
 Si vous utilisez des points de terminaison d'un VPC pour Bedrock :
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -235,9 +235,9 @@ Lorsqu'un jeton de porteur est défini (via `/connect` ou `AWS_BEARER_TOKEN_BEDR
 :::note
 Pour les profils d'inférence personnalisés, utilisez le nom du modèle et du fournisseur dans la clé et définissez la propriété `id` sur l'arn. Cela garantit une mise en cache correcte :
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       // ...
@@ -282,7 +282,7 @@ Pour les profils d'inférence personnalisés, utilisez le nom du modèle et du f
    ```
 
 :::info
-L'utilisation de votre abonnement Claude Pro/Max dans YONSOON (甬算) n'est pas officiellement prise en charge par [Anthropic](https://anthropic.com).
+L'utilisation de votre abonnement Claude Pro/Max dans RAILWISE (甬算) n'est pas officiellement prise en charge par [Anthropic](https://anthropic.com).
 :::
 
 ##### Utilisation des clés API
@@ -306,7 +306,7 @@ Si vous rencontrez des erreurs « Je suis désolé, mais je ne peux pas vous aid
 2. Accédez à [Azure AI Foundry](https://ai.azure.com/) et déployez un modèle.
 
    :::note
-   Le nom du déploiement doit correspondre au nom du modèle pour que yonsoon fonctionne correctement.
+   Le nom du déploiement doit correspondre au nom du modèle pour que railwise fonctionne correctement.
    :::
 
 3. Exécutez la commande `/connect` et recherchez **Azure**.
@@ -327,7 +327,7 @@ Si vous rencontrez des erreurs « Je suis désolé, mais je ne peux pas vous aid
 5. Définissez le nom de votre ressource comme variable d'environnement :
 
    ```bash
-   AZURE_RESOURCE_NAME=XXX yonsoon
+   AZURE_RESOURCE_NAME=XXX railwise
    ```
 
 Ou ajoutez-le à votre profil bash :
@@ -353,7 +353,7 @@ Ou ajoutez-le à votre profil bash :
 2. Accédez à [Azure AI Foundry](https://ai.azure.com/) et déployez un modèle.
 
    :::note
-   Le nom du déploiement doit correspondre au nom du modèle pour que yonsoon fonctionne correctement.
+   Le nom du déploiement doit correspondre au nom du modèle pour que railwise fonctionne correctement.
    :::
 
 3. Exécutez la commande `/connect` et recherchez **Azure Cognitive Services**.
@@ -374,7 +374,7 @@ Ou ajoutez-le à votre profil bash :
 5. Définissez le nom de votre ressource comme variable d'environnement :
 
    ```bash
-   AZURE_COGNITIVE_SERVICES_RESOURCE_NAME=XXX yonsoon
+   AZURE_COGNITIVE_SERVICES_RESOURCE_NAME=XXX railwise
    ```
 
 Ou ajoutez-le à votre profil bash :
@@ -485,11 +485,11 @@ Ou définissez-le comme variable d'environnement.
    /models
    ```
 
-Vous pouvez également ajouter des modèles via votre configuration yonsoon.
+Vous pouvez également ajouter des modèles via votre configuration railwise.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "cloudflare-ai-gateway": {
       "models": {
@@ -666,7 +666,7 @@ Sélectionnez **OAuth** et votre navigateur s'ouvrira pour autorisation.
 
 1.  Accédez à [GitLab Paramètres utilisateur > Jetons d'accès](https://gitlab.com/-/user_settings/personal_access_tokens)
 2.  Cliquez sur **Ajouter un nouveau jeton**
-3.  Nom : `YONSOON (甬算)`, Portées : `api`
+3.  Nom : `RAILWISE (甬算)`, Portées : `api`
 4.  Copiez le jeton (commence par `glpat-`)
 5.  Entrez-le dans le terminal
 
@@ -686,20 +686,20 @@ Trois modèles basés sur Claude sont disponibles :
 
 :::note
 Vous pouvez également spécifier la variable d'environnement 'GITLAB_TOKEN' si vous ne souhaitez pas
-pour stocker le jeton dans le stockage d'authentification yonsoon.
+pour stocker le jeton dans le stockage d'authentification railwise.
 :::
 
 ##### GitLab auto-hébergé
 
 :::note[note de conformité]
-YONSOON (甬算) utilise un petit modèle pour certaines tâches d'IA telles que la génération du titre de la session.
-Il est configuré pour utiliser gpt-5-nano par défaut, hébergé par Zen. Pour verrouiller YONSOON (甬算)
+RAILWISE (甬算) utilise un petit modèle pour certaines tâches d'IA telles que la génération du titre de la session.
+Il est configuré pour utiliser gpt-5-nano par défaut, hébergé par Zen. Pour verrouiller RAILWISE (甬算)
 pour utiliser uniquement votre propre instance hébergée par GitLab, ajoutez ce qui suit à votre
-Fichier `yonsoon.json`. Il est également recommandé de désactiver le partage de session.
+Fichier `railwise.json`. Il est également recommandé de désactiver le partage de session.
 
 ```json
 {
-"$schema": "https://yonsoon.ai/config.json",
+"$schema": "https://railwise.ai/config.json",
 "small_model": "gitlab/duo-chat-haiku-4-5",
 "share": "disabled"
 }
@@ -757,11 +757,11 @@ Plus de documentation sur la page d'accueil [opencode-gitlab-auth](https://www.n
 
 ##### Configuration
 
-Personnalisez via `yonsoon.json` :
+Personnalisez via `railwise.json` :
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "gitlab": {
       "options": {
@@ -780,10 +780,10 @@ Personnalisez via `yonsoon.json` :
 
 Pour accéder aux outils GitLab (demandes de fusion, tickets, pipelines, CI/CD, etc.) :
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
-  "plugin": ["@gitlab/yonsoon-gitlab-plugin"]
+  "$schema": "https://railwise.ai/config.json",
+  "plugin": ["@gitlab/railwise-gitlab-plugin"]
 }
 ```
 
@@ -793,7 +793,7 @@ Ce plugin fournit des fonctionnalités complètes de gestion du référentiel Gi
 
 ### GitHub Copilot
 
-Pour utiliser votre abonnement GitHub Copilot avec yonsoon :
+Pour utiliser votre abonnement GitHub Copilot avec railwise :
 
 :::note
 Certains modèles peuvent avoir besoin d'un [Pro+
@@ -830,7 +830,7 @@ Certains modèles doivent être activés manuellement dans vos [GitHub Copilot p
 
 ### Google Vertex AI
 
-Pour utiliser Google Vertex AI avec YONSOON (甬算) :
+Pour utiliser Google Vertex AI avec RAILWISE (甬算) :
 
 1. Rendez-vous sur **Model Garden** dans Google Cloud Console et vérifiez les
    modèles disponibles dans votre région.
@@ -846,10 +846,10 @@ Pour utiliser Google Vertex AI avec YONSOON (甬算) :
      - `GOOGLE_APPLICATION_CREDENTIALS` : chemin d'accès au fichier de clé JSON de votre compte de service
      - Authentifiez-vous à l'aide de gcloud CLI : `gcloud auth application-default login`
 
-Définissez-les lors de l'exécution de yonsoon.
+Définissez-les lors de l'exécution de railwise.
 
 ```bash
-   GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json GOOGLE_CLOUD_PROJECT=your-project-id yonsoon
+   GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json GOOGLE_CLOUD_PROJECT=your-project-id railwise
 ```
 
 Ou ajoutez-les à votre profil bash.
@@ -959,13 +959,13 @@ Pour plus de fournisseurs et de fonctionnalités avancées telles que la mise en
 
 #### Configurations facultatives
 
-Si vous voyez une fonctionnalité ou un modèle d'Helicone qui n'est pas configuré automatiquement via yonsoon, vous pouvez toujours le configurer vous-même.
+Si vous voyez une fonctionnalité ou un modèle d'Helicone qui n'est pas configuré automatiquement via railwise, vous pouvez toujours le configurer vous-même.
 
 Voici le [Répertoire des modèles d'Helicone](https://helicone.ai/models), vous en aurez besoin pour récupérer les identifiants des modèles que vous souhaitez ajouter.
 
-```jsonc title="~/.config/yonsoon/yonsoon.jsonc"
+```jsonc title="~/.config/railwise/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -991,9 +991,9 @@ Voici le [Répertoire des modèles d'Helicone](https://helicone.ai/models), vous
 
 Helicone prend en charge les en-têtes personnalisés pour des fonctionnalités telles que la mise en cache, le suivi des utilisateurs et la gestion des sessions. Ajoutez-les à la configuration de votre fournisseur en utilisant `options.headers` :
 
-```jsonc title="~/.config/yonsoon/yonsoon.jsonc"
+```jsonc title="~/.config/railwise/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1002,7 +1002,7 @@ Helicone prend en charge les en-têtes personnalisés pour des fonctionnalités 
         "baseURL": "https://ai-gateway.helicone.ai",
         "headers": {
           "Helicone-Cache-Enabled": "true",
-          "Helicone-User-Id": "yonsoon",
+          "Helicone-User-Id": "railwise",
         },
       },
     },
@@ -1012,21 +1012,21 @@ Helicone prend en charge les en-têtes personnalisés pour des fonctionnalités 
 
 ##### Suivi des sessions
 
-La fonctionnalité [Sessions](https://docs.helicone.ai/features/sessions) d'Helicone vous permet de regrouper les requêtes LLM associées. Utilisez le plugin [yonsoon-helicone-session](https://github.com/H2Shami/yonsoon-helicone-session) pour enregistrer automatiquement chaque conversation YONSOON (甬算) en tant que session dans Helicone.
+La fonctionnalité [Sessions](https://docs.helicone.ai/features/sessions) d'Helicone vous permet de regrouper les requêtes LLM associées. Utilisez le plugin [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) pour enregistrer automatiquement chaque conversation RAILWISE (甬算) en tant que session dans Helicone.
 
 ```bash
-npm install -g yonsoon-helicone-session
+npm install -g railwise-helicone-session
 ```
 
 Ajoutez-le à votre configuration.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "plugin": ["yonsoon-helicone-session"]
+  "plugin": ["railwise-helicone-session"]
 }
 ```
 
-Le plugin injecte les en-têtes `Helicone-Session-Id` et `Helicone-Session-Name` dans vos requêtes. Sur la page Sessions d'Helicone, vous verrez chaque conversation YONSOON (甬算) répertoriée comme une session distincte.
+Le plugin injecte les en-têtes `Helicone-Session-Id` et `Helicone-Session-Name` dans vos requêtes. Sur la page Sessions d'Helicone, vous verrez chaque conversation RAILWISE (甬算) répertoriée comme une session distincte.
 
 ##### En-têtes Helicone communs
 
@@ -1043,11 +1043,11 @@ Consultez le [Helicone Header Directory](https://docs.helicone.ai/helicone-heade
 
 ### llama.cpp
 
-Vous pouvez configurer yonsoon pour utiliser des modèles locaux via l'utilitaire llama-server de [llama.cpp's](https://github.com/ggml-org/llama.cpp)
+Vous pouvez configurer railwise pour utiliser des modèles locaux via l'utilitaire llama-server de [llama.cpp's](https://github.com/ggml-org/llama.cpp)
 
-```json title="yonsoon.json" "llama.cpp" {5, 6, 8, 10-15}
+```json title="railwise.json" "llama.cpp" {5, 6, 8, 10-15}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1110,11 +1110,11 @@ IO.NET propose 17 modèles optimisés pour différents cas d'utilisation :
 
 ### LM Studio
 
-Vous pouvez configurer yonsoon pour utiliser des modèles locaux via LM Studio.
+Vous pouvez configurer railwise pour utiliser des modèles locaux via LM Studio.
 
-```json title="yonsoon.json" "lmstudio" {5, 6, 8, 10-14}
+```json title="railwise.json" "lmstudio" {5, 6, 8, 10-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1227,15 +1227,15 @@ Pour utiliser Kimi K2 de Moonshot AI :
 
 ### Ollama
 
-Vous pouvez configurer yonsoon pour utiliser des modèles locaux via Ollama.
+Vous pouvez configurer railwise pour utiliser des modèles locaux via Ollama.
 
 :::tip
-Ollama peut se configurer automatiquement pour YONSOON (甬算). Voir les [documents d'intégration Ollama](https://docs.ollama.com/integrations/yonsoon) pour plus de détails.
+Ollama peut se configurer automatiquement pour RAILWISE (甬算). Voir les [documents d'intégration Ollama](https://docs.ollama.com/integrations/railwise) pour plus de détails.
 :::
 
-```json title="yonsoon.json" "ollama" {5, 6, 8, 10-14}
+```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1269,13 +1269,13 @@ Si les appels d'outils ne fonctionnent pas, essayez d'augmenter `num_ctx` dans O
 
 ### Ollama Cloud
 
-Pour utiliser Ollama Cloud avec YONSOON (甬算) :
+Pour utiliser Ollama Cloud avec RAILWISE (甬算) :
 
 1. Rendez-vous sur [https://ollama.com/](https://ollama.com/) et connectez-vous ou créez un compte.
 
 2. Accédez à **Paramètres** > **Clés** et cliquez sur **Ajouter une clé API** pour générer une nouvelle clé API.
 
-3. Copiez la clé API à utiliser dans YONSOON (甬算).
+3. Copiez la clé API à utiliser dans RAILWISE (甬算).
 
 4. Exécutez la commande `/connect` et recherchez **Ollama Cloud**.
 
@@ -1292,7 +1292,7 @@ Pour utiliser Ollama Cloud avec YONSOON (甬算) :
    └ enter
    ```
 
-6. **Important** : Avant d'utiliser des modèles cloud dans YONSOON (甬算), vous devez extraire les informations du modèle localement :
+6. **Important** : Avant d'utiliser des modèles cloud dans RAILWISE (甬算), vous devez extraire les informations du modèle localement :
 
    ```bash
    ollama pull gpt-oss:20b-cloud
@@ -1339,19 +1339,19 @@ Si vous disposez déjà d'une clé API, vous pouvez sélectionner **Entrer manue
 
 ---
 
-### YONSOON (甬算) Zen
+### RAILWISE (甬算) Zen
 
-YONSOON (甬算) Zen est une liste de modèles testés et vérifiés fournie par l'équipe YONSOON (甬算). [En savoir plus](/docs/zen).
+RAILWISE (甬算) Zen est une liste de modèles testés et vérifiés fournie par l'équipe RAILWISE (甬算). [En savoir plus](/docs/zen).
 
-1. Connectez-vous à **<a href={console}>YONSOON (甬算) Zen</a>** et cliquez sur **Créer une clé API**.
+1. Connectez-vous à **<a href={console}>RAILWISE (甬算) Zen</a>** et cliquez sur **Créer une clé API**.
 
-2. Exécutez la commande `/connect` et recherchez **YONSOON (甬算) Zen**.
+2. Exécutez la commande `/connect` et recherchez **RAILWISE (甬算) Zen**.
 
    ```txt
    /connect
    ```
 
-3. Entrez votre clé YONSOON (甬算) API.
+3. Entrez votre clé RAILWISE (甬算) API.
 
    ```txt
    ┌ API key
@@ -1393,11 +1393,11 @@ YONSOON (甬算) Zen est une liste de modèles testés et vérifiés fournie par
    /models
    ```
 
-Vous pouvez également ajouter des modèles supplémentaires via votre configuration yonsoon.
+Vous pouvez également ajouter des modèles supplémentaires via votre configuration railwise.
 
-```json title="yonsoon.json" {6}
+```json title="railwise.json" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openrouter": {
       "models": {
@@ -1408,11 +1408,11 @@ Vous pouvez également ajouter des modèles supplémentaires via votre configura
 }
 ```
 
-5. Vous pouvez également les personnaliser via votre configuration yonsoon. Voici un exemple de spécification d'un fournisseur
+5. Vous pouvez également les personnaliser via votre configuration railwise. Voici un exemple de spécification d'un fournisseur
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "openrouter": {
          "models": {
@@ -1460,7 +1460,7 @@ SAP AI Core donne accès à plus de 40 modèles de OpenAI, Anthropic, Google, Am
 Ou définissez la variable d'environnement `AICORE_SERVICE_KEY` :
 
 ```bash
-   AICORE_SERVICE_KEY='{"clientid":"...","clientsecret":"...","url":"...","serviceurls":{"AI_API_URL":"..."}}' yonsoon
+   AICORE_SERVICE_KEY='{"clientid":"...","clientsecret":"...","url":"...","serviceurls":{"AI_API_URL":"..."}}' railwise
 ```
 
 Ou ajoutez-le à votre profil bash :
@@ -1472,7 +1472,7 @@ Ou ajoutez-le à votre profil bash :
 4. Définissez éventuellement l'ID de déploiement et le groupe de ressources :
 
    ```bash
-   AICORE_DEPLOYMENT_ID=your-deployment-id AICORE_RESOURCE_GROUP=your-resource-group yonsoon
+   AICORE_DEPLOYMENT_ID=your-deployment-id AICORE_RESOURCE_GROUP=your-resource-group railwise
    ```
 
    :::note
@@ -1516,7 +1516,7 @@ Ou ajoutez-le à votre profil bash :
 
 ### Scaleway
 
-Pour utiliser [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/) avec Yonsoon :
+Pour utiliser [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/) avec Railwise :
 
 1. Rendez-vous dans les [Paramètres IAM de la console Scaleway](https://console.scaleway.com/iam/api-keys) pour générer une nouvelle clé API.
 
@@ -1624,11 +1624,11 @@ Vercel AI Gateway vous permet d'accéder aux modèles de OpenAI, Anthropic, Goog
    /models
    ```
 
-Vous pouvez également personnaliser les modèles via votre configuration yonsoon. Voici un exemple de spécification de l'ordre de routage du fournisseur.
+Vous pouvez également personnaliser les modèles via votre configuration railwise. Voici un exemple de spécification de l'ordre de routage du fournisseur.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "vercel": {
       "models": {
@@ -1734,11 +1734,11 @@ Si vous êtes abonné au **Plan de codage GLM**, sélectionnez **Plan de codage 
    /models
    ```
 
-Vous pouvez également ajouter des modèles supplémentaires via votre configuration yonsoon.
+Vous pouvez également ajouter des modèles supplémentaires via votre configuration railwise.
 
-```json title="yonsoon.json" {6}
+```json title="railwise.json" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "zenmux": {
       "models": {
@@ -1756,7 +1756,7 @@ Vous pouvez également ajouter des modèles supplémentaires via votre configura
 Pour ajouter un fournisseur **OpenAI-compatible** qui n'est pas répertorié dans la commande `/connect` :
 
 :::tip
-Vous pouvez utiliser n'importe quel fournisseur compatible OpenAI avec yonsoon. La plupart des fournisseurs d'IA modernes proposent des API compatibles OpenAI.
+Vous pouvez utiliser n'importe quel fournisseur compatible OpenAI avec railwise. La plupart des fournisseurs d'IA modernes proposent des API compatibles OpenAI.
 :::
 
 1. Exécutez la commande `/connect` et faites défiler jusqu'à **Autre**.
@@ -1795,18 +1795,18 @@ Vous pouvez utiliser n'importe quel fournisseur compatible OpenAI avec yonsoon. 
 
    ┌  Add credential
    │
-   ▲  This only stores a credential for myprovider - you will need to configure it in yonsoon.json, check the docs for examples.
+   ▲  This only stores a credential for myprovider - you will need to configure it in railwise.json, check the docs for examples.
    │
    ◇  Enter your API key
    │  sk-...
    └
    ```
 
-4. Créez ou mettez à jour votre fichier `yonsoon.json` dans le répertoire de votre projet :
+4. Créez ou mettez à jour votre fichier `railwise.json` dans le répertoire de votre projet :
 
-   ```json title="yonsoon.json" ""myprovider"" {5-15}
+   ```json title="railwise.json" ""myprovider"" {5-15}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "myprovider": {
          "npm": "@ai-sdk/openai-compatible",
@@ -1843,9 +1843,9 @@ En savoir plus sur les options avancées dans l'exemple ci-dessous.
 
 Voici un exemple de définition des options `apiKey`, `headers` et modèle `limit`.
 
-```json title="yonsoon.json" {9,11,17-20}
+```json title="railwise.json" {9,11,17-20}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "myprovider": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1878,7 +1878,7 @@ Détails de configuration :
 - **limit.context** : nombre maximal de jetons d'entrée acceptés par le modèle.
 - **limit.output** : nombre maximal de jetons que le modèle peut générer.
 
-Les champs `limit` permettent à YONSOON (甬算) de comprendre la quantité de contexte qu'il vous reste. Les fournisseurs standard les extraient automatiquement de models.dev.
+Les champs `limit` permettent à RAILWISE (甬算) de comprendre la quantité de contexte qu'il vous reste. Les fournisseurs standard les extraient automatiquement de models.dev.
 
 ---
 
@@ -1886,12 +1886,12 @@ Les champs `limit` permettent à YONSOON (甬算) de comprendre la quantité de 
 
 Si vous rencontrez des difficultés lors de la configuration d'un fournisseur, vérifiez les points suivants :
 
-1. **Vérifiez la configuration de l'authentification** : exécutez `yonsoon auth list` pour voir si les informations d'identification
+1. **Vérifiez la configuration de l'authentification** : exécutez `railwise auth list` pour voir si les informations d'identification
    pour le fournisseur sont ajoutés à votre configuration.
 
 Cela ne s'applique pas aux fournisseurs comme Amazon Bedrock, qui s'appuient sur des variables d'environnement pour leur authentification.
 
-2. Pour les fournisseurs personnalisés, vérifiez la configuration yonsoon et :
-   - Assurez-vous que l'ID du fournisseur utilisé dans la commande `/connect` correspond à l'ID de votre configuration yonsoon.
+2. Pour les fournisseurs personnalisés, vérifiez la configuration railwise et :
+   - Assurez-vous que l'ID du fournisseur utilisé dans la commande `/connect` correspond à l'ID de votre configuration railwise.
    - Le bon package npm est utilisé pour le fournisseur. Par exemple, utilisez `@ai-sdk/cerebras` pour Cerebras. Et pour tous les autres fournisseurs compatibles OpenAI, utilisez `@ai-sdk/openai-compatible`.
    - Vérifiez que le point de terminaison API correct est utilisé dans le champ `options.baseURL`.

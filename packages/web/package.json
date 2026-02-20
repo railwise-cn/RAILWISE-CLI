@@ -1,11 +1,11 @@
 {
-  "name": "@yonsoon/web",
+  "name": "@railwise/web",
   "type": "module",
   "license": "MIT",
   "version": "1.2.8",
   "scripts": {
     "dev": "astro dev",
-    "dev:remote": "VITE_API_URL=https://api.yonsoon.ai astro dev",
+    "dev:remote": "VITE_API_URL=https://api.railwise.ai astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -35,7 +35,7 @@
     "vscode-languageserver-types": "3.17.5"
   },
   "devDependencies": {
-    "opencode": "workspace:*",
+    "railwise": "workspace:*",
     "@types/node": "catalog:",
     "@astrojs/check": "0.9.6",
     "typescript": "catalog:"

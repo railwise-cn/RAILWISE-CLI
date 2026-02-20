@@ -1,8 +1,8 @@
-import { createYonsoonClient, createYonsoonServer } from "@yonsoon/sdk"
+import { createRailwiseClient, createRailwiseServer } from "@railwise/sdk"
 import { pathToFileURL } from "bun"
 
-const server = await createYonsoonServer()
-const client = createYonsoonClient({ baseUrl: server.url })
+const server = await createRailwiseServer()
+const client = createRailwiseClient({ baseUrl: server.url })
 
 const input = await Array.fromAsync(new Bun.Glob("packages/core/*.ts").scan())
 

@@ -11,18 +11,18 @@ export const dict = {
   "desktop.updater.checkFailed.title": "Nie udało się sprawdzić aktualizacji",
   "desktop.updater.checkFailed.message": "Nie udało się sprawdzić aktualizacji",
   "desktop.updater.none.title": "Brak dostępnych aktualizacji",
-  "desktop.updater.none.message": "Korzystasz już z najnowszej wersji YONSOON (甬算)",
+  "desktop.updater.none.message": "Korzystasz już z najnowszej wersji RAILWISE (甬算)",
   "desktop.updater.downloadFailed.title": "Aktualizacja nie powiodła się",
   "desktop.updater.downloadFailed.message": "Nie udało się pobrać aktualizacji",
   "desktop.updater.downloaded.title": "Aktualizacja pobrana",
   "desktop.updater.downloaded.prompt":
-    "Pobrano wersję {{version}} YONSOON (甬算). Czy chcesz ją zainstalować i uruchomić ponownie?",
+    "Pobrano wersję {{version}} RAILWISE (甬算). Czy chcesz ją zainstalować i uruchomić ponownie?",
   "desktop.updater.installFailed.title": "Aktualizacja nie powiodła się",
   "desktop.updater.installFailed.message": "Nie udało się zainstalować aktualizacji",
 
   "desktop.cli.installed.title": "CLI zainstalowane",
   "desktop.cli.installed.message":
-    "CLI zainstalowane w {{path}}\n\nUruchom ponownie terminal, aby użyć polecenia 'yonsoon'.",
+    "CLI zainstalowane w {{path}}\n\nUruchom ponownie terminal, aby użyć polecenia 'railwise'.",
   "desktop.cli.failed.title": "Instalacja nie powiodła się",
   "desktop.cli.failed.message": "Nie udało się zainstalować CLI: {{error}}",
 }

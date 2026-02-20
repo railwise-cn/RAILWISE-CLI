@@ -15,9 +15,9 @@ struct DisplayConfig {
 
 fn dir() -> Option<PathBuf> {
     Some(dirs::data_dir()?.join(if cfg!(debug_assertions) {
-        "ai.yonsoon.desktop.dev"
+        "ai.railwise.desktop.dev"
     } else {
-        "ai.yonsoon.desktop"
+        "ai.railwise.desktop"
     }))
 }
 

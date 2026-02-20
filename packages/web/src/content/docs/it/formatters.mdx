@@ -1,15 +1,15 @@
 ---
 title: Formattatori
-description: YONSOON (甬算) usa formattatori specifici per linguaggio.
+description: RAILWISE (甬算) usa formattatori specifici per linguaggio.
 ---
 
-YONSOON (甬算) formatta automaticamente i file dopo che vengono scritti o modificati usando formattatori specifici per linguaggio. Questo assicura che il codice generato segua lo stile del tuo progetto.
+RAILWISE (甬算) formatta automaticamente i file dopo che vengono scritti o modificati usando formattatori specifici per linguaggio. Questo assicura che il codice generato segua lo stile del tuo progetto.
 
 ---
 
 ## Integrati
 
-YONSOON (甬算) include diversi formattatori integrati per linguaggi e framework popolari. Qui sotto trovi la lista dei formattatori, delle estensioni supportate e dei comandi o opzioni di config richiesti.
+RAILWISE (甬算) include diversi formattatori integrati per linguaggi e framework popolari. Qui sotto trovi la lista dei formattatori, delle estensioni supportate e dei comandi o opzioni di config richiesti.
 
 | Formattatore         | Estensioni                                                                                               | Requisiti                                                                                             |
 | -------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -39,13 +39,13 @@ YONSOON (甬算) include diversi formattatori integrati per linguaggi e framewor
 | oxfmt (Experimental) | .js, .jsx, .ts, .tsx                                                                                     | `oxfmt` dependency in `package.json` and an [experimental env variable flag](/docs/cli/#experimental) |
 | ormolu               | .hs                                                                                                      | `ormolu` command available                                                                            |
 
-Quindi, se il progetto ha `prettier` in `package.json`, YONSOON (甬算) lo usera automaticamente.
+Quindi, se il progetto ha `prettier` in `package.json`, RAILWISE (甬算) lo usera automaticamente.
 
 ---
 
 ## Come funziona
 
-Quando YONSOON (甬算) scrive o modifica un file:
+Quando RAILWISE (甬算) scrive o modifica un file:
 
 1. Controlla l'estensione del file rispetto a tutti i formattatori abilitati.
 2. Esegue il comando del formattatore appropriato sul file.
@@ -57,11 +57,11 @@ Questo processo avviene in background, mantenendo lo stile del codice senza pass
 
 ## Configurazione
 
-Puoi personalizzare i formattatori nella sezione `formatter` della config di YONSOON (甬算).
+Puoi personalizzare i formattatori nella sezione `formatter` della config di RAILWISE (甬算).
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {}
 }
 ```
@@ -83,18 +83,18 @@ Vediamo alcuni esempi.
 
 Per disabilitare **tutti** i formattatori globalmente, imposta `formatter` a `false`:
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": false
 }
 ```
 
 Per disabilitare un formattatore **specifico**, imposta `disabled` a `true`:
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -109,9 +109,9 @@ Per disabilitare un formattatore **specifico**, imposta `disabled` a `true`:
 
 Puoi sovrascrivere i formattatori integrati o aggiungerne di nuovi specificando comando, variabili d'ambiente ed estensioni file:
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

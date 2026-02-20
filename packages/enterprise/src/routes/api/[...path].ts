@@ -16,9 +16,9 @@ app
     openAPIRouteHandler(app, {
       documentation: {
         info: {
-          title: "Yonsoon Enterprise API",
+          title: "Railwise Enterprise API",
           version: "1.0.0",
-          description: "Yonsoon Enterprise API endpoints",
+          description: "Railwise Enterprise API endpoints",
         },
         openapi: "3.1.1",
       },

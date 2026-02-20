@@ -1,5 +1,5 @@
-import { Select } from "@yonsoon/ui/select"
-import { showToast } from "@yonsoon/ui/toast"
+import { Select } from "@railwise/ui/select"
+import { showToast } from "@railwise/ui/toast"
 import { Component, For, createMemo, type JSX } from "solid-js"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"

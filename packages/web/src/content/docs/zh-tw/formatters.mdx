@@ -60,9 +60,9 @@ OpenCode 內建了多種適用於主流語言和框架的格式化器。下表�
 
 您可以透過 OpenCode 設定中的 `formatter` 部分自訂格式化器。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {}
 }
 ```
@@ -84,18 +84,18 @@ OpenCode 內建了多種適用於主流語言和框架的格式化器。下表�
 
 要全域停用**所有**格式化器，將 `formatter` 設為 `false`：
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": false
 }
 ```
 
 要停用**特定**格式化器，將 `disabled` 設為 `true`：
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -110,9 +110,9 @@ OpenCode 內建了多種適用於主流語言和框架的格式化器。下表�
 
 您可以透過指定指令、環境變數和副檔名來覆寫內建格式化器或新增新的格式化器：
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

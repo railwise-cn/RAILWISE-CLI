@@ -1,4 +1,4 @@
-import { Resource } from "@yonsoon/console-resource"
+import { Resource } from "@railwise/console-resource"
 
 export const logger = {
   metric: (values: Record<string, any>) => {

@@ -15,7 +15,7 @@ pub fn init(log_dir: &Path) -> WorkerGuard {
     cleanup(log_dir);
 
     let timestamp = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S");
-    let filename = format!("yonsoon-desktop_{timestamp}.log");
+    let filename = format!("railwise-desktop_{timestamp}.log");
     let log_path = log_dir.join(&filename);
 
     LOG_PATH
@@ -27,9 +27,9 @@ pub fn init(log_dir: &Path) -> WorkerGuard {
 
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| {
         if cfg!(debug_assertions) {
-            EnvFilter::new("yonsoon_lib=debug,yonsoon_desktop=debug,sidecar=debug")
+            EnvFilter::new("railwise_lib=debug,railwise_desktop=debug,sidecar=debug")
         } else {
-            EnvFilter::new("yonsoon_lib=info,yonsoon_desktop=info,sidecar=info")
+            EnvFilter::new("railwise_lib=info,railwise_desktop=info,sidecar=info")
         }
     });
 

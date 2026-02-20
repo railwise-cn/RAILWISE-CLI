@@ -6,9 +6,9 @@ import { bundledLanguages, type BundledLanguage } from "shiki"
 import { createSimpleContext } from "./helper"
 import { getSharedHighlighter, registerCustomTheme, ThemeRegistrationResolved } from "@pierre/diffs"
 
-registerCustomTheme("YONSOON (甬算)", () => {
+registerCustomTheme("RAILWISE (甬算)", () => {
   return Promise.resolve({
-    name: "YONSOON (甬算)",
+    name: "RAILWISE (甬算)",
     colors: {
       "editor.background": "var(--color-background-stronger)",
       "editor.foreground": "var(--text-base)",
@@ -428,7 +428,7 @@ async function highlightCodeBlocks(html: string): Promise<string> {
   const matches = [...html.matchAll(codeBlockRegex)]
   if (matches.length === 0) return html
 
-  const highlighter = await getSharedHighlighter({ themes: ["YONSOON (甬算)"], langs: [] })
+  const highlighter = await getSharedHighlighter({ themes: ["RAILWISE (甬算)"], langs: [] })
 
   let result = html
   for (const match of matches) {
@@ -450,7 +450,7 @@ async function highlightCodeBlocks(html: string): Promise<string> {
 
     const highlighted = highlighter.codeToHtml(code, {
       lang: language,
-      theme: "YONSOON (甬算)",
+      theme: "RAILWISE (甬算)",
       tabindex: false,
     })
     result = result.replace(fullMatch, () => highlighted)
@@ -479,7 +479,7 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
       }),
       markedShiki({
         async highlight(code, lang) {
-          const highlighter = await getSharedHighlighter({ themes: ["YONSOON (甬算)"], langs: [] })
+          const highlighter = await getSharedHighlighter({ themes: ["RAILWISE (甬算)"], langs: [] })
           if (!(lang in bundledLanguages)) {
             lang = "text"
           }
@@ -488,7 +488,7 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
           }
           return highlighter.codeToHtml(code, {
             lang: lang || "text",
-            theme: "YONSOON (甬算)",
+            theme: "RAILWISE (甬算)",
             tabindex: false,
           })
         },

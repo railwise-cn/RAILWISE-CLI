@@ -1,12 +1,12 @@
 import { Component, Show, createMemo, createResource, type JSX } from "solid-js"
 import { createStore } from "solid-js/store"
-import { Button } from "@yonsoon/ui/button"
-import { Icon } from "@yonsoon/ui/icon"
-import { Select } from "@yonsoon/ui/select"
-import { Switch } from "@yonsoon/ui/switch"
-import { Tooltip } from "@yonsoon/ui/tooltip"
-import { useTheme, type ColorScheme } from "@yonsoon/ui/theme"
-import { showToast } from "@yonsoon/ui/toast"
+import { Button } from "@railwise/ui/button"
+import { Icon } from "@railwise/ui/icon"
+import { Select } from "@railwise/ui/select"
+import { Switch } from "@railwise/ui/switch"
+import { Tooltip } from "@railwise/ui/tooltip"
+import { useTheme, type ColorScheme } from "@railwise/ui/theme"
+import { showToast } from "@railwise/ui/toast"
 import { useLanguage } from "@/context/language"
 import { usePlatform } from "@/context/platform"
 import { useSettings, monoFontFamily } from "@/context/settings"
@@ -202,7 +202,7 @@ export const SettingsGeneral: Component = () => {
           description={
             <>
               {language.t("settings.general.row.theme.description")}{" "}
-              <Link href="https://yonsoon.ai/docs/themes/">{language.t("common.learnMore")}</Link>
+              <Link href="https://railwise.ai/docs/themes/">{language.t("common.learnMore")}</Link>
             </>
           }
         >

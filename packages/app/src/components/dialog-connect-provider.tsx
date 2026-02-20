@@ -1,15 +1,15 @@
-import type { ProviderAuthAuthorization } from "@yonsoon/sdk/v2/client"
-import { Button } from "@yonsoon/ui/button"
-import { useDialog } from "@yonsoon/ui/context/dialog"
-import { Dialog } from "@yonsoon/ui/dialog"
-import { Icon } from "@yonsoon/ui/icon"
-import { IconButton } from "@yonsoon/ui/icon-button"
-import type { IconName } from "@yonsoon/ui/icons/provider"
-import { List, type ListRef } from "@yonsoon/ui/list"
-import { ProviderIcon } from "@yonsoon/ui/provider-icon"
-import { Spinner } from "@yonsoon/ui/spinner"
-import { TextField } from "@yonsoon/ui/text-field"
-import { showToast } from "@yonsoon/ui/toast"
+import type { ProviderAuthAuthorization } from "@railwise/sdk/v2/client"
+import { Button } from "@railwise/ui/button"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { Dialog } from "@railwise/ui/dialog"
+import { Icon } from "@railwise/ui/icon"
+import { IconButton } from "@railwise/ui/icon-button"
+import type { IconName } from "@railwise/ui/icons/provider"
+import { List, type ListRef } from "@railwise/ui/list"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
+import { Spinner } from "@railwise/ui/spinner"
+import { TextField } from "@railwise/ui/text-field"
+import { showToast } from "@railwise/ui/toast"
 import { createMemo, Match, onCleanup, onMount, Switch } from "solid-js"
 import { createStore, produce } from "solid-js/store"
 import { Link } from "@/components/link"
@@ -270,16 +270,16 @@ export function DialogConnectProvider(props: { provider: string }) {
     return (
       <div class="flex flex-col gap-6">
         <Switch>
-          <Match when={provider().id === "yonsoon"}>
+          <Match when={provider().id === "railwise"}>
             <div class="flex flex-col gap-4">
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.yonsoonZen.line1")}</div>
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.yonsoonZen.line2")}</div>
+              <div class="text-14-regular text-text-base">{language.t("provider.connect.railwiseZen.line1")}</div>
+              <div class="text-14-regular text-text-base">{language.t("provider.connect.railwiseZen.line2")}</div>
               <div class="text-14-regular text-text-base">
-                {language.t("provider.connect.yonsoonZen.visit.prefix")}
-                <Link href="https://yonsoon.ai/zen" tabIndex={-1}>
-                  {language.t("provider.connect.yonsoonZen.visit.link")}
+                {language.t("provider.connect.railwiseZen.visit.prefix")}
+                <Link href="https://railwise.ai/zen" tabIndex={-1}>
+                  {language.t("provider.connect.railwiseZen.visit.link")}
                 </Link>
-                {language.t("provider.connect.yonsoonZen.visit.suffix")}
+                {language.t("provider.connect.railwiseZen.visit.suffix")}
               </div>
             </div>
           </Match>

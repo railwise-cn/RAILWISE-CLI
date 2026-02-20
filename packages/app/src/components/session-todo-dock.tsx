@@ -1,6 +1,6 @@
-import type { Todo } from "@yonsoon/sdk/v2"
-import { Checkbox } from "@yonsoon/ui/checkbox"
-import { IconButton } from "@yonsoon/ui/icon-button"
+import type { Todo } from "@railwise/sdk/v2"
+import { Checkbox } from "@railwise/ui/checkbox"
+import { IconButton } from "@railwise/ui/icon-button"
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
 

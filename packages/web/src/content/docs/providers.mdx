@@ -33,9 +33,9 @@ config.
 
 You can customize the base URL for any provider by setting the `baseURL` option. This is useful when using proxy services or custom endpoints.
 
-```json title="yonsoon.json" {6}
+```json title="railwise.json" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -57,7 +57,7 @@ tested and verified to work well with OpenCode. [Learn more](/docs/zen).
 If you are new, we recommend starting with OpenCode Zen.
 :::
 
-1. Run the `/connect` command in the TUI, select opencode, and head to [yonsoon.ai/auth](https://yonsoon.ai/auth).
+1. Run the `/connect` command in the TUI, select opencode, and head to [railwise.ai/auth](https://railwise.ai/auth).
 
    ```txt
    /connect
@@ -159,11 +159,11 @@ To use Amazon Bedrock with OpenCode:
 
    #### Configuration File (Recommended)
 
-   For project-specific or persistent configuration, use `yonsoon.json`:
+   For project-specific or persistent configuration, use `railwise.json`:
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "amazon-bedrock": {
          "options": {
@@ -188,9 +188,9 @@ To use Amazon Bedrock with OpenCode:
 
    If you're using VPC endpoints for Bedrock:
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "amazon-bedrock": {
          "options": {
@@ -232,9 +232,9 @@ To use Amazon Bedrock with OpenCode:
 :::note
 For custom inference profiles, use the model and provider name in the key and set the `id` property to the arn. This ensures correct caching:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "amazon-bedrock": {
       // ...
@@ -484,9 +484,9 @@ Cloudflare AI Gateway lets you access models from OpenAI, Anthropic, Workers AI,
 
    You can also add models through your opencode config.
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "cloudflare-ai-gateway": {
          "models": {
@@ -688,11 +688,11 @@ to store token in opencode auth storage.
 OpenCode uses a small model for some AI tasks like generating the session title.
 It is configured to use gpt-5-nano by default, hosted by Zen. To lock OpenCode
 to only use your own GitLab-hosted instance, add the following to your
-`yonsoon.json` file. It is also recommended to disable session sharing.
+`railwise.json` file. It is also recommended to disable session sharing.
 
 ```json
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "small_model": "gitlab/duo-chat-haiku-4-5",
   "share": "disabled"
 }
@@ -750,11 +750,11 @@ More documentation on [opencode-gitlab-auth](https://www.npmjs.com/package/@gitl
 
 ##### Configuration
 
-Customize through `yonsoon.json`:
+Customize through `railwise.json`:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "gitlab": {
       "options": {
@@ -773,9 +773,9 @@ Customize through `yonsoon.json`:
 
 To access GitLab tools (merge requests, issues, pipelines, CI/CD, etc.):
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": ["@gitlab/opencode-gitlab-plugin"]
 }
 ```
@@ -954,9 +954,9 @@ In the event you see a feature or model from Helicone that isn't configured auto
 
 Here's [Helicone's Model Directory](https://helicone.ai/models), you'll need this to grab the IDs of the models you want to add.
 
-```jsonc title="~/.config/opencode/yonsoon.jsonc"
+```jsonc title="~/.config/opencode/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -982,9 +982,9 @@ Here's [Helicone's Model Directory](https://helicone.ai/models), you'll need thi
 
 Helicone supports custom headers for features like caching, user tracking, and session management. Add them to your provider config using `options.headers`:
 
-```jsonc title="~/.config/opencode/yonsoon.jsonc"
+```jsonc title="~/.config/opencode/railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "helicone": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1011,7 +1011,7 @@ npm install -g opencode-helicone-session
 
 Add it to your config.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "plugin": ["opencode-helicone-session"]
 }
@@ -1036,9 +1036,9 @@ See the [Helicone Header Directory](https://docs.helicone.ai/helicone-headers/he
 
 You can configure opencode to use local models through [llama.cpp's](https://github.com/ggml-org/llama.cpp) llama-server utility
 
-```json title="yonsoon.json" "llama.cpp" {5, 6, 8, 10-15}
+```json title="railwise.json" "llama.cpp" {5, 6, 8, 10-15}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1103,9 +1103,9 @@ IO.NET offers 17 models optimized for various use cases:
 
 You can configure opencode to use local models through LM Studio.
 
-```json title="yonsoon.json" "lmstudio" {5, 6, 8, 10-14}
+```json title="railwise.json" "lmstudio" {5, 6, 8, 10-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "lmstudio": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1224,9 +1224,9 @@ You can configure opencode to use local models through Ollama.
 Ollama can automatically configure itself for OpenCode. See the [Ollama integration docs](https://docs.ollama.com/integrations/opencode) for details.
 :::
 
-```json title="yonsoon.json" "ollama" {5, 6, 8, 10-14}
+```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
@@ -1386,9 +1386,9 @@ OpenCode Zen is a list of tested and verified models provided by the OpenCode te
 
    You can also add additional models through your opencode config.
 
-   ```json title="yonsoon.json" {6}
+   ```json title="railwise.json" {6}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "openrouter": {
          "models": {
@@ -1401,9 +1401,9 @@ OpenCode Zen is a list of tested and verified models provided by the OpenCode te
 
 5. You can also customize them through your opencode config. Here's an example of specifying a provider
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "openrouter": {
          "models": {
@@ -1650,9 +1650,9 @@ Vercel AI Gateway lets you access models from OpenAI, Anthropic, Google, xAI, an
 
 You can also customize models through your opencode config. Here's an example of specifying provider routing order.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "vercel": {
       "models": {
@@ -1760,9 +1760,9 @@ Some useful routing options:
 
    You can also add additional models through your opencode config.
 
-   ```json title="yonsoon.json" {6}
+   ```json title="railwise.json" {6}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "zenmux": {
          "models": {
@@ -1819,18 +1819,18 @@ You can use any OpenAI-compatible provider with opencode. Most modern AI provide
 
    ┌  Add credential
    │
-   ▲  This only stores a credential for myprovider - you will need to configure it in yonsoon.json, check the docs for examples.
+   ▲  This only stores a credential for myprovider - you will need to configure it in railwise.json, check the docs for examples.
    │
    ◇  Enter your API key
    │  sk-...
    └
    ```
 
-4. Create or update your `yonsoon.json` file in your project directory:
+4. Create or update your `railwise.json` file in your project directory:
 
-   ```json title="yonsoon.json" ""myprovider"" {5-15}
+   ```json title="railwise.json" ""myprovider"" {5-15}
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "provider": {
        "myprovider": {
          "npm": "@ai-sdk/openai-compatible",
@@ -1866,9 +1866,9 @@ You can use any OpenAI-compatible provider with opencode. Most modern AI provide
 
 Here's an example setting the `apiKey`, `headers`, and model `limit` options.
 
-```json title="yonsoon.json" {9,11,17-20}
+```json title="railwise.json" {9,11,17-20}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "myprovider": {
       "npm": "@ai-sdk/openai-compatible",

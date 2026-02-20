@@ -15,7 +15,7 @@ import {
   buttonText,
 } from "../styles"
 
-const CONSOLE_URL = "https://yonsoon.ai/"
+const CONSOLE_URL = "https://railwise.ai/"
 
 interface InviteEmailProps {
   inviter: string
@@ -34,7 +34,7 @@ export const InviteEmail = ({
   return (
     <Html lang="en">
       <Head>
-        <Title>{`YONSOON (甬算) — ${messagePlain}`}</Title>
+        <Title>{`RAILWISE (甬算) — ${messagePlain}`}</Title>
       </Head>
       <Fonts assetsUrl={assetsUrl} />
       <Preview>{messagePlain}</Preview>
@@ -44,16 +44,16 @@ export const InviteEmail = ({
             <Row>
               <Column>
                 <A href={`${CONSOLE_URL}zen`}>
-                  <Img height="32" alt="YONSOON (甬算) Logo" src={`${assetsUrl}/logo.png`} />
+                  <Img height="32" alt="RAILWISE (甬算) Logo" src={`${assetsUrl}/logo.png`} />
                 </A>
               </Column>
             </Row>
 
             <Section style={{ padding: `${unit * 2}px 0 0 0` }}>
-              <Text style={headingText}>Join your team's YONSOON (甬算) workspace</Text>
+              <Text style={headingText}>Join your team's RAILWISE (甬算) workspace</Text>
               <Text style={contentText}>
                 You have been invited by <Span style={contentHighlightText}>{inviter}</Span> to join the{" "}
-                <Span style={contentHighlightText}>{workspaceName}</Span> workspace on YONSOON (甬算).
+                <Span style={contentHighlightText}>{workspaceName}</Span> workspace on RAILWISE (甬算).
               </Text>
             </Section>
 

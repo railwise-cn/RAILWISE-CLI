@@ -1,15 +1,15 @@
 ---
 title: Giriş
-description: yonsoon kullanmaya başlayın.
+description: railwise kullanmaya başlayın.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**yonsoon**](/) açık kaynaklı bir AI kodlama ajanıdır. Terminal tabanlı bir arayüz, masaüstü uygulaması veya IDE uzantısı olarak mevcuttur.
+[**railwise**](/) açık kaynaklı bir AI kodlama ajanıdır. Terminal tabanlı bir arayüz, masaüstü uygulaması veya IDE uzantısı olarak mevcuttur.
 
-![yonsoon TUI with the yonsoon theme](../../../assets/lander/screenshot.png)
+![railwise TUI with the railwise theme](../../../assets/lander/screenshot.png)
 
 Başlayalım.
 
@@ -17,7 +17,7 @@ Başlayalım.
 
 #### Ön koşullar
 
-yonsoon'u terminalinizde kullanmak için ihtiyacınız olacak:
+railwise'u terminalinizde kullanmak için ihtiyacınız olacak:
 
 1. Şu gibi modern bir terminal emülatörü:
    - [WezTerm](https://wezterm.org), cross-platform
@@ -31,10 +31,10 @@ yonsoon'u terminalinizde kullanmak için ihtiyacınız olacak:
 
 ## Kurulum
 
-yonsoon'u kurmanın en kolay yolu kurulum betiğidir.
+railwise'u kurmanın en kolay yolu kurulum betiğidir.
 
 ```bash
-curl -fsSL https://yonsoon.ai/install | bash
+curl -fsSL https://railwise.ai/install | bash
 ```
 
 Ayrıca aşağıdaki komutlarla da yükleyebilirsiniz:
@@ -45,28 +45,28 @@ Ayrıca aşağıdaki komutlarla da yükleyebilirsiniz:
 
       <TabItem label="npm">
       ```bash
-      npm install -g yonsoon-ai
+      npm install -g railwise-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g yonsoon-ai
+        bun install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g yonsoon-ai
+        pnpm install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add yonsoon-ai
+        yarn global add railwise-ai
         ```
 
       </TabItem>
@@ -76,68 +76,68 @@ Ayrıca aşağıdaki komutlarla da yükleyebilirsiniz:
 - **Homebrew'u macOS ve Linux'ta kullanma**
 
   ```bash
-  brew install anomalyco/tap/yonsoon
+  brew install anomalyco/tap/railwise
   ```
 
-  > En güncel sürümler için yonsoon tap'ini kullanmanızı öneririz. Resmi `brew install yonsoon` formülü Homebrew ekibi tarafından korunur ve daha sık güncellenir.
+  > En güncel sürümler için railwise tap'ini kullanmanızı öneririz. Resmi `brew install railwise` formülü Homebrew ekibi tarafından korunur ve daha sık güncellenir.
 
 - **Paru'yu Arch Linux'ta kullanma**
 
   ```bash
-  sudo pacman -S yonsoon           # Arch Linux (Stable)
-  paru -S yonsoon-bin              # Arch Linux (Latest from AUR)
+  sudo pacman -S railwise           # Arch Linux (Stable)
+  paru -S railwise-bin              # Arch Linux (Latest from AUR)
   ```
 
 #### Windows
 
 :::tip[Önerilen: WSL kullanın]
-Windows'ta en iyi deneyim için [Windows Subsystem for Linux (WSL)](/docs/windows-wsl) kullanılmasını öneririz. Daha iyi performans ve yonsoon'un özellikleriyle tam uyumluluğu sağlar.
+Windows'ta en iyi deneyim için [Windows Subsystem for Linux (WSL)](/docs/windows-wsl) kullanılmasını öneririz. Daha iyi performans ve railwise'un özellikleriyle tam uyumluluğu sağlar.
 :::
 
 - **Chocolatey Kullanımı**
 
   ```bash
-  choco install yonsoon
+  choco install railwise
   ```
 
 - **Scoop Kullanımı**
 
   ```bash
-  scoop install yonsoon
+  scoop install railwise
   ```
 
 - **NPM kullanarak**
 
   ```bash
-  npm install -g yonsoon-ai
+  npm install -g railwise-ai
   ```
 
 - **Mise Kullanımı**
 
   ```bash
-  mise use -g github:anomalyco/yonsoon
+  mise use -g github:anomalyco/railwise
   ```
 
 - **Docker'ı kullanma**
 
   ```bash
-  docker run -it --rm ghcr.io/anomalyco/yonsoon
+  docker run -it --rm ghcr.io/anomalyco/railwise
   ```
 
-yonsoon'un Bun kullanılarak Windows'a yüklenmesine yönelik destek şu anda devam etmektedir.
+railwise'un Bun kullanılarak Windows'a yüklenmesine yönelik destek şu anda devam etmektedir.
 
-İkili dosyayı [Releases](https://github.com/anomalyco/yonsoon/releases)'dan da alabilirsiniz.
+İkili dosyayı [Releases](https://github.com/anomalyco/railwise/releases)'dan da alabilirsiniz.
 
 ---
 
 ## Yapılandırma
 
-yonsoon ile herhangi bir LLM sağlayıcısının API anahtarlarını yapılandırarak kullanabilirsiniz.
+railwise ile herhangi bir LLM sağlayıcısının API anahtarlarını yapılandırarak kullanabilirsiniz.
 
-LLM sağlayıcılarını kullanmaya yeni başlıyorsanız, [YONSOON (甬算) Zen](/docs/zen) kullanmanızı öneririz.
-yonsoon ekibi tarafından test edilmiş ve doğrulanmış modellerin seçilmiş bir listesidir.
+LLM sağlayıcılarını kullanmaya yeni başlıyorsanız, [RAILWISE (甬算) Zen](/docs/zen) kullanmanızı öneririz.
+railwise ekibi tarafından test edilmiş ve doğrulanmış modellerin seçilmiş bir listesidir.
 
-1. TUI'de `/connect` komutunu çalıştırın, yonsoon'u seçin ve [yonsoon.ai/auth](https://yonsoon.ai/auth)'ye gidin.
+1. TUI'de `/connect` komutunu çalıştırın, railwise'u seçin ve [railwise.ai/auth](https://railwise.ai/auth)'ye gidin.
 
    ```txt
    /connect
@@ -167,32 +167,32 @@ Artık bir sağlayıcı yapılandırdığınıza göre, bir projeye gidebilirsin
 cd /path/to/project
 ```
 
-Ve yonsoon'u çalıştırın.
+Ve railwise'u çalıştırın.
 
 ```bash
-yonsoon
+railwise
 ```
 
-Daha sonra aşağıdaki komutu çalıştırarak proje için yonsoon'u başlatın.
+Daha sonra aşağıdaki komutu çalıştırarak proje için railwise'u başlatın.
 
 ```bash frame="none"
 /init
 ```
 
-Bu, yonsoon'un projenizi analiz etmesini ve bir `AGENTS.md` dosyası oluşturmasını sağlayacaktır.
+Bu, railwise'un projenizi analiz etmesini ve bir `AGENTS.md` dosyası oluşturmasını sağlayacaktır.
 proje kökü.
 
 :::tip
 Projenizin `AGENTS.md` dosyasını Git'e göndermelisiniz.
 :::
 
-Bu, yonsoon'un proje yapısını ve kullanılan kodlama kalıplarını anlamasına yardımcı olur.
+Bu, railwise'un proje yapısını ve kullanılan kodlama kalıplarını anlamasına yardımcı olur.
 
 ---
 
 ## Kullanım
 
-Artık projeniz üzerinde çalışmak için yonsoon'u kullanmaya hazırsınız. Dilediğiniz soruyu sorabilirsiniz.
+Artık projeniz üzerinde çalışmak için railwise'u kullanmaya hazırsınız. Dilediğiniz soruyu sorabilirsiniz.
 
 AI kodlama ajanını kullanmaya yeniyseniz aşağıdaki örnekler yardımcı olabilir.
 
@@ -200,7 +200,7 @@ AI kodlama ajanını kullanmaya yeniyseniz aşağıdaki örnekler yardımcı ola
 
 ### Soru Sorma
 
-yonsoon'dan kod tabanını size açıklamasını isteyebilirsiniz.
+railwise'dan kod tabanını size açıklamasını isteyebilirsiniz.
 
 :::tip
 Projedeki dosyaları bulanık aramak için `@` tuşunu kullanın.
@@ -216,11 +216,11 @@ Kod tabanının üzerinde çalışmadığınız bir kısmı varsa bu yararlı ol
 
 ### Özellik Ekleme
 
-yonsoon'dan projenize yeni özellikler eklemesini isteyebilirsiniz. Yine de öncelikle ondan bir plan oluşturmasını istemenizi öneririz.
+railwise'dan projenize yeni özellikler eklemesini isteyebilirsiniz. Yine de öncelikle ondan bir plan oluşturmasını istemenizi öneririz.
 
 1. **Bir plan oluşturun**
 
-   yonsoon, değişiklik yapma özelliğini kapatan bir \_Plan modu_na sahiptir.
+   railwise, değişiklik yapma özelliğini kapatan bir \_Plan modu_na sahiptir.
    Bu modda, özelliğin nasıl uygulanacağını önerir.
 
    **Sekme** tuşunu kullanarak buna geçin. Bunun için sağ alt köşede bir gösterge göreceksiniz.
@@ -237,14 +237,14 @@ yonsoon'dan projenize yeni özellikler eklemesini isteyebilirsiniz. Yine de önc
    From this screen, the user can undelete a note or permanently delete it.
    ```
 
-   yonsoon'un isteğinizi anlaması için yeterli ayrıntı verin.
+   railwise'un isteğinizi anlaması için yeterli ayrıntı verin.
    Ekibinizdeki junior bir geliştiriciyle konuşur gibi yazmak genelde iyi sonuç verir.
 
    :::tip
-   yonsoon'a bol bağlam ve örnek verin.
+   railwise'a bol bağlam ve örnek verin.
    :::
 
-   yonsoon verdiğiniz görselleri tarayıp prompt'a ekleyebilir.
+   railwise verdiğiniz görselleri tarayıp prompt'a ekleyebilir.
    Bunu bir görseli terminale sürükleyip bırakarak yapabilirsiniz.
 
 2. **Planı yineleyin**
@@ -260,7 +260,7 @@ yonsoon'dan projenize yeni özellikler eklemesini isteyebilirsiniz. Yine de önc
    İsteme eklemek için görüntüleri terminale sürükleyip bırakın.
    :::
 
-   yonsoon verdiğiniz görselleri tarayıp prompt'a ekleyebilir.
+   railwise verdiğiniz görselleri tarayıp prompt'a ekleyebilir.
    Bunu bir görseli terminale sürükleyip bırakarak yapabilirsiniz.
 
 3. **Özelliği oluşturun**
@@ -281,7 +281,7 @@ yonsoon'dan projenize yeni özellikler eklemesini isteyebilirsiniz. Yine de önc
 
 ### Değişiklik Yapma
 
-Daha basit değişikliklerde, önce planı incelemeden yonsoon'dan doğrudan değişiklik yapmasını isteyebilirsiniz.
+Daha basit değişikliklerde, önce planı incelemeden railwise'dan doğrudan değişiklik yapmasını isteyebilirsiniz.
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
 We need to add authentication to the /settings route. Take a look at how this is
@@ -289,13 +289,13 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-yonsoon'un doğru değişiklikleri yapması için yeterli ayrıntı verdiğinizden emin olun.
+railwise'un doğru değişiklikleri yapması için yeterli ayrıntı verdiğinizden emin olun.
 
 ---
 
 ### Değişiklikleri Geri Alma
 
-Diyelim ki yonsoon'dan bazı değişiklikler yapmasını istediniz.
+Diyelim ki railwise'dan bazı değişiklikler yapmasını istediniz.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -308,13 +308,13 @@ Ama istediğinin bu olmadığını anlıyorsun. Değişiklikleri **geri alabilir
 /undo
 ```
 
-yonsoon değişiklikleri geri alır ve orijinal mesajınızı tekrar gösterir.
+railwise değişiklikleri geri alır ve orijinal mesajınızı tekrar gösterir.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-Buradan komut isteminde ince ayar yapabilir ve yonsoon'dan tekrar denemesini isteyebilirsiniz.
+Buradan komut isteminde ince ayar yapabilir ve railwise'dan tekrar denemesini isteyebilirsiniz.
 
 :::tip
 Birden çok değişikliği geri almak için `/undo` komutunu birden çok kez çalıştırabilirsiniz.
@@ -330,7 +330,7 @@ Veya `/redo` komutunu kullanarak değişiklikleri **yeniden yapabilirsiniz**.
 
 ## Paylaşma
 
-yonsoon ile yaptığınız görüşmeleri [ekibinizle paylaşabilirsiniz](/docs/share).
+railwise ile yaptığınız görüşmeleri [ekibinizle paylaşabilirsiniz](/docs/share).
 
 ```bash frame="none"
 /share
@@ -342,12 +342,12 @@ Bu, mevcut konuşmaya bir bağlantı oluşturacak ve bunu panonuza kopyalayacakt
 Konuşmalar varsayılan olarak paylaşılmaz.
 :::
 
-İşte yonsoon'lu bir [örnek konuşma](https://yonsoon.ai/s/4XP1fce5).
+İşte railwise'lu bir [örnek konuşma](https://railwise.ai/s/4XP1fce5).
 
 ---
 
 ## Özelleştirme
 
-İşte bu kadar! Artık yonsoon'u kullanma konusunda profesyonelsiniz.
+İşte bu kadar! Artık railwise'u kullanma konusunda profesyonelsiniz.
 
-Kendinize göre uyarlamak için [tema seçebilir](/docs/themes), [tuş atamalarını özelleştirebilir](/docs/keybinds), [kod biçimlendirici ayarlayabilir](/docs/formatters), [özel komutlar oluşturabilir](/docs/commands) veya [yonsoon config](/docs/config) ile oynayabilirsiniz.
+Kendinize göre uyarlamak için [tema seçebilir](/docs/themes), [tuş atamalarını özelleştirebilir](/docs/keybinds), [kod biçimlendirici ayarlayabilir](/docs/formatters), [özel komutlar oluşturabilir](/docs/commands) veya [railwise config](/docs/config) ile oynayabilirsiniz.

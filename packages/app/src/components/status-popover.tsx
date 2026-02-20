@@ -1,10 +1,10 @@
-import { Button } from "@yonsoon/ui/button"
-import { useDialog } from "@yonsoon/ui/context/dialog"
-import { Icon } from "@yonsoon/ui/icon"
-import { Popover } from "@yonsoon/ui/popover"
-import { Switch } from "@yonsoon/ui/switch"
-import { Tabs } from "@yonsoon/ui/tabs"
-import { showToast } from "@yonsoon/ui/toast"
+import { Button } from "@railwise/ui/button"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { Icon } from "@railwise/ui/icon"
+import { Popover } from "@railwise/ui/popover"
+import { Switch } from "@railwise/ui/switch"
+import { Tabs } from "@railwise/ui/tabs"
+import { showToast } from "@railwise/ui/toast"
 import { useNavigate } from "@solidjs/router"
 import { type Accessor, createEffect, createMemo, createSignal, For, type JSXElement, onCleanup, Show } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
@@ -187,7 +187,7 @@ export function StatusPopover() {
   const lspCount = createMemo(() => lspItems().length)
   const plugins = createMemo(() => sync.data.config.plugin ?? [])
   const pluginCount = createMemo(() => plugins().length)
-  const pluginEmpty = createMemo(() => pluginEmptyMessage(language.t("dialog.plugins.empty"), "yonsoon.json"))
+  const pluginEmpty = createMemo(() => pluginEmptyMessage(language.t("dialog.plugins.empty"), "railwise.json"))
   const overallHealthy = createMemo(() => {
     const serverHealthy = server.healthy() === true
     const anyMcpIssue = mcpNames().some((name) => {

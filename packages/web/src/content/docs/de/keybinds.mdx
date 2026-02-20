@@ -3,11 +3,11 @@ title: Tastenkombinationen
 description: Passen Sie Ihre Tastenkombinationen an.
 ---
 
-YONSOON (甬算) verfügt über eine Liste von Tastenkombinationen, die Sie über die YONSOON (甬算)-Konfiguration anpassen können.
+RAILWISE (甬算) verfügt über eine Liste von Tastenkombinationen, die Sie über die RAILWISE (甬算)-Konfiguration anpassen können.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ YONSOON (甬算) verfügt über eine Liste von Tastenkombinationen, die Sie übe
 
 ## Leader Key
 
-YONSOON (甬算) verwendet für die meisten Keybinds einen `leader`-Schlüssel. Dies vermeidet Konflikte in Ihrem Terminal.
+RAILWISE (甬算) verwendet für die meisten Keybinds einen `leader`-Schlüssel. Dies vermeidet Konflikte in Ihrem Terminal.
 
 Standardmäßig ist `ctrl+x` der Leader Key und bei den meisten Aktionen müssen Sie zuerst den Leader Key und dann die Tastenkombination drücken. Um beispielsweise eine neue Sitzung zu starten, drücken Sie zuerst `ctrl+x` und dann `n`.
 
@@ -119,9 +119,9 @@ Sie müssen für Ihre Keybinds keinen Leader Key verwenden, wir empfehlen jedoch
 
 Sie können eine Keybind deaktivieren, indem Sie den Schlüssel mit dem Wert „none“ zu Ihrer Konfiguration hinzufügen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -132,7 +132,7 @@ Sie können eine Keybind deaktivieren, indem Sie den Schlüssel mit dem Wert „
 
 ## Desktop-Prompt-Shortcuts
 
-Die Eingabeaufforderungseingabe der YONSOON (甬算)-Desktop-App unterstützt gängige Readline/Emacs-style-Verknüpfungen zum Bearbeiten von Text. Diese sind integriert und derzeit nicht über `yonsoon.json` konfigurierbar.
+Die Eingabeaufforderungseingabe der RAILWISE (甬算)-Desktop-App unterstützt gängige Readline/Emacs-style-Verknüpfungen zum Bearbeiten von Text. Diese sind integriert und derzeit nicht über `railwise.json` konfigurierbar.
 
 | Keybind  | Aktion                                                |
 | -------- | ----------------------------------------------------- |

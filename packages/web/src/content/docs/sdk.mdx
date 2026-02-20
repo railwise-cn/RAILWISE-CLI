@@ -1,13 +1,13 @@
 ---
 title: SDK
-description: Type-safe JS client for yonsoon server.
+description: Type-safe JS client for railwise server.
 ---
 
 import config from "../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-The yonsoon JS/TS SDK provides a type-safe client for interacting with the server.
-Use it to build integrations and control yonsoon programmatically.
+The railwise JS/TS SDK provides a type-safe client for interacting with the server.
+Use it to build integrations and control railwise programmatically.
 
 [Learn more](/docs/server) about how the server works. For examples, check out the [projects](/docs/ecosystem#projects) built by the community.
 
@@ -18,19 +18,19 @@ Use it to build integrations and control yonsoon programmatically.
 Install the SDK from npm:
 
 ```bash
-npm install @yonsoon/sdk
+npm install @railwise/sdk
 ```
 
 ---
 
 ## Create client
 
-Create an instance of yonsoon:
+Create an instance of railwise:
 
 ```javascript
-import { createYonsoon } from "@yonsoon/sdk"
+import { createRailwise } from "@railwise/sdk"
 
-const { client } = await createYonsoon()
+const { client } = await createRailwise()
 ```
 
 This starts both a server and a client
@@ -49,12 +49,12 @@ This starts both a server and a client
 
 ## Config
 
-You can pass a configuration object to customize behavior. The instance still picks up your `yonsoon.json`, but you can override or add configuration inline:
+You can pass a configuration object to customize behavior. The instance still picks up your `railwise.json`, but you can override or add configuration inline:
 
 ```javascript
-import { createYonsoon } from "@yonsoon/sdk"
+import { createRailwise } from "@railwise/sdk"
 
-const yonsoon = await createYonsoon({
+const railwise = await createRailwise({
   hostname: "127.0.0.1",
   port: 4096,
   config: {
@@ -62,19 +62,19 @@ const yonsoon = await createYonsoon({
   },
 })
 
-console.log(`Server running at ${yonsoon.server.url}`)
+console.log(`Server running at ${railwise.server.url}`)
 
-yonsoon.server.close()
+railwise.server.close()
 ```
 
 ## Client only
 
-If you already have a running instance of yonsoon, you can create a client instance to connect to it:
+If you already have a running instance of railwise, you can create a client instance to connect to it:
 
 ```javascript
-import { createYonsoonClient } from "@yonsoon/sdk"
+import { createRailwiseClient } from "@railwise/sdk"
 
-const client = createYonsoonClient({
+const client = createRailwiseClient({
   baseUrl: "http://localhost:4096",
 })
 ```
@@ -96,7 +96,7 @@ const client = createYonsoonClient({
 The SDK includes TypeScript definitions for all API types. Import them directly:
 
 ```typescript
-import type { Session, Message, Part } from "@yonsoon/sdk"
+import type { Session, Message, Part } from "@railwise/sdk"
 ```
 
 All types are generated from the server's OpenAPI specification and available in the <a href={typesUrl}>types file</a>.
@@ -376,7 +376,7 @@ await client.session.prompt({
 ```javascript
 // Search and read files
 const textResults = await client.find.text({
-  query: { pattern: "function.*yonsoon" },
+  query: { pattern: "function.*railwise" },
 })
 
 const files = await client.find.files({

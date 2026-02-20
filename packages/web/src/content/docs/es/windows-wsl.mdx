@@ -1,14 +1,14 @@
 ---
 title: Windows (WSL)
-description: Ejecuta YONSOON (甬算) en Windows con WSL para una mejor experiencia.
+description: Ejecuta RAILWISE (甬算) en Windows con WSL para una mejor experiencia.
 ---
 
 import { Steps } from "@astrojs/starlight/components"
 
-Aunque YONSOON (甬算) puede ejecutarse directamente en Windows, recomendamos usar [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) para obtener la mejor experiencia. WSL ofrece un entorno Linux que funciona perfectamente con las funciones de YONSOON (甬算).
+Aunque RAILWISE (甬算) puede ejecutarse directamente en Windows, recomendamos usar [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) para obtener la mejor experiencia. WSL ofrece un entorno Linux que funciona perfectamente con las funciones de RAILWISE (甬算).
 
 :::tip[¿Por qué WSL?]
-WSL ofrece mejor rendimiento del sistema de archivos, soporte completo de terminal y compatibilidad con las herramientas de desarrollo de las que depende YONSOON (甬算).
+WSL ofrece mejor rendimiento del sistema de archivos, soporte completo de terminal y compatibilidad con las herramientas de desarrollo de las que depende RAILWISE (甬算).
 :::
 
 ---
@@ -21,21 +21,21 @@ WSL ofrece mejor rendimiento del sistema de archivos, soporte completo de termin
 
    Si aún no lo hiciste, [instala WSL](https://learn.microsoft.com/en-us/windows/wsl/install) usando la guía oficial de Microsoft.
 
-2. **Instala YONSOON (甬算) en WSL**
+2. **Instala RAILWISE (甬算) en WSL**
 
-   Cuando WSL esté listo, abre tu terminal de WSL e instala YONSOON (甬算) con uno de los [métodos de instalación](/docs/).
+   Cuando WSL esté listo, abre tu terminal de WSL e instala RAILWISE (甬算) con uno de los [métodos de instalación](/docs/).
 
    ```bash
-   curl -fsSL https://yonsoon.ai/install | bash
+   curl -fsSL https://railwise.ai/install | bash
    ```
 
-3. **Usa YONSOON (甬算) desde WSL**
+3. **Usa RAILWISE (甬算) desde WSL**
 
-   Ve al directorio de tu proyecto (accede a los archivos de Windows desde `/mnt/c/`, `/mnt/d/`, etc.) y ejecuta YONSOON (甬算).
+   Ve al directorio de tu proyecto (accede a los archivos de Windows desde `/mnt/c/`, `/mnt/d/`, etc.) y ejecuta RAILWISE (甬算).
 
    ```bash
    cd /mnt/c/Users/YourName/project
-   yonsoon
+   railwise
    ```
 
 </Steps>
@@ -44,12 +44,12 @@ WSL ofrece mejor rendimiento del sistema de archivos, soporte completo de termin
 
 ## Aplicación de escritorio + servidor WSL
 
-Si prefieres usar la app de escritorio de YONSOON (甬算) pero quieres ejecutar el servidor en WSL:
+Si prefieres usar la app de escritorio de RAILWISE (甬算) pero quieres ejecutar el servidor en WSL:
 
 1. **Inicia el servidor en WSL** con `--hostname 0.0.0.0` para permitir conexiones externas:
 
    ```bash
-   yonsoon serve --hostname 0.0.0.0 --port 4096
+   railwise serve --hostname 0.0.0.0 --port 4096
    ```
 
 2. **Conecta la app de escritorio** a `http://localhost:4096`
@@ -59,10 +59,10 @@ Si `localhost` no funciona en tu configuración, conéctate usando la dirección
 :::
 
 :::caution
-Cuando uses `--hostname 0.0.0.0`, define `YONSOON_SERVER_PASSWORD` para proteger el servidor.
+Cuando uses `--hostname 0.0.0.0`, define `RAILWISE_SERVER_PASSWORD` para proteger el servidor.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve --hostname 0.0.0.0
+RAILWISE_SERVER_PASSWORD=your-password railwise serve --hostname 0.0.0.0
 ```
 
 :::
@@ -73,15 +73,15 @@ YONSOON_SERVER_PASSWORD=your-password yonsoon serve --hostname 0.0.0.0
 
 Para obtener la mejor experiencia web en Windows:
 
-1. **Ejecuta `yonsoon web` en la terminal de WSL** en lugar de PowerShell:
+1. **Ejecuta `railwise web` en la terminal de WSL** en lugar de PowerShell:
 
    ```bash
-   yonsoon web --hostname 0.0.0.0
+   railwise web --hostname 0.0.0.0
    ```
 
-2. **Accede desde tu navegador de Windows** en `http://localhost:<port>` (YONSOON (甬算) muestra la URL)
+2. **Accede desde tu navegador de Windows** en `http://localhost:<port>` (RAILWISE (甬算) muestra la URL)
 
-Ejecutar `yonsoon web` desde WSL garantiza acceso correcto al sistema de archivos e integración con la terminal, manteniéndolo accesible desde tu navegador de Windows.
+Ejecutar `railwise web` desde WSL garantiza acceso correcto al sistema de archivos e integración con la terminal, manteniéndolo accesible desde tu navegador de Windows.
 
 ---
 
@@ -97,17 +97,17 @@ Ejemplo:
 
 ```bash
 cd /mnt/c/Users/YourName/Documents/project
-yonsoon
+railwise
 ```
 
 :::tip
-Para una experiencia más fluida, considera clonar o copiar tu repo al sistema de archivos de WSL (por ejemplo en `~/code/`) y ejecutar YONSOON (甬算) ahí.
+Para una experiencia más fluida, considera clonar o copiar tu repo al sistema de archivos de WSL (por ejemplo en `~/code/`) y ejecutar RAILWISE (甬算) ahí.
 :::
 
 ---
 
 ## Consejos
 
-- Ejecuta YONSOON (甬算) en WSL para proyectos guardados en unidades de Windows: el acceso a archivos es transparente
-- Usa la [extensión WSL de VS Code](https://code.visualstudio.com/docs/remote/wsl) junto con YONSOON (甬算) para un flujo de desarrollo integrado
-- Tu configuración y tus sesiones de YONSOON (甬算) se guardan dentro del entorno WSL en `~/.local/share/yonsoon/`
+- Ejecuta RAILWISE (甬算) en WSL para proyectos guardados en unidades de Windows: el acceso a archivos es transparente
+- Usa la [extensión WSL de VS Code](https://code.visualstudio.com/docs/remote/wsl) junto con RAILWISE (甬算) para un flujo de desarrollo integrado
+- Tu configuración y tus sesiones de RAILWISE (甬算) se guardan dentro del entorno WSL en `~/.local/share/railwise/`

@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: YONSOON (甬算) 터미널 사용자 인터페이스 사용.
+description: RAILWISE (甬算) 터미널 사용자 인터페이스 사용.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-yonsoon는 LLM과 함께 프로젝트를 위해 대화형 terminal 인터페이스 또는 TUI를 제공합니다.
+railwise는 LLM과 함께 프로젝트를 위해 대화형 terminal 인터페이스 또는 TUI를 제공합니다.
 
-yonsoon는 현재 디렉토리에 TUI를 시작합니다.
+railwise는 현재 디렉토리에 TUI를 시작합니다.
 
 ```bash
-yonsoon
+railwise
 ```
 
 또는 특정 작업 디렉토리에 대해 시작할 수 있습니다.
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 TUI에 있다면 메시지가 표시됩니다.
@@ -57,7 +57,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## 명령
 
-yonsoon TUI를 사용할 때, `/`를 입력하여 명령 이름을 따라 작업을 신속하게 실행할 수 있습니다. 예를 들면:
+railwise TUI를 사용할 때, `/`를 입력하여 명령 이름을 따라 작업을 신속하게 실행할 수 있습니다. 예를 들면:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ yonsoon TUI를 사용할 때, `/`를 입력하여 명령 이름을 따라 작업
 
 ### /connect
 
-yonsoon에 대한 공급자를 추가합니다. 사용 가능한 공급자에서 선택하고 API 키를 추가 할 수 있습니다.
+railwise에 대한 공급자를 추가합니다. 사용 가능한 공급자에서 선택하고 API 키를 추가 할 수 있습니다.
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ yonsoon에 대한 공급자를 추가합니다. 사용 가능한 공급자에서
 
 ### /exit
 
-yonsoon를 종료합니다. Aliases : `/quit`, `/q`
+railwise를 종료합니다. Aliases : `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -355,11 +355,11 @@ VS Code와 같은 일부 편집기는 `--wait` 플래그와 함께 시작해야�
 
 ## 구성
 
-yonsoon config 파일을 통해 TUI 동작을 사용자 정의할 수 있습니다.
+railwise config 파일을 통해 TUI 동작을 사용자 정의할 수 있습니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

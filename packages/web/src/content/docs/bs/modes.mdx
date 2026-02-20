@@ -10,14 +10,14 @@ Načini se sada konfiguriraju preko opcije `agent` u konfiguraciji otvorenog kod
 
 Režimi u otvorenom kodu omogućavaju vam da prilagodite ponašanje, alate i upite za različite slučajeve upotrebe.
 Dolazi sa dva ugrađena načina rada: **build** i **plan**. Možete prilagoditi
-ove ili konfigurirajte svoje putem yonsoon config.
+ove ili konfigurirajte svoje putem railwise config.
 Možete se prebacivati ​​između režima tokom sesije ili ih konfigurisati u svom konfiguracionom fajlu.
 
 ---
 
 ## Ugrađeni
 
-yonsoon dolazi sa dva ugrađena načina rada.
+railwise dolazi sa dva ugrađena načina rada.
 
 ### Build
 
@@ -28,7 +28,7 @@ Build je **podrazumijevani** režim sa svim omogućenim alatima. Ovo je standard
 Ograničeni način rada dizajniran za planiranje i analizu. U načinu plana, sljedeći alati su onemogućeni prema zadanim postavkama:
 
 - `write` - Ne mogu kreirati nove fajlove
-- `edit` - Ne mogu modificirati postojeće fajlove, osim fajlova koji se nalaze na `.yonsoon/plans/*.md` radi detaljiziranja samog plana
+- `edit` - Ne mogu modificirati postojeće fajlove, osim fajlova koji se nalaze na `.railwise/plans/*.md` radi detaljiziranja samog plana
 - `patch` - Ne mogu primijeniti zakrpe
 - `bash` - Ne mogu izvršiti naredbe ljuske
   Ovaj način rada je koristan kada želite da AI analizira kod, predlaže promjene ili kreira planove bez ikakvih stvarnih modifikacija u vašoj bazi kodova.
@@ -48,11 +48,11 @@ Možete prilagoditi ugrađene načine rada ili kreirati vlastite kroz konfigurac
 
 ### JSON konfiguracija
 
-Konfigurirajte načine rada u svom `yonsoon.json` konfiguracijskom fajlu:
+Konfigurirajte načine rada u svom `railwise.json` konfiguracijskom fajlu:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "build": {
       "model": "anthropic/claude-sonnet-4-20250514",
@@ -79,10 +79,10 @@ Konfigurirajte načine rada u svom `yonsoon.json` konfiguracijskom fajlu:
 
 Također možete definirati načine rada koristeći markdown datoteke. Postavite ih u:
 
-- Globalno: `~/.config/yonsoon/modes/`
-- Projekat: `.yonsoon/modes/`
+- Globalno: `~/.config/railwise/modes/`
+- Projekat: `.railwise/modes/`
 
-```markdown title="~/.config/yonsoon/modes/review.md"
+```markdown title="~/.config/railwise/modes/review.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.1
@@ -111,7 +111,7 @@ Pogledajmo ove opcije konfiguracije detaljno.
 
 Koristite `model` konfiguraciju da nadjačate zadani model za ovaj način rada. Korisno za korištenje različitih modela optimiziranih za različite zadatke. Na primjer, brži model za planiranje, sposobniji model za implementaciju.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -127,7 +127,7 @@ Koristite `model` konfiguraciju da nadjačate zadani model za ovaj način rada. 
 
 Kontrolišite slučajnost i kreativnost odgovora AI pomoću `temperature` konfiguracije. Niže vrijednosti čine odgovore fokusiranijim i determinističkim, dok veće vrijednosti povećavaju kreativnost i varijabilnost.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "plan": {
@@ -146,7 +146,7 @@ Vrijednosti temperature obično se kreću od 0,0 do 1,0:
 - **0,3-0,5**: Uravnoteženi odgovori sa malo kreativnosti, dobro za opšte razvojne zadatke
 - **0,6-1,0**: kreativniji i raznovrsniji odgovori, korisni za razmišljanje i istraživanje
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "analyze": {
@@ -164,13 +164,13 @@ Vrijednosti temperature obično se kreću od 0,0 do 1,0:
 }
 ```
 
-Ako temperatura nije navedena, yonsoon koristi podrazumijevane postavke specifične za model (obično 0 za većinu modela i 0.55 za Qwen modele).
+Ako temperatura nije navedena, railwise koristi podrazumijevane postavke specifične za model (obično 0 za većinu modela i 0.55 za Qwen modele).
 
 ### Upit
 
 Navedite prilagođenu sistemsku datoteku prompta za ovaj način rada s konfiguracijom `prompt`. Datoteka s promptom treba da sadrži upute specifične za svrhu načina rada.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "mode": {
     "review": {
@@ -233,9 +233,9 @@ Možete kreirati vlastite prilagođene modove tako što ćete ih dodati u konfig
 
 ### Korištenje JSON konfiguracije
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mode": {
     "docs": {
       "prompt": "{file:./prompts/documentation.txt}",
@@ -254,9 +254,9 @@ Možete kreirati vlastite prilagođene modove tako što ćete ih dodati u konfig
 
 ### Korištenje markdown fajlova
 
-Kreirajte fajlove načina u `.yonsoon/modes/` za specifične načine rada ili `~/.config/yonsoon/modes/` za globalne načine:
+Kreirajte fajlove načina u `.railwise/modes/` za specifične načine rada ili `~/.config/railwise/modes/` za globalne načine:
 
-```markdown title=".yonsoon/modes/debug.md"
+```markdown title=".railwise/modes/debug.md"
 ---
 temperature: 0.1
 tools:
@@ -280,7 +280,7 @@ Focus on:
 Do not make any changes to files. Only investigate and report.
 ```
 
-```markdown title="~/.config/yonsoon/modes/refactor.md"
+```markdown title="~/.config/railwise/modes/refactor.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.2

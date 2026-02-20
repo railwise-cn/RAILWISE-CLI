@@ -1,9 +1,9 @@
 import { Component, createMemo, createSignal, Show } from "solid-js"
 import { useSync } from "@/context/sync"
 import { useSDK } from "@/context/sdk"
-import { Dialog } from "@yonsoon/ui/dialog"
-import { List } from "@yonsoon/ui/list"
-import { Switch } from "@yonsoon/ui/switch"
+import { Dialog } from "@railwise/ui/dialog"
+import { List } from "@railwise/ui/list"
+import { Switch } from "@railwise/ui/switch"
 import { useLanguage } from "@/context/language"
 
 const statusLabels = {

@@ -1,11 +1,11 @@
 name: "Setup Git Committer"
 description: "Create app token and configure git user"
 inputs:
-  yonsoon-app-id:
-    description: "YONSOON (甬算) GitHub App ID"
+  railwise-app-id:
+    description: "RAILWISE (甬算) GitHub App ID"
     required: true
-  yonsoon-app-secret:
-    description: "YONSOON (甬算) GitHub App private key"
+  railwise-app-secret:
+    description: "RAILWISE (甬算) GitHub App private key"
     required: true
 outputs:
   token:
@@ -21,8 +21,8 @@ runs:
       id: apptoken
       uses: actions/create-github-app-token@v2
       with:
-        app-id: ${{ inputs.yonsoon-app-id }}
-        private-key: ${{ inputs.yonsoon-app-secret }}
+        app-id: ${{ inputs.railwise-app-id }}
+        private-key: ${{ inputs.railwise-app-secret }}
         owner: ${{ github.repository_owner }}
 
     - name: Configure git user

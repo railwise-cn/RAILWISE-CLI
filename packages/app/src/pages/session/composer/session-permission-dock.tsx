@@ -1,8 +1,8 @@
 import { For, Show } from "solid-js"
-import type { PermissionRequest } from "@yonsoon/sdk/v2"
-import { Button } from "@yonsoon/ui/button"
-import { DockPrompt } from "@yonsoon/ui/dock-prompt"
-import { Icon } from "@yonsoon/ui/icon"
+import type { PermissionRequest } from "@railwise/sdk/v2"
+import { Button } from "@railwise/ui/button"
+import { DockPrompt } from "@railwise/ui/dock-prompt"
+import { Icon } from "@railwise/ui/icon"
 import { useLanguage } from "@/context/language"
 
 export function SessionPermissionDock(props: {

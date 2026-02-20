@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: YONSOON (甬算) CLI muligheder og kommandoer.
+description: RAILWISE (甬算) CLI muligheder og kommandoer.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) CLI starter som standard [TUI](/docs/tui), når den kører uden nogen argumenter.
+RAILWISE (甬算) CLI starter som standard [TUI](/docs/tui), når den kører uden nogen argumenter.
 
 ```bash
-yonsoon
+railwise
 ```
 
-Men den accepterer også kommandoer som dokumenteret på denne side. Dette giver dig mulighed for at interagere med YONSOON (甬算) programmatisk.
+Men den accepterer også kommandoer som dokumenteret på denne side. Dette giver dig mulighed for at interagere med RAILWISE (甬算) programmatisk.
 
 ```bash
-yonsoon run "Explain how closures work in JavaScript"
+railwise run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-Start YONSOON (甬算) terminalbrugergrænsefladen.
+Start RAILWISE (甬算) terminalbrugergrænsefladen.
 
 ```bash
-yonsoon [project]
+railwise [project]
 ```
 
 #### Flag
@@ -44,36 +44,36 @@ yonsoon [project]
 
 ## Kommandoer
 
-YONSOON (甬算) CLI har også følgende kommandoer.
+RAILWISE (甬算) CLI har også følgende kommandoer.
 
 ---
 
 ### agent
 
-Administrer agenter i YONSOON (甬算).
+Administrer agenter i RAILWISE (甬算).
 
 ```bash
-yonsoon agent [command]
+railwise agent [command]
 ```
 
 ---
 
 ### attach
 
-Tilslut en terminal til en allerede kørende YONSOON (甬算) backend-server startet via `serve` eller `web` kommandoer.
+Tilslut en terminal til en allerede kørende RAILWISE (甬算) backend-server startet via `serve` eller `web` kommandoer.
 
 ```bash
-yonsoon attach [url]
+railwise attach [url]
 ```
 
-Dette gør det muligt at bruge TUI med en ekstern YONSOON (甬算) backend. For eksempel:
+Dette gør det muligt at bruge TUI med en ekstern RAILWISE (甬算) backend. For eksempel:
 
 ```bash
 # Start the backend server for web/mobile access
-yonsoon web --port 4096 --hostname 0.0.0.0
+railwise web --port 4096 --hostname 0.0.0.0
 
 # In another terminal, attach the TUI to the running backend
-yonsoon attach http://10.20.30.40:4096
+railwise attach http://10.20.30.40:4096
 ```
 
 #### Flag
@@ -90,7 +90,7 @@ yonsoon attach http://10.20.30.40:4096
 Opret en ny agent med brugerdefineret konfiguration.
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 Denne kommando vil guide dig gennem oprettelse af en ny agent med en brugerdefineret systemprompt og værktøjskonfiguration.
@@ -102,7 +102,7 @@ Denne kommando vil guide dig gennem oprettelse af en ny agent med en brugerdefin
 Liste over alle tilgængelige agenter.
 
 ```bash
-yonsoon agent list
+railwise agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ yonsoon agent list
 Kommando til at administrere legitimationsoplysninger og login for udbydere.
 
 ```bash
-yonsoon auth [command]
+railwise auth [command]
 ```
 
 ---
 
 #### login
 
-YONSOON (甬算) drives af udbyderlisten på [Models.dev](https://models.dev), så du kan bruge `yonsoon auth login` til at konfigurere API-nøgler for enhver udbyder, du vil bruge. Dette er gemt i `~/.local/share/yonsoon/auth.json`.
+RAILWISE (甬算) drives af udbyderlisten på [Models.dev](https://models.dev), så du kan bruge `railwise auth login` til at konfigurere API-nøgler for enhver udbyder, du vil bruge. Dette er gemt i `~/.local/share/railwise/auth.json`.
 
 ```bash
-yonsoon auth login
+railwise auth login
 ```
 
-Når YONSOON (甬算) starter op, indlæser den udbyderne fra legitimationsfilen. Og hvis der er nogen nøgler defineret i dine miljøer eller en `.env` fil i dit projekt.
+Når RAILWISE (甬算) starter op, indlæser den udbyderne fra legitimationsfilen. Og hvis der er nogen nøgler defineret i dine miljøer eller en `.env` fil i dit projekt.
 
 ---
 
@@ -134,13 +134,13 @@ Når YONSOON (甬算) starter op, indlæser den udbyderne fra legitimationsfilen
 Viser alle de godkendte udbydere som gemt i legitimationsfilen.
 
 ```bash
-yonsoon auth list
+railwise auth list
 ```
 
 Eller den korte version.
 
 ```bash
-yonsoon auth ls
+railwise auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ yonsoon auth ls
 Logger dig ud af en udbyder ved at rydde den fra legitimationsfilen.
 
 ```bash
-yonsoon auth logout
+railwise auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ yonsoon auth logout
 Administrator GitHub-agenten til lagerautomatisering.
 
 ```bash
-yonsoon github [command]
+railwise github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ yonsoon github [command]
 Installatør GitHub-agenten i dit lager.
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 Dette opsætter det nødvendige GitHub Actions workflow og guider dig gennem konfigurationsprocessen. [Learn more](/docs/github).
@@ -182,7 +182,7 @@ Dette opsætter det nødvendige GitHub Actions workflow og guider dig gennem kon
 Kør GitHub-agenten. Dette bruges typisk i GitHub Actions.
 
 ```bash
-yonsoon github run
+railwise github run
 ```
 
 ##### Flag
@@ -199,7 +199,7 @@ yonsoon github run
 Administrator Model Context Protocol-servere.
 
 ```bash
-yonsoon mcp [command]
+railwise mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ yonsoon mcp [command]
 Tilføj en MCP-server til din konfiguration.
 
 ```bash
-yonsoon mcp add
+railwise mcp add
 ```
 
 Denne kommando vil guide dig gennem tilføjelse af enten en lokal eller ekstern MCP-server.
@@ -221,13 +221,13 @@ Denne kommando vil guide dig gennem tilføjelse af enten en lokal eller ekstern 
 Liste over alle konfigurerede MCP-servere og deres forbindelsesstatus.
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 Eller brug den korte version.
 
 ```bash
-yonsoon mcp ls
+railwise mcp ls
 ```
 
 ---
@@ -237,7 +237,7 @@ yonsoon mcp ls
 Godkendt med en OAuth-aktiveret MCP-server.
 
 ```bash
-yonsoon mcp auth [name]
+railwise mcp auth [name]
 ```
 
 Hvis du ikke angiver et servernavn, bliver du bedt om at vælge blandt tilgængelige OAuth-kompatible servere.
@@ -245,13 +245,13 @@ Hvis du ikke angiver et servernavn, bliver du bedt om at vælge blandt tilgænge
 Du kan også angive OAuth-kompatible servere og deres godkendelsesstatus.
 
 ```bash
-yonsoon mcp auth list
+railwise mcp auth list
 ```
 
 Eller brug den korte version.
 
 ```bash
-yonsoon mcp auth ls
+railwise mcp auth ls
 ```
 
 ---
@@ -261,7 +261,7 @@ yonsoon mcp auth ls
 Fjern OAuth-legitimationsoplysninger for en MCP-server.
 
 ```bash
-yonsoon mcp logout [name]
+railwise mcp logout [name]
 ```
 
 ---
@@ -271,7 +271,7 @@ yonsoon mcp logout [name]
 Fejlfinding af OAuth-forbindelsesproblemer for en MCP-server.
 
 ```bash
-yonsoon mcp debug <name>
+railwise mcp debug <name>
 ```
 
 ---
@@ -281,7 +281,7 @@ yonsoon mcp debug <name>
 Liste over alle tilgængelige modeller fra konfigurerede udbydere.
 
 ```bash
-yonsoon models [provider]
+railwise models [provider]
 ```
 
 Denne kommando viser alle tilgængelige modeller på tværs af dine konfigurerede udbydere i formatet `provider/model`.
@@ -291,7 +291,7 @@ Dette er nyttigt til at finde ud af det nøjagtige modelnavn, der skal bruges i 
 Du kan eventuelt videregive et udbyder-id for at filtrere modeller efter den udbyder.
 
 ```bash
-yonsoon models anthropic
+railwise models anthropic
 ```
 
 #### Flag
@@ -301,36 +301,36 @@ yonsoon models anthropic
 | `--refresh` | Opdater modelcachen fra models.dev                                      |
 | `--verbose` | Brug mere detaljeret modeloutput (inkluderer metadata som omkostninger) |
 
-Brug flaget `--refresh` til at opdatere den cachelagrede modelliste. Dette er nyttigt, når nye modeller er blevet tilføjet til en udbyder, og du vil se dem i YONSOON (甬算).
+Brug flaget `--refresh` til at opdatere den cachelagrede modelliste. Dette er nyttigt, når nye modeller er blevet tilføjet til en udbyder, og du vil se dem i RAILWISE (甬算).
 
 ```bash
-yonsoon models --refresh
+railwise models --refresh
 ```
 
 ---
 
 ### run
 
-Kør yonsoon i ikke-interaktiv tilstand ved at sende en prompt direkte.
+Kør railwise i ikke-interaktiv tilstand ved at sende en prompt direkte.
 
 ```bash
-yonsoon run [message..]
+railwise run [message..]
 ```
 
 Dette er nyttigt til scripting, automatisering, eller når du vil have et hurtigt svar uden at starte hele TUI. F.eks.
 
-```bash "yonsoon run"
-yonsoon run Explain the use of context in Go
+```bash "railwise run"
+railwise run Explain the use of context in Go
 ```
 
-Du kan også vedhæfte til en kørende `yonsoon serve`-instans for at undgå MCP serverens kolde opstartstider ved hver kørsel:
+Du kan også vedhæfte til en kørende `railwise serve`-instans for at undgå MCP serverens kolde opstartstider ved hver kørsel:
 
 ```bash
 # Start a headless server in one terminal
-yonsoon serve
+railwise serve
 
 # In another terminal, run commands that attach to it
-yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
+railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 ```
 
 #### Flag
@@ -347,20 +347,20 @@ yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f` | Fil(er), der skal vedhæftes til meddelelsen                                         |
 | `--format`   |      | Format: standard (formateret) eller json (rå JSON hændelser)                        |
 | `--title`    |      | Titel for sessionen (bruger trunkeret prompt, hvis der ikke er angivet nogen værdi) |
-| `--attach`   |      | Tilslut til en kørende yonsoon-server (f.eks. http://localhost:4096)               |
+| `--attach`   |      | Tilslut til en kørende railwise-server (f.eks. http://localhost:4096)               |
 | `--port`     |      | Port til den lokale server (standard til vilkårlig port)                            |
 
 ---
 
 ### serve
 
-Start en hovedløs YONSOON (甬算)-server til API-adgang. Tjek [server docs](/docs/server) for den fulde HTTP-grænseflade.
+Start en hovedløs RAILWISE (甬算)-server til API-adgang. Tjek [server docs](/docs/server) for den fulde HTTP-grænseflade.
 
 ```bash
-yonsoon serve
+railwise serve
 ```
 
-Dette starter en HTTP-server, der giver API-adgang til yonsoon-funktionalitet uden TUI-grænsefladen. Indstil `YONSOON_SERVER_PASSWORD` for at aktivere HTTP grundlæggende godkendelse (brugernavn er standard til `yonsoon`).
+Dette starter en HTTP-server, der giver API-adgang til railwise-funktionalitet uden TUI-grænsefladen. Indstil `RAILWISE_SERVER_PASSWORD` for at aktivere HTTP grundlæggende godkendelse (brugernavn er standard til `railwise`).
 
 #### Flag
 
@@ -375,20 +375,20 @@ Dette starter en HTTP-server, der giver API-adgang til yonsoon-funktionalitet ud
 
 ### session
 
-Administrator YONSOON (甬算) sessionsholder.
+Administrator RAILWISE (甬算) sessionsholder.
 
 ```bash
-yonsoon session [command]
+railwise session [command]
 ```
 
 ---
 
 #### list
 
-Liste over alle YONSOON (甬算) sessioner.
+Liste over alle RAILWISE (甬算) sessioner.
 
 ```bash
-yonsoon session list
+railwise session list
 ```
 
 ##### Flag
@@ -402,10 +402,10 @@ yonsoon session list
 
 ### stats
 
-Vis tokenbrug og omkostningsstatistikker for dine YONSOON (甬算)-sessioner.
+Vis tokenbrug og omkostningsstatistikker for dine RAILWISE (甬算)-sessioner.
 
 ```bash
-yonsoon stats
+railwise stats
 ```
 
 #### Flag
@@ -424,7 +424,7 @@ yonsoon stats
 Eksporter sessionsdata som JSON.
 
 ```bash
-yonsoon export [sessionID]
+railwise export [sessionID]
 ```
 
 Hvis du ikke angiver et sessions-id, bliver du bedt om at vælge mellem tilgængelige sessioner.
@@ -433,30 +433,30 @@ Hvis du ikke angiver et sessions-id, bliver du bedt om at vælge mellem tilgæng
 
 ### import
 
-Importer sessionsdata fra en JSON fil eller YONSOON (甬算) del URL.
+Importer sessionsdata fra en JSON fil eller RAILWISE (甬算) del URL.
 
 ```bash
-yonsoon import <file>
+railwise import <file>
 ```
 
-Du kan importere fra en lokal fil eller en YONSOON (甬算) share URL.
+Du kan importere fra en lokal fil eller en RAILWISE (甬算) share URL.
 
 ```bash
-yonsoon import session.json
-yonsoon import https://opncd.ai/s/abc123
+railwise import session.json
+railwise import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-Start en hovedløs YONSOON (甬算)-server med en webgrænseflade.
+Start en hovedløs RAILWISE (甬算)-server med en webgrænseflade.
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-Dette starter en HTTP-server og åbner en webbrowser for at få adgang til YONSOON (甬算) via en webgrænseflade. Indstil `YONSOON_SERVER_PASSWORD` for at aktivere HTTP grundlæggende godkendelse (brugernavn er standard til `yonsoon`).
+Dette starter en HTTP-server og åbner en webbrowser for at få adgang til RAILWISE (甬算) via en webgrænseflade. Indstil `RAILWISE_SERVER_PASSWORD` for at aktivere HTTP grundlæggende godkendelse (brugernavn er standard til `railwise`).
 
 #### Flag
 
@@ -474,7 +474,7 @@ Dette starter en HTTP-server og åbner en webbrowser for at få adgang til YONSO
 Start en ACP-server (Agent Client Protocol).
 
 ```bash
-yonsoon acp
+railwise acp
 ```
 
 Denne kommando starter en ACP-server, der kommunikerer via stdin/stdout ved hjælp af nd-JSON.
@@ -491,10 +491,10 @@ Denne kommando starter en ACP-server, der kommunikerer via stdin/stdout ved hjæ
 
 ### uninstall
 
-Afinstaller YONSOON (甬算) og fjern alle relaterede filer.
+Afinstaller RAILWISE (甬算) og fjern alle relaterede filer.
 
 ```bash
-yonsoon uninstall
+railwise uninstall
 ```
 
 #### Flag
@@ -510,22 +510,22 @@ yonsoon uninstall
 
 ### upgrade
 
-Opdaterer YONSOON (甬算) til den nyeste version eller en specifik version.
+Opdaterer RAILWISE (甬算) til den nyeste version eller en specifik version.
 
 ```bash
-yonsoon upgrade [target]
+railwise upgrade [target]
 ```
 
 For at opgradere til den nyeste version.
 
 ```bash
-yonsoon upgrade
+railwise upgrade
 ```
 
 For at opgradere til en bestemt version.
 
 ```bash
-yonsoon upgrade v0.1.48
+railwise upgrade v0.1.48
 ```
 
 #### upgrade
@@ -538,7 +538,7 @@ yonsoon upgrade v0.1.48
 
 ## Globale flag
 
-yonsoon CLI tager følgende globale flag.
+railwise CLI tager følgende globale flag.
 
 | Flag           | Kort | Beskrivelse                          |
 | -------------- | ---- | ------------------------------------ |
@@ -551,34 +551,34 @@ yonsoon CLI tager følgende globale flag.
 
 ## Miljøvariabler
 
-YONSOON (甬算) kan konfigureres ved hjælp af miljøvariabler.
+RAILWISE (甬算) kan konfigureres ved hjælp af miljøvariabler.
 
 | Variabel                              | Skriv   | Beskrivelse                                                           |
 | ------------------------------------- | ------- | --------------------------------------------------------------------- |
-| `YONSOON_AUTO_SHARE`                 | boolean | Del automatisk session                                                |
-| `YONSOON_GIT_BASH_PATH`              | string  | Sti til Git Bash eksekverbar på Windows                               |
-| `YONSOON_CONFIG`                     | string  | Sti til konfigurationsfil                                             |
-| `YONSOON_CONFIG_DIR`                 | string  | Sti til konfigurationsmappe                                           |
-| `YONSOON_CONFIG_CONTENT`             | string  | Indbygget json-konfigurationsindhold                                  |
-| `YONSOON_DISABLE_AUTOUPDATE`         | boolean | Deaktiver automatisk opdateringskontrol                               |
-| `YONSOON_DISABLE_PRUNE`              | boolean | Deaktiver beskæring af gamle data                                     |
-| `YONSOON_DISABLE_TERMINAL_TITLE`     | boolean | Deaktiver automatisk opdatering af terminaltitel                      |
-| `YONSOON_PERMISSION`                 | string  | Indbygget json-tilladelseskonfiguration                               |
-| `YONSOON_DISABLE_DEFAULT_PLUGINS`    | boolean | Deaktiver standard plugins                                            |
-| `YONSOON_DISABLE_LSP_DOWNLOAD`       | boolean | Deaktiver automatisk LSP-serverdownloads                              |
-| `YONSOON_ENABLE_EXPERIMENTAL_MODELS` | boolean | Aktive eksperimentelle modeller                                       |
-| `YONSOON_DISABLE_AUTOCOMPACT`        | boolean | Deaktiver automatisk kontekstkomprimering                             |
-| `YONSOON_DISABLE_CLAUDE_CODE`        | boolean | Deaktiver læsning fra `.claude` (prompt + færdigheder)                |
-| `YONSOON_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Deaktiver læsning `~/.claude/CLAUDE.md`                               |
-| `YONSOON_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Deaktiver indlæsning af `.claude/skills`                              |
-| `YONSOON_DISABLE_MODELS_FETCH`       | boolean | Deaktivering af modeller fra eksterne kilder                          |
-| `YONSOON_FAKE_VCS`                   | string  | Falsk VCS-udbyder til testformål                                      |
-| `YONSOON_DISABLE_FILETIME_CHECK`     | boolean | Deaktiver filtidskontrol for optimering                               |
-| `YONSOON_CLIENT`                     | string  | Klient-id (standard til `cli`)                                        |
-| `YONSOON_ENABLE_EXA`                 | boolean | Aktiver Exa-websøgeværktøjer                                          |
-| `YONSOON_SERVER_PASSWORD`            | string  | Aktiver grundlæggende godkendelse for `serve`/`web`                   |
-| `YONSOON_SERVER_USERNAME`            | string  | Tilsidesæt grundlæggende godkendelsesbrugernavn (standard `yonsoon`) |
-| `YONSOON_MODELS_URL`                 | string  | Brugerdefineret URL til hentning af modelkonfiguration                |
+| `RAILWISE_AUTO_SHARE`                 | boolean | Del automatisk session                                                |
+| `RAILWISE_GIT_BASH_PATH`              | string  | Sti til Git Bash eksekverbar på Windows                               |
+| `RAILWISE_CONFIG`                     | string  | Sti til konfigurationsfil                                             |
+| `RAILWISE_CONFIG_DIR`                 | string  | Sti til konfigurationsmappe                                           |
+| `RAILWISE_CONFIG_CONTENT`             | string  | Indbygget json-konfigurationsindhold                                  |
+| `RAILWISE_DISABLE_AUTOUPDATE`         | boolean | Deaktiver automatisk opdateringskontrol                               |
+| `RAILWISE_DISABLE_PRUNE`              | boolean | Deaktiver beskæring af gamle data                                     |
+| `RAILWISE_DISABLE_TERMINAL_TITLE`     | boolean | Deaktiver automatisk opdatering af terminaltitel                      |
+| `RAILWISE_PERMISSION`                 | string  | Indbygget json-tilladelseskonfiguration                               |
+| `RAILWISE_DISABLE_DEFAULT_PLUGINS`    | boolean | Deaktiver standard plugins                                            |
+| `RAILWISE_DISABLE_LSP_DOWNLOAD`       | boolean | Deaktiver automatisk LSP-serverdownloads                              |
+| `RAILWISE_ENABLE_EXPERIMENTAL_MODELS` | boolean | Aktive eksperimentelle modeller                                       |
+| `RAILWISE_DISABLE_AUTOCOMPACT`        | boolean | Deaktiver automatisk kontekstkomprimering                             |
+| `RAILWISE_DISABLE_CLAUDE_CODE`        | boolean | Deaktiver læsning fra `.claude` (prompt + færdigheder)                |
+| `RAILWISE_DISABLE_CLAUDE_CODE_PROMPT` | boolean | Deaktiver læsning `~/.claude/CLAUDE.md`                               |
+| `RAILWISE_DISABLE_CLAUDE_CODE_SKILLS` | boolean | Deaktiver indlæsning af `.claude/skills`                              |
+| `RAILWISE_DISABLE_MODELS_FETCH`       | boolean | Deaktivering af modeller fra eksterne kilder                          |
+| `RAILWISE_FAKE_VCS`                   | string  | Falsk VCS-udbyder til testformål                                      |
+| `RAILWISE_DISABLE_FILETIME_CHECK`     | boolean | Deaktiver filtidskontrol for optimering                               |
+| `RAILWISE_CLIENT`                     | string  | Klient-id (standard til `cli`)                                        |
+| `RAILWISE_ENABLE_EXA`                 | boolean | Aktiver Exa-websøgeværktøjer                                          |
+| `RAILWISE_SERVER_PASSWORD`            | string  | Aktiver grundlæggende godkendelse for `serve`/`web`                   |
+| `RAILWISE_SERVER_USERNAME`            | string  | Tilsidesæt grundlæggende godkendelsesbrugernavn (standard `railwise`) |
+| `RAILWISE_MODELS_URL`                 | string  | Brugerdefineret URL til hentning af modelkonfiguration                |
 
 ---
 
@@ -588,16 +588,16 @@ Disse miljøvariabler muliggør eksperimentelle funktioner, der kan ændres elle
 
 | Variabel                                        | Skriv   | Beskrivelse                                |
 | ----------------------------------------------- | ------- | ------------------------------------------ |
-| `YONSOON_EXPERIMENTAL`                         | boolean | Aktiver alle eksperimentelle funktioner    |
-| `YONSOON_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Aktiver ikonopdagelse                      |
-| `YONSOON_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Deaktiver kopi ved valg i TUI              |
-| `YONSOON_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | nummer  | Standard timeout for bash-kommandoer i ms  |
-| `YONSOON_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | nummer  | Maks. output-tokens for LLM-svar           |
-| `YONSOON_EXPERIMENTAL_FILEWATCHER`             | boolean | Aktiver filovervågning for hele dir        |
-| `YONSOON_EXPERIMENTAL_OXFMT`                   | boolean | Aktiver oxfmt formatter                    |
-| `YONSOON_EXPERIMENTAL_LSP_TOOL`                | boolean | Aktive eksperimenter LSP værktøj           |
-| `YONSOON_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Deaktiver filovervågning                   |
-| `YONSOON_EXPERIMENTAL_EXA`                     | boolean | Aktive eksperimenter Exa-funktioner        |
-| `YONSOON_EXPERIMENTAL_LSP_TY`                  | boolean | Aktive forsøg LSP typekontrol              |
-| `YONSOON_EXPERIMENTAL_MARKDOWN`                | boolean | Aktive eksperimentelle markdown-funktioner |
-| `YONSOON_EXPERIMENTAL_PLAN_MODE`               | boolean | Aktiver plantilstand                       |
+| `RAILWISE_EXPERIMENTAL`                         | boolean | Aktiver alle eksperimentelle funktioner    |
+| `RAILWISE_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Aktiver ikonopdagelse                      |
+| `RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | Deaktiver kopi ved valg i TUI              |
+| `RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | nummer  | Standard timeout for bash-kommandoer i ms  |
+| `RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | nummer  | Maks. output-tokens for LLM-svar           |
+| `RAILWISE_EXPERIMENTAL_FILEWATCHER`             | boolean | Aktiver filovervågning for hele dir        |
+| `RAILWISE_EXPERIMENTAL_OXFMT`                   | boolean | Aktiver oxfmt formatter                    |
+| `RAILWISE_EXPERIMENTAL_LSP_TOOL`                | boolean | Aktive eksperimenter LSP værktøj           |
+| `RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Deaktiver filovervågning                   |
+| `RAILWISE_EXPERIMENTAL_EXA`                     | boolean | Aktive eksperimenter Exa-funktioner        |
+| `RAILWISE_EXPERIMENTAL_LSP_TY`                  | boolean | Aktive forsøg LSP typekontrol              |
+| `RAILWISE_EXPERIMENTAL_MARKDOWN`                | boolean | Aktive eksperimentelle markdown-funktioner |
+| `RAILWISE_EXPERIMENTAL_PLAN_MODE`               | boolean | Aktiver plantilstand                       |

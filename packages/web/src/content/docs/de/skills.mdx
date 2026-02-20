@@ -3,7 +3,7 @@ title: Agenten-Skills
 description: "Definiere wiederverwendbares Verhalten ueber SKILL.md"
 ---
 
-Agent Skills erlauben YONSOON (甬算), wiederverwendbare Anweisungen aus deinem Repo oder Home-Verzeichnis zu finden.
+Agent Skills erlauben RAILWISE (甬算), wiederverwendbare Anweisungen aus deinem Repo oder Home-Verzeichnis zu finden.
 Sie werden bei Bedarf ueber das native `skill`-Tool geladen, wenn ein Agent sie wirklich braucht.
 
 ---
@@ -11,10 +11,10 @@ Sie werden bei Bedarf ueber das native `skill`-Tool geladen, wenn ein Agent sie 
 ## Dateien platzieren
 
 Erstelle pro Skill-Namen einen Ordner und lege dort eine `SKILL.md` ab.
-YONSOON (甬算) sucht in folgenden Pfaden:
+RAILWISE (甬算) sucht in folgenden Pfaden:
 
-- Project config: `.yonsoon/skills/<name>/SKILL.md`
-- Global config: `~/.config/yonsoon/skills/<name>/SKILL.md`
+- Project config: `.railwise/skills/<name>/SKILL.md`
+- Global config: `~/.config/railwise/skills/<name>/SKILL.md`
 - Project Claude-compatible: `.claude/skills/<name>/SKILL.md`
 - Global Claude-compatible: `~/.claude/skills/<name>/SKILL.md`
 - Project agent-compatible: `.agents/skills/<name>/SKILL.md`
@@ -24,10 +24,10 @@ YONSOON (甬算) sucht in folgenden Pfaden:
 
 ## Discovery verstehen
 
-Bei projektlokalen Pfaden laeuft YONSOON (甬算) vom aktuellen Verzeichnis nach oben bis zum Git-Worktree.
-Dabei werden passende `skills/*/SKILL.md` in `.yonsoon/` sowie passende Dateien unter `.claude/skills/*/SKILL.md` und `.agents/skills/*/SKILL.md` geladen.
+Bei projektlokalen Pfaden laeuft RAILWISE (甬算) vom aktuellen Verzeichnis nach oben bis zum Git-Worktree.
+Dabei werden passende `skills/*/SKILL.md` in `.railwise/` sowie passende Dateien unter `.claude/skills/*/SKILL.md` und `.agents/skills/*/SKILL.md` geladen.
 
-Globale Definitionen kommen zusaetzlich aus `~/.config/yonsoon/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` und `~/.agents/skills/*/SKILL.md`.
+Globale Definitionen kommen zusaetzlich aus `~/.config/railwise/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` und `~/.agents/skills/*/SKILL.md`.
 
 ---
 
@@ -73,14 +73,14 @@ Formuliere sie so konkret, dass Agenten den Skill eindeutig auswaehlen koennen.
 
 ## Beispiel verwenden
 
-Erstelle `.yonsoon/skills/git-release/SKILL.md` zum Beispiel so:
+Erstelle `.railwise/skills/git-release/SKILL.md` zum Beispiel so:
 
 ```markdown
 ---
 name: git-release
 description: Create consistent releases and changelogs
 license: MIT
-compatibility: yonsoon
+compatibility: railwise
 metadata:
   audience: maintainers
   workflow: github
@@ -102,7 +102,7 @@ Ask clarifying questions if the target versioning scheme is unclear.
 
 ## Tool-Beschreibung erkennen
 
-YONSOON (甬算) listet verfuegbare Skills in der Beschreibung des `skill`-Tools.
+RAILWISE (甬算) listet verfuegbare Skills in der Beschreibung des `skill`-Tools.
 Jeder Eintrag enthaelt Namen und Beschreibung:
 
 ```xml
@@ -124,7 +124,7 @@ skill({ name: "git-release" })
 
 ## Berechtigungen konfigurieren
 
-Steuere in `yonsoon.json` per Muster, auf welche Skills Agenten zugreifen duerfen:
+Steuere in `railwise.json` per Muster, auf welche Skills Agenten zugreifen duerfen:
 
 ```json
 {
@@ -163,7 +163,7 @@ permission:
 ---
 ```
 
-**Fuer eingebaute Agenten** (in `yonsoon.json`):
+**Fuer eingebaute Agenten** (in `railwise.json`):
 
 ```json
 {

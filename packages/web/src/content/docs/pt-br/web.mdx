@@ -1,28 +1,28 @@
 ---
 title: Web
-description: Usando o yonsoon no seu navegador.
+description: Usando o railwise no seu navegador.
 ---
 
-O yonsoon pode ser executado como uma aplicação web no seu navegador, proporcionando a mesma poderosa experiência de codificação com IA sem precisar de um terminal.
+O railwise pode ser executado como uma aplicação web no seu navegador, proporcionando a mesma poderosa experiência de codificação com IA sem precisar de um terminal.
 
-![yonsoon Web - Nova Sessão](../../../assets/web/web-homepage-new-session.png)
+![railwise Web - Nova Sessão](../../../assets/web/web-homepage-new-session.png)
 
 ## Primeiros passos
 
 Inicie a interface web executando:
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-Isso inicia um servidor local em `127.0.0.1` com uma porta aleatória disponível e abre automaticamente o yonsoon no seu navegador padrão.
+Isso inicia um servidor local em `127.0.0.1` com uma porta aleatória disponível e abre automaticamente o railwise no seu navegador padrão.
 
 :::caution
-Se `YONSOON_SERVER_PASSWORD` não estiver definido, o servidor ficará sem segurança. Isso é aceitável para uso local, mas deve ser configurado para acesso à rede.
+Se `RAILWISE_SERVER_PASSWORD` não estiver definido, o servidor ficará sem segurança. Isso é aceitável para uso local, mas deve ser configurado para acesso à rede.
 :::
 
 :::tip[Usuários do Windows]
-Para a melhor experiência, execute `yonsoon web` a partir do [WSL](/docs/windows-wsl) em vez do PowerShell. Isso garante acesso adequado ao sistema de arquivos e integração com o terminal.
+Para a melhor experiência, execute `railwise web` a partir do [WSL](/docs/windows-wsl) em vez do PowerShell. Isso garante acesso adequado ao sistema de arquivos e integração com o terminal.
 :::
 
 ---
@@ -33,21 +33,21 @@ Você pode configurar o servidor web usando flags de linha de comando ou no seu 
 
 ### Porta
 
-Por padrão, o yonsoon escolhe uma porta disponível. Você pode especificar uma porta:
+Por padrão, o railwise escolhe uma porta disponível. Você pode especificar uma porta:
 
 ```bash
-yonsoon web --port 4096
+railwise web --port 4096
 ```
 
 ### Nome do Host
 
-Por padrão, o servidor se vincula a `127.0.0.1` (apenas localhost). Para tornar o yonsoon acessível na sua rede:
+Por padrão, o servidor se vincula a `127.0.0.1` (apenas localhost). Para tornar o railwise acessível na sua rede:
 
 ```bash
-yonsoon web --hostname 0.0.0.0
+railwise web --hostname 0.0.0.0
 ```
 
-Ao usar `0.0.0.0`, o yonsoon exibirá endereços locais e de rede:
+Ao usar `0.0.0.0`, o railwise exibirá endereços locais e de rede:
 
 ```
   Local access:       http://localhost:4096
@@ -59,15 +59,15 @@ Ao usar `0.0.0.0`, o yonsoon exibirá endereços locais e de rede:
 Ative o mDNS para tornar seu servidor descobrível na rede local:
 
 ```bash
-yonsoon web --mdns
+railwise web --mdns
 ```
 
-Isso define automaticamente o nome do host como `0.0.0.0` e anuncia o servidor como `yonsoon.local`.
+Isso define automaticamente o nome do host como `0.0.0.0` e anuncia o servidor como `railwise.local`.
 
 Você pode personalizar o nome de domínio mDNS para executar várias instâncias na mesma rede:
 
 ```bash
-yonsoon web --mdns --mdns-domain myproject.local
+railwise web --mdns --mdns-domain myproject.local
 ```
 
 ### CORS
@@ -75,36 +75,36 @@ yonsoon web --mdns --mdns-domain myproject.local
 Para permitir domínios adicionais para CORS (útil para frontends personalizados):
 
 ```bash
-yonsoon web --cors https://example.com
+railwise web --cors https://example.com
 ```
 
 ### Autenticação
 
-Para proteger o acesso, defina uma senha usando a variável de ambiente `YONSOON_SERVER_PASSWORD`:
+Para proteger o acesso, defina uma senha usando a variável de ambiente `RAILWISE_SERVER_PASSWORD`:
 
 ```bash
-YONSOON_SERVER_PASSWORD=secret yonsoon web
+RAILWISE_SERVER_PASSWORD=secret railwise web
 ```
 
-O nome de usuário padrão é `yonsoon`, mas pode ser alterado com `YONSOON_SERVER_USERNAME`.
+O nome de usuário padrão é `railwise`, mas pode ser alterado com `RAILWISE_SERVER_USERNAME`.
 
 ---
 
 ## Usando a Interface Web
 
-Uma vez iniciada, a interface web fornece acesso às suas sessões do yonsoon.
+Uma vez iniciada, a interface web fornece acesso às suas sessões do railwise.
 
 ### Sessões
 
 Visualize e gerencie suas sessões a partir da página inicial. Você pode ver sessões ativas e iniciar novas.
 
-![yonsoon Web - Sessão Ativa](../../../assets/web/web-homepage-active-session.png)
+![railwise Web - Sessão Ativa](../../../assets/web/web-homepage-active-session.png)
 
 ### Status do Servidor
 
 Clique em "Ver Servidores" para visualizar os servidores conectados e seu status.
 
-![yonsoon Web - Ver Servidores](../../../assets/web/web-homepage-see-servers.png)
+![railwise Web - Ver Servidores](../../../assets/web/web-homepage-see-servers.png)
 
 ---
 
@@ -114,10 +114,10 @@ Você pode anexar um terminal TUI a um servidor web em execução:
 
 ```bash
 # Start the web server
-yonsoon web --port 4096
+railwise web --port 4096
 
 # In another terminal, attach the TUI
-yonsoon attach http://localhost:4096
+railwise attach http://localhost:4096
 ```
 
 Isso permite que você use tanto a interface web quanto o terminal simultaneamente, compartilhando as mesmas sessões e estado.
@@ -126,7 +126,7 @@ Isso permite que você use tanto a interface web quanto o terminal simultaneamen
 
 ## Arquivo de Configuração
 
-Você também pode configurar as configurações do servidor no seu arquivo de configuração `yonsoon.json`:
+Você também pode configurar as configurações do servidor no seu arquivo de configuração `railwise.json`:
 
 ```json
 {

@@ -1,14 +1,14 @@
 ---
 title: Windows (WSL)
-description: En iyi deneyim icin yonsoon'u WSL'de calistirin.
+description: En iyi deneyim icin railwise'u WSL'de calistirin.
 ---
 
 import { Steps } from "@astrojs/starlight/components"
 
-yonsoon Windows'ta dogrudan calisabilir, ancak en iyi deneyim icin [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) kullanmanizi oneriyoruz. WSL, yonsoon ozellikleriyle sorunsuz calisan bir Linux ortami saglar.
+railwise Windows'ta dogrudan calisabilir, ancak en iyi deneyim icin [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) kullanmanizi oneriyoruz. WSL, railwise ozellikleriyle sorunsuz calisan bir Linux ortami saglar.
 
 :::tip[Neden WSL?]
-WSL, daha iyi dosya sistemi performansi, tam terminal destegi ve yonsoon'un dayandigi gelistirme araclariyla uyumluluk sunar.
+WSL, daha iyi dosya sistemi performansi, tam terminal destegi ve railwise'un dayandigi gelistirme araclariyla uyumluluk sunar.
 :::
 
 ---
@@ -21,21 +21,21 @@ WSL, daha iyi dosya sistemi performansi, tam terminal destegi ve yonsoon'un daya
 
    Henuz yuklemediyseniz resmi Microsoft rehberini kullanarak [WSL kurulumunu](https://learn.microsoft.com/en-us/windows/wsl/install) yapin.
 
-2. **yonsoon'u WSL icine yukleyin**
+2. **railwise'u WSL icine yukleyin**
 
-   WSL hazir olduktan sonra WSL terminalini acin ve yonsoon'u [kurulum yontemlerinden](/docs/) biriyle yukleyin.
+   WSL hazir olduktan sonra WSL terminalini acin ve railwise'u [kurulum yontemlerinden](/docs/) biriyle yukleyin.
 
    ```bash
-   curl -fsSL https://yonsoon.ai/install | bash
+   curl -fsSL https://railwise.ai/install | bash
    ```
 
-3. **yonsoon'u WSL icinden kullanin**
+3. **railwise'u WSL icinden kullanin**
 
-   Proje dizininize gidin (`/mnt/c/`, `/mnt/d/` vb. ile Windows dosyalarina erisebilirsiniz) ve yonsoon'u calistirin.
+   Proje dizininize gidin (`/mnt/c/`, `/mnt/d/` vb. ile Windows dosyalarina erisebilirsiniz) ve railwise'u calistirin.
 
    ```bash
    cd /mnt/c/Users/YourName/project
-   yonsoon
+   railwise
    ```
 
 </Steps>
@@ -44,12 +44,12 @@ WSL, daha iyi dosya sistemi performansi, tam terminal destegi ve yonsoon'un daya
 
 ## Masaüstü uygulaması + WSL sunucusu
 
-yonsoon Desktop kullanmak isteyip sunucuyu WSL'de calistirmak istiyorsaniz:
+railwise Desktop kullanmak isteyip sunucuyu WSL'de calistirmak istiyorsaniz:
 
 1. **Sunucuyu WSL'de baslatin** ve dis baglantilara izin vermek icin `--hostname 0.0.0.0` kullanin:
 
    ```bash
-   yonsoon serve --hostname 0.0.0.0 --port 4096
+   railwise serve --hostname 0.0.0.0 --port 4096
    ```
 
 2. **Desktop uygulamasini** `http://localhost:4096` adresine baglayin
@@ -59,10 +59,10 @@ Kurulumunuzda `localhost` calismiyorsa bunun yerine WSL IP adresini kullanin (WS
 :::
 
 :::caution
-`--hostname 0.0.0.0` kullaniyorsaniz sunucuyu guvene almak icin `YONSOON_SERVER_PASSWORD` ayarlayin.
+`--hostname 0.0.0.0` kullaniyorsaniz sunucuyu guvene almak icin `RAILWISE_SERVER_PASSWORD` ayarlayin.
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve --hostname 0.0.0.0
+RAILWISE_SERVER_PASSWORD=your-password railwise serve --hostname 0.0.0.0
 ```
 
 :::
@@ -73,15 +73,15 @@ YONSOON_SERVER_PASSWORD=your-password yonsoon serve --hostname 0.0.0.0
 
 Windows'ta en iyi web deneyimi icin:
 
-1. **`yonsoon web` komutunu PowerShell yerine WSL terminalinde calistirin**:
+1. **`railwise web` komutunu PowerShell yerine WSL terminalinde calistirin**:
 
    ```bash
-   yonsoon web --hostname 0.0.0.0
+   railwise web --hostname 0.0.0.0
    ```
 
-2. **Windows tarayicinizdan** `http://localhost:<port>` adresini acin (yonsoon URL'yi yazdirir)
+2. **Windows tarayicinizdan** `http://localhost:<port>` adresini acin (railwise URL'yi yazdirir)
 
-`yonsoon web` komutunu WSL'den calistirmak, dosya sistemi erisimi ve terminal entegrasyonunu daha tutarli hale getirirken tarayicidan erisimi korur.
+`railwise web` komutunu WSL'den calistirmak, dosya sistemi erisimi ve terminal entegrasyonunu daha tutarli hale getirirken tarayicidan erisimi korur.
 
 ---
 
@@ -97,17 +97,17 @@ Ornek:
 
 ```bash
 cd /mnt/c/Users/YourName/Documents/project
-yonsoon
+railwise
 ```
 
 :::tip
-En sorunsuz deneyim icin deponuzu WSL dosya sistemine (ornegin `~/code/` altina) klonlayip yonsoon'u orada calistirmayi dusunun.
+En sorunsuz deneyim icin deponuzu WSL dosya sistemine (ornegin `~/code/` altina) klonlayip railwise'u orada calistirmayi dusunun.
 :::
 
 ---
 
 ## İpuçları
 
-- Windows suruculerinde duran projelerde yonsoon'u WSL icinde calistirin - dosya erisimi daha sorunsuz olur
-- Butunlesik bir gelistirme akisi icin yonsoon ile birlikte VS Code [WSL eklentisini](https://code.visualstudio.com/docs/remote/wsl) kullanin
-- yonsoon konfigurasyonunuz ve oturumlariniz WSL ortaminda `~/.local/share/yonsoon/` konumunda saklanir
+- Windows suruculerinde duran projelerde railwise'u WSL icinde calistirin - dosya erisimi daha sorunsuz olur
+- Butunlesik bir gelistirme akisi icin railwise ile birlikte VS Code [WSL eklentisini](https://code.visualstudio.com/docs/remote/wsl) kullanin
+- railwise konfigurasyonunuz ve oturumlariniz WSL ortaminda `~/.local/share/railwise/` konumunda saklanir

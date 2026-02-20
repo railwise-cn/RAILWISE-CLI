@@ -1,18 +1,18 @@
 ---
 title: Za preduzeća
-description: Sigurno korištenje YONSOON (甬算) u vašoj organizaciji.
+description: Sigurno korištenje RAILWISE (甬算) u vašoj organizaciji.
 ---
 
 import config from "../../../../config.mjs"
 export const email = `mailto:${config.email}`
 
-YONSOON (甬算) Enterprise je za organizacije koje žele osigurati da njihov kod i podaci nikada ne napuštaju njihovu infrastrukturu. To omogućava centralizovana konfiguracija koja se integriše s vašim SSO-om i internim AI gateway-om.
+RAILWISE (甬算) Enterprise je za organizacije koje žele osigurati da njihov kod i podaci nikada ne napuštaju njihovu infrastrukturu. To omogućava centralizovana konfiguracija koja se integriše s vašim SSO-om i internim AI gateway-om.
 
 :::note
-YONSOON (甬算) ne pohranjuje nijedan vaš kod ili kontekstualne podatke.
+RAILWISE (甬算) ne pohranjuje nijedan vaš kod ili kontekstualne podatke.
 :::
 
-Da započnete s YONSOON (甬算) Enterprise:
+Da započnete s RAILWISE (甬算) Enterprise:
 
 1. Uradite interni probni period sa svojim timom.
 2. **<a href={email}>Kontaktirajte nas</a>** da razgovaramo o cijenama i opcijama implementacije.
@@ -21,15 +21,15 @@ Da započnete s YONSOON (甬算) Enterprise:
 
 ## Proba
 
-YONSOON (甬算) je otvorenog koda i ne pohranjuje vaš kod niti kontekstualne podatke, tako da vaši developeri mogu jednostavno [započeti](/docs/) i provesti probu.
+RAILWISE (甬算) je otvorenog koda i ne pohranjuje vaš kod niti kontekstualne podatke, tako da vaši developeri mogu jednostavno [započeti](/docs/) i provesti probu.
 
 ---
 
 ### Rukovanje podacima
 
-**YONSOON (甬算) ne pohranjuje vaš kod ni kontekstualne podatke.** Sva obrada se odvija lokalno ili putem direktnih API poziva vašem AI provajderu.
+**RAILWISE (甬算) ne pohranjuje vaš kod ni kontekstualne podatke.** Sva obrada se odvija lokalno ili putem direktnih API poziva vašem AI provajderu.
 
-To znači da, sve dok koristite provajdera kojem vjerujete ili interni AI gateway, YONSOON (甬算) možete koristiti sigurno.
+To znači da, sve dok koristite provajdera kojem vjerujete ili interni AI gateway, RAILWISE (甬算) možete koristiti sigurno.
 
 Jedina iznimka je opcionalna funkcija `/share`.
 
@@ -37,15 +37,15 @@ Jedina iznimka je opcionalna funkcija `/share`.
 
 #### Dijeljenje razgovora
 
-Ako korisnik uključi funkciju `/share`, razgovor i povezani podaci šalju se servisu koji koristimo za hosting ovih share stranica na yonsoon.ai.
+Ako korisnik uključi funkciju `/share`, razgovor i povezani podaci šalju se servisu koji koristimo za hosting ovih share stranica na railwise.ai.
 
 Podaci se trenutno serviraju kroz edge mrežu našeg CDN-a i keširaju se blizu korisnika.
 
 Preporučujemo da ovo onemogućite tokom probe.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "share": "disabled"
 }
 ```
@@ -56,25 +56,25 @@ Preporučujemo da ovo onemogućite tokom probe.
 
 ### Vlasništvo koda
 
-**Vi posjedujete sav kod koji YONSOON (甬算) proizvede.** Nema ograničenja licenciranja niti zahtjeva za vlasništvo.
+**Vi posjedujete sav kod koji RAILWISE (甬算) proizvede.** Nema ograničenja licenciranja niti zahtjeva za vlasništvo.
 
 ---
 
 ## Cijene
 
-Koristimo model naplate po sjedištu za YONSOON (甬算) Enterprise. Ako imate vlastiti LLM gateway, ne naplaćujemo korištene tokene. Za više detalja o cijenama i opcijama implementacije, **<a href={email}>kontaktirajte nas</a>**.
+Koristimo model naplate po sjedištu za RAILWISE (甬算) Enterprise. Ako imate vlastiti LLM gateway, ne naplaćujemo korištene tokene. Za više detalja o cijenama i opcijama implementacije, **<a href={email}>kontaktirajte nas</a>**.
 
 ---
 
 ## Postavljanje
 
-Nakon što završite probni period i spremni ste koristiti YONSOON (甬算) u svojoj organizaciji, možete **<a href={email}>kontaktirati nas</a>** da razgovaramo o cijenama i opcijama implementacije.
+Nakon što završite probni period i spremni ste koristiti RAILWISE (甬算) u svojoj organizaciji, možete **<a href={email}>kontaktirati nas</a>** da razgovaramo o cijenama i opcijama implementacije.
 
 ---
 
 ### Centralna konfiguracija
 
-Možemo postaviti YONSOON (甬算) da koristi jednu centralnu konfiguraciju za cijelu organizaciju.
+Možemo postaviti RAILWISE (甬算) da koristi jednu centralnu konfiguraciju za cijelu organizaciju.
 
 Ta centralizovana konfiguracija može se integrisati s vašim SSO provajderom i osigurava da svi korisnici pristupaju samo vašem internom AI gateway-u.
 
@@ -82,15 +82,15 @@ Ta centralizovana konfiguracija može se integrisati s vašim SSO provajderom i 
 
 ### SSO integracija
 
-Kroz centralnu konfiguraciju, YONSOON (甬算) se može integrisati sa SSO provajderom vaše organizacije za autentifikaciju.
+Kroz centralnu konfiguraciju, RAILWISE (甬算) se može integrisati sa SSO provajderom vaše organizacije za autentifikaciju.
 
-To omogućava YONSOON (甬算) da dobije vjerodajnice za interni AI gateway kroz vaš postojeći sistem upravljanja identitetom.
+To omogućava RAILWISE (甬算) da dobije vjerodajnice za interni AI gateway kroz vaš postojeći sistem upravljanja identitetom.
 
 ---
 
 ### Interni AI gateway
 
-Uz centralnu konfiguraciju, YONSOON (甬算) se može podesiti da koristi samo vaš interni AI gateway.
+Uz centralnu konfiguraciju, RAILWISE (甬算) se može podesiti da koristi samo vaš interni AI gateway.
 
 Također možete onemogućiti sve druge AI provajdere, čime osiguravate da svi zahtjevi prolaze kroz odobrenu infrastrukturu vaše organizacije.
 
@@ -107,16 +107,16 @@ Ovo je trenutno na našoj mapi puta. Ako ste zainteresovani, **<a href={email}>j
 ## Često postavljana pitanja
 
 <details>
-<summary>Šta je YONSOON (甬算) Enterprise?</summary>
+<summary>Šta je RAILWISE (甬算) Enterprise?</summary>
 
-YONSOON (甬算) Enterprise je za organizacije koje žele osigurati da njihov kod i podaci nikada ne napuštaju njihovu infrastrukturu. To omogućava centralizovana konfiguracija koja se integriše s vašim SSO-om i internim AI gateway-om.
+RAILWISE (甬算) Enterprise je za organizacije koje žele osigurati da njihov kod i podaci nikada ne napuštaju njihovu infrastrukturu. To omogućava centralizovana konfiguracija koja se integriše s vašim SSO-om i internim AI gateway-om.
 
 </details>
 
 <details>
-<summary>Kako započeti s YONSOON (甬算) Enterprise?</summary>
+<summary>Kako započeti s RAILWISE (甬算) Enterprise?</summary>
 
-Jednostavno započnite internu probu sa svojim timom. YONSOON (甬算) po defaultu ne pohranjuje vaš kod ni kontekstualne podatke, što olakšava početak.
+Jednostavno započnite internu probu sa svojim timom. RAILWISE (甬算) po defaultu ne pohranjuje vaš kod ni kontekstualne podatke, što olakšava početak.
 
 Zatim **<a href={email}>kontaktirajte nas</a>** da razgovaramo o cijenama i opcijama implementacije.
 
@@ -130,16 +130,16 @@ Nudimo enterprise cijene po sjedištu. Ako imate vlastiti LLM gateway, ne napla�
 </details>
 
 <details>
-<summary>Jesu li moji podaci sigurni uz YONSOON (甬算) Enterprise?</summary>
+<summary>Jesu li moji podaci sigurni uz RAILWISE (甬算) Enterprise?</summary>
 
-Da. YONSOON (甬算) ne pohranjuje vaš kod niti kontekstualne podatke. Sva obrada se odvija lokalno ili putem direktnih API poziva vašem AI provajderu. Uz centralnu konfiguraciju i SSO integraciju, vaši podaci ostaju sigurni unutar infrastrukture vaše organizacije.
+Da. RAILWISE (甬算) ne pohranjuje vaš kod niti kontekstualne podatke. Sva obrada se odvija lokalno ili putem direktnih API poziva vašem AI provajderu. Uz centralnu konfiguraciju i SSO integraciju, vaši podaci ostaju sigurni unutar infrastrukture vaše organizacije.
 
 </details>
 
 <details>
 <summary>Možemo li koristiti vlastiti privatni NPM registar?</summary>
 
-YONSOON (甬算) podržava privatne npm registre kroz Bunovu izvornu podršku za `.npmrc` datoteku. Ako vaša organizacija koristi privatni registar, kao što je JFrog Artifactory, Nexus ili slično, osigurajte da su developeri autentifikovani prije pokretanja YONSOON (甬算).
+RAILWISE (甬算) podržava privatne npm registre kroz Bunovu izvornu podršku za `.npmrc` datoteku. Ako vaša organizacija koristi privatni registar, kao što je JFrog Artifactory, Nexus ili slično, osigurajte da su developeri autentifikovani prije pokretanja RAILWISE (甬算).
 
 Da postavite autentifikaciju s privatnim registrom:
 
@@ -147,10 +147,10 @@ Da postavite autentifikaciju s privatnim registrom:
 npm login --registry=https://your-company.jfrog.io/api/npm/npm-virtual/
 ```
 
-Ovo kreira `~/.npmrc` s detaljima za autentifikaciju. YONSOON (甬算) će to automatski prepoznati.
+Ovo kreira `~/.npmrc` s detaljima za autentifikaciju. RAILWISE (甬算) će to automatski prepoznati.
 
 :::caution
-Morate biti prijavljeni na privatni registar prije pokretanja YONSOON (甬算).
+Morate biti prijavljeni na privatni registar prije pokretanja RAILWISE (甬算).
 :::
 
 Alternativno, možete ručno konfigurisati `.npmrc` datoteku:
@@ -160,6 +160,6 @@ registry=https://your-company.jfrog.io/api/npm/npm-virtual/
 //your-company.jfrog.io/api/npm/npm-virtual/:_authToken=${NPM_AUTH_TOKEN}
 ```
 
-Developeri moraju biti prijavljeni na privatni registar prije pokretanja YONSOON (甬算) kako bi se paketi mogli instalirati iz vašeg enterprise registra.
+Developeri moraju biti prijavljeni na privatni registar prije pokretanja RAILWISE (甬算) kako bi se paketi mogli instalirati iz vašeg enterprise registra.
 
 </details>

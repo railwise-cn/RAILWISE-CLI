@@ -3,11 +3,11 @@ title: Tastebindinger
 description: Tilpas dine nøglebindinger.
 ---
 
-YONSOON (甬算) har en liste over nøglebindinger, som du kan tilpasse gennem YONSOON (甬算)-konfigurationen.
+RAILWISE (甬算) har en liste over nøglebindinger, som du kan tilpasse gennem RAILWISE (甬算)-konfigurationen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ YONSOON (甬算) har en liste over nøglebindinger, som du kan tilpasse gennem Y
 
 ## Ledertast
 
-YONSOON (甬算) bruger en `leader` nøgle til de fleste smagsbindinger. Dette undgår konflikter i din terminal.
+RAILWISE (甬算) bruger en `leader` nøgle til de fleste smagsbindinger. Dette undgår konflikter i din terminal.
 
 Som standard er `ctrl+x` ledertasten, og de fleste handlinger kræver, at du først trykker på ledertasten og derefter genvejen. For eksempel, for at starte en ny session, skal du først trykke på `ctrl+x` og derefter trykke på `n`.
 
@@ -119,9 +119,9 @@ Du behøver ikke bruge en ledernøgle til dine nøglebindinger, men vi anbefaler
 
 Du kan deaktivere en nøglebinding ved at tilføje nøglen til din konfiguration med værdien "ingen".
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -132,7 +132,7 @@ Du kan deaktivere en nøglebinding ved at tilføje nøglen til din konfiguration
 
 ## Genveje til skrivebordsprompt
 
-YONSOON (甬算) desktop app prompt input understøtter almindelige Readline/Emacs-style genveje til redigering af tekst. Disse er indbyggede og i øjeblikket ikke konfigurerede via `yonsoon.json`.
+RAILWISE (甬算) desktop app prompt input understøtter almindelige Readline/Emacs-style genveje til redigering af tekst. Disse er indbyggede og i øjeblikket ikke konfigurerede via `railwise.json`.
 
 | Genvej   | Håndtering                                  |
 | -------- | ------------------------------------------- |

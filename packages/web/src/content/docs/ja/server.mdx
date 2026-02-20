@@ -1,19 +1,19 @@
 ---
 title: サーバー
-description: HTTP 経由で YONSOON (甬算) サーバーと通信します。
+description: HTTP 経由で RAILWISE (甬算) サーバーと通信します。
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-`yonsoon serve` コマンドは、YONSOON (甬算) クライアントが使用できる OpenAPI エンドポイントを公開するヘッドレス HTTP サーバーを実行します。
+`railwise serve` コマンドは、RAILWISE (甬算) クライアントが使用できる OpenAPI エンドポイントを公開するヘッドレス HTTP サーバーを実行します。
 
 ---
 
 ### 使用法
 
 ```bash
-yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
 ```
 
 #### オプション
@@ -23,36 +23,36 @@ yonsoon serve [--port <number>] [--hostname <string>] [--cors <origin>]
 | `--port`        | リッスンするポート                | `4096`           |
 | `--hostname`    | リッスンするホスト名              | `127.0.0.1`      |
 | `--mdns`        | mDNS 検出を有効にする             | `false`          |
-| `--mdns-domain` | mDNS サービスのカスタムドメイン名 | `yonsoon.local` |
+| `--mdns-domain` | mDNS サービスのカスタムドメイン名 | `railwise.local` |
 | `--cors`        | 許可する追加のブラウザーオリジン  | `[]`             |
 
 `--cors` は複数回渡すことができます。
 
 ```bash
-yonsoon serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
 ```
 
 ---
 
 ### 認証
 
-HTTP 基本認証でサーバーを保護するには、`YONSOON_SERVER_PASSWORD` を設定します。ユーザー名はデフォルトで `yonsoon` になるか、`YONSOON_SERVER_USERNAME` を設定してオーバーライドします。これは、`yonsoon serve` と `yonsoon web` の両方に当てはまります。
+HTTP 基本認証でサーバーを保護するには、`RAILWISE_SERVER_PASSWORD` を設定します。ユーザー名はデフォルトで `railwise` になるか、`RAILWISE_SERVER_USERNAME` を設定してオーバーライドします。これは、`railwise serve` と `railwise web` の両方に当てはまります。
 
 ```bash
-YONSOON_SERVER_PASSWORD=your-password yonsoon serve
+RAILWISE_SERVER_PASSWORD=your-password railwise serve
 ```
 
 ---
 
 ### 仕組み
 
-`yonsoon` を実行すると、TUI とサーバーが起動します。 TUI はサーバーと通信するクライアントです。サーバーは OpenAPI 3.1 仕様のエンドポイントを公開します。このエンドポイントは、[SDK](/docs/sdk) を使用してアクセスできます。
+`railwise` を実行すると、TUI とサーバーが起動します。 TUI はサーバーと通信するクライアントです。サーバーは OpenAPI 3.1 仕様のエンドポイントを公開します。このエンドポイントは、[SDK](/docs/sdk) を使用してアクセスできます。
 
 :::tip
-YONSOON (甬算) サーバーを使用して、プログラムで YONSOON (甬算) と対話します。
+RAILWISE (甬算) サーバーを使用して、プログラムで RAILWISE (甬算) と対話します。
 :::
 
-`yonsoon serve` を実行してスタンドアロンサーバーを起動できます。すでに YONSOON (甬算) TUI を実行している場合でも、`yonsoon serve` は新しいサーバーを起動します。
+`railwise serve` を実行してスタンドアロンサーバーを起動できます。すでに RAILWISE (甬算) TUI を実行している場合でも、`railwise serve` は新しいサーバーを起動します。
 
 ---
 
@@ -60,7 +60,7 @@ YONSOON (甬算) サーバーを使用して、プログラムで YONSOON (甬�
 
 TUI を起動すると、ポートとホスト名がランダムに割り当てられます。代わりに、`--hostname` と `--port` [フラグ](/docs/cli) を使用して固定できます。次に、これを使用してサーバーに接続します。
 
-[`/tui`](#tui) エンドポイントは、サーバー経由で TUI を駆動するために使用できます。たとえば、プロンプトを事前入力したり、実行したりできます。この設定は、YONSOON (甬算) [IDE](/docs/ide) プラグインによって使用されます。
+[`/tui`](#tui) エンドポイントは、サーバー経由で TUI を駆動するために使用できます。たとえば、プロンプトを事前入力したり、実行したりできます。この設定は、RAILWISE (甬算) [IDE](/docs/ide) プラグインによって使用されます。
 
 ---
 
@@ -78,7 +78,7 @@ http://<hostname>:<port>/doc
 
 ## API
 
-YONSOON (甬算) サーバーは次の API を公開します。
+RAILWISE (甬算) サーバーは次の API を公開します。
 
 ---
 

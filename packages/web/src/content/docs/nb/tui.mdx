@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: Bruke yonsoon-terminalbrukergrensesnittet.
+description: Bruke railwise-terminalbrukergrensesnittet.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-yonsoon gir et interaktivt terminalgrensesnitt (TUI) for å jobbe med prosjektene dine med en LLM.
+railwise gir et interaktivt terminalgrensesnitt (TUI) for å jobbe med prosjektene dine med en LLM.
 
-Å kjøre yonsoon starter TUI for gjeldende katalog.
+Å kjøre railwise starter TUI for gjeldende katalog.
 
 ```bash
-yonsoon
+railwise
 ```
 
 Eller du kan starte den for en spesifikk arbeidskatalog.
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 Når du er i TUI, kan du stille den spørsmål med en prompt.
@@ -57,7 +57,7 @@ Utdataene fra kommandoen legges til samtalen som et verktøyresultat.
 
 ## Kommandoer
 
-Når du bruker yonsoon TUI, kan du skrive `/` etterfulgt av et kommandonavn for raskt å utføre handlinger. For eksempel:
+Når du bruker railwise TUI, kan du skrive `/` etterfulgt av et kommandonavn for raskt å utføre handlinger. For eksempel:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ Her er alle tilgjengelige slash-kommandoer:
 
 ### connect
 
-Legg til en leverandør til yonsoon. Lar deg velge fra tilgjengelige leverandører og legge til deres API-nøkler.
+Legg til en leverandør til railwise. Lar deg velge fra tilgjengelige leverandører og legge til deres API-nøkler.
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ Veksle visning av verktøydetaljer.
 
 ### exit
 
-Avslutt yonsoon. _Aliaser_: `/quit`, `/q`
+Avslutt railwise. _Aliaser_: `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -355,11 +355,11 @@ Noen editorer trenger kommandolinjeargumenter for å kjøre i blokkeringsmodus. 
 
 ## Konfigurasjon
 
-Du kan tilpasse TUI-oppførselen gjennom yonsoon-konfigurasjonsfilen.
+Du kan tilpasse TUI-oppførselen gjennom railwise-konfigurasjonsfilen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

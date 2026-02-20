@@ -31,7 +31,7 @@ export default defineConfig({
     configSchema(),
     solidJs(),
     starlight({
-      title: "YONSOON (甬算)",
+      title: "RAILWISE (甬算)",
       defaultLocale: "root",
       locales: {
         root: {
@@ -291,7 +291,7 @@ function configSchema() {
     hooks: {
       "astro:build:done": async () => {
         console.log("generating config schema")
-        spawnSync("../yonsoon/script/schema.ts", ["./dist/config.json"])
+        spawnSync("../railwise/script/schema.ts", ["./dist/config.json"])
       },
     },
   }

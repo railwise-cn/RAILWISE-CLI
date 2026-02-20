@@ -37,7 +37,7 @@ jobs:
 
       - name: Install opencode
         if: steps.team-check.outputs.is_team != 'true'
-        run: curl -fsSL https://yonsoon.ai/install | bash
+        run: curl -fsSL https://railwise.ai/install | bash
 
       - name: Build prompt
         if: steps.team-check.outputs.is_team != 'true'
@@ -59,7 +59,7 @@ jobs:
       - name: Check for duplicate PRs
         if: steps.team-check.outputs.is_team != 'true'
         env:
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |

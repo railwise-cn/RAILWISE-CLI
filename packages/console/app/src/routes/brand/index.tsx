@@ -5,31 +5,31 @@ import { Footer } from "~/component/footer"
 import { Legal } from "~/component/legal"
 import { useI18n } from "~/context/i18n"
 import { LocaleLinks } from "~/component/locale-links"
-import previewLogoLight from "../../asset/brand/preview-yonsoon-logo-light.png"
-import previewLogoDark from "../../asset/brand/preview-yonsoon-logo-dark.png"
-import previewLogoLightSquare from "../../asset/brand/preview-yonsoon-logo-light-square.png"
-import previewLogoDarkSquare from "../../asset/brand/preview-yonsoon-logo-dark-square.png"
-import previewWordmarkLight from "../../asset/brand/preview-yonsoon-wordmark-light.png"
-import previewWordmarkDark from "../../asset/brand/preview-yonsoon-wordmark-dark.png"
-import previewWordmarkSimpleLight from "../../asset/brand/preview-yonsoon-wordmark-simple-light.png"
-import previewWordmarkSimpleDark from "../../asset/brand/preview-yonsoon-wordmark-simple-dark.png"
-import logoLightPng from "../../asset/brand/yonsoon-logo-light.png"
-import logoDarkPng from "../../asset/brand/yonsoon-logo-dark.png"
-import logoLightSquarePng from "../../asset/brand/yonsoon-logo-light-square.png"
-import logoDarkSquarePng from "../../asset/brand/yonsoon-logo-dark-square.png"
-import wordmarkLightPng from "../../asset/brand/yonsoon-wordmark-light.png"
-import wordmarkDarkPng from "../../asset/brand/yonsoon-wordmark-dark.png"
-import wordmarkSimpleLightPng from "../../asset/brand/yonsoon-wordmark-simple-light.png"
-import wordmarkSimpleDarkPng from "../../asset/brand/yonsoon-wordmark-simple-dark.png"
-import logoLightSvg from "../../asset/brand/yonsoon-logo-light.svg"
-import logoDarkSvg from "../../asset/brand/yonsoon-logo-dark.svg"
-import logoLightSquareSvg from "../../asset/brand/yonsoon-logo-light-square.svg"
-import logoDarkSquareSvg from "../../asset/brand/yonsoon-logo-dark-square.svg"
-import wordmarkLightSvg from "../../asset/brand/yonsoon-wordmark-light.svg"
-import wordmarkDarkSvg from "../../asset/brand/yonsoon-wordmark-dark.svg"
-import wordmarkSimpleLightSvg from "../../asset/brand/yonsoon-wordmark-simple-light.svg"
-import wordmarkSimpleDarkSvg from "../../asset/brand/yonsoon-wordmark-simple-dark.svg"
-const brandAssets = "/yonsoon-brand-assets.zip"
+import previewLogoLight from "../../asset/brand/preview-railwise-logo-light.png"
+import previewLogoDark from "../../asset/brand/preview-railwise-logo-dark.png"
+import previewLogoLightSquare from "../../asset/brand/preview-railwise-logo-light-square.png"
+import previewLogoDarkSquare from "../../asset/brand/preview-railwise-logo-dark-square.png"
+import previewWordmarkLight from "../../asset/brand/preview-railwise-wordmark-light.png"
+import previewWordmarkDark from "../../asset/brand/preview-railwise-wordmark-dark.png"
+import previewWordmarkSimpleLight from "../../asset/brand/preview-railwise-wordmark-simple-light.png"
+import previewWordmarkSimpleDark from "../../asset/brand/preview-railwise-wordmark-simple-dark.png"
+import logoLightPng from "../../asset/brand/railwise-logo-light.png"
+import logoDarkPng from "../../asset/brand/railwise-logo-dark.png"
+import logoLightSquarePng from "../../asset/brand/railwise-logo-light-square.png"
+import logoDarkSquarePng from "../../asset/brand/railwise-logo-dark-square.png"
+import wordmarkLightPng from "../../asset/brand/railwise-wordmark-light.png"
+import wordmarkDarkPng from "../../asset/brand/railwise-wordmark-dark.png"
+import wordmarkSimpleLightPng from "../../asset/brand/railwise-wordmark-simple-light.png"
+import wordmarkSimpleDarkPng from "../../asset/brand/railwise-wordmark-simple-dark.png"
+import logoLightSvg from "../../asset/brand/railwise-logo-light.svg"
+import logoDarkSvg from "../../asset/brand/railwise-logo-dark.svg"
+import logoLightSquareSvg from "../../asset/brand/railwise-logo-light-square.svg"
+import logoDarkSquareSvg from "../../asset/brand/railwise-logo-dark-square.svg"
+import wordmarkLightSvg from "../../asset/brand/railwise-wordmark-light.svg"
+import wordmarkDarkSvg from "../../asset/brand/railwise-wordmark-dark.svg"
+import wordmarkSimpleLightSvg from "../../asset/brand/railwise-wordmark-simple-light.svg"
+import wordmarkSimpleDarkSvg from "../../asset/brand/railwise-wordmark-simple-dark.svg"
+const brandAssets = "/railwise-brand-assets.zip"
 
 export default function Brand() {
   const i18n = useI18n()
@@ -73,7 +73,7 @@ export default function Brand() {
             <p>{i18n.t("brand.subtitle")}</p>
             <button
               data-component="download-button"
-              onClick={() => downloadFile(brandAssets, "yonsoon-brand-assets.zip")}
+              onClick={() => downloadFile(brandAssets, "railwise-brand-assets.zip")}
             >
               {i18n.t("brand.downloadAll")}
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,9 +88,9 @@ export default function Brand() {
 
             <div data-component="brand-grid">
               <div>
-                <img src={previewLogoLight} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewLogoLight} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(logoLightPng, "yonsoon-logo-light.png")}>
+                  <button onClick={() => downloadFile(logoLightPng, "railwise-logo-light.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -101,7 +101,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(logoLightSvg, "yonsoon-logo-light.svg")}>
+                  <button onClick={() => downloadFile(logoLightSvg, "railwise-logo-light.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -115,9 +115,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewLogoDark} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewLogoDark} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(logoDarkPng, "yonsoon-logo-dark.png")}>
+                  <button onClick={() => downloadFile(logoDarkPng, "railwise-logo-dark.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -128,7 +128,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(logoDarkSvg, "yonsoon-logo-dark.svg")}>
+                  <button onClick={() => downloadFile(logoDarkSvg, "railwise-logo-dark.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -142,9 +142,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewLogoLightSquare} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewLogoLightSquare} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(logoLightSquarePng, "yonsoon-logo-light-square.png")}>
+                  <button onClick={() => downloadFile(logoLightSquarePng, "railwise-logo-light-square.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -155,7 +155,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(logoLightSquareSvg, "yonsoon-logo-light-square.svg")}>
+                  <button onClick={() => downloadFile(logoLightSquareSvg, "railwise-logo-light-square.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -169,9 +169,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewLogoDarkSquare} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewLogoDarkSquare} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(logoDarkSquarePng, "yonsoon-logo-dark-square.png")}>
+                  <button onClick={() => downloadFile(logoDarkSquarePng, "railwise-logo-dark-square.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -182,7 +182,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(logoDarkSquareSvg, "yonsoon-logo-dark-square.svg")}>
+                  <button onClick={() => downloadFile(logoDarkSquareSvg, "railwise-logo-dark-square.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -196,9 +196,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkLight} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewWordmarkLight} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(wordmarkLightPng, "yonsoon-wordmark-light.png")}>
+                  <button onClick={() => downloadFile(wordmarkLightPng, "railwise-wordmark-light.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -209,7 +209,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(wordmarkLightSvg, "yonsoon-wordmark-light.svg")}>
+                  <button onClick={() => downloadFile(wordmarkLightSvg, "railwise-wordmark-light.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -223,9 +223,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkDark} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewWordmarkDark} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(wordmarkDarkPng, "yonsoon-wordmark-dark.png")}>
+                  <button onClick={() => downloadFile(wordmarkDarkPng, "railwise-wordmark-dark.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -236,7 +236,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(wordmarkDarkSvg, "yonsoon-wordmark-dark.svg")}>
+                  <button onClick={() => downloadFile(wordmarkDarkSvg, "railwise-wordmark-dark.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -250,9 +250,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkSimpleLight} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewWordmarkSimpleLight} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(wordmarkSimpleLightPng, "yonsoon-wordmark-simple-light.png")}>
+                  <button onClick={() => downloadFile(wordmarkSimpleLightPng, "railwise-wordmark-simple-light.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -263,7 +263,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(wordmarkSimpleLightSvg, "yonsoon-wordmark-simple-light.svg")}>
+                  <button onClick={() => downloadFile(wordmarkSimpleLightSvg, "railwise-wordmark-simple-light.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -277,9 +277,9 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkSimpleDark} alt="YONSOON (甬算) brand guidelines" />
+                <img src={previewWordmarkSimpleDark} alt="RAILWISE (甬算) brand guidelines" />
                 <div data-component="actions">
-                  <button onClick={() => downloadFile(wordmarkSimpleDarkPng, "yonsoon-wordmark-simple-dark.png")}>
+                  <button onClick={() => downloadFile(wordmarkSimpleDarkPng, "railwise-wordmark-simple-dark.png")}>
                     PNG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -290,7 +290,7 @@ export default function Brand() {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => downloadFile(wordmarkSimpleDarkSvg, "yonsoon-wordmark-simple-dark.svg")}>
+                  <button onClick={() => downloadFile(wordmarkSimpleDarkSvg, "railwise-wordmark-simple-dark.svg")}>
                     SVG
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path

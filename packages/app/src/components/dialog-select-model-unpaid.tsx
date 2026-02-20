@@ -1,11 +1,11 @@
-import { Button } from "@yonsoon/ui/button"
-import { useDialog } from "@yonsoon/ui/context/dialog"
-import { Dialog } from "@yonsoon/ui/dialog"
-import type { IconName } from "@yonsoon/ui/icons/provider"
-import { List, type ListRef } from "@yonsoon/ui/list"
-import { ProviderIcon } from "@yonsoon/ui/provider-icon"
-import { Tag } from "@yonsoon/ui/tag"
-import { Tooltip } from "@yonsoon/ui/tooltip"
+import { Button } from "@railwise/ui/button"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { Dialog } from "@railwise/ui/dialog"
+import type { IconName } from "@railwise/ui/icons/provider"
+import { List, type ListRef } from "@railwise/ui/list"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
+import { Tag } from "@railwise/ui/tag"
+import { Tooltip } from "@railwise/ui/tooltip"
 import { type Component, Show } from "solid-js"
 import { useLocal } from "@/context/local"
 import { popularProviders, useProviders } from "@/hooks/use-providers"
@@ -48,7 +48,7 @@ export const DialogSelectModelUnpaid: Component = () => {
                 <ModelTooltip
                   model={item}
                   latest={item.latest}
-                  free={item.provider.id === "yonsoon" && (!item.cost || item.cost.input === 0)}
+                  free={item.provider.id === "railwise" && (!item.cost || item.cost.input === 0)}
                 />
               }
             >
@@ -97,7 +97,7 @@ export const DialogSelectModelUnpaid: Component = () => {
                   <div class="w-full flex items-center gap-x-3">
                     <ProviderIcon data-slot="list-item-extra-icon" id={i.id as IconName} />
                     <span>{i.name}</span>
-                    <Show when={i.id === "yonsoon"}>
+                    <Show when={i.id === "railwise"}>
                       <Tag>{language.t("dialog.provider.tag.recommended")}</Tag>
                     </Show>
                     <Show when={i.id === "anthropic"}>

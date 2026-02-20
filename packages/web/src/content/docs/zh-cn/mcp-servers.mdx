@@ -23,11 +23,11 @@ MCP 服务器会占用你的上下文空间，所以请谨慎选择启用哪些�
 
 ## 启用
 
-你可以在 [OpenCode 配置](https://yonsoon.ai/docs/config/)的 `mcp` 字段下定义 MCP 服务器。为每个 MCP 指定一个唯一的名称，在提示词中可以通过该名称来引用对应的 MCP。
+你可以在 [OpenCode 配置](https://railwise.ai/docs/config/)的 `mcp` 字段下定义 MCP 服务器。为每个 MCP 指定一个唯一的名称，在提示词中可以通过该名称来引用对应的 MCP。
 
-```jsonc title="yonsoon.jsonc" {6}
+```jsonc title="railwise.jsonc" {6}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "name-of-mcp-server": {
       // ...
@@ -46,13 +46,13 @@ MCP 服务器会占用你的上下文空间，所以请谨慎选择启用哪些�
 
 ### 覆盖远程默认值
 
-组织可以通过其 `.well-known/yonsoon` 端点提供默认的 MCP 服务器。这些服务器可能默认处于禁用状态，允许用户按需启用。
+组织可以通过其 `.well-known/railwise` 端点提供默认的 MCP 服务器。这些服务器可能默认处于禁用状态，允许用户按需启用。
 
 要启用组织远程配置中的某个服务器，请在本地配置中添加该服务器并设置 `enabled: true`：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "jira": {
       "type": "remote",
@@ -71,9 +71,9 @@ MCP 服务器会占用你的上下文空间，所以请谨慎选择启用哪些�
 
 通过在 MCP 对象中将 `type` 设置为 `"local"` 来添加本地 MCP 服务器。
 
-```jsonc title="yonsoon.jsonc" {15}
+```jsonc title="railwise.jsonc" {15}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-local-mcp-server": {
       "type": "local",
@@ -92,9 +92,9 @@ MCP 服务器会占用你的上下文空间，所以请谨慎选择启用哪些�
 
 例如，以下是添加测试用的 [`@modelcontextprotocol/server-everything`](https://www.npmjs.com/package/@modelcontextprotocol/server-everything) MCP 服务器的方法。
 
-```jsonc title="yonsoon.jsonc"
+```jsonc title="railwise.jsonc"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "mcp_everything": {
       "type": "local",
@@ -130,9 +130,9 @@ use the mcp_everything tool to add the number 3 and 4
 
 通过将 `type` 设置为 `"remote"` 来添加远程 MCP 服务器。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-remote-mcp": {
       "type": "remote",
@@ -177,9 +177,9 @@ OpenCode 会自动处理远程 MCP 服务器的 OAuth 身份验证。当服务�
 
 对于大多数支持 OAuth 的 MCP 服务器，无需特殊配置。只需配置远程服务器即可：
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -197,9 +197,9 @@ OpenCode 会自动处理远程 MCP 服务器的 OAuth 身份验证。当服务�
 
 如果你已经从 MCP 服务器提供商处获得了客户端凭据，可以直接配置：
 
-```json title="yonsoon.json" {7-11}
+```json title="railwise.json" {7-11}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -246,9 +246,9 @@ opencode mcp logout my-oauth-server
 
 如果你想为某个服务器禁用自动 OAuth（例如，该服务器使用 API 密钥而非 OAuth），可以将 `oauth` 设置为 `false`：
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-api-key-server": {
       "type": "remote",
@@ -299,9 +299,9 @@ opencode mcp debug my-oauth-server
 
 你可以全局启用或禁用 MCP 工具。
 
-```json title="yonsoon.json" {14}
+```json title="railwise.json" {14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -320,9 +320,9 @@ opencode mcp debug my-oauth-server
 
 也可以使用 glob 模式来禁用所有匹配的 MCP。
 
-```json title="yonsoon.json" {14}
+```json title="railwise.json" {14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -350,9 +350,9 @@ opencode mcp debug my-oauth-server
 1. 全局禁用该工具。
 2. 在[代理配置](/docs/agents#tools)中，将 MCP 服务器作为工具启用。
 
-```json title="yonsoon.json" {11, 14-18}
+```json title="railwise.json" {11, 14-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "my-mcp": {
       "type": "local",
@@ -404,9 +404,9 @@ MCP 服务器工具在注册时以服务器名称作为前缀，因此要禁用�
 
 添加 [Sentry MCP 服务器](https://mcp.sentry.dev) 以与你的 Sentry 项目和问题进行交互。
 
-```json title="yonsoon.json" {4-8}
+```json title="railwise.json" {4-8}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "sentry": {
       "type": "remote",
@@ -437,9 +437,9 @@ Show me the latest unresolved issues in my project. use sentry
 
 添加 [Context7 MCP 服务器](https://github.com/upstash/context7) 以搜索文档。
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -451,9 +451,9 @@ Show me the latest unresolved issues in my project. use sentry
 
 如果你注册了免费账户，可以使用 API 密钥来获得更高的速率限制。
 
-```json title="yonsoon.json" {7-9}
+```json title="railwise.json" {7-9}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -486,9 +486,9 @@ When you need to search docs, use `context7` tools.
 
 添加 [Grep by Vercel](https://grep.app) MCP 服务器以搜索 GitHub 上的代码片段。
 
-```json title="yonsoon.json" {4-7}
+```json title="railwise.json" {4-7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "mcp": {
     "gh_grep": {
       "type": "remote",

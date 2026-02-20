@@ -149,7 +149,7 @@ describe("buildRequestParts", () => {
       text: "@README.md",
       messageID: "msg_mac_1",
       sessionID: "ses_mac_1",
-      sessionDirectory: "/Users/kelvin/Projects/yonsoon",
+      sessionDirectory: "/Users/kelvin/Projects/railwise",
     })
 
     const filePart = result.requestParts.find((part) => part.type === "file")
@@ -158,7 +158,7 @@ describe("buildRequestParts", () => {
       // URL should be parseable
       expect(() => new URL(filePart.url)).not.toThrow()
       // Should be a normal Unix path
-      expect(filePart.url).toBe("file:///Users/kelvin/Projects/yonsoon/README.md")
+      expect(filePart.url).toBe("file:///Users/kelvin/Projects/railwise/README.md")
     }
   })
 

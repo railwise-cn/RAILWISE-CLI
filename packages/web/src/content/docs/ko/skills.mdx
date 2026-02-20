@@ -3,7 +3,7 @@ title: "에이전트 스킬"
 description: "SKILL.md 정의를 통해 재사용 가능한 동작을 정의합니다."
 ---
 
-Agent Skill let yonsoon discover reusable instruction from your repo 또는 홈 디렉토리.
+Agent Skill let railwise discover reusable instruction from your repo 또는 홈 디렉토리.
 Skills are loaded on-demand via native `skill` tool-agents see available skills and can loaded full content when needed.
 
 ---
@@ -11,10 +11,10 @@ Skills are loaded on-demand via native `skill` tool-agents see available skills 
 ## 파일 위치
 
 기술 이름 당 하나의 폴더를 만들고 내부 `SKILL.md`를 넣어.
-yonsoon 이 위치를 검색:
+railwise 이 위치를 검색:
 
-- 프로젝트 구성: `.yonsoon/skills/<name>/SKILL.md`
-- 글로벌 구성: `~/.config/yonsoon/skills/<name>/SKILL.md`
+- 프로젝트 구성: `.railwise/skills/<name>/SKILL.md`
+- 글로벌 구성: `~/.config/railwise/skills/<name>/SKILL.md`
 - 프로젝트 클로드 호환 : `.claude/skills/<name>/SKILL.md`
 - 글로벌 클로드 호환 : `~/.claude/skills/<name>/SKILL.md`
 - 프로젝트 에이전트 호환 : `.agents/skills/<name>/SKILL.md`
@@ -24,10 +24,10 @@ yonsoon 이 위치를 검색:
 
 ## 검색 이해
 
-Project-local paths의 경우, yonsoon는 git worktree에 도달 할 때까지 현재 작업 디렉토리에서 걷습니다.
-그것은 `skills/*/SKILL.md`에 있는 어떤 어울리는 `.yonsoon/` 및 어떤 어울리는 `.claude/skills/*/SKILL.md` 또는 `.agents/skills/*/SKILL.md`를 방법 적재합니다.
+Project-local paths의 경우, railwise는 git worktree에 도달 할 때까지 현재 작업 디렉토리에서 걷습니다.
+그것은 `skills/*/SKILL.md`에 있는 어떤 어울리는 `.railwise/` 및 어떤 어울리는 `.claude/skills/*/SKILL.md` 또는 `.agents/skills/*/SKILL.md`를 방법 적재합니다.
 
-세계적인 정의는 또한 `~/.config/yonsoon/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` 및 `~/.agents/skills/*/SKILL.md`에서 적재됩니다.
+세계적인 정의는 또한 `~/.config/railwise/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` 및 `~/.agents/skills/*/SKILL.md`에서 적재됩니다.
 
 ---
 
@@ -73,14 +73,14 @@ Project-local paths의 경우, yonsoon는 git worktree에 도달 할 때까지 �
 
 ## 사용 예제
 
-이처럼 `.yonsoon/skills/git-release/SKILL.md` 만들기:
+이처럼 `.railwise/skills/git-release/SKILL.md` 만들기:
 
 ```markdown
 ---
 name: git-release
 description: Create consistent releases and changelogs
 license: MIT
-compatibility: yonsoon
+compatibility: railwise
 metadata:
   audience: maintainers
   workflow: github
@@ -102,7 +102,7 @@ Ask clarifying questions if the target versioning scheme is unclear.
 
 ## 도구 설명 인식
 
-yonsoon는 `skill` 도구 설명에서 사용할 수있는 기술을 나열합니다.
+railwise는 `skill` 도구 설명에서 사용할 수있는 기술을 나열합니다.
 각 항목에는 기술 이름 및 설명이 포함됩니다.
 
 ```xml
@@ -124,7 +124,7 @@ skill({ name: "git-release" })
 
 ## 권한 구성
 
-기술 에이전트가 `yonsoon.json`의 패턴 기반 권한을 사용하여 액세스 할 수있는 제어 :
+기술 에이전트가 `railwise.json`의 패턴 기반 권한을 사용하여 액세스 할 수있는 제어 :
 
 ```json
 {
@@ -163,7 +163,7 @@ permission:
 ---
 ```
 
-** 내장 에이전트 ** (`yonsoon.json`에서):
+** 내장 에이전트 ** (`railwise.json`에서):
 
 ```json
 {

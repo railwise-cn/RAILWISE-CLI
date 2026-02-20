@@ -1,7 +1,7 @@
-export const deepLinkEvent = "yonsoon:deep-link"
+export const deepLinkEvent = "railwise:deep-link"
 
 export const parseDeepLink = (input: string) => {
-  if (!input.startsWith("yonsoon://")) return
+  if (!input.startsWith("railwise://")) return
   if (typeof URL.canParse === "function" && !URL.canParse(input)) return
   const url = (() => {
     try {
@@ -20,15 +20,15 @@ export const parseDeepLink = (input: string) => {
 export const collectOpenProjectDeepLinks = (urls: string[]) =>
   urls.map(parseDeepLink).filter((directory): directory is string => !!directory)
 
-type YONSOON (甬算)Window = Window & {
-  __YONSOON__?: {
+type RAILWISE (甬算)Window = Window & {
+  __RAILWISE__?: {
     deepLinks?: string[]
   }
 }
 
-export const drainPendingDeepLinks = (target: YONSOON (甬算)Window) => {
-  const pending = target.__YONSOON__?.deepLinks ?? []
+export const drainPendingDeepLinks = (target: RAILWISE (甬算)Window) => {
+  const pending = target.__RAILWISE__?.deepLinks ?? []
   if (pending.length === 0) return []
-  if (target.__YONSOON__) target.__YONSOON__.deepLinks = []
+  if (target.__RAILWISE__) target.__RAILWISE__.deepLinks = []
   return pending
 }

@@ -1,8 +1,8 @@
 import { Component, For, Show } from "solid-js"
-import { FileIcon } from "@yonsoon/ui/file-icon"
-import { IconButton } from "@yonsoon/ui/icon-button"
-import { Tooltip } from "@yonsoon/ui/tooltip"
-import { getDirectory, getFilename, getFilenameTruncated } from "@yonsoon/util/path"
+import { FileIcon } from "@railwise/ui/file-icon"
+import { IconButton } from "@railwise/ui/icon-button"
+import { Tooltip } from "@railwise/ui/tooltip"
+import { getDirectory, getFilename, getFilenameTruncated } from "@railwise/util/path"
 import type { ContextItem } from "@/context/prompt"
 
 type PromptContextItem = ContextItem & { key: string }

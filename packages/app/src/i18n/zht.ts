@@ -136,7 +136,7 @@ export const dict = {
   "provider.connect.opencodeZen.line1": "OpenCode Zen 為你提供一組精選的可靠最佳化模型，用於程式碼代理程式。",
   "provider.connect.opencodeZen.line2": "只需一個 API 金鑰，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
   "provider.connect.opencodeZen.visit.prefix": "造訪 ",
-  "provider.connect.opencodeZen.visit.link": "yonsoon.ai/zen",
+  "provider.connect.opencodeZen.visit.link": "railwise.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": " 取得你的 API 金鑰。",
   "provider.connect.oauth.code.visit.prefix": "造訪 ",
   "provider.connect.oauth.code.visit.link": "此連結",
@@ -290,7 +290,7 @@ export const dict = {
   "dialog.mcp.empty": "未設定 MCP",
 
   "dialog.lsp.empty": "已從檔案類型自動偵測到 LSPs",
-  "dialog.plugins.empty": "在 yonsoon.json 中設定的外掛程式",
+  "dialog.plugins.empty": "在 railwise.json 中設定的外掛程式",
 
   "mcp.status.connected": "已連線",
   "mcp.status.failed": "失敗",
@@ -455,7 +455,7 @@ export const dict = {
   "error.chain.responseBody": "回應內容:\n{{body}}",
   "error.chain.didYouMean": "你是不是想輸入: {{suggestions}}",
   "error.chain.modelNotFound": "找不到模型: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "請檢查你的設定 (yonsoon.json) 中的 provider/model 名稱",
+  "error.chain.checkConfig": "請檢查你的設定 (railwise.json) 中的 provider/model 名稱",
   "error.chain.mcpFailed": 'MCP 伺服器 "{{name}}" 啟動失敗。注意: OpenCode 暫不支援 MCP 認證。',
   "error.chain.providerAuthFailed": "提供者認證失敗 ({{provider}}): {{message}}",
   "error.chain.providerInitFailed": '無法初始化提供者 "{{provider}}"。請檢查憑證和設定。',

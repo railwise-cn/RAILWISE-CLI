@@ -1,11 +1,11 @@
-import { TextField } from "@yonsoon/ui/text-field"
-import { Logo } from "@yonsoon/ui/logo"
-import { Button } from "@yonsoon/ui/button"
+import { TextField } from "@railwise/ui/text-field"
+import { Logo } from "@railwise/ui/logo"
+import { Button } from "@railwise/ui/button"
 import { Component, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { usePlatform } from "@/context/platform"
 import { useLanguage } from "@/context/language"
-import { Icon } from "@yonsoon/ui/icon"
+import { Icon } from "@railwise/ui/icon"
 
 export type InitError = {
   name: string
@@ -299,7 +299,7 @@ export const ErrorPage: Component<ErrorPageProps> = (props) => {
             <button
               type="button"
               class="flex items-center text-text-interactive-base gap-1"
-              onClick={() => platform.openLink("https://yonsoon.ai/desktop-feedback")}
+              onClick={() => platform.openLink("https://railwise.ai/desktop-feedback")}
             >
               <div>{language.t("error.page.report.discord")}</div>
               <Icon name="discord" class="text-text-interactive-base" />

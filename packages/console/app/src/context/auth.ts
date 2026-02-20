@@ -1,8 +1,8 @@
 import { getRequestEvent } from "solid-js/web"
-import { and, Database, eq, inArray, isNull, sql } from "@yonsoon/console-core/drizzle/index.js"
-import { UserTable } from "@yonsoon/console-core/schema/user.sql.js"
+import { and, Database, eq, inArray, isNull, sql } from "@railwise/console-core/drizzle/index.js"
+import { UserTable } from "@railwise/console-core/schema/user.sql.js"
 import { redirect } from "@solidjs/router"
-import { Actor } from "@yonsoon/console-core/actor.js"
+import { Actor } from "@railwise/console-core/actor.js"
 
 import { createClient } from "@openauthjs/openauth/client"
 
@@ -12,7 +12,7 @@ export const AuthClient = createClient({
 })
 
 import { useSession } from "@solidjs/start/http"
-import { Resource } from "@yonsoon/console-resource"
+import { Resource } from "@railwise/console-resource"
 
 export interface AuthSession {
   account?: Record<

@@ -57,15 +57,15 @@ OpenCode Desktop 會在背景執行一個本地 OpenCode 伺服器（即 `openco
 
 開啟你的全域設定檔，查找 `plugin` 鍵。
 
-- **macOS/Linux**: `~/.config/opencode/yonsoon.jsonc`（或 `~/.config/opencode/yonsoon.json`）
-- **macOS/Linux**（舊版安裝）: `~/.local/share/opencode/yonsoon.jsonc`
-- **Windows**: 按 `WIN+R` 並貼上 `%USERPROFILE%\.config\opencode\yonsoon.jsonc`
+- **macOS/Linux**: `~/.config/opencode/railwise.jsonc`（或 `~/.config/opencode/railwise.json`）
+- **macOS/Linux**（舊版安裝）: `~/.local/share/opencode/railwise.jsonc`
+- **Windows**: 按 `WIN+R` 並貼上 `%USERPROFILE%\.config\opencode\railwise.jsonc`
 
 如果你設定了外掛，請透過移除該鍵或將其設定為空陣列來暫時停用它們：
 
 ```jsonc
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": [],
 }
 ```
@@ -78,7 +78,7 @@ OpenCode 還可以從磁碟載入本地外掛。暫時將這些外掛移走（�
   - **macOS/Linux**: `~/.config/opencode/plugins/`
   - **Windows**: 按 `WIN+R` 並貼上 `%USERPROFILE%\.config\opencode\plugins`
 - **專案外掛**（僅當你使用了專案級設定時）
-  - `<your-project>/.yonsoon/plugins/`
+  - `<your-project>/.railwise/plugins/`
 
 如果應用程式恢復正常，請逐個重新啟用外掛，找出導致問題的那個。
 
@@ -111,13 +111,13 @@ OpenCode Desktop 可以啟動自己的本地伺服器（預設行為），也可
 
 #### 從設定中移除 `server.port` / `server.hostname`
 
-如果你的 `yonsoon.json(c)` 包含 `server` 部分，請暫時移除該部分並重新啟動桌面應用程式。
+如果你的 `railwise.json(c)` 包含 `server` 部分，請暫時移除該部分並重新啟動桌面應用程式。
 
 #### 檢查環境變數
 
-如果你在環境中設定了 `YONSOON_PORT`，桌面應用程式將嘗試使用該連接埠作為本地伺服器連接埠。
+如果你在環境中設定了 `RAILWISE_PORT`，桌面應用程式將嘗試使用該連接埠作為本地伺服器連接埠。
 
-- 取消設定 `YONSOON_PORT`（或選擇一個空閒連接埠）並重新啟動。
+- 取消設定 `RAILWISE_PORT`（或選擇一個空閒連接埠）並重新啟動。
 
 ---
 
@@ -185,7 +185,7 @@ OpenCode Desktop 僅在以下情況下顯示系統通知：
 
    如需即時幫助和社群討論，請加入我們的 Discord 伺服器：
 
-   [**yonsoon.ai/discord**](https://yonsoon.ai/discord)
+   [**railwise.ai/discord**](https://railwise.ai/discord)
 
 ---
 

@@ -1,68 +1,68 @@
 ---
 title: GitLab
-description: GitLab sorunlarında ve birleştirme isteklerinde yonsoon'u kullanın.
+description: GitLab sorunlarında ve birleştirme isteklerinde railwise'u kullanın.
 ---
 
-yonsoon, GitLab CI/CD işlem hattınız veya GitLab Duo aracılığıyla GitLab iş akışınızla bütünleşir.
+railwise, GitLab CI/CD işlem hattınız veya GitLab Duo aracılığıyla GitLab iş akışınızla bütünleşir.
 
-Her iki durumda da yonsoon, GitLab çalıştırıcılarınızda çalışacaktır.
+Her iki durumda da railwise, GitLab çalıştırıcılarınızda çalışacaktır.
 
 ---
 
 ## GitLab CI
 
-yonsoon normal bir GitLab işlem hattında çalışır. Bunu bir [CI component](https://docs.gitlab.com/ee/ci/components/) olarak bir işlem hattına oluşturabilirsiniz.
+railwise normal bir GitLab işlem hattında çalışır. Bunu bir [CI component](https://docs.gitlab.com/ee/ci/components/) olarak bir işlem hattına oluşturabilirsiniz.
 
-Burada yonsoon için topluluk tarafından oluşturulan bir CI/CD bileşeni kullanıyoruz — [nagyv/gitlab-yonsoon](https://gitlab.com/nagyv/gitlab-yonsoon).
+Burada railwise için topluluk tarafından oluşturulan bir CI/CD bileşeni kullanıyoruz — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### Özellikler
 
-- **İş başına özel işlemleri kullanın**: yonsoon parçalarının kullanıma veya devre dışı bırakmak için yonsoon'u özel bir yapılandırma dizini ile yapılandırın; örneğin `./config/#custom-directory`.
-- **Minimum kurulum**: CI bileşeni yonsoon'u arka planda kurar; yalnızca yonsoon yapılandırmasını ve ilk istemi oluşturmanız gerekir.
+- **İş başına özel işlemleri kullanın**: railwise parçalarının kullanıma veya devre dışı bırakmak için railwise'u özel bir yapılandırma dizini ile yapılandırın; örneğin `./config/#custom-directory`.
+- **Minimum kurulum**: CI bileşeni railwise'u arka planda kurar; yalnızca railwise yapılandırmasını ve ilk istemi oluşturmanız gerekir.
 - **Esnek**: CI bileşeni, davranışını özelleştirmek için çeşitli girişleri destekler
 
 ---
 
 ### Kurulum
 
-1. yonsoon kimlik doğrulamanızı JSON **Ayarlar** > **CI/CD** > **Değişkenler** altında Dosya türü CI ortam değişkenleri olarak saklayın. Bunları "Maskeli ve gizli" olarak işaretlediğinizden emin olun.
+1. railwise kimlik doğrulamanızı JSON **Ayarlar** > **CI/CD** > **Değişkenler** altında Dosya türü CI ortam değişkenleri olarak saklayın. Bunları "Maskeli ve gizli" olarak işaretlediğinizden emin olun.
 2. Aşağıdakileri `.gitlab-ci.yml` dosyanıza ekleyin.
 
    ```yaml title=".gitlab-ci.yml"
    include:
-     - component: $CI_SERVER_FQDN/nagyv/gitlab-yonsoon/yonsoon@2
+     - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
-         config_dir: ${CI_PROJECT_DIR}/yonsoon-config
-         auth_json: $YONSOON_AUTH_JSON # The variable name for your YONSOON (甬算) authentication JSON
+         config_dir: ${CI_PROJECT_DIR}/railwise-config
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
 
-Daha fazla girdi ve bu bileşene yönelik kullanım durumları için [check out the docs](https://gitlab.com/explore/catalog/nagyv/gitlab-yonsoon).
+Daha fazla girdi ve bu bileşene yönelik kullanım durumları için [check out the docs](https://gitlab.com/explore/catalog/nagyv/gitlab-railwise).
 
 ---
 
 ## GitLab Duo
 
-yonsoon, GitLab iş akışınızla bütünleşir.
-Bir yorumda `@yonsoon`'dan bahsedin; yonsoon, GitLab CI işlem hattınızdaki görevleri yürütecektir.
+railwise, GitLab iş akışınızla bütünleşir.
+Bir yorumda `@railwise`'dan bahsedin; railwise, GitLab CI işlem hattınızdaki görevleri yürütecektir.
 
 ---
 
 ### Özellikler
 
-- **Sorunları önceliklendirin**: yonsoon'dan bir sorunu araştırıp size açıklamasını isteyin.
-- **Düzelt ve uygula**: yonsoon'dan bir sorunu düzeltmesini veya bir özelliği uygulamasını isteyin.
+- **Sorunları önceliklendirin**: railwise'dan bir sorunu araştırıp size açıklamasını isteyin.
+- **Düzelt ve uygula**: railwise'dan bir sorunu düzeltmesini veya bir özelliği uygulamasını isteyin.
   Yeni bir dal oluşturacak ve değişikliklerle birlikte bir birleştirme isteği oluşturacaktır.
-- **Güvenli**: yonsoon, GitLab çalıştırıcılarınızda çalışır.
+- **Güvenli**: railwise, GitLab çalıştırıcılarınızda çalışır.
 
 ---
 
 ### Yapılandırma
 
-yonsoon, GitLab CI/CD işlem hattınızda çalışır; bunu ayarlamak için ihtiyacınız olacaklar:
+railwise, GitLab CI/CD işlem hattınızda çalışır; bunu ayarlamak için ihtiyacınız olacaklar:
 
 :::tip
 Güncel talimatlar için [**GitLab docs**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/)'a göz atın.
@@ -82,19 +82,19 @@ Güncel talimatlar için [**GitLab docs**](https://docs.gitlab.com/user/duo_agen
     ```yaml
     image: node:22-slim
     commands:
-      - echo "Installing yonsoon"
-      - npm install --global yonsoon-ai
+      - echo "Installing railwise"
+      - npm install --global railwise-ai
       - echo "Installing glab"
-      - export GITLAB_TOKEN=$GITLAB_TOKEN_YONSOON
+      - export GITLAB_TOKEN=$GITLAB_TOKEN_RAILWISE
       - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
       - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating YONSOON (甬算) auth configuration"
-      - mkdir --parents ~/.local/share/yonsoon
+      - echo "Creating RAILWISE (甬算) auth configuration"
+      - mkdir --parents ~/.local/share/railwise
       - |
-        cat > ~/.local/share/yonsoon/auth.json << EOF
+        cat > ~/.local/share/railwise/auth.json << EOF
         {
           "anthropic": {
             "type": "api",
@@ -103,13 +103,13 @@ Güncel talimatlar için [**GitLab docs**](https://docs.gitlab.com/user/duo_agen
         }
         EOF
       - echo "Configuring git"
-      - git config --global user.email "yonsoon@gitlab.com"
-      - git config --global user.name "YONSOON (甬算)"
+      - git config --global user.email "railwise@gitlab.com"
+      - git config --global user.name "RAILWISE (甬算)"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running YONSOON (甬算)"
+      - echo "Running RAILWISE (甬算)"
       - |
-        yonsoon run "
+        railwise run "
         You are an AI assistant helping with GitLab operations.
 
         Context: $AI_FLOW_CONTEXT
@@ -146,7 +146,7 @@ Güncel talimatlar için [**GitLab docs**](https://docs.gitlab.com/user/duo_agen
         fi
     variables:
       - ANTHROPIC_API_KEY
-      - GITLAB_TOKEN_YONSOON
+      - GITLAB_TOKEN_RAILWISE
       - GITLAB_HOST
     ```
 
@@ -158,10 +158,10 @@ Ayrıntılı talimatlar için [GitLab CLI agents docs](https://docs.gitlab.com/u
 
 ### Örnekler
 
-GitLab'da yonsoon'u nasıl kullanabileceğinize dair bazı örnekleri burada bulabilirsiniz.
+GitLab'da railwise'u nasıl kullanabileceğinize dair bazı örnekleri burada bulabilirsiniz.
 
 :::tip
-`@yonsoon`'dan farklı bir tetikleyici ifade kullanacak şekilde yapılandırabilirsiniz.
+`@railwise`'dan farklı bir tetikleyici ifade kullanacak şekilde yapılandırabilirsiniz.
 :::
 
 - **Bir sorunu açıklama**
@@ -169,27 +169,27 @@ GitLab'da yonsoon'u nasıl kullanabileceğinize dair bazı örnekleri burada bul
   Bu yorumu bir GitLab sayısına ekleyin.
 
   ```
-  @yonsoon explain this issue
+  @railwise explain this issue
   ```
 
-  yonsoon konuyu okuyacak ve net bir açıklama ile yanıt verecektir.
+  railwise konuyu okuyacak ve net bir açıklama ile yanıt verecektir.
 
 - **Bir sorunu düzeltme**
 
   In a GitLab issue, say:
 
   ```
-  @yonsoon fix this
+  @railwise fix this
   ```
 
-  yonsoon yeni bir dal oluşturacak, değişiklikleri uygulayacak ve değişiklikleri içeren bir birleştirme isteği açacaktır.
+  railwise yeni bir dal oluşturacak, değişiklikleri uygulayacak ve değişiklikleri içeren bir birleştirme isteği açacaktır.
 
 - **Birleştirme isteklerini inceleme**
 
   GitLab birleştirme isteğine aşağıdaki yorumu bırakın.
 
   ```
-  @yonsoon review this merge request
+  @railwise review this merge request
   ```
 
-  yonsoon, birleştirme isteğini inceleyecek ve geri bildirim sağlayacaktır.
+  railwise, birleştirme isteğini inceleyecek ve geri bildirim sağlayacaktır.

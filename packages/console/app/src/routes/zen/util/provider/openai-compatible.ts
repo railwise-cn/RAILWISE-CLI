@@ -26,7 +26,7 @@ export const oaCompatHelper: ProviderHelper = () => ({
   modifyUrl: (providerApi: string) => providerApi + "/chat/completions",
   modifyHeaders: (headers: Headers, body: Record<string, any>, apiKey: string) => {
     headers.set("authorization", `Bearer ${apiKey}`)
-    headers.set("x-session-affinity", headers.get("x-yonsoon-session") ?? "")
+    headers.set("x-session-affinity", headers.get("x-railwise-session") ?? "")
   },
   modifyBody: (body: Record<string, any>) => {
     return {

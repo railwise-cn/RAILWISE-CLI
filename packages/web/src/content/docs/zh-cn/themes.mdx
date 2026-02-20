@@ -63,9 +63,9 @@ OpenCode 自带多个内置主题。
 
 您可以通过 `/theme` 命令调出主题选择界面来选择主题，也可以在[配置](/docs/config)文件中直接指定。
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "theme": "tokyonight"
 }
 ```
@@ -84,8 +84,8 @@ OpenCode 支持灵活的基于 JSON 的主题系统，让用户可以轻松创�
 
 1. **内置主题** — 嵌入在二进制文件中
 2. **用户配置目录** — 定义在 `~/.config/opencode/themes/*.json` 或 `$XDG_CONFIG_HOME/opencode/themes/*.json`
-3. **项目根目录** — 定义在 `<project-root>/.yonsoon/themes/*.json`
-4. **当前工作目录** — 定义在 `./.yonsoon/themes/*.json`
+3. **项目根目录** — 定义在 `<project-root>/.railwise/themes/*.json`
+4. **当前工作目录** — 定义在 `./.railwise/themes/*.json`
 
 如果多个目录包含同名主题，将使用优先级较高的目录中的主题。
 
@@ -105,8 +105,8 @@ vim ~/.config/opencode/themes/my-theme.json
 创建项目级主题：
 
 ```bash no-frame
-mkdir -p .yonsoon/themes
-vim .yonsoon/themes/my-theme.json
+mkdir -p .railwise/themes
+vim .railwise/themes/my-theme.json
 ```
 
 ---
@@ -144,7 +144,7 @@ vim .yonsoon/themes/my-theme.json
 
 ```json title="my-theme.json"
 {
-  "$schema": "https://yonsoon.ai/theme.json",
+  "$schema": "https://railwise.ai/theme.json",
   "defs": {
     "nord0": "#2E3440",
     "nord1": "#3B4252",

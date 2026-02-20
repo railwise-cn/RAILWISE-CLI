@@ -16,36 +16,36 @@ import { A, useNavigate, useParams } from "@solidjs/router"
 import { useLayout, LocalProject } from "@/context/layout"
 import { useGlobalSync } from "@/context/global-sync"
 import { Persist, persisted } from "@/utils/persist"
-import { base64Encode } from "@yonsoon/util/encode"
+import { base64Encode } from "@railwise/util/encode"
 import { decode64 } from "@/utils/base64"
-import { ResizeHandle } from "@yonsoon/ui/resize-handle"
-import { Button } from "@yonsoon/ui/button"
-import { Icon } from "@yonsoon/ui/icon"
-import { IconButton } from "@yonsoon/ui/icon-button"
-import { Tooltip, TooltipKeybind } from "@yonsoon/ui/tooltip"
-import { DropdownMenu } from "@yonsoon/ui/dropdown-menu"
-import { Dialog } from "@yonsoon/ui/dialog"
-import { getFilename } from "@yonsoon/util/path"
-import { Session, type Message } from "@yonsoon/sdk/v2/client"
+import { ResizeHandle } from "@railwise/ui/resize-handle"
+import { Button } from "@railwise/ui/button"
+import { Icon } from "@railwise/ui/icon"
+import { IconButton } from "@railwise/ui/icon-button"
+import { Tooltip, TooltipKeybind } from "@railwise/ui/tooltip"
+import { DropdownMenu } from "@railwise/ui/dropdown-menu"
+import { Dialog } from "@railwise/ui/dialog"
+import { getFilename } from "@railwise/util/path"
+import { Session, type Message } from "@railwise/sdk/v2/client"
 import { usePlatform } from "@/context/platform"
 import { useSettings } from "@/context/settings"
 import { createStore, produce, reconcile } from "solid-js/store"
 import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, closestCenter } from "@thisbeyond/solid-dnd"
 import type { DragEvent } from "@thisbeyond/solid-dnd"
 import { useProviders } from "@/hooks/use-providers"
-import { showToast, Toast, toaster } from "@yonsoon/ui/toast"
+import { showToast, Toast, toaster } from "@railwise/ui/toast"
 import { useGlobalSDK } from "@/context/global-sdk"
 import { clearWorkspaceTerminals } from "@/context/terminal"
 import { useNotification } from "@/context/notification"
 import { usePermission } from "@/context/permission"
-import { Binary } from "@yonsoon/util/binary"
-import { retry } from "@yonsoon/util/retry"
+import { Binary } from "@railwise/util/binary"
+import { retry } from "@railwise/util/retry"
 import { playSound, soundSrc } from "@/utils/sound"
 import { createAim } from "@/utils/aim"
 import { Worktree as WorktreeState } from "@/utils/worktree"
 
-import { useDialog } from "@yonsoon/ui/context/dialog"
-import { useTheme, type ColorScheme } from "@yonsoon/ui/theme"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { useTheme, type ColorScheme } from "@railwise/ui/theme"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { DialogSelectServer } from "@/components/dialog-select-server"
 import { DialogSettings } from "@/components/dialog-settings"
@@ -1976,7 +1976,7 @@ export default function Layout(props: ParentProps) {
               settingsKeybind={() => command.keybind("settings.open")}
               onOpenSettings={openSettings}
               helpLabel={() => language.t("sidebar.help")}
-              onOpenHelp={() => platform.openLink("https://yonsoon.ai/desktop-feedback")}
+              onOpenHelp={() => platform.openLink("https://railwise.ai/desktop-feedback")}
               renderPanel={() => <SidebarPanel project={currentProject()} />}
             />
           </div>
@@ -2041,7 +2041,7 @@ export default function Layout(props: ParentProps) {
               settingsKeybind={() => command.keybind("settings.open")}
               onOpenSettings={openSettings}
               helpLabel={() => language.t("sidebar.help")}
-              onOpenHelp={() => platform.openLink("https://yonsoon.ai/desktop-feedback")}
+              onOpenHelp={() => platform.openLink("https://railwise.ai/desktop-feedback")}
               renderPanel={() => <SidebarPanel project={currentProject()} mobile />}
             />
           </nav>

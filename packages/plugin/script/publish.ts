@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { Script } from "@yonsoon/script"
+import { Script } from "@railwise/script"
 import { $ } from "bun"
 
 const dir = new URL("..", import.meta.url).pathname

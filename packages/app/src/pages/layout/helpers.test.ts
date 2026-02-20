@@ -4,24 +4,24 @@ import { displayName, errorMessage, getDraggableId, syncWorkspaceOrder, workspac
 
 describe("layout deep links", () => {
   test("parses open-project deep links", () => {
-    expect(parseDeepLink("yonsoon://open-project?directory=/tmp/demo")).toBe("/tmp/demo")
+    expect(parseDeepLink("railwise://open-project?directory=/tmp/demo")).toBe("/tmp/demo")
   })
 
   test("ignores non-project deep links", () => {
-    expect(parseDeepLink("yonsoon://other?directory=/tmp/demo")).toBeUndefined()
+    expect(parseDeepLink("railwise://other?directory=/tmp/demo")).toBeUndefined()
     expect(parseDeepLink("https://example.com")).toBeUndefined()
   })
 
   test("ignores malformed deep links safely", () => {
-    expect(() => parseDeepLink("yonsoon://open-project/%E0%A4%A%")).not.toThrow()
-    expect(parseDeepLink("yonsoon://open-project/%E0%A4%A%")).toBeUndefined()
+    expect(() => parseDeepLink("railwise://open-project/%E0%A4%A%")).not.toThrow()
+    expect(parseDeepLink("railwise://open-project/%E0%A4%A%")).toBeUndefined()
   })
 
   test("parses links when URL.canParse is unavailable", () => {
     const original = Object.getOwnPropertyDescriptor(URL, "canParse")
     Object.defineProperty(URL, "canParse", { configurable: true, value: undefined })
     try {
-      expect(parseDeepLink("yonsoon://open-project?directory=/tmp/demo")).toBe("/tmp/demo")
+      expect(parseDeepLink("railwise://open-project?directory=/tmp/demo")).toBe("/tmp/demo")
     } finally {
       if (original) Object.defineProperty(URL, "canParse", original)
       if (!original) Reflect.deleteProperty(URL, "canParse")
@@ -29,27 +29,27 @@ describe("layout deep links", () => {
   })
 
   test("ignores open-project deep links without directory", () => {
-    expect(parseDeepLink("yonsoon://open-project")).toBeUndefined()
-    expect(parseDeepLink("yonsoon://open-project?directory=")).toBeUndefined()
+    expect(parseDeepLink("railwise://open-project")).toBeUndefined()
+    expect(parseDeepLink("railwise://open-project?directory=")).toBeUndefined()
   })
 
   test("collects only valid open-project directories", () => {
     const result = collectOpenProjectDeepLinks([
-      "yonsoon://open-project?directory=/a",
-      "yonsoon://other?directory=/b",
-      "yonsoon://open-project?directory=/c",
+      "railwise://open-project?directory=/a",
+      "railwise://other?directory=/b",
+      "railwise://open-project?directory=/c",
     ])
     expect(result).toEqual(["/a", "/c"])
   })
 
   test("drains global deep links once", () => {
     const target = {
-      __YONSOON__: {
-        deepLinks: ["yonsoon://open-project?directory=/a"],
+      __RAILWISE__: {
+        deepLinks: ["railwise://open-project?directory=/a"],
       },
-    } as unknown as Window & { __YONSOON__?: { deepLinks?: string[] } }
+    } as unknown as Window & { __RAILWISE__?: { deepLinks?: string[] } }
 
-    expect(drainPendingDeepLinks(target)).toEqual(["yonsoon://open-project?directory=/a"])
+    expect(drainPendingDeepLinks(target)).toEqual(["railwise://open-project?directory=/a"])
     expect(drainPendingDeepLinks(target)).toEqual([])
   })
 })

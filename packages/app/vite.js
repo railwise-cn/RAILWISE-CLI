@@ -7,7 +7,7 @@ import { fileURLToPath } from "url"
  */
 export default [
   {
-    name: "yonsoon-desktop:config",
+    name: "railwise-desktop:config",
     config() {
       return {
         resolve: {

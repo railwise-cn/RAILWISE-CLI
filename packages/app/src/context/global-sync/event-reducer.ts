@@ -1,4 +1,4 @@
-import { Binary } from "@yonsoon/util/binary"
+import { Binary } from "@railwise/util/binary"
 import { produce, reconcile, type SetStoreFunction, type Store } from "solid-js/store"
 import type {
   FileDiff,
@@ -10,7 +10,7 @@ import type {
   Session,
   SessionStatus,
   Todo,
-} from "@yonsoon/sdk/v2/client"
+} from "@railwise/sdk/v2/client"
 import type { State, VcsCache } from "./types"
 import { trimSessions } from "./session-trim"
 

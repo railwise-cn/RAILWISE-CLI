@@ -5,7 +5,7 @@ import { Header } from "~/component/header"
 import { Footer } from "~/component/footer"
 import { IconCopy, IconCheck } from "~/component/icon"
 import { Faq } from "~/component/faq"
-import desktopAppIcon from "../../asset/lander/yonsoon-desktop-icon.png"
+import desktopAppIcon from "../../asset/lander/railwise-desktop-icon.png"
 import { Legal } from "~/component/legal"
 import { config } from "~/config"
 import { createSignal, onMount, Show, JSX } from "solid-js"
@@ -118,34 +118,34 @@ export default function Download() {
             <div data-component="section-content">
               <button
                 data-component="cli-row"
-                onClick={handleCopyClick("curl -fsSL https://yonsoon.ai/install | bash")}
+                onClick={handleCopyClick("curl -fsSL https://railwise.ai/install | bash")}
               >
                 <code>
-                  curl -fsSL https://<strong>yonsoon.ai/install</strong> | bash
+                  curl -fsSL https://<strong>railwise.ai/install</strong> | bash
                 </code>
                 <CopyStatus />
               </button>
-              <button data-component="cli-row" onClick={handleCopyClick("npm i -g yonsoon-ai")}>
+              <button data-component="cli-row" onClick={handleCopyClick("npm i -g railwise-ai")}>
                 <code>
-                  npm i -g <strong>yonsoon-ai</strong>
+                  npm i -g <strong>railwise-ai</strong>
                 </code>
                 <CopyStatus />
               </button>
-              <button data-component="cli-row" onClick={handleCopyClick("bun add -g yonsoon-ai")}>
+              <button data-component="cli-row" onClick={handleCopyClick("bun add -g railwise-ai")}>
                 <code>
-                  bun add -g <strong>yonsoon-ai</strong>
+                  bun add -g <strong>railwise-ai</strong>
                 </code>
                 <CopyStatus />
               </button>
-              <button data-component="cli-row" onClick={handleCopyClick("brew install anomalyco/tap/yonsoon")}>
+              <button data-component="cli-row" onClick={handleCopyClick("brew install anomalyco/tap/railwise")}>
                 <code>
-                  brew install <strong>anomalyco/tap/yonsoon</strong>
+                  brew install <strong>anomalyco/tap/railwise</strong>
                 </code>
                 <CopyStatus />
               </button>
-              <button data-component="cli-row" onClick={handleCopyClick("paru -S yonsoon")}>
+              <button data-component="cli-row" onClick={handleCopyClick("paru -S railwise")}>
                 <code>
-                  paru -S <strong>yonsoon</strong>
+                  paru -S <strong>railwise</strong>
                 </code>
                 <CopyStatus />
               </button>
@@ -157,9 +157,9 @@ export default function Download() {
               <span>[2]</span> {i18n.t("download.section.desktop")}
             </div>
             <div data-component="section-content">
-              <button data-component="cli-row" onClick={handleCopyClick("brew install --cask yonsoon-desktop")}>
+              <button data-component="cli-row" onClick={handleCopyClick("brew install --cask railwise-desktop")}>
                 <code>
-                  brew install --cask <strong>yonsoon-desktop</strong>
+                  brew install --cask <strong>railwise-desktop</strong>
                 </code>
                 <CopyStatus />
               </button>

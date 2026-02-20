@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: yonsoon CLI seçenekleri ve komutları.
+description: railwise CLI seçenekleri ve komutları.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-yonsoon CLI herhangi bir argüman olmadan çalıştırıldığında varsayılan olarak [TUI](/docs/tui)'yi başlatır.
+railwise CLI herhangi bir argüman olmadan çalıştırıldığında varsayılan olarak [TUI](/docs/tui)'yi başlatır.
 
 ```bash
-yonsoon
+railwise
 ```
 
-Ancak bu sayfada belgelendiği gibi komutları da kabul eder. Bu, yonsoon ile programlı olarak etkileşim kurmanıza olanak tanır.
+Ancak bu sayfada belgelendiği gibi komutları da kabul eder. Bu, railwise ile programlı olarak etkileşim kurmanıza olanak tanır.
 
 ```bash
-yonsoon run "Explain how closures work in JavaScript"
+railwise run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-yonsoon terminal kullanıcı arayüzünü başlatır.
+railwise terminal kullanıcı arayüzünü başlatır.
 
 ```bash
-yonsoon [project]
+railwise [project]
 ```
 
 #### Bayraklar
@@ -44,36 +44,36 @@ yonsoon [project]
 
 ## Komutlar
 
-yonsoon CLI ayrıca aşağıdaki komutlara da sahiptir.
+railwise CLI ayrıca aşağıdaki komutlara da sahiptir.
 
 ---
 
 ### agent
 
-yonsoon için agent'ları yönetin.
+railwise için agent'ları yönetin.
 
 ```bash
-yonsoon agent [command]
+railwise agent [command]
 ```
 
 ---
 
 ### attach
 
-`serve` veya `web` komutlarıyla başlatılan, halihazırda çalışan bir yonsoon arka uç sunucusuna bir terminal ekleyin.
+`serve` veya `web` komutlarıyla başlatılan, halihazırda çalışan bir railwise arka uç sunucusuna bir terminal ekleyin.
 
 ```bash
-yonsoon attach [url]
+railwise attach [url]
 ```
 
-Bu, TUI öğesinin uzak bir yonsoon arka ucuyla kullanılmasına olanak tanır. Örneğin:
+Bu, TUI öğesinin uzak bir railwise arka ucuyla kullanılmasına olanak tanır. Örneğin:
 
 ```bash
 # Start the backend server for web/mobile access
-yonsoon web --port 4096 --hostname 0.0.0.0
+railwise web --port 4096 --hostname 0.0.0.0
 
 # In another terminal, attach the TUI to the running backend
-yonsoon attach http://10.20.30.40:4096
+railwise attach http://10.20.30.40:4096
 ```
 
 #### Bayraklar
@@ -90,7 +90,7 @@ yonsoon attach http://10.20.30.40:4096
 Özel yapılandırmaya sahip yeni bir agent oluşturun.
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 Bu komut, özel sistem istemi ve araç yapılandırmasıyla yeni bir agent oluşturma konusunda size yol gösterecektir.
@@ -102,7 +102,7 @@ Bu komut, özel sistem istemi ve araç yapılandırmasıyla yeni bir agent oluş
 Mevcut tüm agent'ları listeleyin.
 
 ```bash
-yonsoon agent list
+railwise agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ yonsoon agent list
 Sağlayıcılar için kimlik bilgilerini ve oturum açmayı yönetme komutu.
 
 ```bash
-yonsoon auth [command]
+railwise auth [command]
 ```
 
 ---
 
 #### login
 
-yonsoon, [Models.dev](https://models.dev) adresindeki sağlayıcı listesi tarafından desteklenmektedir, dolayısıyla kullanmak istediğiniz herhangi bir sağlayıcı için API anahtarlarını ayarlamak üzere `yonsoon auth login` kullanabilirsiniz. Bu `~/.local/share/yonsoon/auth.json`'de saklanıyor.
+railwise, [Models.dev](https://models.dev) adresindeki sağlayıcı listesi tarafından desteklenmektedir, dolayısıyla kullanmak istediğiniz herhangi bir sağlayıcı için API anahtarlarını ayarlamak üzere `railwise auth login` kullanabilirsiniz. Bu `~/.local/share/railwise/auth.json`'de saklanıyor.
 
 ```bash
-yonsoon auth login
+railwise auth login
 ```
 
-yonsoon başlatıldığında sağlayıcıları kimlik bilgileri dosyasından yükler. Ayrıca ortam değişkenlerindeki veya projenizdeki `.env` dosyasındaki anahtarları da kullanır.
+railwise başlatıldığında sağlayıcıları kimlik bilgileri dosyasından yükler. Ayrıca ortam değişkenlerindeki veya projenizdeki `.env` dosyasındaki anahtarları da kullanır.
 
 ---
 
@@ -134,13 +134,13 @@ yonsoon başlatıldığında sağlayıcıları kimlik bilgileri dosyasından yü
 Kimlik bilgileri dosyasında depolanan tüm kimliği doğrulanmış sağlayıcıları listeler.
 
 ```bash
-yonsoon auth list
+railwise auth list
 ```
 
 Veya kısa versiyonu.
 
 ```bash
-yonsoon auth ls
+railwise auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ yonsoon auth ls
 Bir sağlayıcıyı kimlik bilgileri dosyasından temizleyerek oturumunuzu kapatır.
 
 ```bash
-yonsoon auth logout
+railwise auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ yonsoon auth logout
 Depo otomasyonu için GitHub aracısını yönetin.
 
 ```bash
-yonsoon github [command]
+railwise github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ yonsoon github [command]
 GitHub aracısını deponuza yükleyin.
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 Bu komut gerekli GitHub Actions workflow'unu kurar ve yapılandırma adımlarında size rehberlik eder. [Daha fazla bilgi](/docs/github).
@@ -182,7 +182,7 @@ Bu komut gerekli GitHub Actions workflow'unu kurar ve yapılandırma adımların
 GitHub aracısını çalıştırın. Bu genellikle GitHub Eylemlerinde kullanılır.
 
 ```bash
-yonsoon github run
+railwise github run
 ```
 
 ##### Bayraklar
@@ -199,7 +199,7 @@ yonsoon github run
 Model Bağlam Protokolü sunucularını yönetin.
 
 ```bash
-yonsoon mcp [command]
+railwise mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ yonsoon mcp [command]
 Yapılandırmanıza bir MCP sunucusu ekleyin.
 
 ```bash
-yonsoon mcp add
+railwise mcp add
 ```
 
 Bu komut, yerel veya uzak bir MCP sunucusu ekleme konusunda size yol gösterecektir.
@@ -221,13 +221,13 @@ Bu komut, yerel veya uzak bir MCP sunucusu ekleme konusunda size yol gösterecek
 Yapılandırılmış tüm MCP sunucularını ve bağlantı durumlarını listeleyin.
 
 ```bash
-yonsoon mcp list
+railwise mcp list
 ```
 
 Veya kısa versiyonunu kullanın.
 
 ```bash
-yonsoon mcp ls
+railwise mcp ls
 ```
 
 ---
@@ -237,7 +237,7 @@ yonsoon mcp ls
 OAuth'un etkin olduğu bir MCP sunucusuyla kimlik doğrulaması yapın.
 
 ```bash
-yonsoon mcp auth [name]
+railwise mcp auth [name]
 ```
 
 Sunucu adı belirtmezseniz mevcut OAuth özellikli sunucular arasından seçim yapmanız istenir.
@@ -245,13 +245,13 @@ Sunucu adı belirtmezseniz mevcut OAuth özellikli sunucular arasından seçim y
 Ayrıca OAuth özellikli sunucuları ve bunların kimlik doğrulama durumlarını da listeleyebilirsiniz.
 
 ```bash
-yonsoon mcp auth list
+railwise mcp auth list
 ```
 
 Veya kısa versiyonunu kullanın.
 
 ```bash
-yonsoon mcp auth ls
+railwise mcp auth ls
 ```
 
 ---
@@ -261,7 +261,7 @@ yonsoon mcp auth ls
 MCP sunucusu için OAuth kimlik bilgilerini kaldırın.
 
 ```bash
-yonsoon mcp logout [name]
+railwise mcp logout [name]
 ```
 
 ---
@@ -271,7 +271,7 @@ yonsoon mcp logout [name]
 MCP sunucusu için OAuth bağlantı sorunlarının hatalarını ayıklayın.
 
 ```bash
-yonsoon mcp debug <name>
+railwise mcp debug <name>
 ```
 
 ---
@@ -281,7 +281,7 @@ yonsoon mcp debug <name>
 Yapılandırılmış sağlayıcıların tüm mevcut modellerini listeleyin.
 
 ```bash
-yonsoon models [provider]
+railwise models [provider]
 ```
 
 Bu komut, yapılandırdığınız sağlayıcılardaki modelleri `provider/model` formatında listeler.
@@ -291,7 +291,7 @@ Bu, [config dosyanızda](/docs/config/) kullanmanız gereken tam model adını b
 Modelleri bu sağlayıcıya göre filtrelemek için isteğe bağlı olarak bir sağlayıcı kimliğini iletebilirsiniz.
 
 ```bash
-yonsoon models anthropic
+railwise models anthropic
 ```
 
 #### Bayraklar
@@ -301,36 +301,36 @@ yonsoon models anthropic
 | `--refresh` | Modeller.dev'den model önbelleğini yenileyin                                |
 | `--verbose` | Daha ayrıntılı model çıktısı kullanın (maliyetler gibi meta veriler içerir) |
 
-Önbelleğe alınan model listesini güncellemek için `--refresh` bayrağını kullanın. Bu, bir sağlayıcıya yeni modeller eklendiğinde ve bunları yonsoon'da görmek istediğinizde kullanışlıdır.
+Önbelleğe alınan model listesini güncellemek için `--refresh` bayrağını kullanın. Bu, bir sağlayıcıya yeni modeller eklendiğinde ve bunları railwise'da görmek istediğinizde kullanışlıdır.
 
 ```bash
-yonsoon models --refresh
+railwise models --refresh
 ```
 
 ---
 
 ### run
 
-Doğrudan bir istem ileterek yonsoon'u etkileşimli olmayan modda çalıştırın.
+Doğrudan bir istem ileterek railwise'u etkileşimli olmayan modda çalıştırın.
 
 ```bash
-yonsoon run [message..]
+railwise run [message..]
 ```
 
 Bu, komut dosyası oluşturma, otomasyon veya TUI'un tamamını başlatmadan hızlı bir yanıt istediğinizde kullanışlıdır. Örneğin.
 
-```bash "yonsoon run"
-yonsoon run Explain the use of context in Go
+```bash "railwise run"
+railwise run Explain the use of context in Go
 ```
 
-Ayrıca, her çalıştırmada MCP sunucusunun soğuk önyükleme sürelerini önlemek için çalışan bir `yonsoon serve` örneğine de ekleyebilirsiniz:
+Ayrıca, her çalıştırmada MCP sunucusunun soğuk önyükleme sürelerini önlemek için çalışan bir `railwise serve` örneğine de ekleyebilirsiniz:
 
 ```bash
 # Start a headless server in one terminal
-yonsoon serve
+railwise serve
 
 # In another terminal, run commands that attach to it
-yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
+railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 ```
 
 #### Bayraklar
@@ -347,20 +347,20 @@ yonsoon run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f` | Mesaja eklenecek dosya(lar)                                                       |
 | `--format`   |      | Biçim: varsayılan (biçimlendirilmiş) veya json (ham JSON olayları)                |
 | `--title`    |      | Oturumun başlığı (değer sağlanmazsa kısaltılmış bilgi istemi kullanılır)          |
-| `--attach`   |      | Çalışan bir yonsoon sunucusuna ekleyin (ör. http://localhost:4096)               |
+| `--attach`   |      | Çalışan bir railwise sunucusuna ekleyin (ör. http://localhost:4096)               |
 | `--port`     |      | Yerel sunucunun bağlantı noktası (varsayılan olarak rastgele bağlantı noktasıdır) |
 
 ---
 
 ### serve
 
-API erişimi için headless bir yonsoon sunucusu başlatır. Tam HTTP arayüzü için [server docs](/docs/server) sayfasına bakın.
+API erişimi için headless bir railwise sunucusu başlatır. Tam HTTP arayüzü için [server docs](/docs/server) sayfasına bakın.
 
 ```bash
-yonsoon serve
+railwise serve
 ```
 
-Bu, TUI arayüzü olmadan yonsoon işlevselliğine API erişimi sağlayan bir HTTP sunucusunu başlatır. HTTP temel kimlik doğrulamasını etkinleştirmek için `YONSOON_SERVER_PASSWORD` öğesini ayarlayın (kullanıcı adı varsayılan olarak `yonsoon` şeklindedir).
+Bu, TUI arayüzü olmadan railwise işlevselliğine API erişimi sağlayan bir HTTP sunucusunu başlatır. HTTP temel kimlik doğrulamasını etkinleştirmek için `RAILWISE_SERVER_PASSWORD` öğesini ayarlayın (kullanıcı adı varsayılan olarak `railwise` şeklindedir).
 
 #### Bayraklar
 
@@ -375,20 +375,20 @@ Bu, TUI arayüzü olmadan yonsoon işlevselliğine API erişimi sağlayan bir HT
 
 ### session
 
-yonsoon oturumlarını yönetin.
+railwise oturumlarını yönetin.
 
 ```bash
-yonsoon session [command]
+railwise session [command]
 ```
 
 ---
 
 #### list
 
-Tüm yonsoon oturumlarını listeleyin.
+Tüm railwise oturumlarını listeleyin.
 
 ```bash
-yonsoon session list
+railwise session list
 ```
 
 ##### Bayraklar
@@ -402,10 +402,10 @@ yonsoon session list
 
 ### stats
 
-yonsoon oturumlarınız için belirteç kullanımı ve maliyet istatistiklerini gösterin.
+railwise oturumlarınız için belirteç kullanımı ve maliyet istatistiklerini gösterin.
 
 ```bash
-yonsoon stats
+railwise stats
 ```
 
 #### Bayraklar
@@ -424,7 +424,7 @@ yonsoon stats
 Oturum verilerini JSON olarak dışa aktarın.
 
 ```bash
-yonsoon export [sessionID]
+railwise export [sessionID]
 ```
 
 Bir oturum kimliği sağlamazsanız mevcut oturumlar arasından seçim yapmanız istenir.
@@ -433,30 +433,30 @@ Bir oturum kimliği sağlamazsanız mevcut oturumlar arasından seçim yapmanız
 
 ### import
 
-Bir JSON dosyasından veya yonsoon paylaşımından URL oturum verilerini içe aktarın.
+Bir JSON dosyasından veya railwise paylaşımından URL oturum verilerini içe aktarın.
 
 ```bash
-yonsoon import <file>
+railwise import <file>
 ```
 
-Yerel bir dosyadan veya yonsoon paylaşımından (URL) içe aktarabilirsiniz.
+Yerel bir dosyadan veya railwise paylaşımından (URL) içe aktarabilirsiniz.
 
 ```bash
-yonsoon import session.json
-yonsoon import https://opncd.ai/s/abc123
+railwise import session.json
+railwise import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-Web arayüzüyle başsız bir yonsoon sunucusu başlatın.
+Web arayüzüyle başsız bir railwise sunucusu başlatın.
 
 ```bash
-yonsoon web
+railwise web
 ```
 
-Bu, bir HTTP sunucusunu başlatır ve bir web arayüzü aracılığıyla yonsoon'a erişmek için bir web tarayıcısı açar. HTTP temel kimlik doğrulamasını etkinleştirmek için `YONSOON_SERVER_PASSWORD` öğesini ayarlayın (kullanıcı adı varsayılan olarak `yonsoon` şeklindedir).
+Bu, bir HTTP sunucusunu başlatır ve bir web arayüzü aracılığıyla railwise'a erişmek için bir web tarayıcısı açar. HTTP temel kimlik doğrulamasını etkinleştirmek için `RAILWISE_SERVER_PASSWORD` öğesini ayarlayın (kullanıcı adı varsayılan olarak `railwise` şeklindedir).
 
 #### Bayraklar
 
@@ -474,7 +474,7 @@ Bu, bir HTTP sunucusunu başlatır ve bir web arayüzü aracılığıyla yonsoon
 Bir ACP (Ajan İstemci Protokolü) sunucusu başlatın.
 
 ```bash
-yonsoon acp
+railwise acp
 ```
 
 Bu komut, nd-JSON kullanarak stdin/stdout aracılığıyla iletişim kuran bir ACP sunucusunu başlatır.
@@ -491,10 +491,10 @@ Bu komut, nd-JSON kullanarak stdin/stdout aracılığıyla iletişim kuran bir A
 
 ### uninstall
 
-yonsoon'u kaldırın ve ilgili tüm dosyaları kaldırın.
+railwise'u kaldırın ve ilgili tüm dosyaları kaldırın.
 
 ```bash
-yonsoon uninstall
+railwise uninstall
 ```
 
 #### Bayraklar
@@ -510,22 +510,22 @@ yonsoon uninstall
 
 ### upgrade
 
-yonsoon'u en son sürüme veya belirli bir sürüme günceller.
+railwise'u en son sürüme veya belirli bir sürüme günceller.
 
 ```bash
-yonsoon upgrade [target]
+railwise upgrade [target]
 ```
 
 En son sürüme yükseltmek için.
 
 ```bash
-yonsoon upgrade
+railwise upgrade
 ```
 
 Belirli bir sürüme yükseltmek için:
 
 ```bash
-yonsoon upgrade v0.1.48
+railwise upgrade v0.1.48
 ```
 
 #### Bayraklar
@@ -538,7 +538,7 @@ yonsoon upgrade v0.1.48
 
 ## Global bayraklar
 
-yonsoon CLI aşağıdaki global bayrakları destekler.
+railwise CLI aşağıdaki global bayrakları destekler.
 
 | Bayrak         | Kısa | Tanım                                    |
 | -------------- | ---- | ---------------------------------------- |
@@ -551,34 +551,34 @@ yonsoon CLI aşağıdaki global bayrakları destekler.
 
 ## Ortam değişkenleri
 
-yonsoon ortam değişkenleri kullanılarak yapılandırılabilir.
+railwise ortam değişkenleri kullanılarak yapılandırılabilir.
 
 | Değişken                              | Tip     | Açıklama                                                                    |
 | ------------------------------------- | ------- | --------------------------------------------------------------------------- |
-| `YONSOON_AUTO_SHARE`                 | boolean | Oturumları otomatik olarak paylaş                                           |
-| `YONSOON_GIT_BASH_PATH`              | string  | Windows'ta yürütülebilir Git Bash'in Yolu                                   |
-| `YONSOON_CONFIG`                     | string  | Yapılandırma dosyasının yolu                                                |
-| `YONSOON_CONFIG_DIR`                 | string  | Yapılandırma dizinine giden yol                                             |
-| `YONSOON_CONFIG_CONTENT`             | string  | Satır içi JSON config içeriği                                               |
-| `YONSOON_DISABLE_AUTOUPDATE`         | boolean | Otomatik güncelleme kontrollerini devre dışı bırak                          |
-| `YONSOON_DISABLE_PRUNE`              | boolean | Eski verilerin temizlenmesini devre dışı bırak                              |
-| `YONSOON_DISABLE_TERMINAL_TITLE`     | boolean | Otomatik terminal başlığı güncellemelerini devre dışı bırakın               |
-| `YONSOON_PERMISSION`                 | string  | Satır içi JSON izin config'i                                                |
-| `YONSOON_DISABLE_DEFAULT_PLUGINS`    | boolean | Varsayılan eklentileri devre dışı bırakın                                   |
-| `YONSOON_DISABLE_LSP_DOWNLOAD`       | boolean | Otomatik LSP sunucu indirmelerini devre dışı bırakın                        |
-| `YONSOON_ENABLE_EXPERIMENTAL_MODELS` | boolean | Deneysel modelleri etkinleştir                                              |
-| `YONSOON_DISABLE_AUTOCOMPACT`        | boolean | Otomatik context sıkıştırmayı devre dışı bırak                              |
-| `YONSOON_DISABLE_CLAUDE_CODE`        | boolean | `.claude`'den okumayı devre dışı bırak (istem + beceriler)                  |
-| `YONSOON_DISABLE_CLAUDE_CODE_PROMPT` | boolean | `~/.claude/CLAUDE.md` dosyasını okumayı devre dışı bırak                    |
-| `YONSOON_DISABLE_CLAUDE_CODE_SKILLS` | boolean | `.claude/skills` yüklemesini devre dışı bırak                               |
-| `YONSOON_DISABLE_MODELS_FETCH`       | boolean | Uzak kaynaklardan model getirmeyi devre dışı bırakın                        |
-| `YONSOON_FAKE_VCS`                   | string  | Test amaçlı sahte VCS sağlayıcısı                                           |
-| `YONSOON_DISABLE_FILETIME_CHECK`     | boolean | Optimizasyon için dosya süresi kontrolünü devre dışı bırakın                |
-| `YONSOON_CLIENT`                     | string  | Client kimliği (varsayılan: `cli`)                                          |
-| `YONSOON_ENABLE_EXA`                 | boolean | Exa web arama araçlarını etkinleştir                                        |
-| `YONSOON_SERVER_PASSWORD`            | string  | `serve`/`web` için temel kimlik doğrulamayı etkinleştirin                   |
-| `YONSOON_SERVER_USERNAME`            | string  | Temel kimlik doğrulama kullanıcı adını geçersiz kıl (varsayılan `yonsoon`) |
-| `YONSOON_MODELS_URL`                 | string  | Model yapılandırmasını almak için özel URL                                  |
+| `RAILWISE_AUTO_SHARE`                 | boolean | Oturumları otomatik olarak paylaş                                           |
+| `RAILWISE_GIT_BASH_PATH`              | string  | Windows'ta yürütülebilir Git Bash'in Yolu                                   |
+| `RAILWISE_CONFIG`                     | string  | Yapılandırma dosyasının yolu                                                |
+| `RAILWISE_CONFIG_DIR`                 | string  | Yapılandırma dizinine giden yol                                             |
+| `RAILWISE_CONFIG_CONTENT`             | string  | Satır içi JSON config içeriği                                               |
+| `RAILWISE_DISABLE_AUTOUPDATE`         | boolean | Otomatik güncelleme kontrollerini devre dışı bırak                          |
+| `RAILWISE_DISABLE_PRUNE`              | boolean | Eski verilerin temizlenmesini devre dışı bırak                              |
+| `RAILWISE_DISABLE_TERMINAL_TITLE`     | boolean | Otomatik terminal başlığı güncellemelerini devre dışı bırakın               |
+| `RAILWISE_PERMISSION`                 | string  | Satır içi JSON izin config'i                                                |
+| `RAILWISE_DISABLE_DEFAULT_PLUGINS`    | boolean | Varsayılan eklentileri devre dışı bırakın                                   |
+| `RAILWISE_DISABLE_LSP_DOWNLOAD`       | boolean | Otomatik LSP sunucu indirmelerini devre dışı bırakın                        |
+| `RAILWISE_ENABLE_EXPERIMENTAL_MODELS` | boolean | Deneysel modelleri etkinleştir                                              |
+| `RAILWISE_DISABLE_AUTOCOMPACT`        | boolean | Otomatik context sıkıştırmayı devre dışı bırak                              |
+| `RAILWISE_DISABLE_CLAUDE_CODE`        | boolean | `.claude`'den okumayı devre dışı bırak (istem + beceriler)                  |
+| `RAILWISE_DISABLE_CLAUDE_CODE_PROMPT` | boolean | `~/.claude/CLAUDE.md` dosyasını okumayı devre dışı bırak                    |
+| `RAILWISE_DISABLE_CLAUDE_CODE_SKILLS` | boolean | `.claude/skills` yüklemesini devre dışı bırak                               |
+| `RAILWISE_DISABLE_MODELS_FETCH`       | boolean | Uzak kaynaklardan model getirmeyi devre dışı bırakın                        |
+| `RAILWISE_FAKE_VCS`                   | string  | Test amaçlı sahte VCS sağlayıcısı                                           |
+| `RAILWISE_DISABLE_FILETIME_CHECK`     | boolean | Optimizasyon için dosya süresi kontrolünü devre dışı bırakın                |
+| `RAILWISE_CLIENT`                     | string  | Client kimliği (varsayılan: `cli`)                                          |
+| `RAILWISE_ENABLE_EXA`                 | boolean | Exa web arama araçlarını etkinleştir                                        |
+| `RAILWISE_SERVER_PASSWORD`            | string  | `serve`/`web` için temel kimlik doğrulamayı etkinleştirin                   |
+| `RAILWISE_SERVER_USERNAME`            | string  | Temel kimlik doğrulama kullanıcı adını geçersiz kıl (varsayılan `railwise`) |
+| `RAILWISE_MODELS_URL`                 | string  | Model yapılandırmasını almak için özel URL                                  |
 
 ---
 
@@ -588,16 +588,16 @@ Bu ortam değişkenleri değişebilecek veya kaldırılabilecek deneysel özelli
 
 | Değişken                                        | Tip     | Tanım                                                   |
 | ----------------------------------------------- | ------- | ------------------------------------------------------- |
-| `YONSOON_EXPERIMENTAL`                         | boolean | Tüm deneysel özellikleri etkinleştir                    |
-| `YONSOON_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Simge bulmayı etkinleştir                               |
-| `YONSOON_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | TUI'da seçim yapıldığında kopyalamayı devre dışı bırak  |
-| `YONSOON_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | MS cinsinden bash komutları için varsayılan zaman aşımı |
-| `YONSOON_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | LLM yanıtları için maksimum çıktı belirteçleri          |
-| `YONSOON_EXPERIMENTAL_FILEWATCHER`             | boolean | Tüm dizin için dosya izleyiciyi etkinleştir             |
-| `YONSOON_EXPERIMENTAL_OXFMT`                   | boolean | Oxfmt biçimlendiriciyi etkinleştir                      |
-| `YONSOON_EXPERIMENTAL_LSP_TOOL`                | boolean | Deneysel LSP aracını etkinleştir                        |
-| `YONSOON_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Dosya izleyiciyi devre dışı bırak                       |
-| `YONSOON_EXPERIMENTAL_EXA`                     | boolean | Deneysel Exa özelliklerini etkinleştirin                |
-| `YONSOON_EXPERIMENTAL_LSP_TY`                  | boolean | Deneysel LSP tür denetimini etkinleştir                 |
-| `YONSOON_EXPERIMENTAL_MARKDOWN`                | boolean | Deneysel işaretleme özelliklerini etkinleştir           |
-| `YONSOON_EXPERIMENTAL_PLAN_MODE`               | boolean | Plan modunu etkinleştir                                 |
+| `RAILWISE_EXPERIMENTAL`                         | boolean | Tüm deneysel özellikleri etkinleştir                    |
+| `RAILWISE_EXPERIMENTAL_ICON_DISCOVERY`          | boolean | Simge bulmayı etkinleştir                               |
+| `RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT`  | boolean | TUI'da seçim yapıldığında kopyalamayı devre dışı bırak  |
+| `RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` | number  | MS cinsinden bash komutları için varsayılan zaman aşımı |
+| `RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX`        | number  | LLM yanıtları için maksimum çıktı belirteçleri          |
+| `RAILWISE_EXPERIMENTAL_FILEWATCHER`             | boolean | Tüm dizin için dosya izleyiciyi etkinleştir             |
+| `RAILWISE_EXPERIMENTAL_OXFMT`                   | boolean | Oxfmt biçimlendiriciyi etkinleştir                      |
+| `RAILWISE_EXPERIMENTAL_LSP_TOOL`                | boolean | Deneysel LSP aracını etkinleştir                        |
+| `RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER`     | boolean | Dosya izleyiciyi devre dışı bırak                       |
+| `RAILWISE_EXPERIMENTAL_EXA`                     | boolean | Deneysel Exa özelliklerini etkinleştirin                |
+| `RAILWISE_EXPERIMENTAL_LSP_TY`                  | boolean | Deneysel LSP tür denetimini etkinleştir                 |
+| `RAILWISE_EXPERIMENTAL_MARKDOWN`                | boolean | Deneysel işaretleme özelliklerini etkinleştir           |
+| `RAILWISE_EXPERIMENTAL_PLAN_MODE`               | boolean | Plan modunu etkinleştir                                 |

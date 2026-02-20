@@ -1,9 +1,9 @@
 import type { APIEvent } from "@solidjs/start/server"
-import { and, Database, eq, isNull } from "@yonsoon/console-core/drizzle/index.js"
-import { KeyTable } from "@yonsoon/console-core/schema/key.sql.js"
-import { WorkspaceTable } from "@yonsoon/console-core/schema/workspace.sql.js"
-import { ModelTable } from "@yonsoon/console-core/schema/model.sql.js"
-import { ZenData } from "@yonsoon/console-core/model.js"
+import { and, Database, eq, isNull } from "@railwise/console-core/drizzle/index.js"
+import { KeyTable } from "@railwise/console-core/schema/key.sql.js"
+import { WorkspaceTable } from "@railwise/console-core/schema/workspace.sql.js"
+import { ModelTable } from "@railwise/console-core/schema/model.sql.js"
+import { ZenData } from "@railwise/console-core/model.js"
 
 export async function OPTIONS(input: APIEvent) {
   return new Response(null, {
@@ -29,7 +29,7 @@ export async function GET(input: APIEvent) {
           id,
           object: "model",
           created: Math.floor(Date.now() / 1000),
-          owned_by: "yonsoon",
+          owned_by: "railwise",
         })),
     }),
     {

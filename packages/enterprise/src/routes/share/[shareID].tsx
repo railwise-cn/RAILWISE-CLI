@@ -1,37 +1,37 @@
-import { FileDiff, Message, Model, Part, Session, SessionStatus, UserMessage } from "@yonsoon/sdk/v2"
-import { SessionTurn } from "@yonsoon/ui/session-turn"
-import { SessionReview } from "@yonsoon/ui/session-review"
-import { DataProvider } from "@yonsoon/ui/context"
-import { DiffComponentProvider } from "@yonsoon/ui/context/diff"
-import { CodeComponentProvider } from "@yonsoon/ui/context/code"
-import { WorkerPoolProvider } from "@yonsoon/ui/context/worker-pool"
+import { FileDiff, Message, Model, Part, Session, SessionStatus, UserMessage } from "@railwise/sdk/v2"
+import { SessionTurn } from "@railwise/ui/session-turn"
+import { SessionReview } from "@railwise/ui/session-review"
+import { DataProvider } from "@railwise/ui/context"
+import { DiffComponentProvider } from "@railwise/ui/context/diff"
+import { CodeComponentProvider } from "@railwise/ui/context/code"
+import { WorkerPoolProvider } from "@railwise/ui/context/worker-pool"
 import { createAsync, query, useParams } from "@solidjs/router"
 import { createEffect, createMemo, ErrorBoundary, For, Match, Show, Switch } from "solid-js"
 import { Share } from "~/core/share"
-import { Logo, Mark } from "@yonsoon/ui/logo"
-import { IconButton } from "@yonsoon/ui/icon-button"
-import { ProviderIcon } from "@yonsoon/ui/provider-icon"
-import { createDefaultOptions } from "@yonsoon/ui/pierre"
-import { iife } from "@yonsoon/util/iife"
-import { Binary } from "@yonsoon/util/binary"
-import { NamedError } from "@yonsoon/util/error"
+import { Logo, Mark } from "@railwise/ui/logo"
+import { IconButton } from "@railwise/ui/icon-button"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
+import { createDefaultOptions } from "@railwise/ui/pierre"
+import { iife } from "@railwise/util/iife"
+import { Binary } from "@railwise/util/binary"
+import { NamedError } from "@railwise/util/error"
 import { DateTime } from "luxon"
 import { createStore } from "solid-js/store"
 import z from "zod"
 import NotFound from "../[...404]"
-import { Tabs } from "@yonsoon/ui/tabs"
-import { MessageNav } from "@yonsoon/ui/message-nav"
+import { Tabs } from "@railwise/ui/tabs"
+import { MessageNav } from "@railwise/ui/message-nav"
 import { preloadMultiFileDiff, PreloadMultiFileDiffResult } from "@pierre/diffs/ssr"
-import { Diff as SSRDiff } from "@yonsoon/ui/diff-ssr"
+import { Diff as SSRDiff } from "@railwise/ui/diff-ssr"
 import { clientOnly } from "@solidjs/start"
-import { type IconName } from "@yonsoon/ui/icons/provider"
+import { type IconName } from "@railwise/ui/icons/provider"
 import { Meta, Title } from "@solidjs/meta"
 import { Base64 } from "js-base64"
 
-const ClientOnlyDiff = clientOnly(() => import("@yonsoon/ui/diff").then((m) => ({ default: m.Diff })))
-const ClientOnlyCode = clientOnly(() => import("@yonsoon/ui/code").then((m) => ({ default: m.Code })))
+const ClientOnlyDiff = clientOnly(() => import("@railwise/ui/diff").then((m) => ({ default: m.Diff })))
+const ClientOnlyCode = clientOnly(() => import("@railwise/ui/code").then((m) => ({ default: m.Code })))
 const ClientOnlyWorkerPoolProvider = clientOnly(() =>
-  import("@yonsoon/ui/pierre/worker").then((m) => ({
+  import("@railwise/ui/pierre/worker").then((m) => ({
     default: (props: { children: any }) => (
       <WorkerPoolProvider pools={m.getWorkerPools()}>{props.children}</WorkerPoolProvider>
     ),
@@ -317,7 +317,7 @@ export default function () {
                           <div class="relative bg-background-stronger w-screen h-screen overflow-hidden flex flex-col">
                             <header class="h-12 px-6 py-2 flex items-center justify-between self-stretch bg-background-base border-b border-border-weak-base">
                               <div class="">
-                                <a href="https://yonsoon.ai">
+                                <a href="https://railwise.ai">
                                   <Mark />
                                 </a>
                               </div>
@@ -331,7 +331,7 @@ export default function () {
                                 />
                                 <IconButton
                                   as={"a"}
-                                  href="https://yonsoon.ai/discord"
+                                  href="https://railwise.ai/discord"
                                   target="_blank"
                                   icon="discord"
                                   variant="ghost"

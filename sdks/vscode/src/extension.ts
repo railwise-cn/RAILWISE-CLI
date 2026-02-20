@@ -3,15 +3,15 @@ export function deactivate() {}
 
 import * as vscode from "vscode"
 
-const TERMINAL_NAME = "yonsoon"
+const TERMINAL_NAME = "railwise"
 
 export function activate(context: vscode.ExtensionContext) {
-  let openNewTerminalDisposable = vscode.commands.registerCommand("yonsoon.openNewTerminal", async () => {
+  let openNewTerminalDisposable = vscode.commands.registerCommand("railwise.openNewTerminal", async () => {
     await openTerminal()
   })
 
-  let openTerminalDisposable = vscode.commands.registerCommand("yonsoon.openTerminal", async () => {
-    // An yonsoon terminal already exists => focus it
+  let openTerminalDisposable = vscode.commands.registerCommand("railwise.openTerminal", async () => {
+    // An railwise terminal already exists => focus it
     const existingTerminal = vscode.window.terminals.find((t) => t.name === TERMINAL_NAME)
     if (existingTerminal) {
       existingTerminal.show()
@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
     await openTerminal()
   })
 
-  let addFilepathDisposable = vscode.commands.registerCommand("yonsoon.addFilepathToTerminal", async () => {
+  let addFilepathDisposable = vscode.commands.registerCommand("railwise.addFilepathToTerminal", async () => {
     const fileRef = getActiveFile()
     if (!fileRef) {
       return
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     if (terminal.name === TERMINAL_NAME) {
       // @ts-ignore
-      const port = terminal.creationOptions.env?.["_EXTENSION_YONSOON_PORT"]
+      const port = terminal.creationOptions.env?.["_EXTENSION_RAILWISE_PORT"]
       port ? await appendPrompt(parseInt(port), fileRef) : terminal.sendText(fileRef, false)
       terminal.show()
     }
@@ -56,13 +56,13 @@ export function activate(context: vscode.ExtensionContext) {
         preserveFocus: false,
       },
       env: {
-        _EXTENSION_YONSOON_PORT: port.toString(),
-        YONSOON_CALLER: "vscode",
+        _EXTENSION_RAILWISE_PORT: port.toString(),
+        RAILWISE_CALLER: "vscode",
       },
     })
 
     terminal.show()
-    terminal.sendText(`yonsoon --port ${port}`)
+    terminal.sendText(`railwise --port ${port}`)
 
     const fileRef = getActiveFile()
     if (!fileRef) {

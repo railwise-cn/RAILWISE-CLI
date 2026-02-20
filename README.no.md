@@ -1,17 +1,17 @@
 <p align="center">
-  <a href="https://yonsoon.ai">
+  <a href="https://railwise.ai">
     <picture>
       <source srcset="packages/console/app/src/asset/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
       <source srcset="packages/console/app/src/asset/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
-      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="YONSOON (甬算) logo">
+      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE (甬算) logo">
     </picture>
   </a>
 </p>
 <p align="center">AI-kodeagent med åpen kildekode.</p>
 <p align="center">
-  <a href="https://yonsoon.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
-  <a href="https://www.npmjs.com/package/yonsoon-ai"><img alt="npm" src="https://img.shields.io/npm/v/yonsoon-ai?style=flat-square" /></a>
-  <a href="https://github.com/anomalyco/yonsoon/actions/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/anomalyco/yonsoon/publish.yml?style=flat-square&branch=dev" /></a>
+  <a href="https://railwise.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
+  <a href="https://www.npmjs.com/package/railwise-ai"><img alt="npm" src="https://img.shields.io/npm/v/railwise-ai?style=flat-square" /></a>
+  <a href="https://github.com/anomalyco/railwise/actions/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/anomalyco/railwise/publish.yml?style=flat-square&branch=dev" /></a>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@
   <a href="README.uk.md">Українська</a>
 </p>
 
-[![YONSOON (甬算) Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://yonsoon.ai)
+[![RAILWISE (甬算) Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
 
 ---
 
@@ -43,18 +43,18 @@
 
 ```bash
 # YOLO
-curl -fsSL https://yonsoon.ai/install | bash
+curl -fsSL https://railwise.ai/install | bash
 
 # Pakkehåndterere
-npm i -g yonsoon-ai@latest        # eller bun/pnpm/yarn
-scoop install yonsoon             # Windows
-choco install yonsoon             # Windows
-brew install anomalyco/tap/yonsoon # macOS og Linux (anbefalt, alltid oppdatert)
-brew install yonsoon              # macOS og Linux (offisiell brew-formel, oppdateres sjeldnere)
-sudo pacman -S yonsoon            # Arch Linux (Stable)
-paru -S yonsoon-bin               # Arch Linux (Latest from AUR)
-mise use -g yonsoon               # alle OS
-nix run nixpkgs#yonsoon           # eller github:anomalyco/yonsoon for nyeste dev-branch
+npm i -g railwise-ai@latest        # eller bun/pnpm/yarn
+scoop install railwise             # Windows
+choco install railwise             # Windows
+brew install anomalyco/tap/railwise # macOS og Linux (anbefalt, alltid oppdatert)
+brew install railwise              # macOS og Linux (offisiell brew-formel, oppdateres sjeldnere)
+sudo pacman -S railwise            # Arch Linux (Stable)
+paru -S railwise-bin               # Arch Linux (Latest from AUR)
+mise use -g railwise               # alle OS
+nix run nixpkgs#railwise           # eller github:anomalyco/railwise for nyeste dev-branch
 ```
 
 > [!TIP]
@@ -62,40 +62,40 @@ nix run nixpkgs#yonsoon           # eller github:anomalyco/yonsoon for nyeste de
 
 ### Desktop-app (BETA)
 
-YONSOON (甬算) er også tilgjengelig som en desktop-app. Last ned direkte fra [releases-siden](https://github.com/anomalyco/yonsoon/releases) eller [yonsoon.ai/download](https://yonsoon.ai/download).
+RAILWISE (甬算) er også tilgjengelig som en desktop-app. Last ned direkte fra [releases-siden](https://github.com/anomalyco/railwise/releases) eller [railwise.ai/download](https://railwise.ai/download).
 
 | Plattform             | Nedlasting                            |
 | --------------------- | ------------------------------------- |
-| macOS (Apple Silicon) | `yonsoon-desktop-darwin-aarch64.dmg` |
-| macOS (Intel)         | `yonsoon-desktop-darwin-x64.dmg`     |
-| Windows               | `yonsoon-desktop-windows-x64.exe`    |
+| macOS (Apple Silicon) | `railwise-desktop-darwin-aarch64.dmg` |
+| macOS (Intel)         | `railwise-desktop-darwin-x64.dmg`     |
+| Windows               | `railwise-desktop-windows-x64.exe`    |
 | Linux                 | `.deb`, `.rpm` eller AppImage         |
 
 ```bash
 # macOS (Homebrew)
-brew install --cask yonsoon-desktop
+brew install --cask railwise-desktop
 # Windows (Scoop)
-scoop bucket add extras; scoop install extras/yonsoon-desktop
+scoop bucket add extras; scoop install extras/railwise-desktop
 ```
 
 #### Installasjonsmappe
 
 Installasjonsskriptet bruker følgende prioritet for installasjonsstien:
 
-1. `$YONSOON_INSTALL_DIR` - Egendefinert installasjonsmappe
+1. `$RAILWISE_INSTALL_DIR` - Egendefinert installasjonsmappe
 2. `$XDG_BIN_DIR` - Sti som følger XDG Base Directory Specification
 3. `$HOME/bin` - Standard brukerbinar-mappe (hvis den finnes eller kan opprettes)
-4. `$HOME/.yonsoon/bin` - Standard fallback
+4. `$HOME/.railwise/bin` - Standard fallback
 
 ```bash
 # Eksempler
-YONSOON_INSTALL_DIR=/usr/local/bin curl -fsSL https://yonsoon.ai/install | bash
-XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://yonsoon.ai/install | bash
+RAILWISE_INSTALL_DIR=/usr/local/bin curl -fsSL https://railwise.ai/install | bash
+XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://railwise.ai/install | bash
 ```
 
 ### Agents
 
-YONSOON (甬算) har to innebygde agents du kan bytte mellom med `Tab`-tasten.
+RAILWISE (甬算) har to innebygde agents du kan bytte mellom med `Tab`-tasten.
 
 - **build** - Standard, agent med full tilgang for utviklingsarbeid
 - **plan** - Skrivebeskyttet agent for analyse og kodeutforsking
@@ -106,19 +106,19 @@ YONSOON (甬算) har to innebygde agents du kan bytte mellom med `Tab`-tasten.
 Det finnes også en **general**-subagent for komplekse søk og flertrinnsoppgaver.
 Den brukes internt og kan kalles via `@general` i meldinger.
 
-Les mer om [agents](https://yonsoon.ai/docs/agents).
+Les mer om [agents](https://railwise.ai/docs/agents).
 
 ### Dokumentasjon
 
-For mer info om hvordan du konfigurerer YONSOON (甬算), [**se dokumentasjonen**](https://yonsoon.ai/docs).
+For mer info om hvordan du konfigurerer RAILWISE (甬算), [**se dokumentasjonen**](https://railwise.ai/docs).
 
 ### Bidra
 
-Hvis du vil bidra til YONSOON (甬算), les [contributing docs](./CONTRIBUTING.md) før du sender en pull request.
+Hvis du vil bidra til RAILWISE (甬算), les [contributing docs](./CONTRIBUTING.md) før du sender en pull request.
 
-### Bygge på YONSOON (甬算)
+### Bygge på RAILWISE (甬算)
 
-Hvis du jobber med et prosjekt som er relatert til YONSOON (甬算) og bruker "yonsoon" som en del av navnet; for eksempel "yonsoon-dashboard" eller "yonsoon-mobile", legg inn en merknad i README som presiserer at det ikke er bygget av YONSOON (甬算)-teamet og ikke er tilknyttet oss på noen måte.
+Hvis du jobber med et prosjekt som er relatert til RAILWISE (甬算) og bruker "railwise" som en del av navnet; for eksempel "railwise-dashboard" eller "railwise-mobile", legg inn en merknad i README som presiserer at det ikke er bygget av RAILWISE (甬算)-teamet og ikke er tilknyttet oss på noen måte.
 
 ### FAQ
 
@@ -127,11 +127,11 @@ Hvis du jobber med et prosjekt som er relatert til YONSOON (甬算) og bruker "y
 Det er veldig likt Claude Code når det gjelder funksjonalitet. Her er de viktigste forskjellene:
 
 - 100% open source
-- Ikke knyttet til en bestemt leverandør. Selv om vi anbefaler modellene vi tilbyr gjennom [YONSOON (甬算) Zen](https://yonsoon.ai/zen); kan YONSOON (甬算) brukes med Claude, OpenAI, Google eller til og med lokale modeller. Etter hvert som modellene utvikler seg vil gapene lukkes og prisene gå ned, så det er viktig å være provider-agnostic.
+- Ikke knyttet til en bestemt leverandør. Selv om vi anbefaler modellene vi tilbyr gjennom [RAILWISE (甬算) Zen](https://railwise.ai/zen); kan RAILWISE (甬算) brukes med Claude, OpenAI, Google eller til og med lokale modeller. Etter hvert som modellene utvikler seg vil gapene lukkes og prisene gå ned, så det er viktig å være provider-agnostic.
 - LSP-støtte rett ut av boksen
-- Fokus på TUI. YONSOON (甬算) er bygget av neovim-brukere og skaperne av [terminal.shop](https://terminal.shop); vi kommer til å presse grensene for hva som er mulig i terminalen.
-- Klient/server-arkitektur. Dette kan for eksempel la YONSOON (甬算) kjøre på maskinen din, mens du styrer den eksternt fra en mobilapp. Det betyr at TUI-frontend'en bare er en av de mulige klientene.
+- Fokus på TUI. RAILWISE (甬算) er bygget av neovim-brukere og skaperne av [terminal.shop](https://terminal.shop); vi kommer til å presse grensene for hva som er mulig i terminalen.
+- Klient/server-arkitektur. Dette kan for eksempel la RAILWISE (甬算) kjøre på maskinen din, mens du styrer den eksternt fra en mobilapp. Det betyr at TUI-frontend'en bare er en av de mulige klientene.
 
 ---
 
-**Bli med i fellesskapet** [Discord](https://discord.gg/yonsoon) | [X.com](https://x.com/yonsoon)
+**Bli med i fellesskapet** [Discord](https://discord.gg/railwise) | [X.com](https://x.com/railwise)

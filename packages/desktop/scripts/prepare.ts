@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { $ } from "bun"
 
-import { Script } from "@yonsoon/script"
+import { Script } from "@railwise/script"
 import { copyBinaryToSidecarFolder, getCurrentSidecar, windowsify } from "./utils"
 
 const pkg = await Bun.file("./package.json").json()
@@ -11,9 +11,9 @@ console.log(`Updated package.json version to ${Script.version}`)
 
 const sidecarConfig = getCurrentSidecar()
 
-const dir = "src-tauri/target/yonsoon-binaries"
+const dir = "src-tauri/target/railwise-binaries"
 
 await $`mkdir -p ${dir}`
-await $`gh run download ${Bun.env.GITHUB_RUN_ID} -n yonsoon-cli`.cwd(dir)
+await $`gh run download ${Bun.env.GITHUB_RUN_ID} -n railwise-cli`.cwd(dir)
 
-await copyBinaryToSidecarFolder(windowsify(`${dir}/${sidecarConfig.ocBinary}/bin/yonsoon`))
+await copyBinaryToSidecarFolder(windowsify(`${dir}/${sidecarConfig.ocBinary}/bin/railwise`))

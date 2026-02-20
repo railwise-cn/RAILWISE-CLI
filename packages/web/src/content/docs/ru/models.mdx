@@ -3,13 +3,13 @@ title: Модели
 description: Настройка поставщика и модели LLM.
 ---
 
-yonsoon использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https://models.dev) для поддержки **более 75 поставщиков LLM** и поддерживает запуск локальных моделей.
+railwise использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https://models.dev) для поддержки **более 75 поставщиков LLM** и поддерживает запуск локальных моделей.
 
 ---
 
 ## Провайдеры
 
-Большинство популярных провайдеров предварительно загружены по умолчанию. Если вы добавили учетные данные для поставщика с помощью команды `/connect`, они будут доступны при запуске yonsoon.
+Большинство популярных провайдеров предварительно загружены по умолчанию. Если вы добавили учетные данные для поставщика с помощью команды `/connect`, они будут доступны при запуске railwise.
 
 Узнайте больше о [providers](/docs/providers).
 
@@ -35,7 +35,7 @@ yonsoon использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https
 
 Однако лишь немногие из них хороши как в генерации кода, так и в вызове инструментов.
 
-Вот несколько моделей, которые хорошо работают с yonsoon (в произвольном порядке). (Это не исчерпывающий список и не обязательно актуальный):
+Вот несколько моделей, которые хорошо работают с railwise (в произвольном порядке). (Это не исчерпывающий список и не обязательно актуальный):
 
 - GPT 5.2
 - Кодекс GPT 5.1
@@ -49,16 +49,16 @@ yonsoon использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https
 ## Установить значение по умолчанию
 
 Чтобы установить одну из них в качестве модели по умолчанию, вы можете установить ключ `model` в вашем
-Конфигурация yonsoon.
+Конфигурация railwise.
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "model": "lmstudio/google/gemma-3n-e4b"
 }
 ```
 
-Здесь полный идентификатор `provider_id/model_id`. Например, если вы используете [YONSOON (甬算) Zen](/docs/zen), вы должны использовать `yonsoon/gpt-5.1-codex` для кодекса GPT 5.1.
+Здесь полный идентификатор `provider_id/model_id`. Например, если вы используете [RAILWISE (甬算) Zen](/docs/zen), вы должны использовать `railwise/gpt-5.1-codex` для кодекса GPT 5.1.
 
 Если вы настроили [пользовательский поставщик](/docs/providers#custom), `provider_id` — это ключ из части `provider` вашей конфигурации, а `model_id` — это ключ из `provider.models`.
 
@@ -68,9 +68,9 @@ yonsoon использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https
 
 Вы можете глобально настроить параметры модели через файл config.
 
-```jsonc title="yonsoon.jsonc" {7-12,19-24}
+```jsonc title="railwise.jsonc" {7-12,19-24}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -107,11 +107,11 @@ yonsoon использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https
 
 Вы также можете определить собственные варианты, расширяющие встроенные. Варианты позволяют настраивать разные параметры для одной и той же модели без создания повторяющихся записей:
 
-```jsonc title="yonsoon.jsonc" {6-21}
+```jsonc title="railwise.jsonc" {6-21}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
-    "yonsoon": {
+    "railwise": {
       "models": {
         "gpt-5": {
           "variants": {
@@ -137,11 +137,11 @@ yonsoon использует [AI SDK](https://ai-sdk.dev/) и [Models.dev](https
 
 ## Варианты
 
-Многие модели поддерживают несколько вариантов с разными конфигурациями. yonsoon поставляется со встроенными вариантами по умолчанию для популярных провайдеров.
+Многие модели поддерживают несколько вариантов с разными конфигурациями. railwise поставляется со встроенными вариантами по умолчанию для популярных провайдеров.
 
 ### Встроенные варианты
 
-yonsoon поставляется с вариантами по умолчанию для многих провайдеров:
+railwise поставляется с вариантами по умолчанию для многих провайдеров:
 
 **Anthropic**:
 
@@ -172,9 +172,9 @@ yonsoon поставляется с вариантами по умолчанию
 
 Вы можете переопределить существующие варианты или добавить свои собственные:
 
-```jsonc title="yonsoon.jsonc" {7-18}
+```jsonc title="railwise.jsonc" {7-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -203,15 +203,15 @@ yonsoon поставляется с вариантами по умолчанию
 
 ## Загрузка моделей
 
-Когда yonsoon запускается, он проверяет модели в следующем порядке приоритета:
+Когда railwise запускается, он проверяет модели в следующем порядке приоритета:
 
 1. CLI-флаг `--model` или `-m`. Формат тот же, что и в файле конфигурации: `provider_id/model_id`.
 
-2. Список моделей в конфигурации yonsoon.
+2. Список моделей в конфигурации railwise.
 
-   ```json title="yonsoon.json"
+   ```json title="railwise.json"
    {
-     "$schema": "https://yonsoon.ai/config.json",
+     "$schema": "https://railwise.ai/config.json",
      "model": "anthropic/claude-sonnet-4-20250514"
    }
    ```

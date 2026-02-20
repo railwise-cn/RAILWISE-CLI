@@ -37,7 +37,7 @@ impl CommandWrapper for WinCreationFlags {
     }
 }
 
-const CLI_INSTALL_DIR: &str = ".yonsoon/bin";
+const CLI_INSTALL_DIR: &str = ".railwise/bin";
 const CLI_BINARY_NAME: &str = "opencode";
 
 #[derive(serde::Deserialize, Debug)]
@@ -244,14 +244,14 @@ pub fn spawn_command(
 
     let mut envs = vec![
         (
-            "YONSOON_EXPERIMENTAL_ICON_DISCOVERY".to_string(),
+            "RAILWISE_EXPERIMENTAL_ICON_DISCOVERY".to_string(),
             "true".to_string(),
         ),
         (
-            "YONSOON_EXPERIMENTAL_FILEWATCHER".to_string(),
+            "RAILWISE_EXPERIMENTAL_FILEWATCHER".to_string(),
             "true".to_string(),
         ),
-        ("YONSOON_CLIENT".to_string(), "desktop".to_string()),
+        ("RAILWISE_CLIENT".to_string(), "desktop".to_string()),
         (
             "XDG_STATE_HOME".to_string(),
             state_dir.to_string_lossy().to_string(),
@@ -269,26 +269,26 @@ pub fn spawn_command(
             let version = app.package_info().version.to_string();
             let mut script = vec![
                 "set -e".to_string(),
-                "BIN=\"$HOME/.yonsoon/bin/opencode\"".to_string(),
+                "BIN=\"$HOME/.railwise/bin/opencode\"".to_string(),
                 "if [ ! -x \"$BIN\" ]; then".to_string(),
                 format!(
-                    "  curl -fsSL https://yonsoon.ai/install | bash -s -- --version {} --no-modify-path",
+                    "  curl -fsSL https://railwise.ai/install | bash -s -- --version {} --no-modify-path",
                     shell_escape(&version)
                 ),
                 "fi".to_string(),
             ];
 
             let mut env_prefix = vec![
-                "YONSOON_EXPERIMENTAL_ICON_DISCOVERY=true".to_string(),
-                "YONSOON_EXPERIMENTAL_FILEWATCHER=true".to_string(),
-                "YONSOON_CLIENT=desktop".to_string(),
+                "RAILWISE_EXPERIMENTAL_ICON_DISCOVERY=true".to_string(),
+                "RAILWISE_EXPERIMENTAL_FILEWATCHER=true".to_string(),
+                "RAILWISE_CLIENT=desktop".to_string(),
                 "XDG_STATE_HOME=\"$HOME/.local/state\"".to_string(),
             ];
             env_prefix.extend(
                 envs.iter()
-                    .filter(|(key, _)| key != "YONSOON_EXPERIMENTAL_ICON_DISCOVERY")
-                    .filter(|(key, _)| key != "YONSOON_EXPERIMENTAL_FILEWATCHER")
-                    .filter(|(key, _)| key != "YONSOON_CLIENT")
+                    .filter(|(key, _)| key != "RAILWISE_EXPERIMENTAL_ICON_DISCOVERY")
+                    .filter(|(key, _)| key != "RAILWISE_EXPERIMENTAL_FILEWATCHER")
+                    .filter(|(key, _)| key != "RAILWISE_CLIENT")
                     .filter(|(key, _)| key != "XDG_STATE_HOME")
                     .map(|(key, value)| format!("{}={}", key, shell_escape(value))),
             );
@@ -428,8 +428,8 @@ pub fn serve(
     tracing::info!(port, "Spawning sidecar");
 
     let envs = [
-        ("YONSOON_SERVER_USERNAME", "opencode".to_string()),
-        ("YONSOON_SERVER_PASSWORD", password.to_string()),
+        ("RAILWISE_SERVER_USERNAME", "opencode".to_string()),
+        ("RAILWISE_SERVER_PASSWORD", password.to_string()),
     ];
 
     let (events, child) = spawn_command(

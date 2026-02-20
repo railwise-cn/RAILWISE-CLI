@@ -1,9 +1,9 @@
 ---
 title: Programtillegg
-description: Skriv dine egne programtillegg for å utvide yonsoon.
+description: Skriv dine egne programtillegg for å utvide railwise.
 ---
 
-Plugins lar deg utvide YONSOON (甬算) ved å koble til ulike hendelser og tilpasse atferd. Du kan lage plugins for å legge til nye funksjoner, integrere med eksterne tjenester eller endre standardoppførselen til YONSOON (甬算).
+Plugins lar deg utvide RAILWISE (甬算) ved å koble til ulike hendelser og tilpasse atferd. Du kan lage plugins for å legge til nye funksjoner, integrere med eksterne tjenester eller endre standardoppførselen til RAILWISE (甬算).
 
 For eksempler, sjekk ut [plugins](/docs/ecosystem#plugins) opprettet av fellesskapet.
 
@@ -19,8 +19,8 @@ Det er to måter å laste inn plugins.
 
 Plasser JavaScript- eller TypeScript-filer i plugin-katalogen.
 
-- `.yonsoon/plugins/` - Programtillegg på prosjektnivå
-- `~/.config/yonsoon/plugins/` - Globale plugins
+- `.railwise/plugins/` - Programtillegg på prosjektnivå
+- `~/.config/railwise/plugins/` - Globale plugins
 
 Filer i disse katalogene lastes automatisk ved oppstart.
 
@@ -30,10 +30,10 @@ Filer i disse katalogene lastes automatisk ved oppstart.
 
 Spesifiser npm-pakker i konfigurasjonsfilen.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
-  "plugin": ["yonsoon-helicone-session", "yonsoon-wakatime", "@my-org/custom-plugin"]
+  "$schema": "https://railwise.ai/config.json",
+  "plugin": ["railwise-helicone-session", "railwise-wakatime", "@my-org/custom-plugin"]
 }
 ```
 
@@ -45,7 +45,7 @@ Bla gjennom tilgjengelige plugins i [økosystemet](/docs/ecosystem#plugins).
 
 ### Hvordan plugins installeres
 
-**npm-plugins** installeres automatisk ved hjelp av Bun ved oppstart. Pakker og deres avhengigheter er bufret i `~/.cache/yonsoon/node_modules/`.
+**npm-plugins** installeres automatisk ved hjelp av Bun ved oppstart. Pakker og deres avhengigheter er bufret i `~/.cache/railwise/node_modules/`.
 
 **Lokale plugins** lastes direkte fra plugin-katalogen. For å bruke eksterne pakker, må du opprette en `package.json` i konfigurasjonskatalogen din (se [Dependencies](#dependencies)), eller publisere plugin-en til npm og [legg den til i konfigurasjonen din](/docs/config#plugins).
 
@@ -55,10 +55,10 @@ Bla gjennom tilgjengelige plugins i [økosystemet](/docs/ecosystem#plugins).
 
 Plugins lastes inn fra alle kilder og alle kroker kjøres i rekkefølge. Lastrekkefølgen er:
 
-1. Global konfigurasjon (`~/.config/yonsoon/yonsoon.json`)
-2. Prosjektkonfigurasjon (`yonsoon.json`)
-3. Global plugin-katalog (`~/.config/yonsoon/plugins/`)
-4. Prosjektpluginkatalog (`.yonsoon/plugins/`)
+1. Global konfigurasjon (`~/.config/railwise/railwise.json`)
+2. Prosjektkonfigurasjon (`railwise.json`)
+3. Global plugin-katalog (`~/.config/railwise/plugins/`)
+4. Prosjektpluginkatalog (`.railwise/plugins/`)
 
 Dupliserte npm-pakker med samme navn og versjon lastes inn én gang. Imidlertid lastes en lokal plugin og en npm plugin med lignende navn begge separat.
 
@@ -75,7 +75,7 @@ funksjoner. Hver funksjon mottar et kontekstobjekt og returnerer et krokobjekt.
 
 Lokale plugins og tilpassede verktøy kan bruke eksterne npm-pakker. Legg til en `package.json` til konfigurasjonskatalogen med avhengighetene du trenger.
 
-```json title=".yonsoon/package.json"
+```json title=".railwise/package.json"
 {
   "dependencies": {
     "shescape": "^2.1.0"
@@ -83,9 +83,9 @@ Lokale plugins og tilpassede verktøy kan bruke eksterne npm-pakker. Legg til en
 }
 ```
 
-YONSOON (甬算) kjører `bun install` ved oppstart for å installere disse. Programtilleggene og verktøyene dine kan deretter importere dem.
+RAILWISE (甬算) kjører `bun install` ved oppstart for å installere disse. Programtilleggene og verktøyene dine kan deretter importere dem.
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
 
 export const MyPlugin = async (ctx) => {
@@ -103,7 +103,7 @@ export const MyPlugin = async (ctx) => {
 
 ### Grunnleggende struktur
 
-```js title=".yonsoon/plugins/example.js"
+```js title=".railwise/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
   console.log("Plugin initialized!")
 
@@ -118,7 +118,7 @@ Plugin-funksjonen mottar:
 - `project`: Gjeldende prosjektinformasjon.
 - `directory`: Gjeldende arbeidskatalog.
 - `worktree`: Git-arbeidstrebanen.
-- `client`: En YONSOON (甬算) SDK klient for samhandling med AI.
+- `client`: En RAILWISE (甬算) SDK klient for samhandling med AI.
 - `$`: Buns [shell API](https://bun.com/docs/runtime/shell) for å utføre kommandoer.
 
 ---
@@ -128,7 +128,7 @@ Plugin-funksjonen mottar:
 For TypeScript-plugins kan du importere typer fra plugin-pakken:
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@yonsoon/plugin"
+import type { Plugin } from "@railwise/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -211,7 +211,7 @@ Plugins kan abonnere på hendelser som vist nedenfor i Eksempler-delen. Her er e
 
 ## Eksempler
 
-Her er noen eksempler på plugins du kan bruke for å utvide YONSOON (甬算).
+Her er noen eksempler på plugins du kan bruke for å utvide RAILWISE (甬算).
 
 ---
 
@@ -219,13 +219,13 @@ Her er noen eksempler på plugins du kan bruke for å utvide YONSOON (甬算).
 
 Send varsler når visse hendelser inntreffer:
 
-```js title=".yonsoon/plugins/notification.js"
+```js title=".railwise/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
   return {
     event: async ({ event }) => {
       // Send notification on session completion
       if (event.type === "session.idle") {
-        await $`osascript -e 'display notification "Session completed!" with title "yonsoon"'`
+        await $`osascript -e 'display notification "Session completed!" with title "railwise"'`
       }
     },
   }
@@ -235,16 +235,16 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 Vi bruker `osascript` for å kjøre AppleScript på macOS. Her bruker vi den til å sende varsler.
 
 :::note
-Hvis du bruker YONSOON (甬算)-skrivebordsappen, kan den sende systemvarsler automatisk når et svar er klart eller når en økt feiler.
+Hvis du bruker RAILWISE (甬算)-skrivebordsappen, kan den sende systemvarsler automatisk når et svar er klart eller når en økt feiler.
 :::
 
 ---
 
 ### .env-beskyttelse
 
-Hindre YONSOON (甬算) fra å lese `.env` filer:
+Hindre RAILWISE (甬算) fra å lese `.env` filer:
 
-```javascript title=".yonsoon/plugins/env-protection.js"
+```javascript title=".railwise/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
   return {
     "tool.execute.before": async (input, output) => {
@@ -262,7 +262,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 Injiser miljøvariabler i all shell-utførelse (AI-verktøy og brukerterminaler):
 
-```javascript title=".yonsoon/plugins/inject-env.js"
+```javascript title=".railwise/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
   return {
     "shell.env": async (input, output) => {
@@ -277,10 +277,10 @@ export const InjectEnvPlugin = async () => {
 
 ### Egendefinerte verktøy
 
-Plugins kan også legge til egendefinerte verktøy til YONSOON (甬算):
+Plugins kan også legge til egendefinerte verktøy til RAILWISE (甬算):
 
-```ts title=".yonsoon/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@railwise/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,13 +300,13 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool`-hjelperen lager et tilpasset verktøy som YONSOON (甬算) kan kalle. Den tar en Zod-skjemafunksjon og returnerer en verktøydefinisjon med:
+`tool`-hjelperen lager et tilpasset verktøy som RAILWISE (甬算) kan kalle. Den tar en Zod-skjemafunksjon og returnerer en verktøydefinisjon med:
 
 - `description`: Hva verktøyet gjør
 - `args`: Zod-skjema for verktøyets argumenter
   - `execute`: Funksjon som kjører når verktøyet kalles
 
-Dine egendefinerte verktøy vil være tilgjengelige for YONSOON (甬算) sammen med innebygde verktøy.
+Dine egendefinerte verktøy vil være tilgjengelige for RAILWISE (甬算) sammen med innebygde verktøy.
 
 ---
 
@@ -314,7 +314,7 @@ Dine egendefinerte verktøy vil være tilgjengelige for YONSOON (甬算) sammen 
 
 Bruk `client.app.log()` i stedet for `console.log` for strukturert logging:
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
   await client.app.log({
     body: {
@@ -327,7 +327,7 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-Nivåer: `debug`, `info`, `warn`, `error`. Se [SDK dokumentasjon](https://yonsoon.ai/docs/sdk) for detaljer.
+Nivåer: `debug`, `info`, `warn`, `error`. Se [SDK dokumentasjon](https://railwise.ai/docs/sdk) for detaljer.
 
 ---
 
@@ -335,8 +335,8 @@ Nivåer: `debug`, `info`, `warn`, `error`. Se [SDK dokumentasjon](https://yonsoo
 
 Tilpass konteksten inkludert når en økt komprimeres:
 
-```ts title=".yonsoon/plugins/compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,8 +359,8 @@ Include any state that should persist across compaction:
 
 Du kan også erstatte komprimeringsprompten helt ved å stille inn `output.prompt`:
 
-```ts title=".yonsoon/plugins/custom-compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {

@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: Использование TUI yonsoon.
+description: Использование TUI railwise.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-yonsoon предоставляет интерактивный terminal интерфейс или TUI для работы над вашими проектами с помощью LLM.
+railwise предоставляет интерактивный terminal интерфейс или TUI для работы над вашими проектами с помощью LLM.
 
-Запуск yonsoon запускает TUI для текущего каталога.
+Запуск railwise запускает TUI для текущего каталога.
 
 ```bash
-yonsoon
+railwise
 ```
 
 Или вы можете запустить его для определенного рабочего каталога.
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 Как только вы окажетесь в TUI, вы можете запросить его с помощью сообщения.
@@ -57,7 +57,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## Команды
 
-При использовании yonsoon TUI вы можете ввести `/`, а затем имя команды, чтобы быстро выполнить действия. Например:
+При использовании railwise TUI вы можете ввести `/`, а затем имя команды, чтобы быстро выполнить действия. Например:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### connect
 
-Добавьте провайдера в yonsoon. Позволяет выбирать из доступных поставщиков и добавлять их ключи API.
+Добавьте провайдера в railwise. Позволяет выбирать из доступных поставщиков и добавлять их ключи API.
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### exit
 
-Выйдите из yonsoon. _Псевдонимы_: `/quit`, `/q`
+Выйдите из railwise. _Псевдонимы_: `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -355,11 +355,11 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## Настройка
 
-Вы можете настроить поведение TUI через файл конфигурации yonsoon.
+Вы можете настроить поведение TUI через файл конфигурации railwise.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

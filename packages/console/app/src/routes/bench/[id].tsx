@@ -1,8 +1,8 @@
 import { Title } from "@solidjs/meta"
 import { createAsync, query, useParams } from "@solidjs/router"
 import { createSignal, For, Show } from "solid-js"
-import { Database, desc, eq } from "@yonsoon/console-core/drizzle/index.js"
-import { BenchmarkTable } from "@yonsoon/console-core/schema/benchmark.sql.js"
+import { Database, desc, eq } from "@railwise/console-core/drizzle/index.js"
+import { BenchmarkTable } from "@railwise/console-core/schema/benchmark.sql.js"
 import { useI18n } from "~/context/i18n"
 
 interface TaskSource {

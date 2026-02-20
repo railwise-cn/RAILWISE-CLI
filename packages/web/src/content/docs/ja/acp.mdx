@@ -1,9 +1,9 @@
 ---
 title: ACP サポート
-description: ACP 互換エディターで YONSOON (甬算) を使用します。
+description: ACP 互換エディターで RAILWISE (甬算) を使用します。
 ---
 
-YONSOON (甬算) は [Agent Client Protocol](https://agentclientprotocol.com) または (ACP) をサポートしているため、互換性のあるエディターや IDE で直接使用できます。
+RAILWISE (甬算) は [Agent Client Protocol](https://agentclientprotocol.com) または (ACP) をサポートしているため、互換性のあるエディターや IDE で直接使用できます。
 
 :::tip
 ACP をサポートするエディターとツールのリストについては、[ACP progress report](https://zed.dev/blog/acp-progress-report#available-now) を参照してください。
@@ -14,9 +14,9 @@ ACP は、コードエディターと AI コーディングエージェント間
 
 ## 設定
 
-ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマンドを実行するようにエディタを設定します。
+ACP 経由で RAILWISE (甬算) を使用するには、`railwise acp` コマンドを実行するようにエディタを設定します。
 
-このコマンドは、stdio 経由で JSON-RPC 経由でエディターと通信する ACP 互換のサブプロセスとして YONSOON (甬算) を開始します。
+このコマンドは、stdio 経由で JSON-RPC 経由でエディターと通信する ACP 互換のサブプロセスとして RAILWISE (甬算) を開始します。
 
 以下は、ACP をサポートする一般的なエディタの例です。
 
@@ -29,8 +29,8 @@ ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマン�
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "railwise",
       "args": ["acp"]
     }
   }
@@ -50,9 +50,9 @@ ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマン�
         {
           "agent": {
             "custom": {
-              "name": "YONSOON (甬算)",
+              "name": "RAILWISE (甬算)",
               "command": {
-                "command": "yonsoon",
+                "command": "railwise",
                 "args": ["acp"]
               }
             }
@@ -73,15 +73,15 @@ ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマン�
 ```json title="acp.json"
 {
   "agent_servers": {
-    "YONSOON (甬算)": {
-      "command": "/absolute/path/bin/yonsoon",
+    "RAILWISE (甬算)": {
+      "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
   }
 }
 ```
 
-これを開くには、AI Chat エージェントセレクターで新しい「YONSOON (甬算)」エージェントを使用します。
+これを開くには、AI Chat エージェントセレクターで新しい「RAILWISE (甬算)」エージェントを使用します。
 
 ---
 
@@ -92,8 +92,8 @@ ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマン�
 ```lua
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" }
     }
   }
@@ -105,11 +105,11 @@ ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマン�
 ```lua {6-8}
 {
   acp_providers = {
-    ["yonsoon"] = {
-      command = "yonsoon",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" },
       env = {
-        YONSOON_API_KEY = os.getenv("YONSOON_API_KEY")
+        RAILWISE_API_KEY = os.getenv("RAILWISE_API_KEY")
       }
     }
   }
@@ -120,14 +120,14 @@ ACP 経由で YONSOON (甬算) を使用するには、`yonsoon acp` コマン�
 
 ### CodeCompanion.nvim
 
-[CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim) で YONSOON (甬算) を ACP エージェントとして使用するには、以下を Neovim 構成に追加します。
+[CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim) で RAILWISE (甬算) を ACP エージェントとして使用するには、以下を Neovim 構成に追加します。
 
 ```lua
 require("codecompanion").setup({
   interactions = {
     chat = {
       adapter = {
-        name = "yonsoon",
+        name = "railwise",
         model = "claude-sonnet-4",
       },
     },
@@ -135,13 +135,13 @@ require("codecompanion").setup({
 })
 ```
 
-この構成は、YONSOON (甬算) をチャットの ACP エージェントとして使用するように CodeCompanion をセットアップします。
+この構成は、RAILWISE (甬算) をチャットの ACP エージェントとして使用するように CodeCompanion をセットアップします。
 
-環境変数 (`YONSOON_API_KEY` など) を渡す必要がある場合、詳細については、CodeCompanion.nvim ドキュメントの「[アダプターの構成: 環境変数](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key)」を参照してください。
+環境変数 (`RAILWISE_API_KEY` など) を渡す必要がある場合、詳細については、CodeCompanion.nvim ドキュメントの「[アダプターの構成: 環境変数](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key)」を参照してください。
 
 ## サポート
 
-YONSOON (甬算) は、ACP 経由でもターミナル内で動作するのと同じように動作します。すべての機能がサポートされています。
+RAILWISE (甬算) は、ACP 経由でもターミナル内で動作するのと同じように動作します。すべての機能がサポートされています。
 
 :::note
 `/undo` や `/redo` などの一部の組み込みスラッシュコマンドは現在サポートされていません。
@@ -149,7 +149,7 @@ YONSOON (甬算) は、ACP 経由でもターミナル内で動作するのと�
 
 - 組み込みツール (ファイル操作、ターミナルコマンドなど)
 - カスタムツールとスラッシュコマンド
-- YONSOON (甬算) 設定で構成された MCP サーバー
+- RAILWISE (甬算) 設定で構成された MCP サーバー
 - `AGENTS.md` のプロジェクト固有のルール
 - カスタムフォーマッタとリンター
 - エージェントと権限システム

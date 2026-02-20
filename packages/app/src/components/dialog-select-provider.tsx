@@ -1,11 +1,11 @@
 import { Component, Show } from "solid-js"
-import { useDialog } from "@yonsoon/ui/context/dialog"
+import { useDialog } from "@railwise/ui/context/dialog"
 import { popularProviders, useProviders } from "@/hooks/use-providers"
-import { Dialog } from "@yonsoon/ui/dialog"
-import { List } from "@yonsoon/ui/list"
-import { Tag } from "@yonsoon/ui/tag"
-import { ProviderIcon } from "@yonsoon/ui/provider-icon"
-import { iconNames, type IconName } from "@yonsoon/ui/icons/provider"
+import { Dialog } from "@railwise/ui/dialog"
+import { List } from "@railwise/ui/list"
+import { Tag } from "@railwise/ui/tag"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
+import { iconNames, type IconName } from "@railwise/ui/icons/provider"
 import { DialogConnectProvider } from "./dialog-connect-provider"
 import { useLanguage } from "@/context/language"
 import { DialogCustomProvider } from "./dialog-custom-provider"
@@ -73,7 +73,7 @@ export const DialogSelectProvider: Component = () => {
             <Show when={i.id === CUSTOM_ID}>
               <Tag>{language.t("settings.providers.tag.custom")}</Tag>
             </Show>
-            <Show when={i.id === "yonsoon"}>
+            <Show when={i.id === "railwise"}>
               <Tag>{language.t("dialog.provider.tag.recommended")}</Tag>
             </Show>
             <Show when={note(i.id)}>{(value) => <div class="text-14-regular text-text-weak">{value()}</div>}</Show>

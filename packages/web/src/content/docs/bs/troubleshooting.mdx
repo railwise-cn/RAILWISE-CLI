@@ -3,7 +3,7 @@ title: Rješavanje problema
 description: Uobičajeni problemi i kako ih riješiti.
 ---
 
-Da biste otklonili probleme s YONSOON (甬算), počnite provjeravanjem dnevnika i lokalnih podataka koje pohranjuje na disku.
+Da biste otklonili probleme s RAILWISE (甬算), počnite provjeravanjem dnevnika i lokalnih podataka koje pohranjuje na disku.
 
 ---
 
@@ -11,21 +11,21 @@ Da biste otklonili probleme s YONSOON (甬算), počnite provjeravanjem dnevnika
 
 Log fajlovi se pišu na:
 
-- **macOS/Linux**: `~/.local/share/yonsoon/log/`
-- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.local\share\yonsoon\log`
+- **macOS/Linux**: `~/.local/share/railwise/log/`
+- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.local\share\railwise\log`
 
 Datoteke evidencije se imenuju vremenskim oznakama (npr. `2025-01-09T123456.log`) i čuvaju se najnovijih 10 datoteka dnevnika.
 
-Možete postaviti nivo dnevnika pomoću opcije komandne linije `--log-level` da biste dobili detaljnije informacije o otklanjanju grešaka. Na primjer, `yonsoon --log-level DEBUG`.
+Možete postaviti nivo dnevnika pomoću opcije komandne linije `--log-level` da biste dobili detaljnije informacije o otklanjanju grešaka. Na primjer, `railwise --log-level DEBUG`.
 
 ---
 
 ## Pohrana
 
-YONSOON (甬算) pohranjuje podatke o sesiji i druge podatke aplikacije na disku na:
+RAILWISE (甬算) pohranjuje podatke o sesiji i druge podatke aplikacije na disku na:
 
-- **macOS/Linux**: `~/.local/share/yonsoon/`
-- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.local\share\yonsoon`
+- **macOS/Linux**: `~/.local/share/railwise/`
+- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.local\share\railwise`
 
 Ovaj direktorij sadrži:
 
@@ -39,13 +39,13 @@ Ovaj direktorij sadrži:
 
 ## Desktop aplikacija
 
-YONSOON (甬算) Desktop pokreće lokalni YONSOON (甬算) server (`yonsoon-cli` sidecar) u pozadini. Većina problema je uzrokovana nedostatkom dodatka, oštećenom keš memorijom ili lošim postavkama servera.
+RAILWISE (甬算) Desktop pokreće lokalni RAILWISE (甬算) server (`railwise-cli` sidecar) u pozadini. Većina problema je uzrokovana nedostatkom dodatka, oštećenom keš memorijom ili lošim postavkama servera.
 
 ### Brze provjere
 
 - Potpuno zatvorite i ponovo pokrenite aplikaciju.
 - Ako aplikacija prikaže ekran s greškom, kliknite na **Restart** i kopirajte detalje o grešci.
-- samo za macOS: `YONSOON (甬算)` meni -> **Ponovo učitaj Webview** (pomaže ako je korisnički interfejs prazan/zamrznut).
+- samo za macOS: `RAILWISE (甬算)` meni -> **Ponovo učitaj Webview** (pomaže ako je korisnički interfejs prazan/zamrznut).
 
 ---
 
@@ -57,28 +57,28 @@ Ako se desktop aplikacija ruši pri pokretanju, visi ili se čudno ponaša, poč
 
 Otvorite svoju globalnu konfiguracijsku datoteku i potražite ključ `plugin`.
 
-- **macOS/Linux**: `~/.config/yonsoon/yonsoon.jsonc` (ili `~/.config/yonsoon/yonsoon.json`)
-- **macOS/Linux** (starije instalacije): `~/.local/share/yonsoon/yonsoon.jsonc`
-- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.config\yonsoon\yonsoon.jsonc`
+- **macOS/Linux**: `~/.config/railwise/railwise.jsonc` (ili `~/.config/railwise/railwise.json`)
+- **macOS/Linux** (starije instalacije): `~/.local/share/railwise/railwise.jsonc`
+- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.config\railwise\railwise.jsonc`
 
 Ako imate konfigurirane dodatke, privremeno ih onemogućite uklanjanjem ključa ili postavljanjem na prazan niz:
 
 ```jsonc
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": [],
 }
 ```
 
 #### Provjera direktorija dodataka
 
-YONSOON (甬算) također može učitati lokalne dodatke s diska. Privremeno ih maknite s puta (ili preimenujte folder) i ponovo pokrenite desktop aplikaciju:
+RAILWISE (甬算) također može učitati lokalne dodatke s diska. Privremeno ih maknite s puta (ili preimenujte folder) i ponovo pokrenite desktop aplikaciju:
 
 - **Globalni dodaci**
-  - **macOS/Linux**: `~/.config/yonsoon/plugins/`
-  - **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.config\yonsoon\plugins`
+  - **macOS/Linux**: `~/.config/railwise/plugins/`
+  - **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.config\railwise\plugins`
 - **Projektni dodaci** (samo ako koristite konfiguraciju po projektu)
-  - `<your-project>/.yonsoon/plugins/`
+  - `<your-project>/.railwise/plugins/`
 
 Ako aplikacija ponovo počne raditi, ponovo omogućite dodatke jedan po jedan kako biste otkrili koji od njih uzrokuje problem.
 
@@ -86,22 +86,22 @@ Ako aplikacija ponovo počne raditi, ponovo omogućite dodatke jedan po jedan ka
 
 ### Brisanje keš memorije
 
-Ako onemogućavanje dodataka ne pomogne (ili se instalacija dodatka zaglavila), obrišite keš memoriju kako bi ga YONSOON (甬算) mogao ponovo izgraditi.
+Ako onemogućavanje dodataka ne pomogne (ili se instalacija dodatka zaglavila), obrišite keš memoriju kako bi ga RAILWISE (甬算) mogao ponovo izgraditi.
 
-1. Potpuno zatvorite YONSOON (甬算) Desktop.
+1. Potpuno zatvorite RAILWISE (甬算) Desktop.
 2. Izbrišite keš direktorij:
 
-- **macOS**: Finder -> `Cmd+Shift+G` -> zalijepi `~/.cache/yonsoon`
-- **Linux**: obrišite `~/.cache/yonsoon` (ili pokrenite `rm -rf ~/.cache/yonsoon`)
-- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.cache\yonsoon`
+- **macOS**: Finder -> `Cmd+Shift+G` -> zalijepi `~/.cache/railwise`
+- **Linux**: obrišite `~/.cache/railwise` (ili pokrenite `rm -rf ~/.cache/railwise`)
+- **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.cache\railwise`
 
-3. Ponovo pokrenite YONSOON (甬算) Desktop.
+3. Ponovo pokrenite RAILWISE (甬算) Desktop.
 
 ---
 
 ### Rješavanje problema sa vezom na serveru
 
-YONSOON (甬算) Desktop može ili pokrenuti svoj lokalni server (podrazumevano) ili se povezati na URL servera koji ste konfigurisali.
+RAILWISE (甬算) Desktop može ili pokrenuti svoj lokalni server (podrazumevano) ili se povezati na URL servera koji ste konfigurisali.
 
 Ako vidite dijaloški okvir **"Povezivanje nije uspjelo"** (ili aplikacija nikada ne prođe kroz početni ekran), provjerite da li postoji prilagođeni URL servera.
 
@@ -111,13 +111,13 @@ Na početnom ekranu kliknite na ime servera (sa tačkom statusa) da otvorite bir
 
 #### Uklonite `server.port` / `server.hostname` iz vaše konfiguracije
 
-Ako vaš `yonsoon.json(c)` sadrži odjeljak `server`, privremeno ga uklonite i ponovo pokrenite desktop aplikaciju.
+Ako vaš `railwise.json(c)` sadrži odjeljak `server`, privremeno ga uklonite i ponovo pokrenite desktop aplikaciju.
 
 #### Provjerite varijable okruženja
 
-Ako ste postavili `YONSOON_PORT` u svom okruženju, desktop aplikacija će pokušati da koristi taj port za lokalni server.
+Ako ste postavili `RAILWISE_PORT` u svom okruženju, desktop aplikacija će pokušati da koristi taj port za lokalni server.
 
-- Poništite `YONSOON_PORT` (ili odaberite slobodan port) i ponovo pokrenite.
+- Poništite `RAILWISE_PORT` (ili odaberite slobodan port) i ponovo pokrenite.
 
 ---
 
@@ -132,21 +132,21 @@ Na Linuxu, neka podešavanja Waylanda mogu uzrokovati prazne prozore ili greške
 
 ### Windows: WebView2 izvršno okruženje
 
-Na Windows-u, YONSOON (甬算) Desktop zahtijeva Microsoft Edge **WebView2 Runtime**. Ako se aplikacija otvori u praznom prozoru ili se ne pokrene, instalirajte/ažurirajte WebView2 i pokušajte ponovo.
+Na Windows-u, RAILWISE (甬算) Desktop zahtijeva Microsoft Edge **WebView2 Runtime**. Ako se aplikacija otvori u praznom prozoru ili se ne pokrene, instalirajte/ažurirajte WebView2 i pokušajte ponovo.
 
 ---
 
 ### Windows: Opšti problemi sa performansama
 
-Ako imate spore performanse, probleme s pristupom datotekama ili probleme s terminalom na Windows-u, pokušajte koristiti [WSL (Windows podsistem za Linux)](/docs/windows-wsl). WSL pruža Linux okruženje koje radi neprimetnije sa YONSOON (甬算) karakteristikama.
+Ako imate spore performanse, probleme s pristupom datotekama ili probleme s terminalom na Windows-u, pokušajte koristiti [WSL (Windows podsistem za Linux)](/docs/windows-wsl). WSL pruža Linux okruženje koje radi neprimetnije sa RAILWISE (甬算) karakteristikama.
 
 ---
 
 ### Obavještenja se ne prikazuju
 
-YONSOON (甬算) Desktop prikazuje sistemska obavještenja samo kada:
+RAILWISE (甬算) Desktop prikazuje sistemska obavještenja samo kada:
 
-- obavještenja su omogućena za YONSOON (甬算) u postavkama vašeg OS-a, i
+- obavještenja su omogućena za RAILWISE (甬算) u postavkama vašeg OS-a, i
 - prozor aplikacije nije fokusiran.
 
 ---
@@ -155,11 +155,11 @@ YONSOON (甬算) Desktop prikazuje sistemska obavještenja samo kada:
 
 Ako se aplikacija ne pokrene i ne možete izbrisati postavke unutar korisničkog sučelja, resetirajte spremljeno stanje desktop aplikacije.
 
-1. Zatvorite YONSOON (甬算) Desktop.
-2. Pronađite i izbrišite ove datoteke (oni žive u direktoriju podataka YONSOON (甬算) Desktop aplikacije):
+1. Zatvorite RAILWISE (甬算) Desktop.
+2. Pronađite i izbrišite ove datoteke (oni žive u direktoriju podataka RAILWISE (甬算) Desktop aplikacije):
 
-- `yonsoon.settings.dat` (URL zadanog servera za desktop)
-- `yonsoon.global.dat` i `yonsoon.workspace.*.dat` (stanje korisničkog interfejsa poput nedavnih servera/projekata)
+- `railwise.settings.dat` (URL zadanog servera za desktop)
+- `railwise.global.dat` i `railwise.workspace.*.dat` (stanje korisničkog interfejsa poput nedavnih servera/projekata)
 
 Da brzo pronađete direktorij:
 
@@ -171,13 +171,13 @@ Da brzo pronađete direktorij:
 
 ## Traženje pomoći
 
-Ako imate problema s YONSOON (甬算):
+Ako imate problema s RAILWISE (甬算):
 
 1. **Prijavite probleme na GitHub**
 
    Najbolji način da prijavite greške ili zatražite funkcije je putem našeg GitHub spremišta:
 
-   [**github.com/anomalyco/yonsoon/issues**](https://github.com/anomalyco/yonsoon/issues)
+   [**github.com/anomalyco/railwise/issues**](https://github.com/anomalyco/railwise/issues)
 
    Prije kreiranja novog problema, pretražite postojeće probleme da vidite je li vaš problem već prijavljen.
 
@@ -185,7 +185,7 @@ Ako imate problema s YONSOON (甬算):
 
    Za pomoć u stvarnom vremenu i diskusiju u zajednici, pridružite se našem Discord serveru:
 
-   [**yonsoon.ai/discord**](https://yonsoon.ai/discord)
+   [**railwise.ai/discord**](https://railwise.ai/discord)
 
 ---
 
@@ -195,11 +195,11 @@ Evo nekih uobičajenih problema i kako ih riješiti.
 
 ---
 
-### YONSOON (甬算) se ne pokreće
+### RAILWISE (甬算) se ne pokreće
 
 1. Provjerite dnevnike za poruke o greškama
 2. Pokušajte pokrenuti sa `--print-logs` da vidite izlaz u terminalu
-3. Uvjerite se da imate najnoviju verziju sa `yonsoon upgrade`
+3. Uvjerite se da imate najnoviju verziju sa `railwise upgrade`
 
 ---
 
@@ -225,9 +225,9 @@ primjeri:
 
 - `openai/gpt-4.1`
 - `openrouter/google/gemini-2.5-flash`
-- `yonsoon/kimi-k2`
+- `railwise/kimi-k2`
 
-Da saznate kojim modelima imate pristup, pokrenite `yonsoon models`
+Da saznate kojim modelima imate pristup, pokrenite `railwise models`
 
 ---
 
@@ -241,10 +241,10 @@ Da biste ovo riješili:
 2. Ako se problem nastavi, pokušajte obrisati pohranjenu konfiguraciju:
 
 ```bash
-   rm -rf ~/.local/share/yonsoon
+   rm -rf ~/.local/share/railwise
 ```
 
-Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.local\share\yonsoon`
+Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.local\share\railwise`
 
 3. Ponovo izvršite autentifikaciju kod svog provajdera koristeći naredbu `/connect` u TUI.
 
@@ -252,21 +252,21 @@ Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.local\share\yonsoo
 
 ### AI_APICallError i problemi sa paketom dobavljača
 
-Ako naiđete na greške API poziva, to može biti zbog zastarjelih paketa dobavljača. YONSOON (甬算) dinamički instalira pakete dobavljača (OpenAI, Anthropic, Google, itd.) po potrebi i kešira ih lokalno.
+Ako naiđete na greške API poziva, to može biti zbog zastarjelih paketa dobavljača. RAILWISE (甬算) dinamički instalira pakete dobavljača (OpenAI, Anthropic, Google, itd.) po potrebi i kešira ih lokalno.
 
 Da biste riješili probleme s paketom dobavljača:
 
 1. Obrišite keš paketa provajdera:
 
 ```bash
-   rm -rf ~/.cache/yonsoon
+   rm -rf ~/.cache/railwise
 ```
 
-Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.cache\yonsoon`
+Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.cache\railwise`
 
-2. Ponovo pokrenite YONSOON (甬算) da ponovo instalirate najnovije pakete dobavljača
+2. Ponovo pokrenite RAILWISE (甬算) da ponovo instalirate najnovije pakete dobavljača
 
-Ovo će prisiliti YONSOON (甬算) da preuzme najnovije verzije paketa dobavljača, što često rješava probleme kompatibilnosti s parametrima modela i promjenama API-ja.
+Ovo će prisiliti RAILWISE (甬算) da preuzme najnovije verzije paketa dobavljača, što često rješava probleme kompatibilnosti s parametrima modela i promjenama API-ja.
 
 ---
 
@@ -297,4 +297,4 @@ Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 export DISPLAY=:99.0
 ```
 
-YONSOON (甬算) će otkriti da li koristite Wayland i preferirate `wl-clipboard`, u suprotnom će pokušati pronaći alate međuspremnika po redoslijedu: `xclip` i `xsel`.
+RAILWISE (甬算) će otkriti da li koristite Wayland i preferirate `wl-clipboard`, u suprotnom će pokušati pronaći alate međuspremnika po redoslijedu: `xclip` i `xsel`.

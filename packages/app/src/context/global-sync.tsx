@@ -1,14 +1,14 @@
 import type {
   Config,
-  YonsoonClient,
+  RailwiseClient,
   Path,
   Project,
   ProviderAuthResponse,
   ProviderListResponse,
   Todo,
-} from "@yonsoon/sdk/v2/client"
-import { showToast } from "@yonsoon/ui/toast"
-import { getFilename } from "@yonsoon/util/path"
+} from "@railwise/sdk/v2/client"
+import { showToast } from "@railwise/ui/toast"
+import { getFilename } from "@railwise/util/path"
 import {
   createContext,
   createEffect,
@@ -64,7 +64,7 @@ function createGlobalSync() {
   const owner = getOwner()
   if (!owner) throw new Error("GlobalSync must be created within owner")
 
-  const sdkCache = new Map<string, YonsoonClient>()
+  const sdkCache = new Map<string, RailwiseClient>()
   const booting = new Map<string, Promise<void>>()
   const sessionLoads = new Map<string, Promise<void>>()
   const sessionMeta = new Map<string, { limit: number }>()

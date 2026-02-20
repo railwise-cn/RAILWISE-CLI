@@ -1,5 +1,5 @@
 {
-  "name": "@yonsoon/slack",
+  "name": "@railwise/slack",
   "version": "1.2.8",
   "type": "module",
   "license": "MIT",
@@ -8,7 +8,7 @@
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
-    "@yonsoon/sdk": "workspace:*",
+    "@railwise/sdk": "workspace:*",
     "@slack/bolt": "^3.17.1"
   },
   "devDependencies": {

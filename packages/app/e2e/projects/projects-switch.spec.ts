@@ -1,4 +1,4 @@
-import { base64Decode } from "@yonsoon/util/encode"
+import { base64Decode } from "@railwise/util/encode"
 import { test, expect } from "../fixtures"
 import {
   defocus,

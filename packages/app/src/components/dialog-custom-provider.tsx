@@ -1,10 +1,10 @@
-import { Button } from "@yonsoon/ui/button"
-import { useDialog } from "@yonsoon/ui/context/dialog"
-import { Dialog } from "@yonsoon/ui/dialog"
-import { IconButton } from "@yonsoon/ui/icon-button"
-import { ProviderIcon } from "@yonsoon/ui/provider-icon"
-import { TextField } from "@yonsoon/ui/text-field"
-import { showToast } from "@yonsoon/ui/toast"
+import { Button } from "@railwise/ui/button"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { Dialog } from "@railwise/ui/dialog"
+import { IconButton } from "@railwise/ui/icon-button"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
+import { TextField } from "@railwise/ui/text-field"
+import { showToast } from "@railwise/ui/toast"
 import { For } from "solid-js"
 import { createStore } from "solid-js/store"
 import { Link } from "@/components/link"
@@ -292,7 +292,7 @@ export function DialogCustomProvider(props: Props) {
         <form onSubmit={save} class="px-2.5 pb-6 flex flex-col gap-6">
           <p class="text-14-regular text-text-base">
             {language.t("provider.custom.description.prefix")}
-            <Link href="https://yonsoon.ai/docs/providers/#custom-provider" tabIndex={-1}>
+            <Link href="https://railwise.ai/docs/providers/#custom-provider" tabIndex={-1}>
               {language.t("provider.custom.description.link")}
             </Link>
             {language.t("provider.custom.description.suffix")}

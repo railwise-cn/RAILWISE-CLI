@@ -8,8 +8,8 @@ import {
   type DragEvent,
 } from "@thisbeyond/solid-dnd"
 import { ConstrainDragXAxis } from "@/utils/solid-dnd"
-import { IconButton } from "@yonsoon/ui/icon-button"
-import { Tooltip, TooltipKeybind } from "@yonsoon/ui/tooltip"
+import { IconButton } from "@railwise/ui/icon-button"
+import { Tooltip, TooltipKeybind } from "@railwise/ui/tooltip"
 import { type LocalProject } from "@/context/layout"
 import { sidebarExpanded } from "./sidebar-shell-helpers"
 

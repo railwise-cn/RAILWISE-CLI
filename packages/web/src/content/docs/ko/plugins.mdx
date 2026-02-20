@@ -19,7 +19,7 @@ description: OpenCode를 확장하기 위해 자신만의 플러그인을 작성
 
 플러그인 디렉토리에 JavaScript 또는 TypeScript 파일을 배치합니다.
 
-- `.yonsoon/plugins/` - 프로젝트 레벨 플러그인
+- `.railwise/plugins/` - 프로젝트 레벨 플러그인
 - `~/.config/opencode/plugins/` - 글로벌 플러그인
 
 이 디렉토리의 파일은 자동으로 시작에로드됩니다.
@@ -30,9 +30,9 @@ description: OpenCode를 확장하기 위해 자신만의 플러그인을 작성
 
 config 파일에 npm 패키지를 지정합니다.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": ["opencode-helicone-session", "opencode-wakatime", "@my-org/custom-plugin"]
 }
 ```
@@ -55,10 +55,10 @@ config 파일에 npm 패키지를 지정합니다.
 
 플러그인은 모든 소스에서로드되며 모든 후크는 순서대로 실행됩니다. 로드 순서는 다음과 같습니다:
 
-1. 글로벌 구성 (`~/.config/opencode/yonsoon.json`)
-2. 프로젝트 구성 (`yonsoon.json`)
+1. 글로벌 구성 (`~/.config/opencode/railwise.json`)
+2. 프로젝트 구성 (`railwise.json`)
 3. 글로벌 플러그인 디렉토리 (`~/.config/opencode/plugins/`)
-4. 프로젝트 플러그인 디렉토리 (`.yonsoon/plugins/`)
+4. 프로젝트 플러그인 디렉토리 (`.railwise/plugins/`)
 
 중복 npm 패키지는 한 번만 로드됩니다. 하지만, 로컬 플러그인과 같은 이름과 npm 플러그인은 모두 별도로로드됩니다.
 
@@ -75,7 +75,7 @@ config 파일에 npm 패키지를 지정합니다.
 
 로컬 플러그인 및 사용자 정의 도구는 외부 npm 패키지를 사용할 수 있습니다. `package.json`를 config 디렉토리에 추가하면 필요한 의존도가 있습니다.
 
-```json title=".yonsoon/package.json"
+```json title=".railwise/package.json"
 {
   "dependencies": {
     "shescape": "^2.1.0"
@@ -85,7 +85,7 @@ config 파일에 npm 패키지를 지정합니다.
 
 opencode는 `bun install`를 시작합니다. 플러그인 및 도구가 가져올 수 있습니다.
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
 
 export const MyPlugin = async (ctx) => {
@@ -103,7 +103,7 @@ export const MyPlugin = async (ctx) => {
 
 ### 기본 구조
 
-```js title=".yonsoon/plugins/example.js"
+```js title=".railwise/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
   console.log("Plugin initialized!")
 
@@ -128,7 +128,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 TypeScript 플러그인의 경우 플러그인 패키지에서 유형을 가져올 수 있습니다.
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@yonsoon/plugin"
+import type { Plugin } from "@railwise/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -219,7 +219,7 @@ opencode를 확장하기 위해 사용할 수있는 플러그인의 몇 가지 �
 
 특정 이벤트가 발생할 때 알림을 전송:
 
-```js title=".yonsoon/plugins/notification.js"
+```js title=".railwise/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
   return {
     event: async ({ event }) => {
@@ -244,7 +244,7 @@ opencode 데스크톱 앱을 사용하는 경우 응답이 준비되어 있거�
 
 읽기 `.env` 파일에서 opencode를 방지하십시오:
 
-```javascript title=".yonsoon/plugins/env-protection.js"
+```javascript title=".railwise/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
   return {
     "tool.execute.before": async (input, output) => {
@@ -262,7 +262,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 환경 변수를 모든 shell 실행 (AI 도구 및 사용자 terminal)로 주사하십시오.
 
-```javascript title=".yonsoon/plugins/inject-env.js"
+```javascript title=".railwise/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
   return {
     "shell.env": async (input, output) => {
@@ -279,8 +279,8 @@ export const InjectEnvPlugin = async () => {
 
 플러그인은 opencode에 사용자 정의 도구를 추가 할 수 있습니다 :
 
-```ts title=".yonsoon/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@railwise/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -314,7 +314,7 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 
 구조화된 로깅을 위해 `console.log` 대신 `client.app.log()`를 사용하십시오:
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
   await client.app.log({
     body: {
@@ -327,7 +327,7 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-레벨: `debug`, `info`, `warn`, `error`. [SDK 문서](https://yonsoon.ai/docs/sdk)를 참고하세요.
+레벨: `debug`, `info`, `warn`, `error`. [SDK 문서](https://railwise.ai/docs/sdk)를 참고하세요.
 
 ---
 
@@ -335,8 +335,8 @@ export const MyPlugin = async ({ client }) => {
 
 세션이 압축 될 때 포함 된 컨텍스트를 사용자 지정:
 
-```ts title=".yonsoon/plugins/compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,8 +359,8 @@ LLM이 압축 요약을 생성하기 전에 `experimental.session.compacting` �
 
 당신은 또한 `output.prompt`를 조정해서 조밀함을 전적으로 대체할 수 있습니다:
 
-```ts title=".yonsoon/plugins/custom-compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {

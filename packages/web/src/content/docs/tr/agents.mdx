@@ -15,7 +15,7 @@ Bir oturum sırasında agent'lar arasında geçiş yapabilir veya onları `@` if
 
 ## Türler
 
-yonsoon'da iki tür agent vardır; birincil agent'lar ve alt agent'lar.
+railwise'da iki tür agent vardır; birincil agent'lar ve alt agent'lar.
 
 ---
 
@@ -27,7 +27,7 @@ Birincil agent'lar, doğrudan etkileşim kurduğunuz ana yardımcılardır. **Se
 Bir oturum sırasında birincil agent'lar arasında geçiş yapmak için **Sekme** tuşunu kullanabilirsiniz.
 :::
 
-yonsoon, **Build** ve **Plan** olmak üzere iki yerleşik birincil agent ile birlikte gelir. Bunlara aşağıda bakacağız.
+railwise, **Build** ve **Plan** olmak üzere iki yerleşik birincil agent ile birlikte gelir. Bunlara aşağıda bakacağız.
 
 ---
 
@@ -35,13 +35,13 @@ yonsoon, **Build** ve **Plan** olmak üzere iki yerleşik birincil agent ile bir
 
 Alt agent'lar, birincil agent'ların belirli görevler için çağırabileceği uzman yardımcılardır. Ayrıca mesajlarınızda **@ bahsederek** bunları manuel olarak da çağırabilirsiniz.
 
-yonsoon, **General** ve **Explore** olmak üzere iki yerleşik alt agent ile birlikte gelir. Buna aşağıda bakacağız.
+railwise, **General** ve **Explore** olmak üzere iki yerleşik alt agent ile birlikte gelir. Buna aşağıda bakacağız.
 
 ---
 
 ## Yerleşik
 
-yonsoon iki yerleşik birincil agent ve iki yerleşik alt agent ile birlikte gelir.
+railwise iki yerleşik birincil agent ve iki yerleşik alt agent ile birlikte gelir.
 
 ---
 
@@ -135,11 +135,11 @@ Yerleşik agent'ları özelleştirebilir veya yapılandırma yoluyla kendinizink
 
 ### JSON
 
-Agent'ları `yonsoon.json` yapılandırma dosyanızda yapılandırın:
+Agent'ları `railwise.json` yapılandırma dosyanızda yapılandırın:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "mode": "primary",
@@ -180,10 +180,10 @@ Agent'ları `yonsoon.json` yapılandırma dosyanızda yapılandırın:
 
 Ayrıca agent'ları Markdown dosyalarını kullanarak da tanımlayabilirsiniz. Bunları şuraya yerleştirin:
 
-- Global: `~/.config/yonsoon/agents/`
-- Per-project: `.yonsoon/agents/`
+- Global: `~/.config/railwise/agents/`
+- Per-project: `.railwise/agents/`
 
-```markdown title="~/.config/yonsoon/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Reviews code for quality and best practices
 mode: subagent
@@ -219,7 +219,7 @@ Bu yapılandırma seçeneklerine ayrıntılı olarak bakalım.
 
 Agent'ın ne yaptığına ve ne zaman kullanılacağına ilişkin kısa bir açıklama sağlamak için `description` seçeneğini kullanın.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -239,7 +239,7 @@ LLM'in yanıtlarının rastgeleliğini ve yaratıcılığını `temperature` yap
 
 Düşük değerler yanıtları daha odaklı ve belirleyici hale getirirken, yüksek değerler yaratıcılığı ve değişkenliği artırır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "plan": {
@@ -258,7 +258,7 @@ Sıcaklık değerleri tipik olarak 0,0 ila 1,0 arasındadır:
 - **0,3-0,5**: Biraz yaratıcılık içeren dengeli yanıtlar, genel gelişim görevleri için iyi
 - **0,6-1,0**: Daha yaratıcı ve çeşitli yanıtlar, beyin fırtınası ve keşif için yararlı
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "analyze": {
@@ -276,7 +276,7 @@ Sıcaklık değerleri tipik olarak 0,0 ila 1,0 arasındadır:
 }
 ```
 
-Sıcaklık belirtilmezse yonsoon modeline özgü varsayılanları kullanır; çoğu model için genellikle 0, Qwen modelleri için 0,55.
+Sıcaklık belirtilmezse railwise modeline özgü varsayılanları kullanır; çoğu model için genellikle 0, Qwen modelleri için 0,55.
 
 ---
 
@@ -286,7 +286,7 @@ Bir agent'ın yalnızca metinle yanıt vermeye zorlanmadan önce gerçekleştire
 
 Bu ayarlanmazsa, model durmayı seçene veya kullanıcı oturumu kesene kadar agent yinelemeye devam edecektir.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "quick-thinker": {
@@ -310,7 +310,7 @@ Eski `maxSteps` alanı kullanımdan kaldırıldı. Bunun yerine `steps` kullanı
 
 Agent'ı devre dışı bırakmak için `true` olarak ayarlayın.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -326,7 +326,7 @@ Agent'ı devre dışı bırakmak için `true` olarak ayarlayın.
 
 Bu agent için `prompt` yapılandırmasıyla özel bir sistem prompt dosyası belirtin. Prompt dosyası, agent'ın amacına özel talimatlar içermelidir.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -336,7 +336,7 @@ Bu agent için `prompt` yapılandırmasıyla özel bir sistem prompt dosyası be
 }
 ```
 
-Bu yol, yapılandırma dosyasının bulunduğu yere göredir. Yani bu hem global yonsoon yapılandırması hem de projeye özel yapılandırma için işe yarar.
+Bu yol, yapılandırma dosyasının bulunduğu yere göredir. Yani bu hem global railwise yapılandırması hem de projeye özel yapılandırma için işe yarar.
 
 ---
 
@@ -348,7 +348,7 @@ Bu agent'ın kodu geçersiz için `model` ayarını kullanın. Farklı bölümle
 Bir model belirtmezseniz, birincil agent'lar [model globally configured](/docs/config#models)'yi kullanırken alt agent'lar, alt agent'ı çağıran birincil agent'ın modelini kullanır.
 :::
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "plan": {
@@ -358,7 +358,7 @@ Bir model belirtmezseniz, birincil agent'lar [model globally configured](/docs/c
 }
 ```
 
-yonsoon hesabınızdaki model kimliğini `provider/model-id` biçimini kullanır. Örneğin, [YONSOON (甬算) Zen](/docs/zen) kullanıyorsanız, GPT 5.1 Codex için `yonsoon/gpt-5.1-codex` kullanırsınız.
+railwise hesabınızdaki model kimliğini `provider/model-id` biçimini kullanır. Örneğin, [RAILWISE (甬算) Zen](/docs/zen) kullanıyorsanız, GPT 5.1 Codex için `railwise/gpt-5.1-codex` kullanırsınız.
 
 ---
 
@@ -366,9 +366,9 @@ yonsoon hesabınızdaki model kimliğini `provider/model-id` biçimini kullanır
 
 `tools` yapılandırmasıyla bu agent'ta hangi araçların mevcut olduğunu kontrol edin. Belirli araçları `true` veya `false` olarak ayarlayarak etkinleştirebilir veya devre dışı bırakabilirsiniz.
 
-```json title="yonsoon.json" {3-6,9-12}
+```json title="railwise.json" {3-6,9-12}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tools": {
     "write": true,
     "bash": true
@@ -390,9 +390,9 @@ Agent'a özgü yapılandırma, genel yapılandırmayı geçersiz kılar.
 
 Aynı anda birden fazla aracı kontrol etmek için joker karakterleri de kullanabilirsiniz. Örneğin, bir MCP sunucusundaki tüm araçları devre dışı bırakmak için:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "readonly": {
       "tools": {
@@ -417,9 +417,9 @@ Bir agent'ın gerçekleştirebileceği eylemleri yönetmek için izinleri yapıl
 - `"allow"` — Onay olmadan tüm işlemlere izin ver
 - `"deny"` — Agent'ı devre dışı bırakır
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "deny"
   }
@@ -428,9 +428,9 @@ Bir agent'ın gerçekleştirebileceği eylemleri yönetmek için izinleri yapıl
 
 Bu izinleri agent başına geçersiz kılabilirsiniz.
 
-```json title="yonsoon.json" {3-5,8-10}
+```json title="railwise.json" {3-5,8-10}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "deny"
   },
@@ -446,7 +446,7 @@ Bu izinleri agent başına geçersiz kılabilirsiniz.
 
 İzinleri Markdown agent'larında da ayarlayabilirsiniz.
 
-```markdown title="~/.config/yonsoon/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Code review without edits
 mode: subagent
@@ -465,9 +465,9 @@ Only analyze code and suggest changes.
 
 Belirli bash komutları için izinleri ayarlayabilirsiniz.
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -483,9 +483,9 @@ Belirli bash komutları için izinleri ayarlayabilirsiniz.
 
 Bu küresel bir desen alabilir.
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -501,9 +501,9 @@ Bu küresel bir desen alabilir.
 Ayrıca tüm komutların izinlerini yönetmek için `*` joker karakterini de kullanabilirsiniz.
 Son eşleşen kural öncelikli olduğundan, `*` joker karakterini ilk sıraya ve belirli kuralları sonraya koyun.
 
-```json title="yonsoon.json" {8}
+```json title="railwise.json" {8}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -525,7 +525,7 @@ Son eşleşen kural öncelikli olduğundan, `*` joker karakterini ilk sıraya ve
 
 Agent'ın modunu `mode` yapılandırmasıyla kontrol edin. `mode` seçeneği agent'ın nasıl kullanılabileceğini belirlemek için kullanılır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -543,7 +543,7 @@ Agent'ın modunu `mode` yapılandırmasıyla kontrol edin. `mode` seçeneği age
 
 `@` otomatik tamamlama menüsünden bir alt agent'ı `hidden: true` ile gizleyin. Yalnızca diğer agent'lar tarafından Task aracı aracılığıyla programlı olarak çağrılması gereken dahili alt agent'lar için kullanışlıdır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "internal-helper": {
@@ -566,7 +566,7 @@ Yalnızca `mode: subagent` agent'ları için geçerlidir.
 
 `permission.task` ile bir agent'ın Task aracı aracılığıyla hangi alt agent'ları çağırabileceğini kontrol edin. Esnek eşleştirme için küresel desenleri kullanır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "orchestrator": {
@@ -601,7 +601,7 @@ Agent'ın kullanıcı arayüzündeki görsel görünümünü `color` seçeneğiy
 
 geçerli bir onaltılık renk (ör. `#FF5733`) veya tema rengini kullanın: `primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "creative": {
@@ -620,7 +620,7 @@ geçerli bir onaltılık renk (ör. `#FF5733`) veya tema rengini kullanın: `pri
 
 `top_p` seçeneğiyle yanıt çeşitliliğini kontrol edin. Rastgeleliği kontrol etmek için sıcaklığa alternatif.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "brainstorm": {
@@ -640,7 +640,7 @@ Agent yapılandırmanızdaki diğer seçenekler, model seçenekleri olarak **do�
 
 Örneğin OpenAI'nin akıl yürütme modelleriyle akıl yürütme çabasını kontrol edebilirsiniz:
 
-```json title="yonsoon.json" {6,7}
+```json title="railwise.json" {6,7}
 {
   "agent": {
     "deep-thinker": {
@@ -656,7 +656,7 @@ Agent yapılandırmanızdaki diğer seçenekler, model seçenekleri olarak **do�
 Bu ek seçenekler modele ve sağlayıcıya özeldir. Kullanılabilir parametreler için sağlayıcınızın belgelerine bakın.
 
 :::tip
-Mevcut modellerin listesini görmek için `yonsoon models` komutunu çalıştırın.
+Mevcut modellerin listesini görmek için `railwise models` komutunu çalıştırın.
 :::
 
 ---
@@ -666,7 +666,7 @@ Mevcut modellerin listesini görmek için `yonsoon models` komutunu çalıştır
 Aşağıdaki komutu kullanarak yeni agent'lar oluşturabilirsiniz:
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 Bu etkileşimli komut şunları sağlayacaktır:
@@ -696,14 +696,14 @@ Farklı agent'lara yönelik bazı yaygın kullanım senaryoları aşağıda veri
 Yararlı bulabileceğiniz bazı örnek agent'ları burada bulabilirsiniz.
 
 :::tip
-Paylaşmak istediğiniz bir agent'ınız var mı? [Submit a PR](https://github.com/anomalyco/yonsoon).
+Paylaşmak istediğiniz bir agent'ınız var mı? [Submit a PR](https://github.com/anomalyco/railwise).
 :::
 
 ---
 
 ### Dokümantasyon agent'ı
 
-```markdown title="~/.config/yonsoon/agents/docs-writer.md"
+```markdown title="~/.config/railwise/agents/docs-writer.md"
 ---
 description: Writes and maintains project documentation
 mode: subagent
@@ -725,7 +725,7 @@ Focus on:
 
 ### Güvenlik denetçisi
 
-```markdown title="~/.config/yonsoon/agents/security-auditor.md"
+```markdown title="~/.config/railwise/agents/security-auditor.md"
 ---
 description: Performs security audits and identifies vulnerabilities
 mode: subagent
@@ -759,11 +759,11 @@ Look for:
 
 ### JSON
 
-Agent'ları `yonsoon.json` yapılandırma dosyanızda yapılandırın:
+Agent'ları `railwise.json` yapılandırma dosyanızda yapılandırın:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "mode": "primary",
@@ -804,10 +804,10 @@ Agent'ları `yonsoon.json` yapılandırma dosyanızda yapılandırın:
 
 Ayrıca agent'ları Markdown dosyalarını kullanarak da tanımlayabilirsiniz. Bunları şuraya yerleştirin:
 
-- Global: `~/.config/yonsoon/agents/`
-- Per-project: `.yonsoon/agents/`
+- Global: `~/.config/railwise/agents/`
+- Per-project: `.railwise/agents/`
 
-```markdown title="~/.config/yonsoon/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Reviews code for quality and best practices
 mode: subagent
@@ -843,7 +843,7 @@ Bu yapılandırma seçeneklerine ayrıntılı olarak bakalım.
 
 Agent'ın ne yaptığına ve ne zaman kullanılacağına ilişkin kısa bir açıklama sağlamak için `description` seçeneğini kullanın.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -863,7 +863,7 @@ LLM'nin yanıtlarının rastgeleliğini ve yaratıcılığını `temperature` ya
 
 Düşük değerler yanıtları daha odaklı ve belirleyici hale getirirken, yüksek değerler yaratıcılığı ve değişkenliği artırır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "plan": {
@@ -882,7 +882,7 @@ Sıcaklık değerleri tipik olarak 0,0 ila 1,0 arasındadır:
 - **0,3-0,5**: Biraz yaratıcılık içeren dengeli yanıtlar, genel gelişim görevleri için iyi
 - **0,6-1,0**: Daha yaratıcı ve çeşitli yanıtlar, beyin fırtınası ve keşif için yararlı
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "analyze": {
@@ -900,7 +900,7 @@ Sıcaklık değerleri tipik olarak 0,0 ila 1,0 arasındadır:
 }
 ```
 
-Sıcaklık belirtilmezse yonsoon modeline özgü varsayılanları kullanır; çoğu model için genellikle 0, Qwen modelleri için 0,55.
+Sıcaklık belirtilmezse railwise modeline özgü varsayılanları kullanır; çoğu model için genellikle 0, Qwen modelleri için 0,55.
 
 ---
 
@@ -910,7 +910,7 @@ Bir agent'ın yalnızca metinle yanıt vermeye zorlanmadan önce gerçekleştire
 
 Bu ayarlanmazsa, model durmayı seçene veya kullanıcı oturumu kesene kadar agent yinelemeye devam edecektir.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "quick-thinker": {
@@ -934,7 +934,7 @@ Eski `maxSteps` alanı kullanımdan kaldırıldı. Bunun yerine `steps` kullanı
 
 Agent'ı devre dışı bırakmak için `true` olarak ayarlayın.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -950,7 +950,7 @@ Agent'ı devre dışı bırakmak için `true` olarak ayarlayın.
 
 Bu agent için `prompt` yapılandırmasıyla özel bir sistem prompt dosyası belirtin. Prompt dosyası, agent'ın amacına özel talimatlar içermelidir.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -960,7 +960,7 @@ Bu agent için `prompt` yapılandırmasıyla özel bir sistem prompt dosyası be
 }
 ```
 
-Bu yol, yapılandırma dosyasının bulunduğu yere göredir. Yani bu hem global yonsoon yapılandırması hem de projeye özel yapılandırma için işe yarar.
+Bu yol, yapılandırma dosyasının bulunduğu yere göredir. Yani bu hem global railwise yapılandırması hem de projeye özel yapılandırma için işe yarar.
 
 ---
 
@@ -972,7 +972,7 @@ Bu agent'ın varsayılan modelini geçersiz kılmak için `model` ayarını kull
 Bir model belirtmezseniz, primary agent'lar [model globally configured](/docs/config#models)'yi kullanırken subagent'lar, subagent'ı çağıran primary agent'ın modelini kullanır.
 :::
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "plan": {
@@ -982,7 +982,7 @@ Bir model belirtmezseniz, primary agent'lar [model globally configured](/docs/co
 }
 ```
 
-yonsoon hesabınızdaki model kimliğini `provider/model-id` biçimini kullanır. Örneğin, [YONSOON (甬算) Zen](/docs/zen) kullanıyorsanız, GPT 5.1 Codex için `yonsoon/gpt-5.1-codex` kullanırsınız.
+railwise hesabınızdaki model kimliğini `provider/model-id` biçimini kullanır. Örneğin, [RAILWISE (甬算) Zen](/docs/zen) kullanıyorsanız, GPT 5.1 Codex için `railwise/gpt-5.1-codex` kullanırsınız.
 
 ---
 
@@ -990,9 +990,9 @@ yonsoon hesabınızdaki model kimliğini `provider/model-id` biçimini kullanır
 
 `tools` yapılandırmasıyla bu agent'ta hangi araçların mevcut olduğunu kontrol edin. Belirli araçları `true` veya `false` olarak ayarlayarak etkinleştirebilir veya devre dışı bırakabilirsiniz.
 
-```json title="yonsoon.json" {3-6,9-12}
+```json title="railwise.json" {3-6,9-12}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tools": {
     "write": true,
     "bash": true
@@ -1014,9 +1014,9 @@ Agent'a özgü yapılandırma, genel yapılandırmayı geçersiz kılar.
 
 Aynı anda birden fazla aracı kontrol etmek için joker karakterleri de kullanabilirsiniz. Örneğin, bir MCP sunucusundaki tüm araçları devre dışı bırakmak için:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "readonly": {
       "tools": {
@@ -1041,9 +1041,9 @@ Bir agent'ın gerçekleştirebileceği eylemleri yönetmek için izinleri yapıl
 - `"allow"` — Onay olmadan tüm işlemlere izin ver
 - `"deny"` — Agent'ı devre dışı bırakır
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "deny"
   }
@@ -1052,9 +1052,9 @@ Bir agent'ın gerçekleştirebileceği eylemleri yönetmek için izinleri yapıl
 
 Bu izinleri agent başına geçersiz kılabilirsiniz.
 
-```json title="yonsoon.json" {3-5,8-10}
+```json title="railwise.json" {3-5,8-10}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "deny"
   },
@@ -1070,7 +1070,7 @@ Bu izinleri agent başına geçersiz kılabilirsiniz.
 
 İzinleri Markdown agent'larında da ayarlayabilirsiniz.
 
-```markdown title="~/.config/yonsoon/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Code review without edits
 mode: subagent
@@ -1089,9 +1089,9 @@ Only analyze code and suggest changes.
 
 Belirli bash komutları için izinleri ayarlayabilirsiniz.
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -1107,9 +1107,9 @@ Belirli bash komutları için izinleri ayarlayabilirsiniz.
 
 Bu küresel bir desen alabilir.
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -1125,9 +1125,9 @@ Bu küresel bir desen alabilir.
 Ayrıca tüm komutların izinlerini yönetmek için `*` joker karakterini de kullanabilirsiniz.
 Son eşleşen kural öncelikli olduğundan, `*` joker karakterini ilk sıraya ve belirli kuralları sonraya koyun.
 
-```json title="yonsoon.json" {8}
+```json title="railwise.json" {8}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -1149,7 +1149,7 @@ Son eşleşen kural öncelikli olduğundan, `*` joker karakterini ilk sıraya ve
 
 Agent'ın modunu `mode` yapılandırmasıyla kontrol edin. `mode` seçeneği agent'ın nasıl kullanılabileceğini belirlemek için kullanılır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -1167,7 +1167,7 @@ Agent'ın modunu `mode` yapılandırmasıyla kontrol edin. `mode` seçeneği age
 
 `@` otomatik tamamlama menüsünden bir subagent'ı `hidden: true` ile gizleyin. Yalnızca diğer agent'lar tarafından Task aracı aracılığıyla programlı olarak çağrılması gereken dahili subagent'lar için kullanışlıdır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "internal-helper": {
@@ -1190,7 +1190,7 @@ Yalnızca `mode: subagent` agent'ları için geçerlidir.
 
 `permission.task` ile bir agent'ın Task aracı aracılığıyla hangi subagent'ları çağırabileceğini kontrol edin. Esnek eşleştirme için küresel desenleri kullanır.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "orchestrator": {
@@ -1225,7 +1225,7 @@ Agent'ın kullanıcı arayüzündeki görsel görünümünü `color` seçeneğiy
 
 geçerli bir onaltılık renk (ör. `#FF5733`) veya tema rengini kullanın: `primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "creative": {
@@ -1244,7 +1244,7 @@ geçerli bir onaltılık renk (ör. `#FF5733`) veya tema rengini kullanın: `pri
 
 `top_p` seçeneğiyle yanıt çeşitliliğini kontrol edin. Rastgeleliği kontrol etmek için sıcaklığa alternatif.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "brainstorm": {
@@ -1264,7 +1264,7 @@ Agent yapılandırmanızdaki diğer seçenekler, model seçenekleri olarak **do�
 
 Örneğin OpenAI'nin akıl yürütme modelleriyle akıl yürütme çabasını kontrol edebilirsiniz:
 
-```json title="yonsoon.json" {6,7}
+```json title="railwise.json" {6,7}
 {
   "agent": {
     "deep-thinker": {
@@ -1280,7 +1280,7 @@ Agent yapılandırmanızdaki diğer seçenekler, model seçenekleri olarak **do�
 Bu ek seçenekler modele ve sağlayıcıya özeldir. Kullanılabilir parametreler için sağlayıcınızın belgelerine bakın.
 
 :::tip
-Mevcut modellerin listesini görmek için `yonsoon models` komutunu çalıştırın.
+Mevcut modellerin listesini görmek için `railwise models` komutunu çalıştırın.
 :::
 
 ---
@@ -1290,7 +1290,7 @@ Mevcut modellerin listesini görmek için `yonsoon models` komutunu çalıştır
 Aşağıdaki komutu kullanarak yeni agent'lar oluşturabilirsiniz:
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 Bu etkileşimli komut şunları sağlayacaktır:
@@ -1320,14 +1320,14 @@ Farklı agent'lara yönelik bazı yaygın kullanım senaryoları aşağıda veri
 Yararlı bulabileceğiniz bazı örnek agent'ları burada bulabilirsiniz.
 
 :::tip
-Paylaşmak istediğiniz bir agent'ınız var mı? [Submit a PR](https://github.com/anomalyco/yonsoon).
+Paylaşmak istediğiniz bir agent'ınız var mı? [Submit a PR](https://github.com/anomalyco/railwise).
 :::
 
 ---
 
 ### Dokümantasyon agent'ı
 
-```markdown title="~/.config/yonsoon/agents/docs-writer.md"
+```markdown title="~/.config/railwise/agents/docs-writer.md"
 ---
 description: Writes and maintains project documentation
 mode: subagent
@@ -1349,7 +1349,7 @@ Focus on:
 
 ### Güvenlik denetçisi
 
-```markdown title="~/.config/yonsoon/agents/security-auditor.md"
+```markdown title="~/.config/railwise/agents/security-auditor.md"
 ---
 description: Performs security audits and identifies vulnerabilities
 mode: subagent

@@ -22,8 +22,8 @@ jobs:
         id: committer
         uses: ./.github/actions/setup-git-committer
         with:
-          yonsoon-app-id: ${{ vars.YONSOON_APP_ID }}
-          yonsoon-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
+          railwise-app-id: ${{ vars.RAILWISE_APP_ID }}
+          railwise-app-secret: ${{ secrets.RAILWISE_APP_SECRET }}
 
       - name: Generate
         run: ./script/generate.ts

@@ -1,9 +1,9 @@
 ---
 title: プラグイン
-description: YONSOON (甬算) を拡張する独自のプラグインを作成します。
+description: RAILWISE (甬算) を拡張する独自のプラグインを作成します。
 ---
 
-プラグインを使用すると、さまざまなイベントにフックして動作をカスタマイズすることで YONSOON (甬算) を拡張できます。プラグインを作成して、新しい機能を追加したり、外部サービスと統合したり、YONSOON (甬算) のデフォルトの動作を変更したりできます。
+プラグインを使用すると、さまざまなイベントにフックして動作をカスタマイズすることで RAILWISE (甬算) を拡張できます。プラグインを作成して、新しい機能を追加したり、外部サービスと統合したり、RAILWISE (甬算) のデフォルトの動作を変更したりできます。
 
 たとえば、コミュニティによって作成された [plugins](/docs/ecosystem#plugins) をチェックしてください。
 
@@ -19,8 +19,8 @@ description: YONSOON (甬算) を拡張する独自のプラグインを作成�
 
 JavaScript または TypeScript ファイルをプラグインディレクトリに配置します。
 
-- `.yonsoon/plugins/` - プロジェクトレベルのプラグイン
-- `~/.config/yonsoon/plugins/` - グローバルプラグイン
+- `.railwise/plugins/` - プロジェクトレベルのプラグイン
+- `~/.config/railwise/plugins/` - グローバルプラグイン
 
 これらのディレクトリ内のファイルは起動時に自動的にロードされます。
 
@@ -30,10 +30,10 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 
 設定ファイルで npm パッケージを指定します。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
-  "plugin": ["yonsoon-helicone-session", "yonsoon-wakatime", "@my-org/custom-plugin"]
+  "$schema": "https://railwise.ai/config.json",
+  "plugin": ["railwise-helicone-session", "railwise-wakatime", "@my-org/custom-plugin"]
 }
 ```
 
@@ -45,7 +45,7 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 
 ### プラグインのインストール
 
-**npm プラグイン** は、起動時に Bun を使用して自動的にインストールされます。パッケージとその依存関係は `~/.cache/yonsoon/node_modules/` にキャッシュされます。
+**npm プラグイン** は、起動時に Bun を使用して自動的にインストールされます。パッケージとその依存関係は `~/.cache/railwise/node_modules/` にキャッシュされます。
 
 **ローカルプラグイン**は、プラグインディレクトリから直接ロードされます。外部パッケージを使用するには、config ディレクトリ内に `package.json` を作成するか ([Dependency](#dependencies) を参照)、プラグインを npm に公開して [config](/docs/config#plugins) に追加する必要があります。
 
@@ -55,10 +55,10 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 
 プラグインはすべてのソースからロードされ、すべてのフックが順番に実行されます。ロード順序は次のとおりです。
 
-1. グローバル設定 (`~/.config/yonsoon/yonsoon.json`)
-2. プロジェクト設定 (`yonsoon.json`)
-3. グローバルプラグインディレクトリ (`~/.config/yonsoon/plugins/`)
-4. プロジェクトプラグインディレクトリ (`.yonsoon/plugins/`)
+1. グローバル設定 (`~/.config/railwise/railwise.json`)
+2. プロジェクト設定 (`railwise.json`)
+3. グローバルプラグインディレクトリ (`~/.config/railwise/plugins/`)
+4. プロジェクトプラグインディレクトリ (`.railwise/plugins/`)
 
 同じ名前とバージョンを持つ重複した npm パッケージは 1 回ロードされます。ただし、似た名前のローカルプラグインと npm プラグインは両方とも別々にロードされます。
 
@@ -75,7 +75,7 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 
 ローカルプラグインとカスタムツールは外部の npm パッケージを使用できます。必要な依存関係を含む `package.json` を config ディレクトリに追加します。
 
-```json title=".yonsoon/package.json"
+```json title=".railwise/package.json"
 {
   "dependencies": {
     "shescape": "^2.1.0"
@@ -83,9 +83,9 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 }
 ```
 
-YONSOON (甬算) は起動時に `bun install` を実行してこれらをインストールします。プラグインとツールはそれらをインポートできるようになります。
+RAILWISE (甬算) は起動時に `bun install` を実行してこれらをインストールします。プラグインとツールはそれらをインポートできるようになります。
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
 
 export const MyPlugin = async (ctx) => {
@@ -103,7 +103,7 @@ export const MyPlugin = async (ctx) => {
 
 ### 基本構造
 
-```js title=".yonsoon/plugins/example.js"
+```js title=".railwise/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
   console.log("Plugin initialized!")
 
@@ -118,7 +118,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 - `project`: 現在のプロジェクト情報。
 - `directory`: 現在の作業ディレクトリ。
 - `worktree`: git ワークツリーのパス。
-- `client`: AI と対話するための YONSOON (甬算) SDK クライアント。
+- `client`: AI と対話するための RAILWISE (甬算) SDK クライアント。
 - `$`: Bun の [コマンドを実行するためのシェル API](https://bun.com/docs/runtime/shell)。
 
 ---
@@ -128,7 +128,7 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 TypeScript プラグインの場合、プラグインパッケージから型をインポートできます。
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@yonsoon/plugin"
+import type { Plugin } from "@railwise/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -211,7 +211,7 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ## 例
 
-ここでは、YONSOON (甬算) を拡張するために使用できるプラグインの例をいくつか示します。
+ここでは、RAILWISE (甬算) を拡張するために使用できるプラグインの例をいくつか示します。
 
 ---
 
@@ -219,13 +219,13 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 特定のイベントが発生したときに通知を送信します。
 
-```js title=".yonsoon/plugins/notification.js"
+```js title=".railwise/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
   return {
     event: async ({ event }) => {
       // Send notification on session completion
       if (event.type === "session.idle") {
-        await $`osascript -e 'display notification "Session completed!" with title "yonsoon"'`
+        await $`osascript -e 'display notification "Session completed!" with title "railwise"'`
       }
     },
   }
@@ -235,16 +235,16 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 macOS 上で AppleScript を実行するために `osascript` を使用しています。ここでは通知を送信するために使用しています。
 
 :::note
-YONSOON (甬算) デスクトップアプリを使用している場合は、応答の準備ができたとき、またはセッションエラーが発生したときにシステム通知を自動的に送信できます。
+RAILWISE (甬算) デスクトップアプリを使用している場合は、応答の準備ができたとき、またはセッションエラーが発生したときにシステム通知を自動的に送信できます。
 :::
 
 ---
 
 ### .env の保護
 
-YONSOON (甬算) が `.env` ファイルを読み取らないようにします。
+RAILWISE (甬算) が `.env` ファイルを読み取らないようにします。
 
-```javascript title=".yonsoon/plugins/env-protection.js"
+```javascript title=".railwise/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
   return {
     "tool.execute.before": async (input, output) => {
@@ -262,7 +262,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 すべてのシェル実行 (AI ツールとユーザーターミナル) に環境変数を挿入します。
 
-```javascript title=".yonsoon/plugins/inject-env.js"
+```javascript title=".railwise/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
   return {
     "shell.env": async (input, output) => {
@@ -277,10 +277,10 @@ export const InjectEnvPlugin = async () => {
 
 ### カスタムツール
 
-プラグインは YONSOON (甬算) にカスタムツールを追加することもできます。
+プラグインは RAILWISE (甬算) にカスタムツールを追加することもできます。
 
-```ts title=".yonsoon/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@railwise/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,13 +300,13 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool` ヘルパーは、YONSOON (甬算) が呼び出すことができるカスタムツールを作成します。 Zod スキーマ関数を受け取り、次のようなツール定義を返します。
+`tool` ヘルパーは、RAILWISE (甬算) が呼び出すことができるカスタムツールを作成します。 Zod スキーマ関数を受け取り、次のようなツール定義を返します。
 
 - `description`: ツールの機能
 - `args`: ツールの引数の Zod スキーマ
 - `execute`: ツールが呼び出されたときに実行される関数
 
-カスタムツールは、組み込みツールと並行して YONSOON (甬算) で使用できます。
+カスタムツールは、組み込みツールと並行して RAILWISE (甬算) で使用できます。
 
 ---
 
@@ -314,7 +314,7 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 
 構造化ログには `client.app.log()` の代わりに `console.log` を使用します。
 
-```ts title=".yonsoon/plugins/my-plugin.ts"
+```ts title=".railwise/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
   await client.app.log({
     body: {
@@ -327,7 +327,7 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-レベル: `debug`、`info`、`warn`、`error`。詳細については、[SDK ドキュメント](https://yonsoon.ai/docs/sdk) を参照してください。
+レベル: `debug`、`info`、`warn`、`error`。詳細については、[SDK ドキュメント](https://railwise.ai/docs/sdk) を参照してください。
 
 ---
 
@@ -335,8 +335,8 @@ export const MyPlugin = async ({ client }) => {
 
 セッションが圧縮されたときに含まれるコンテキストをカスタマイズします。
 
-```ts title=".yonsoon/plugins/compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,8 +359,8 @@ Include any state that should persist across compaction:
 
 `output.prompt` を設定することで、圧縮プロンプトを完全に置き換えることもできます。
 
-```ts title=".yonsoon/plugins/custom-compaction.ts"
-import type { Plugin } from "@yonsoon/plugin"
+```ts title=".railwise/plugins/custom-compaction.ts"
+import type { Plugin } from "@railwise/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {

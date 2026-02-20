@@ -15,7 +15,7 @@ description: เอเจนต์พิเศษและปรับแต่�
 
 ## ประเภท
 
-YONSOON (甬算) มีเอเจนต์สองประเภท: **Primary Agent** (เอเจนต์หลัก) และ **Subagent** (เอเจนต์ย่อย)
+RAILWISE (甬算) มีเอเจนต์สองประเภท: **Primary Agent** (เอเจนต์หลัก) และ **Subagent** (เอเจนต์ย่อย)
 
 ---
 
@@ -27,7 +27,7 @@ Primary Agent คือผู้ช่วยหลักที่คุณคุ
 **Tab** จะเก็บประวัติการสนทนาไว้เมื่อสลับระหว่างเอเจนต์
 :::
 
-YONSOON (甬算) มีเอเจนต์หลักในตัวได้แก่ **Build** และ **Plan**
+RAILWISE (甬算) มีเอเจนต์หลักในตัวได้แก่ **Build** และ **Plan**
 ดูรายละเอียดด้านล่าง
 
 ---
@@ -36,13 +36,13 @@ YONSOON (甬算) มีเอเจนต์หลักในตัวได้
 
 Subagent คือผู้ช่วยเฉพาะทางที่ Primary Agent สามารถเรียกใช้งานได้ หรือคุณสามารถเรียกใช้โดยตรงโดยพิมพ์ **@** ตามด้วยชื่อเอเจนต์ในข้อความของคุณ
 
-YONSOON (甬算) มี subagent ในตัวได้แก่ **General** และ **Explore**
+RAILWISE (甬算) มี subagent ในตัวได้แก่ **General** และ **Explore**
 
 ---
 
 ## บิวท์อิน
 
-YONSOON (甬算) มาพร้อมกับเอเจนต์หลักและ subagent ในตัวดังนี้
+RAILWISE (甬算) มาพร้อมกับเอเจนต์หลักและ subagent ในตัวดังนี้
 
 ---
 
@@ -134,11 +134,11 @@ _Mode_: `primary`
 
 ### JSON
 
-กำหนดค่าเอเจนต์ในไฟล์ `yonsoon.json` ของคุณ:
+กำหนดค่าเอเจนต์ในไฟล์ `railwise.json` ของคุณ:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "mode": "primary",
@@ -179,10 +179,10 @@ _Mode_: `primary`
 
 คุณสามารถกำหนดเอเจนต์ด้วยไฟล์ Markdown ได้ใน:
 
-- ระดับผู้ใช้ (Global): `~/.config/yonsoon/agents/`
-- ระดับโปรเจ็กต์: `.yonsoon/agents/`
+- ระดับผู้ใช้ (Global): `~/.config/railwise/agents/`
+- ระดับโปรเจ็กต์: `.railwise/agents/`
 
-```markdown title="~/.config/yonsoon/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Reviews code for quality and best practices
 mode: subagent
@@ -218,7 +218,7 @@ Provide constructive feedback without making direct changes.
 
 ใช้ฟิลด์ `description` เพื่ออธิบายว่าเอเจนต์นี้ทำอะไร
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -238,7 +238,7 @@ Provide constructive feedback without making direct changes.
 
 ค่าที่ต่ำกว่าจะให้ผลลัพธ์ที่แน่นอนและแม่นยำกว่า ส่วนค่าที่สูงกว่าจะให้ความหลากหลายและความคิดสร้างสรรค์มากกว่า
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "plan": {
@@ -257,7 +257,7 @@ Provide constructive feedback without making direct changes.
 - **0.3-0.5**: สมดุล เหมาะสำหรับการพัฒนาทั่วไป
 - **0.6-1.0**: สร้างสรรค์ เหมาะสำหรับการระดมสมอง
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "analyze": {
@@ -275,7 +275,7 @@ Provide constructive feedback without making direct changes.
 }
 ```
 
-หมายเหตุ: YONSOON (甬算) ค่าเริ่มต้นคือ 0 สำหรับโมเดลส่วนใหญ่ และ 0.55 สำหรับโมเดล Qwen
+หมายเหตุ: RAILWISE (甬算) ค่าเริ่มต้นคือ 0 สำหรับโมเดลส่วนใหญ่ และ 0.55 สำหรับโมเดล Qwen
 
 ---
 
@@ -285,7 +285,7 @@ Provide constructive feedback without making direct changes.
 
 หากไม่ได้ตั้งค่านี้ เอเจนต์จะทำงานต่อไปจนกว่างานจะเสร็จหรือผู้ใช้ขัดจังหวะ
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "quick-thinker": {
@@ -309,7 +309,7 @@ Provide constructive feedback without making direct changes.
 
 ตั้งค่าเป็น `true` เพื่อปิดการใช้งานเอเจนต์
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -325,7 +325,7 @@ Provide constructive feedback without making direct changes.
 
 ระบุ System Prompt สำหรับเอเจนต์นี้ด้วย `prompt`
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -344,10 +344,10 @@ Provide constructive feedback without making direct changes.
 ใช้ตัวเลือก `model` เพื่อกำหนดโมเดลเฉพาะสำหรับเอเจนต์นี้ มีประโยชน์เมื่อต้องการใช้โมเดลที่เชี่ยวชาญเฉพาะด้าน หรือโมเดลที่มี Context window ขนาดใหญ่สำหรับการตรวจสอบ codebase
 
 :::tip
-หากไม่ได้ระบุโมเดล เอเจนต์จะใช้ [โมเดลเริ่มต้น](/docs/config#models) ของ YONSOON (甬算)
+หากไม่ได้ระบุโมเดล เอเจนต์จะใช้ [โมเดลเริ่มต้น](/docs/config#models) ของ RAILWISE (甬算)
 :::
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "plan": {
@@ -365,9 +365,9 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 กำหนดเครื่องมือที่เอเจนต์สามารถใช้งานได้ด้วย `tools` คุณสามารถระบุชื่อเครื่องมือ หรือใช้ wildcard
 
-```json title="yonsoon.json" {3-6,9-12}
+```json title="railwise.json" {3-6,9-12}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tools": {
     "write": true,
     "bash": true
@@ -389,9 +389,9 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 คุณสามารถใช้ wildcard `*` เพื่อควบคุมเครื่องมือหลายรายการพร้อมกัน เช่น เครื่องมือจากเซิร์ฟเวอร์ MCP:
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "readonly": {
       "tools": {
@@ -416,9 +416,9 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 - `"allow"` — อนุญาตให้ทำงานได้โดยไม่ต้องถาม
 - `"deny"` — ไม่อนุญาตให้ใช้
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "deny"
   }
@@ -427,9 +427,9 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 คุณสามารถกำหนดสิทธิ์ในระดับเอเจนต์ได้:
 
-```json title="yonsoon.json" {3-5,8-10}
+```json title="railwise.json" {3-5,8-10}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "permission": {
     "edit": "deny"
   },
@@ -445,7 +445,7 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 ใน Markdown agent:
 
-```markdown title="~/.config/yonsoon/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Code review without edits
 mode: subagent
@@ -464,9 +464,9 @@ Only analyze code and suggest changes.
 
 คุณสามารถกำหนดสิทธิ์สำหรับคำสั่ง bash เฉพาะได้:
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -482,9 +482,9 @@ Only analyze code and suggest changes.
 
 รองรับ glob patterns:
 
-```json title="yonsoon.json" {7}
+```json title="railwise.json" {7}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -499,9 +499,9 @@ Only analyze code and suggest changes.
 
 ใช้ `*` wildcard เพื่อตั้งค่าเริ่มต้นสำหรับคำสั่งอื่นๆ ทั้งหมด กฎที่ตรงกันล่าสุดจะมีผลบังคับใช้ (Last match wins):
 
-```json title="yonsoon.json" {8}
+```json title="railwise.json" {8}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -523,7 +523,7 @@ Only analyze code and suggest changes.
 
 กำหนดโหมดของเอเจนต์ด้วย `mode`
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "review": {
@@ -541,7 +541,7 @@ Only analyze code and suggest changes.
 
 ซ่อน subagent จากเมนู autocomplete `@` ด้วย `hidden: true` มีประโยชน์สำหรับ subagent ภายในที่ถูกเรียกใช้โดยเอเจนต์อื่นผ่านเครื่องมือ task เท่านั้น
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "internal-helper": {
@@ -562,7 +562,7 @@ Only analyze code and suggest changes.
 
 กำหนดว่า subagent ใดที่เอเจนต์นี้สามารถเรียกใช้ได้ผ่านเครื่องมือ task ด้วย `permission.task`
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "orchestrator": {
@@ -593,7 +593,7 @@ Only analyze code and suggest changes.
 
 ใช้รหัสสี hex (เช่น `#FF5733`) หรือชื่อสีมาตรฐาน: `primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "creative": {
@@ -612,7 +612,7 @@ Only analyze code and suggest changes.
 
 ควบคุมความหลากหลายของการตอบกลับด้วยตัวเลือก `top_p`
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
   "agent": {
     "brainstorm": {
@@ -632,7 +632,7 @@ Only analyze code and suggest changes.
 
 เช่น สำหรับโมเดลที่มีการให้เหตุผลของ OpenAI:
 
-```json title="yonsoon.json" {6,7}
+```json title="railwise.json" {6,7}
 {
   "agent": {
     "deep-thinker": {
@@ -648,7 +648,7 @@ Only analyze code and suggest changes.
 ตรวจสอบเอกสารของแต่ละโมเดลสำหรับตัวเลือกที่รองรับ
 
 :::tip
-ใช้ `yonsoon models` เพื่อดูรายการตัวเลือกทั้งหมด
+ใช้ `railwise models` เพื่อดูรายการตัวเลือกทั้งหมด
 :::
 
 ---
@@ -658,7 +658,7 @@ Only analyze code and suggest changes.
 สร้างเอเจนต์ใหม่ด้วยคำสั่ง:
 
 ```bash
-yonsoon agent create
+railwise agent create
 ```
 
 คำสั่งแบบโต้ตอบจะถาม:
@@ -688,12 +688,12 @@ yonsoon agent create
 นี่คือตัวอย่างเอเจนต์ที่คุณอาจพบว่ามีประโยชน์
 
 :::tip
-คุณมีเอเจนต์เจ๋งๆ ที่ต้องการแบ่งปันหรือไม่? [ส่ง PR มาที่นี่](https://github.com/anomalyco/yonsoon)
+คุณมีเอเจนต์เจ๋งๆ ที่ต้องการแบ่งปันหรือไม่? [ส่ง PR มาที่นี่](https://github.com/anomalyco/railwise)
 :::
 
 ### Docs Writer
 
-```markdown title="~/.config/yonsoon/agents/docs-writer.md"
+```markdown title="~/.config/railwise/agents/docs-writer.md"
 ---
 description: Writes and maintains project documentation
 mode: subagent
@@ -715,7 +715,7 @@ Focus on:
 
 ### Security Auditor
 
-```markdown title="~/.config/yonsoon/agents/security-auditor.md"
+```markdown title="~/.config/railwise/agents/security-auditor.md"
 ---
 description: Performs security audits and identifies vulnerabilities
 mode: subagent

@@ -1,17 +1,17 @@
 ---
 title: GitHub
-description: Bruk yonsoon i GitHub-problemer og pull-forespørsler.
+description: Bruk railwise i GitHub-problemer og pull-forespørsler.
 ---
 
-YONSOON (甬算) integreres med GitHub-arbeidsflyten din. Nevn `/yonsoon` eller `/oc` i kommentaren din, og YONSOON (甬算) vil utføre oppgaver i din GitHub Actions-løper.
+RAILWISE (甬算) integreres med GitHub-arbeidsflyten din. Nevn `/railwise` eller `/oc` i kommentaren din, og RAILWISE (甬算) vil utføre oppgaver i din GitHub Actions-løper.
 
 ---
 
 ## Funksjoner
 
-- **Triage saker**: Be YONSOON (甬算) se på en sak og forklare den for deg.
-- **Fiks og implementer**: Be YONSOON (甬算) om å fikse en sak eller implementere en funksjon. Den vil jobbe i en ny gren og sende inn en PR med alle endringene.
-- **Sikkert**: YONSOON (甬算) kjører i GitHub-runners.
+- **Triage saker**: Be RAILWISE (甬算) se på en sak og forklare den for deg.
+- **Fiks og implementer**: Be RAILWISE (甬算) om å fikse en sak eller implementere en funksjon. Den vil jobbe i en ny gren og sende inn en PR med alle endringene.
+- **Sikkert**: RAILWISE (甬算) kjører i GitHub-runners.
 
 ---
 
@@ -20,7 +20,7 @@ YONSOON (甬算) integreres med GitHub-arbeidsflyten din. Nevn `/yonsoon` eller 
 Kjør følgende kommando i et prosjekt som er et GitHub-repo:
 
 ```bash
-yonsoon github install
+railwise github install
 ```
 
 Dette vil lede deg gjennom å installere GitHub-appen, lage arbeidsflyten og sette opp secrets (hemmeligheter).
@@ -33,14 +33,14 @@ Eller du kan sette den opp manuelt.
 
 1. **Installer GitHub-appen**
 
-   Gå over til [**github.com/apps/yonsoon-agent**](https://github.com/apps/yonsoon-agent). Sørg for at den er installert på mållageret.
+   Gå over til [**github.com/apps/railwise-agent**](https://github.com/apps/railwise-agent). Sørg for at den er installert på mållageret.
 
 2. **Legg til arbeidsflyten**
 
-   Legg til følgende arbeidsflytfil til `.github/workflows/yonsoon.yml` i repoen. Sørg for å sette riktig `model` og nødvendige API-nøkler i `env`.
+   Legg til følgende arbeidsflytfil til `.github/workflows/railwise.yml` i repoen. Sørg for å sette riktig `model` og nødvendige API-nøkler i `env`.
 
-   ```yml title=".github/workflows/yonsoon.yml" {24,26}
-   name: yonsoon
+   ```yml title=".github/workflows/railwise.yml" {24,26}
+   name: railwise
 
    on:
      issue_comment:
@@ -49,10 +49,10 @@ Eller du kan sette den opp manuelt.
        types: [created]
 
    jobs:
-     yonsoon:
+     railwise:
        if: |
          contains(github.event.comment.body, '/oc') ||
-         contains(github.event.comment.body, '/yonsoon')
+         contains(github.event.comment.body, '/railwise')
        runs-on: ubuntu-latest
        permissions:
          id-token: write
@@ -63,8 +63,8 @@ Eller du kan sette den opp manuelt.
               fetch-depth: 1
               persist-credentials: false
 
-          - name: Run YONSOON (甬算)
-           uses: anomalyco/yonsoon/github@latest
+          - name: Run RAILWISE (甬算)
+           uses: anomalyco/railwise/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
            with:
@@ -81,13 +81,13 @@ Eller du kan sette den opp manuelt.
 
 ## Konfigurasjon
 
-- `model`: Modellen som skal brukes med YONSOON (甬算). Tar formatet `provider/model`. Dette er **obligatorisk**.
+- `model`: Modellen som skal brukes med RAILWISE (甬算). Tar formatet `provider/model`. Dette er **obligatorisk**.
 - `agent`: Agenten som skal brukes. Må være en primær agent. Faller tilbake til `default_agent` fra config eller `"build"` hvis ikke funnet.
-- `share`: Om YONSOON (甬算)-økten skal deles. Standard er **true** for offentlige depoter.
-- `prompt`: Valgfri egendefinert melding for å overstyre standard oppførsel. Bruk dette til å tilpasse hvordan YONSOON (甬算) behandler forespørsler.
-- `token`: Valgfritt GitHub-tilgangstoken for å utføre operasjoner som å lage kommentarer, foreta endringer og åpne pull-forespørsler. Som standard bruker YONSOON (甬算) installasjonstilgangstokenet fra YONSOON (甬算) GitHub-appen, så commits, kommentarer og pull-forespørsler ser ut til å komme fra appen.
+- `share`: Om RAILWISE (甬算)-økten skal deles. Standard er **true** for offentlige depoter.
+- `prompt`: Valgfri egendefinert melding for å overstyre standard oppførsel. Bruk dette til å tilpasse hvordan RAILWISE (甬算) behandler forespørsler.
+- `token`: Valgfritt GitHub-tilgangstoken for å utføre operasjoner som å lage kommentarer, foreta endringer og åpne pull-forespørsler. Som standard bruker RAILWISE (甬算) installasjonstilgangstokenet fra RAILWISE (甬算) GitHub-appen, så commits, kommentarer og pull-forespørsler ser ut til å komme fra appen.
 
-  Alternativt kan du bruke GitHub Action-løperens [innebygde `GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) uten å installere YONSOON (甬算) GitHub-appen. Bare sørg for å gi de nødvendige tillatelsene i arbeidsflyten din:
+  Alternativt kan du bruke GitHub Action-løperens [innebygde `GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) uten å installere RAILWISE (甬算) GitHub-appen. Bare sørg for å gi de nødvendige tillatelsene i arbeidsflyten din:
 
   ```yaml
   permissions:
@@ -103,30 +103,30 @@ Eller du kan sette den opp manuelt.
 
 ## Støttede hendelser
 
-YONSOON (甬算) kan utløses av følgende GitHub-hendelser:
+RAILWISE (甬算) kan utløses av følgende GitHub-hendelser:
 
 | Hendelsestype                 | Utløst av                               | Detaljer                                                                                                                |
 | ----------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Kommentar på sak eller PR               | Nevn `/yonsoon` eller `/oc` i kommentaren din. YONSOON (甬算) leser kontekst og kan opprette grener, åpne PR-er eller svare. |
-| `pull_request_review_comment` | Kommenter spesifikke kodelinjer i en PR | Nevn `/yonsoon` eller `/oc` mens du ser gjennom koden. YONSOON (甬算) mottar filbane, linjenummer og diff-kontekst.          |
-| `issues`                      | Sak åpnet eller redigert                | Utløs YONSOON (甬算) automatisk når saker opprettes eller endres. Krever `prompt` inngang.                                    |
-| `pull_request`                | PR åpnet eller oppdatert                | Utløs YONSOON (甬算) automatisk når PR-er åpnes, synkroniseres eller gjenåpnes. Nyttig for automatiserte anmeldelser.         |
-| `schedule`                    | Cron-basert tidsplan                    | Kjør YONSOON (甬算) etter en tidsplan. Krever `prompt` inngang. Utdata går til logger og PR (ingen sak å kommentere).         |
-| `workflow_dispatch`           | Manuell utløser fra GitHub UI           | Utløs YONSOON (甬算) på forespørsel via fanen Handlinger. Krever `prompt` inngang. Utdata går til logger og PR-er.            |
+| `issue_comment`               | Kommentar på sak eller PR               | Nevn `/railwise` eller `/oc` i kommentaren din. RAILWISE (甬算) leser kontekst og kan opprette grener, åpne PR-er eller svare. |
+| `pull_request_review_comment` | Kommenter spesifikke kodelinjer i en PR | Nevn `/railwise` eller `/oc` mens du ser gjennom koden. RAILWISE (甬算) mottar filbane, linjenummer og diff-kontekst.          |
+| `issues`                      | Sak åpnet eller redigert                | Utløs RAILWISE (甬算) automatisk når saker opprettes eller endres. Krever `prompt` inngang.                                    |
+| `pull_request`                | PR åpnet eller oppdatert                | Utløs RAILWISE (甬算) automatisk når PR-er åpnes, synkroniseres eller gjenåpnes. Nyttig for automatiserte anmeldelser.         |
+| `schedule`                    | Cron-basert tidsplan                    | Kjør RAILWISE (甬算) etter en tidsplan. Krever `prompt` inngang. Utdata går til logger og PR (ingen sak å kommentere).         |
+| `workflow_dispatch`           | Manuell utløser fra GitHub UI           | Utløs RAILWISE (甬算) på forespørsel via fanen Handlinger. Krever `prompt` inngang. Utdata går til logger og PR-er.            |
 
 ### Eksempel på tidsplan
 
-Kjør YONSOON (甬算) på en tidsplan for å utføre automatiserte oppgaver:
+Kjør RAILWISE (甬算) på en tidsplan for å utføre automatiserte oppgaver:
 
-```yaml title=".github/workflows/yonsoon-scheduled.yml"
-name: Scheduled YONSOON (甬算) Task
+```yaml title=".github/workflows/railwise-scheduled.yml"
+name: Scheduled RAILWISE (甬算) Task
 
 on:
   schedule:
     - cron: "0 9 * * 1" # Every Monday at 9am UTC
 
 jobs:
-  yonsoon:
+  railwise:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -139,8 +139,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run YONSOON (甬算)
-        uses: anomalyco/yonsoon/github@latest
+      - name: Run RAILWISE (甬算)
+        uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         with:
@@ -150,7 +150,7 @@ jobs:
             If you find issues worth addressing, open an issue to track them.
 ```
 
-For planlagte arrangementer er `prompt`-inngangen **påkrevd** siden det ikke er noen kommentarer å trekke ut instruksjoner fra. Planlagte workflows kjører uten brukerkontekst for tillatelsessjekking, så arbeidsflyten må gi `contents: write` og `pull-requests: write` hvis du forventer at YONSOON (甬算) oppretter grener eller PR-er.
+For planlagte arrangementer er `prompt`-inngangen **påkrevd** siden det ikke er noen kommentarer å trekke ut instruksjoner fra. Planlagte workflows kjører uten brukerkontekst for tillatelsessjekking, så arbeidsflyten må gi `contents: write` og `pull-requests: write` hvis du forventer at RAILWISE (甬算) oppretter grener eller PR-er.
 
 ---
 
@@ -158,8 +158,8 @@ For planlagte arrangementer er `prompt`-inngangen **påkrevd** siden det ikke er
 
 Gjennomgå PR-er automatisk når de åpnes eller oppdateres:
 
-```yaml title=".github/workflows/yonsoon-review.yml"
-name: yonsoon-review
+```yaml title=".github/workflows/railwise-review.yml"
+name: railwise-review
 
 on:
   pull_request:
@@ -177,7 +177,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: anomalyco/yonsoon/github@latest
+      - uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -191,7 +191,7 @@ jobs:
             - Suggest improvements
 ```
 
-For `pull_request`-hendelser, hvis ingen `prompt` er oppgitt, går YONSOON (甬算) som standard gjennom PR-en.
+For `pull_request`-hendelser, hvis ingen `prompt` er oppgitt, går RAILWISE (甬算) som standard gjennom PR-en.
 
 ---
 
@@ -199,7 +199,7 @@ For `pull_request`-hendelser, hvis ingen `prompt` er oppgitt, går YONSOON (甬�
 
 Automatisk triage av nye saker. Dette eksemplet filtrerer til kontoer eldre enn 30 dager for å redusere spam:
 
-```yaml title=".github/workflows/yonsoon-triage.yml"
+```yaml title=".github/workflows/railwise-triage.yml"
 name: Issue Triage
 
 on:
@@ -233,7 +233,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: anomalyco/yonsoon/github@latest
+      - uses: anomalyco/railwise/github@latest
         if: steps.check.outputs.result == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -252,10 +252,10 @@ For `issues`-hendelser er `prompt`-inngangen **påkrevd** siden det ikke er noen
 
 ## Egendefinerte prompter
 
-Overstyr standardprompten for å tilpasse oppførselen til YONSOON (甬算) for arbeidsflyten din.
+Overstyr standardprompten for å tilpasse oppførselen til RAILWISE (甬算) for arbeidsflyten din.
 
-```yaml title=".github/workflows/yonsoon.yml"
-- uses: anomalyco/yonsoon/github@latest
+```yaml title=".github/workflows/railwise.yml"
+- uses: anomalyco/railwise/github@latest
   with:
     model: anthropic/claude-sonnet-4-5
     prompt: |
@@ -271,10 +271,10 @@ Dette er nyttig for å håndheve spesifikke vurderingskriterier, kodestandarder 
 
 ## Eksempler
 
-Her er noen eksempler på hvordan du kan bruke YONSOON (甬算) i GitHub.
+Her er noen eksempler på hvordan du kan bruke RAILWISE (甬算) i GitHub.
 
 :::tip
-Du kan konfigurere til å bruke en annen triggerfrase enn `@yonsoon`.
+Du kan konfigurere til å bruke en annen triggerfrase enn `@railwise`.
 :::
 
 - **Forklar en sak (issue)**
@@ -282,20 +282,20 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@yonsoon`.
   Legg til denne kommentaren i en GitHub-sak.
 
   ```
-  /yonsoon explain this issue
+  /railwise explain this issue
   ```
 
-  YONSOON (甬算) vil lese hele tråden, inkludert alle kommentarer, og svare med en tydelig forklaring.
+  RAILWISE (甬算) vil lese hele tråden, inkludert alle kommentarer, og svare med en tydelig forklaring.
 
 - **Fiks en sak**
 
   I en GitHub-sak, si:
 
   ```
-  /yonsoon fix this
+  /railwise fix this
   ```
 
-  Og YONSOON (甬算) vil opprette en ny gren, implementere endringene og åpne en PR med endringene.
+  Og RAILWISE (甬算) vil opprette en ny gren, implementere endringene og åpne en PR med endringene.
 
 - **Se gjennom PR-er og gjør endringer**
 
@@ -305,18 +305,18 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@yonsoon`.
   Delete the attachment from S3 when the note is removed /oc
   ```
 
-  YONSOON (甬算) vil implementere den forespurte endringen og committe den til samme PR.
+  RAILWISE (甬算) vil implementere den forespurte endringen og committe den til samme PR.
 
 - **Review av spesifikke kodelinjer**
 
-  Legg igjen en kommentar direkte på kodelinjer i PRs "Filer"-fane. YONSOON (甬算) oppdager automatisk filen, linjenumrene og diff-konteksten for å gi presise svar.
+  Legg igjen en kommentar direkte på kodelinjer i PRs "Filer"-fane. RAILWISE (甬算) oppdager automatisk filen, linjenumrene og diff-konteksten for å gi presise svar.
 
   ```
   [Comment on specific lines in Files tab]
   /oc add error handling here
   ```
 
-  Når du kommenterer spesifikke linjer, mottar YONSOON (甬算):
+  Når du kommenterer spesifikke linjer, mottar RAILWISE (甬算):
   - Den nøyaktige filen blir gjennomgått
   - De spesifikke kodelinjene
   - Den omkringliggende diff-konteksten

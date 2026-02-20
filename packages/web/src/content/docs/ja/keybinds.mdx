@@ -3,11 +3,11 @@ title: キーバインド
 description: キーバインドをカスタマイズします。
 ---
 
-YONSOON (甬算) には、YONSOON (甬算) 設定を通じてカスタマイズできるキーバインドのリストがあります。
+RAILWISE (甬算) には、RAILWISE (甬算) 設定を通じてカスタマイズできるキーバインドのリストがあります。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "leader": "ctrl+x",
     "app_exit": "ctrl+c,ctrl+d,<leader>q",
@@ -107,7 +107,7 @@ YONSOON (甬算) には、YONSOON (甬算) 設定を通じてカスタマイズ�
 
 ## リーダーキー
 
-YONSOON (甬算) は、ほとんどのキーバインドに `leader` キーを使用します。これにより、ターミナルでの競合が回避されます。
+RAILWISE (甬算) は、ほとんどのキーバインドに `leader` キーを使用します。これにより、ターミナルでの競合が回避されます。
 
 デフォルトでは、`ctrl+x` がリーダーキーであり、ほとんどの操作では、最初にリーダーキーを押してからショートカットを押す必要があります。たとえば、新しいセッションを開始するには、まず `ctrl+x` を押してから、`n` を押します。
 
@@ -119,9 +119,9 @@ YONSOON (甬算) は、ほとんどのキーバインドに `leader` キーを�
 
 キーバインドを無効にするには、値「none」を指定してキーを構成に追加します。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "keybinds": {
     "session_compact": "none"
   }
@@ -132,7 +132,7 @@ YONSOON (甬算) は、ほとんどのキーバインドに `leader` キーを�
 
 ## デスクトッププロンプトのショートカット
 
-YONSOON (甬算) デスクトップアプリのプロンプト入力は、テキストを編集するための一般的な Readline/Emacs スタイルのショートカットをサポートしています。これらは組み込みであり、現在 `yonsoon.json` を介して構成することはできません。
+RAILWISE (甬算) デスクトップアプリのプロンプト入力は、テキストを編集するための一般的な Readline/Emacs スタイルのショートカットをサポートしています。これらは組み込みであり、現在 `railwise.json` を介して構成することはできません。
 
 | ショートカット | アクション                                        |
 | -------------- | ------------------------------------------------- |

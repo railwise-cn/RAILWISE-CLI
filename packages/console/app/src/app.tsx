@@ -2,8 +2,8 @@ import { MetaProvider, Title, Meta } from "@solidjs/meta"
 import { Router } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
 import { Suspense } from "solid-js"
-import { Favicon } from "@yonsoon/ui/favicon"
-import { Font } from "@yonsoon/ui/font"
+import { Favicon } from "@railwise/ui/favicon"
+import { Font } from "@railwise/ui/font"
 import "@ibm/plex/css/ibm-plex.css"
 import "./app.css"
 import { LanguageProvider } from "~/context/language"
@@ -19,8 +19,8 @@ export default function App() {
         <LanguageProvider>
           <I18nProvider>
             <MetaProvider>
-              <Title>yonsoon</Title>
-              <Meta name="description" content="YONSOON (甬算) - The open source coding agent." />
+              <Title>railwise</Title>
+              <Meta name="description" content="RAILWISE (甬算) - The open source coding agent." />
               <Favicon />
               <Font />
               <Suspense>{props.children}</Suspense>

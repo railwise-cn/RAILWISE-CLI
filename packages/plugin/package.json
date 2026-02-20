@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@yonsoon/plugin",
+  "name": "@railwise/plugin",
   "version": "1.2.8",
   "type": "module",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "dist"
   ],
   "dependencies": {
-    "@yonsoon/sdk": "workspace:*",
+    "@railwise/sdk": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

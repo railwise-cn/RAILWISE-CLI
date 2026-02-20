@@ -1,5 +1,5 @@
 {
-  "name": "@yonsoon/ui",
+  "name": "@railwise/ui",
   "version": "1.2.8",
   "type": "module",
   "license": "MIT",
@@ -41,8 +41,8 @@
   },
   "dependencies": {
     "@kobalte/core": "catalog:",
-    "@yonsoon/sdk": "workspace:*",
-    "@yonsoon/util": "workspace:*",
+    "@railwise/sdk": "workspace:*",
+    "@railwise/util": "workspace:*",
     "@pierre/diffs": "catalog:",
     "@shikijs/transformers": "3.9.2",
     "@solid-primitives/bounds": "0.1.3",

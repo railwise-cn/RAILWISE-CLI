@@ -1,4 +1,4 @@
-import { Actor } from "@yonsoon/console-core/actor.js"
+import { Actor } from "@railwise/console-core/actor.js"
 import { getActor } from "./auth"
 
 export async function withActor<T>(fn: () => T, workspace?: string) {

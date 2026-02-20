@@ -1,5 +1,5 @@
 {
-  description = "YONSOON (甬算) development flake";
+  description = "RAILWISE (甬算) development flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -37,16 +37,16 @@
             node_modules = final.callPackage ./nix/node_modules.nix {
               inherit rev;
             };
-            yonsoon = final.callPackage ./nix/yonsoon.nix {
+            railwise = final.callPackage ./nix/railwise.nix {
               inherit node_modules;
             };
             desktop = final.callPackage ./nix/desktop.nix {
-              inherit yonsoon;
+              inherit railwise;
             };
           in
           {
-            inherit yonsoon;
-            yonsoon-desktop = desktop;
+            inherit railwise;
+            railwise-desktop = desktop;
           };
       };
 
@@ -56,16 +56,16 @@
           node_modules = pkgs.callPackage ./nix/node_modules.nix {
             inherit rev;
           };
-          yonsoon = pkgs.callPackage ./nix/yonsoon.nix {
+          railwise = pkgs.callPackage ./nix/railwise.nix {
             inherit node_modules;
           };
           desktop = pkgs.callPackage ./nix/desktop.nix {
-            inherit yonsoon;
+            inherit railwise;
           };
         in
         {
-          default = yonsoon;
-          inherit yonsoon desktop;
+          default = railwise;
+          inherit railwise desktop;
           # Updater derivation with fakeHash - build fails and reveals correct hash
           node_modules_updater = node_modules.override {
             hash = pkgs.lib.fakeHash;

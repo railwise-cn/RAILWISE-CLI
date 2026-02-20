@@ -3,11 +3,11 @@ title: Modeli
 description: Konfiguriranje LLM provajdera i modela.
 ---
 
-YONSOON (甬算) koristi [AI SDK](https://ai-sdk.dev/) i [Models.dev](https://models.dev) za podršku **75+ LLM providera**, uključujući lokalne modele.
+RAILWISE (甬算) koristi [AI SDK](https://ai-sdk.dev/) i [Models.dev](https://models.dev) za podršku **75+ LLM providera**, uključujući lokalne modele.
 
 ## Provajderi
 
-Većina popularnih provajdera su unaprijed učitani prema zadanim postavkama. Ako ste dodali vjerodajnice za provajdera putem naredbe `/connect`, oni će biti dostupni kada pokrenete YONSOON (甬算).
+Većina popularnih provajdera su unaprijed učitani prema zadanim postavkama. Ako ste dodali vjerodajnice za provajdera putem naredbe `/connect`, oni će biti dostupni kada pokrenete RAILWISE (甬算).
 Saznajte više o [providers](/docs/providers).
 
 ---
@@ -30,7 +30,7 @@ Razmislite o korištenju jednog od modela koje preporučujemo.
 :::
 
 Međutim, postoji samo nekoliko njih koji su dobri i u generiranju koda i u pozivanju alata.
-Evo nekoliko modela koji dobro rade sa YONSOON (甬算), bez posebnog redosleda. (Ovo nije potpuna lista niti je nužno ažurirana):
+Evo nekoliko modela koji dobro rade sa RAILWISE (甬算), bez posebnog redosleda. (Ovo nije potpuna lista niti je nužno ažurirana):
 
 - GPT 5.2
 - Codex GPT 5.1
@@ -44,16 +44,16 @@ Evo nekoliko modela koji dobro rade sa YONSOON (甬算), bez posebnog redosleda.
 ## Postavljanje zadanog
 
 Da postavite jedan od ovih kao zadani model, možete postaviti ključ `model` u svom
-YONSOON (甬算) config.
+RAILWISE (甬算) config.
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "model": "lmstudio/google/gemma-3n-e4b"
 }
 ```
 
-Ovdje je puni ID `provider_id/model_id`. Na primjer, ako koristite [YONSOON (甬算) Zen](/docs/zen), koristili biste `yonsoon/gpt-5.1-codex` za GPT 5.1 Codex.
+Ovdje je puni ID `provider_id/model_id`. Na primjer, ako koristite [RAILWISE (甬算) Zen](/docs/zen), koristili biste `railwise/gpt-5.1-codex` za GPT 5.1 Codex.
 Ako ste konfigurirali [prilagođenog provajdera](/docs/providers#custom), `provider_id` je ključ iz `provider` dijela vaše konfiguracije, a `model_id` je ključ iz `provider.models`.
 
 ---
@@ -62,9 +62,9 @@ Ako ste konfigurirali [prilagođenog provajdera](/docs/providers#custom), `provi
 
 Možete globalno konfigurirati opcije modela kroz config.
 
-```jsonc title="yonsoon.jsonc" {7-12,19-24}
+```jsonc title="railwise.jsonc" {7-12,19-24}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -99,11 +99,11 @@ Ugrađeni dobavljač i nazivi modela mogu se naći na [Models.dev](https://model
 Također možete konfigurirati ove opcije za sve agente koje koristite. Konfiguracija agenta poništava sve globalne opcije ovdje. [Saznajte više](/docs/agents/#additional).
 Također možete definirati prilagođene varijante koje proširuju ugrađene. Varijante vam omogućavaju da konfigurirate različite postavke za isti model bez stvaranja duplih unosa:
 
-```jsonc title="yonsoon.jsonc" {6-21}
+```jsonc title="railwise.jsonc" {6-21}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
-    "yonsoon": {
+    "railwise": {
       "models": {
         "gpt-5": {
           "variants": {
@@ -129,11 +129,11 @@ Također možete definirati prilagođene varijante koje proširuju ugrađene. Va
 
 ## Varijante
 
-Mnogi modeli podržavaju više varijanti sa različitim konfiguracijama. YONSOON (甬算) se isporučuje sa ugrađenim podrazumevanim varijantama za popularne provajdere.
+Mnogi modeli podržavaju više varijanti sa različitim konfiguracijama. RAILWISE (甬算) se isporučuje sa ugrađenim podrazumevanim varijantama za popularne provajdere.
 
 ### Ugrađene varijante
 
-YONSOON (甬算) se isporučuje sa zadanim varijantama za mnoge provajdere:
+RAILWISE (甬算) se isporučuje sa zadanim varijantama za mnoge provajdere:
 **Anthropic**:
 
 - `high` - Visok budžet za razmišljanje (zadano)
@@ -157,9 +157,9 @@ YONSOON (甬算) se isporučuje sa zadanim varijantama za mnoge provajdere:
 
 Možete nadjačati postojeće varijante ili dodati svoje:
 
-```jsonc title="yonsoon.jsonc" {7-18}
+```jsonc title="railwise.jsonc" {7-18}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "provider": {
     "openai": {
       "models": {
@@ -186,14 +186,14 @@ Koristite keybind `variant_cycle` za brzo prebacivanje između varijanti. [Sazna
 
 ## Učitavanje modela
 
-Kada se YONSOON (甬算) pokrene, on provjerava modele u sljedećem prioritetnom redoslijedu:
+Kada se RAILWISE (甬算) pokrene, on provjerava modele u sljedećem prioritetnom redoslijedu:
 
 1. Oznaka komandne linije `--model` ili `-m`. Format je isti kao u konfiguracijskoj datoteci: `provider_id/model_id`.
-2. Lista modela u YONSOON (甬算) konfiguraciji.
+2. Lista modela u RAILWISE (甬算) konfiguraciji.
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "model": "anthropic/claude-sonnet-4-20250514"
 }
 ```

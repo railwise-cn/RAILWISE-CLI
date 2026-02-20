@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-APP=yonsoon
+APP=railwise
 
 MUTED='\033[0;2m'
 RED='\033[0;31m'
@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 
 usage() {
     cat <<EOF
-YONSOON (甬算) Installer
+RAILWISE (甬算) Installer
 
 Usage: install.sh [options]
 
@@ -22,7 +22,7 @@ Options:
 Examples:
     ./install
     ./install --version 1.0.180
-    ./install --binary /path/to/yonsoon
+    ./install --binary /path/to/railwise
 EOF
 }
 
@@ -65,7 +65,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-INSTALL_DIR=$HOME/.yonsoon/bin
+INSTALL_DIR=$HOME/.railwise/bin
 mkdir -p "$INSTALL_DIR"
 
 # If --binary is provided, skip all download/detection logic
@@ -181,8 +181,8 @@ else
     fi
 
     if [ -z "$requested_version" ]; then
-        url="https://github.com/anomalyco/yonsoon/releases/latest/download/$filename"
-        specific_version=$(curl -s https://api.github.com/repos/anomalyco/yonsoon/releases/latest | sed -n 's/.*"tag_name": *"v\([^"]*\)".*/\1/p')
+        url="https://github.com/anomalyco/railwise/releases/latest/download/$filename"
+        specific_version=$(curl -s https://api.github.com/repos/anomalyco/railwise/releases/latest | sed -n 's/.*"tag_name": *"v\([^"]*\)".*/\1/p')
 
         if [[ $? -ne 0 || -z "$specific_version" ]]; then
             echo -e "${RED}Failed to fetch version information${NC}"
@@ -191,14 +191,14 @@ else
     else
         # Strip leading 'v' if present
         requested_version="${requested_version#v}"
-        url="https://github.com/anomalyco/yonsoon/releases/download/v${requested_version}/$filename"
+        url="https://github.com/anomalyco/railwise/releases/download/v${requested_version}/$filename"
         specific_version=$requested_version
 
         # Verify the release exists before downloading
-        http_status=$(curl -sI -o /dev/null -w "%{http_code}" "https://github.com/anomalyco/yonsoon/releases/tag/v${requested_version}")
+        http_status=$(curl -sI -o /dev/null -w "%{http_code}" "https://github.com/anomalyco/railwise/releases/tag/v${requested_version}")
         if [ "$http_status" = "404" ]; then
             echo -e "${RED}Error: Release v${requested_version} not found${NC}"
-            echo -e "${MUTED}Available releases: https://github.com/anomalyco/yonsoon/releases${NC}"
+            echo -e "${MUTED}Available releases: https://github.com/anomalyco/railwise/releases${NC}"
             exit 1
         fi
     fi
@@ -219,11 +219,11 @@ print_message() {
 }
 
 check_version() {
-    if command -v yonsoon >/dev/null 2>&1; then
-        yonsoon_path=$(which yonsoon)
+    if command -v railwise >/dev/null 2>&1; then
+        railwise_path=$(which railwise)
 
         ## Check the installed version
-        installed_version=$(yonsoon --version 2>/dev/null || echo "")
+        installed_version=$(railwise --version 2>/dev/null || echo "")
 
         if [[ "$installed_version" != "$specific_version" ]]; then
             print_message info "${MUTED}Installed version: ${NC}$installed_version."
@@ -275,7 +275,7 @@ download_with_progress() {
     fi
 
     local tmp_dir=${TMPDIR:-/tmp}
-    local basename="${tmp_dir}/yonsoon_install_$$"
+    local basename="${tmp_dir}/railwise_install_$$"
     local tracefile="${basename}.trace"
 
     rm -f "$tracefile"
@@ -325,8 +325,8 @@ download_with_progress() {
 }
 
 download_and_install() {
-    print_message info "\n${MUTED}Installing ${NC}yonsoon ${MUTED}version: ${NC}$specific_version"
-    local tmp_dir="${TMPDIR:-/tmp}/yonsoon_install_$$"
+    print_message info "\n${MUTED}Installing ${NC}railwise ${MUTED}version: ${NC}$specific_version"
+    local tmp_dir="${TMPDIR:-/tmp}/railwise_install_$$"
     mkdir -p "$tmp_dir"
 
     if [[ "$os" == "windows" ]] || ! [ -t 2 ] || ! download_with_progress "$url" "$tmp_dir/$filename"; then
@@ -340,15 +340,15 @@ download_and_install() {
         unzip -q "$tmp_dir/$filename" -d "$tmp_dir"
     fi
 
-    mv "$tmp_dir/yonsoon" "$INSTALL_DIR"
-    chmod 755 "${INSTALL_DIR}/yonsoon"
+    mv "$tmp_dir/railwise" "$INSTALL_DIR"
+    chmod 755 "${INSTALL_DIR}/railwise"
     rm -rf "$tmp_dir"
 }
 
 install_from_binary() {
-    print_message info "\n${MUTED}Installing ${NC}yonsoon ${MUTED}from: ${NC}$binary_path"
-    cp "$binary_path" "${INSTALL_DIR}/yonsoon"
-    chmod 755 "${INSTALL_DIR}/yonsoon"
+    print_message info "\n${MUTED}Installing ${NC}railwise ${MUTED}from: ${NC}$binary_path"
+    cp "$binary_path" "${INSTALL_DIR}/railwise"
+    chmod 755 "${INSTALL_DIR}/railwise"
 }
 
 if [ -n "$binary_path" ]; then
@@ -366,9 +366,9 @@ add_to_path() {
     if grep -Fxq "$command" "$config_file"; then
         print_message info "Command already exists in $config_file, skipping write."
     elif [[ -w $config_file ]]; then
-        echo -e "\n# yonsoon" >> "$config_file"
+        echo -e "\n# railwise" >> "$config_file"
         echo "$command" >> "$config_file"
-        print_message info "${MUTED}Successfully added ${NC}yonsoon ${MUTED}to \$PATH in ${NC}$config_file"
+        print_message info "${MUTED}Successfully added ${NC}railwise ${MUTED}to \$PATH in ${NC}$config_file"
     else
         print_message warning "Manually add the directory to $config_file (or similar):"
         print_message info "  $command"
@@ -451,9 +451,9 @@ echo -e "${MUTED}▀  ▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ${NC}�
 echo -e ""
 echo -e "                  甬  算"
 echo -e ""
-echo -e "${MUTED}YONSOON is ready. To start:${NC}"
+echo -e "${MUTED}RAILWISE is ready. To start:${NC}"
 echo -e ""
 echo -e "cd <project>  ${MUTED}# Open directory${NC}"
-echo -e "yonsoon       ${MUTED}# Run command${NC}"
+echo -e "railwise       ${MUTED}# Run command${NC}"
 echo -e ""
 echo -e ""

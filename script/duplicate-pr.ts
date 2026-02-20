@@ -2,7 +2,7 @@
 
 import path from "path"
 import { pathToFileURL } from "bun"
-import { createYonsoon } from "@yonsoon/sdk"
+import { createRailwise } from "@railwise/sdk"
 import { parseArgs } from "util"
 
 async function main() {
@@ -35,7 +35,7 @@ Examples:
     process.exit(1)
   }
 
-  const yonsoon = await createYonsoon({ port: 0 })
+  const railwise = await createRailwise({ port: 0 })
 
   try {
     const parts: Array<{ type: "text"; text: string } | { type: "file"; url: string; filename: string; mime: string }> =
@@ -58,8 +58,8 @@ Examples:
 
     parts.push({ type: "text", text: message })
 
-    const session = await yonsoon.client.session.create()
-    const result = await yonsoon.client.session
+    const session = await railwise.client.session.create()
+    const result = await railwise.client.session
       .prompt({
         path: { id: session.data!.id },
         body: {
@@ -72,7 +72,7 @@ Examples:
 
     console.log(result.trim())
   } finally {
-    yonsoon.server.close()
+    railwise.server.close()
   }
 }
 

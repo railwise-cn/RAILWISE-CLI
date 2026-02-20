@@ -1,68 +1,68 @@
 ---
 title: GitLab
-description: استخدم YONSOON (甬算) في مشكلات GitLab وطلبات الدمج.
+description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبات الدمج.
 ---
 
-يتكامل YONSOON (甬算) مع سير عمل GitLab لديك عبر خط أنابيب GitLab CI/CD أو عبر GitLab Duo.
+يتكامل RAILWISE (甬算) مع سير عمل GitLab لديك عبر خط أنابيب GitLab CI/CD أو عبر GitLab Duo.
 
-في كلتا الحالتين، سيعمل YONSOON (甬算) على مشغّلات GitLab لديك.
+في كلتا الحالتين، سيعمل RAILWISE (甬算) على مشغّلات GitLab لديك.
 
 ---
 
 ## GitLab CI
 
-يعمل YONSOON (甬算) ضمن خط أنابيب GitLab عادي. يمكنك دمجه في الخط كمكوّن [CI](https://docs.gitlab.com/ee/ci/components/).
+يعمل RAILWISE (甬算) ضمن خط أنابيب GitLab عادي. يمكنك دمجه في الخط كمكوّن [CI](https://docs.gitlab.com/ee/ci/components/).
 
-هنا نستخدم مكوّن CI/CD أنشأه المجتمع لـ YONSOON (甬算) — [nagyv/gitlab-yonsoon](https://gitlab.com/nagyv/gitlab-yonsoon).
+هنا نستخدم مكوّن CI/CD أنشأه المجتمع لـ RAILWISE (甬算) — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### الميزات
 
-- **استخدام إعدادات مخصّصة لكل مهمة**: يمكنك إعداد YONSOON (甬算) باستخدام دليل إعدادات مخصّص، مثل `./config/#custom-directory`، لتفعيل الوظائف أو تعطيلها في كل تشغيل لـ YONSOON (甬算).
-- **إعداد بسيط**: يقوم مكوّن CI بإعداد YONSOON (甬算) في الخلفية؛ كل ما عليك هو إنشاء إعدادات YONSOON (甬算) والمطالبة (prompt) الأولية.
+- **استخدام إعدادات مخصّصة لكل مهمة**: يمكنك إعداد RAILWISE (甬算) باستخدام دليل إعدادات مخصّص، مثل `./config/#custom-directory`، لتفعيل الوظائف أو تعطيلها في كل تشغيل لـ RAILWISE (甬算).
+- **إعداد بسيط**: يقوم مكوّن CI بإعداد RAILWISE (甬算) في الخلفية؛ كل ما عليك هو إنشاء إعدادات RAILWISE (甬算) والمطالبة (prompt) الأولية.
 - **مرن**: يدعم مكوّن CI عدة مُدخلات لتخصيص سلوكه.
 
 ---
 
 ### الإعداد
 
-1. احفظ JSON مصادقة YONSOON (甬算) كمتغيرات بيئة CI من نوع File ضمن **Settings** > **CI/CD** > **Variables**. تأكد من تعيينها على "Masked and hidden".
+1. احفظ JSON مصادقة RAILWISE (甬算) كمتغيرات بيئة CI من نوع File ضمن **Settings** > **CI/CD** > **Variables**. تأكد من تعيينها على "Masked and hidden".
 2. أضف ما يلي إلى ملف `.gitlab-ci.yml`.
 
    ```yaml title=".gitlab-ci.yml"
    include:
-     - component: $CI_SERVER_FQDN/nagyv/gitlab-yonsoon/yonsoon@2
+     - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
-         config_dir: ${CI_PROJECT_DIR}/yonsoon-config
-         auth_json: $YONSOON_AUTH_JSON # The variable name for your YONSOON (甬算) authentication JSON
+         config_dir: ${CI_PROJECT_DIR}/railwise-config
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
 
-لمزيد من المُدخلات وحالات الاستخدام، [اطّلع على الوثائق](https://gitlab.com/explore/catalog/nagyv/gitlab-yonsoon) الخاصة بهذا المكوّن.
+لمزيد من المُدخلات وحالات الاستخدام، [اطّلع على الوثائق](https://gitlab.com/explore/catalog/nagyv/gitlab-railwise) الخاصة بهذا المكوّن.
 
 ---
 
 ## GitLab Duo
 
-يتكامل YONSOON (甬算) مع سير عمل GitLab لديك.
-اذكر `@yonsoon` في تعليق، وسينفّذ YONSOON (甬算) المهام ضمن خط أنابيب GitLab CI لديك.
+يتكامل RAILWISE (甬算) مع سير عمل GitLab لديك.
+اذكر `@railwise` في تعليق، وسينفّذ RAILWISE (甬算) المهام ضمن خط أنابيب GitLab CI لديك.
 
 ---
 
 ### الميزات
 
-- **فرز المشكلات**: اطلب من YONSOON (甬算) النظر في مشكلة وشرحها لك.
-- **الإصلاح والتنفيذ**: اطلب من YONSOON (甬算) إصلاح مشكلة أو تنفيذ ميزة.
+- **فرز المشكلات**: اطلب من RAILWISE (甬算) النظر في مشكلة وشرحها لك.
+- **الإصلاح والتنفيذ**: اطلب من RAILWISE (甬算) إصلاح مشكلة أو تنفيذ ميزة.
   سيُنشئ فرعًا جديدًا ويرفع طلب دمج بالتغييرات.
-- **آمن**: يعمل YONSOON (甬算) على مشغّلات GitLab لديك.
+- **آمن**: يعمل RAILWISE (甬算) على مشغّلات GitLab لديك.
 
 ---
 
 ### الإعداد
 
-يعمل YONSOON (甬算) ضمن خط أنابيب GitLab CI/CD لديك، وإليك ما ستحتاجه لإعداده:
+يعمل RAILWISE (甬算) ضمن خط أنابيب GitLab CI/CD لديك، وإليك ما ستحتاجه لإعداده:
 
 :::tip
 اطّلع على [**وثائق GitLab**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) للحصول على تعليمات محدّثة.
@@ -82,19 +82,19 @@ description: استخدم YONSOON (甬算) في مشكلات GitLab وطلبات
     ```yaml
     image: node:22-slim
     commands:
-      - echo "Installing yonsoon"
-      - npm install --global yonsoon-ai
+      - echo "Installing railwise"
+      - npm install --global railwise-ai
       - echo "Installing glab"
-      - export GITLAB_TOKEN=$GITLAB_TOKEN_YONSOON
+      - export GITLAB_TOKEN=$GITLAB_TOKEN_RAILWISE
       - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
       - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating YONSOON (甬算) auth configuration"
-      - mkdir --parents ~/.local/share/yonsoon
+      - echo "Creating RAILWISE (甬算) auth configuration"
+      - mkdir --parents ~/.local/share/railwise
       - |
-        cat > ~/.local/share/yonsoon/auth.json << EOF
+        cat > ~/.local/share/railwise/auth.json << EOF
         {
           "anthropic": {
             "type": "api",
@@ -103,13 +103,13 @@ description: استخدم YONSOON (甬算) في مشكلات GitLab وطلبات
         }
         EOF
       - echo "Configuring git"
-      - git config --global user.email "yonsoon@gitlab.com"
-      - git config --global user.name "YONSOON (甬算)"
+      - git config --global user.email "railwise@gitlab.com"
+      - git config --global user.name "RAILWISE (甬算)"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running YONSOON (甬算)"
+      - echo "Running RAILWISE (甬算)"
       - |
-        yonsoon run "
+        railwise run "
         You are an AI assistant helping with GitLab operations.
 
         Context: $AI_FLOW_CONTEXT
@@ -146,7 +146,7 @@ description: استخدم YONSOON (甬算) في مشكلات GitLab وطلبات
         fi
     variables:
       - ANTHROPIC_API_KEY
-      - GITLAB_TOKEN_YONSOON
+      - GITLAB_TOKEN_RAILWISE
       - GITLAB_HOST
     ```
 
@@ -158,10 +158,10 @@ description: استخدم YONSOON (甬算) في مشكلات GitLab وطلبات
 
 ### أمثلة
 
-فيما يلي بعض الأمثلة على كيفية استخدام YONSOON (甬算) في GitLab.
+فيما يلي بعض الأمثلة على كيفية استخدام RAILWISE (甬算) في GitLab.
 
 :::tip
-يمكنك ضبطه لاستخدام عبارة تشغيل مختلفة عن `@yonsoon`.
+يمكنك ضبطه لاستخدام عبارة تشغيل مختلفة عن `@railwise`.
 :::
 
 - **شرح مشكلة**
@@ -169,27 +169,27 @@ description: استخدم YONSOON (甬算) في مشكلات GitLab وطلبات
   أضف هذا التعليق في مشكلة على GitLab.
 
   ```
-  @yonsoon explain this issue
+  @railwise explain this issue
   ```
 
-  سيقرأ YONSOON (甬算) المشكلة ويرد بشرح واضح.
+  سيقرأ RAILWISE (甬算) المشكلة ويرد بشرح واضح.
 
 - **إصلاح مشكلة**
 
   في مشكلة على GitLab، قل:
 
   ```
-  @yonsoon fix this
+  @railwise fix this
   ```
 
-  سيُنشئ YONSOON (甬算) فرعًا جديدًا، وينفّذ التغييرات، ويفتح طلب دمج بالتغييرات.
+  سيُنشئ RAILWISE (甬算) فرعًا جديدًا، وينفّذ التغييرات، ويفتح طلب دمج بالتغييرات.
 
 - **مراجعة طلبات الدمج**
 
   اترك التعليق التالي على طلب دمج في GitLab.
 
   ```
-  @yonsoon review this merge request
+  @railwise review this merge request
   ```
 
-  سيُراجع YONSOON (甬算) طلب الدمج ويقدّم ملاحظات.
+  سيُراجع RAILWISE (甬算) طلب الدمج ويقدّم ملاحظات.

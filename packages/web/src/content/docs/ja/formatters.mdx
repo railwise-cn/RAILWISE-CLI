@@ -1,15 +1,15 @@
 ---
 title: フォーマッタ
-description: YONSOON (甬算) は言語固有のフォーマッタを使用します。
+description: RAILWISE (甬算) は言語固有のフォーマッタを使用します。
 ---
 
-YONSOON (甬算) は、言語固有のフォーマッタを使用してファイルを作成または編集した後、ファイルを自動的にフォーマットします。これにより、生成されるコードがプロジェクトのコードスタイルに従っていることが保証されます。
+RAILWISE (甬算) は、言語固有のフォーマッタを使用してファイルを作成または編集した後、ファイルを自動的にフォーマットします。これにより、生成されるコードがプロジェクトのコードスタイルに従っていることが保証されます。
 
 ---
 
 ## 組み込み
 
-YONSOON (甬算) には、一般的な言語およびフレームワーク用のいくつかの組み込みフォーマッタが付属しています。以下は、フォーマッタ、サポートされているファイル拡張子、および必要なコマンドまたは構成オプションのリストです。
+RAILWISE (甬算) には、一般的な言語およびフレームワーク用のいくつかの組み込みフォーマッタが付属しています。以下は、フォーマッタ、サポートされているファイル拡張子、および必要なコマンドまたは構成オプションのリストです。
 
 | Formatter            | Extensions                                                                                               | Requirements                                                                                          |
 | -------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -39,13 +39,13 @@ YONSOON (甬算) には、一般的な言語およびフレームワーク用の
 | oxfmt (Experimental) | .js, .jsx, .ts, .tsx                                                                                     | `oxfmt` dependency in `package.json` and an [experimental env variable flag](/docs/cli/#experimental) |
 | ormolu               | .hs                                                                                                      | `ormolu` command available                                                                            |
 
-したがって、プロジェクトの `prettier` に `package.json` が含まれている場合、YONSOON (甬算) は自動的にそれを使用します。
+したがって、プロジェクトの `prettier` に `package.json` が含まれている場合、RAILWISE (甬算) は自動的にそれを使用します。
 
 ---
 
 ## 仕組み
 
-YONSOON (甬算) がファイルを書き込んだり編集したりすると、次のことが行われます。
+RAILWISE (甬算) がファイルを書き込んだり編集したりすると、次のことが行われます。
 
 1. 有効なすべてのフォーマッタに対してファイル拡張子をチェックします。
 2. ファイルに対して適切なフォーマッタコマンドを実行します。
@@ -57,11 +57,11 @@ YONSOON (甬算) がファイルを書き込んだり編集したりすると、
 
 ## 設定
 
-YONSOON (甬算) 設定の `formatter` セクションを通じてフォーマッタをカスタマイズできます。
+RAILWISE (甬算) 設定の `formatter` セクションを通じてフォーマッタをカスタマイズできます。
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {}
 }
 ```
@@ -83,18 +83,18 @@ YONSOON (甬算) 設定の `formatter` セクションを通じてフォーマ�
 
 **すべて**のフォーマッタをグローバルに無効にするには、`formatter` を `false` に設定します。
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": false
 }
 ```
 
 **特定**のフォーマッタを無効にするには、`disabled` を `true` に設定します。
 
-```json title="yonsoon.json" {5}
+```json title="railwise.json" {5}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -109,9 +109,9 @@ YONSOON (甬算) 設定の `formatter` セクションを通じてフォーマ�
 
 コマンド、環境変数、ファイル拡張子を指定することで、組み込みフォーマッタをオーバーライドしたり、新しいフォーマッタを追加したりできます。
 
-```json title="yonsoon.json" {4-14}
+```json title="railwise.json" {4-14}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "formatter": {
     "prettier": {
       "command": ["npx", "prettier", "--write", "$FILE"],

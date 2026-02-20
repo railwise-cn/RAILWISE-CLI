@@ -1,4 +1,4 @@
-import { createSimpleContext } from "@yonsoon/ui/context"
+import { createSimpleContext } from "@railwise/ui/context"
 import { type Accessor, batch, createEffect, createMemo, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
 import { usePlatform } from "@/context/platform"

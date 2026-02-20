@@ -20,15 +20,15 @@ jobs:
 
       - uses: ./.github/actions/setup-bun
 
-      - name: Install yonsoon
-        run: curl -fsSL https://yonsoon.ai/install | bash
+      - name: Install railwise
+        run: curl -fsSL https://railwise.ai/install | bash
 
       - name: Generate daily PR recap
         id: recap
         env:
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          YONSOON_PERMISSION: |
+          RAILWISE_PERMISSION: |
             {
               "bash": {
                 "*": "deny",
@@ -42,7 +42,7 @@ jobs:
         run: |
           TODAY=$(date -u +%Y-%m-%d)
 
-          yonsoon run -m yonsoon/claude-sonnet-4-5 "Generate a daily PR activity recap for the YONSOON (甬算) repository.
+          railwise run -m railwise/claude-sonnet-4-5 "Generate a daily PR activity recap for the RAILWISE (甬算) repository.
 
           TODAY'S DATE: ${TODAY}
 

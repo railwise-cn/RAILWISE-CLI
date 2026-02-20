@@ -53,16 +53,16 @@ impl MainWindow {
             app,
             decorations,
         )
-        .title("YONSOON (甬算)")
+        .title("RAILWISE (甬算)")
         .disable_drag_drop_handler()
         .zoom_hotkeys_enabled(false)
         .visible(true)
         .maximized(true)
         .initialization_script(format!(
             r#"
-            window.__YONSOON__ ??= {{}};
-            window.__YONSOON__.updaterEnabled = {UPDATER_ENABLED};
-            window.__YONSOON__.wsl = {wsl_enabled};
+            window.__RAILWISE__ ??= {{}};
+            window.__RAILWISE__.updaterEnabled = {UPDATER_ENABLED};
+            window.__RAILWISE__.wsl = {wsl_enabled};
           "#
         ));
 

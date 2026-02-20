@@ -3,7 +3,7 @@ title: Fehlerbehebung
 description: Haeufige Probleme und schnelle Loesungen.
 ---
 
-Wenn YONSOON (甬算) Probleme macht, starte mit Logs und lokal gespeicherten Daten auf der Festplatte.
+Wenn RAILWISE (甬算) Probleme macht, starte mit Logs und lokal gespeicherten Daten auf der Festplatte.
 
 ---
 
@@ -11,21 +11,21 @@ Wenn YONSOON (甬算) Probleme macht, starte mit Logs und lokal gespeicherten Da
 
 Logdateien werden hier gespeichert:
 
-- **macOS/Linux**: `~/.local/share/yonsoon/log/`
-- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.local\share\yonsoon\log`
+- **macOS/Linux**: `~/.local/share/railwise/log/`
+- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.local\share\railwise\log`
 
 Dateinamen enthalten Zeitstempel (z. B. `2025-01-09T123456.log`) und es bleiben die letzten 10 Logs erhalten.
 
-Mit `--log-level` bekommst du detailliertere Diagnoseinfos, z. B. `yonsoon --log-level DEBUG`.
+Mit `--log-level` bekommst du detailliertere Diagnoseinfos, z. B. `railwise --log-level DEBUG`.
 
 ---
 
 ## Speicher
 
-yonsoon speichert Sitzungs- und App-Daten auf der Festplatte unter:
+railwise speichert Sitzungs- und App-Daten auf der Festplatte unter:
 
-- **macOS/Linux**: `~/.local/share/yonsoon/`
-- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.local\share\yonsoon`
+- **macOS/Linux**: `~/.local/share/railwise/`
+- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.local\share\railwise`
 
 Dieses Verzeichnis enthaelt:
 
@@ -39,14 +39,14 @@ Dieses Verzeichnis enthaelt:
 
 ## Desktop-App
 
-YONSOON (甬算) Desktop startet im Hintergrund einen lokalen YONSOON (甬算)-Server (`yonsoon-cli`-Sidecar).
+RAILWISE (甬算) Desktop startet im Hintergrund einen lokalen RAILWISE (甬算)-Server (`railwise-cli`-Sidecar).
 Viele Probleme kommen von fehlerhaften Plugins, kaputtem Cache oder falschen Server-Einstellungen.
 
 ### Schnellchecks
 
 - App komplett beenden und neu starten
 - Bei Fehlerbildschirm **Restart** klicken und Details kopieren
-- Nur macOS: `YONSOON (甬算)`-Menue -> **Reload Webview** (hilft bei leerer/eingefrorener UI)
+- Nur macOS: `RAILWISE (甬算)`-Menue -> **Reload Webview** (hilft bei leerer/eingefrorener UI)
 
 ---
 
@@ -58,28 +58,28 @@ If the desktop app is crashing on launch, hanging, or behaving strangely, start 
 
 Open your global config file and look for a `plugin` key.
 
-- **macOS/Linux**: `~/.config/yonsoon/yonsoon.jsonc` (or `~/.config/yonsoon/yonsoon.json`)
-- **macOS/Linux** (older installs): `~/.local/share/yonsoon/yonsoon.jsonc`
-- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.config\yonsoon\yonsoon.jsonc`
+- **macOS/Linux**: `~/.config/railwise/railwise.jsonc` (or `~/.config/railwise/railwise.json`)
+- **macOS/Linux** (older installs): `~/.local/share/railwise/railwise.jsonc`
+- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.config\railwise\railwise.jsonc`
 
 If you have plugins configured, temporarily disable them by removing the key or setting it to an empty array:
 
 ```jsonc
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "plugin": [],
 }
 ```
 
 #### Plugin-Verzeichnisse prüfen
 
-YONSOON (甬算) can also load local plugins from disk. Temporarily move these out of the way (or rename the folder) and restart the desktop app:
+RAILWISE (甬算) can also load local plugins from disk. Temporarily move these out of the way (or rename the folder) and restart the desktop app:
 
 - **Global plugins**
-  - **macOS/Linux**: `~/.config/yonsoon/plugins/`
-  - **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.config\yonsoon\plugins`
+  - **macOS/Linux**: `~/.config/railwise/plugins/`
+  - **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.config\railwise\plugins`
 - **Project plugins** (only if you use per-project config)
-  - `<your-project>/.yonsoon/plugins/`
+  - `<your-project>/.railwise/plugins/`
 
 If the app starts working again, re-enable plugins one at a time to find which one is causing the issue.
 
@@ -87,22 +87,22 @@ If the app starts working again, re-enable plugins one at a time to find which o
 
 ### Cache leeren
 
-If disabling plugins doesn't help (or a plugin install is stuck), clear the cache so YONSOON (甬算) can rebuild it.
+If disabling plugins doesn't help (or a plugin install is stuck), clear the cache so RAILWISE (甬算) can rebuild it.
 
-1. Quit YONSOON (甬算) Desktop completely.
+1. Quit RAILWISE (甬算) Desktop completely.
 2. Delete the cache directory:
 
-- **macOS**: Finder -> `Cmd+Shift+G` -> paste `~/.cache/yonsoon`
-- **Linux**: delete `~/.cache/yonsoon` (or run `rm -rf ~/.cache/yonsoon`)
-- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.cache\yonsoon`
+- **macOS**: Finder -> `Cmd+Shift+G` -> paste `~/.cache/railwise`
+- **Linux**: delete `~/.cache/railwise` (or run `rm -rf ~/.cache/railwise`)
+- **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.cache\railwise`
 
-3. Restart YONSOON (甬算) Desktop.
+3. Restart RAILWISE (甬算) Desktop.
 
 ---
 
 ### Server-Verbindungsprobleme beheben
 
-YONSOON (甬算) Desktop can either start its own local server (default) or connect to a server URL you configured.
+RAILWISE (甬算) Desktop can either start its own local server (default) or connect to a server URL you configured.
 
 If you see a **"Connection Failed"** dialog (or the app never gets past the splash screen), check for a custom server URL.
 
@@ -112,13 +112,13 @@ From the Home screen, click the server name (with the status dot) to open the Se
 
 #### `server.port` / `server.hostname` aus Konfiguration entfernen
 
-If your `yonsoon.json(c)` contains a `server` section, temporarily remove it and restart the desktop app.
+If your `railwise.json(c)` contains a `server` section, temporarily remove it and restart the desktop app.
 
 #### Umgebungsvariablen prüfen
 
-If you have `YONSOON_PORT` set in your environment, the desktop app will try to use that port for the local server.
+If you have `RAILWISE_PORT` set in your environment, the desktop app will try to use that port for the local server.
 
-- Unset `YONSOON_PORT` (or pick a free port) and restart.
+- Unset `RAILWISE_PORT` (or pick a free port) and restart.
 
 ---
 
@@ -133,21 +133,21 @@ On Linux, some Wayland setups can cause blank windows or compositor errors.
 
 ### Windows: WebView2-Laufzeit
 
-On Windows, YONSOON (甬算) Desktop requires the Microsoft Edge **WebView2 Runtime**. If the app opens to a blank window or won't start, install/update WebView2 and try again.
+On Windows, RAILWISE (甬算) Desktop requires the Microsoft Edge **WebView2 Runtime**. If the app opens to a blank window or won't start, install/update WebView2 and try again.
 
 ---
 
 ### Windows: Allgemeine Performance-Probleme
 
-If you're experiencing slow performance, file access issues, or terminal problems on Windows, try using [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL provides a Linux environment that works more seamlessly with YONSOON (甬算)'s features.
+If you're experiencing slow performance, file access issues, or terminal problems on Windows, try using [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL provides a Linux environment that works more seamlessly with RAILWISE (甬算)'s features.
 
 ---
 
 ### Benachrichtigungen werden nicht angezeigt
 
-YONSOON (甬算) Desktop only shows system notifications when:
+RAILWISE (甬算) Desktop only shows system notifications when:
 
-- notifications are enabled for YONSOON (甬算) in your OS settings, and
+- notifications are enabled for RAILWISE (甬算) in your OS settings, and
 - the app window is not focused.
 
 ---
@@ -156,11 +156,11 @@ YONSOON (甬算) Desktop only shows system notifications when:
 
 If the app won't start and you can't clear settings from inside the UI, reset the desktop app's saved state.
 
-1. Quit YONSOON (甬算) Desktop.
-2. Find and delete these files (they live in the YONSOON (甬算) Desktop app data directory):
+1. Quit RAILWISE (甬算) Desktop.
+2. Find and delete these files (they live in the RAILWISE (甬算) Desktop app data directory):
 
-- `yonsoon.settings.dat` (desktop default server URL)
-- `yonsoon.global.dat` and `yonsoon.workspace.*.dat` (UI state like recent servers/projects)
+- `railwise.settings.dat` (desktop default server URL)
+- `railwise.global.dat` and `railwise.workspace.*.dat` (UI state like recent servers/projects)
 
 To find the directory quickly:
 
@@ -172,13 +172,13 @@ To find the directory quickly:
 
 ## Hilfe bekommen
 
-Wenn du Probleme mit YONSOON (甬算) hast:
+Wenn du Probleme mit RAILWISE (甬算) hast:
 
 1. **Probleme auf GitHub melden**
 
    Bugs und Feature-Wuensche meldest du am besten im GitHub-Repository:
 
-   [**github.com/anomalyco/yonsoon/issues**](https://github.com/anomalyco/yonsoon/issues)
+   [**github.com/anomalyco/railwise/issues**](https://github.com/anomalyco/railwise/issues)
 
    Suche vor dem Erstellen nach bestehenden Issues, damit Duplikate vermieden werden.
 
@@ -186,7 +186,7 @@ Wenn du Probleme mit YONSOON (甬算) hast:
 
    Fuer schnelle Hilfe und Austausch in der Community:
 
-   [**yonsoon.ai/discord**](https://yonsoon.ai/discord)
+   [**railwise.ai/discord**](https://railwise.ai/discord)
 
 ---
 
@@ -196,11 +196,11 @@ Hier sind typische Fehlerbilder und wie du sie loest.
 
 ---
 
-### YONSOON (甬算) startet nicht
+### RAILWISE (甬算) startet nicht
 
 1. Check the logs for error messages
 2. Try running with `--print-logs` to see output in the terminal
-3. Ensure you have the latest version with `yonsoon upgrade`
+3. Ensure you have the latest version with `railwise upgrade`
 
 ---
 
@@ -226,9 +226,9 @@ Examples:
 
 - `openai/gpt-4.1`
 - `openrouter/google/gemini-2.5-flash`
-- `yonsoon/kimi-k2`
+- `railwise/kimi-k2`
 
-To figure out what models you have access to, run `yonsoon models`
+To figure out what models you have access to, run `railwise models`
 
 ---
 
@@ -242,10 +242,10 @@ To resolve this:
 2. If the issue persists, try clearing your stored configuration:
 
    ```bash
-   rm -rf ~/.local/share/yonsoon
+   rm -rf ~/.local/share/railwise
    ```
 
-   On Windows, press `WIN+R` and delete: `%USERPROFILE%\.local\share\yonsoon`
+   On Windows, press `WIN+R` and delete: `%USERPROFILE%\.local\share\railwise`
 
 3. Re-authenticate with your provider using the `/connect` command in the TUI.
 
@@ -253,21 +253,21 @@ To resolve this:
 
 ### AI_APICallError und Provider-Paket-Probleme
 
-If you encounter API call errors, this may be due to outdated provider packages. yonsoon dynamically installs provider packages (OpenAI, Anthropic, Google, etc.) as needed and caches them locally.
+If you encounter API call errors, this may be due to outdated provider packages. railwise dynamically installs provider packages (OpenAI, Anthropic, Google, etc.) as needed and caches them locally.
 
 To resolve provider package issues:
 
 1. Clear the provider package cache:
 
    ```bash
-   rm -rf ~/.cache/yonsoon
+   rm -rf ~/.cache/railwise
    ```
 
-   On Windows, press `WIN+R` and delete: `%USERPROFILE%\.cache\yonsoon`
+   On Windows, press `WIN+R` and delete: `%USERPROFILE%\.cache\railwise`
 
-2. Restart yonsoon to reinstall the latest provider packages
+2. Restart railwise to reinstall the latest provider packages
 
-This will force yonsoon to download the most recent versions of provider packages, which often resolves compatibility issues with model parameters and API changes.
+This will force railwise to download the most recent versions of provider packages, which often resolves compatibility issues with model parameters and API changes.
 
 ---
 
@@ -298,4 +298,4 @@ Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 export DISPLAY=:99.0
 ```
 
-yonsoon will detect if you're using Wayland and prefer `wl-clipboard`, otherwise it will try to find clipboard tools in order of: `xclip` and `xsel`.
+railwise will detect if you're using Wayland and prefer `wl-clipboard`, otherwise it will try to find clipboard tools in order of: `xclip` and `xsel`.

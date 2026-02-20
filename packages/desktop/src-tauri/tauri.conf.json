@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "YONSOON (甬算) Dev",
-  "identifier": "ai.yonsoon.desktop.dev",
-  "mainBinaryName": "YONSOON (甬算)",
+  "productName": "RAILWISE (甬算) Dev",
+  "identifier": "ai.railwise.desktop.dev",
+  "mainBinaryName": "RAILWISE (甬算)",
   "version": "../package.json",
   "build": {
     "beforeDevCommand": "bun run dev",
@@ -33,7 +33,7 @@
     ],
     "active": true,
     "targets": ["deb", "rpm", "dmg", "nsis", "app"],
-    "externalBin": ["sidecars/yonsoon-cli"],
+    "externalBin": ["sidecars/railwise-cli"],
     "linux": {
       "rpm": {
         "compression": {
@@ -55,7 +55,7 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["yonsoon"]
+        "schemes": ["railwise"]
       }
     }
   }

@@ -3,9 +3,9 @@ title: Themes
 description: Wybierz wbudowany motyw lub zdefiniuj własny.
 ---
 
-Dzięki yonsoon możesz wybrać jeden z kilku wbudowanych motywów, użyć motywu, który dostosowuje się do motywu terminala lub zdefiniować własny, niestandardowy motyw.
+Dzięki railwise możesz wybrać jeden z kilku wbudowanych motywów, użyć motywu, który dostosowuje się do motywu terminala lub zdefiniować własny, niestandardowy motyw.
 
-Domyślnie yonsoon używa naszego własnego motywu `yonsoon`.
+Domyślnie railwise używa naszego własnego motywu `railwise`.
 
 ---
 
@@ -23,7 +23,7 @@ Bez obsługi Truecolor motywy mogą pojawiać się ze zmniejszoną dokładności
 
 ## Wbudowane motywy
 
-yonsoon ma kilka wbudowanych motywów.
+railwise ma kilka wbudowanych motywów.
 
 | Name                   | Description                                                                       |
 | ---------------------- | --------------------------------------------------------------------------------- |
@@ -53,7 +53,7 @@ Motyw `system` został zaprojektowany tak, aby automatycznie dostosowywał się 
 
 Motyw systemu przeznaczony jest dla użytkowników, którzy:
 
-- Want yonsoon to match their terminal's appearance
+- Want railwise to match their terminal's appearance
 - Użyj niestandardowych schematów kolorów terminali
 - Prefer a consistent look across all terminal applications
 
@@ -63,9 +63,9 @@ Motyw systemu przeznaczony jest dla użytkowników, którzy:
 
 Możesz wybrać motyw, wywołując opcję wyboru motywu za pomocą polecenia `/theme`. Możesz też określić to w [config](/docs/config).
 
-```json title="yonsoon.json" {3}
+```json title="railwise.json" {3}
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "theme": "tokyonight"
 }
 ```
@@ -74,7 +74,7 @@ Możesz wybrać motyw, wywołując opcję wyboru motywu za pomocą polecenia `/t
 
 ## Motywy niestandardowe
 
-yonsoon obsługuje elastyczny system motywów oparty na JSON, który pozwala użytkownikom łatwo tworzyć i dostosowywać motywy.
+railwise obsługuje elastyczny system motywów oparty na JSON, który pozwala użytkownikom łatwo tworzyć i dostosowywać motywy.
 
 ---
 
@@ -83,9 +83,9 @@ yonsoon obsługuje elastyczny system motywów oparty na JSON, który pozwala uż
 Motywy są ładowane z wielu katalogów w następującej kolejności, przy czym późniejsze katalogi zastępują wcześniejsze:
 
 1. **Wbudowane motywy** – są osadzone w formacie binarnym
-2. **Katalog konfiguracji użytkownika** - Zdefiniowany w `~/.config/yonsoon/themes/*.json` lub `$XDG_CONFIG_HOME/yonsoon/themes/*.json`
-3. **Katalog główny projektu** - Zdefiniowany w `<project-root>/.yonsoon/themes/*.json`
-4. **Bieżący katalog roboczy** - Zdefiniowany w `./.yonsoon/themes/*.json`
+2. **Katalog konfiguracji użytkownika** - Zdefiniowany w `~/.config/railwise/themes/*.json` lub `$XDG_CONFIG_HOME/railwise/themes/*.json`
+3. **Katalog główny projektu** - Zdefiniowany w `<project-root>/.railwise/themes/*.json`
+4. **Bieżący katalog roboczy** - Zdefiniowany w `./.railwise/themes/*.json`
 
 Jeśli wiele katalogów zawiera motyw o tej samej nazwie, zostanie użyty motyw z katalogu o wyższym priorytecie.
 
@@ -98,15 +98,15 @@ Aby utworzyć niestandardowy motyw, utwórz plik JSON w jednym z katalogów moty
 W przypadku motywów dla całego użytkownika:
 
 ```bash no-frame
-mkdir -p ~/.config/yonsoon/themes
-vim ~/.config/yonsoon/themes/my-theme.json
+mkdir -p ~/.config/railwise/themes
+vim ~/.config/railwise/themes/my-theme.json
 ```
 
 Oraz dla tematów specyficznych dla projektu.
 
 ```bash no-frame
-mkdir -p .yonsoon/themes
-vim .yonsoon/themes/my-theme.json
+mkdir -p .railwise/themes
+vim .railwise/themes/my-theme.json
 ```
 
 ---
@@ -144,7 +144,7 @@ Oto przykład niestandardowego motywu:
 
 ```json title="my-theme.json"
 {
-  "$schema": "https://yonsoon.ai/theme.json",
+  "$schema": "https://railwise.ai/theme.json",
   "defs": {
     "nord0": "#2E3440",
     "nord1": "#3B4252",

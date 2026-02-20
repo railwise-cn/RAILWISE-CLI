@@ -1,15 +1,15 @@
 ---
 title: はじめに
-description: YONSOON (甬算) を始めましょう。
+description: RAILWISE (甬算) を始めましょう。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**YONSOON (甬算)**](/) は、オープンソースの AI コーディングエージェントです。これは、ターミナルベースのインターフェイス、デスクトップアプリ、または IDE 拡張機能として利用できます。
+[**RAILWISE (甬算)**](/) は、オープンソースの AI コーディングエージェントです。これは、ターミナルベースのインターフェイス、デスクトップアプリ、または IDE 拡張機能として利用できます。
 
-![yonsoonテーマ](../../../assets/lander/screenshot.png)を使用したYONSOON (甬算) TUI
+![railwiseテーマ](../../../assets/lander/screenshot.png)を使用したRAILWISE (甬算) TUI
 
 始めましょう。
 
@@ -17,7 +17,7 @@ export const console = config.console
 
 #### 前提条件
 
-ターミナルで YONSOON (甬算) を使用するには、次のものが必要です。
+ターミナルで RAILWISE (甬算) を使用するには、次のものが必要です。
 
 1. 次のような最新のターミナルエミュレータ:
    - [WezTerm](https://wezterm.org)、クロスプラットフォーム
@@ -31,10 +31,10 @@ export const console = config.console
 
 ## インストール
 
-YONSOON (甬算) をインストールする最も簡単な方法は、インストールスクリプトを使用することです。
+RAILWISE (甬算) をインストールする最も簡単な方法は、インストールスクリプトを使用することです。
 
 ```bash
-curl -fsSL https://yonsoon.ai/install | bash
+curl -fsSL https://railwise.ai/install | bash
 ```
 
 次のコマンドを使用してインストールすることもできます。
@@ -45,28 +45,28 @@ curl -fsSL https://yonsoon.ai/install | bash
 
       <TabItem label="npm">
       ```bash
-      npm install -g yonsoon-ai
+      npm install -g railwise-ai
       ```
 
           </TabItem>
 
         <TabItem label="Bun">
         ```bash
-        bun install -g yonsoon-ai
+        bun install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="pnpm">
         ```bash
-        pnpm install -g yonsoon-ai
+        pnpm install -g railwise-ai
         ```
 
           </TabItem>
 
         <TabItem label="Yarn">
         ```bash
-        yarn global add yonsoon-ai
+        yarn global add railwise-ai
         ```
 
       </TabItem>
@@ -76,68 +76,68 @@ curl -fsSL https://yonsoon.ai/install | bash
 - **macOS および Linux での Homebrew の使用**
 
   ```bash
-  brew install anomalyco/tap/yonsoon
+  brew install anomalyco/tap/railwise
   ```
 
-  > 最新のリリースには YONSOON (甬算) タップを使用することをお勧めします。公式の `brew install yonsoon` 式は Homebrew チームによって維持されており、更新頻度は低くなります。
+  > 最新のリリースには RAILWISE (甬算) タップを使用することをお勧めします。公式の `brew install railwise` 式は Homebrew チームによって維持されており、更新頻度は低くなります。
 
 - **Arch Linux での Paru の使用**
 
   ```bash
-  sudo pacman -S yonsoon           # Arch Linux (Stable)
-  paru -S yonsoon-bin              # Arch Linux (Latest from AUR)
+  sudo pacman -S railwise           # Arch Linux (Stable)
+  paru -S railwise-bin              # Arch Linux (Latest from AUR)
   ```
 
 #### Windows
 
 :::tip[推奨: WSL を使用する]
-Windows で最高のエクスペリエンスを得るには、[Windows Subsystem for Linux (WSL)](/docs/windows-wsl) を使用することをお勧めします。これにより、パフォーマンスが向上し、YONSOON (甬算) の機能との完全な互換性が提供されます。
+Windows で最高のエクスペリエンスを得るには、[Windows Subsystem for Linux (WSL)](/docs/windows-wsl) を使用することをお勧めします。これにより、パフォーマンスが向上し、RAILWISE (甬算) の機能との完全な互換性が提供されます。
 :::
 
 - **Chocolatey の使用**
 
   ```bash
-  choco install yonsoon
+  choco install railwise
   ```
 
 - **Scoop の使用**
 
   ```bash
-  scoop install yonsoon
+  scoop install railwise
   ```
 
 - **npm の使用**
 
   ```bash
-  npm install -g yonsoon-ai
+  npm install -g railwise-ai
   ```
 
 - **Mise の使用**
 
   ```bash
-  mise use -g github:anomalyco/yonsoon
+  mise use -g github:anomalyco/railwise
   ```
 
 - **Docker の使用**
 
   ```bash
-  docker run -it --rm ghcr.io/anomalyco/yonsoon
+  docker run -it --rm ghcr.io/anomalyco/railwise
   ```
 
-Bun を使用して Windows に YONSOON (甬算) をインストールするためのサポートは現在進行中です。
+Bun を使用して Windows に RAILWISE (甬算) をインストールするためのサポートは現在進行中です。
 
-[Releases](https://github.com/anomalyco/yonsoon/releases).
+[Releases](https://github.com/anomalyco/railwise/releases).
 
 ---
 
 ## 設定
 
-YONSOON (甬算) を使用すると、API キーを構成することで任意の LLM プロバイダーを使用できます。
+RAILWISE (甬算) を使用すると、API キーを構成することで任意の LLM プロバイダーを使用できます。
 
-LLM プロバイダーを初めて使用する場合は、[YONSOON (甬算) Zen](/docs/zen) をお勧めします。
-これは、YONSOON (甬算) チームによってテストおよび検証されたモデルの厳選されたリストです。
+LLM プロバイダーを初めて使用する場合は、[RAILWISE (甬算) Zen](/docs/zen) をお勧めします。
+これは、RAILWISE (甬算) チームによってテストおよび検証されたモデルの厳選されたリストです。
 
-1. TUI で `/connect` コマンドを実行し、yonsoon を選択して、[yonsoon.ai/auth](https://yonsoon.ai/auth) で認証します。
+1. TUI で `/connect` コマンドを実行し、railwise を選択して、[railwise.ai/auth](https://railwise.ai/auth) で認証します。
 
    ```txt
    /connect
@@ -166,31 +166,31 @@ LLM プロバイダーを初めて使用する場合は、[YONSOON (甬算) Zen]
 cd /path/to/project
 ```
 
-そしてYONSOON (甬算)を実行します。
+そしてRAILWISE (甬算)を実行します。
 
 ```bash
-yonsoon
+railwise
 ```
 
-次に、次のコマンドを実行して、プロジェクトの YONSOON (甬算) を初期化します。
+次に、次のコマンドを実行して、プロジェクトの RAILWISE (甬算) を初期化します。
 
 ```bash frame="none"
 /init
 ```
 
-これにより、YONSOON (甬算) がプロジェクトを分析し、プロジェクトのルートに `AGENTS.md` ファイルを作成します。
+これにより、RAILWISE (甬算) がプロジェクトを分析し、プロジェクトのルートに `AGENTS.md` ファイルを作成します。
 
 :::tip
 プロジェクトの `AGENTS.md` ファイルを Git にコミットする必要があります。
 :::
 
-これは、YONSOON (甬算) がプロジェクトの構造と使用されているコーディングパターンを理解するのに役立ちます。
+これは、RAILWISE (甬算) がプロジェクトの構造と使用されているコーディングパターンを理解するのに役立ちます。
 
 ---
 
 ## 使用法
 
-これで、YONSOON (甬算) を使用してプロジェクトに取り組む準備が整いました。何でもお気軽にお尋ねください！
+これで、RAILWISE (甬算) を使用してプロジェクトに取り組む準備が整いました。何でもお気軽にお尋ねください！
 
 AI コーディングエージェントを初めて使用する場合は、次の例を参考にしてください。
 
@@ -198,7 +198,7 @@ AI コーディングエージェントを初めて使用する場合は、次�
 
 ### 質問する
 
-YONSOON (甬算) にコードベースの説明を依頼できます。
+RAILWISE (甬算) にコードベースの説明を依頼できます。
 
 :::tip
 プロジェクト内のファイルをあいまい検索するには、`@` キーを使用します。
@@ -214,11 +214,11 @@ How is authentication handled in @packages/functions/src/api/index.ts
 
 ### 機能を追加する
 
-YONSOON (甬算) に新しい機能をプロジェクトに追加するよう依頼できます。ただし、最初は計画の作成を依頼することをお勧めします。
+RAILWISE (甬算) に新しい機能をプロジェクトに追加するよう依頼できます。ただし、最初は計画の作成を依頼することをお勧めします。
 
 1. **計画を作成する**
 
-YONSOON (甬算) には、変更を加える機能を無効にする _Plan mode_ があり、
+RAILWISE (甬算) には、変更を加える機能を無効にする _Plan mode_ があり、
 代わりに、その機能を*どのように*実装するかを提案します。
 
 **Tab** キーを使用してそれに切り替えます。右下隅にこれを示すインジケーターが表示されます。
@@ -235,11 +235,11 @@ YONSOON (甬算) には、変更を加える機能を無効にする _Plan mode_
    From this screen, the user can undelete a note or permanently delete it.
 ```
 
-自分が何を望んでいるのかを理解するために、YONSOON (甬算) に十分な詳細を提供したいと考えています。
+自分が何を望んでいるのかを理解するために、RAILWISE (甬算) に十分な詳細を提供したいと考えています。
 チームの若手開発者と話しているように話すと良いでしょう。
 
 :::tip
-YONSOON (甬算) に多くのコンテキストと例を提供して、意図する内容を理解できるようにします。
+RAILWISE (甬算) に多くのコンテキストと例を提供して、意図する内容を理解できるようにします。
 :::
 
 2. **計画を反復する**
@@ -255,7 +255,7 @@ YONSOON (甬算) に多くのコンテキストと例を提供して、意図す
 画像をターミナルにドラッグアンドドロップして、プロンプトに追加します。
 :::
 
-YONSOON (甬算) は、指定された画像をスキャンしてプロンプトに追加できます。
+RAILWISE (甬算) は、指定された画像をスキャンしてプロンプトに追加できます。
 画像をターミナルにドラッグアンドドロップしてこれを行うことができます。
 
 3. **機能を構築する**
@@ -277,7 +277,7 @@ YONSOON (甬算) は、指定された画像をスキャンしてプロンプト
 
 ### 変更を加える
 
-より単純な変更については、YONSOON (甬算) に直接ビルドするよう依頼できます。
+より単純な変更については、RAILWISE (甬算) に直接ビルドするよう依頼できます。
 最初に計画を見直す必要はありません。
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
@@ -286,13 +286,13 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-YONSOON (甬算) が適切な変更を行えるように、十分な量の詳細を確実に提供する必要があります。
+RAILWISE (甬算) が適切な変更を行えるように、十分な量の詳細を確実に提供する必要があります。
 
 ---
 
 ### 変更を元に戻す
 
-YONSOON (甬算) にいくつかの変更を依頼するとします。
+RAILWISE (甬算) にいくつかの変更を依頼するとします。
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -305,13 +305,13 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 /undo
 ```
 
-YONSOON (甬算) は加えた変更を元に戻し、元のメッセージを再度表示します。
+RAILWISE (甬算) は加えた変更を元に戻し、元のメッセージを再度表示します。
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-ここからプロンプトを調整し、YONSOON (甬算) に再試行を依頼できます。
+ここからプロンプトを調整し、RAILWISE (甬算) に再試行を依頼できます。
 
 :::tip
 `/undo` を複数回実行すると、複数の変更を元に戻すことができます。
@@ -327,7 +327,7 @@ Can you refactor the function in @packages/functions/src/api/index.ts?
 
 ## 共有
 
-YONSOON (甬算) との会話は [他のチームメンバーと共有できます](/docs/share)。
+RAILWISE (甬算) との会話は [他のチームメンバーと共有できます](/docs/share)。
 
 ```bash frame="none"
 /share
@@ -339,12 +339,12 @@ YONSOON (甬算) との会話は [他のチームメンバーと共有できま�
 会話はデフォルトでは共有されません。
 :::
 
-これは [YONSOON (甬算) を使用した会話 ](https://yonsoon.ai/s/4XP1fce5) の例です。
+これは [RAILWISE (甬算) を使用した会話 ](https://railwise.ai/s/4XP1fce5) の例です。
 
 ---
 
 ## カスタマイズ
 
-それで終わりです！これであなたは YONSOON (甬算) の使い方のプロになりました。
+それで終わりです！これであなたは RAILWISE (甬算) の使い方のプロになりました。
 
-独自のものにするには、[テーマ](/docs/themes) を選択する、[キーバインドをカスタマイズする](/docs/keybinds)、[コードフォーマッタ](/docs/formatters) を設定する、[カスタムコマンド](/docs/commands) を作成する、または [YONSOON (甬算)設定](/docs/config) を試してみることをお勧めします。
+独自のものにするには、[テーマ](/docs/themes) を選択する、[キーバインドをカスタマイズする](/docs/keybinds)、[コードフォーマッタ](/docs/formatters) を設定する、[カスタムコマンド](/docs/commands) を作成する、または [RAILWISE (甬算)設定](/docs/config) を試してみることをお勧めします。

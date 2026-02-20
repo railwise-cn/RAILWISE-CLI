@@ -50,9 +50,9 @@ jobs:
           ./script/version.ts
         env:
           GH_TOKEN: ${{ github.token }}
-          YONSOON_BUMP: ${{ inputs.bump }}
-          YONSOON_VERSION: ${{ inputs.version }}
-          YONSOON_API_KEY: ${{ secrets.YONSOON_API_KEY }}
+          RAILWISE_BUMP: ${{ inputs.bump }}
+          RAILWISE_VERSION: ${{ inputs.version }}
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
     outputs:
       version: ${{ steps.version.outputs.version }}
       release: ${{ steps.version.outputs.release }}
@@ -74,8 +74,8 @@ jobs:
         run: |
           ./packages/opencode/script/build.ts
         env:
-          YONSOON_VERSION: ${{ needs.version.outputs.version }}
-          YONSOON_RELEASE: ${{ needs.version.outputs.release }}
+          RAILWISE_VERSION: ${{ needs.version.outputs.version }}
+          RAILWISE_RELEASE: ${{ needs.version.outputs.release }}
           GH_TOKEN: ${{ github.token }}
 
       - uses: actions/upload-artifact@v4
@@ -165,7 +165,7 @@ jobs:
           cd packages/desktop
           bun ./scripts/prepare.ts
         env:
-          YONSOON_VERSION: ${{ needs.version.outputs.version }}
+          RAILWISE_VERSION: ${{ needs.version.outputs.version }}
           GITHUB_TOKEN: ${{ steps.committer.outputs.token }}
           RUST_TARGET: ${{ matrix.settings.target }}
           GH_TOKEN: ${{ github.token }}
@@ -247,8 +247,8 @@ jobs:
         id: committer
         uses: ./.github/actions/setup-git-committer
         with:
-          opencode-app-id: ${{ vars.YONSOON_APP_ID }}
-          opencode-app-secret: ${{ secrets.YONSOON_APP_SECRET }}
+          opencode-app-id: ${{ vars.RAILWISE_APP_ID }}
+          opencode-app-secret: ${{ secrets.RAILWISE_APP_SECRET }}
 
       - uses: actions/download-artifact@v4
         with:
@@ -276,8 +276,8 @@ jobs:
 
       - run: ./script/publish.ts
         env:
-          YONSOON_VERSION: ${{ needs.version.outputs.version }}
-          YONSOON_RELEASE: ${{ needs.version.outputs.release }}
+          RAILWISE_VERSION: ${{ needs.version.outputs.version }}
+          RAILWISE_RELEASE: ${{ needs.version.outputs.release }}
           AUR_KEY: ${{ secrets.AUR_KEY }}
           GITHUB_TOKEN: ${{ steps.committer.outputs.token }}
           NPM_CONFIG_PROVENANCE: false

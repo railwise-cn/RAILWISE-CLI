@@ -1,13 +1,13 @@
 import "@/index.css"
-import { Code } from "@yonsoon/ui/code"
-import { I18nProvider } from "@yonsoon/ui/context"
-import { CodeComponentProvider } from "@yonsoon/ui/context/code"
-import { DialogProvider } from "@yonsoon/ui/context/dialog"
-import { DiffComponentProvider } from "@yonsoon/ui/context/diff"
-import { MarkedProvider } from "@yonsoon/ui/context/marked"
-import { Diff } from "@yonsoon/ui/diff"
-import { Font } from "@yonsoon/ui/font"
-import { ThemeProvider } from "@yonsoon/ui/theme"
+import { Code } from "@railwise/ui/code"
+import { I18nProvider } from "@railwise/ui/context"
+import { CodeComponentProvider } from "@railwise/ui/context/code"
+import { DialogProvider } from "@railwise/ui/context/dialog"
+import { DiffComponentProvider } from "@railwise/ui/context/diff"
+import { MarkedProvider } from "@railwise/ui/context/marked"
+import { Diff } from "@railwise/ui/diff"
+import { Font } from "@railwise/ui/font"
+import { ThemeProvider } from "@railwise/ui/theme"
 import { MetaProvider } from "@solidjs/meta"
 import { Navigate, Route, Router } from "@solidjs/router"
 import { ErrorBoundary, type JSX, lazy, type ParentProps, Show, Suspense } from "solid-js"
@@ -58,7 +58,7 @@ function UiI18nBridge(props: ParentProps) {
 
 declare global {
   interface Window {
-    __YONSOON__?: {
+    __RAILWISE__?: {
       updaterEnabled?: boolean
       deepLinks?: string[]
       wsl?: boolean

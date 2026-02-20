@@ -1,5 +1,5 @@
-import type { Event } from "@yonsoon/sdk/v2/client"
-import { createSimpleContext } from "@yonsoon/ui/context"
+import type { Event } from "@railwise/sdk/v2/client"
+import { createSimpleContext } from "@railwise/ui/context"
 import { createGlobalEmitter } from "@solid-primitives/event-bus"
 import { batch, onCleanup } from "solid-js"
 import z from "zod"

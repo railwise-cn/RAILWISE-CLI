@@ -1,22 +1,22 @@
 ---
 title: TUI
-description: การใช้อินเทอร์เฟซผู้ใช้ terminal YONSOON (甬算)
+description: การใช้อินเทอร์เฟซผู้ใช้ terminal RAILWISE (甬算)
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-YONSOON (甬算) มีอินเทอร์เฟซ terminal แบบโต้ตอบหรือ TUI สำหรับการทำงานในโครงการของคุณด้วย LLM
+RAILWISE (甬算) มีอินเทอร์เฟซ terminal แบบโต้ตอบหรือ TUI สำหรับการทำงานในโครงการของคุณด้วย LLM
 
-การรัน YONSOON (甬算) จะเริ่มต้น TUI สำหรับไดเร็กทอรีปัจจุบัน
+การรัน RAILWISE (甬算) จะเริ่มต้น TUI สำหรับไดเร็กทอรีปัจจุบัน
 
 ```bash
-yonsoon
+railwise
 ```
 
 หรือคุณสามารถเริ่มต้นสำหรับไดเร็กทอรีการทำงานเฉพาะได้
 
 ```bash
-yonsoon /path/to/project
+railwise /path/to/project
 ```
 
 เมื่อคุณอยู่ใน TUI แล้ว คุณสามารถแจ้งด้วยข้อความได้
@@ -57,7 +57,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## คำสั่ง
 
-เมื่อใช้ YONSOON (甬算) TUI คุณสามารถพิมพ์ `/` ตามด้วยชื่อคำสั่งเพื่อดำเนินการอย่างรวดเร็ว ตัวอย่างเช่น:
+เมื่อใช้ RAILWISE (甬算) TUI คุณสามารถพิมพ์ `/` ตามด้วยชื่อคำสั่งเพื่อดำเนินการอย่างรวดเร็ว ตัวอย่างเช่น:
 
 ```bash frame="none"
 /help
@@ -71,7 +71,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### connect
 
-เพิ่มผู้ให้บริการให้กับ YONSOON (甬算) ให้คุณเลือกจากผู้ให้บริการที่มีอยู่และเพิ่มคีย์ API
+เพิ่มผู้ให้บริการให้กับ RAILWISE (甬算) ให้คุณเลือกจากผู้ให้บริการที่มีอยู่และเพิ่มคีย์ API
 
 ```bash frame="none"
 /connect
@@ -117,7 +117,7 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ### exit
 
-ออกจาก YONSOON (甬算) _นามแฝง_: `/quit`, `/q`
+ออกจาก RAILWISE (甬算) _นามแฝง_: `/quit`, `/q`
 
 ```bash frame="none"
 /exit
@@ -355,11 +355,11 @@ How is auth handled in @packages/functions/src/api/index.ts?
 
 ## กำหนดค่า
 
-คุณสามารถปรับแต่งพฤติกรรม TUI ผ่านไฟล์กำหนดค่า YONSOON (甬算) ของคุณได้
+คุณสามารถปรับแต่งพฤติกรรม TUI ผ่านไฟล์กำหนดค่า RAILWISE (甬算) ของคุณได้
 
-```json title="yonsoon.json"
+```json title="railwise.json"
 {
-  "$schema": "https://yonsoon.ai/config.json",
+  "$schema": "https://railwise.ai/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {

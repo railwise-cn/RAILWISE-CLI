@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { Resource } from "@yonsoon/console-resource"
+import { Resource } from "@railwise/console-resource"
 import { AwsClient } from "aws4fetch"
 import { fn } from "./util/fn"
 
@@ -32,7 +32,7 @@ export namespace AWS {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          FromEmailAddress: `YONSOON (甬算) Zen <contact@anoma.ly>`,
+          FromEmailAddress: `RAILWISE (甬算) Zen <contact@anoma.ly>`,
           Destination: {
             ToAddresses: [input.to],
           },

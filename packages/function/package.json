@@ -1,5 +1,5 @@
 {
-  "name": "@yonsoon/function",
+  "name": "@railwise/function",
   "version": "1.2.8",
   "$schema": "https://json.schemastore.org/package.json",
   "private": true,

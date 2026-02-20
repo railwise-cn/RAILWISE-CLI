@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { $ } from "bun"
-import { Script } from "@yonsoon/script"
+import { Script } from "@railwise/script"
 
 const highlightsTemplate = `
 <!--
@@ -67,7 +67,7 @@ if (Script.release) {
 }
 
 console.log("\n=== cli ===\n")
-await import(`../packages/yonsoon/script/publish.ts`)
+await import(`../packages/railwise/script/publish.ts`)
 
 console.log("\n=== sdk ===\n")
 await import(`../packages/sdk/js/script/publish.ts`)

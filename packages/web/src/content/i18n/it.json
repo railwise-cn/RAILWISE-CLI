@@ -53,7 +53,7 @@
   "share.error_id_not_found": "ID non trovato",
   "share.error_api_url_not_found": "URL API non trovato",
   "share.error_connection_failed": "Connessione non riuscita",
-  "share.railwise_version": "Versione RAILWISE (甬算)",
+  "share.railwise_version": "Versione RAILWISE",
   "share.railwise_name": "railwise",
   "share.models": "Modelli",
   "share.cost": "Costo",

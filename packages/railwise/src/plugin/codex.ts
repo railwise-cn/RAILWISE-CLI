@@ -1,4 +1,4 @@
-import type { Hooks, PluginInput } from "@railwise/plugin"
+import type { Hooks, PluginInput } from "nb-railwise"
 import { Log } from "../util/log"
 import { Installation } from "../installation"
 import { Auth, OAUTH_DUMMY_KEY } from "../auth"
@@ -145,7 +145,7 @@ async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> 
 const HTML_SUCCESS = `<!doctype html>
 <html>
   <head>
-    <title>RAILWISE (甬算) - Codex Authorization Successful</title>
+    <title>RAILWISE - Codex Authorization Successful</title>
     <style>
       body {
         font-family:
@@ -176,7 +176,7 @@ const HTML_SUCCESS = `<!doctype html>
   <body>
     <div class="container">
       <h1>Authorization Successful</h1>
-      <p>You can close this window and return to RAILWISE (甬算).</p>
+      <p>You can close this window and return to RAILWISE.</p>
     </div>
     <script>
       setTimeout(() => window.close(), 2000)
@@ -187,7 +187,7 @@ const HTML_SUCCESS = `<!doctype html>
 const HTML_ERROR = (error: string) => `<!doctype html>
 <html>
   <head>
-    <title>RAILWISE (甬算) - Codex Authorization Failed</title>
+    <title>RAILWISE - Codex Authorization Failed</title>
     <style>
       body {
         font-family:

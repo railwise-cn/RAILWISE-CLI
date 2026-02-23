@@ -1,4 +1,4 @@
-import type { Hooks, PluginInput } from "@railwise/plugin"
+import type { Hooks, PluginInput } from "nb-railwise"
 import { Installation } from "@/installation"
 import { iife } from "@/util/iife"
 

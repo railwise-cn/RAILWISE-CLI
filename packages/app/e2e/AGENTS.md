@@ -59,7 +59,7 @@ test("test description", async ({ page, sdk, gotoSession }) => {
 ### Using Fixtures
 
 - `page` - Playwright page
-- `sdk` - RAILWISE (甬算) SDK client for API calls
+- `sdk` - RAILWISE SDK client for API calls
 - `gotoSession(sessionID?)` - Navigate to session
 
 ### Helper Functions

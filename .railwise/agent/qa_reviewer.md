@@ -1,6 +1,6 @@
 ---
 description: 总工办质检员，负责技术方案与报告的规范合规性终审，拥有最高否决权
-model: railwise/claude-opus-4-5
+model: anthropic/claude-opus-4-6
 color: "#E74C3C"
 ---
 

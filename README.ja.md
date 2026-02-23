@@ -3,7 +3,7 @@
     <picture>
       <source srcset="packages/console/app/src/asset/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
       <source srcset="packages/console/app/src/asset/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
-      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE (甬算) logo">
+      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE logo">
     </picture>
   </a>
 </p>
@@ -35,7 +35,7 @@
   <a href="README.uk.md">Українська</a>
 </p>
 
-[![RAILWISE (甬算) Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
+[![RAILWISE Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
 
 ---
 
@@ -62,7 +62,7 @@ nix run nixpkgs#railwise           # または github:anomalyco/railwise で最�
 
 ### デスクトップアプリ (BETA)
 
-RAILWISE (甬算) はデスクトップアプリとしても利用できます。[releases page](https://github.com/anomalyco/railwise/releases) から直接ダウンロードするか、[railwise.ai/download](https://railwise.ai/download) を利用してください。
+RAILWISE はデスクトップアプリとしても利用できます。[releases page](https://github.com/anomalyco/railwise/releases) から直接ダウンロードするか、[railwise.ai/download](https://railwise.ai/download) を利用してください。
 
 | プラットフォーム      | ダウンロード                          |
 | --------------------- | ------------------------------------- |
@@ -95,7 +95,7 @@ XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://railwise.ai/install | bash
 
 ### Agents
 
-RAILWISE (甬算) には組み込みの Agent が2つあり、`Tab` キーで切り替えられます。
+RAILWISE には組み込みの Agent が2つあり、`Tab` キーで切り替えられます。
 
 - **build** - デフォルト。開発向けのフルアクセス Agent
 - **plan** - 分析とコード探索向けの読み取り専用 Agent
@@ -110,15 +110,15 @@ RAILWISE (甬算) には組み込みの Agent が2つあり、`Tab` キーで切
 
 ### ドキュメント
 
-RAILWISE (甬算) の設定については [**ドキュメント**](https://railwise.ai/docs) を参照してください。
+RAILWISE の設定については [**ドキュメント**](https://railwise.ai/docs) を参照してください。
 
 ### コントリビュート
 
-RAILWISE (甬算) に貢献したい場合は、Pull Request を送る前に [contributing docs](./CONTRIBUTING.md) を読んでください。
+RAILWISE に貢献したい場合は、Pull Request を送る前に [contributing docs](./CONTRIBUTING.md) を読んでください。
 
-### RAILWISE (甬算) の上に構築する
+### RAILWISE の上に構築する
 
-RAILWISE (甬算) に関連するプロジェクトで、名前に "railwise"（例: "railwise-dashboard" や "railwise-mobile"）を含める場合は、そのプロジェクトが RAILWISE (甬算) チームによって作られたものではなく、いかなる形でも関係がないことを README に明記してください。
+RAILWISE に関連するプロジェクトで、名前に "railwise"（例: "railwise-dashboard" や "railwise-mobile"）を含める場合は、そのプロジェクトが RAILWISE チームによって作られたものではなく、いかなる形でも関係がないことを README に明記してください。
 
 ### FAQ
 
@@ -127,10 +127,10 @@ RAILWISE (甬算) に関連するプロジェクトで、名前に "railwise"（
 機能面では Claude Code と非常に似ています。主な違いは次のとおりです。
 
 - 100% オープンソース
-- 特定のプロバイダーに依存しません。[RAILWISE (甬算) Zen](https://railwise.ai/zen) で提供しているモデルを推奨しますが、RAILWISE (甬算) は Claude、OpenAI、Google、またはローカルモデルでも利用できます。モデルが進化すると差は縮まり価格も下がるため、provider-agnostic であることが重要です。
+- 特定のプロバイダーに依存しません。[RAILWISE Zen](https://railwise.ai/zen) で提供しているモデルを推奨しますが、RAILWISE は Claude、OpenAI、Google、またはローカルモデルでも利用できます。モデルが進化すると差は縮まり価格も下がるため、provider-agnostic であることが重要です。
 - そのまま使える LSP サポート
-- TUI にフォーカス。RAILWISE (甬算) は neovim ユーザーと [terminal.shop](https://terminal.shop) の制作者によって作られており、ターミナルで可能なことの限界を押し広げます。
-- クライアント/サーバー構成。例えば RAILWISE (甬算) をあなたのPCで動かし、モバイルアプリからリモート操作できます。TUI フロントエンドは複数あるクライアントの1つにすぎません。
+- TUI にフォーカス。RAILWISE は neovim ユーザーと [terminal.shop](https://terminal.shop) の制作者によって作られており、ターミナルで可能なことの限界を押し広げます。
+- クライアント/サーバー構成。例えば RAILWISE をあなたのPCで動かし、モバイルアプリからリモート操作できます。TUI フロントエンドは複数あるクライアントの1つにすぎません。
 
 ---
 

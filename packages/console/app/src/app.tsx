@@ -20,7 +20,7 @@ export default function App() {
           <I18nProvider>
             <MetaProvider>
               <Title>railwise</Title>
-              <Meta name="description" content="RAILWISE (甬算) - The open source coding agent." />
+              <Meta name="description" content="RAILWISE - The open source coding agent." />
               <Favicon />
               <Font />
               <Suspense>{props.children}</Suspense>

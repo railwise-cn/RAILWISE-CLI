@@ -88,7 +88,7 @@ export default function Brand() {
 
             <div data-component="brand-grid">
               <div>
-                <img src={previewLogoLight} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewLogoLight} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(logoLightPng, "railwise-logo-light.png")}>
                     PNG
@@ -115,7 +115,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewLogoDark} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewLogoDark} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(logoDarkPng, "railwise-logo-dark.png")}>
                     PNG
@@ -142,7 +142,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewLogoLightSquare} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewLogoLightSquare} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(logoLightSquarePng, "railwise-logo-light-square.png")}>
                     PNG
@@ -169,7 +169,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewLogoDarkSquare} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewLogoDarkSquare} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(logoDarkSquarePng, "railwise-logo-dark-square.png")}>
                     PNG
@@ -196,7 +196,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkLight} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewWordmarkLight} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(wordmarkLightPng, "railwise-wordmark-light.png")}>
                     PNG
@@ -223,7 +223,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkDark} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewWordmarkDark} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(wordmarkDarkPng, "railwise-wordmark-dark.png")}>
                     PNG
@@ -250,7 +250,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkSimpleLight} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewWordmarkSimpleLight} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(wordmarkSimpleLightPng, "railwise-wordmark-simple-light.png")}>
                     PNG
@@ -277,7 +277,7 @@ export default function Brand() {
                 </div>
               </div>
               <div>
-                <img src={previewWordmarkSimpleDark} alt="RAILWISE (甬算) brand guidelines" />
+                <img src={previewWordmarkSimpleDark} alt="RAILWISE brand guidelines" />
                 <div data-component="actions">
                   <button onClick={() => downloadFile(wordmarkSimpleDarkPng, "railwise-wordmark-simple-dark.png")}>
                     PNG

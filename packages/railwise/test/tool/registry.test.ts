@@ -88,7 +88,7 @@ describe("tool.registry", () => {
           JSON.stringify({
             name: "custom-tools",
             dependencies: {
-              "@railwise/plugin": "^0.0.0",
+              "nb-railwise": "^0.0.0",
               cowsay: "^1.6.0",
             },
           }),

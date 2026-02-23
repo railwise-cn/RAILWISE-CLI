@@ -3,11 +3,11 @@
     <picture>
       <source srcset="packages/console/app/src/asset/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
       <source srcset="packages/console/app/src/asset/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
-      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE (甬算) logo">
+      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE logo">
     </picture>
   </a>
 </p>
-<p align="center">RAILWISE (甬算) je open source AI agent za programiranje.</p>
+<p align="center">RAILWISE je open source AI agent za programiranje.</p>
 <p align="center">
   <a href="https://railwise.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
   <a href="https://www.npmjs.com/package/railwise-ai"><img alt="npm" src="https://img.shields.io/npm/v/railwise-ai?style=flat-square" /></a>
@@ -36,7 +36,7 @@
   <a href="README.uk.md">Українська</a>
 </p>
 
-[![RAILWISE (甬算) Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
+[![RAILWISE Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
 
 ---
 
@@ -63,7 +63,7 @@ nix run nixpkgs#railwise           # ili github:anomalyco/railwise za najnoviji 
 
 ### Desktop aplikacija (BETA)
 
-RAILWISE (甬算) je dostupan i kao desktop aplikacija. Preuzmi je direktno sa [stranice izdanja](https://github.com/anomalyco/railwise/releases) ili sa [railwise.ai/download](https://railwise.ai/download).
+RAILWISE je dostupan i kao desktop aplikacija. Preuzmi je direktno sa [stranice izdanja](https://github.com/anomalyco/railwise/releases) ili sa [railwise.ai/download](https://railwise.ai/download).
 
 | Platforma             | Preuzimanje                           |
 | --------------------- | ------------------------------------- |
@@ -96,7 +96,7 @@ XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://railwise.ai/install | bash
 
 ### Agenti
 
-RAILWISE (甬算) uključuje dva ugrađena agenta između kojih možeš prebacivati tasterom `Tab`.
+RAILWISE uključuje dva ugrađena agenta između kojih možeš prebacivati tasterom `Tab`.
 
 - **build** - Podrazumijevani agent sa punim pristupom za razvoj
 - **plan** - Agent samo za čitanje za analizu i istraživanje koda
@@ -111,15 +111,15 @@ Saznaj više o [agentima](https://railwise.ai/docs/agents).
 
 ### Dokumentacija
 
-Za više informacija o konfiguraciji RAILWISE (甬算)-a, [**pogledaj dokumentaciju**](https://railwise.ai/docs).
+Za više informacija o konfiguraciji RAILWISE-a, [**pogledaj dokumentaciju**](https://railwise.ai/docs).
 
 ### Doprinosi
 
-Ako želiš doprinositi RAILWISE (甬算)-u, pročitaj [upute za doprinošenje](./CONTRIBUTING.md) prije slanja pull requesta.
+Ako želiš doprinositi RAILWISE-u, pročitaj [upute za doprinošenje](./CONTRIBUTING.md) prije slanja pull requesta.
 
-### Gradnja na RAILWISE (甬算)-u
+### Gradnja na RAILWISE-u
 
-Ako radiš na projektu koji je povezan s RAILWISE (甬算)-om i koristi "railwise" kao dio naziva, npr. "railwise-dashboard" ili "railwise-mobile", dodaj napomenu u svoj README da projekat nije napravio RAILWISE (甬算) tim i da nije povezan s nama.
+Ako radiš na projektu koji je povezan s RAILWISE-om i koristi "railwise" kao dio naziva, npr. "railwise-dashboard" ili "railwise-mobile", dodaj napomenu u svoj README da projekat nije napravio RAILWISE tim i da nije povezan s nama.
 
 ### FAQ
 
@@ -128,10 +128,10 @@ Ako radiš na projektu koji je povezan s RAILWISE (甬算)-om i koristi "railwis
 Po mogućnostima je vrlo sličan Claude Code-u. Ključne razlike su:
 
 - 100% open source
-- Nije vezan za jednog provajdera. Iako preporučujemo modele koje nudimo kroz [RAILWISE (甬算) Zen](https://railwise.ai/zen), RAILWISE (甬算) možeš koristiti s Claude, OpenAI, Google ili čak lokalnim modelima. Kako modeli napreduju, razlike među njima će se smanjivati, a cijene padati, zato je nezavisnost od provajdera važna.
+- Nije vezan za jednog provajdera. Iako preporučujemo modele koje nudimo kroz [RAILWISE Zen](https://railwise.ai/zen), RAILWISE možeš koristiti s Claude, OpenAI, Google ili čak lokalnim modelima. Kako modeli napreduju, razlike među njima će se smanjivati, a cijene padati, zato je nezavisnost od provajdera važna.
 - LSP podrška odmah po instalaciji
-- Fokus na TUI. RAILWISE (甬算) grade neovim korisnici i kreatori [terminal.shop](https://terminal.shop); pomjeraćemo granice onoga što je moguće u terminalu.
-- Klijent/server arhitektura. To, recimo, omogućava da RAILWISE (甬算) radi na tvom računaru dok ga daljinski koristiš iz mobilne aplikacije, što znači da je TUI frontend samo jedan od mogućih klijenata.
+- Fokus na TUI. RAILWISE grade neovim korisnici i kreatori [terminal.shop](https://terminal.shop); pomjeraćemo granice onoga što je moguće u terminalu.
+- Klijent/server arhitektura. To, recimo, omogućava da RAILWISE radi na tvom računaru dok ga daljinski koristiš iz mobilne aplikacije, što znači da je TUI frontend samo jedan od mogućih klijenata.
 
 ---
 

@@ -11,12 +11,12 @@ export const dict = {
   "desktop.updater.checkFailed.title": "Opdateringstjek mislykkedes",
   "desktop.updater.checkFailed.message": "Kunne ikke tjekke for opdateringer",
   "desktop.updater.none.title": "Ingen opdatering tilgængelig",
-  "desktop.updater.none.message": "Du bruger allerede den nyeste version af RAILWISE (甬算)",
+  "desktop.updater.none.message": "Du bruger allerede den nyeste version af RAILWISE",
   "desktop.updater.downloadFailed.title": "Opdatering mislykkedes",
   "desktop.updater.downloadFailed.message": "Kunne ikke downloade opdateringen",
   "desktop.updater.downloaded.title": "Opdatering downloadet",
   "desktop.updater.downloaded.prompt":
-    "Version {{version}} af RAILWISE (甬算) er blevet downloadet. Vil du installere den og genstarte?",
+    "Version {{version}} af RAILWISE er blevet downloadet. Vil du installere den og genstarte?",
   "desktop.updater.installFailed.title": "Opdatering mislykkedes",
   "desktop.updater.installFailed.message": "Kunne ikke installere opdateringen",
 

@@ -27,3 +27,4 @@ target
 railwise-dev
 logs/
 *.bun-build
+output/

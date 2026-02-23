@@ -124,8 +124,8 @@ export function Header(props: { zen?: boolean; hideGetStarted?: boolean }) {
     <section data-component="top">
       <div onContextMenu={handleLogoContextMenu}>
         <A href={language.route("/")}>
-          <img data-slot="logo light" src={logoLight} alt="RAILWISE (甬算)" width="189" height="34" />
-          <img data-slot="logo dark" src={logoDark} alt="RAILWISE (甬算)" width="189" height="34" />
+          <img data-slot="logo light" src={logoLight} alt="RAILWISE" width="189" height="34" />
+          <img data-slot="logo dark" src={logoDark} alt="RAILWISE" width="189" height="34" />
         </A>
       </div>
 

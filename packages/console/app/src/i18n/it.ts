@@ -76,7 +76,7 @@ export const dict = {
   "error.reloadAmountMin": "L'importo della ricarica deve essere almeno ${{amount}}",
   "error.reloadTriggerMin": "La soglia del saldo deve essere almeno ${{amount}}",
 
-  "home.title": "RAILWISE (甬算) | L'agente di coding IA open source",
+  "home.title": "RAILWISE | L'agente di coding IA open source",
 
   "temp.title": "railwise | Agente di coding IA costruito per il terminale",
   "temp.hero.title": "L'agente di coding IA costruito per il terminale",
@@ -89,8 +89,8 @@ export const dict = {
   "temp.feature.zen.afterLink": "fornita da railwise",
   "temp.feature.models.beforeLink": "Supporta 75+ provider LLM tramite",
   "temp.feature.models.afterLink": ", inclusi modelli locali",
-  "temp.screenshot.caption": "RAILWISE (甬算) TUI con il tema tokyonight",
-  "temp.screenshot.alt": "RAILWISE (甬算) TUI con tema tokyonight",
+  "temp.screenshot.caption": "RAILWISE TUI con il tema tokyonight",
+  "temp.screenshot.alt": "RAILWISE TUI con tema tokyonight",
 
   "home.banner.badge": "Nuovo",
   "home.banner.text": "App desktop disponibile in beta",
@@ -104,8 +104,8 @@ export const dict = {
 
   "home.install.ariaLabel": "Opzioni di installazione",
 
-  "home.what.title": "Che cos'è RAILWISE (甬算)?",
-  "home.what.body": "RAILWISE (甬算) è un agente open source che ti aiuta a scrivere codice nel terminale, IDE o desktop.",
+  "home.what.title": "Che cos'è RAILWISE?",
+  "home.what.body": "RAILWISE è un agente open source che ti aiuta a scrivere codice nel terminale, IDE o desktop.",
   "home.what.lsp.title": "LSP abilitato",
   "home.what.lsp.body": "Carica automaticamente gli LSP giusti per il LLM",
   "home.what.multiSession.title": "Multi-session",
@@ -124,43 +124,43 @@ export const dict = {
 
   "home.growth.title": "L'agente di coding IA open source",
   "home.growth.body":
-    "Con oltre <strong>{{stars}}</strong> stelle su GitHub, <strong>{{contributors}}</strong> contributori e oltre <strong>{{commits}}</strong> commit, RAILWISE (甬算) è usato e apprezzato da oltre <strong>{{monthlyUsers}}</strong> sviluppatori ogni mese.",
+    "Con oltre <strong>{{stars}}</strong> stelle su GitHub, <strong>{{contributors}}</strong> contributori e oltre <strong>{{commits}}</strong> commit, RAILWISE è usato e apprezzato da oltre <strong>{{monthlyUsers}}</strong> sviluppatori ogni mese.",
   "home.growth.githubStars": "Stelle GitHub",
   "home.growth.contributors": "Contributori",
   "home.growth.monthlyDevs": "Devs mensili",
 
   "home.privacy.title": "Progettato per la privacy",
   "home.privacy.body":
-    "RAILWISE (甬算) non archivia il tuo codice né i dati di contesto, così può operare in ambienti sensibili alla privacy.",
+    "RAILWISE non archivia il tuo codice né i dati di contesto, così può operare in ambienti sensibili alla privacy.",
   "home.privacy.learnMore": "Scopri di più su",
   "home.privacy.link": "privacy",
 
-  "home.faq.q1": "Che cos'è RAILWISE (甬算)?",
+  "home.faq.q1": "Che cos'è RAILWISE?",
   "home.faq.a1":
-    "RAILWISE (甬算) è un agente open source che ti aiuta a scrivere ed eseguire codice con qualsiasi modello di IA. È disponibile come interfaccia terminale, app desktop o estensione IDE.",
-  "home.faq.q2": "Come uso RAILWISE (甬算)?",
+    "RAILWISE è un agente open source che ti aiuta a scrivere ed eseguire codice con qualsiasi modello di IA. È disponibile come interfaccia terminale, app desktop o estensione IDE.",
+  "home.faq.q2": "Come uso RAILWISE?",
   "home.faq.a2.before": "Il modo più semplice per iniziare è leggere l'",
   "home.faq.a2.link": "introduzione",
-  "home.faq.q3": "Mi servono abbonamenti IA extra per usare RAILWISE (甬算)?",
+  "home.faq.q3": "Mi servono abbonamenti IA extra per usare RAILWISE?",
   "home.faq.a3.p1":
-    "Non necessariamente: RAILWISE (甬算) include un set di modelli gratuiti che puoi usare senza creare un account.",
+    "Non necessariamente: RAILWISE include un set di modelli gratuiti che puoi usare senza creare un account.",
   "home.faq.a3.p2.beforeZen": "Inoltre, puoi usare modelli popolari per il coding creando un account",
   "home.faq.a3.p2.afterZen": ".",
   "home.faq.a3.p3":
-    "Anche se incoraggiamo gli utenti a usare Zen, RAILWISE (甬算) funziona anche con i provider più diffusi come OpenAI, Anthropic, xAI, ecc.",
+    "Anche se incoraggiamo gli utenti a usare Zen, RAILWISE funziona anche con i provider più diffusi come OpenAI, Anthropic, xAI, ecc.",
   "home.faq.a3.p4.beforeLocal": "Puoi anche collegare i tuoi",
   "home.faq.a3.p4.localLink": "modelli locali",
-  "home.faq.q4": "Posso usare i miei abbonamenti IA esistenti con RAILWISE (甬算)?",
+  "home.faq.q4": "Posso usare i miei abbonamenti IA esistenti con RAILWISE?",
   "home.faq.a4.p1":
-    "Sì, RAILWISE (甬算) supporta gli abbonamenti dei principali provider. Puoi usare Claude Pro/Max, ChatGPT Plus/Pro o GitHub Copilot.",
-  "home.faq.q5": "Posso usare RAILWISE (甬算) solo nel terminale?",
-  "home.faq.a5.beforeDesktop": "Non più! RAILWISE (甬算) ora è disponibile come app per",
+    "Sì, RAILWISE supporta gli abbonamenti dei principali provider. Puoi usare Claude Pro/Max, ChatGPT Plus/Pro o GitHub Copilot.",
+  "home.faq.q5": "Posso usare RAILWISE solo nel terminale?",
+  "home.faq.a5.beforeDesktop": "Non più! RAILWISE ora è disponibile come app per",
   "home.faq.a5.desktop": "desktop",
   "home.faq.a5.and": "e",
   "home.faq.a5.web": "web",
-  "home.faq.q6": "Quanto costa RAILWISE (甬算)?",
+  "home.faq.q6": "Quanto costa RAILWISE?",
   "home.faq.a6":
-    "RAILWISE (甬算) è gratuito al 100%. Include anche un set di modelli gratuiti. Potrebbero esserci costi aggiuntivi se colleghi altri provider.",
+    "RAILWISE è gratuito al 100%. Include anche un set di modelli gratuiti. Potrebbero esserci costi aggiuntivi se colleghi altri provider.",
   "home.faq.q7": "E per quanto riguarda dati e privacy?",
   "home.faq.a7.p1":
     "I tuoi dati vengono archiviati solo quando usi i nostri modelli gratuiti o crei link condivisibili.",
@@ -168,8 +168,8 @@ export const dict = {
   "home.faq.a7.p2.modelsLink": "i nostri modelli",
   "home.faq.a7.p2.and": "e",
   "home.faq.a7.p2.shareLink": "le pagine di condivisione",
-  "home.faq.q8": "RAILWISE (甬算) è open source?",
-  "home.faq.a8.p1": "Sì, RAILWISE (甬算) è completamente open source. Il codice sorgente è pubblico su",
+  "home.faq.q8": "RAILWISE è open source?",
+  "home.faq.a8.p1": "Sì, RAILWISE è completamente open source. Il codice sorgente è pubblico su",
   "home.faq.a8.p2": "sotto la",
   "home.faq.a8.mitLicense": "Licenza MIT",
   "home.faq.a8.p3":
@@ -177,23 +177,23 @@ export const dict = {
 
   "home.zenCta.title": "Accedi a modelli affidabili e ottimizzati per agenti di coding",
   "home.zenCta.body":
-    "Zen ti dà accesso a una selezione di modelli di IA che RAILWISE (甬算) ha testato e benchmarkato specificamente per agenti di coding. Niente più preoccupazioni per prestazioni e qualità incoerenti tra provider: usa modelli validati che funzionano.",
+    "Zen ti dà accesso a una selezione di modelli di IA che RAILWISE ha testato e benchmarkato specificamente per agenti di coding. Niente più preoccupazioni per prestazioni e qualità incoerenti tra provider: usa modelli validati che funzionano.",
   "home.zenCta.link": "Scopri Zen",
 
-  "zen.title": "RAILWISE (甬算) Zen | Una selezione curata di modelli affidabili e ottimizzati per agenti di coding",
+  "zen.title": "RAILWISE Zen | Una selezione curata di modelli affidabili e ottimizzati per agenti di coding",
   "zen.hero.title": "Accedi a modelli affidabili e ottimizzati per agenti di coding",
   "zen.hero.body":
-    "Zen ti dà accesso a una selezione di modelli di IA che RAILWISE (甬算) ha testato e benchmarkato specificamente per agenti di coding. Niente più preoccupazioni per prestazioni e qualità incoerenti tra provider: usa modelli validati che funzionano.",
+    "Zen ti dà accesso a una selezione di modelli di IA che RAILWISE ha testato e benchmarkato specificamente per agenti di coding. Niente più preoccupazioni per prestazioni e qualità incoerenti tra provider: usa modelli validati che funzionano.",
 
-  "zen.faq.q1": "Cos'è RAILWISE (甬算) Zen?",
+  "zen.faq.q1": "Cos'è RAILWISE Zen?",
   "zen.faq.a1":
-    "Zen è un set curato di modelli di IA testati e benchmarkati per agenti di coding, creato dal team dietro RAILWISE (甬算).",
+    "Zen è un set curato di modelli di IA testati e benchmarkati per agenti di coding, creato dal team dietro RAILWISE.",
   "zen.faq.q2": "Cosa rende Zen più accurato?",
   "zen.faq.a2":
     "Zen offre solo modelli testati e benchmarkati specificamente per agenti di coding. Non useresti un coltello da burro per tagliare una bistecca; non usare modelli scarsi per programmare.",
   "zen.faq.q3": "Zen è più economico?",
   "zen.faq.a3":
-    "Zen non è a scopo di lucro. Zen ribalta i costi dei provider di modelli direttamente su di te. Più Zen viene usato, più RAILWISE (甬算) può negoziare tariffe migliori e passarle a te.",
+    "Zen non è a scopo di lucro. Zen ribalta i costi dei provider di modelli direttamente su di te. Più Zen viene usato, più RAILWISE può negoziare tariffe migliori e passarle a te.",
   "zen.faq.q4": "Quanto costa Zen?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "addebita per richiesta",
@@ -201,7 +201,7 @@ export const dict = {
   "zen.faq.a4.p2.beforeAccount": "Il costo totale dipende dall'uso e puoi impostare limiti di spesa mensili nel tuo",
   "zen.faq.a4.p2.accountLink": "account",
   "zen.faq.a4.p3":
-    "Per coprire i costi, RAILWISE (甬算) aggiunge solo una piccola commissione di elaborazione del pagamento di $1.23 per ogni ricarica di saldo da $20.",
+    "Per coprire i costi, RAILWISE aggiunge solo una piccola commissione di elaborazione del pagamento di $1.23 per ogni ricarica di saldo da $20.",
   "zen.faq.q5": "E per quanto riguarda dati e privacy?",
   "zen.faq.a5.beforeExceptions":
     "Tutti i modelli Zen sono ospitati negli Stati Uniti. I provider seguono una policy di zero-retention e non usano i tuoi dati per l'addestramento dei modelli, con le",
@@ -212,7 +212,7 @@ export const dict = {
   "zen.faq.a7": "Sì, puoi disattivare la fatturazione in qualsiasi momento e usare il saldo rimanente.",
   "zen.faq.q8": "Posso usare Zen con altri agenti di coding?",
   "zen.faq.a8":
-    "Anche se Zen funziona alla grande con RAILWISE (甬算), puoi usare Zen con qualsiasi agente. Segui le istruzioni di configurazione nel tuo agente di coding preferito.",
+    "Anche se Zen funziona alla grande con RAILWISE, puoi usare Zen con qualsiasi agente. Segui le istruzioni di configurazione nel tuo agente di coding preferito.",
 
   "zen.cta.start": "Inizia con Zen",
   "zen.pricing.title": "Aggiungi $20 di saldo a consumo",
@@ -221,12 +221,12 @@ export const dict = {
   "zen.problem.title": "Quale problema risolve Zen?",
   "zen.problem.body":
     "Sono disponibili numerosi modelli, ma solo pochi funzionano bene con gli agenti di coding. La maggior parte dei provider li configura in modo diverso con risultati variabili.",
-  "zen.problem.subtitle": "Stiamo risolvendo questo problema per tutti, non solo per gli utenti RAILWISE (甬算).",
+  "zen.problem.subtitle": "Stiamo risolvendo questo problema per tutti, non solo per gli utenti RAILWISE.",
   "zen.problem.item1": "Testare modelli selezionati e consultare i loro team",
   "zen.problem.item2": "Collaborare con i provider per garantire che vengano consegnati correttamente",
   "zen.problem.item3": "Benchmark di tutte le combinazioni modello-provider che raccomandiamo",
   "zen.how.title": "Come funziona Zen",
-  "zen.how.body": "Anche se ti consigliamo di utilizzare Zen con RAILWISE (甬算), puoi utilizzare Zen con qualsiasi agente.",
+  "zen.how.body": "Anche se ti consigliamo di utilizzare Zen con RAILWISE, puoi utilizzare Zen con qualsiasi agente.",
   "zen.how.step1.title": "Iscriviti e aggiungi un saldo di $20",
   "zen.how.step1.beforeLink": "segui le",
   "zen.how.step1.link": "istruzioni di configurazione",
@@ -240,12 +240,12 @@ export const dict = {
     "Tutti i modelli Zen sono ospitati negli Stati Uniti. I provider seguono una policy di zero-retention e non usano i tuoi dati per l'addestramento dei modelli, con le",
   "zen.privacy.exceptionsLink": "seguenti eccezioni",
 
-  "black.meta.title": "RAILWISE (甬算) Black | Accedi ai migliori modelli di coding al mondo",
+  "black.meta.title": "RAILWISE Black | Accedi ai migliori modelli di coding al mondo",
   "black.meta.description":
-    "Ottieni l'accesso a Claude, GPT, Gemini e altri con i piani di abbonamento RAILWISE (甬算) Black.",
+    "Ottieni l'accesso a Claude, GPT, Gemini e altri con i piani di abbonamento RAILWISE Black.",
   "black.hero.title": "Accedi ai migliori modelli di coding al mondo",
   "black.hero.subtitle": "Inclusi Claude, GPT, Gemini e altri",
-  "black.title": "RAILWISE (甬算) Black | Prezzi",
+  "black.title": "RAILWISE Black | Prezzi",
   "black.plan.icon20": "Piano Black 20",
   "black.plan.icon100": "Piano Black 100",
   "black.plan.icon200": "Piano Black 200",
@@ -264,10 +264,10 @@ export const dict = {
   "black.action.continue": "Continua",
   "black.finePrint.beforeTerms": "I prezzi mostrati non includono le tasse applicabili",
   "black.finePrint.terms": "Termini di servizio",
-  "black.workspace.title": "RAILWISE (甬算) Black | Seleziona Workspace",
+  "black.workspace.title": "RAILWISE Black | Seleziona Workspace",
   "black.workspace.selectPlan": "Seleziona un workspace per questo piano",
   "black.workspace.name": "Workspace {{n}}",
-  "black.subscribe.title": "Abbonati a RAILWISE (甬算) Black",
+  "black.subscribe.title": "Abbonati a RAILWISE Black",
   "black.subscribe.paymentMethod": "Metodo di pagamento",
   "black.subscribe.loadingPaymentForm": "Caricamento modulo di pagamento...",
   "black.subscribe.selectWorkspaceToContinue": "Seleziona un workspace per continuare",
@@ -279,9 +279,9 @@ export const dict = {
   "black.subscribe.processing": "Elaborazione...",
   "black.subscribe.submit": "Abbonati ${{plan}}",
   "black.subscribe.form.chargeNotice": "Ti verrà addebitato solo quando il tuo abbonamento sarà attivato",
-  "black.subscribe.success.title": "Sei nella lista d'attesa di RAILWISE (甬算) Black",
+  "black.subscribe.success.title": "Sei nella lista d'attesa di RAILWISE Black",
   "black.subscribe.success.subscriptionPlan": "Piano di abbonamento",
-  "black.subscribe.success.planName": "RAILWISE (甬算) Black {{plan}}",
+  "black.subscribe.success.planName": "RAILWISE Black {{plan}}",
   "black.subscribe.success.amount": "Importo",
   "black.subscribe.success.amountValue": "${{plan}} al mese",
   "black.subscribe.success.paymentMethod": "Metodo di pagamento",
@@ -466,15 +466,15 @@ export const dict = {
   "workspace.black.time.minutes": "minuti",
   "workspace.black.time.fewSeconds": "pochi secondi",
   "workspace.black.subscription.title": "Abbonamento",
-  "workspace.black.subscription.message": "Sei abbonato a RAILWISE (甬算) Black per ${{plan}} al mese.",
+  "workspace.black.subscription.message": "Sei abbonato a RAILWISE Black per ${{plan}} al mese.",
   "workspace.black.subscription.manage": "Gestisci Abbonamento",
   "workspace.black.subscription.rollingUsage": "Utilizzo 5-ore",
   "workspace.black.subscription.weeklyUsage": "Utilizzo Settimanale",
   "workspace.black.subscription.resetsIn": "Si resetta tra",
   "workspace.black.subscription.useBalance": "Usa il tuo saldo disponibile dopo aver raggiunto i limiti di utilizzo",
   "workspace.black.waitlist.title": "Waitlist",
-  "workspace.black.waitlist.joined": "Sei nella waitlist per il piano RAILWISE (甬算) Black da ${{plan}} al mese.",
-  "workspace.black.waitlist.ready": "Siamo pronti per iscriverti al piano RAILWISE (甬算) Black da ${{plan}} al mese.",
+  "workspace.black.waitlist.joined": "Sei nella waitlist per il piano RAILWISE Black da ${{plan}} al mese.",
+  "workspace.black.waitlist.ready": "Siamo pronti per iscriverti al piano RAILWISE Black da ${{plan}} al mese.",
   "workspace.black.waitlist.leave": "Lascia Waitlist",
   "workspace.black.waitlist.leaving": "Uscita...",
   "workspace.black.waitlist.left": "Uscito",
@@ -484,15 +484,15 @@ export const dict = {
   "workspace.black.waitlist.enrollNote":
     "Quando clicchi su Iscriviti, il tuo abbonamento inizia immediatamente e la tua carta verrà addebitata.",
 
-  "download.title": "RAILWISE (甬算) | Download",
-  "download.meta.description": "Scarica RAILWISE (甬算) per macOS, Windows e Linux",
-  "download.hero.title": "Scarica RAILWISE (甬算)",
+  "download.title": "RAILWISE | Download",
+  "download.meta.description": "Scarica RAILWISE per macOS, Windows e Linux",
+  "download.hero.title": "Scarica RAILWISE",
   "download.hero.subtitle": "Disponibile in Beta per macOS, Windows e Linux",
   "download.hero.button": "Scarica per {{os}}",
-  "download.section.terminal": "RAILWISE (甬算) Terminal",
-  "download.section.desktop": "RAILWISE (甬算) Desktop (Beta)",
-  "download.section.extensions": "RAILWISE (甬算) Extensions",
-  "download.section.integrations": "RAILWISE (甬算) Integrations",
+  "download.section.terminal": "RAILWISE Terminal",
+  "download.section.desktop": "RAILWISE Desktop (Beta)",
+  "download.section.extensions": "RAILWISE Extensions",
+  "download.section.integrations": "RAILWISE Integrations",
   "download.action.download": "Scarica",
   "download.action.install": "Installa",
 
@@ -503,25 +503,25 @@ export const dict = {
   "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
-    "Non necessariamente, ma probabilmente. Avrai bisogno di un abbonamento IA se vuoi collegare RAILWISE (甬算) a un provider a pagamento, sebbene tu possa lavorare con",
+    "Non necessariamente, ma probabilmente. Avrai bisogno di un abbonamento IA se vuoi collegare RAILWISE a un provider a pagamento, sebbene tu possa lavorare con",
   "download.faq.a3.localLink": "modelli locali",
   "download.faq.a3.afterLocal.beforeZen": "gratuitamente. Mentre incoraggiamo gli utenti a usare",
-  "download.faq.a3.afterZen": ", RAILWISE (甬算) funziona con tutti i provider popolari come OpenAI, Anthropic, xAI ecc.",
+  "download.faq.a3.afterZen": ", RAILWISE funziona con tutti i provider popolari come OpenAI, Anthropic, xAI ecc.",
 
-  "download.faq.a5.p1": "RAILWISE (甬算) è gratuito al 100%.",
+  "download.faq.a5.p1": "RAILWISE è gratuito al 100%.",
   "download.faq.a5.p2.beforeZen":
-    "Eventuali costi aggiuntivi proverranno dal tuo abbonamento a un provider di modelli. Mentre RAILWISE (甬算) funziona con qualsiasi provider di modelli, raccomandiamo di usare",
+    "Eventuali costi aggiuntivi proverranno dal tuo abbonamento a un provider di modelli. Mentre RAILWISE funziona con qualsiasi provider di modelli, raccomandiamo di usare",
   "download.faq.a5.p2.afterZen": ".",
 
-  "download.faq.a6.p1": "I tuoi dati e informazioni sono archiviati solo quando crei link condivisibili in RAILWISE (甬算).",
+  "download.faq.a6.p1": "I tuoi dati e informazioni sono archiviati solo quando crei link condivisibili in RAILWISE.",
   "download.faq.a6.p2.beforeShare": "Scopri di più sulle",
   "download.faq.a6.shareLink": "pagine condivise",
 
-  "enterprise.title": "RAILWISE (甬算) | Soluzioni Enterprise per la tua organizzazione",
-  "enterprise.meta.description": "Contatta RAILWISE (甬算) per soluzioni enterprise",
+  "enterprise.title": "RAILWISE | Soluzioni Enterprise per la tua organizzazione",
+  "enterprise.meta.description": "Contatta RAILWISE per soluzioni enterprise",
   "enterprise.hero.title": "Il tuo codice è tuo",
   "enterprise.hero.body1":
-    "RAILWISE (甬算) opera in modo sicuro all'interno della tua organizzazione senza dati o contesto archiviati e senza restrizioni di licenza o rivendicazioni di proprietà. Inizia una prova con il tuo team, poi distribuisci attraverso la tua organizzazione integrandolo con il tuo SSO e gateway IA interno.",
+    "RAILWISE opera in modo sicuro all'interno della tua organizzazione senza dati o contesto archiviati e senza restrizioni di licenza o rivendicazioni di proprietà. Inizia una prova con il tuo team, poi distribuisci attraverso la tua organizzazione integrandolo con il tuo SSO e gateway IA interno.",
   "enterprise.hero.body2": "Facci sapere come possiamo aiutare.",
   "enterprise.form.name.label": "Nome completo",
   "enterprise.form.name.placeholder": "Jeff Bezos",
@@ -535,29 +535,29 @@ export const dict = {
   "enterprise.form.sending": "Invio...",
   "enterprise.form.success": "Messaggio inviato, ti contatteremo presto.",
   "enterprise.faq.title": "FAQ",
-  "enterprise.faq.q1": "Cos'è RAILWISE (甬算) Enterprise?",
+  "enterprise.faq.q1": "Cos'è RAILWISE Enterprise?",
   "enterprise.faq.a1":
-    "RAILWISE (甬算) Enterprise è per le organizzazioni che vogliono garantire che il loro codice e dati non lascino mai la loro infrastruttura. Può farlo usando una configurazione centralizzata che si integra con il tuo SSO e gateway IA interno.",
-  "enterprise.faq.q2": "Come inizio con RAILWISE (甬算) Enterprise?",
+    "RAILWISE Enterprise è per le organizzazioni che vogliono garantire che il loro codice e dati non lascino mai la loro infrastruttura. Può farlo usando una configurazione centralizzata che si integra con il tuo SSO e gateway IA interno.",
+  "enterprise.faq.q2": "Come inizio con RAILWISE Enterprise?",
   "enterprise.faq.a2":
-    "Inizia semplicemente con una prova interna con il tuo team. RAILWISE (甬算) per impostazione predefinita non archivia il tuo codice o dati di contesto, rendendo facile iniziare. Poi contattaci per discutere prezzi e opzioni di implementazione.",
+    "Inizia semplicemente con una prova interna con il tuo team. RAILWISE per impostazione predefinita non archivia il tuo codice o dati di contesto, rendendo facile iniziare. Poi contattaci per discutere prezzi e opzioni di implementazione.",
   "enterprise.faq.q3": "Come funziona il prezzo enterprise?",
   "enterprise.faq.a3":
     "Offriamo prezzi enterprise per postazione. Se hai il tuo gateway LLM, non addebitiamo per i token usati. Per ulteriori dettagli, contattaci per un preventivo personalizzato basato sulle esigenze della tua organizzazione.",
-  "enterprise.faq.q4": "I miei dati sono sicuri con RAILWISE (甬算) Enterprise?",
+  "enterprise.faq.q4": "I miei dati sono sicuri con RAILWISE Enterprise?",
   "enterprise.faq.a4":
-    "Sì. RAILWISE (甬算) non archivia il tuo codice o dati di contesto. Tutto il trattamento avviene localmente o attraverso chiamate API dirette al tuo provider IA. Con configurazione centrale e integrazione SSO, i tuoi dati rimangono sicuri all'interno dell'infrastruttura della tua organizzazione.",
+    "Sì. RAILWISE non archivia il tuo codice o dati di contesto. Tutto il trattamento avviene localmente o attraverso chiamate API dirette al tuo provider IA. Con configurazione centrale e integrazione SSO, i tuoi dati rimangono sicuri all'interno dell'infrastruttura della tua organizzazione.",
 
-  "brand.title": "RAILWISE (甬算) | Brand",
-  "brand.meta.description": "Linee guida del brand RAILWISE (甬算)",
+  "brand.title": "RAILWISE | Brand",
+  "brand.meta.description": "Linee guida del brand RAILWISE",
   "brand.heading": "Linee guida del brand",
-  "brand.subtitle": "Risorse e asset per aiutarti a lavorare con il brand RAILWISE (甬算).",
+  "brand.subtitle": "Risorse e asset per aiutarti a lavorare con il brand RAILWISE.",
   "brand.downloadAll": "Scarica tutti gli asset",
 
-  "changelog.title": "RAILWISE (甬算) | Changelog",
-  "changelog.meta.description": "Note di rilascio e changelog RAILWISE (甬算)",
+  "changelog.title": "RAILWISE | Changelog",
+  "changelog.meta.description": "Note di rilascio e changelog RAILWISE",
   "changelog.hero.title": "Changelog",
-  "changelog.hero.subtitle": "Nuovi aggiornamenti e miglioramenti a RAILWISE (甬算)",
+  "changelog.hero.subtitle": "Nuovi aggiornamenti e miglioramenti a RAILWISE",
   "changelog.empty": "Nessuna voce del changelog trovata.",
   "changelog.viewJson": "Vedi JSON",
 

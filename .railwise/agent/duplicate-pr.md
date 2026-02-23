@@ -1,7 +1,7 @@
 ---
 mode: primary
 hidden: true
-model: railwise/claude-haiku-4-5
+model: anthropic/claude-haiku-3-5-20241022
 color: "#E67E22"
 tools:
   "*": false

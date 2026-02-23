@@ -20978,7 +20978,7 @@
     "env": ["RAILWISE_API_KEY"],
     "npm": "@ai-sdk/openai-compatible",
     "api": "https://railwise.ai/zen/v1",
-    "name": "RAILWISE (甬算) Zen",
+    "name": "RAILWISE Zen",
     "doc": "https://railwise.ai/docs/zen",
     "models": {
       "glm-4.7": {

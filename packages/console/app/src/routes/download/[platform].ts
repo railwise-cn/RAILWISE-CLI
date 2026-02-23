@@ -12,9 +12,9 @@ const assetNames: Record<string, string> = {
 
 // Doing this on the server lets us preserve the original name for platforms we don't care to rename for
 const downloadNames: Record<string, string> = {
-  "darwin-aarch64-dmg": "RAILWISE (甬算) Desktop.dmg",
-  "darwin-x64-dmg": "RAILWISE (甬算) Desktop.dmg",
-  "windows-x64-nsis": "RAILWISE (甬算) Desktop Installer.exe",
+  "darwin-aarch64-dmg": "RAILWISE Desktop.dmg",
+  "darwin-x64-dmg": "RAILWISE Desktop.dmg",
+  "windows-x64-nsis": "RAILWISE Desktop Installer.exe",
 } satisfies { [K in DownloadPlatform]?: string }
 
 export async function GET({ params: { platform } }: APIEvent) {

@@ -3,7 +3,7 @@
     <picture>
       <source srcset="packages/console/app/src/asset/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
       <source srcset="packages/console/app/src/asset/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
-      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE (甬算) logo">
+      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE logo">
     </picture>
   </a>
 </p>
@@ -35,7 +35,7 @@
   <a href="README.uk.md">Українська</a>
 </p>
 
-[![RAILWISE (甬算) Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
+[![RAILWISE Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
 
 ---
 
@@ -62,7 +62,7 @@ nix run nixpkgs#railwise           # eller github:anomalyco/railwise for nyeste 
 
 ### Desktop-app (BETA)
 
-RAILWISE (甬算) er også tilgjengelig som en desktop-app. Last ned direkte fra [releases-siden](https://github.com/anomalyco/railwise/releases) eller [railwise.ai/download](https://railwise.ai/download).
+RAILWISE er også tilgjengelig som en desktop-app. Last ned direkte fra [releases-siden](https://github.com/anomalyco/railwise/releases) eller [railwise.ai/download](https://railwise.ai/download).
 
 | Plattform             | Nedlasting                            |
 | --------------------- | ------------------------------------- |
@@ -95,7 +95,7 @@ XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://railwise.ai/install | bash
 
 ### Agents
 
-RAILWISE (甬算) har to innebygde agents du kan bytte mellom med `Tab`-tasten.
+RAILWISE har to innebygde agents du kan bytte mellom med `Tab`-tasten.
 
 - **build** - Standard, agent med full tilgang for utviklingsarbeid
 - **plan** - Skrivebeskyttet agent for analyse og kodeutforsking
@@ -110,15 +110,15 @@ Les mer om [agents](https://railwise.ai/docs/agents).
 
 ### Dokumentasjon
 
-For mer info om hvordan du konfigurerer RAILWISE (甬算), [**se dokumentasjonen**](https://railwise.ai/docs).
+For mer info om hvordan du konfigurerer RAILWISE, [**se dokumentasjonen**](https://railwise.ai/docs).
 
 ### Bidra
 
-Hvis du vil bidra til RAILWISE (甬算), les [contributing docs](./CONTRIBUTING.md) før du sender en pull request.
+Hvis du vil bidra til RAILWISE, les [contributing docs](./CONTRIBUTING.md) før du sender en pull request.
 
-### Bygge på RAILWISE (甬算)
+### Bygge på RAILWISE
 
-Hvis du jobber med et prosjekt som er relatert til RAILWISE (甬算) og bruker "railwise" som en del av navnet; for eksempel "railwise-dashboard" eller "railwise-mobile", legg inn en merknad i README som presiserer at det ikke er bygget av RAILWISE (甬算)-teamet og ikke er tilknyttet oss på noen måte.
+Hvis du jobber med et prosjekt som er relatert til RAILWISE og bruker "railwise" som en del av navnet; for eksempel "railwise-dashboard" eller "railwise-mobile", legg inn en merknad i README som presiserer at det ikke er bygget av RAILWISE-teamet og ikke er tilknyttet oss på noen måte.
 
 ### FAQ
 
@@ -127,10 +127,10 @@ Hvis du jobber med et prosjekt som er relatert til RAILWISE (甬算) og bruker "
 Det er veldig likt Claude Code når det gjelder funksjonalitet. Her er de viktigste forskjellene:
 
 - 100% open source
-- Ikke knyttet til en bestemt leverandør. Selv om vi anbefaler modellene vi tilbyr gjennom [RAILWISE (甬算) Zen](https://railwise.ai/zen); kan RAILWISE (甬算) brukes med Claude, OpenAI, Google eller til og med lokale modeller. Etter hvert som modellene utvikler seg vil gapene lukkes og prisene gå ned, så det er viktig å være provider-agnostic.
+- Ikke knyttet til en bestemt leverandør. Selv om vi anbefaler modellene vi tilbyr gjennom [RAILWISE Zen](https://railwise.ai/zen); kan RAILWISE brukes med Claude, OpenAI, Google eller til og med lokale modeller. Etter hvert som modellene utvikler seg vil gapene lukkes og prisene gå ned, så det er viktig å være provider-agnostic.
 - LSP-støtte rett ut av boksen
-- Fokus på TUI. RAILWISE (甬算) er bygget av neovim-brukere og skaperne av [terminal.shop](https://terminal.shop); vi kommer til å presse grensene for hva som er mulig i terminalen.
-- Klient/server-arkitektur. Dette kan for eksempel la RAILWISE (甬算) kjøre på maskinen din, mens du styrer den eksternt fra en mobilapp. Det betyr at TUI-frontend'en bare er en av de mulige klientene.
+- Fokus på TUI. RAILWISE er bygget av neovim-brukere og skaperne av [terminal.shop](https://terminal.shop); vi kommer til å presse grensene for hva som er mulig i terminalen.
+- Klient/server-arkitektur. Dette kan for eksempel la RAILWISE kjøre på maskinen din, mens du styrer den eksternt fra en mobilapp. Det betyr at TUI-frontend'en bare er en av de mulige klientene.
 
 ---
 

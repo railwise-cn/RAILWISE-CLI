@@ -22,8 +22,8 @@ body:
   - type: input
     id: railwise-version
     attributes:
-      label: RAILWISE (甬算) version
-      description: What version of RAILWISE (甬算) are you using?
+      label: RAILWISE version
+      description: What version of RAILWISE are you using?
     validations:
       required: false
 

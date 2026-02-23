@@ -141,7 +141,7 @@ export namespace User {
         const { InviteEmail } = await import("@railwise/console-mail/InviteEmail.jsx")
         await AWS.sendEmail({
           to: email,
-          subject: `You've been invited to join the ${emailInfo.workspaceName} workspace on RAILWISE (甬算)`,
+          subject: `You've been invited to join the ${emailInfo.workspaceName} workspace on RAILWISE`,
           body: render(
             // @ts-ignore
             InviteEmail({

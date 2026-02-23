@@ -1,4 +1,4 @@
-import type { Hooks, PluginInput, Plugin as PluginInstance } from "@railwise/plugin"
+import type { Hooks, PluginInput, Plugin as PluginInstance } from "nb-railwise"
 import { Config } from "../config/config"
 import { Bus } from "../bus"
 import { Log } from "../util/log"

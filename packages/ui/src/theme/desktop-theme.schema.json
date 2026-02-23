@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://railwise.ai/desktop-theme.json",
-  "title": "RAILWISE (甬算) Desktop Theme",
-  "description": "A theme definition for the RAILWISE (甬算) desktop application",
+  "title": "RAILWISE Desktop Theme",
+  "description": "A theme definition for the RAILWISE desktop application",
   "type": "object",
   "required": ["name", "id", "light", "dark"],
   "properties": {

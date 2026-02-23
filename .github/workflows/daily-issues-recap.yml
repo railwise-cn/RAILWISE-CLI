@@ -43,7 +43,7 @@ jobs:
           # Get today's date range
           TODAY=$(date -u +%Y-%m-%d)
 
-          railwise run -m railwise/claude-sonnet-4-5 "Generate a daily issues recap for the RAILWISE (甬算) repository.
+          railwise run -m railwise/claude-sonnet-4-5 "Generate a daily issues recap for the RAILWISE repository.
 
           TODAY'S DATE: ${TODAY}
 

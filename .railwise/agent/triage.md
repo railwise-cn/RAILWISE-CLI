@@ -1,7 +1,7 @@
 ---
 mode: primary
 hidden: true
-model: opencode/minimax-m2.5
+model: gemini/gemini-2.5-flash
 color: "#44BA81"
 tools:
   "*": false

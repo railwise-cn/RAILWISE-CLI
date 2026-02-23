@@ -1,5 +1,5 @@
 /// <reference path="../env.d.ts" />
-import { tool } from "@railwise/plugin"
+import { tool } from "nb-railwise/tool"
 import path from "path"
 
 export default tool({

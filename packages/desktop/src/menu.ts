@@ -16,7 +16,7 @@ export async function createMenu(trigger: (id: string) => void) {
   const menu = await Menu.new({
     items: [
       await Submenu.new({
-        text: "RAILWISE (甬算)",
+        text: "RAILWISE",
         items: [
           await PredefinedMenuItem.new({
             item: { About: null },
@@ -160,7 +160,7 @@ export async function createMenu(trigger: (id: string) => void) {
           // missing native macos search
           await MenuItem.new({
             action: () => openUrl("https://railwise.ai/docs"),
-            text: "RAILWISE (甬算) Documentation",
+            text: "RAILWISE Documentation",
           }),
           await MenuItem.new({
             action: () => openUrl("https://discord.com/invite/railwise"),

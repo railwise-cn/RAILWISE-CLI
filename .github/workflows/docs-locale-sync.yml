@@ -46,7 +46,7 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Sync locale docs with RAILWISE (甬算)
+      - name: Sync locale docs with RAILWISE
         if: steps.changes.outputs.has_changes == 'true'
         uses: sst/railwise/github@latest
         env:

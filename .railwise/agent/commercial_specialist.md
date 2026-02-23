@@ -1,6 +1,6 @@
 ---
 description: 商务及招投标专家，负责商务报价、标书资质响应、合同审核与催款结算
-model: railwise/claude-sonnet-4-5
+model: anthropic/claude-sonnet-4-20250514
 color: "#F39C12"
 ---
 

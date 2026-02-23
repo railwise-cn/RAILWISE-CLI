@@ -362,7 +362,7 @@ name: railwise-skill
 description: A skill in the .railwise/skill directory.
 ---
 
-# RAILWISE (甬算) Skill
+# RAILWISE Skill
 `,
       )
       await Bun.write(
@@ -372,7 +372,7 @@ name: railwise-skill
 description: A skill in the .railwise/skills directory.
 ---
 
-# RAILWISE (甬算) Skill
+# RAILWISE Skill
 `,
       )
     },

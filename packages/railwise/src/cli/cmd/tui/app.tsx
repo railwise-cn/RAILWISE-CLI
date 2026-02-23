@@ -261,14 +261,14 @@ function App() {
     if (!terminalTitleEnabled() || Flag.RAILWISE_DISABLE_TERMINAL_TITLE) return
 
     if (route.data.type === "home") {
-      renderer.setTerminalTitle("RAILWISE (甬算)")
+      renderer.setTerminalTitle("RAILWISE")
       return
     }
 
     if (route.data.type === "session") {
       const session = sync.session.get(route.data.sessionID)
       if (!session || SessionApi.isDefaultTitle(session.title)) {
-        renderer.setTerminalTitle("RAILWISE (甬算)")
+        renderer.setTerminalTitle("RAILWISE")
         return
       }
 
@@ -662,7 +662,7 @@ function App() {
         DialogAlert.show(
           dialog,
           "Warning",
-          "While openrouter is a convenient way to access LLMs your request will often be routed to subpar providers that do not work well in our testing.\n\nFor reliable access to models check out RAILWISE (甬算) Zen\nhttps://railwise.ai/zen",
+          "While openrouter is a convenient way to access LLMs your request will often be routed to subpar providers that do not work well in our testing.\n\nFor reliable access to models check out RAILWISE Zen\nhttps://railwise.ai/zen",
         ).then(() => kv.set("openrouter_warning", true))
       })
     }
@@ -724,7 +724,7 @@ function App() {
     toast.show({
       variant: "info",
       title: "Update Available",
-      message: `RAILWISE (甬算) v${evt.properties.version} is available. Run 'railwise upgrade' to update manually.`,
+      message: `RAILWISE v${evt.properties.version} is available. Run 'railwise upgrade' to update manually.`,
       duration: 10000,
     })
   })

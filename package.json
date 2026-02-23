@@ -79,14 +79,14 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.933.0",
-    "@railwise/plugin": "workspace:*",
+    "nb-railwise": "workspace:*",
     "@railwise/script": "workspace:*",
     "@railwise/sdk": "workspace:*",
     "typescript": "catalog:"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/anomalyco/opencode"
+    "url": "https://github.com/YOUR_GITHUB_ORG/railwise"
   },
   "license": "MIT",
   "prettier": {

@@ -33,7 +33,8 @@ permissions:
 jobs:
   version:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: github.repository == 'anomalyco/opencode'
+    # TODO: 替换为你的 GitHub org/repo
+    if: true  # was: github.repository == 'anomalyco/opencode'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -41,9 +42,9 @@ jobs:
 
       - uses: ./.github/actions/setup-bun
 
-      - name: Install OpenCode
+      - name: Install Railwise
         if: inputs.bump || inputs.version
-        run: bun i -g opencode-ai
+        run: bun i -g railwise-ai
 
       - id: version
         run: |
@@ -61,7 +62,8 @@ jobs:
   build-cli:
     needs: version
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: github.repository == 'anomalyco/opencode'
+    # TODO: 替换为你的 GitHub org/repo
+    if: true  # was: github.repository == 'anomalyco/opencode'
     steps:
       - uses: actions/checkout@v3
         with:

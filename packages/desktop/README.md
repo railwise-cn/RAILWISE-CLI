@@ -1,6 +1,6 @@
-# RAILWISE (甬算) Desktop
+# RAILWISE Desktop
 
-Native RAILWISE (甬算) desktop app, built with Tauri v2.
+Native RAILWISE desktop app, built with Tauri v2.
 
 ## Development
 

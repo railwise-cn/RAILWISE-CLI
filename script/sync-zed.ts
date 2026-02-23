@@ -110,7 +110,7 @@ async function main() {
 
   console.log(`📬 Creating pull request...`)
   const prResult =
-    await $`gh pr create --repo ${UPSTREAM_REPO} --base main --head ${FORK_REPO.split("/")[0]}:${branchName} --title "Update ${EXTENSION_NAME} to v${cleanVersion}" --body "Updating RAILWISE (甬算) extension to v${cleanVersion}"`
+    await $`gh pr create --repo ${UPSTREAM_REPO} --base main --head ${FORK_REPO.split("/")[0]}:${branchName} --title "Update ${EXTENSION_NAME} to v${cleanVersion}" --body "Updating RAILWISE extension to v${cleanVersion}"`
       .env({ ...process.env, GH_TOKEN: prToken })
       .nothrow()
 

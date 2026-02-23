@@ -217,7 +217,7 @@ function ApiMethod(props: ApiMethodProps) {
         props.providerID === "railwise" ? (
           <box gap={1}>
             <text fg={theme.textMuted}>
-              RAILWISE (甬算) Zen gives you access to all the best coding models at the cheapest prices with a single API key.
+              RAILWISE Zen gives you access to all the best coding models at the cheapest prices with a single API key.
             </text>
             <text fg={theme.text}>
               Go to <span style={{ fg: theme.primary }}>https://railwise.ai/zen</span> to get a key

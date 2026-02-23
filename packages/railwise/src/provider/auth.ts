@@ -3,7 +3,7 @@ import { Plugin } from "../plugin"
 import { map, filter, pipe, fromEntries, mapValues } from "remeda"
 import z from "zod"
 import { fn } from "@/util/fn"
-import type { AuthOuathResult, Hooks } from "@railwise/plugin"
+import type { AuthOuathResult, Hooks } from "nb-railwise"
 import { NamedError } from "@railwise/util/error"
 import { Auth } from "@/auth"
 

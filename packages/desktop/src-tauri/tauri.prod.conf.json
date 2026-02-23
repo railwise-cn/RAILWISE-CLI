@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "RAILWISE (甬算)",
+  "productName": "RAILWISE",
   "identifier": "ai.railwise.desktop",
   "bundle": {
     "createUpdaterArtifacts": true,

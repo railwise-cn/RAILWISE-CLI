@@ -1,5 +1,5 @@
 /// <reference path="../env.d.ts" />
-import { tool } from "@railwise/plugin"
+import { tool } from "nb-railwise/tool"
 
 const LEVELING_LIMITS: Record<string, { k: number; unit: string; desc: string }> = {
   "1st": { k: 4, unit: "mm", desc: "一等水准" },

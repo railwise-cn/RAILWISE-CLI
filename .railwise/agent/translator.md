@@ -1,7 +1,7 @@
 ---
 description: Translate content for a specified locale while preserving technical terms
 mode: subagent
-model: opencode/gemini-3-pro
+model: gemini/gemini-3-pro-preview
 ---
 
 You are a professional translator and localization specialist.

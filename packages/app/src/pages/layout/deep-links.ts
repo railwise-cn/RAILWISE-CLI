@@ -20,13 +20,13 @@ export const parseDeepLink = (input: string) => {
 export const collectOpenProjectDeepLinks = (urls: string[]) =>
   urls.map(parseDeepLink).filter((directory): directory is string => !!directory)
 
-type RAILWISE (甬算)Window = Window & {
+type RailwiseWindow = Window & {
   __RAILWISE__?: {
     deepLinks?: string[]
   }
 }
 
-export const drainPendingDeepLinks = (target: RAILWISE (甬算)Window) => {
+export const drainPendingDeepLinks = (target: RailwiseWindow) => {
   const pending = target.__RAILWISE__?.deepLinks ?? []
   if (pending.length === 0) return []
   if (target.__RAILWISE__) target.__RAILWISE__.deepLinks = []

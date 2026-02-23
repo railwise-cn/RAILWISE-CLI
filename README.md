@@ -1,138 +1,114 @@
-<p align="center">
-  <a href="https://railwise.ai">
-    <picture>
-      <source srcset="packages/console/app/src/asset/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
-      <source srcset="packages/console/app/src/asset/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
-      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="RAILWISE logo">
-    </picture>
-  </a>
-</p>
-<p align="center">The open source AI coding agent.</p>
-<p align="center">
-  <a href="https://railwise.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
-  <a href="https://www.npmjs.com/package/railwise-ai"><img alt="npm" src="https://img.shields.io/npm/v/railwise-ai?style=flat-square" /></a>
-  <a href="https://github.com/anomalyco/railwise/actions/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/anomalyco/railwise/publish.yml?style=flat-square&branch=dev" /></a>
-</p>
+# RAILWISE-CLI
 
-<p align="center">
-  <a href="README.md">English</a> |
-  <a href="README.zh.md">简体中文</a> |
-  <a href="README.zht.md">繁體中文</a> |
-  <a href="README.ko.md">한국어</a> |
-  <a href="README.de.md">Deutsch</a> |
-  <a href="README.es.md">Español</a> |
-  <a href="README.fr.md">Français</a> |
-  <a href="README.it.md">Italiano</a> |
-  <a href="README.da.md">Dansk</a> |
-  <a href="README.ja.md">日本語</a> |
-  <a href="README.pl.md">Polski</a> |
-  <a href="README.ru.md">Русский</a> |
-  <a href="README.bs.md">Bosanski</a> |
-  <a href="README.ar.md">العربية</a> |
-  <a href="README.no.md">Norsk</a> |
-  <a href="README.br.md">Português (Brasil)</a> |
-  <a href="README.th.md">ไทย</a> |
-  <a href="README.tr.md">Türkçe</a> |
-  <a href="README.uk.md">Українська</a>
-</p>
+睿威智测 AI 工程测绘多智能体 CLI 系统。
 
-[![RAILWISE Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://railwise.ai)
+基于 [OpenCode](https://github.com/sst/opencode) 深度定制，面向工程测量、结构监测、地铁监测等测绘业务场景，提供从外业数据采集到内业报告生成的全流程 AI 辅助。
 
 ---
 
-### Installation
+## 快速开始
+
+### 环境要求
+
+- [Bun](https://bun.sh) >= 1.3.9
+- API 密钥（Anthropic / OpenAI / Gemini，通过代理或直连）
+
+### 安装
 
 ```bash
-# YOLO
-curl -fsSL https://railwise.ai/install | bash
+git clone https://github.com/railwise-cn/RAILWISE-CLI.git
+cd RAILWISE-CLI
+bun install
 
-# Package managers
-npm i -g railwise-ai@latest        # or bun/pnpm/yarn
-scoop install railwise             # Windows
-choco install railwise             # Windows
-brew install anomalyco/tap/railwise # macOS and Linux (recommended, always up to date)
-brew install railwise              # macOS and Linux (official brew formula, updated less)
-sudo pacman -S railwise            # Arch Linux (Stable)
-paru -S railwise-bin               # Arch Linux (Latest from AUR)
-mise use -g railwise               # Any OS
-nix run nixpkgs#railwise           # or github:anomalyco/railwise for latest dev branch
+# 配置 API 密钥
+cp .railwise/railwise.jsonc.example .railwise/railwise.jsonc
+# 编辑 .railwise/railwise.jsonc，填入你的 API Key
+
+# 启动
+bun run dev
 ```
-
-> [!TIP]
-> Remove versions older than 0.1.x before installing.
-
-### Desktop App (BETA)
-
-RAILWISE is also available as a desktop application. Download directly from the [releases page](https://github.com/anomalyco/railwise/releases) or [railwise.ai/download](https://railwise.ai/download).
-
-| Platform              | Download                              |
-| --------------------- | ------------------------------------- |
-| macOS (Apple Silicon) | `railwise-desktop-darwin-aarch64.dmg` |
-| macOS (Intel)         | `railwise-desktop-darwin-x64.dmg`     |
-| Windows               | `railwise-desktop-windows-x64.exe`    |
-| Linux                 | `.deb`, `.rpm`, or AppImage           |
-
-```bash
-# macOS (Homebrew)
-brew install --cask railwise-desktop
-# Windows (Scoop)
-scoop bucket add extras; scoop install extras/railwise-desktop
-```
-
-#### Installation Directory
-
-The install script respects the following priority order for the installation path:
-
-1. `$RAILWISE_INSTALL_DIR` - Custom installation directory
-2. `$XDG_BIN_DIR` - XDG Base Directory Specification compliant path
-3. `$HOME/bin` - Standard user binary directory (if it exists or can be created)
-4. `$HOME/.railwise/bin` - Default fallback
-
-```bash
-# Examples
-RAILWISE_INSTALL_DIR=/usr/local/bin curl -fsSL https://railwise.ai/install | bash
-XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://railwise.ai/install | bash
-```
-
-### Agents
-
-RAILWISE includes two built-in agents you can switch between with the `Tab` key.
-
-- **build** - Default, full-access agent for development work
-- **plan** - Read-only agent for analysis and code exploration
-  - Denies file edits by default
-  - Asks permission before running bash commands
-  - Ideal for exploring unfamiliar codebases or planning changes
-
-Also included is a **general** subagent for complex searches and multistep tasks.
-This is used internally and can be invoked using `@general` in messages.
-
-Learn more about [agents](https://railwise.ai/docs/agents).
-
-### Documentation
-
-For more info on how to configure RAILWISE, [**head over to our docs**](https://railwise.ai/docs).
-
-### Contributing
-
-If you're interested in contributing to RAILWISE, please read our [contributing docs](./CONTRIBUTING.md) before submitting a pull request.
-
-### Building on RAILWISE
-
-If you are working on a project that's related to RAILWISE and is using "railwise" as part of its name, for example "railwise-dashboard" or "railwise-mobile", please add a note to your README to clarify that it is not built by the RAILWISE team and is not affiliated with us in any way.
-
-### FAQ
-
-#### How is this different from Claude Code?
-
-It's very similar to Claude Code in terms of capability. Here are the key differences:
-
-- 100% open source
-- Not coupled to any provider. Although we recommend the models we provide through [RAILWISE Zen](https://railwise.ai/zen), RAILWISE can be used with Claude, OpenAI, Google, or even local models. As models evolve, the gaps between them will close and pricing will drop, so being provider-agnostic is important.
-- Out-of-the-box LSP support
-- A focus on TUI. RAILWISE is built by neovim users and the creators of [terminal.shop](https://terminal.shop); we are going to push the limits of what's possible in the terminal.
-- A client/server architecture. This, for example, can allow RAILWISE to run on your computer while you drive it remotely from a mobile app, meaning that the TUI frontend is just one of the possible clients.
 
 ---
 
-**Join our community** [Discord](https://discord.gg/railwise) | [X.com](https://x.com/railwise)
+## 系统架构
+
+### 自定义智能体（7 个领域专家）
+
+| 智能体 | 角色 | 职责 |
+|--------|------|------|
+| `chief_manager` | 项目总工 | 任务分发与流程调度 |
+| `solution_architect` | 方案设计师 | 监测方案编制、技术路线规划 |
+| `data_analyst` | 数据分析师 | 平差计算、变形趋势分析、预警研判 |
+| `qa_inspector` | 外业质检员 | 原始数据完整性与闭合差审查 |
+| `qa_reviewer` | 内业审核员 | 报告质量终审 |
+| `technical_writer` | 技术文档员 | 监测日报/周报/月报撰写 |
+| `commercial_specialist` | 商务专员 | 投标文件、计量支付 |
+
+### 专用工具
+
+| 工具 | 功能 |
+|------|------|
+| `survey_calculator` | 水准/导线闭合差校核、最小二乘严密平差、预警等级判定 |
+| `monitoring_csv` | 自动化监测 CSV 海量数据清洗与统计 |
+| `format_parser` | 徕卡 GSI-8/GSI-16 及 DAT 格式文件解析 |
+| `chart_generator` | SVG 趋势折线图生成（多测点 + 报警线） |
+
+### 业务命令（SOP 工作流）
+
+| 命令 | 用途 |
+|------|------|
+| `/daily-report` | 监测日报生成 |
+| `/data-check` | 外业数据质检 |
+| `/bid-prepare` | 投标文件编制 |
+| `/safety-check` | 安全巡检记录 |
+| `/payment-reminder` | 计量支付催款 |
+
+---
+
+## 项目结构
+
+```
+RAILWISE-CLI/
+├── .railwise/                  # 自定义配置（智能体、工具、命令）
+│   ├── agent/                  # 智能体 prompt 定义
+│   ├── tool/                   # TypeScript 自定义工具
+│   ├── command/                # SOP 命令模板
+│   └── railwise.jsonc          # 运行时配置（API 密钥，需自行创建）
+├── packages/
+│   ├── railwise/               # CLI 核心引擎
+│   ├── nb-railwise/            # 插件 SDK（工具开发 API）
+│   ├── app/                    # TUI 前端
+│   ├── desktop/                # 桌面端（开发中）
+│   └── ...
+└── package.json                # Bun monorepo
+```
+
+## 插件开发
+
+自定义工具使用 `nb-railwise` SDK 开发，放置于 `.railwise/tool/` 目录即可自动加载：
+
+```typescript
+/// <reference path="../env.d.ts" />
+import { tool } from "nb-railwise/tool"
+
+export default tool({
+  description: "工具描述",
+  args: {
+    input: tool.schema.string().describe("参数说明"),
+  },
+  async execute(args) {
+    // 实现逻辑
+    return JSON.stringify({ result: "..." })
+  },
+})
+```
+
+---
+
+## 致谢
+
+本项目基于 [OpenCode](https://github.com/sst/opencode)（MIT 协议）构建，感谢 SST 团队的开源贡献。
+
+## 许可
+
+MIT

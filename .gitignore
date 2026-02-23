@@ -17,8 +17,8 @@ ts-dist
 /result
 refs
 Session.vim
-railwise.json
-railwise.jsonc
+/railwise.json
+/railwise.jsonc
 a.out
 target
 .scripts

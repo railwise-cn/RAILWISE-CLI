@@ -13,7 +13,8 @@
     "prepare": "husky",
     "random": "echo 'Random script'",
     "hello": "echo 'Hello World!'",
-    "test": "echo 'do not run tests from root' && exit 1"
+    "test": "echo 'do not run tests from root' && exit 1",
+    "postinstall": "mkdir -p .railwise/node_modules && ln -sf ../../packages/nb-railwise .railwise/node_modules/nb-railwise"
   },
   "workspaces": {
     "packages": [
@@ -86,7 +87,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_GITHUB_ORG/railwise"
+    "url": "https://github.com/railwise-cn/RAILWISE-CLI"
   },
   "license": "MIT",
   "prettier": {

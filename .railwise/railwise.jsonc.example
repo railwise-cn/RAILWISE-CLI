@@ -1,34 +1,29 @@
 {
   "$schema": "https://railwise.ai/config.json",
-  "model": "anthropic/claude-opus-4-6",
+  // 默认使用的模型
+  "model": "anthropic/claude-sonnet-4-20250514",
   "provider": {
+    // Anthropic 直连或代理
     "anthropic": {
       "options": {
-        "baseURL": "https://api.jiekou.ai/anthropic",
-        "apiKey": "YOUR_API_KEY_HERE"
+        "baseURL": "https://api.anthropic.com",
+        "apiKey": "sk-ant-xxxx-YOUR-API-KEY-HERE"
       }
     },
+    // OpenAI 兼容接口（可接代理）
     "openai": {
       "options": {
-        "baseURL": "https://api.jiekou.ai/openai/v1",
-        "apiKey": "YOUR_API_KEY_HERE"
+        "baseURL": "https://api.openai.com/v1",
+        "apiKey": "sk-xxxx-YOUR-API-KEY-HERE"
       }
     },
+    // Gemini（通过 OpenAI 兼容接口或原生接口）
     "gemini": {
       "options": {
-        "baseURL": "https://api.jiekou.ai/openai/v1",
-        "apiKey": "YOUR_API_KEY_HERE"
+        "baseURL": "https://generativelanguage.googleapis.com/v1beta/openai",
+        "apiKey": "YOUR-GEMINI-API-KEY-HERE"
       },
       "models": {
-        "antigravity-claude-opus-4-5-thinking": {
-          "name": "Claude Opus 4.5 Thinking (Antigravity)",
-          "limit": { "context": 200000, "output": 64000 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
-          "variants": {
-            "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
-            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
-          }
-        },
         "gemini-2.5-flash": {
           "name": "Gemini 2.5 Flash",
           "limit": { "context": 1048576, "output": 65536 },
@@ -37,16 +32,6 @@
         "gemini-2.5-pro": {
           "name": "Gemini 2.5 Pro",
           "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
-        },
-        "gemini-3-flash-preview": {
-          "name": "Gemini 3 Flash Preview",
-          "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
-        },
-        "gemini-3-pro-preview": {
-          "name": "Gemini 3 Pro Preview",
-          "limit": { "context": 1048576, "output": 65535 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
         }
       }

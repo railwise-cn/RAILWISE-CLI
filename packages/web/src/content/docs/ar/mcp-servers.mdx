@@ -3,7 +3,7 @@ title: خوادم MCP
 description: أضف أدوات MCP محلية وبعيدة.
 ---
 
-يمكنك إضافة أدوات خارجية إلى RAILWISE (甬算) باستخدام _Model Context Protocol_، أو MCP. يدعم RAILWISE (甬算) خوادم محلية وبعيدة.
+يمكنك إضافة أدوات خارجية إلى RAILWISE باستخدام _Model Context Protocol_، أو MCP. يدعم RAILWISE خوادم محلية وبعيدة.
 
 بعد إضافتها، تصبح أدوات MCP متاحة تلقائيا للـ LLM إلى جانب الأدوات المضمنة.
 
@@ -23,7 +23,7 @@ description: أضف أدوات MCP محلية وبعيدة.
 
 ## التمكين
 
-يمكنك تعريف خوادم MCP في [إعدادات RAILWISE (甬算)](https://railwise.ai/docs/config/) ضمن `mcp`. أضف كل خادم MCP باسم فريد. ويمكنك الإشارة إلى ذلك الخادم بالاسم عند توجيه الطلب إلى الـ LLM.
+يمكنك تعريف خوادم MCP في [إعدادات RAILWISE](https://railwise.ai/docs/config/) ضمن `mcp`. أضف كل خادم MCP باسم فريد. ويمكنك الإشارة إلى ذلك الخادم بالاسم عند توجيه الطلب إلى الـ LLM.
 
 ```jsonc title="railwise.jsonc" {6}
 {
@@ -165,7 +165,7 @@ use the mcp_everything tool to add the number 3 and 4
 
 ## OAuth
 
-يتولى RAILWISE (甬算) تلقائيا معالجة مصادقة OAuth لخوادم MCP البعيدة. عندما يتطلب خادم ما المصادقة، سيقوم RAILWISE (甬算) بما يلي:
+يتولى RAILWISE تلقائيا معالجة مصادقة OAuth لخوادم MCP البعيدة. عندما يتطلب خادم ما المصادقة، سيقوم RAILWISE بما يلي:
 
 1. اكتشاف استجابة 401 وبدء تدفق OAuth
 2. استخدام **Dynamic Client Registration (RFC 7591)** إذا كان الخادم يدعمه
@@ -189,7 +189,7 @@ use the mcp_everything tool to add the number 3 and 4
 }
 ```
 
-إذا كان الخادم يتطلب المصادقة، فسيطلب منك RAILWISE (甬算) المصادقة عند أول محاولة لاستخدامه. وإذا لم يحدث ذلك، يمكنك [تشغيل التدفق يدويا](#authenticating) باستخدام `railwise mcp auth <server-name>`.
+إذا كان الخادم يتطلب المصادقة، فسيطلب منك RAILWISE المصادقة عند أول محاولة لاستخدامه. وإذا لم يحدث ذلك، يمكنك [تشغيل التدفق يدويا](#authenticating) باستخدام `railwise mcp auth <server-name>`.
 
 ---
 
@@ -238,7 +238,7 @@ railwise mcp list
 railwise mcp logout my-oauth-server
 ```
 
-سيفتح أمر `mcp auth` متصفحك للتفويض. بعد إكمال التفويض، سيخزّن RAILWISE (甬算) الرموز بشكل آمن في `~/.local/share/railwise/mcp-auth.json`.
+سيفتح أمر `mcp auth` متصفحك للتفويض. بعد إكمال التفويض، سيخزّن RAILWISE الرموز بشكل آمن في `~/.local/share/railwise/mcp-auth.json`.
 
 ---
 
@@ -291,7 +291,7 @@ railwise mcp debug my-oauth-server
 
 ## الإدارة
 
-تتوفر خوادم MCP لديك كأدوات داخل RAILWISE (甬算) إلى جانب الأدوات المضمنة. لذا يمكنك إدارتها عبر إعدادات RAILWISE (甬算) مثل أي أداة أخرى.
+تتوفر خوادم MCP لديك كأدوات داخل RAILWISE إلى جانب الأدوات المضمنة. لذا يمكنك إدارتها عبر إعدادات RAILWISE مثل أي أداة أخرى.
 
 ---
 
@@ -423,7 +423,7 @@ railwise mcp debug my-oauth-server
 railwise mcp auth sentry
 ```
 
-سيؤدي ذلك إلى فتح نافذة متصفح لإكمال تدفق OAuth وربط RAILWISE (甬算) بحساب Sentry الخاص بك.
+سيؤدي ذلك إلى فتح نافذة متصفح لإكمال تدفق OAuth وربط RAILWISE بحساب Sentry الخاص بك.
 
 بعد المصادقة، يمكنك استخدام أدوات Sentry في طلباتك للاستعلام عن القضايا والمشاريع وبيانات الأخطاء.
 

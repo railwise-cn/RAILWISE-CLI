@@ -388,12 +388,12 @@ test("migrates mode field to agent field", async () => {
   })
 })
 
-test("loads config from .opencode directory", async () => {
+test("loads config from .railwise directory", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const opencodeDir = path.join(dir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
-      const agentDir = path.join(opencodeDir, "agent")
+      const railwiseDir = path.join(dir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
+      const agentDir = path.join(railwiseDir, "agent")
       await fs.mkdir(agentDir, { recursive: true })
 
       await Filesystem.write(
@@ -423,10 +423,10 @@ Test agent prompt`,
 test("loads agents from .railwise/agents (plural)", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const opencodeDir = path.join(dir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(dir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
-      const agentsDir = path.join(opencodeDir, "agents")
+      const agentsDir = path.join(railwiseDir, "agents")
       await fs.mkdir(path.join(agentsDir, "nested"), { recursive: true })
 
       await Filesystem.write(
@@ -474,10 +474,10 @@ Nested agent prompt`,
 test("loads commands from .railwise/command (singular)", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const opencodeDir = path.join(dir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(dir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
-      const commandDir = path.join(opencodeDir, "command")
+      const commandDir = path.join(railwiseDir, "command")
       await fs.mkdir(path.join(commandDir, "nested"), { recursive: true })
 
       await Filesystem.write(
@@ -519,10 +519,10 @@ Nested command template`,
 test("loads commands from .railwise/commands (plural)", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const opencodeDir = path.join(dir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(dir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
-      const commandsDir = path.join(opencodeDir, "commands")
+      const commandsDir = path.join(railwiseDir, "commands")
       await fs.mkdir(path.join(commandsDir, "nested"), { recursive: true })
 
       await Filesystem.write(
@@ -703,10 +703,10 @@ test("resolves scoped npm plugins in config", async () => {
 test("merges plugin arrays from global and local configs", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      // Create a nested project structure with local .opencode config
+      // Create a nested project structure with local .railwise config
       const projectDir = path.join(dir, "project")
-      const opencodeDir = path.join(projectDir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(projectDir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
       // Global config with plugins
       await Filesystem.write(
@@ -717,9 +717,9 @@ test("merges plugin arrays from global and local configs", async () => {
         }),
       )
 
-      // Local .opencode config with different plugins
+      // Local .railwise config with different plugins
       await Filesystem.write(
-        path.join(opencodeDir, "railwise.json"),
+        path.join(railwiseDir, "railwise.json"),
         JSON.stringify({
           $schema: "https://railwise.ai/config.json",
           plugin: ["local-plugin-1"],
@@ -749,9 +749,9 @@ test("merges plugin arrays from global and local configs", async () => {
 test("does not error when only custom agent is a subagent", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const opencodeDir = path.join(dir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
-      const agentDir = path.join(opencodeDir, "agent")
+      const railwiseDir = path.join(dir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
+      const agentDir = path.join(railwiseDir, "agent")
       await fs.mkdir(agentDir, { recursive: true })
 
       await Filesystem.write(
@@ -782,8 +782,8 @@ test("merges instructions arrays from global and local configs", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
       const projectDir = path.join(dir, "project")
-      const opencodeDir = path.join(projectDir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(projectDir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
       await Filesystem.write(
         path.join(dir, "railwise.json"),
@@ -794,7 +794,7 @@ test("merges instructions arrays from global and local configs", async () => {
       )
 
       await Filesystem.write(
-        path.join(opencodeDir, "railwise.json"),
+        path.join(railwiseDir, "railwise.json"),
         JSON.stringify({
           $schema: "https://railwise.ai/config.json",
           instructions: ["local-instructions.md"],
@@ -821,8 +821,8 @@ test("deduplicates duplicate instructions from global and local configs", async 
   await using tmp = await tmpdir({
     init: async (dir) => {
       const projectDir = path.join(dir, "project")
-      const opencodeDir = path.join(projectDir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(projectDir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
       await Filesystem.write(
         path.join(dir, "railwise.json"),
@@ -833,7 +833,7 @@ test("deduplicates duplicate instructions from global and local configs", async 
       )
 
       await Filesystem.write(
-        path.join(opencodeDir, "railwise.json"),
+        path.join(railwiseDir, "railwise.json"),
         JSON.stringify({
           $schema: "https://railwise.ai/config.json",
           instructions: ["duplicate.md", "local-only.md"],
@@ -862,10 +862,10 @@ test("deduplicates duplicate instructions from global and local configs", async 
 test("deduplicates duplicate plugins from global and local configs", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      // Create a nested project structure with local .opencode config
+      // Create a nested project structure with local .railwise config
       const projectDir = path.join(dir, "project")
-      const opencodeDir = path.join(projectDir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      const railwiseDir = path.join(projectDir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
 
       // Global config with plugins
       await Filesystem.write(
@@ -876,9 +876,9 @@ test("deduplicates duplicate plugins from global and local configs", async () =>
         }),
       )
 
-      // Local .opencode config with some overlapping plugins
+      // Local .railwise config with some overlapping plugins
       await Filesystem.write(
-        path.join(opencodeDir, "railwise.json"),
+        path.join(railwiseDir, "railwise.json"),
         JSON.stringify({
           $schema: "https://railwise.ai/config.json",
           plugin: ["duplicate-plugin", "local-plugin-1"],
@@ -1396,7 +1396,7 @@ test("MCP config deep merges preserving base config properties", async () => {
   })
 })
 
-test("local .opencode config can override MCP from project config", async () => {
+test("local .railwise config can override MCP from project config", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
       // Project config with disabled MCP
@@ -1413,11 +1413,11 @@ test("local .opencode config can override MCP from project config", async () => 
           },
         }),
       )
-      // Local .opencode directory config enables it
-      const opencodeDir = path.join(dir, ".opencode")
-      await fs.mkdir(opencodeDir, { recursive: true })
+      // Local .railwise directory config enables it
+      const railwiseDir = path.join(dir, ".railwise")
+      await fs.mkdir(railwiseDir, { recursive: true })
       await Filesystem.write(
-        path.join(opencodeDir, "railwise.json"),
+        path.join(railwiseDir, "railwise.json"),
         JSON.stringify({
           $schema: "https://railwise.ai/config.json",
           mcp: {
@@ -1573,8 +1573,8 @@ describe("deduplicatePlugins", () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
         const projectDir = path.join(dir, "project")
-        const opencodeDir = path.join(projectDir, ".opencode")
-        const pluginDir = path.join(opencodeDir, "plugin")
+        const railwiseDir = path.join(projectDir, ".railwise")
+        const pluginDir = path.join(railwiseDir, "plugin")
         await fs.mkdir(pluginDir, { recursive: true })
 
         await Filesystem.write(
@@ -1647,17 +1647,17 @@ describe("RAILWISE_DISABLE_PROJECT_CONFIG", () => {
     try {
       await using tmp = await tmpdir({
         init: async (dir) => {
-          // Create a .opencode directory with a command
-          const opencodeDir = path.join(dir, ".opencode", "command")
-          await fs.mkdir(opencodeDir, { recursive: true })
-          await Filesystem.write(path.join(opencodeDir, "test-cmd.md"), "# Test Command\nThis is a test command.")
+          // Create a .railwise directory with a command
+          const railwiseDir = path.join(dir, ".railwise", "command")
+          await fs.mkdir(railwiseDir, { recursive: true })
+          await Filesystem.write(path.join(railwiseDir, "test-cmd.md"), "# Test Command\nThis is a test command.")
         },
       })
       await Instance.provide({
         directory: tmp.path,
         fn: async () => {
           const directories = await Config.directories()
-          // Project .opencode should NOT be in directories list
+          // Project .railwise should NOT be in directories list
           const hasProjectOpencode = directories.some((d) => d.startsWith(tmp.path))
           expect(hasProjectOpencode).toBe(false)
         },

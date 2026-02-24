@@ -1,17 +1,17 @@
 ---
 title: Anbieter
-description: Verwendung eines beliebigen LLM-Anbieters in RAILWISE (甬算).
+description: Verwendung eines beliebigen LLM-Anbieters in RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 
-RAILWISE (甬算) verwendet [AI SDK](https://ai-sdk.dev/) und [Models.dev](https://models.dev) zur Unterstützung von **75+ LLM-Anbietern** und unterstützt die Ausführung lokaler Modelle.
+RAILWISE verwendet [AI SDK](https://ai-sdk.dev/) und [Models.dev](https://models.dev) zur Unterstützung von **75+ LLM-Anbietern** und unterstützt die Ausführung lokaler Modelle.
 
 Um einen Anbieter hinzuzufügen, müssen Sie:
 
 1. Fügen Sie die API-Schlüssel für den Anbieter mit dem Befehl `/connect` hinzu.
-2. Konfigurieren Sie den Anbieter in Ihrer RAILWISE (甬算)-Konfiguration.
+2. Konfigurieren Sie den Anbieter in Ihrer RAILWISE-Konfiguration.
 
 ---
 
@@ -24,7 +24,7 @@ in `~/.local/share/railwise/auth.json`.
 
 ### Konfiguration
 
-Sie können die Anbieter über den Abschnitt `provider` in Ihrem RAILWISE (甬算) anpassen
+Sie können die Anbieter über den Abschnitt `provider` in Ihrem RAILWISE anpassen
 config.
 
 ---
@@ -48,16 +48,16 @@ Sie können die Base URL für jeden Anbieter anpassen, indem Sie die Option `bas
 
 ---
 
-## RAILWISE (甬算) Zen
+## RAILWISE Zen
 
-RAILWISE (甬算) Zen ist eine Liste von Modellen, die vom RAILWISE (甬算)-Team bereitgestellt wurden
-Getestet und verifiziert, dass es gut mit RAILWISE (甬算) funktioniert. [Learn more](/docs/zen).
+RAILWISE Zen ist eine Liste von Modellen, die vom RAILWISE-Team bereitgestellt wurden
+Getestet und verifiziert, dass es gut mit RAILWISE funktioniert. [Learn more](/docs/zen).
 
 :::tip
-Wenn Sie neu sind, empfehlen wir Ihnen, mit RAILWISE (甬算) Zen zu beginnen.
+Wenn Sie neu sind, empfehlen wir Ihnen, mit RAILWISE Zen zu beginnen.
 :::
 
-1. Führen Sie den Befehl `/connect` in TUI aus, wählen Sie RAILWISE (甬算) aus und gehen Sie zu [railwise.ai/auth](https://railwise.ai/auth).
+1. Führen Sie den Befehl `/connect` in TUI aus, wählen Sie RAILWISE aus und gehen Sie zu [railwise.ai/auth](https://railwise.ai/auth).
 
    ```txt
    /connect
@@ -80,7 +80,7 @@ Wenn Sie neu sind, empfehlen wir Ihnen, mit RAILWISE (甬算) Zen zu beginnen.
    /models
    ```
 
-Es funktioniert wie jeder andere Anbieter in RAILWISE (甬算) und ist völlig optional.
+Es funktioniert wie jeder andere Anbieter in RAILWISE und ist völlig optional.
 
 ---
 
@@ -124,7 +124,7 @@ Sehen Sie hier keinen Anbieter? Senden Sie einen PR.
 
 ### Amazon Bedrock
 
-So verwenden Sie Amazon Bedrock mit RAILWISE (甬算):
+So verwenden Sie Amazon Bedrock mit RAILWISE:
 
 1. Gehen Sie zum **Modellkatalog** in der Amazon Bedrock-Konsole und fordern Sie an
    Zugriff auf die gewünschten Modelle.
@@ -137,7 +137,7 @@ So verwenden Sie Amazon Bedrock mit RAILWISE (甬算):
 
    #### Umgebungsvariablen (Schnellstart)
 
-   Legen Sie eine dieser Umgebungsvariablen fest, während Sie RAILWISE (甬算) ausführen:
+   Legen Sie eine dieser Umgebungsvariablen fest, während Sie RAILWISE ausführen:
 
    ```bash
    # Option 1: Using AWS access keys
@@ -279,7 +279,7 @@ Verwenden Sie für benutzerdefinierte Inferenzprofile den Modell- und Anbieterna
    ```
 
 :::info
-Die Verwendung Ihres Claude Pro/Max-Abonnements in RAILWISE (甬算) wird von [Anthropic](https://anthropic.com) nicht offiziell unterstützt.
+Die Verwendung Ihres Claude Pro/Max-Abonnements in RAILWISE wird von [Anthropic](https://anthropic.com) nicht offiziell unterstützt.
 :::
 
 ##### Verwendung von API-Keys
@@ -303,7 +303,7 @@ Wenn Sie auf die Fehlermeldung „Es tut mir leid, aber ich kann Ihnen bei diese
 2. Gehen Sie zu [Azure AI Foundry](https://ai.azure.com/) und stellen Sie ein Modell bereit.
 
    :::note
-   Der Bereitstellungsname muss mit dem Modellnamen übereinstimmen, damit RAILWISE (甬算) ordnungsgemäß funktioniert.
+   Der Bereitstellungsname muss mit dem Modellnamen übereinstimmen, damit RAILWISE ordnungsgemäß funktioniert.
    :::
 
 3. Führen Sie den Befehl `/connect` aus und suchen Sie nach **Azure**.
@@ -350,7 +350,7 @@ Wenn Sie auf die Fehlermeldung „Es tut mir leid, aber ich kann Ihnen bei diese
 2. Gehen Sie zu [Azure AI Foundry](https://ai.azure.com/) und stellen Sie ein Modell bereit.
 
    :::note
-   Der Bereitstellungsname muss mit dem Modellnamen übereinstimmen, damit RAILWISE (甬算) ordnungsgemäß funktioniert.
+   Der Bereitstellungsname muss mit dem Modellnamen übereinstimmen, damit RAILWISE ordnungsgemäß funktioniert.
    :::
 
 3. Führen Sie den Befehl `/connect` aus und suchen Sie nach **Azure Cognitive Services**.
@@ -482,7 +482,7 @@ Mit dem Cloudflare AI Gateway können Sie über einen einheitlichen Endpunkt auf
    /models
    ```
 
-   Sie können Modelle auch über Ihre RAILWISE (甬算)-Konfiguration hinzufügen.
+   Sie können Modelle auch über Ihre RAILWISE-Konfiguration hinzufügen.
 
    ```json title="railwise.json"
    {
@@ -662,7 +662,7 @@ GitLab Duo bietet AI-gestützten Agenten-Chat mit nativen Tool-Aufruffunktionen 
    #### Verwendung eines persönlichen Zugriffstokens
    1. Gehe zu [GitLab User Settings > Access Tokens](https://gitlab.com/-/user_settings/personal_access_tokens)
    2. Klicken Sie auf **Neues Token hinzufügen**
-   3. Name: `RAILWISE (甬算)`, Bereiche: `api`
+   3. Name: `RAILWISE`, Bereiche: `api`
    4. Kopieren Sie das Token (beginnt mit `glpat-`)
    5. Geben Sie es im Terminal ein
 
@@ -679,14 +679,14 @@ GitLab Duo bietet AI-gestützten Agenten-Chat mit nativen Tool-Aufruffunktionen 
 
 :::note
 Sie können auch die Umgebungsvariable „GITLAB_TOKEN“ angeben, wenn Sie dies nicht möchten
-um das Token im RAILWISE (甬算)-Authentifizierungsspeicher zu speichern.
+um das Token im RAILWISE-Authentifizierungsspeicher zu speichern.
 :::
 
 ##### Selbstgehostetes GitLab
 
 :::note[Compliance-Hinweis]
-RAILWISE (甬算) verwendet ein kleines Modell für einige AI-Aufgaben wie das Generieren des Sitzungstitels.
-Es ist standardmäßig für die Verwendung von gpt-5-nano konfiguriert und wird von Zen gehostet. Zum Sperren von RAILWISE (甬算)
+RAILWISE verwendet ein kleines Modell für einige AI-Aufgaben wie das Generieren des Sitzungstitels.
+Es ist standardmäßig für die Verwendung von gpt-5-nano konfiguriert und wird von Zen gehostet. Zum Sperren von RAILWISE
 Um nur Ihre eigene von GitLab gehostete Instanz zu verwenden, fügen Sie Folgendes zu Ihrer hinzu
 `railwise.json`-Datei. Es wird außerdem empfohlen, die Sitzungsfreigabe zu deaktivieren.
 
@@ -746,7 +746,7 @@ Stellen Sie dann die Anwendung ID als Umgebungsvariable bereit:
 export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 ```
 
-Weitere Dokumentation auf der [opencode-gitlab-auth](https://www.npmjs.com/package/@gitlab/opencode-gitlab-auth)-Homepage.
+Weitere Dokumentation auf der [railwise-gitlab-auth](https://www.npmjs.com/package/@gitlab/railwise-gitlab-auth)-Homepage.
 
 ##### Konfiguration
 
@@ -786,7 +786,7 @@ Dieses Plugin bietet umfassende GitLab-Repository-Verwaltungsfunktionen, einschl
 
 ### GitHub Copilot
 
-So verwenden Sie Ihr GitHub Copilot-Abonnement mit RAILWISE (甬算):
+So verwenden Sie Ihr GitHub Copilot-Abonnement mit RAILWISE:
 
 :::note
 Einige Modelle benötigen möglicherweise ein [Pro+
@@ -823,7 +823,7 @@ Einige Modelle müssen in Ihrem [GitHub Copilot settings](https://docs.github.co
 
 ### Google Vertex AI
 
-So verwenden Sie Google Vertex AI mit RAILWISE (甬算):
+So verwenden Sie Google Vertex AI mit RAILWISE:
 
 1. Gehen Sie zum **Model Garden** in der Google Cloud Console und überprüfen Sie die
    Modelle, die in Ihrer Region verfügbar sind.
@@ -839,7 +839,7 @@ So verwenden Sie Google Vertex AI mit RAILWISE (甬算):
      - `GOOGLE_APPLICATION_CREDENTIALS`: Pfad zur Schlüsseldatei Ihres Dienstkontos JSON
      - Authentifizieren Sie sich mit gcloud CLI: `gcloud auth application-default login`
 
-   Legen Sie sie fest, während Sie RAILWISE (甬算) ausführen.
+   Legen Sie sie fest, während Sie RAILWISE ausführen.
 
    ```bash
    GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json GOOGLE_CLOUD_PROJECT=your-project-id railwise
@@ -952,7 +952,7 @@ Weitere Anbieter und erweiterte Funktionen wie Caching und Ratenbegrenzung finde
 
 #### Optionale Konfigurationen
 
-Falls Sie eine Funktion oder ein Modell von Helicone sehen, das nicht automatisch über RAILWISE (甬算) konfiguriert wird, können Sie es jederzeit selbst konfigurieren.
+Falls Sie eine Funktion oder ein Modell von Helicone sehen, das nicht automatisch über RAILWISE konfiguriert wird, können Sie es jederzeit selbst konfigurieren.
 
 Hier ist [Helicone's Model Directory](https://helicone.ai/models). Sie benötigen dies, um die IDs der Modelle abzurufen, die Sie hinzufügen möchten.
 
@@ -1005,7 +1005,7 @@ Helicone unterstützt benutzerdefinierte Header für Funktionen wie Caching, Ben
 
 ##### Sitzungsverfolgung
 
-Mit der [Sessions](https://docs.helicone.ai/features/sessions)-Funktion von Helicone können Sie zusammengehörige LLM-Anfragen gruppieren. Verwenden Sie das [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session)-Plugin, um jede RAILWISE (甬算)-Konversation automatisch als Sitzung in Helicone zu protokollieren.
+Mit der [Sessions](https://docs.helicone.ai/features/sessions)-Funktion von Helicone können Sie zusammengehörige LLM-Anfragen gruppieren. Verwenden Sie das [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session)-Plugin, um jede RAILWISE-Konversation automatisch als Sitzung in Helicone zu protokollieren.
 
 ```bash
 npm install -g railwise-helicone-session
@@ -1019,7 +1019,7 @@ Fügen Sie es Ihrer Konfiguration hinzu.
 }
 ```
 
-Das Plugin fügt `Helicone-Session-Id`- und `Helicone-Session-Name`-Header in Ihre Anfragen ein. Auf der Seite „Sitzungen“ von Helicone wird jede RAILWISE (甬算)-Konversation als separate Sitzung aufgeführt.
+Das Plugin fügt `Helicone-Session-Id`- und `Helicone-Session-Name`-Header in Ihre Anfragen ein. Auf der Seite „Sitzungen“ von Helicone wird jede RAILWISE-Konversation als separate Sitzung aufgeführt.
 
 ##### Gängige Helicone-Header
 
@@ -1036,7 +1036,7 @@ Alle verfügbaren Header finden Sie unter [Helicone Header Directory](https://do
 
 ### llama.cpp
 
-Sie können RAILWISE (甬算) für die Verwendung lokaler Modelle über das Dienstprogramm [llama.cpp's](https://github.com/ggml-org/llama.cpp) llama-server konfigurieren
+Sie können RAILWISE für die Verwendung lokaler Modelle über das Dienstprogramm [llama.cpp's](https://github.com/ggml-org/llama.cpp) llama-server konfigurieren
 
 ```json title="railwise.json" "llama.cpp" {5, 6, 8, 10-15}
 {
@@ -1103,7 +1103,7 @@ IO.NET bietet 17-Modelle, die für verschiedene Anwendungsfälle optimiert sind:
 
 ### LM Studio
 
-Sie können RAILWISE (甬算) über LM Studio für die Verwendung lokaler Modelle konfigurieren.
+Sie können RAILWISE über LM Studio für die Verwendung lokaler Modelle konfigurieren.
 
 ```json title="railwise.json" "lmstudio" {5, 6, 8, 10-14}
 {
@@ -1220,10 +1220,10 @@ So verwenden Sie Kimi K2 von Moonshot AI:
 
 ### Ollama
 
-Sie können RAILWISE (甬算) über Ollama für die Verwendung lokaler Modelle konfigurieren.
+Sie können RAILWISE über Ollama für die Verwendung lokaler Modelle konfigurieren.
 
 :::tip
-Ollama kann sich automatisch für RAILWISE (甬算) konfigurieren. Weitere Informationen finden Sie unter [Ollama integration docs](https://docs.ollama.com/integrations/railwise).
+Ollama kann sich automatisch für RAILWISE konfigurieren. Weitere Informationen finden Sie unter [Ollama integration docs](https://docs.ollama.com/integrations/railwise).
 :::
 
 ```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
@@ -1262,13 +1262,13 @@ Wenn Toolaufrufe nicht funktionieren, versuchen Sie, `num_ctx` in Ollama zu erh�
 
 ### Ollama Cloud
 
-So verwenden Sie Ollama Cloud mit RAILWISE (甬算):
+So verwenden Sie Ollama Cloud mit RAILWISE:
 
 1. Gehen Sie zu [https://ollama.com/](https://ollama.com/) und melden Sie sich an oder erstellen Sie ein Konto.
 
 2. Navigieren Sie zu **Einstellungen** > **Schlüssel** und klicken Sie auf **Add API Key**, um einen neuen API-Schlüssel zu generieren.
 
-3. Kopieren Sie den API-Schlüssel zur Verwendung in RAILWISE (甬算).
+3. Kopieren Sie den API-Schlüssel zur Verwendung in RAILWISE.
 
 4. Führen Sie den Befehl `/connect` aus und suchen Sie nach **Ollama Cloud**.
 
@@ -1285,7 +1285,7 @@ So verwenden Sie Ollama Cloud mit RAILWISE (甬算):
    └ enter
    ```
 
-6. **Wichtig**: Bevor Sie Cloud-Modelle in RAILWISE (甬算) verwenden, müssen Sie die Modellinformationen lokal abrufen:
+6. **Wichtig**: Bevor Sie Cloud-Modelle in RAILWISE verwenden, müssen Sie die Modellinformationen lokal abrufen:
 
    ```bash
    ollama pull gpt-oss:20b-cloud
@@ -1332,19 +1332,19 @@ Wenn Sie bereits über einen API-Schlüssel verfügen, können Sie **API-Schlüs
 
 ---
 
-### RAILWISE (甬算) Zen
+### RAILWISE Zen
 
-RAILWISE (甬算) Zen ist eine Liste getesteter und verifizierter Modelle, die vom RAILWISE (甬算)-Team bereitgestellt werden. [Learn more](/docs/zen).
+RAILWISE Zen ist eine Liste getesteter und verifizierter Modelle, die vom RAILWISE-Team bereitgestellt werden. [Learn more](/docs/zen).
 
-1. Melden Sie sich bei **<a href={console}>RAILWISE (甬算) Zen</a>** an und klicken Sie auf **Create API Key**.
+1. Melden Sie sich bei **<a href={console}>RAILWISE Zen</a>** an und klicken Sie auf **Create API Key**.
 
-2. Führen Sie den Befehl `/connect` aus und suchen Sie nach **RAILWISE (甬算) Zen**.
+2. Führen Sie den Befehl `/connect` aus und suchen Sie nach **RAILWISE Zen**.
 
    ```txt
    /connect
    ```
 
-3. Geben Sie Ihren RAILWISE (甬算) API-Schlüssel ein.
+3. Geben Sie Ihren RAILWISE API-Schlüssel ein.
 
    ```txt
    ┌ API key
@@ -1386,7 +1386,7 @@ RAILWISE (甬算) Zen ist eine Liste getesteter und verifizierter Modelle, die v
    /models
    ```
 
-   Sie können auch zusätzliche Modelle über Ihre RAILWISE (甬算)-Konfiguration hinzufügen.
+   Sie können auch zusätzliche Modelle über Ihre RAILWISE-Konfiguration hinzufügen.
 
    ```json title="railwise.json" {6}
    {
@@ -1401,7 +1401,7 @@ RAILWISE (甬算) Zen ist eine Liste getesteter und verifizierter Modelle, die v
    }
    ```
 
-5. Sie können sie auch über Ihre RAILWISE (甬算)-Konfiguration anpassen. Hier ist ein Beispiel für die Angabe eines Anbieters
+5. Sie können sie auch über Ihre RAILWISE-Konfiguration anpassen. Hier ist ein Beispiel für die Angabe eines Anbieters
 
    ```json title="railwise.json"
    {
@@ -1509,7 +1509,7 @@ SAP AI Core bietet Zugriff auf 40+ Modelle von OpenAI, Anthropic, Google, Amazon
 
 ### Scaleway
 
-So verwenden Sie [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/) mit RAILWISE (甬算):
+So verwenden Sie [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/) mit RAILWISE:
 
 1. Gehen Sie zu [Scaleway Console IAM settings](https://console.scaleway.com/iam/api-keys), um einen neuen API-Schlüssel zu generieren.
 
@@ -1617,7 +1617,7 @@ Mit dem Vercel AI Gateway können Sie über einen einheitlichen Endpunkt auf Mod
    /models
    ```
 
-Sie können Modelle auch über Ihre RAILWISE (甬算)-Konfiguration anpassen. Hier ist ein Beispiel für die Angabe der Provider-Routing-Reihenfolge.
+Sie können Modelle auch über Ihre RAILWISE-Konfiguration anpassen. Hier ist ein Beispiel für die Angabe der Provider-Routing-Reihenfolge.
 
 ```json title="railwise.json"
 {
@@ -1727,7 +1727,7 @@ Einige nützliche Routing-Optionen:
    /models
    ```
 
-   Sie können auch zusätzliche Modelle über Ihre RAILWISE (甬算)-Konfiguration hinzufügen.
+   Sie können auch zusätzliche Modelle über Ihre RAILWISE-Konfiguration hinzufügen.
 
    ```json title="railwise.json" {6}
    {
@@ -1749,7 +1749,7 @@ Einige nützliche Routing-Optionen:
 So fügen Sie einen **OpenAI-kompatiblen** Anbieter hinzu, der nicht im Befehl `/connect` aufgeführt ist:
 
 :::tip
-Sie können jeden OpenAI-kompatiblen Anbieter mit RAILWISE (甬算) verwenden. Die meisten modernen AI-Anbieter bieten OpenAI-kompatible APIs an.
+Sie können jeden OpenAI-kompatiblen Anbieter mit RAILWISE verwenden. Die meisten modernen AI-Anbieter bieten OpenAI-kompatible APIs an.
 :::
 
 1. Führen Sie den Befehl `/connect` aus und scrollen Sie nach unten zu **Andere**.
@@ -1870,7 +1870,7 @@ Konfigurationsdetails:
 - **limit.context**: Maximale Eingabetokens, die das Modell akzeptiert.
 - **limit.output**: Maximale Token, die das Modell generieren kann.
 
-Mithilfe der `limit`-Felder kann RAILWISE (甬算) erkennen, wie viel Kontext Sie noch haben. Standardanbieter beziehen diese automatisch von models.dev.
+Mithilfe der `limit`-Felder kann RAILWISE erkennen, wie viel Kontext Sie noch haben. Standardanbieter beziehen diese automatisch von models.dev.
 
 ---
 
@@ -1883,7 +1883,7 @@ Wenn Sie Probleme beim Konfigurieren eines Anbieters haben, überprüfen Sie Fol
 
    Dies gilt nicht für Anbieter wie Amazon Bedrock, die für ihre Authentifizierung auf Umgebungsvariablen angewiesen sind.
 
-2. Überprüfen Sie bei benutzerdefinierten Anbietern die RAILWISE (甬算)-Konfiguration und:
-   - Stellen Sie sicher, dass der im Befehl `/connect` verwendete Anbieter ID mit dem ID in Ihrer RAILWISE (甬算)-Konfiguration übereinstimmt.
+2. Überprüfen Sie bei benutzerdefinierten Anbietern die RAILWISE-Konfiguration und:
+   - Stellen Sie sicher, dass der im Befehl `/connect` verwendete Anbieter ID mit dem ID in Ihrer RAILWISE-Konfiguration übereinstimmt.
    - Für den Anbieter wird das richtige npm-Paket verwendet. Verwenden Sie beispielsweise `@ai-sdk/cerebras` für Cerebras. Und für alle anderen OpenAI-kompatiblen Anbieter verwenden Sie `@ai-sdk/openai-compatible`.
    - Überprüfen Sie, ob im Feld `options.baseURL` der richtige Endpunkt API verwendet wird.

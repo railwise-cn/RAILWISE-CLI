@@ -532,7 +532,7 @@ test("skill directories are allowed for external_directory", async () => {
   await using tmp = await tmpdir({
     git: true,
     init: async (dir) => {
-      const skillDir = path.join(dir, ".opencode", "skill", "perm-skill")
+      const skillDir = path.join(dir, ".railwise", "skill", "perm-skill")
       await Bun.write(
         path.join(skillDir, "SKILL.md"),
         `---
@@ -554,7 +554,7 @@ description: Permission skill.
       directory: tmp.path,
       fn: async () => {
         const build = await Agent.get("build")
-        const skillDir = path.join(tmp.path, ".opencode", "skill", "perm-skill")
+        const skillDir = path.join(tmp.path, ".railwise", "skill", "perm-skill")
         const target = path.join(skillDir, "reference", "notes.md")
         expect(PermissionNext.evaluate("external_directory", target, build!.permission).action).toBe("allow")
       },

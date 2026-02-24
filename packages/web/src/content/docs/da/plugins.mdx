@@ -1,9 +1,9 @@
 ---
 title: Plugins
-description: Skriv dine egne plugins for at udvide RAILWISE (甬算).
+description: Skriv dine egne plugins for at udvide RAILWISE.
 ---
 
-Plugins giver dig mulighed for at udvide RAILWISE (甬算) ved at tilslutte sig forskellige begivenheder og tilpasse adfærd. Du kan oprette plugins for at tilføje nye funktioner, integrere med eksterne tjenester eller ændre RAILWISE (甬算)s standardadfærd.
+Plugins giver dig mulighed for at udvide RAILWISE ved at tilslutte sig forskellige begivenheder og tilpasse adfærd. Du kan oprette plugins for at tilføje nye funktioner, integrere med eksterne tjenester eller ændre RAILWISEs standardadfærd.
 
 For eksempler, tjek [plugins](/docs/ecosystem#plugins) oprettet af fællesskabet.
 
@@ -83,7 +83,7 @@ Lokale plugins og brugerdefinerede værktøjer kan bruge eksterne npm-pakker. Ti
 }
 ```
 
-RAILWISE (甬算) kører `bun install` ved opstart for at installere disse. Dine plugins og værktøjer kan derefter importere dem.
+RAILWISE kører `bun install` ved opstart for at installere disse. Dine plugins og værktøjer kan derefter importere dem.
 
 ```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -235,7 +235,7 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 Vi bruger `osascript` til at køre AppleScript på macOS. Her bruger vi det til at sende notifikationer.
 
 :::note
-Hvis du bruger RAILWISE (甬算) desktop-appen, kan den sende systemmeddelelser automatisk, når et svar er klar, eller når en session fejler.
+Hvis du bruger RAILWISE desktop-appen, kan den sende systemmeddelelser automatisk, når et svar er klar, eller når en session fejler.
 :::
 
 ---

@@ -4,12 +4,12 @@ description: 不同模式适用于不同的使用场景。
 ---
 
 :::caution
-模式现在通过 opencode 配置中的 `agent` 选项进行配置。`mode` 选项已废弃。[了解更多](/docs/agents)。
+模式现在通过 railwise 配置中的 `agent` 选项进行配置。`mode` 选项已废弃。[了解更多](/docs/agents)。
 :::
 
-opencode 中的模式允许你为不同的使用场景自定义行为、工具和提示词。
+railwise 中的模式允许你为不同的使用场景自定义行为、工具和提示词。
 
-opencode 自带两种内置模式：**build** 和 **plan**。你可以自定义这些模式，也可以通过 opencode 配置创建自己的模式。
+railwise 自带两种内置模式：**build** 和 **plan**。你可以自定义这些模式，也可以通过 railwise 配置创建自己的模式。
 
 你可以在会话中切换模式，也可以在配置文件中进行配置。
 
@@ -17,7 +17,7 @@ opencode 自带两种内置模式：**build** 和 **plan**。你可以自定义�
 
 ## 内置模式
 
-opencode 自带两种内置模式。
+railwise 自带两种内置模式。
 
 ---
 
@@ -85,10 +85,10 @@ Plan 是一种为规划和分析设计的受限模式。在 plan 模式下，以
 
 你还可以使用 Markdown 文件定义模式。将文件放置在以下位置：
 
-- 全局：`~/.config/opencode/modes/`
+- 全局：`~/.config/railwise/modes/`
 - 项目：`.railwise/modes/`
 
-```markdown title="~/.config/opencode/modes/review.md"
+```markdown title="~/.config/railwise/modes/review.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.1
@@ -171,7 +171,7 @@ Markdown 文件名即为模式名称（例如，`review.md` 创建一个名为 `
 }
 ```
 
-如果未指定温度，opencode 将使用模型特定的默认值（大多数模型通常为 0，Qwen 模型为 0.55）。
+如果未指定温度，railwise 将使用模型特定的默认值（大多数模型通常为 0，Qwen 模型为 0.55）。
 
 ---
 
@@ -189,7 +189,7 @@ Markdown 文件名即为模式名称（例如，`review.md` 创建一个名为 `
 }
 ```
 
-此路径相对于配置文件所在位置。因此，全局 opencode 配置和项目特定配置均可使用。
+此路径相对于配置文件所在位置。因此，全局 railwise 配置和项目特定配置均可使用。
 
 ---
 
@@ -265,7 +265,7 @@ Markdown 文件名即为模式名称（例如，`review.md` 创建一个名为 `
 
 ### 使用 Markdown 文件
 
-在 `.railwise/modes/` 中创建项目特定的模式文件，或在 `~/.config/opencode/modes/` 中创建全局模式文件：
+在 `.railwise/modes/` 中创建项目特定的模式文件，或在 `~/.config/railwise/modes/` 中创建全局模式文件：
 
 ```markdown title=".railwise/modes/debug.md"
 ---
@@ -291,7 +291,7 @@ Focus on:
 Do not make any changes to files. Only investigate and report.
 ```
 
-```markdown title="~/.config/opencode/modes/refactor.md"
+```markdown title="~/.config/railwise/modes/refactor.md"
 ---
 model: anthropic/claude-sonnet-4-20250514
 temperature: 0.2

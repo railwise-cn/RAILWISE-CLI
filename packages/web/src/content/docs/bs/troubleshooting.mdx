@@ -3,7 +3,7 @@ title: Rješavanje problema
 description: Uobičajeni problemi i kako ih riješiti.
 ---
 
-Da biste otklonili probleme s RAILWISE (甬算), počnite provjeravanjem dnevnika i lokalnih podataka koje pohranjuje na disku.
+Da biste otklonili probleme s RAILWISE, počnite provjeravanjem dnevnika i lokalnih podataka koje pohranjuje na disku.
 
 ---
 
@@ -22,7 +22,7 @@ Možete postaviti nivo dnevnika pomoću opcije komandne linije `--log-level` da 
 
 ## Pohrana
 
-RAILWISE (甬算) pohranjuje podatke o sesiji i druge podatke aplikacije na disku na:
+RAILWISE pohranjuje podatke o sesiji i druge podatke aplikacije na disku na:
 
 - **macOS/Linux**: `~/.local/share/railwise/`
 - **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.local\share\railwise`
@@ -39,13 +39,13 @@ Ovaj direktorij sadrži:
 
 ## Desktop aplikacija
 
-RAILWISE (甬算) Desktop pokreće lokalni RAILWISE (甬算) server (`railwise-cli` sidecar) u pozadini. Većina problema je uzrokovana nedostatkom dodatka, oštećenom keš memorijom ili lošim postavkama servera.
+RAILWISE Desktop pokreće lokalni RAILWISE server (`railwise-cli` sidecar) u pozadini. Većina problema je uzrokovana nedostatkom dodatka, oštećenom keš memorijom ili lošim postavkama servera.
 
 ### Brze provjere
 
 - Potpuno zatvorite i ponovo pokrenite aplikaciju.
 - Ako aplikacija prikaže ekran s greškom, kliknite na **Restart** i kopirajte detalje o grešci.
-- samo za macOS: `RAILWISE (甬算)` meni -> **Ponovo učitaj Webview** (pomaže ako je korisnički interfejs prazan/zamrznut).
+- samo za macOS: `RAILWISE` meni -> **Ponovo učitaj Webview** (pomaže ako je korisnički interfejs prazan/zamrznut).
 
 ---
 
@@ -72,7 +72,7 @@ Ako imate konfigurirane dodatke, privremeno ih onemogućite uklanjanjem ključa 
 
 #### Provjera direktorija dodataka
 
-RAILWISE (甬算) također može učitati lokalne dodatke s diska. Privremeno ih maknite s puta (ili preimenujte folder) i ponovo pokrenite desktop aplikaciju:
+RAILWISE također može učitati lokalne dodatke s diska. Privremeno ih maknite s puta (ili preimenujte folder) i ponovo pokrenite desktop aplikaciju:
 
 - **Globalni dodaci**
   - **macOS/Linux**: `~/.config/railwise/plugins/`
@@ -86,22 +86,22 @@ Ako aplikacija ponovo počne raditi, ponovo omogućite dodatke jedan po jedan ka
 
 ### Brisanje keš memorije
 
-Ako onemogućavanje dodataka ne pomogne (ili se instalacija dodatka zaglavila), obrišite keš memoriju kako bi ga RAILWISE (甬算) mogao ponovo izgraditi.
+Ako onemogućavanje dodataka ne pomogne (ili se instalacija dodatka zaglavila), obrišite keš memoriju kako bi ga RAILWISE mogao ponovo izgraditi.
 
-1. Potpuno zatvorite RAILWISE (甬算) Desktop.
+1. Potpuno zatvorite RAILWISE Desktop.
 2. Izbrišite keš direktorij:
 
 - **macOS**: Finder -> `Cmd+Shift+G` -> zalijepi `~/.cache/railwise`
 - **Linux**: obrišite `~/.cache/railwise` (ili pokrenite `rm -rf ~/.cache/railwise`)
 - **Windows**: Pritisnite `WIN+R` i zalijepite `%USERPROFILE%\.cache\railwise`
 
-3. Ponovo pokrenite RAILWISE (甬算) Desktop.
+3. Ponovo pokrenite RAILWISE Desktop.
 
 ---
 
 ### Rješavanje problema sa vezom na serveru
 
-RAILWISE (甬算) Desktop može ili pokrenuti svoj lokalni server (podrazumevano) ili se povezati na URL servera koji ste konfigurisali.
+RAILWISE Desktop može ili pokrenuti svoj lokalni server (podrazumevano) ili se povezati na URL servera koji ste konfigurisali.
 
 Ako vidite dijaloški okvir **"Povezivanje nije uspjelo"** (ili aplikacija nikada ne prođe kroz početni ekran), provjerite da li postoji prilagođeni URL servera.
 
@@ -132,21 +132,21 @@ Na Linuxu, neka podešavanja Waylanda mogu uzrokovati prazne prozore ili greške
 
 ### Windows: WebView2 izvršno okruženje
 
-Na Windows-u, RAILWISE (甬算) Desktop zahtijeva Microsoft Edge **WebView2 Runtime**. Ako se aplikacija otvori u praznom prozoru ili se ne pokrene, instalirajte/ažurirajte WebView2 i pokušajte ponovo.
+Na Windows-u, RAILWISE Desktop zahtijeva Microsoft Edge **WebView2 Runtime**. Ako se aplikacija otvori u praznom prozoru ili se ne pokrene, instalirajte/ažurirajte WebView2 i pokušajte ponovo.
 
 ---
 
 ### Windows: Opšti problemi sa performansama
 
-Ako imate spore performanse, probleme s pristupom datotekama ili probleme s terminalom na Windows-u, pokušajte koristiti [WSL (Windows podsistem za Linux)](/docs/windows-wsl). WSL pruža Linux okruženje koje radi neprimetnije sa RAILWISE (甬算) karakteristikama.
+Ako imate spore performanse, probleme s pristupom datotekama ili probleme s terminalom na Windows-u, pokušajte koristiti [WSL (Windows podsistem za Linux)](/docs/windows-wsl). WSL pruža Linux okruženje koje radi neprimetnije sa RAILWISE karakteristikama.
 
 ---
 
 ### Obavještenja se ne prikazuju
 
-RAILWISE (甬算) Desktop prikazuje sistemska obavještenja samo kada:
+RAILWISE Desktop prikazuje sistemska obavještenja samo kada:
 
-- obavještenja su omogućena za RAILWISE (甬算) u postavkama vašeg OS-a, i
+- obavještenja su omogućena za RAILWISE u postavkama vašeg OS-a, i
 - prozor aplikacije nije fokusiran.
 
 ---
@@ -155,8 +155,8 @@ RAILWISE (甬算) Desktop prikazuje sistemska obavještenja samo kada:
 
 Ako se aplikacija ne pokrene i ne možete izbrisati postavke unutar korisničkog sučelja, resetirajte spremljeno stanje desktop aplikacije.
 
-1. Zatvorite RAILWISE (甬算) Desktop.
-2. Pronađite i izbrišite ove datoteke (oni žive u direktoriju podataka RAILWISE (甬算) Desktop aplikacije):
+1. Zatvorite RAILWISE Desktop.
+2. Pronađite i izbrišite ove datoteke (oni žive u direktoriju podataka RAILWISE Desktop aplikacije):
 
 - `railwise.settings.dat` (URL zadanog servera za desktop)
 - `railwise.global.dat` i `railwise.workspace.*.dat` (stanje korisničkog interfejsa poput nedavnih servera/projekata)
@@ -171,7 +171,7 @@ Da brzo pronađete direktorij:
 
 ## Traženje pomoći
 
-Ako imate problema s RAILWISE (甬算):
+Ako imate problema s RAILWISE:
 
 1. **Prijavite probleme na GitHub**
 
@@ -195,7 +195,7 @@ Evo nekih uobičajenih problema i kako ih riješiti.
 
 ---
 
-### RAILWISE (甬算) se ne pokreće
+### RAILWISE se ne pokreće
 
 1. Provjerite dnevnike za poruke o greškama
 2. Pokušajte pokrenuti sa `--print-logs` da vidite izlaz u terminalu
@@ -252,7 +252,7 @@ Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.local\share\railwi
 
 ### AI_APICallError i problemi sa paketom dobavljača
 
-Ako naiđete na greške API poziva, to može biti zbog zastarjelih paketa dobavljača. RAILWISE (甬算) dinamički instalira pakete dobavljača (OpenAI, Anthropic, Google, itd.) po potrebi i kešira ih lokalno.
+Ako naiđete na greške API poziva, to može biti zbog zastarjelih paketa dobavljača. RAILWISE dinamički instalira pakete dobavljača (OpenAI, Anthropic, Google, itd.) po potrebi i kešira ih lokalno.
 
 Da biste riješili probleme s paketom dobavljača:
 
@@ -264,9 +264,9 @@ Da biste riješili probleme s paketom dobavljača:
 
 Na Windows-u pritisnite `WIN+R` i izbrišite: `%USERPROFILE%\.cache\railwise`
 
-2. Ponovo pokrenite RAILWISE (甬算) da ponovo instalirate najnovije pakete dobavljača
+2. Ponovo pokrenite RAILWISE da ponovo instalirate najnovije pakete dobavljača
 
-Ovo će prisiliti RAILWISE (甬算) da preuzme najnovije verzije paketa dobavljača, što često rješava probleme kompatibilnosti s parametrima modela i promjenama API-ja.
+Ovo će prisiliti RAILWISE da preuzme najnovije verzije paketa dobavljača, što često rješava probleme kompatibilnosti s parametrima modela i promjenama API-ja.
 
 ---
 
@@ -297,4 +297,4 @@ Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 export DISPLAY=:99.0
 ```
 
-RAILWISE (甬算) će otkriti da li koristite Wayland i preferirate `wl-clipboard`, u suprotnom će pokušati pronaći alate međuspremnika po redoslijedu: `xclip` i `xsel`.
+RAILWISE će otkriti da li koristite Wayland i preferirate `wl-clipboard`, u suprotnom će pokušati pronaći alate međuspremnika po redoslijedu: `xclip` i `xsel`.

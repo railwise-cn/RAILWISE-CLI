@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: أوامر وخيارات CLI في RAILWISE (甬算).
+description: أوامر وخيارات CLI في RAILWISE.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-يبدأ CLI الخاص بـ RAILWISE (甬算) افتراضيا واجهة [TUI](/docs/tui) عند تشغيله بدون أي معاملات.
+يبدأ CLI الخاص بـ RAILWISE افتراضيا واجهة [TUI](/docs/tui) عند تشغيله بدون أي معاملات.
 
 ```bash
 railwise
 ```
 
-كما يدعم أيضا أوامر موثقة في هذه الصفحة، ما يتيح لك التفاعل مع RAILWISE (甬算) برمجيا.
+كما يدعم أيضا أوامر موثقة في هذه الصفحة، ما يتيح لك التفاعل مع RAILWISE برمجيا.
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-بدء واجهة المستخدم terminal (TUI) الخاصة بـ RAILWISE (甬算).
+بدء واجهة المستخدم terminal (TUI) الخاصة بـ RAILWISE.
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## الأوامر
 
-يتضمن CLI الخاص بـ RAILWISE (甬算) أيضا الأوامر التالية.
+يتضمن CLI الخاص بـ RAILWISE أيضا الأوامر التالية.
 
 ---
 
 ### agent
 
-إدارة وكلاء RAILWISE (甬算).
+إدارة وكلاء RAILWISE.
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-إرفاق terminal بخادم الواجهة الخلفية لـ RAILWISE (甬算) قيد التشغيل بالفعل، والذي تم تشغيله عبر الأمرين `serve` أو `web`.
+إرفاق terminal بخادم الواجهة الخلفية لـ RAILWISE قيد التشغيل بالفعل، والذي تم تشغيله عبر الأمرين `serve` أو `web`.
 
 ```bash
 railwise attach [url]
 ```
 
-يتيح ذلك استخدام واجهة TUI مع واجهة خلفية لـ RAILWISE (甬算) تعمل عن بعد. على سبيل المثال:
+يتيح ذلك استخدام واجهة TUI مع واجهة خلفية لـ RAILWISE تعمل عن بعد. على سبيل المثال:
 
 ```bash
 # ابدأ خادم الواجهة الخلفية للوصول عبر الويب/الجوال
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-يعتمد RAILWISE (甬算) على قائمة المزودين في [Models.dev](https://models.dev)، لذا يمكنك استخدام `railwise auth login` لتهيئة مفاتيح API لأي مزود ترغب باستخدامه. يتم حفظ ذلك في `~/.local/share/railwise/auth.json`.
+يعتمد RAILWISE على قائمة المزودين في [Models.dev](https://models.dev)، لذا يمكنك استخدام `railwise auth login` لتهيئة مفاتيح API لأي مزود ترغب باستخدامه. يتم حفظ ذلك في `~/.local/share/railwise/auth.json`.
 
 ```bash
 railwise auth login
 ```
 
-عند تشغيل RAILWISE (甬算) يقوم بتحميل المزودين من ملف بيانات الاعتماد، وكذلك أي مفاتيح معرّفة في متغيرات البيئة لديك أو في ملف `.env` ضمن مشروعك.
+عند تشغيل RAILWISE يقوم بتحميل المزودين من ملف بيانات الاعتماد، وكذلك أي مفاتيح معرّفة في متغيرات البيئة لديك أو في ملف `.env` ضمن مشروعك.
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | تحديث ذاكرة التخزين المؤقت للنماذج من models.dev              |
 | `--verbose` | استخدام مخرجات أكثر تفصيلا للنماذج (تشمل بيانات مثل التكاليف) |
 
-استخدم الراية `--refresh` لتحديث قائمة النماذج المخزنة مؤقتا. يفيد ذلك عند إضافة نماذج جديدة إلى مزود وتريد رؤيتها في RAILWISE (甬算).
+استخدم الراية `--refresh` لتحديث قائمة النماذج المخزنة مؤقتا. يفيد ذلك عند إضافة نماذج جديدة إلى مزود وتريد رؤيتها في RAILWISE.
 
 ```bash
 railwise models --refresh
@@ -354,7 +354,7 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 
 ### serve
 
-بدء خادم RAILWISE (甬算) بدون واجهة للوصول عبر API. راجع [توثيق الخادم](/docs/server) لواجهة HTTP الكاملة.
+بدء خادم RAILWISE بدون واجهة للوصول عبر API. راجع [توثيق الخادم](/docs/server) لواجهة HTTP الكاملة.
 
 ```bash
 railwise serve
@@ -375,7 +375,7 @@ railwise serve
 
 ### session
 
-إدارة جلسات RAILWISE (甬算).
+إدارة جلسات RAILWISE.
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-عرض جميع جلسات RAILWISE (甬算).
+عرض جميع جلسات RAILWISE.
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-عرض إحصاءات استخدام الرموز والتكلفة لجلسات RAILWISE (甬算) لديك.
+عرض إحصاءات استخدام الرموز والتكلفة لجلسات RAILWISE لديك.
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ railwise export [sessionID]
 
 ### import
 
-استيراد بيانات الجلسة من ملف JSON أو رابط مشاركة RAILWISE (甬算).
+استيراد بيانات الجلسة من ملف JSON أو رابط مشاركة RAILWISE.
 
 ```bash
 railwise import <file>
 ```
 
-يمكنك الاستيراد من ملف محلي أو من رابط مشاركة RAILWISE (甬算).
+يمكنك الاستيراد من ملف محلي أو من رابط مشاركة RAILWISE.
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-بدء خادم RAILWISE (甬算) بدون واجهة مع واجهة ويب.
+بدء خادم RAILWISE بدون واجهة مع واجهة ويب.
 
 ```bash
 railwise web
 ```
 
-يشغّل هذا خادم HTTP ويفتح متصفح ويب للوصول إلى RAILWISE (甬算) عبر واجهة ويب. اضبط `RAILWISE_SERVER_PASSWORD` لتفعيل مصادقة HTTP الأساسية (اسم المستخدم الافتراضي `railwise`).
+يشغّل هذا خادم HTTP ويفتح متصفح ويب للوصول إلى RAILWISE عبر واجهة ويب. اضبط `RAILWISE_SERVER_PASSWORD` لتفعيل مصادقة HTTP الأساسية (اسم المستخدم الافتراضي `railwise`).
 
 #### الرايات
 
@@ -491,7 +491,7 @@ railwise acp
 
 ### uninstall
 
-إلغاء تثبيت RAILWISE (甬算) وإزالة جميع الملفات ذات الصلة.
+إلغاء تثبيت RAILWISE وإزالة جميع الملفات ذات الصلة.
 
 ```bash
 railwise uninstall
@@ -551,7 +551,7 @@ railwise upgrade v0.1.48
 
 ## متغيرات البيئة
 
-يمكن تهيئة RAILWISE (甬算) باستخدام متغيرات البيئة.
+يمكن تهيئة RAILWISE باستخدام متغيرات البيئة.
 
 | المتغير                               | النوع   | الوصف                                                     |
 | ------------------------------------- | ------- | --------------------------------------------------------- |

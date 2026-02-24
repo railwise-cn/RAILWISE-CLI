@@ -3,7 +3,7 @@ title: "Compétences des agents"
 description: "Définir un comportement réutilisable via les définitions SKILL.md"
 ---
 
-Les compétences d'agent permettent à RAILWISE (甬算) de découvrir des instructions réutilisables à partir de votre dépôt ou de votre répertoire personnel.
+Les compétences d'agent permettent à RAILWISE de découvrir des instructions réutilisables à partir de votre dépôt ou de votre répertoire personnel.
 Les compétences sont chargées à la demande via l'outil natif `skill` : les agents voient les compétences disponibles et peuvent charger le contenu complet en cas de besoin.
 
 ---
@@ -11,7 +11,7 @@ Les compétences sont chargées à la demande via l'outil natif `skill` : les a
 ## Placer des fichiers
 
 Créez un dossier par nom de compétence et insérez-y un `SKILL.md`.
-RAILWISE (甬算) recherche ces emplacements :
+RAILWISE recherche ces emplacements :
 
 - Configuration du projet : `.railwise/skills/<name>/SKILL.md`
 - Configuration globale : `~/.config/railwise/skills/<name>/SKILL.md`
@@ -24,7 +24,7 @@ RAILWISE (甬算) recherche ces emplacements :
 
 ## Comprendre la découverte
 
-Pour les chemins locaux du projet, RAILWISE (甬算) remonte de votre répertoire de travail actuel jusqu'à ce qu'il atteigne l'arbre de travail git.
+Pour les chemins locaux du projet, RAILWISE remonte de votre répertoire de travail actuel jusqu'à ce qu'il atteigne l'arbre de travail git.
 Il charge tout `skills/*/SKILL.md` correspondant dans `.railwise/` et tout `.claude/skills/*/SKILL.md` ou `.agents/skills/*/SKILL.md` correspondant en cours de route.
 
 Les définitions globales sont également chargées à partir de `~/.config/railwise/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` et `~/.agents/skills/*/SKILL.md`.
@@ -102,7 +102,7 @@ Ask clarifying questions if the target versioning scheme is unclear.
 
 ## Reconnaître la description de l'outil
 
-RAILWISE (甬算) répertorie les compétences disponibles dans la description de l'outil `skill`.
+RAILWISE répertorie les compétences disponibles dans la description de l'outil `skill`.
 Chaque entrée comprend le nom et la description de la compétence :
 
 ```xml

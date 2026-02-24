@@ -1,12 +1,12 @@
 ---
 title: Tjener
-description: Samhandle med RAILWISE (甬算)-tjener over HTTP.
+description: Samhandle med RAILWISE-tjener over HTTP.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-Kommandoen `railwise serve` kjører en hodeløs HTTP-server som eksponerer et OpenAPI-endepunkt som en RAILWISE (甬算)-klient kan bruke.
+Kommandoen `railwise serve` kjører en hodeløs HTTP-server som eksponerer et OpenAPI-endepunkt som en RAILWISE-klient kan bruke.
 
 ---
 
@@ -51,13 +51,13 @@ klient som snakker med serveren. Serveren viser en OpenAPI 3.1-spesifikasjon
 endepunkt. Dette endepunktet brukes også til å generere en [SDK](/docs/sdk).
 
 :::tip
-Bruk RAILWISE (甬算)-serveren til å samhandle med RAILWISE (甬算) programmatisk.
+Bruk RAILWISE-serveren til å samhandle med RAILWISE programmatisk.
 :::
 
-Denne arkitekturen lar RAILWISE (甬算) støtte flere klienter og lar deg samhandle med RAILWISE (甬算) programmatisk.
+Denne arkitekturen lar RAILWISE støtte flere klienter og lar deg samhandle med RAILWISE programmatisk.
 
 Du kan kjøre `railwise serve` for å starte en frittstående server. Hvis du har
-RAILWISE (甬算) TUI kjører, vil `railwise serve` starte en ny server.
+RAILWISE TUI kjører, vil `railwise serve` starte en ny server.
 
 ---
 
@@ -65,7 +65,7 @@ RAILWISE (甬算) TUI kjører, vil `railwise serve` starte en ny server.
 
 Når du starter TUI, tildeler den tilfeldig en port og vertsnavn. Du kan i stedet sende inn `--hostname` og `--port` [flagg](/docs/cli). Bruk deretter denne til å koble til serveren.
 
-[`/tui`](#tui) endepunktet kan brukes til å kjøre TUI gjennom serveren. Du kan for eksempel forhåndsutfylle eller kjøre en forespørsel. Dette oppsettet brukes av RAILWISE (甬算) [IDE](/docs/ide) plugins.
+[`/tui`](#tui) endepunktet kan brukes til å kjøre TUI gjennom serveren. Du kan for eksempel forhåndsutfylle eller kjøre en forespørsel. Dette oppsettet brukes av RAILWISE [IDE](/docs/ide) plugins.
 
 ---
 

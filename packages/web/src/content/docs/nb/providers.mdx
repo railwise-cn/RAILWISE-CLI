@@ -1,17 +1,17 @@
 ---
 title: Leverandører
-description: Bruke en hvilken som helst LLM-leverandør i RAILWISE (甬算).
+description: Bruke en hvilken som helst LLM-leverandør i RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 
-RAILWISE (甬算) bruker [AI SDK](https://ai-sdk.dev/) og [Models.dev](https://models.dev) for å støtte **75+ LLM leverandører** og den støtter kjøring av lokale modeller.
+RAILWISE bruker [AI SDK](https://ai-sdk.dev/) og [Models.dev](https://models.dev) for å støtte **75+ LLM leverandører** og den støtter kjøring av lokale modeller.
 
 For å legge til en leverandør må du:
 
 1. Legg til API-nøkkelen for leverandøren ved å bruke kommandoen `/connect`.
-2. Konfigurer leverandøren i RAILWISE (甬算)-konfigurasjonen.
+2. Konfigurer leverandøren i RAILWISE-konfigurasjonen.
 
 ---
 
@@ -24,7 +24,7 @@ i `~/.local/share/railwise/auth.json`.
 
 ### Konfigurasjon
 
-Du kan tilpasse leverandørene gjennom `provider`-delen i RAILWISE (甬算)
+Du kan tilpasse leverandørene gjennom `provider`-delen i RAILWISE
 konfig.
 
 ---
@@ -48,13 +48,13 @@ Du kan tilpasse base-URL-en for enhver leverandør ved å angi alternativet `bas
 
 ---
 
-## RAILWISE (甬算) Zen
+## RAILWISE Zen
 
-RAILWISE (甬算) Zen er en liste over modeller levert av RAILWISE (甬算)-teamet som har vært
-testet og verifisert for å fungere godt med RAILWISE (甬算). [Finn ut mer](/docs/zen).
+RAILWISE Zen er en liste over modeller levert av RAILWISE-teamet som har vært
+testet og verifisert for å fungere godt med RAILWISE. [Finn ut mer](/docs/zen).
 
 :::tip
-Hvis du er ny, anbefaler vi å starte med RAILWISE (甬算) Zen.
+Hvis du er ny, anbefaler vi å starte med RAILWISE Zen.
 :::
 
 1. Kjør kommandoen `/connect` i TUI, velg railwise og gå til [railwise.ai/auth](https://railwise.ai/auth).
@@ -80,7 +80,7 @@ Hvis du er ny, anbefaler vi å starte med RAILWISE (甬算) Zen.
    /models
    ```
 
-Det fungerer som alle andre leverandører i RAILWISE (甬算) og er helt valgfritt å bruke.
+Det fungerer som alle andre leverandører i RAILWISE og er helt valgfritt å bruke.
 
 ---
 
@@ -124,7 +124,7 @@ Ser du ikke en leverandør her? Send inn en PR.
 
 ### Amazon Bedrock
 
-Slik bruker du Amazon Bedrock med RAILWISE (甬算):
+Slik bruker du Amazon Bedrock med RAILWISE:
 
 1. Gå over til **modellkatalogen** i Amazon Bedrock-konsollen og be om
    tilgang til modellene du ønsker.
@@ -137,7 +137,7 @@ Slik bruker du Amazon Bedrock med RAILWISE (甬算):
 
    #### Miljøvariabler (hurtigstart)
 
-   Angi en av disse miljøvariablene mens du kjører RAILWISE (甬算):
+   Angi en av disse miljøvariablene mens du kjører RAILWISE:
 
    ```bash
    # Option 1: Using AWS access keys
@@ -303,7 +303,7 @@ Hvis du støter på «Beklager, men jeg kan ikke hjelpe med den forespørselen»
 2. Gå til [Azure AI Foundry](https://ai.azure.com/) og distribuer en modell.
 
    :::note
-   Distribusjonsnavnet må samsvare med modellnavnet for at RAILWISE (甬算) skal fungere skikkelig.
+   Distribusjonsnavnet må samsvare med modellnavnet for at RAILWISE skal fungere skikkelig.
    :::
 
 3. Kjør kommandoen `/connect` og søk etter **Azure**.
@@ -350,7 +350,7 @@ Hvis du støter på «Beklager, men jeg kan ikke hjelpe med den forespørselen»
 2. Gå til [Azure AI Foundry](https://ai.azure.com/) og distribuer en modell.
 
    :::note
-   Distribusjonsnavnet må samsvare med modellnavnet for at RAILWISE (甬算) skal fungere skikkelig.
+   Distribusjonsnavnet må samsvare med modellnavnet for at RAILWISE skal fungere skikkelig.
    :::
 
 3. Kjør kommandoen `/connect` og søk etter **Azure Cognitive Services**.
@@ -482,7 +482,7 @@ Cloudflare AI Gateway lar deg få tilgang til modeller fra OpenAI, Anthropic, Wo
    /models
    ```
 
-   Du kan også legge til modeller gjennom RAILWISE (甬算)-konfigurasjonen.
+   Du kan også legge til modeller gjennom RAILWISE-konfigurasjonen.
 
    ```json title="railwise.json"
    {
@@ -662,7 +662,7 @@ GitLab Duo gir AI-drevet agentchat med native verktøyoppringingsfunksjoner gjen
    #### Bruker personlig tilgangstoken
    1. Gå til [GitLab User Settings > Access Tokens](https://gitlab.com/-/user_settings/personal_access_tokens)
    2. Klikk på **Legg til nytt token**
-   3. Navn: `RAILWISE (甬算)`, omfang: `api`
+   3. Navn: `RAILWISE`, omfang: `api`
    4. Kopier tokenet (starter med `glpat-`)
    5. Skriv den inn i terminalen
 
@@ -679,14 +679,14 @@ GitLab Duo gir AI-drevet agentchat med native verktøyoppringingsfunksjoner gjen
 
 :::note
 Du kan også spesifisere 'GITLAB_TOKEN' miljøvariabel hvis du ikke vil
-for å lagre token i RAILWISE (甬算) auth-lagring.
+for å lagre token i RAILWISE auth-lagring.
 :::
 
 ##### Selvhostet GitLab
 
 :::note[Merknad om samsvar]
-RAILWISE (甬算) bruker en liten modell for noen AI oppgaver som å generere økttittelen.
-Den er konfigurert til å bruke gpt-5-nano som standard, hostet av Zen. For å låse RAILWISE (甬算)
+RAILWISE bruker en liten modell for noen AI oppgaver som å generere økttittelen.
+Den er konfigurert til å bruke gpt-5-nano som standard, hostet av Zen. For å låse RAILWISE
 for kun å bruke din egen GitLab-hostede forekomst, legg til følgende i din
 `railwise.json` fil. Det anbefales også å deaktivere øktdeling.
 
@@ -746,7 +746,7 @@ Utsett deretter applikasjonen ID som miljøvariabel:
 export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 ```
 
-Mer dokumentasjon på [opencode-gitlab-auth](https://www.npmjs.com/package/@gitlab/opencode-gitlab-auth) hjemmeside.
+Mer dokumentasjon på [railwise-gitlab-auth](https://www.npmjs.com/package/@gitlab/railwise-gitlab-auth) hjemmeside.
 
 ##### Konfigurasjon
 
@@ -786,7 +786,7 @@ Denne plugin-en gir omfattende GitLab-repository-administrasjonsfunksjoner, inkl
 
 ### GitHub Copilot
 
-Slik bruker du GitHub Copilot-abonnementet med RAILWISE (甬算):
+Slik bruker du GitHub Copilot-abonnementet med RAILWISE:
 
 :::note
 Noen modeller kan trenge en [Pro+
@@ -823,7 +823,7 @@ Noen modeller må aktiveres manuelt i [GitHub Copilot-innstillingene](https://do
 
 ### Google Vertex AI
 
-Slik bruker du Google Vertex AI med RAILWISE (甬算):
+Slik bruker du Google Vertex AI med RAILWISE:
 
 1. Gå over til **Model Garden** i Google Cloud Console og sjekk
    modeller tilgjengelig i din region.
@@ -839,7 +839,7 @@ Slik bruker du Google Vertex AI med RAILWISE (甬算):
      - `GOOGLE_APPLICATION_CREDENTIALS`: Bane til tjenestekontoen JSON nøkkelfil
      - Autentiser med gcloud CLI: `gcloud auth application-default login`
 
-   Sett dem mens du kjører RAILWISE (甬算).
+   Sett dem mens du kjører RAILWISE.
 
    ```bash
    GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json GOOGLE_CLOUD_PROJECT=your-project-id railwise
@@ -952,7 +952,7 @@ For flere leverandører og avanserte funksjoner som bufring og hastighetsbegrens
 
 #### Valgfrie konfigurasjoner
 
-I tilfelle du ser en funksjon eller modell fra Helicone som ikke konfigureres automatisk gjennom RAILWISE (甬算), kan du alltid konfigurere den selv.
+I tilfelle du ser en funksjon eller modell fra Helicone som ikke konfigureres automatisk gjennom RAILWISE, kan du alltid konfigurere den selv.
 
 Her er [Helicone's Model Directory](https://helicone.ai/models), du trenger denne for å hente ID-ene til modellene du vil legge til.
 
@@ -1005,7 +1005,7 @@ Helicone støtter tilpassede headere for funksjoner som bufring, brukersporing o
 
 ##### Sesjonssporing
 
-Helicones [Sessions](https://docs.helicone.ai/features/sessions) funksjon lar deg gruppere relaterte LLM forespørsler sammen. Bruk [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) plugin for automatisk å logge hver RAILWISE (甬算)-samtale som en økt i Helicone.
+Helicones [Sessions](https://docs.helicone.ai/features/sessions) funksjon lar deg gruppere relaterte LLM forespørsler sammen. Bruk [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) plugin for automatisk å logge hver RAILWISE-samtale som en økt i Helicone.
 
 ```bash
 npm install -g railwise-helicone-session
@@ -1019,7 +1019,7 @@ Legg den til i konfigurasjonen din.
 }
 ```
 
-Programtillegget injiserer `Helicone-Session-Id` og `Helicone-Session-Name` headere i forespørslene dine. På Helicones Sessions-side vil du se hver RAILWISE (甬算)-samtale oppført som en separat økt.
+Programtillegget injiserer `Helicone-Session-Id` og `Helicone-Session-Name` headere i forespørslene dine. På Helicones Sessions-side vil du se hver RAILWISE-samtale oppført som en separat økt.
 
 ##### Vanlige Helicone-headere
 
@@ -1036,7 +1036,7 @@ Se [Helicone Header Directory](https://docs.helicone.ai/helicone-headers/header-
 
 ### llama.cpp
 
-Du kan konfigurere RAILWISE (甬算) for å bruke lokale modeller gjennom [llama.cpp](https://github.com/ggml-org/llama.cpp) llama-server-verktøyet.
+Du kan konfigurere RAILWISE for å bruke lokale modeller gjennom [llama.cpp](https://github.com/ggml-org/llama.cpp) llama-server-verktøyet.
 
 ```json title="railwise.json" "llama.cpp" {5, 6, 8, 10-15}
 {
@@ -1103,7 +1103,7 @@ IO.NET tilbyr 17 modeller optimert for ulike brukstilfeller:
 
 ### LM Studio
 
-Du kan konfigurere RAILWISE (甬算) for å bruke lokale modeller gjennom LM Studio.
+Du kan konfigurere RAILWISE for å bruke lokale modeller gjennom LM Studio.
 
 ```json title="railwise.json" "lmstudio" {5, 6, 8, 10-14}
 {
@@ -1220,10 +1220,10 @@ Slik bruker du Kimi K2 fra Moonshot AI:
 
 ### Ollama
 
-Du kan konfigurere RAILWISE (甬算) for å bruke lokale modeller gjennom Ollama.
+Du kan konfigurere RAILWISE for å bruke lokale modeller gjennom Ollama.
 
 :::tip
-Ollama kan automatisk konfigurere seg selv for RAILWISE (甬算). Se [Ollama-integrasjonsdokumentene](https://docs.ollama.com/integrations/railwise) for detaljer.
+Ollama kan automatisk konfigurere seg selv for RAILWISE. Se [Ollama-integrasjonsdokumentene](https://docs.ollama.com/integrations/railwise) for detaljer.
 :::
 
 ```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
@@ -1262,13 +1262,13 @@ Hvis verktøykall ikke fungerer, prøv å øke `num_ctx` i Ollama. Start rundt 1
 
 ### Ollama Cloud
 
-Slik bruker du Ollama Cloud med RAILWISE (甬算):
+Slik bruker du Ollama Cloud med RAILWISE:
 
 1. Gå over til [https://ollama.com/](https://ollama.com/) og logg på eller opprett en konto.
 
 2. Naviger til **Innstillinger** > **Nøkler** og klikk på **Legg til API nøkkel** for å generere en ny API nøkkel.
 
-3. Kopier API-nøkkelen for bruk i RAILWISE (甬算).
+3. Kopier API-nøkkelen for bruk i RAILWISE.
 
 4. Kjør kommandoen `/connect` og søk etter **Ollama Cloud**.
 
@@ -1285,7 +1285,7 @@ Slik bruker du Ollama Cloud med RAILWISE (甬算):
    └ enter
    ```
 
-6. **Viktig**: Før du bruker skymodeller i RAILWISE (甬算), må du hente modellinformasjonen lokalt:
+6. **Viktig**: Før du bruker skymodeller i RAILWISE, må du hente modellinformasjonen lokalt:
 
    ```bash
    ollama pull gpt-oss:20b-cloud
@@ -1332,19 +1332,19 @@ Hvis du allerede har en API-nøkkel, kan du velge **Angi API-nøkkel manuelt** o
 
 ---
 
-### RAILWISE (甬算) Zen
+### RAILWISE Zen
 
-RAILWISE (甬算) Zen er en liste over testede og verifiserte modeller levert av RAILWISE (甬算)-teamet. [Finn ut mer](/docs/zen).
+RAILWISE Zen er en liste over testede og verifiserte modeller levert av RAILWISE-teamet. [Finn ut mer](/docs/zen).
 
-1. Logg på **<a href={console}>RAILWISE (甬算) Zen</a>** og klikk på **Create API Key**.
+1. Logg på **<a href={console}>RAILWISE Zen</a>** og klikk på **Create API Key**.
 
-2. Kjør kommandoen `/connect` og søk etter **RAILWISE (甬算) Zen**.
+2. Kjør kommandoen `/connect` og søk etter **RAILWISE Zen**.
 
    ```txt
    /connect
    ```
 
-3. Skriv inn RAILWISE (甬算) API-nøkkelen.
+3. Skriv inn RAILWISE API-nøkkelen.
 
    ```txt
    ┌ API key
@@ -1386,7 +1386,7 @@ RAILWISE (甬算) Zen er en liste over testede og verifiserte modeller levert av
    /models
    ```
 
-   Du kan også legge til flere modeller gjennom RAILWISE (甬算)-konfigurasjonen.
+   Du kan også legge til flere modeller gjennom RAILWISE-konfigurasjonen.
 
    ```json title="railwise.json" {6}
    {
@@ -1401,7 +1401,7 @@ RAILWISE (甬算) Zen er en liste over testede og verifiserte modeller levert av
    }
    ```
 
-5. Du kan også tilpasse dem gjennom RAILWISE (甬算)-konfigurasjonen. Her er et eksempel på å spesifisere en leverandør
+5. Du kan også tilpasse dem gjennom RAILWISE-konfigurasjonen. Her er et eksempel på å spesifisere en leverandør
 
    ```json title="railwise.json"
    {
@@ -1509,7 +1509,7 @@ SAP AI Core gir tilgang til 40+ modeller fra OpenAI, Anthropic, Google, Amazon, 
 
 ### Scaleway
 
-Slik bruker du [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/) med RAILWISE (甬算):
+Slik bruker du [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/) med RAILWISE:
 
 1. Gå over til [Scaleway Console IAM innstillinger](https://console.scaleway.com/iam/api-keys) for å generere en ny API nøkkel.
 
@@ -1617,7 +1617,7 @@ Vercel AI Gateway lar deg få tilgang til modeller fra OpenAI, Anthropic, Google
    /models
    ```
 
-Du kan også tilpasse modeller gjennom RAILWISE (甬算)-konfigurasjonen. Her er et eksempel på spesifisering av leverandørrutingsrekkefølge.
+Du kan også tilpasse modeller gjennom RAILWISE-konfigurasjonen. Her er et eksempel på spesifisering av leverandørrutingsrekkefølge.
 
 ```json title="railwise.json"
 {
@@ -1727,7 +1727,7 @@ Noen nyttige rutealternativer:
    /models
    ```
 
-   Du kan også legge til flere modeller gjennom RAILWISE (甬算)-konfigurasjonen.
+   Du kan også legge til flere modeller gjennom RAILWISE-konfigurasjonen.
 
    ```json title="railwise.json" {6}
    {
@@ -1749,7 +1749,7 @@ Noen nyttige rutealternativer:
 Slik legger du til en **OpenAI-kompatibel**-leverandør som ikke er oppført i `/connect`-kommandoen:
 
 :::tip
-Du kan bruke hvilken som helst OpenAI-kompatibel leverandør med RAILWISE (甬算). De fleste moderne AI-leverandører tilbyr OpenAI-kompatible APIer.
+Du kan bruke hvilken som helst OpenAI-kompatibel leverandør med RAILWISE. De fleste moderne AI-leverandører tilbyr OpenAI-kompatible APIer.
 :::
 
 1. Kjør kommandoen `/connect` og rull ned til **Annet**.
@@ -1870,7 +1870,7 @@ Konfigurasjonsdetaljer:
 - **limit.context**: Maksimalt Input Tokens som modellen godtar.
 - **limit.output**: Maksimalt antall tokens modellen kan generere.
 
-`limit`-feltene lar RAILWISE (甬算) forstå hvor mye kontekst du har igjen. Standardleverandører henter disse automatisk fra models.dev.
+`limit`-feltene lar RAILWISE forstå hvor mye kontekst du har igjen. Standardleverandører henter disse automatisk fra models.dev.
 
 ---
 
@@ -1883,7 +1883,7 @@ Hvis du har problemer med å konfigurere en leverandør, sjekk følgende:
 
    Dette gjelder ikke leverandører som Amazon Bedrock, som er avhengige av miljøvariabler for godkjenning.
 
-2. For tilpassede leverandører, sjekk RAILWISE (甬算)-konfigurasjonen og:
-   - Sørg for at leverandør-ID-en som brukes i `/connect`-kommandoen samsvarer med ID i RAILWISE (甬算)-konfigurasjonen.
+2. For tilpassede leverandører, sjekk RAILWISE-konfigurasjonen og:
+   - Sørg for at leverandør-ID-en som brukes i `/connect`-kommandoen samsvarer med ID i RAILWISE-konfigurasjonen.
    - Den riktige npm-pakken brukes for leverandøren. Bruk for eksempel `@ai-sdk/cerebras` for Cerebras. Og for alle andre OpenAI-kompatible leverandører, bruk `@ai-sdk/openai-compatible`.
    - Kontroller at riktig API-endepunkt er brukt i `options.baseURL`-feltet.

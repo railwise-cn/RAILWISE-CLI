@@ -1,12 +1,12 @@
 ---
 title: サーバー
-description: HTTP 経由で RAILWISE (甬算) サーバーと通信します。
+description: HTTP 経由で RAILWISE サーバーと通信します。
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-`railwise serve` コマンドは、RAILWISE (甬算) クライアントが使用できる OpenAPI エンドポイントを公開するヘッドレス HTTP サーバーを実行します。
+`railwise serve` コマンドは、RAILWISE クライアントが使用できる OpenAPI エンドポイントを公開するヘッドレス HTTP サーバーを実行します。
 
 ---
 
@@ -49,10 +49,10 @@ RAILWISE_SERVER_PASSWORD=your-password railwise serve
 `railwise` を実行すると、TUI とサーバーが起動します。 TUI はサーバーと通信するクライアントです。サーバーは OpenAPI 3.1 仕様のエンドポイントを公開します。このエンドポイントは、[SDK](/docs/sdk) を使用してアクセスできます。
 
 :::tip
-RAILWISE (甬算) サーバーを使用して、プログラムで RAILWISE (甬算) と対話します。
+RAILWISE サーバーを使用して、プログラムで RAILWISE と対話します。
 :::
 
-`railwise serve` を実行してスタンドアロンサーバーを起動できます。すでに RAILWISE (甬算) TUI を実行している場合でも、`railwise serve` は新しいサーバーを起動します。
+`railwise serve` を実行してスタンドアロンサーバーを起動できます。すでに RAILWISE TUI を実行している場合でも、`railwise serve` は新しいサーバーを起動します。
 
 ---
 
@@ -60,7 +60,7 @@ RAILWISE (甬算) サーバーを使用して、プログラムで RAILWISE (甬
 
 TUI を起動すると、ポートとホスト名がランダムに割り当てられます。代わりに、`--hostname` と `--port` [フラグ](/docs/cli) を使用して固定できます。次に、これを使用してサーバーに接続します。
 
-[`/tui`](#tui) エンドポイントは、サーバー経由で TUI を駆動するために使用できます。たとえば、プロンプトを事前入力したり、実行したりできます。この設定は、RAILWISE (甬算) [IDE](/docs/ide) プラグインによって使用されます。
+[`/tui`](#tui) エンドポイントは、サーバー経由で TUI を駆動するために使用できます。たとえば、プロンプトを事前入力したり、実行したりできます。この設定は、RAILWISE [IDE](/docs/ide) プラグインによって使用されます。
 
 ---
 
@@ -78,7 +78,7 @@ http://<hostname>:<port>/doc
 
 ## API
 
-RAILWISE (甬算) サーバーは次の API を公開します。
+RAILWISE サーバーは次の API を公開します。
 
 ---
 

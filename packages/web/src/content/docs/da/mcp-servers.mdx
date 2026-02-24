@@ -3,7 +3,7 @@ title: MCP-servere
 description: Tilføj lokale og eksterne MCP værktøjer.
 ---
 
-Du kan tilføje eksterne værktøjer til RAILWISE (甬算) ved hjælp af _Model Context Protocol_ eller MCP. RAILWISE (甬算) understøtter både lokale og eksterne servere.
+Du kan tilføje eksterne værktøjer til RAILWISE ved hjælp af _Model Context Protocol_ eller MCP. RAILWISE understøtter både lokale og eksterne servere.
 
 Når de er tilføjet, er MCP automatisk tilgængelig for LLM sammen med indbyggede værktøjer.
 
@@ -23,7 +23,7 @@ Visse MCP-servere, som GitHub MCP-servere, har en tendens til at tilføje mange 
 
 ## Aktivering
 
-Du kan definere MCP-servere i din [RAILWISE (甬算) Config](https://railwise.ai/docs/config/) under `mcp`. Tilføj hver MCP med et unikt navn. Du kan henvise til denne MCP ved navn, når du spørger LLM.
+Du kan definere MCP-servere i din [RAILWISE Config](https://railwise.ai/docs/config/) under `mcp`. Tilføj hver MCP med et unikt navn. Du kan henvise til denne MCP ved navn, når du spørger LLM.
 
 ```jsonc title="railwise.jsonc" {6}
 {
@@ -165,7 +165,7 @@ Tilføj ekstern MCP-server ved at indstille `type` til `"remote"`.
 
 ## OAuth
 
-RAILWISE (甬算) håndterer automatisk OAuth-godkendelse for eksterne MCP-servere. Når en server kræver godkendelse, vil RAILWISE (甬算):
+RAILWISE håndterer automatisk OAuth-godkendelse for eksterne MCP-servere. Når en server kræver godkendelse, vil RAILWISE:
 
 1. Registrer 401-svaret, og start OAuth-flowet
 2. Brug **Dynamic Client Registration (RFC 7591)**, hvis det understøtter af serveren
@@ -189,7 +189,7 @@ For de fleste OAuth-aktiverede MCP-servere kræver ingen speciel konfiguration. 
 }
 ```
 
-Hvis serveren kræver godkendelse, vil RAILWISE (甬算) bede dig om at godkende, når du prøver at bruge den første gang. Hvis ikke, kan du [manually trigger the flow](#authenticating) med `railwise mcp auth <server-name>`.
+Hvis serveren kræver godkendelse, vil RAILWISE bede dig om at godkende, når du prøver at bruge den første gang. Hvis ikke, kan du [manually trigger the flow](#authenticating) med `railwise mcp auth <server-name>`.
 
 ---
 
@@ -238,7 +238,7 @@ Fjern gemte legitimationsoplysninger:
 railwise mcp logout my-oauth-server
 ```
 
-Kommandoen `mcp auth` åbner din browser for godkendelse. Når du har godkendt, vil RAILWISE (甬算) opbevare tokens sikkert i `~/.local/share/railwise/mcp-auth.json`.
+Kommandoen `mcp auth` åbner din browser for godkendelse. Når du har godkendt, vil RAILWISE opbevare tokens sikkert i `~/.local/share/railwise/mcp-auth.json`.
 
 ---
 
@@ -291,7 +291,7 @@ Kommandoen `mcp debug` viser den aktuelle godkendelsesstatus, tester HTTP-forbin
 
 ## Administration
 
-Dine MCPs er tilgængelige som værktøjer i **TK\_** sammen med indbyggede værktøjer. Så du kan administrere dem gennem RAILWISE (甬算)-konfigurationen som ethvert andet værktøj.
+Dine MCPs er tilgængelige som værktøjer i **TK\_** sammen med indbyggede værktøjer. Så du kan administrere dem gennem RAILWISE-konfigurationen som ethvert andet værktøj.
 
 ---
 
@@ -423,7 +423,7 @@ Efter tilføjelse af konfigurationen skal du godkende med Sentry:
 railwise mcp auth sentry
 ```
 
-Dette åbner et browservindue for at fuldføre OAuth-flowet og forbinde RAILWISE (甬算) til din Sentry-konto.
+Dette åbner et browservindue for at fuldføre OAuth-flowet og forbinde RAILWISE til din Sentry-konto.
 
 Når du er godkendt, kan du bruge Sentry-værktøjer i dine prompter til at forespørge om problemer, projekter og fejldata.
 

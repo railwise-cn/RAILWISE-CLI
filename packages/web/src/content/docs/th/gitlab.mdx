@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: ใช้ RAILWISE (甬算) ในปัญหา GitLab และรวมคำขอ
+description: ใช้ RAILWISE ในปัญหา GitLab และรวมคำขอ
 ---
 
-RAILWISE (甬算) ทำงานร่วมกับเวิร์กโฟลว์ GitLab ของคุณผ่านไปป์ไลน์ GitLab CI/CD หรือกับ GitLab Duo
+RAILWISE ทำงานร่วมกับเวิร์กโฟลว์ GitLab ของคุณผ่านไปป์ไลน์ GitLab CI/CD หรือกับ GitLab Duo
 
-ในทั้งสองกรณี RAILWISE (甬算) จะทำงานบน GitLab runners ของคุณ
+ในทั้งสองกรณี RAILWISE จะทำงานบน GitLab runners ของคุณ
 
 ---
 
 ## GitLab CI
 
-RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab ปกติ คุณสามารถสร้างมันลงในไปป์ไลน์เป็น [องค์ประกอบ CI](https://docs.gitlab.com/ee/ci/components/)
+RAILWISE ทำงานในไปป์ไลน์ GitLab ปกติ คุณสามารถสร้างมันลงในไปป์ไลน์เป็น [องค์ประกอบ CI](https://docs.gitlab.com/ee/ci/components/)
 
-ที่นี่เรากำลังใช้คอมโพเนนต์ CI/CD ที่สร้างโดยชุมชนสำหรับ RAILWISE (甬算) — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise)
+ที่นี่เรากำลังใช้คอมโพเนนต์ CI/CD ที่สร้างโดยชุมชนสำหรับ RAILWISE — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise)
 
 ---
 
 ### คุณสมบัติ
 
-- **ใช้การกำหนดค่าแบบกำหนดเองต่องาน**: กำหนดค่า RAILWISE (甬算) ด้วยไดเร็กทอรีการกำหนดค่าแบบกำหนดเอง เช่น `./config/#custom-directory` เพื่อเปิดหรือปิดฟังก์ชันการทำงานต่อการเรียกใช้ RAILWISE (甬算)
-- **การตั้งค่าขั้นต่ำ**: องค์ประกอบ CI จะตั้งค่า RAILWISE (甬算) ในเบื้องหลัง คุณเพียงแค่ต้องสร้างการกำหนดค่า RAILWISE (甬算) และข้อความแจ้งเริ่มต้นเท่านั้น
+- **ใช้การกำหนดค่าแบบกำหนดเองต่องาน**: กำหนดค่า RAILWISE ด้วยไดเร็กทอรีการกำหนดค่าแบบกำหนดเอง เช่น `./config/#custom-directory` เพื่อเปิดหรือปิดฟังก์ชันการทำงานต่อการเรียกใช้ RAILWISE
+- **การตั้งค่าขั้นต่ำ**: องค์ประกอบ CI จะตั้งค่า RAILWISE ในเบื้องหลัง คุณเพียงแค่ต้องสร้างการกำหนดค่า RAILWISE และข้อความแจ้งเริ่มต้นเท่านั้น
 - **ยืดหยุ่น**: ส่วนประกอบ CI รองรับอินพุตหลายอินพุตเพื่อปรับแต่งลักษณะการทำงาน
 
 ---
 
 ### ตั้งค่า
 
-1. จัดเก็บการรับรองความถูกต้อง RAILWISE (甬算) ของคุณ JSON เป็นประเภทไฟล์ CI ตัวแปรสภาพแวดล้อมภายใต้ **การตั้งค่า** > **CI/CD** > **ตัวแปร** ตรวจสอบให้แน่ใจว่าได้ทำเครื่องหมายว่าเป็น "ปิดบังและซ่อนไว้"
+1. จัดเก็บการรับรองความถูกต้อง RAILWISE ของคุณ JSON เป็นประเภทไฟล์ CI ตัวแปรสภาพแวดล้อมภายใต้ **การตั้งค่า** > **CI/CD** > **ตัวแปร** ตรวจสอบให้แน่ใจว่าได้ทำเครื่องหมายว่าเป็น "ปิดบังและซ่อนไว้"
 2. เพิ่มสิ่งต่อไปนี้ในไฟล์ `.gitlab-ci.yml` ของคุณ
 
    ```yaml title=".gitlab-ci.yml"
@@ -35,7 +35,7 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab ปกต
      - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
          config_dir: ${CI_PROJECT_DIR}/railwise-config
-         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
@@ -46,23 +46,23 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab ปกต
 
 ## GitLab Duo
 
-RAILWISE (甬算) ทำงานร่วมกับเวิร์กโฟลว์ GitLab ของคุณ
-พูดถึง `@railwise` ในความคิดเห็น แล้ว RAILWISE (甬算) จะดำเนินการงานภายในไปป์ไลน์ GitLab CI ของคุณ
+RAILWISE ทำงานร่วมกับเวิร์กโฟลว์ GitLab ของคุณ
+พูดถึง `@railwise` ในความคิดเห็น แล้ว RAILWISE จะดำเนินการงานภายในไปป์ไลน์ GitLab CI ของคุณ
 
 ---
 
 ### คุณสมบัติ
 
-- **Issue Triage**: ขอให้ RAILWISE (甬算) ตรวจสอบปัญหาและอธิบายให้คุณทราบ
-- **แก้ไขและนำไปใช้**: ขอให้ RAILWISE (甬算) แก้ไขปัญหาหรือใช้ฟีเจอร์
+- **Issue Triage**: ขอให้ RAILWISE ตรวจสอบปัญหาและอธิบายให้คุณทราบ
+- **แก้ไขและนำไปใช้**: ขอให้ RAILWISE แก้ไขปัญหาหรือใช้ฟีเจอร์
   มันจะสร้างสาขาใหม่และขอรวมการเปลี่ยนแปลง
-- **ปลอดภัย**: RAILWISE (甬算) ทำงานบนนักวิ่ง GitLab ของคุณ
+- **ปลอดภัย**: RAILWISE ทำงานบนนักวิ่ง GitLab ของคุณ
 
 ---
 
 ### ตั้งค่า
 
-RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ของคุณ นี่คือสิ่งที่คุณจะต้องตั้งค่า:
+RAILWISE ทำงานในไปป์ไลน์ GitLab CI/CD ของคุณ นี่คือสิ่งที่คุณจะต้องตั้งค่า:
 
 :::tip
 ตรวจสอบ [**เอกสาร GitLab**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) เพื่อดูคำแนะนำล่าสุด
@@ -91,7 +91,7 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ข
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating RAILWISE (甬算) auth configuration"
+      - echo "Creating RAILWISE auth configuration"
       - mkdir --parents ~/.local/share/railwise
       - |
         cat > ~/.local/share/railwise/auth.json << EOF
@@ -104,10 +104,10 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ข
         EOF
       - echo "Configuring git"
       - git config --global user.email "railwise@gitlab.com"
-      - git config --global user.name "RAILWISE (甬算)"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running RAILWISE (甬算)"
+      - echo "Running RAILWISE"
       - |
         railwise run "
         You are an AI assistant helping with GitLab operations.
@@ -158,7 +158,7 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ข
 
 ### ตัวอย่าง
 
-นี่คือตัวอย่างบางส่วนของวิธีที่คุณสามารถใช้ RAILWISE (甬算) ใน GitLab
+นี่คือตัวอย่างบางส่วนของวิธีที่คุณสามารถใช้ RAILWISE ใน GitLab
 
 :::tip
 คุณสามารถกำหนดค่าให้ใช้วลีทริกเกอร์ที่แตกต่างจาก `@railwise`
@@ -172,7 +172,7 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ข
   @railwise explain this issue
   ```
 
-  RAILWISE (甬算) จะอ่านปัญหาและตอบกลับพร้อมคำอธิบายที่ชัดเจน
+  RAILWISE จะอ่านปัญหาและตอบกลับพร้อมคำอธิบายที่ชัดเจน
 
 - **แก้ไขปัญหา**
 
@@ -182,7 +182,7 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ข
   @railwise fix this
   ```
 
-  RAILWISE (甬算) จะสร้างสาขาใหม่ ดำเนินการเปลี่ยนแปลง และเปิดคำขอรวมที่มีการเปลี่ยนแปลง
+  RAILWISE จะสร้างสาขาใหม่ ดำเนินการเปลี่ยนแปลง และเปิดคำขอรวมที่มีการเปลี่ยนแปลง
 
 - **ตรวจสอบคำขอรวม**
 
@@ -192,4 +192,4 @@ RAILWISE (甬算) ทำงานในไปป์ไลน์ GitLab CI/CD ข
   @railwise review this merge request
   ```
 
-  RAILWISE (甬算) จะตรวจสอบคำขอรวมและให้ข้อเสนอแนะ
+  RAILWISE จะตรวจสอบคำขอรวมและให้ข้อเสนอแนะ

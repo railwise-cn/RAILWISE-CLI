@@ -5,7 +5,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
 
-  <name>RAILWISE (甬算)</name>
+  <name>RAILWISE</name>
   <summary>Open source AI coding agent</summary>
 
   <developer id="ly.anoma">
@@ -14,7 +14,7 @@
 
   <description>
     <p>
-      RAILWISE (甬算) is an open source agent that helps you write and run code with any AI model.
+      RAILWISE is an open source agent that helps you write and run code with any AI model.
     </p>
   </description>
 

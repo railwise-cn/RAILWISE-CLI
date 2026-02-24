@@ -1,17 +1,17 @@
 ---
 title: المزوّدون
-description: استخدام أي موفّر LLM في RAILWISE (甬算).
+description: استخدام أي موفّر LLM في RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 
-يستخدم RAILWISE (甬算) ‏[AI SDK](https://ai-sdk.dev/) و[Models.dev](https://models.dev) لدعم **أكثر من 75 موفّر LLM**، كما يدعم تشغيل النماذج المحلية.
+يستخدم RAILWISE ‏[AI SDK](https://ai-sdk.dev/) و[Models.dev](https://models.dev) لدعم **أكثر من 75 موفّر LLM**، كما يدعم تشغيل النماذج المحلية.
 
 لإضافة مزوّد تحتاج إلى:
 
 1. أضف مفاتيح API الخاصة بالمزوّد باستخدام الأمر `/connect`.
-2. اضبط المزوّد في ملف إعدادات RAILWISE (甬算).
+2. اضبط المزوّد في ملف إعدادات RAILWISE.
 
 ---
 
@@ -24,7 +24,7 @@ export const console = config.console
 
 ### الإعدادات
 
-يمكنك تخصيص المزوّدات عبر قسم `provider` في ملف إعدادات RAILWISE (甬算).
+يمكنك تخصيص المزوّدات عبر قسم `provider` في ملف إعدادات RAILWISE.
 
 ---
 
@@ -47,13 +47,13 @@ export const console = config.console
 
 ---
 
-## RAILWISE (甬算) Zen
+## RAILWISE Zen
 
-RAILWISE (甬算) Zen هي قائمة نماذج يوفّرها فريق RAILWISE (甬算) وقد تم
-اختبارها والتحقق من أنها تعمل بشكل جيد مع RAILWISE (甬算). [اعرف المزيد](/docs/zen).
+RAILWISE Zen هي قائمة نماذج يوفّرها فريق RAILWISE وقد تم
+اختبارها والتحقق من أنها تعمل بشكل جيد مع RAILWISE. [اعرف المزيد](/docs/zen).
 
 :::tip
-إذا كنت جديدا، فننصح بالبدء مع RAILWISE (甬算) Zen.
+إذا كنت جديدا، فننصح بالبدء مع RAILWISE Zen.
 :::
 
 1. شغّل الأمر `/connect` في TUI، واختر railwise، ثم انتقل إلى [railwise.ai/auth](https://railwise.ai/auth).
@@ -79,7 +79,7 @@ RAILWISE (甬算) Zen هي قائمة نماذج يوفّرها فريق RAILWIS
    /models
    ```
 
-يعمل مثل أي مزوّد آخر في RAILWISE (甬算) واستخدامه اختياري بالكامل.
+يعمل مثل أي مزوّد آخر في RAILWISE واستخدامه اختياري بالكامل.
 
 ---
 
@@ -123,7 +123,7 @@ RAILWISE (甬算) Zen هي قائمة نماذج يوفّرها فريق RAILWIS
 
 ### Amazon Bedrock
 
-لاستخدام Amazon Bedrock مع RAILWISE (甬算):
+لاستخدام Amazon Bedrock مع RAILWISE:
 
 1. توجّه إلى **Model catalog** في Amazon Bedrock console واطلب
    الوصول إلى النماذج التي تريدها.
@@ -277,7 +277,7 @@ RAILWISE (甬算) Zen هي قائمة نماذج يوفّرها فريق RAILWIS
    ```
 
 :::info
-استخدام اشتراك Claude Pro/Max داخل RAILWISE (甬算) غير مدعوم رسميا من [Anthropic](https://anthropic.com).
+استخدام اشتراك Claude Pro/Max داخل RAILWISE غير مدعوم رسميا من [Anthropic](https://anthropic.com).
 :::
 
 ##### استخدام مفاتيح API
@@ -659,7 +659,7 @@ RAILWISE (甬算) Zen هي قائمة نماذج يوفّرها فريق RAILWIS
 
    #### استخدام Personal Access Token 1. اذهب إلى [GitLab User Settings > Access Tokens](https://gitlab.com/-/user_settings/personal_access_tokens)
    2. انقر **Add new token**
-   3. Name: `RAILWISE (甬算)`، Scopes: `api`
+   3. Name: `RAILWISE`، Scopes: `api`
    4. انسخ الرمز (يبدأ بـ `glpat-`)
    5. أدخله في terminal
 
@@ -682,8 +682,8 @@ RAILWISE (甬算) Zen هي قائمة نماذج يوفّرها فريق RAILWIS
 ##### GitLab مستضاف ذاتيا
 
 :::note[ملاحظة امتثال]
-يستخدم RAILWISE (甬算) نموذجا صغيرا لبعض مهام الذكاء الاصطناعي مثل إنشاء عنوان الجلسة.
-تم ضبطه لاستخدام gpt-5-nano افتراضيا، مستضافا عبر Zen. لحصر RAILWISE (甬算)
+يستخدم RAILWISE نموذجا صغيرا لبعض مهام الذكاء الاصطناعي مثل إنشاء عنوان الجلسة.
+تم ضبطه لاستخدام gpt-5-nano افتراضيا، مستضافا عبر Zen. لحصر RAILWISE
 على استخدام مثيل GitLab المستضاف لديك فقط، أضف ما يلي إلى ملف
 `railwise.json` لديك. يوصى أيضا بتعطيل مشاركة الجلسات.
 
@@ -743,7 +743,7 @@ callback URL ‏`http://127.0.0.1:8080/callback` ونطاقات الصلاحيا
 export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 ```
 
-مزيد من التوثيق على صفحة [opencode-gitlab-auth](https://www.npmjs.com/package/@gitlab/opencode-gitlab-auth).
+مزيد من التوثيق على صفحة [railwise-gitlab-auth](https://www.npmjs.com/package/@gitlab/railwise-gitlab-auth).
 
 ##### التهيئة
 
@@ -819,7 +819,7 @@ export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 
 ### Google Vertex AI
 
-لاستخدام Google Vertex AI مع RAILWISE (甬算):
+لاستخدام Google Vertex AI مع RAILWISE:
 
 1. توجّه إلى **Model Garden** في Google Cloud Console وتحقق من
    النماذج المتاحة في منطقتك.
@@ -1001,7 +1001,7 @@ export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 
 ##### تتبع الجلسات
 
-تتيح ميزة [Sessions](https://docs.helicone.ai/features/sessions) في Helicone تجميع طلبات LLM المرتبطة معا. استخدم ملحق [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) لتسجيل كل محادثة RAILWISE (甬算) تلقائيا كجلسة في Helicone.
+تتيح ميزة [Sessions](https://docs.helicone.ai/features/sessions) في Helicone تجميع طلبات LLM المرتبطة معا. استخدم ملحق [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) لتسجيل كل محادثة RAILWISE تلقائيا كجلسة في Helicone.
 
 ```bash
 npm install -g railwise-helicone-session
@@ -1015,7 +1015,7 @@ npm install -g railwise-helicone-session
 }
 ```
 
-يقوم الملحق بحقن ترويسات `Helicone-Session-Id` و`Helicone-Session-Name` ضمن طلباتك. في صفحة Sessions داخل Helicone، سترى كل محادثة RAILWISE (甬算) مدرجة كجلسة مستقلة.
+يقوم الملحق بحقن ترويسات `Helicone-Session-Id` و`Helicone-Session-Name` ضمن طلباتك. في صفحة Sessions داخل Helicone، سترى كل محادثة RAILWISE مدرجة كجلسة مستقلة.
 
 ##### ترويسات Helicone الشائعة
 
@@ -1219,7 +1219,7 @@ npm install -g railwise-helicone-session
 يمكنك ضبط railwise لاستخدام نماذج محلية عبر Ollama.
 
 :::tip
-يمكن لـ Ollama ضبط نفسه تلقائيا للعمل مع RAILWISE (甬算). راجع [توثيق تكامل Ollama](https://docs.ollama.com/integrations/railwise) للتفاصيل.
+يمكن لـ Ollama ضبط نفسه تلقائيا للعمل مع RAILWISE. راجع [توثيق تكامل Ollama](https://docs.ollama.com/integrations/railwise) للتفاصيل.
 :::
 
 ```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
@@ -1258,13 +1258,13 @@ npm install -g railwise-helicone-session
 
 ### Ollama Cloud
 
-لاستخدام Ollama Cloud مع RAILWISE (甬算):
+لاستخدام Ollama Cloud مع RAILWISE:
 
 1. توجّه إلى [https://ollama.com/](https://ollama.com/) وسجّل الدخول أو أنشئ حسابا.
 
 2. انتقل إلى **Settings** > **Keys** وانقر **Add API Key** لإنشاء مفتاح API جديد.
 
-3. انسخ مفتاح API لاستخدامه في RAILWISE (甬算).
+3. انسخ مفتاح API لاستخدامه في RAILWISE.
 
 4. شغّل الأمر `/connect` وابحث عن **Ollama Cloud**.
 
@@ -1281,7 +1281,7 @@ npm install -g railwise-helicone-session
    └ enter
    ```
 
-6. **مهم**: قبل استخدام نماذج السحابة في RAILWISE (甬算)، يجب سحب معلومات النموذج محليا:
+6. **مهم**: قبل استخدام نماذج السحابة في RAILWISE، يجب سحب معلومات النموذج محليا:
 
    ```bash
    ollama pull gpt-oss:20b-cloud
@@ -1328,19 +1328,19 @@ npm install -g railwise-helicone-session
 
 ---
 
-### RAILWISE (甬算) Zen
+### RAILWISE Zen
 
-RAILWISE (甬算) Zen هي قائمة من النماذج التي تم اختبارها والتحقق منها مقدّمة من فريق RAILWISE (甬算). [اعرف المزيد](/docs/zen).
+RAILWISE Zen هي قائمة من النماذج التي تم اختبارها والتحقق منها مقدّمة من فريق RAILWISE. [اعرف المزيد](/docs/zen).
 
-1. سجّل الدخول إلى **<a href={console}>RAILWISE (甬算) Zen</a>** وانقر **Create API Key**.
+1. سجّل الدخول إلى **<a href={console}>RAILWISE Zen</a>** وانقر **Create API Key**.
 
-2. شغّل الأمر `/connect` وابحث عن **RAILWISE (甬算) Zen**.
+2. شغّل الأمر `/connect` وابحث عن **RAILWISE Zen**.
 
    ```txt
    /connect
    ```
 
-3. أدخل مفتاح API الخاص بـ RAILWISE (甬算).
+3. أدخل مفتاح API الخاص بـ RAILWISE.
 
    ```txt
    ┌ API key
@@ -1866,7 +1866,7 @@ RAILWISE (甬算) Zen هي قائمة من النماذج التي تم اختب
 - **limit.context**: الحد الأقصى لرموز الإدخال التي يقبلها النموذج.
 - **limit.output**: الحد الأقصى للرموز التي يمكن للنموذج توليدها.
 
-تسمح حقول `limit` لـ RAILWISE (甬算) بفهم مقدار السياق المتبقي لديك. تسحب المزوّدات القياسية هذه القيم تلقائيا من models.dev.
+تسمح حقول `limit` لـ RAILWISE بفهم مقدار السياق المتبقي لديك. تسحب المزوّدات القياسية هذه القيم تلقائيا من models.dev.
 
 ---
 

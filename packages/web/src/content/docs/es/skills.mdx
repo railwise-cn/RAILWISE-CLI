@@ -3,7 +3,7 @@ title: "Habilidades del agente"
 description: "Defina el comportamiento reutilizable mediante definiciones de SKILL.md"
 ---
 
-Las habilidades del agente permiten a RAILWISE (甬算) descubrir instrucciones reutilizables de su repositorio o directorio de inicio.
+Las habilidades del agente permiten a RAILWISE descubrir instrucciones reutilizables de su repositorio o directorio de inicio.
 Las habilidades se cargan bajo demanda a través de la herramienta nativa `skill`: los agentes ven las habilidades disponibles y pueden cargar el contenido completo cuando sea necesario.
 
 ---
@@ -11,7 +11,7 @@ Las habilidades se cargan bajo demanda a través de la herramienta nativa `skill
 ## Colocar archivos
 
 Cree una carpeta por nombre de habilidad y coloque un `SKILL.md` dentro de ella.
-RAILWISE (甬算) busca estas ubicaciones:
+RAILWISE busca estas ubicaciones:
 
 - Configuración del proyecto: `.railwise/skills/<name>/SKILL.md`
 - Configuración global: `~/.config/railwise/skills/<name>/SKILL.md`
@@ -24,7 +24,7 @@ RAILWISE (甬算) busca estas ubicaciones:
 
 ## Entender el descubrimiento
 
-Para las rutas locales del proyecto, RAILWISE (甬算) sube desde su directorio de trabajo actual hasta llegar al árbol de trabajo de git.
+Para las rutas locales del proyecto, RAILWISE sube desde su directorio de trabajo actual hasta llegar al árbol de trabajo de git.
 Carga cualquier `skills/*/SKILL.md` coincidente en `.railwise/` y cualquier `.claude/skills/*/SKILL.md` o `.agents/skills/*/SKILL.md` coincidente a lo largo del camino.
 
 Las definiciones globales también se cargan desde `~/.config/railwise/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` y `~/.agents/skills/*/SKILL.md`.
@@ -102,7 +102,7 @@ Ask clarifying questions if the target versioning scheme is unclear.
 
 ## Reconocer la descripción de la herramienta
 
-RAILWISE (甬算) enumera las habilidades disponibles en la descripción de la herramienta `skill`.
+RAILWISE enumera las habilidades disponibles en la descripción de la herramienta `skill`.
 Cada entrada incluye el nombre y la descripción de la habilidad:
 
 ```xml

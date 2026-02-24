@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبات الدمج.
+description: استخدم RAILWISE في مشكلات GitLab وطلبات الدمج.
 ---
 
-يتكامل RAILWISE (甬算) مع سير عمل GitLab لديك عبر خط أنابيب GitLab CI/CD أو عبر GitLab Duo.
+يتكامل RAILWISE مع سير عمل GitLab لديك عبر خط أنابيب GitLab CI/CD أو عبر GitLab Duo.
 
-في كلتا الحالتين، سيعمل RAILWISE (甬算) على مشغّلات GitLab لديك.
+في كلتا الحالتين، سيعمل RAILWISE على مشغّلات GitLab لديك.
 
 ---
 
 ## GitLab CI
 
-يعمل RAILWISE (甬算) ضمن خط أنابيب GitLab عادي. يمكنك دمجه في الخط كمكوّن [CI](https://docs.gitlab.com/ee/ci/components/).
+يعمل RAILWISE ضمن خط أنابيب GitLab عادي. يمكنك دمجه في الخط كمكوّن [CI](https://docs.gitlab.com/ee/ci/components/).
 
-هنا نستخدم مكوّن CI/CD أنشأه المجتمع لـ RAILWISE (甬算) — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
+هنا نستخدم مكوّن CI/CD أنشأه المجتمع لـ RAILWISE — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### الميزات
 
-- **استخدام إعدادات مخصّصة لكل مهمة**: يمكنك إعداد RAILWISE (甬算) باستخدام دليل إعدادات مخصّص، مثل `./config/#custom-directory`، لتفعيل الوظائف أو تعطيلها في كل تشغيل لـ RAILWISE (甬算).
-- **إعداد بسيط**: يقوم مكوّن CI بإعداد RAILWISE (甬算) في الخلفية؛ كل ما عليك هو إنشاء إعدادات RAILWISE (甬算) والمطالبة (prompt) الأولية.
+- **استخدام إعدادات مخصّصة لكل مهمة**: يمكنك إعداد RAILWISE باستخدام دليل إعدادات مخصّص، مثل `./config/#custom-directory`، لتفعيل الوظائف أو تعطيلها في كل تشغيل لـ RAILWISE.
+- **إعداد بسيط**: يقوم مكوّن CI بإعداد RAILWISE في الخلفية؛ كل ما عليك هو إنشاء إعدادات RAILWISE والمطالبة (prompt) الأولية.
 - **مرن**: يدعم مكوّن CI عدة مُدخلات لتخصيص سلوكه.
 
 ---
 
 ### الإعداد
 
-1. احفظ JSON مصادقة RAILWISE (甬算) كمتغيرات بيئة CI من نوع File ضمن **Settings** > **CI/CD** > **Variables**. تأكد من تعيينها على "Masked and hidden".
+1. احفظ JSON مصادقة RAILWISE كمتغيرات بيئة CI من نوع File ضمن **Settings** > **CI/CD** > **Variables**. تأكد من تعيينها على "Masked and hidden".
 2. أضف ما يلي إلى ملف `.gitlab-ci.yml`.
 
    ```yaml title=".gitlab-ci.yml"
@@ -35,7 +35,7 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
      - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
          config_dir: ${CI_PROJECT_DIR}/railwise-config
-         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
@@ -46,23 +46,23 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
 
 ## GitLab Duo
 
-يتكامل RAILWISE (甬算) مع سير عمل GitLab لديك.
-اذكر `@railwise` في تعليق، وسينفّذ RAILWISE (甬算) المهام ضمن خط أنابيب GitLab CI لديك.
+يتكامل RAILWISE مع سير عمل GitLab لديك.
+اذكر `@railwise` في تعليق، وسينفّذ RAILWISE المهام ضمن خط أنابيب GitLab CI لديك.
 
 ---
 
 ### الميزات
 
-- **فرز المشكلات**: اطلب من RAILWISE (甬算) النظر في مشكلة وشرحها لك.
-- **الإصلاح والتنفيذ**: اطلب من RAILWISE (甬算) إصلاح مشكلة أو تنفيذ ميزة.
+- **فرز المشكلات**: اطلب من RAILWISE النظر في مشكلة وشرحها لك.
+- **الإصلاح والتنفيذ**: اطلب من RAILWISE إصلاح مشكلة أو تنفيذ ميزة.
   سيُنشئ فرعًا جديدًا ويرفع طلب دمج بالتغييرات.
-- **آمن**: يعمل RAILWISE (甬算) على مشغّلات GitLab لديك.
+- **آمن**: يعمل RAILWISE على مشغّلات GitLab لديك.
 
 ---
 
 ### الإعداد
 
-يعمل RAILWISE (甬算) ضمن خط أنابيب GitLab CI/CD لديك، وإليك ما ستحتاجه لإعداده:
+يعمل RAILWISE ضمن خط أنابيب GitLab CI/CD لديك، وإليك ما ستحتاجه لإعداده:
 
 :::tip
 اطّلع على [**وثائق GitLab**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) للحصول على تعليمات محدّثة.
@@ -91,7 +91,7 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating RAILWISE (甬算) auth configuration"
+      - echo "Creating RAILWISE auth configuration"
       - mkdir --parents ~/.local/share/railwise
       - |
         cat > ~/.local/share/railwise/auth.json << EOF
@@ -104,10 +104,10 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
         EOF
       - echo "Configuring git"
       - git config --global user.email "railwise@gitlab.com"
-      - git config --global user.name "RAILWISE (甬算)"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running RAILWISE (甬算)"
+      - echo "Running RAILWISE"
       - |
         railwise run "
         You are an AI assistant helping with GitLab operations.
@@ -158,7 +158,7 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
 
 ### أمثلة
 
-فيما يلي بعض الأمثلة على كيفية استخدام RAILWISE (甬算) في GitLab.
+فيما يلي بعض الأمثلة على كيفية استخدام RAILWISE في GitLab.
 
 :::tip
 يمكنك ضبطه لاستخدام عبارة تشغيل مختلفة عن `@railwise`.
@@ -172,7 +172,7 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
   @railwise explain this issue
   ```
 
-  سيقرأ RAILWISE (甬算) المشكلة ويرد بشرح واضح.
+  سيقرأ RAILWISE المشكلة ويرد بشرح واضح.
 
 - **إصلاح مشكلة**
 
@@ -182,7 +182,7 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
   @railwise fix this
   ```
 
-  سيُنشئ RAILWISE (甬算) فرعًا جديدًا، وينفّذ التغييرات، ويفتح طلب دمج بالتغييرات.
+  سيُنشئ RAILWISE فرعًا جديدًا، وينفّذ التغييرات، ويفتح طلب دمج بالتغييرات.
 
 - **مراجعة طلبات الدمج**
 
@@ -192,4 +192,4 @@ description: استخدم RAILWISE (甬算) في مشكلات GitLab وطلبا�
   @railwise review this merge request
   ```
 
-  سيُراجع RAILWISE (甬算) طلب الدمج ويقدّم ملاحظات.
+  سيُراجع RAILWISE طلب الدمج ويقدّم ملاحظات.

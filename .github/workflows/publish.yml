@@ -34,7 +34,7 @@ jobs:
   version:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     # TODO: 替换为你的 GitHub org/repo
-    if: true  # was: github.repository == 'anomalyco/opencode'
+    if: true  # was: github.repository == 'anomalyco/railwise'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -63,7 +63,7 @@ jobs:
     needs: version
     runs-on: blacksmith-4vcpu-ubuntu-2404
     # TODO: 替换为你的 GitHub org/repo
-    if: true  # was: github.repository == 'anomalyco/opencode'
+    if: true  # was: github.repository == 'anomalyco/railwise'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -74,7 +74,7 @@ jobs:
       - name: Build
         id: build
         run: |
-          ./packages/opencode/script/build.ts
+          ./packages/railwise/script/build.ts
         env:
           RAILWISE_VERSION: ${{ needs.version.outputs.version }}
           RAILWISE_RELEASE: ${{ needs.version.outputs.release }}
@@ -82,8 +82,8 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: opencode-cli
-          path: packages/opencode/dist
+          name: railwise-cli
+          path: packages/railwise/dist
 
     outputs:
       version: ${{ needs.version.outputs.version }}
@@ -203,7 +203,7 @@ jobs:
           releaseId: ${{ needs.version.outputs.release }}
           tagName: ${{ needs.version.outputs.tag }}
           releaseDraft: true
-          releaseAssetNamePattern: opencode-desktop-[platform]-[arch][ext]
+          releaseAssetNamePattern: railwise-desktop-[platform]-[arch][ext]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_BUNDLER_NEW_APPIMAGE_FORMAT: true
@@ -249,13 +249,13 @@ jobs:
         id: committer
         uses: ./.github/actions/setup-git-committer
         with:
-          opencode-app-id: ${{ vars.RAILWISE_APP_ID }}
-          opencode-app-secret: ${{ secrets.RAILWISE_APP_SECRET }}
+          railwise-app-id: ${{ vars.RAILWISE_APP_ID }}
+          railwise-app-secret: ${{ secrets.RAILWISE_APP_SECRET }}
 
       - uses: actions/download-artifact@v4
         with:
-          name: opencode-cli
-          path: packages/opencode/dist
+          name: railwise-cli
+          path: packages/railwise/dist
 
       - name: Cache apt packages (AUR)
         uses: actions/cache@v4
@@ -272,8 +272,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.AUR_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          git config --global user.email "opencode@sst.dev"
-          git config --global user.name "opencode"
+          git config --global user.email "railwise@sst.dev"
+          git config --global user.name "railwise"
           ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts || true
 
       - run: ./script/publish.ts

@@ -1,13 +1,13 @@
 ---
 title: SDK
-description: Typesikker JS-klient for RAILWISE (甬算)-server.
+description: Typesikker JS-klient for RAILWISE-server.
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-RAILWISE (甬算) JS/TS SDK gir en typesikker klient for samhandling med serveren.
-Bruk den til å bygge integrasjoner og kontrollere RAILWISE (甬算) programmatisk.
+RAILWISE JS/TS SDK gir en typesikker klient for samhandling med serveren.
+Bruk den til å bygge integrasjoner og kontrollere RAILWISE programmatisk.
 
 [Finn ut mer](/docs/server) om hvordan serveren fungerer. For eksempler, sjekk ut [prosjektene](/docs/ecosystem#projects) bygget av fellesskapet.
 
@@ -25,7 +25,7 @@ npm install @railwise/sdk
 
 ## Opprette klient
 
-Opprett en forekomst av RAILWISE (甬算):
+Opprett en forekomst av RAILWISE:
 
 ```javascript
 import { createRailwise } from "@railwise/sdk"
@@ -69,7 +69,7 @@ railwise.server.close()
 
 ## Kun klient
 
-Hvis du allerede har en kjørende forekomst av RAILWISE (甬算), kan du opprette en klientforekomst for å koble til den:
+Hvis du allerede har en kjørende forekomst av RAILWISE, kan du opprette en klientforekomst for å koble til den:
 
 ```javascript
 import { createRailwiseClient } from "@railwise/sdk"

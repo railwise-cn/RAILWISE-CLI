@@ -16,7 +16,7 @@ import { ModelTooltip } from "./model-tooltip"
 import { useLanguage } from "@/context/language"
 
 const isFree = (provider: string, cost: { input: number } | undefined) =>
-  provider === "opencode" && (!cost || cost.input === 0)
+  provider === "railwise" && (!cost || cost.input === 0)
 
 const ModelList: Component<{
   provider?: string

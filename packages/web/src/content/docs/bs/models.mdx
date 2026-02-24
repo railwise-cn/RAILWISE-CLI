@@ -3,11 +3,11 @@ title: Modeli
 description: Konfiguriranje LLM provajdera i modela.
 ---
 
-RAILWISE (甬算) koristi [AI SDK](https://ai-sdk.dev/) i [Models.dev](https://models.dev) za podršku **75+ LLM providera**, uključujući lokalne modele.
+RAILWISE koristi [AI SDK](https://ai-sdk.dev/) i [Models.dev](https://models.dev) za podršku **75+ LLM providera**, uključujući lokalne modele.
 
 ## Provajderi
 
-Većina popularnih provajdera su unaprijed učitani prema zadanim postavkama. Ako ste dodali vjerodajnice za provajdera putem naredbe `/connect`, oni će biti dostupni kada pokrenete RAILWISE (甬算).
+Većina popularnih provajdera su unaprijed učitani prema zadanim postavkama. Ako ste dodali vjerodajnice za provajdera putem naredbe `/connect`, oni će biti dostupni kada pokrenete RAILWISE.
 Saznajte više o [providers](/docs/providers).
 
 ---
@@ -30,7 +30,7 @@ Razmislite o korištenju jednog od modela koje preporučujemo.
 :::
 
 Međutim, postoji samo nekoliko njih koji su dobri i u generiranju koda i u pozivanju alata.
-Evo nekoliko modela koji dobro rade sa RAILWISE (甬算), bez posebnog redosleda. (Ovo nije potpuna lista niti je nužno ažurirana):
+Evo nekoliko modela koji dobro rade sa RAILWISE, bez posebnog redosleda. (Ovo nije potpuna lista niti je nužno ažurirana):
 
 - GPT 5.2
 - Codex GPT 5.1
@@ -44,7 +44,7 @@ Evo nekoliko modela koji dobro rade sa RAILWISE (甬算), bez posebnog redosleda
 ## Postavljanje zadanog
 
 Da postavite jedan od ovih kao zadani model, možete postaviti ključ `model` u svom
-RAILWISE (甬算) config.
+RAILWISE config.
 
 ```json title="railwise.json" {3}
 {
@@ -53,7 +53,7 @@ RAILWISE (甬算) config.
 }
 ```
 
-Ovdje je puni ID `provider_id/model_id`. Na primjer, ako koristite [RAILWISE (甬算) Zen](/docs/zen), koristili biste `railwise/gpt-5.1-codex` za GPT 5.1 Codex.
+Ovdje je puni ID `provider_id/model_id`. Na primjer, ako koristite [RAILWISE Zen](/docs/zen), koristili biste `railwise/gpt-5.1-codex` za GPT 5.1 Codex.
 Ako ste konfigurirali [prilagođenog provajdera](/docs/providers#custom), `provider_id` je ključ iz `provider` dijela vaše konfiguracije, a `model_id` je ključ iz `provider.models`.
 
 ---
@@ -129,11 +129,11 @@ Također možete definirati prilagođene varijante koje proširuju ugrađene. Va
 
 ## Varijante
 
-Mnogi modeli podržavaju više varijanti sa različitim konfiguracijama. RAILWISE (甬算) se isporučuje sa ugrađenim podrazumevanim varijantama za popularne provajdere.
+Mnogi modeli podržavaju više varijanti sa različitim konfiguracijama. RAILWISE se isporučuje sa ugrađenim podrazumevanim varijantama za popularne provajdere.
 
 ### Ugrađene varijante
 
-RAILWISE (甬算) se isporučuje sa zadanim varijantama za mnoge provajdere:
+RAILWISE se isporučuje sa zadanim varijantama za mnoge provajdere:
 **Anthropic**:
 
 - `high` - Visok budžet za razmišljanje (zadano)
@@ -186,10 +186,10 @@ Koristite keybind `variant_cycle` za brzo prebacivanje između varijanti. [Sazna
 
 ## Učitavanje modela
 
-Kada se RAILWISE (甬算) pokrene, on provjerava modele u sljedećem prioritetnom redoslijedu:
+Kada se RAILWISE pokrene, on provjerava modele u sljedećem prioritetnom redoslijedu:
 
 1. Oznaka komandne linije `--model` ili `-m`. Format je isti kao u konfiguracijskoj datoteci: `provider_id/model_id`.
-2. Lista modela u RAILWISE (甬算) konfiguraciji.
+2. Lista modela u RAILWISE konfiguraciji.
 
 ```json title="railwise.json"
 {

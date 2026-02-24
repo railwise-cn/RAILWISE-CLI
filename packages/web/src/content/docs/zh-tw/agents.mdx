@@ -15,7 +15,7 @@ description: 設定和使用專門的代理。
 
 ## 類型
 
-OpenCode 中有兩種類型的代理：主代理和子代理。
+Railwise 中有兩種類型的代理：主代理和子代理。
 
 ---
 
@@ -27,7 +27,7 @@ OpenCode 中有兩種類型的代理：主代理和子代理。
 您可以在工作階段期間使用 **Tab** 鍵在主代理之間切換。
 :::
 
-OpenCode 內建了兩個主代理：**Build** 和 **Plan**。我們將在下面介紹它們。
+Railwise 內建了兩個主代理：**Build** 和 **Plan**。我們將在下面介紹它們。
 
 ---
 
@@ -35,13 +35,13 @@ OpenCode 內建了兩個主代理：**Build** 和 **Plan**。我們將在下面�
 
 子代理是主代理可以呼叫來執行特定任務的專業助手。您也可以透過在訊息中 **@ 提及**它們來手動呼叫。
 
-OpenCode 內建了兩個子代理：**General** 和 **Explore**。我們將在下面介紹它們。
+Railwise 內建了兩個子代理：**General** 和 **Explore**。我們將在下面介紹它們。
 
 ---
 
 ## 內建代理
 
-OpenCode 內建了兩個主代理和兩個子代理。
+Railwise 內建了兩個主代理和兩個子代理。
 
 ---
 
@@ -180,10 +180,10 @@ _模式_：`primary`
 
 您還可以使用 Markdown 檔案定義代理。將它們放在：
 
-- 全域：`~/.config/opencode/agents/`
+- 全域：`~/.config/railwise/agents/`
 - 專案級：`.railwise/agents/`
 
-```markdown title="~/.config/opencode/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Reviews code for quality and best practices
 mode: subagent
@@ -276,7 +276,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 }
 ```
 
-如果未指定溫度，OpenCode 將使用模型特定的預設值；大多數模型通常為 0，Qwen 模型為 0.55。
+如果未指定溫度，Railwise 將使用模型特定的預設值；大多數模型通常為 0，Qwen 模型為 0.55。
 
 ---
 
@@ -336,7 +336,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 }
 ```
 
-此路徑相對於設定檔所在位置。因此它同時適用於全域 OpenCode 設定和專案級設定。
+此路徑相對於設定檔所在位置。因此它同時適用於全域 Railwise 設定和專案級設定。
 
 ---
 
@@ -358,7 +358,7 @@ Markdown 檔案名稱即為代理名稱。例如，`review.md` 會建立一個�
 }
 ```
 
-OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如果您使用 [OpenCode Zen](/docs/zen)，則可以使用 `opencode/gpt-5.1-codex` 來表示 GPT 5.1 Codex。
+Railwise 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如果您使用 [Railwise Zen](/docs/zen)，則可以使用 `railwise/gpt-5.1-codex` 來表示 GPT 5.1 Codex。
 
 ---
 
@@ -446,7 +446,7 @@ OpenCode 設定中的模型 ID 使用 `provider/model-id` 格式。例如，如�
 
 您還可以在 Markdown 代理中設定權限。
 
-```markdown title="~/.config/opencode/agents/review.md"
+```markdown title="~/.config/railwise/agents/review.md"
 ---
 description: Code review without edits
 mode: subagent
@@ -656,7 +656,7 @@ Only analyze code and suggest changes.
 這些附加選項是模型和提供商特定的。請查閱您的提供商文件以取得可用參數。
 
 :::tip
-執行 `opencode models` 查看可用模型列表。
+執行 `railwise models` 查看可用模型列表。
 :::
 
 ---
@@ -666,7 +666,7 @@ Only analyze code and suggest changes.
 您可以使用以下命令建立新代理：
 
 ```bash
-opencode agent create
+railwise agent create
 ```
 
 此互動式命令將：
@@ -696,14 +696,14 @@ opencode agent create
 以下是一些您可能會覺得有用的範例代理。
 
 :::tip
-您有想要分享的代理嗎？[提交 PR](https://github.com/anomalyco/opencode)。
+您有想要分享的代理嗎？[提交 PR](https://github.com/anomalyco/railwise)。
 :::
 
 ---
 
 ### 文件代理
 
-```markdown title="~/.config/opencode/agents/docs-writer.md"
+```markdown title="~/.config/railwise/agents/docs-writer.md"
 ---
 description: Writes and maintains project documentation
 mode: subagent
@@ -725,7 +725,7 @@ Focus on:
 
 ### 安全稽核代理
 
-```markdown title="~/.config/opencode/agents/security-auditor.md"
+```markdown title="~/.config/railwise/agents/security-auditor.md"
 ---
 description: Performs security audits and identifies vulnerabilities
 mode: subagent

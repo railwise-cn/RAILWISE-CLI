@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: Brug RAILWISE (甬算) i GitLab-problemer og Merge Requests.
+description: Brug RAILWISE i GitLab-problemer og Merge Requests.
 ---
 
-RAILWISE (甬算) integreres med din GitLab-arbejdsgang gennem din GitLab CI/CD-pipeline eller med GitLab Duo.
+RAILWISE integreres med din GitLab-arbejdsgang gennem din GitLab CI/CD-pipeline eller med GitLab Duo.
 
-I begge tilfælde vil RAILWISE (甬算) køre på dine GitLab-løbere.
+I begge tilfælde vil RAILWISE køre på dine GitLab-løbere.
 
 ---
 
 ## GitLab CI
 
-RAILWISE (甬算) fungerer i en almindelig GitLab-pipeline. Du kan bygge det ind i en pipeline som en [CI component](https://docs.gitlab.com/ee/ci/components/)
+RAILWISE fungerer i en almindelig GitLab-pipeline. Du kan bygge det ind i en pipeline som en [CI component](https://docs.gitlab.com/ee/ci/components/)
 
-Her bruger vi en community-skabt CI/CD-komponent til RAILWISE (甬算) — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
+Her bruger vi en community-skabt CI/CD-komponent til RAILWISE — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### Funktioner
 
-- **Brug brugerdefineret konfiguration pr. job**: Konfigurer RAILWISE (甬算) med en brugerdefineret konfigurationsmappe, for eksempel `./config/#custom-directory` for at aktivere eller deaktivere funktionalitet pr. RAILWISE (甬算) påkald.
-- **Minimal opsætning**: CI-komponenten sætter RAILWISE (甬算) op i baggrunden, du behøver kun at oprette RAILWISE (甬算)-konfigurationen og den indledende prompt.
+- **Brug brugerdefineret konfiguration pr. job**: Konfigurer RAILWISE med en brugerdefineret konfigurationsmappe, for eksempel `./config/#custom-directory` for at aktivere eller deaktivere funktionalitet pr. RAILWISE påkald.
+- **Minimal opsætning**: CI-komponenten sætter RAILWISE op i baggrunden, du behøver kun at oprette RAILWISE-konfigurationen og den indledende prompt.
 - **Fleksibel**: CI-komponenten understøtter flere input til at tilpasse dens adfærd
 
 ---
 
 ### Opsætning
 
-1. Gem din RAILWISE (甬算)-autentificering JSON som en filtype CI-miljøvariabel under **Indstillinger** > **CI/CD** > **Variabler**. Sørg for at markere dem som "Maskede og skjulte".
+1. Gem din RAILWISE-autentificering JSON som en filtype CI-miljøvariabel under **Indstillinger** > **CI/CD** > **Variabler**. Sørg for at markere dem som "Maskede og skjulte".
 2. Tilføj følgende til din `.gitlab-ci.yml` fil.
 
    ```yaml title=".gitlab-ci.yml"
@@ -35,7 +35,7 @@ Her bruger vi en community-skabt CI/CD-komponent til RAILWISE (甬算) — [nagy
      - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
          config_dir: ${CI_PROJECT_DIR}/railwise-config
-         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
@@ -46,23 +46,23 @@ For flere input og use cases [check out the docs](https://gitlab.com/explore/cat
 
 ## GitLab Duo
 
-RAILWISE (甬算) integreres med din GitLab-arbejdsgang.
-Nævn `@railwise` i en kommentar, og RAILWISE (甬算) vil udføre opgaver i din GitLab CI-pipeline.
+RAILWISE integreres med din GitLab-arbejdsgang.
+Nævn `@railwise` i en kommentar, og RAILWISE vil udføre opgaver i din GitLab CI-pipeline.
 
 ---
 
 ### Funktioner
 
-- **Triageproblemer**: Bed RAILWISE (甬算) om at undersøge et problem og forklare dig det.
-- **Ret og implementer**: Bed RAILWISE (甬算) om at løse et problem eller implementere en funktion.
+- **Triageproblemer**: Bed RAILWISE om at undersøge et problem og forklare dig det.
+- **Ret og implementer**: Bed RAILWISE om at løse et problem eller implementere en funktion.
   Det vil oprette en ny branch og rejse en Merge Request med ændringer.
-- **Sikker**: RAILWISE (甬算) kører på dine GitLab-løbere.
+- **Sikker**: RAILWISE kører på dine GitLab-løbere.
 
 ---
 
 ### Opsætning
 
-RAILWISE (甬算) kører i din GitLab CI/CD pipeline, her er hvad du skal bruge for at konfigurere det:
+RAILWISE kører i din GitLab CI/CD pipeline, her er hvad du skal bruge for at konfigurere det:
 
 :::tip
 Tjek [**GitLab docs**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) for opdaterede instruktioner.
@@ -91,7 +91,7 @@ Tjek [**GitLab docs**](https://docs.gitlab.com/user/duo_agent_platform/agent_ass
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating RAILWISE (甬算) auth configuration"
+      - echo "Creating RAILWISE auth configuration"
       - mkdir --parents ~/.local/share/railwise
       - |
         cat > ~/.local/share/railwise/auth.json << EOF
@@ -104,10 +104,10 @@ Tjek [**GitLab docs**](https://docs.gitlab.com/user/duo_agent_platform/agent_ass
         EOF
       - echo "Configuring git"
       - git config --global user.email "railwise@gitlab.com"
-      - git config --global user.name "RAILWISE (甬算)"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running RAILWISE (甬算)"
+      - echo "Running RAILWISE"
       - |
         railwise run "
         You are an AI assistant helping with GitLab operations.
@@ -158,7 +158,7 @@ Du kan henvise til [GitLab CLI agents docs](https://docs.gitlab.com/user/duo_age
 
 ### Eksempler
 
-Her er nogle eksempler på, hvordan du kan bruge RAILWISE (甬算) i GitLab.
+Her er nogle eksempler på, hvordan du kan bruge RAILWISE i GitLab.
 
 :::tip
 Du kan konfigurere til at bruge en anden udløsersætning end `@railwise`.
@@ -172,7 +172,7 @@ Du kan konfigurere til at bruge en anden udløsersætning end `@railwise`.
   @railwise explain this issue
   ```
 
-  RAILWISE (甬算) vil læse spørgsmålet og svare med en klar forklaring.
+  RAILWISE vil læse spørgsmålet og svare med en klar forklaring.
 
 - **Løs et problem**
 
@@ -182,7 +182,7 @@ Du kan konfigurere til at bruge en anden udløsersætning end `@railwise`.
   @railwise fix this
   ```
 
-  RAILWISE (甬算) vil oprette en ny branch, implementere ændringer og åbne en Merge Request med ændringer.
+  RAILWISE vil oprette en ny branch, implementere ændringer og åbne en Merge Request med ændringer.
 
 - **Gennemgå Merge Requests**
 
@@ -192,4 +192,4 @@ Du kan konfigurere til at bruge en anden udløsersætning end `@railwise`.
   @railwise review this merge request
   ```
 
-  RAILWISE (甬算) vil gennemgå din Merge Request og give feedback.
+  RAILWISE vil gennemgå din Merge Request og give feedback.

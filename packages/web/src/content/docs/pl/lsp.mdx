@@ -1,15 +1,15 @@
 ---
 title: Serwery LSP
-description: RAILWISE (甬算) integruje się z serwerami LSP.
+description: RAILWISE integruje się z serwerami LSP.
 ---
 
-RAILWISE (甬算) integruje się z protokołem Language Server Protocol (LSP), aby zapewnić modelom LLM kontekst bazy kodu. Wykorzystuje diagnostykę, aby przekazywać informacje zwrotne do LLM.
+RAILWISE integruje się z protokołem Language Server Protocol (LSP), aby zapewnić modelom LLM kontekst bazy kodu. Wykorzystuje diagnostykę, aby przekazywać informacje zwrotne do LLM.
 
 ---
 
 ## Wbudowane
 
-RAILWISE (甬算) posiada kilka wbudowanych serwerów LSP dla następujących języków:
+RAILWISE posiada kilka wbudowanych serwerów LSP dla następujących języków:
 
 | Serwer LSP         | Rozszerzenia                                                        | Wymagania                                                                |
 | ------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -56,7 +56,7 @@ Możesz wyłączyć automatyczne pobieranie serwerów LSP, ustawiając zmienną 
 
 ## Jak to działa
 
-Gdy RAILWISE (甬算) otwiera plik:
+Gdy RAILWISE otwiera plik:
 
 1. Sprawdza plik pod kątem wszystkich dostępnych serwerów LSP.
 2. Uruchamia odpowiedni serwer LSP, jeśli jeszcze nie działa.
@@ -65,7 +65,7 @@ Gdy RAILWISE (甬算) otwiera plik:
 
 ## Konfiguracja
 
-Możesz dostosować serwery LSP poprzez sekcję `lsp` w konfiguracji RAILWISE (甬算).
+Możesz dostosować serwery LSP poprzez sekcję `lsp` w konfiguracji RAILWISE.
 
 ```json title="railwise.json"
 {

@@ -1,9 +1,9 @@
 ---
 title: Supporto ACP
-description: Usa RAILWISE (甬算) in qualunque editor compatibile con ACP.
+description: Usa RAILWISE in qualunque editor compatibile con ACP.
 ---
 
-RAILWISE (甬算) supporta [Agent Client Protocol](https://agentclientprotocol.com) (ACP), permettendoti di usarlo direttamente in editor e IDE compatibili.
+RAILWISE supporta [Agent Client Protocol](https://agentclientprotocol.com) (ACP), permettendoti di usarlo direttamente in editor e IDE compatibili.
 
 :::tip
 Per una lista di editor e tool che supportano ACP, vedi l'[ACP progress report](https://zed.dev/blog/acp-progress-report#available-now).
@@ -15,9 +15,9 @@ ACP e è un protocollo aperto che standardizza la comunicazione tra editor di co
 
 ## Configurazione
 
-Per usare RAILWISE (甬算) via ACP, configura l'editor in modo che esegua il comando `railwise acp`.
+Per usare RAILWISE via ACP, configura l'editor in modo che esegua il comando `railwise acp`.
 
-Il comando avvia RAILWISE (甬算) come sottoprocesso compatibile con ACP che comunica con l'editor via JSON-RPC su stdio.
+Il comando avvia RAILWISE come sottoprocesso compatibile con ACP che comunica con l'editor via JSON-RPC su stdio.
 
 Qui sotto trovi esempi per editor popolari che supportano ACP.
 
@@ -30,7 +30,7 @@ Aggiungi alla configurazione di [Zed](https://zed.dev) (`~/.config/zed/settings.
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "RAILWISE (甬算)": {
+    "RAILWISE": {
       "command": "railwise",
       "args": ["acp"]
     }
@@ -51,7 +51,7 @@ Puoi anche assegnare una scorciatoia da tastiera modificando `keymap.json`:
         {
           "agent": {
             "custom": {
-              "name": "RAILWISE (甬算)",
+              "name": "RAILWISE",
               "command": {
                 "command": "railwise",
                 "args": ["acp"]
@@ -74,7 +74,7 @@ Aggiungi al tuo acp.json per [JetBrains IDE](https://www.jetbrains.com/) secondo
 ```json title="acp.json"
 {
   "agent_servers": {
-    "RAILWISE (甬算)": {
+    "RAILWISE": {
       "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
@@ -82,7 +82,7 @@ Aggiungi al tuo acp.json per [JetBrains IDE](https://www.jetbrains.com/) secondo
 }
 ```
 
-Per aprirlo, seleziona il nuovo agente 'RAILWISE (甬算)' nel selettore agenti di AI Chat.
+Per aprirlo, seleziona il nuovo agente 'RAILWISE' nel selettore agenti di AI Chat.
 
 ---
 
@@ -121,7 +121,7 @@ Se devi passare variabili d'ambiente:
 
 ### CodeCompanion.nvim
 
-Per usare RAILWISE (甬算) come agente ACP in [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), aggiungi quanto segue alla config di Neovim:
+Per usare RAILWISE come agente ACP in [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), aggiungi quanto segue alla config di Neovim:
 
 ```lua
 require("codecompanion").setup({
@@ -136,20 +136,20 @@ require("codecompanion").setup({
 })
 ```
 
-Questa config imposta CodeCompanion per usare RAILWISE (甬算) come agente ACP per la chat.
+Questa config imposta CodeCompanion per usare RAILWISE come agente ACP per la chat.
 
 Se devi passare variabili d'ambiente (come `RAILWISE_API_KEY`), vedi [Configuring Adapters: Environment Variables](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) nella documentazione di CodeCompanion.nvim.
 
 ## Supporto
 
-RAILWISE (甬算) funziona via ACP come nel terminale. Tutte le funzionalita sono supportate:
+RAILWISE funziona via ACP come nel terminale. Tutte le funzionalita sono supportate:
 :::note
 Alcuni comandi slash integrati come `/undo` e `/redo` non sono attualmente supportati.
 :::
 
 - Strumenti integrati (operazioni sui file, comandi da terminale, ecc.)
 - Strumenti personalizzati e comandi slash
-- Server MCP configurati nella tua configurazione RAILWISE (甬算)
+- Server MCP configurati nella tua configurazione RAILWISE
 - Regole specifiche del progetto da `AGENTS.md`
 - Formatter e linter personalizzati
 - Sistema di agenti e permessi

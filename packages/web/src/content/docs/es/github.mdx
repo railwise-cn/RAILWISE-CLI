@@ -1,17 +1,17 @@
 ---
 title: GitHub
-description: Utilice RAILWISE (甬算) en problemas y solicitudes de extracción de GitHub.
+description: Utilice RAILWISE en problemas y solicitudes de extracción de GitHub.
 ---
 
-RAILWISE (甬算) se integra con su flujo de trabajo GitHub. Mencione `/railwise` o `/oc` en su comentario y RAILWISE (甬算) ejecutará tareas dentro de su corredor de acciones GitHub.
+RAILWISE se integra con su flujo de trabajo GitHub. Mencione `/railwise` o `/oc` en su comentario y RAILWISE ejecutará tareas dentro de su corredor de acciones GitHub.
 
 ---
 
 ## Características
 
-- **Clasificación de problemas**: Pídele a RAILWISE (甬算) que investigue un problema y te lo explique.
-- **Reparar e implementar**: pídale a RAILWISE (甬算) que solucione un problema o implemente una función. Y funcionará en una nueva sucursal y enviará un PR con todos los cambios.
-- **Seguro**: RAILWISE (甬算) se ejecuta dentro de los corredores de tu GitHub.
+- **Clasificación de problemas**: Pídele a RAILWISE que investigue un problema y te lo explique.
+- **Reparar e implementar**: pídale a RAILWISE que solucione un problema o implemente una función. Y funcionará en una nueva sucursal y enviará un PR con todos los cambios.
+- **Seguro**: RAILWISE se ejecuta dentro de los corredores de tu GitHub.
 
 ---
 
@@ -63,7 +63,7 @@ O puede configurarlo manualmente.
               fetch-depth: 1
               persist-credentials: false
 
-          - name: Run RAILWISE (甬算)
+          - name: Run RAILWISE
            uses: anomalyco/railwise/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -81,13 +81,13 @@ O puede configurarlo manualmente.
 
 ## Configuración
 
-- `model`: El modelo a usar con RAILWISE (甬算). Toma el formato de `provider/model`. Esto es **obligatorio**.
+- `model`: El modelo a usar con RAILWISE. Toma el formato de `provider/model`. Esto es **obligatorio**.
 - `agent`: El agente a utilizar. Debe ser un agente primario. Vuelve a `default_agent` desde la configuración o `"build"` si no se encuentra.
-- `share`: si se comparte la sesión RAILWISE (甬算). El valor predeterminado es **verdadero** para repositorios públicos.
-- `prompt`: mensaje personalizado opcional para anular el comportamiento predeterminado. Utilice esto para personalizar cómo RAILWISE (甬算) procesa las solicitudes.
-- `token`: token de acceso GitHub opcional para realizar operaciones como crear comentarios, confirmar cambios y abrir solicitudes de extracción. De forma predeterminada, RAILWISE (甬算) usa el token de acceso a la instalación de la aplicación RAILWISE (甬算) GitHub, por lo que las confirmaciones, los comentarios y las solicitudes de extracción aparecen como provenientes de la aplicación.
+- `share`: si se comparte la sesión RAILWISE. El valor predeterminado es **verdadero** para repositorios públicos.
+- `prompt`: mensaje personalizado opcional para anular el comportamiento predeterminado. Utilice esto para personalizar cómo RAILWISE procesa las solicitudes.
+- `token`: token de acceso GitHub opcional para realizar operaciones como crear comentarios, confirmar cambios y abrir solicitudes de extracción. De forma predeterminada, RAILWISE usa el token de acceso a la instalación de la aplicación RAILWISE GitHub, por lo que las confirmaciones, los comentarios y las solicitudes de extracción aparecen como provenientes de la aplicación.
 
-  Alternativamente, puede usar el GitHub Action Runner [`GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) incorporado sin instalar la aplicación RAILWISE (甬算) GitHub. Solo asegúrese de otorgar los permisos necesarios en su flujo de trabajo:
+  Alternativamente, puede usar el GitHub Action Runner [`GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) incorporado sin instalar la aplicación RAILWISE GitHub. Solo asegúrese de otorgar los permisos necesarios en su flujo de trabajo:
 
   ```yaml
   permissions:
@@ -103,23 +103,23 @@ O puede configurarlo manualmente.
 
 ## Eventos admitidos
 
-RAILWISE (甬算) puede desencadenarse por los siguientes eventos GitHub:
+RAILWISE puede desencadenarse por los siguientes eventos GitHub:
 
 | Tipo de evento                | Activado por                                  | Detalles                                                                                                                                        |
 | ----------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Comentar sobre un tema o PR                   | Mencione `/railwise` o `/oc` en su comentario. RAILWISE (甬算) lee el contexto y puede crear ramas, abrir relaciones públicas o responder.             |
-| `pull_request_review_comment` | Comente líneas de código específicas en un PR | Mencione `/railwise` o `/oc` mientras revisa el código. RAILWISE (甬算) recibe la ruta del archivo, los números de línea y el contexto de diferencias. |
-| `issues`                      | Número abierto o editado                      | Activa automáticamente RAILWISE (甬算) cuando se crean o modifican problemas. Requiere entrada `prompt`.                                               |
-| `pull_request`                | PR abierto o actualizado                      | Activa automáticamente RAILWISE (甬算) cuando los PR se abren, sincronizan o vuelven a abrir. Útil para revisiones automatizadas.                      |
-| `schedule`                    | Programación basada en cron                   | Ejecute RAILWISE (甬算) según una programación. Requiere entrada `prompt`. La salida va a registros y relaciones públicas (no hay temas que comentar). |
-| `workflow_dispatch`           | Activador manual desde GitHub UI              | Active RAILWISE (甬算) a pedido a través de la pestaña Acciones. Requiere entrada `prompt`. La salida va a registros y relaciones públicas.            |
+| `issue_comment`               | Comentar sobre un tema o PR                   | Mencione `/railwise` o `/oc` en su comentario. RAILWISE lee el contexto y puede crear ramas, abrir relaciones públicas o responder.             |
+| `pull_request_review_comment` | Comente líneas de código específicas en un PR | Mencione `/railwise` o `/oc` mientras revisa el código. RAILWISE recibe la ruta del archivo, los números de línea y el contexto de diferencias. |
+| `issues`                      | Número abierto o editado                      | Activa automáticamente RAILWISE cuando se crean o modifican problemas. Requiere entrada `prompt`.                                               |
+| `pull_request`                | PR abierto o actualizado                      | Activa automáticamente RAILWISE cuando los PR se abren, sincronizan o vuelven a abrir. Útil para revisiones automatizadas.                      |
+| `schedule`                    | Programación basada en cron                   | Ejecute RAILWISE según una programación. Requiere entrada `prompt`. La salida va a registros y relaciones públicas (no hay temas que comentar). |
+| `workflow_dispatch`           | Activador manual desde GitHub UI              | Active RAILWISE a pedido a través de la pestaña Acciones. Requiere entrada `prompt`. La salida va a registros y relaciones públicas.            |
 
 ### Ejemplo de programación
 
-Ejecute RAILWISE (甬算) según una programación para realizar tareas automatizadas:
+Ejecute RAILWISE según una programación para realizar tareas automatizadas:
 
 ```yaml title=".github/workflows/railwise-scheduled.yml"
-name: Scheduled RAILWISE (甬算) Task
+name: Scheduled RAILWISE Task
 
 on:
   schedule:
@@ -139,7 +139,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run RAILWISE (甬算)
+      - name: Run RAILWISE
         uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -150,7 +150,7 @@ jobs:
             If you find issues worth addressing, open an issue to track them.
 ```
 
-Para eventos programados, la entrada `prompt` es **obligatoria** ya que no hay comentarios del que extraer instrucciones. Los flujos de trabajo programados se ejecutan sin un contexto de usuario para verificar los permisos, por lo que el flujo de trabajo debe otorgar `contents: write` y `pull-requests: write` si espera que RAILWISE (甬算) cree ramas o PR.
+Para eventos programados, la entrada `prompt` es **obligatoria** ya que no hay comentarios del que extraer instrucciones. Los flujos de trabajo programados se ejecutan sin un contexto de usuario para verificar los permisos, por lo que el flujo de trabajo debe otorgar `contents: write` y `pull-requests: write` si espera que RAILWISE cree ramas o PR.
 
 ---
 
@@ -191,7 +191,7 @@ jobs:
             - Suggest improvements
 ```
 
-Para los eventos `pull_request`, si no se proporciona `prompt`, RAILWISE (甬算) revisa de forma predeterminada la solicitud de extracción.
+Para los eventos `pull_request`, si no se proporciona `prompt`, RAILWISE revisa de forma predeterminada la solicitud de extracción.
 
 ---
 
@@ -252,7 +252,7 @@ Para eventos `issues`, la entrada `prompt` es **obligatoria** ya que no hay ning
 
 ## Indicaciones personalizadas
 
-Anule el mensaje predeterminado para personalizar el comportamiento de RAILWISE (甬算) para su flujo de trabajo.
+Anule el mensaje predeterminado para personalizar el comportamiento de RAILWISE para su flujo de trabajo.
 
 ```yaml title=".github/workflows/railwise.yml"
 - uses: anomalyco/railwise/github@latest
@@ -271,7 +271,7 @@ Esto es útil para hacer cumplir criterios de revisión específicos, estándare
 
 ## Ejemplos
 
-A continuación se muestran algunos ejemplos de cómo puede utilizar RAILWISE (甬算) en GitHub.
+A continuación se muestran algunos ejemplos de cómo puede utilizar RAILWISE en GitHub.
 
 - **Explica un problema**
 
@@ -281,7 +281,7 @@ A continuación se muestran algunos ejemplos de cómo puede utilizar RAILWISE (�
   /railwise explain this issue
   ```
 
-  RAILWISE (甬算) leerá el hilo completo, incluidos todos los comentarios, y responderá con una explicación clara.
+  RAILWISE leerá el hilo completo, incluidos todos los comentarios, y responderá con una explicación clara.
 
 - **Solucionar un problema**
 
@@ -291,7 +291,7 @@ A continuación se muestran algunos ejemplos de cómo puede utilizar RAILWISE (�
   /railwise fix this
   ```
 
-  Y RAILWISE (甬算) creará una nueva rama, implementará los cambios y abrirá un PR con los cambios.
+  Y RAILWISE creará una nueva rama, implementará los cambios y abrirá un PR con los cambios.
 
 - **Revisar relaciones públicas y realizar cambios**
 
@@ -301,18 +301,18 @@ A continuación se muestran algunos ejemplos de cómo puede utilizar RAILWISE (�
   Delete the attachment from S3 when the note is removed /oc
   ```
 
-  RAILWISE (甬算) implementará el cambio solicitado y lo comprometerá con el mismo PR.
+  RAILWISE implementará el cambio solicitado y lo comprometerá con el mismo PR.
 
 - **Revisar líneas de código específicas**
 
-  Deje un comentario directamente en las líneas de código en la pestaña "Archivos" del PR. RAILWISE (甬算) detecta automáticamente el archivo, los números de línea y el contexto de diferencias para proporcionar respuestas precisas.
+  Deje un comentario directamente en las líneas de código en la pestaña "Archivos" del PR. RAILWISE detecta automáticamente el archivo, los números de línea y el contexto de diferencias para proporcionar respuestas precisas.
 
   ```
   [Comment on specific lines in Files tab]
   /oc add error handling here
   ```
 
-  Al comentar líneas específicas, RAILWISE (甬算) recibe:
+  Al comentar líneas específicas, RAILWISE recibe:
   - El archivo exacto que se está revisando.
   - Las líneas de código específicas.
   - El contexto diferencial circundante.

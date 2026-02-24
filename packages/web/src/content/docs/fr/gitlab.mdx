@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: Utilisez RAILWISE (甬算) dans les issues GitLab et les merge requests.
+description: Utilisez RAILWISE dans les issues GitLab et les merge requests.
 ---
 
-RAILWISE (甬算) s'intègre à votre flux de travail GitLab via votre pipeline CI/CD GitLab ou avec GitLab Duo.
+RAILWISE s'intègre à votre flux de travail GitLab via votre pipeline CI/CD GitLab ou avec GitLab Duo.
 
-Dans les deux cas, RAILWISE (甬算) fonctionnera sur vos runners GitLab.
+Dans les deux cas, RAILWISE fonctionnera sur vos runners GitLab.
 
 ---
 
 ## GitLab CI
 
-RAILWISE (甬算) fonctionne dans un pipeline GitLab régulier. Vous pouvez l'intégrer dans un pipeline en tant que [composant CI](https://docs.gitlab.com/ee/ci/components/)
+RAILWISE fonctionne dans un pipeline GitLab régulier. Vous pouvez l'intégrer dans un pipeline en tant que [composant CI](https://docs.gitlab.com/ee/ci/components/)
 
-Ici, nous utilisons un composant CI/CD créé par la communauté pour RAILWISE (甬算) — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
+Ici, nous utilisons un composant CI/CD créé par la communauté pour RAILWISE — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### Fonctionnalités
 
-- **Utiliser une configuration personnalisée par tâche** : configurez RAILWISE (甬算) avec un répertoire de configuration personnalisé, par exemple `./config/#custom-directory` pour activer ou désactiver la fonctionnalité pour chaque appel d'RAILWISE (甬算).
-- **Configuration minimale** : le composant CI configure RAILWISE (甬算) en arrière-plan, il vous suffit de créer la configuration RAILWISE (甬算) et le prompt initial.
+- **Utiliser une configuration personnalisée par tâche** : configurez RAILWISE avec un répertoire de configuration personnalisé, par exemple `./config/#custom-directory` pour activer ou désactiver la fonctionnalité pour chaque appel d'RAILWISE.
+- **Configuration minimale** : le composant CI configure RAILWISE en arrière-plan, il vous suffit de créer la configuration RAILWISE et le prompt initial.
 - **Flexible** : le composant CI prend en charge plusieurs entrées pour personnaliser son comportement
 
 ---
 
 ### Installation
 
-1. Stockez votre authentification RAILWISE (甬算) JSON en tant que variables d'environnement CI de type fichier sous **Paramètres** > **CI/CD** > **Variables**. Assurez-vous de les marquer comme « Masquées et protégées ».
+1. Stockez votre authentification RAILWISE JSON en tant que variables d'environnement CI de type fichier sous **Paramètres** > **CI/CD** > **Variables**. Assurez-vous de les marquer comme « Masquées et protégées ».
 2. Ajoutez ce qui suit à votre fichier `.gitlab-ci.yml`.
 
    ```yaml title=".gitlab-ci.yml"
@@ -35,7 +35,7 @@ Ici, nous utilisons un composant CI/CD créé par la communauté pour RAILWISE (
      - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
          config_dir: ${CI_PROJECT_DIR}/railwise-config
-         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
@@ -46,23 +46,23 @@ Pour plus d'entrées et de cas d'utilisation [consultez la doc](https://gitlab.c
 
 ## GitLab Duo
 
-RAILWISE (甬算) s'intègre à votre flux de travail GitLab.
-Mentionnez `@railwise` dans un commentaire et RAILWISE (甬算) exécutera les tâches au sein de votre pipeline CI GitLab.
+RAILWISE s'intègre à votre flux de travail GitLab.
+Mentionnez `@railwise` dans un commentaire et RAILWISE exécutera les tâches au sein de votre pipeline CI GitLab.
 
 ---
 
 ### Fonctionnalités
 
-- **Triage d'issues** : demandez à RAILWISE (甬算) d'examiner une issue et de vous l'expliquer.
-- **Correction et implémentation** : demandez à RAILWISE (甬算) de résoudre une issue ou d'implémenter une fonctionnalité.
+- **Triage d'issues** : demandez à RAILWISE d'examiner une issue et de vous l'expliquer.
+- **Correction et implémentation** : demandez à RAILWISE de résoudre une issue ou d'implémenter une fonctionnalité.
   Cela créera une nouvelle branche et déclenchera une merge request avec les modifications.
-- **Sécurisé** : RAILWISE (甬算) fonctionne sur vos runners GitLab.
+- **Sécurisé** : RAILWISE fonctionne sur vos runners GitLab.
 
 ---
 
 ### Installation
 
-RAILWISE (甬算) s'exécute dans votre pipeline CI/CD GitLab. Voici ce dont vous aurez besoin pour le configurer :
+RAILWISE s'exécute dans votre pipeline CI/CD GitLab. Voici ce dont vous aurez besoin pour le configurer :
 
 :::tip
 Consultez la [**documentation GitLab**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) pour obtenir des instructions à jour.
@@ -91,7 +91,7 @@ Consultez la [**documentation GitLab**](https://docs.gitlab.com/user/duo_agent_p
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating RAILWISE (甬算) auth configuration"
+      - echo "Creating RAILWISE auth configuration"
       - mkdir --parents ~/.local/share/railwise
       - |
         cat > ~/.local/share/railwise/auth.json << EOF
@@ -104,10 +104,10 @@ Consultez la [**documentation GitLab**](https://docs.gitlab.com/user/duo_agent_p
         EOF
       - echo "Configuring git"
       - git config --global user.email "railwise@gitlab.com"
-      - git config --global user.name "RAILWISE (甬算)"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running RAILWISE (甬算)"
+      - echo "Running RAILWISE"
       - |
         railwise run "
         You are an AI assistant helping with GitLab operations.
@@ -158,7 +158,7 @@ Vous pouvez vous référer aux [GitLab CLI agents docs](https://docs.gitlab.com/
 
 ### Exemples
 
-Voici quelques exemples de la façon dont vous pouvez utiliser RAILWISE (甬算) dans GitLab.
+Voici quelques exemples de la façon dont vous pouvez utiliser RAILWISE dans GitLab.
 
 :::tip
 Vous pouvez configurer pour utiliser une phrase de déclenchement différente de `@railwise`.
@@ -172,7 +172,7 @@ Ajoutez ce commentaire dans une issue GitLab.
   @railwise explain this issue
 ```
 
-RAILWISE (甬算) lira l'issue et répondra avec une explication claire.
+RAILWISE lira l'issue et répondra avec une explication claire.
 
 - **Résoudre une issue**
 
@@ -182,7 +182,7 @@ Dans une issue GitLab, dites :
   @railwise fix this
 ```
 
-RAILWISE (甬算) créera une nouvelle branche, mettra en œuvre les modifications et ouvrira une merge request avec les modifications.
+RAILWISE créera une nouvelle branche, mettra en œuvre les modifications et ouvrira une merge request avec les modifications.
 
 - **Revue de merge request**
 
@@ -192,4 +192,4 @@ Laissez le commentaire suivant sur une merge request GitLab.
   @railwise review this merge request
 ```
 
-RAILWISE (甬算) examinera la merge request et fournira des commentaires.
+RAILWISE examinera la merge request et fournira des commentaires.

@@ -1,20 +1,20 @@
 ---
 title: ルール
-description: RAILWISE (甬算) のカスタム命令を設定します。
+description: RAILWISE のカスタム命令を設定します。
 ---
 
-`AGENTS.md` ファイルを作成することで、RAILWISE (甬算) にカスタム命令を提供できます。これは Cursor のルールと似ています。これには、特定のプロジェクトに合わせて LLM の動作をカスタマイズするために LLM のコンテキストに含まれる命令が含まれています。
+`AGENTS.md` ファイルを作成することで、RAILWISE にカスタム命令を提供できます。これは Cursor のルールと似ています。これには、特定のプロジェクトに合わせて LLM の動作をカスタマイズするために LLM のコンテキストに含まれる命令が含まれています。
 
 ---
 
 ## 初期化
 
-新しい `AGENTS.md` ファイルを作成するには、RAILWISE (甬算) で `/init` コマンドを実行します。
+新しい `AGENTS.md` ファイルを作成するには、RAILWISE で `/init` コマンドを実行します。
 
 :::tip
 プロジェクトの `AGENTS.md` ファイルを Git にコミットする必要があります。
 :::
-`AGENTS.md` ファイルが生成されます。これは、RAILWISE (甬算) がプロジェクトをより適切にナビゲートするのに役立ちます。
+`AGENTS.md` ファイルが生成されます。これは、RAILWISE がプロジェクトをより適切にナビゲートするのに役立ちます。
 
 既存の `AGENTS.md` ファイルがある場合、これはそれに追加しようとします。
 
@@ -53,7 +53,7 @@ This is an SST v3 monorepo with TypeScript. The project uses bun workspaces for 
 
 ## 種類
 
-RAILWISE (甬算) は、複数の場所からの `AGENTS.md` ファイルの読み取りもサポートしています。そして、これはさまざまな目的に役立ちます。
+RAILWISE は、複数の場所からの `AGENTS.md` ファイルの読み取りもサポートしています。そして、これはさまざまな目的に役立ちます。
 
 ### プロジェクト
 
@@ -61,13 +61,13 @@ RAILWISE (甬算) は、複数の場所からの `AGENTS.md` ファイルの読�
 
 ### グローバル
 
-`~/.config/railwise/AGENTS.md` ファイルにグローバルルールを含めることもできます。これは、すべての RAILWISE (甬算) セッションに適用されます。
+`~/.config/railwise/AGENTS.md` ファイルにグローバルルールを含めることもできます。これは、すべての RAILWISE セッションに適用されます。
 
 これは Git にコミットされておらず、チームと共有されていないため、LLM が従うべき個人ルールを指定するためにこれを使用することをお勧めします。
 
 ### Claude Code 互換性
 
-Claude Code から移行するユーザーのために、RAILWISE (甬算) はフォールバックとして Claude Code のファイル規則をサポートしています。
+Claude Code から移行するユーザーのために、RAILWISE はフォールバックとして Claude Code のファイル規則をサポートしています。
 
 - **プロジェクトルール**: プロジェクトディレクトリ内の `CLAUDE.md` (`AGENTS.md` が存在しない場合に使用されます)
 - **グローバルルール**: `~/.claude/CLAUDE.md` (`~/.config/railwise/AGENTS.md` が存在しない場合に使用)
@@ -85,7 +85,7 @@ export RAILWISE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 ## 優先順位
 
-RAILWISE (甬算) が開始されると、次の順序でルールファイルが検索されます。
+RAILWISE が開始されると、次の順序でルールファイルが検索されます。
 
 1. **ローカルファイル** (現在のディレクトリから上に移動) (`AGENTS.md`、`CLAUDE.md`)
 2. **グローバルファイル** (`~/.config/railwise/AGENTS.md`)
@@ -125,7 +125,7 @@ RAILWISE (甬算) が開始されると、次の順序でルールファイル�
 
 ## 外部ファイル参照
 
-RAILWISE (甬算) は `AGENTS.md` のファイル参照を自動的に解析しませんが、次の 2 つの方法で同様の機能を実現できます。
+RAILWISE は `AGENTS.md` のファイル参照を自動的に解析しませんが、次の 2 つの方法で同様の機能を実現できます。
 
 ### `railwise.json` の使用
 
@@ -140,7 +140,7 @@ RAILWISE (甬算) は `AGENTS.md` のファイル参照を自動的に解析し�
 
 ### AGENTS.md の手動指示
 
-`AGENTS.md` で明示的な命令を指定することで、RAILWISE (甬算) に外部ファイルを読み取るように教えることができます。実際の例を次に示します。
+`AGENTS.md` で明示的な命令を指定することで、RAILWISE に外部ファイルを読み取るように教えることができます。実際の例を次に示します。
 
 ```markdown title="AGENTS.md"
 # TypeScript Project Rules
@@ -172,7 +172,7 @@ Read the following file immediately as it's relevant to all workflows: @rules/ge
 - モジュール式の再利用可能なルールファイルを作成する
 - シンボリックリンクまたは git サブモジュールを介してプロジェクト間でルールを共有する
 - 詳細なガイドラインを参照しながら、AGENTS.md を簡潔に保ちます
-- RAILWISE (甬算) が特定のタスクに必要な場合にのみファイルをロードするようにする
+- RAILWISE が特定のタスクに必要な場合にのみファイルをロードするようにする
 
 :::tip
 モノリポジトリまたは共有標準を使用するプロジェクトの場合、グロブパターン (`railwise.json` など) で `packages/*/AGENTS.md` を使用する方が、手動で指示するよりも保守しやすくなります。

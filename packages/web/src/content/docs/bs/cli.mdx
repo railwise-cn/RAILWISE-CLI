@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: RAILWISE (甬算) CLI opcije i naredbe.
+description: RAILWISE CLI opcije i naredbe.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-RAILWISE (甬算) CLI po defaultu pokreće [TUI](/docs/tui) kada se pokrene bez ikakvih argumenata.
+RAILWISE CLI po defaultu pokreće [TUI](/docs/tui) kada se pokrene bez ikakvih argumenata.
 
 ```bash
 railwise
 ```
 
-Ali takođe prihvata naredbe kao što je dokumentovano na ovoj stranici. Ovo vam omogućava programsku interakciju sa RAILWISE (甬算).
+Ali takođe prihvata naredbe kao što je dokumentovano na ovoj stranici. Ovo vam omogućava programsku interakciju sa RAILWISE.
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-Pokrenite RAILWISE (甬算) terminalski korisnički interfejs.
+Pokrenite RAILWISE terminalski korisnički interfejs.
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## Naredbe
 
-RAILWISE (甬算) CLI takođe ima sljedeće naredbe.
+RAILWISE CLI takođe ima sljedeće naredbe.
 
 ---
 
 ### agent
 
-Upravljajte RAILWISE (甬算) agentima.
+Upravljajte RAILWISE agentima.
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-Priključite terminal na već pokrenut RAILWISE (甬算) backend server pokrenut putem `serve` ili `web` naredbi.
+Priključite terminal na već pokrenut RAILWISE backend server pokrenut putem `serve` ili `web` naredbi.
 
 ```bash
 railwise attach [url]
 ```
 
-Ovo omogućava korištenje TUI-ja sa udaljenim RAILWISE (甬算) backend-om. Na primjer:
+Ovo omogućava korištenje TUI-ja sa udaljenim RAILWISE backend-om. Na primjer:
 
 ```bash
 # Start the backend server for web/mobile access
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算) pokreće lista provajdera na [Models.dev](https://models.dev), tako da možete koristiti `railwise auth login` da konfigurirate API ključeve za bilo kojeg provajdera kojeg želite koristiti. Ovo je pohranjeno u `~/.local/share/railwise/auth.json`.
+RAILWISE pokreće lista provajdera na [Models.dev](https://models.dev), tako da možete koristiti `railwise auth login` da konfigurirate API ključeve za bilo kojeg provajdera kojeg želite koristiti. Ovo je pohranjeno u `~/.local/share/railwise/auth.json`.
 
 ```bash
 railwise auth login
 ```
 
-Kada se RAILWISE (甬算) pokrene, učitava dobavljače iz datoteke vjerodajnica. I ako postoje neki ključevi definirani u vašim okruženjima ili `.env` fajl u vašem projektu.
+Kada se RAILWISE pokrene, učitava dobavljače iz datoteke vjerodajnica. I ako postoje neki ključevi definirani u vašim okruženjima ili `.env` fajl u vašem projektu.
 
 ---
 
@@ -298,7 +298,7 @@ railwise models anthropic
 | `--refresh` | Osvježite keš modela sa models.dev                                       |
 | `--verbose` | Koristite detaljniji izlaz modela (uključuje metapodatke poput troškova) |
 
-Koristite `--refresh` zastavicu da ažurirate keširanu listu modela. Ovo je korisno kada su novi modeli dodani provajderu i želite da ih vidite u RAILWISE (甬算).
+Koristite `--refresh` zastavicu da ažurirate keširanu listu modela. Ovo je korisno kada su novi modeli dodani provajderu i želite da ih vidite u RAILWISE.
 
 ```bash
 railwise models --refresh
@@ -308,7 +308,7 @@ railwise models --refresh
 
 ### run
 
-Pokrenite RAILWISE (甬算) u neinteraktivnom modu tako što ćete direktno proslijediti prompt.
+Pokrenite RAILWISE u neinteraktivnom modu tako što ćete direktno proslijediti prompt.
 
 ```bash
 railwise run [message..]
@@ -344,20 +344,20 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f`   | Fajlovi koje treba priložiti poruci                                      |
 | `--format`   |        | Format: default (formatiran) ili json (sirovi JSON događaji)             |
 | `--title`    |        | Naslov sesije (koristi skraćeni prompt ako nije navedena vrijednost)     |
-| `--attach`   |        | Priključite na pokrenuti RAILWISE (甬算) server (npr. http://localhost:4096)    |
+| `--attach`   |        | Priključite na pokrenuti RAILWISE server (npr. http://localhost:4096)    |
 | `--port`     |        | Port za lokalni server (zadano na nasumični port)                        |
 
 ---
 
 ### serve
 
-Pokrenite RAILWISE (甬算) headless server za API pristup. Pogledajte [server docs](/docs/server) za kompletan HTTP interfejs.
+Pokrenite RAILWISE headless server za API pristup. Pogledajte [server docs](/docs/server) za kompletan HTTP interfejs.
 
 ```bash
 railwise serve
 ```
 
-Ovo pokreće HTTP server koji pruža API pristup funkcionalnosti RAILWISE (甬算)-a bez TUI interfejsa. Postavite `RAILWISE_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `railwise`).
+Ovo pokreće HTTP server koji pruža API pristup funkcionalnosti RAILWISE-a bez TUI interfejsa. Postavite `RAILWISE_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `railwise`).
 
 #### Opcije
 
@@ -372,7 +372,7 @@ Ovo pokreće HTTP server koji pruža API pristup funkcionalnosti RAILWISE (甬�
 
 ### session
 
-Upravljajte RAILWISE (甬算) sesijama.
+Upravljajte RAILWISE sesijama.
 
 ```bash
 railwise session [command]
@@ -382,7 +382,7 @@ railwise session [command]
 
 #### list
 
-Navedite sve RAILWISE (甬算) sesije.
+Navedite sve RAILWISE sesije.
 
 ```bash
 railwise session list
@@ -399,7 +399,7 @@ railwise session list
 
 ### stats
 
-Prikaži statistiku upotrebe tokena i troškova za vaše RAILWISE (甬算) sesije.
+Prikaži statistiku upotrebe tokena i troškova za vaše RAILWISE sesije.
 
 ```bash
 railwise stats
@@ -430,13 +430,13 @@ Ako ne unesete ID sesije, od vas će biti zatraženo da odaberete neku od dostup
 
 ### import
 
-Uvezite podatke sesije iz JSON datoteke ili RAILWISE (甬算) dijeljenog URL-a.
+Uvezite podatke sesije iz JSON datoteke ili RAILWISE dijeljenog URL-a.
 
 ```bash
 railwise import <file>
 ```
 
-Možete uvesti iz lokalne datoteke ili RAILWISE (甬算) dijeljenog URL-a.
+Možete uvesti iz lokalne datoteke ili RAILWISE dijeljenog URL-a.
 
 ```bash
 railwise import session.json
@@ -447,13 +447,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-Pokrenite RAILWISE (甬算) headless server sa web interfejsom.
+Pokrenite RAILWISE headless server sa web interfejsom.
 
 ```bash
 railwise web
 ```
 
-Ovo pokreće HTTP server i otvara web pretraživač za pristup RAILWISE (甬算)-u preko web interfejsa. Postavite `RAILWISE_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `railwise`).
+Ovo pokreće HTTP server i otvara web pretraživač za pristup RAILWISE-u preko web interfejsa. Postavite `RAILWISE_SERVER_PASSWORD` da omogućite HTTP osnovnu auth (korisničko ime je zadano na `railwise`).
 
 #### Opcije
 
@@ -488,7 +488,7 @@ Ova naredba pokreće ACP server koji komunicira preko stdin/stdout koristeći nd
 
 ### uninstall
 
-Deinstalirajte RAILWISE (甬算) i uklonite sve povezane datoteke.
+Deinstalirajte RAILWISE i uklonite sve povezane datoteke.
 
 ```bash
 railwise uninstall
@@ -507,7 +507,7 @@ railwise uninstall
 
 ### upgrade
 
-Ažurira RAILWISE (甬算) na najnoviju verziju ili određenu verziju.
+Ažurira RAILWISE na najnoviju verziju ili određenu verziju.
 
 ```bash
 railwise upgrade [target]
@@ -535,7 +535,7 @@ railwise upgrade v0.1.48
 
 ## Globalne opcije
 
-RAILWISE (甬算) CLI prihvata sljedeće globalne zastavice.
+RAILWISE CLI prihvata sljedeće globalne zastavice.
 
 | Opcija         | Kratko | Opis                                      |
 | -------------- | ------ | ----------------------------------------- |
@@ -548,7 +548,7 @@ RAILWISE (甬算) CLI prihvata sljedeće globalne zastavice.
 
 ## Varijable okruženja
 
-RAILWISE (甬算) se može konfigurirati pomoću varijabli okruženja.
+RAILWISE se može konfigurirati pomoću varijabli okruženja.
 
 | Varijabla                             | Tip     | Opis                                                               |
 | ------------------------------------- | ------- | ------------------------------------------------------------------ |

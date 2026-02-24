@@ -1,21 +1,21 @@
 ---
 title: Regler
-description: Set custom instructions for RAILWISE (甬算).
+description: Set custom instructions for RAILWISE.
 ---
 
-Du kan gi tilpassede instruksjoner for å RAILWISE (甬算) ved å opprette en `AGENTS.md`-fil. Dette ligner på Cursors regler. Den inneholder instruksjoner som vil bli inkludert i LLMs kontekst for å tilpasse oppførselen til ditt spesifikke prosjekt.
+Du kan gi tilpassede instruksjoner for å RAILWISE ved å opprette en `AGENTS.md`-fil. Dette ligner på Cursors regler. Den inneholder instruksjoner som vil bli inkludert i LLMs kontekst for å tilpasse oppførselen til ditt spesifikke prosjekt.
 
 ---
 
 ## Initialisering
 
-For å lage en ny `AGENTS.md` fil, kan du kjøre kommandoen `/init` i RAILWISE (甬算).
+For å lage en ny `AGENTS.md` fil, kan du kjøre kommandoen `/init` i RAILWISE.
 
 :::tip
 Du bør sjekke inn prosjektets `AGENTS.md`-fil i Git.
 :::
 
-Dette vil skanne prosjektet og alt dets innhold for å forstå hva prosjektet handler om og generere en `AGENTS.md`-fil med det. Dette hjelper RAILWISE (甬算) å navigere i prosjektet bedre.
+Dette vil skanne prosjektet og alt dets innhold for å forstå hva prosjektet handler om og generere en `AGENTS.md`-fil med det. Dette hjelper RAILWISE å navigere i prosjektet bedre.
 
 Hvis du har en eksisterende `AGENTS.md`-fil, vil denne prøve å legge til den.
 
@@ -54,7 +54,7 @@ Vi legger til prosjektspesifikke instruksjoner her, og dette vil bli delt på tv
 
 ## Typer
 
-RAILWISE (甬算) støtter også lesing av `AGENTS.md`-filen fra flere steder. Og dette tjener forskjellige formål.
+RAILWISE støtter også lesing av `AGENTS.md`-filen fra flere steder. Og dette tjener forskjellige formål.
 
 ### Prosjekt
 
@@ -62,13 +62,13 @@ Plasser en `AGENTS.md` i prosjektroten for prosjektspesifikke regler. Disse gjel
 
 ### Globalt
 
-Du kan også ha globale regler i en `~/.config/railwise/AGENTS.md`-fil. Dette blir brukt på alle RAILWISE (甬算)-økter.
+Du kan også ha globale regler i en `~/.config/railwise/AGENTS.md`-fil. Dette blir brukt på alle RAILWISE-økter.
 
 Siden dette ikke er forpliktet til Git eller delt med teamet ditt, anbefaler vi å bruke dette til å spesifisere eventuelle personlige regler som LLM bør følge.
 
 ### Claude Code-kompatibilitet
 
-For brukere som migrerer fra Claude Code, støtter RAILWISE (甬算) Claude Codes filkonvensjoner som fallbacks:
+For brukere som migrerer fra Claude Code, støtter RAILWISE Claude Codes filkonvensjoner som fallbacks:
 
 - **Prosjektregler**: `CLAUDE.md` i prosjektkatalogen din (brukes hvis ingen `AGENTS.md` eksisterer)
 - **Globale regler**: `~/.claude/CLAUDE.md` (brukes hvis ingen `~/.config/railwise/AGENTS.md` eksisterer)
@@ -86,7 +86,7 @@ export RAILWISE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 ## Forrang
 
-Når RAILWISE (甬算) starter, ser den etter regelfiler i denne rekkefølgen:
+Når RAILWISE starter, ser den etter regelfiler i denne rekkefølgen:
 
 1. **Lokale filer** ved å gå opp fra gjeldende katalog (`AGENTS.md`, `CLAUDE.md`)
 2. **Global fil** på `~/.config/railwise/AGENTS.md`
@@ -126,7 +126,7 @@ Alle instruksjonsfilene er kombinert med `AGENTS.md`-filene dine.
 
 ## Referere til eksterne filer
 
-Selv om RAILWISE (甬算) ikke automatisk analyserer filreferanser i `AGENTS.md`, kan du oppnå lignende funksjonalitet på to måter:
+Selv om RAILWISE ikke automatisk analyserer filreferanser i `AGENTS.md`, kan du oppnå lignende funksjonalitet på to måter:
 
 ### Bruker railwise.json
 
@@ -141,7 +141,7 @@ Den anbefalte tilnærmingen er å bruke feltet `instructions` i `railwise.json`:
 
 ### Manuelle instruksjoner i AGENTS.md
 
-Du kan lære RAILWISE (甬算) å lese eksterne filer ved å gi eksplisitte instruksjoner i `AGENTS.md`. Her er et praktisk eksempel:
+Du kan lære RAILWISE å lese eksterne filer ved å gi eksplisitte instruksjoner i `AGENTS.md`. Her er et praktisk eksempel:
 
 ```markdown title="AGENTS.md"
 # TypeScript Project Rules
@@ -173,7 +173,7 @@ Denne tilnærmingen lar deg:
 - Lage modulære, gjenbrukbare regelfiler
 - Dele regler på tvers av prosjekter via symbolkoblinger eller git-undermoduler
 - Holde AGENTS.md kortfattet mens du refererer til detaljerte retningslinjer
-- Sørge for at RAILWISE (甬算) laster filer kun når det er nødvendig for den spesifikke oppgaven
+- Sørge for at RAILWISE laster filer kun når det er nødvendig for den spesifikke oppgaven
 
 :::tip
 For monorepos eller prosjekter med delte standarder er bruk av `railwise.json` med glob-mønstre (som `packages/*/AGENTS.md`) mer vedlikeholdbart enn manuelle instruksjoner.

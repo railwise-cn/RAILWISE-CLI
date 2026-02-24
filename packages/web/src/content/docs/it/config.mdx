@@ -1,15 +1,15 @@
 ---
 title: Configurazione
-description: Usa la configurazione JSON di RAILWISE (甬算).
+description: Usa la configurazione JSON di RAILWISE.
 ---
 
-Puoi configurare RAILWISE (甬算) usando un file di configurazione JSON.
+Puoi configurare RAILWISE usando un file di configurazione JSON.
 
 ---
 
 ## Formato
 
-RAILWISE (甬算) supporta sia **JSON** sia **JSONC** (JSON con commenti).
+RAILWISE supporta sia **JSON** sia **JSONC** (JSON con commenti).
 
 ```jsonc title="railwise.jsonc"
 {
@@ -94,7 +94,7 @@ Puoi abilitare server specifici nella tua configurazione locale:
 
 ### Configurazione globale
 
-Metti la configurazione globale di RAILWISE (甬算) in `~/.config/railwise/railwise.json`. Usa la configurazione globale per preferenze valide per l'utente (ad es. temi, provider o keybind).
+Metti la configurazione globale di RAILWISE in `~/.config/railwise/railwise.json`. Usa la configurazione globale per preferenze valide per l'utente (ad es. temi, provider o keybind).
 
 La configurazione globale sovrascrive i default remoti dell'organizzazione.
 
@@ -108,7 +108,7 @@ Aggiungi `railwise.json` nella root del progetto. La configurazione di progetto 
 Metti la configurazione specifica del progetto nella root del progetto.
 :::
 
-Quando RAILWISE (甬算) si avvia, cerca un file di configurazione nella directory corrente oppure risale fino alla directory Git piu vicina.
+Quando RAILWISE si avvia, cerca un file di configurazione nella directory corrente oppure risale fino alla directory Git piu vicina.
 
 Questo file puo essere tranquillamente versionato in Git e usa lo stesso schema di quello globale.
 
@@ -196,7 +196,7 @@ Opzioni disponibili:
 
 - `port` - Porta su cui ascoltare.
 - `hostname` - Nome host su cui ascoltare. Quando `mdns` e abilitato e non e impostato alcun hostname, il default e `0.0.0.0`.
-- `mdns` - Abilita la scoperta del servizio mDNS. Questo permette ad altri dispositivi sulla rete di scoprire il tuo server RAILWISE (甬算).
+- `mdns` - Abilita la scoperta del servizio mDNS. Questo permette ad altri dispositivi sulla rete di scoprire il tuo server RAILWISE.
 - `mdnsDomain` - Nome di dominio personalizzato per il servizio mDNS. Predefinito: `railwise.local`. Utile per eseguire piu istanze sulla stessa rete.
 - `cors` - Origini aggiuntive da consentire per CORS quando usi il server HTTP da un client basato su browser. I valori devono essere origini complete (schema + host + porta opzionale), ad es. `https://app.example.com`.
 
@@ -224,7 +224,7 @@ Puoi gestire gli strumenti che un LLM puo usare tramite l'opzione `tools`.
 
 ### Modelli
 
-Puoi configurare provider e modelli da usare in RAILWISE (甬算) tramite le opzioni `provider`, `model` e `small_model`.
+Puoi configurare provider e modelli da usare in RAILWISE tramite le opzioni `provider`, `model` e `small_model`.
 
 ```json title="railwise.json"
 {
@@ -235,7 +235,7 @@ Puoi configurare provider e modelli da usare in RAILWISE (甬算) tramite le opz
 }
 ```
 
-L'opzione `small_model` configura un modello separato per task leggeri come la generazione dei titoli. Per impostazione predefinita, RAILWISE (甬算) prova a usare un modello più economico se disponibile dal tuo provider, altrimenti fa fallback sul tuo modello principale.
+L'opzione `small_model` configura un modello separato per task leggeri come la generazione dei titoli. Per impostazione predefinita, RAILWISE prova a usare un modello più economico se disponibile dal tuo provider, altrimenti fa fallback sul tuo modello principale.
 
 Le opzioni del provider possono includere `timeout` e `setCacheKey`:
 
@@ -297,7 +297,7 @@ I bearer token (`AWS_BEARER_TOKEN_BEDROCK` o `/connect`) hanno precedenza sull'a
 
 ### Temi
 
-Puoi configurare il tema da usare in RAILWISE (甬算) tramite l'opzione `theme`.
+Puoi configurare il tema da usare in RAILWISE tramite l'opzione `theme`.
 
 ```json title="railwise.json"
 {
@@ -347,7 +347,7 @@ Puoi impostare l'agente predefinito usando l'opzione `default_agent`. Questo det
 }
 ```
 
-L'agente predefinito deve essere un agente primary (non un subagent). Puo essere un agente integrato come `"build"` o `"plan"`, oppure un [agente personalizzato](/docs/agents) che hai definito. Se l'agente specificato non esiste o e un subagent, RAILWISE (甬算) fara fallback su `"build"` mostrando un avviso.
+L'agente predefinito deve essere un agente primary (non un subagent). Puo essere un agente integrato come `"build"` o `"plan"`, oppure un [agente personalizzato](/docs/agents) che hai definito. Se l'agente specificato non esiste o e un subagent, RAILWISE fara fallback su `"build"` mostrando un avviso.
 
 Questa impostazione si applica a tutte le interfacce: TUI, CLI (`railwise run`), app desktop e GitHub Action.
 
@@ -417,7 +417,7 @@ Puoi personalizzare i keybind tramite l'opzione `keybinds`.
 
 ### Aggiornamenti automatici
 
-RAILWISE (甬算) scarichera automaticamente eventuali aggiornamenti quando si avvia. Puoi disabilitare questa funzione con l'opzione `autoupdate`.
+RAILWISE scarichera automaticamente eventuali aggiornamenti quando si avvia. Puoi disabilitare questa funzione con l'opzione `autoupdate`.
 
 ```json title="railwise.json"
 {
@@ -530,7 +530,7 @@ Puoi configurare i server MCP che vuoi usare tramite l'opzione `mcp`.
 
 ### Plugin
 
-[I plugin](/docs/plugins) estendono RAILWISE (甬算) con strumenti personalizzati, hook e integrazioni.
+[I plugin](/docs/plugins) estendono RAILWISE con strumenti personalizzati, hook e integrazioni.
 
 Metti i file dei plugin in `.railwise/plugins/` o `~/.config/railwise/plugins/`. Puoi anche caricare plugin da npm tramite l'opzione `plugin`.
 
@@ -594,7 +594,7 @@ Puoi specificare un'allowlist di provider tramite l'opzione `enabled_providers`.
 }
 ```
 
-E utile quando vuoi limitare RAILWISE (甬算) a usare solo alcuni provider invece di disabilitarli uno per uno.
+E utile quando vuoi limitare RAILWISE a usare solo alcuni provider invece di disabilitarli uno per uno.
 
 :::note
 `disabled_providers` ha priorita su `enabled_providers`.

@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: Opzioni e comandi della CLI di RAILWISE (甬算).
+description: Opzioni e comandi della CLI di RAILWISE.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-La CLI di RAILWISE (甬算), per impostazione predefinita, avvia la [TUI](/docs/tui) quando viene eseguita senza argomenti.
+La CLI di RAILWISE, per impostazione predefinita, avvia la [TUI](/docs/tui) quando viene eseguita senza argomenti.
 
 ```bash
 railwise
 ```
 
-Ma accetta anche i comandi documentati in questa pagina. Questo ti permette di interagire con RAILWISE (甬算) in modo programmatico.
+Ma accetta anche i comandi documentati in questa pagina. Questo ti permette di interagire con RAILWISE in modo programmatico.
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-Avvia l'interfaccia testuale di RAILWISE (甬算) (interfaccia utente da terminale).
+Avvia l'interfaccia testuale di RAILWISE (interfaccia utente da terminale).
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## Comandi
 
-La CLI di RAILWISE (甬算) include anche i seguenti comandi.
+La CLI di RAILWISE include anche i seguenti comandi.
 
 ---
 
 ### agent
 
-Gestisci gli agenti per RAILWISE (甬算).
+Gestisci gli agenti per RAILWISE.
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-Collega un terminale a un backend server di RAILWISE (甬算) già in esecuzione avviato tramite i comandi `serve` o `web`.
+Collega un terminale a un backend server di RAILWISE già in esecuzione avviato tramite i comandi `serve` o `web`.
 
 ```bash
 railwise attach [url]
 ```
 
-Questo consente di usare la TUI con un backend RAILWISE (甬算) remoto. Per esempio:
+Questo consente di usare la TUI con un backend RAILWISE remoto. Per esempio:
 
 ```bash
 # Start the backend server for web/mobile access
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算) si basa sull'elenco provider di [Models.dev](https://models.dev), quindi puoi usare `railwise auth login` per configurare le API key per qualunque provider tu voglia usare. Le credenziali vengono salvate in `~/.local/share/railwise/auth.json`.
+RAILWISE si basa sull'elenco provider di [Models.dev](https://models.dev), quindi puoi usare `railwise auth login` per configurare le API key per qualunque provider tu voglia usare. Le credenziali vengono salvate in `~/.local/share/railwise/auth.json`.
 
 ```bash
 railwise auth login
 ```
 
-Quando RAILWISE (甬算) si avvia, carica i provider dal file delle credenziali e, se presenti, anche eventuali key definite nell'ambiente o in un file `.env` nel progetto.
+Quando RAILWISE si avvia, carica i provider dal file delle credenziali e, se presenti, anche eventuali key definite nell'ambiente o in un file `.env` nel progetto.
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | Aggiorna la cache modelli da models.dev            |
 | `--verbose` | Output più verboso (include metadati come i costi) |
 
-Usa `--refresh` per aggiornare l'elenco modelli in cache. È utile quando nuovi modelli vengono aggiunti a un provider e vuoi vederli in RAILWISE (甬算).
+Usa `--refresh` per aggiornare l'elenco modelli in cache. È utile quando nuovi modelli vengono aggiunti a un provider e vuoi vederli in RAILWISE.
 
 ```bash
 railwise models --refresh
@@ -354,7 +354,7 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 
 ### serve
 
-Avvia un server RAILWISE (甬算) headless per accesso via API. Vedi le [server docs](/docs/server) per l'interfaccia HTTP completa.
+Avvia un server RAILWISE headless per accesso via API. Vedi le [server docs](/docs/server) per l'interfaccia HTTP completa.
 
 ```bash
 railwise serve
@@ -375,7 +375,7 @@ Avvia un server HTTP che espone accesso API alle funzionalità di railwise senza
 
 ### session
 
-Gestisci le sessioni RAILWISE (甬算).
+Gestisci le sessioni RAILWISE.
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-Elenca tutte le sessioni RAILWISE (甬算).
+Elenca tutte le sessioni RAILWISE.
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-Mostra statistiche di utilizzo token e costo per le sessioni RAILWISE (甬算).
+Mostra statistiche di utilizzo token e costo per le sessioni RAILWISE.
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ Se non fornisci un ID sessione, ti verrà chiesto di selezionare tra le sessioni
 
 ### import
 
-Importa i dati di sessione da un file JSON o da un URL di condivisione RAILWISE (甬算).
+Importa i dati di sessione da un file JSON o da un URL di condivisione RAILWISE.
 
 ```bash
 railwise import <file>
 ```
 
-Puoi importare da un file locale o da un URL di condivisione RAILWISE (甬算).
+Puoi importare da un file locale o da un URL di condivisione RAILWISE.
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-Avvia un server RAILWISE (甬算) headless con interfaccia web.
+Avvia un server RAILWISE headless con interfaccia web.
 
 ```bash
 railwise web
 ```
 
-Avvia un server HTTP e apre un browser per accedere a RAILWISE (甬算) tramite interfaccia web. Imposta `RAILWISE_SERVER_PASSWORD` per abilitare HTTP basic auth (username di default `railwise`).
+Avvia un server HTTP e apre un browser per accedere a RAILWISE tramite interfaccia web. Imposta `RAILWISE_SERVER_PASSWORD` per abilitare HTTP basic auth (username di default `railwise`).
 
 #### Flag
 
@@ -491,7 +491,7 @@ Questo comando avvia un server ACP che comunica via stdin/stdout usando nd-JSON.
 
 ### uninstall
 
-Disinstalla RAILWISE (甬算) e rimuove tutti i file correlati.
+Disinstalla RAILWISE e rimuove tutti i file correlati.
 
 ```bash
 railwise uninstall
@@ -551,7 +551,7 @@ La CLI di railwise accetta i seguenti flag globali.
 
 ## Variabili d'ambiente
 
-RAILWISE (甬算) può essere configurato tramite variabili d'ambiente.
+RAILWISE può essere configurato tramite variabili d'ambiente.
 
 | Variabile                             | Tipo    | Descrizione                                                 |
 | ------------------------------------- | ------- | ----------------------------------------------------------- |

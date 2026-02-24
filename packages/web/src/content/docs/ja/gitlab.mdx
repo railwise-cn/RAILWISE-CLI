@@ -1,33 +1,33 @@
 ---
 title: GitLab
-description: GitLab の問題とマージリクエストで RAILWISE (甬算) を使用します。
+description: GitLab の問題とマージリクエストで RAILWISE を使用します。
 ---
 
-RAILWISE (甬算) は、GitLab CI/CD パイプラインまたは GitLab Duo を通じて GitLab ワークフローと統合します。
+RAILWISE は、GitLab CI/CD パイプラインまたは GitLab Duo を通じて GitLab ワークフローと統合します。
 
-どちらの場合も、RAILWISE (甬算) は GitLab ランナー上で実行されます。
+どちらの場合も、RAILWISE は GitLab ランナー上で実行されます。
 
 ---
 
 ## GitLab CI
 
-RAILWISE (甬算) は通常の GitLab パイプラインで動作します。 [CI コンポーネント](https://docs.gitlab.com/ee/ci/components/) としてパイプラインに組み込むことができます。
+RAILWISE は通常の GitLab パイプラインで動作します。 [CI コンポーネント](https://docs.gitlab.com/ee/ci/components/) としてパイプラインに組み込むことができます。
 
-ここでは、コミュニティが作成した RAILWISE (甬算) 用の CI/CD コンポーネント — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
+ここでは、コミュニティが作成した RAILWISE 用の CI/CD コンポーネント — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### 機能
 
-- **ジョブごとにカスタム設定を使用する**: カスタム設定ディレクトリ (`./config/#custom-directory` など) を使用して RAILWISE (甬算) を構成し、RAILWISE (甬算) の呼び出しごとに機能を有効または無効にします。
-- **最小限のセットアップ**: CI コンポーネントはバックグラウンドで RAILWISE (甬算) をセットアップします。必要なのは、RAILWISE (甬算) 設定と初期プロンプトを作成することだけです。
+- **ジョブごとにカスタム設定を使用する**: カスタム設定ディレクトリ (`./config/#custom-directory` など) を使用して RAILWISE を構成し、RAILWISE の呼び出しごとに機能を有効または無効にします。
+- **最小限のセットアップ**: CI コンポーネントはバックグラウンドで RAILWISE をセットアップします。必要なのは、RAILWISE 設定と初期プロンプトを作成することだけです。
 - **柔軟性**: CI コンポーネントは、動作をカスタマイズするための複数の入力をサポートしています。
 
 ---
 
 ### 設定
 
-1. RAILWISE (甬算) 認証 JSON をファイルタイプ CI 環境変数として [**設定**] > [**CI/CD**] > [**変数**] に保存します。必ず「マスクして非表示」としてマークしてください。
+1. RAILWISE 認証 JSON をファイルタイプ CI 環境変数として [**設定**] > [**CI/CD**] > [**変数**] に保存します。必ず「マスクして非表示」としてマークしてください。
 2. 以下を `.gitlab-ci.yml` ファイルに追加します。
 
    ```yaml title=".gitlab-ci.yml"
@@ -35,7 +35,7 @@ RAILWISE (甬算) は通常の GitLab パイプラインで動作します。 [C
      - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
        inputs:
          config_dir: ${CI_PROJECT_DIR}/railwise-config
-         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
+         auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE authentication JSON
          command: optional-custom-command
          message: "Your prompt here"
    ```
@@ -46,23 +46,23 @@ RAILWISE (甬算) は通常の GitLab パイプラインで動作します。 [C
 
 ## GitLab Duo
 
-RAILWISE (甬算) は GitLab ワークフローと統合します。
-コメントで `@railwise` に言及すると、RAILWISE (甬算) が GitLab CI パイプライン内でタスクを実行します。
+RAILWISE は GitLab ワークフローと統合します。
+コメントで `@railwise` に言及すると、RAILWISE が GitLab CI パイプライン内でタスクを実行します。
 
 ---
 
 ### 機能
 
-- **問題のトリアージ**: RAILWISE (甬算) に問題を調べて説明してもらいます。
-- **修正と実装**: RAILWISE (甬算) に問題の修正または機能の実装を依頼します。
+- **問題のトリアージ**: RAILWISE に問題を調べて説明してもらいます。
+- **修正と実装**: RAILWISE に問題の修正または機能の実装を依頼します。
   新しいブランチを作成し、変更を加えたマージリクエストを発行します。
-- **安全**: RAILWISE (甬算) は GitLab ランナー上で実行されます。
+- **安全**: RAILWISE は GitLab ランナー上で実行されます。
 
 ---
 
 ### 設定
 
-RAILWISE (甬算) は GitLab CI/CD パイプラインで実行されます。セットアップするには次のものが必要です。
+RAILWISE は GitLab CI/CD パイプラインで実行されます。セットアップするには次のものが必要です。
 
 :::tip
 最新の手順については、[**GitLab ドキュメント**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) を参照してください。
@@ -91,7 +91,7 @@ RAILWISE (甬算) は GitLab CI/CD パイプラインで実行されます。セ
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating RAILWISE (甬算) auth configuration"
+      - echo "Creating RAILWISE auth configuration"
       - mkdir --parents ~/.local/share/railwise
       - |
         cat > ~/.local/share/railwise/auth.json << EOF
@@ -104,10 +104,10 @@ RAILWISE (甬算) は GitLab CI/CD パイプラインで実行されます。セ
         EOF
       - echo "Configuring git"
       - git config --global user.email "railwise@gitlab.com"
-      - git config --global user.name "RAILWISE (甬算)"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running RAILWISE (甬算)"
+      - echo "Running RAILWISE"
       - |
         railwise run "
         You are an AI assistant helping with GitLab operations.
@@ -158,7 +158,7 @@ RAILWISE (甬算) は GitLab CI/CD パイプラインで実行されます。セ
 
 ### 例
 
-GitLab で RAILWISE (甬算) を使用する方法の例をいくつか示します。
+GitLab で RAILWISE を使用する方法の例をいくつか示します。
 
 :::tip
 `@railwise` とは異なるトリガーフレーズを使用するように設定できます。
@@ -172,7 +172,7 @@ GitLab で RAILWISE (甬算) を使用する方法の例をいくつか示しま
   @railwise explain this issue
 ```
 
-RAILWISE (甬算) は問題を読み、明確な説明を返信します。
+RAILWISE は問題を読み、明確な説明を返信します。
 
 - **問題を修正**
 
@@ -182,7 +182,7 @@ GitLab の問題では、次のように言います。
   @railwise fix this
 ```
 
-RAILWISE (甬算) は新しいブランチを作成し、変更を実装し、変更を含むマージリクエストを開きます。
+RAILWISE は新しいブランチを作成し、変更を実装し、変更を含むマージリクエストを開きます。
 
 - **マージリクエストを確認する**
 
@@ -192,4 +192,4 @@ GitLab マージリクエストに次のコメントを残してください。
   @railwise review this merge request
 ```
 
-RAILWISE (甬算) はマージリクエストをレビューし、フィードバックを提供します。
+RAILWISE はマージリクエストをレビューし、フィードバックを提供します。

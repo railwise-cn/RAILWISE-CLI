@@ -1,21 +1,21 @@
 ---
 title: Zen
-description: Udvalgt liste over modeller leveret af RAILWISE (甬算).
+description: Udvalgt liste over modeller leveret af RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 export const email = `mailto:${config.email}`
 
-RAILWISE (甬算) Zen er en liste over testede og verificerede modeller leveret af RAILWISE (甬算)-teamet.
+RAILWISE Zen er en liste over testede og verificerede modeller leveret af RAILWISE-teamet.
 
 :::note
-RAILWISE (甬算) Zen er i øjeblikket i beta.
+RAILWISE Zen er i øjeblikket i beta.
 :::
 
-Zen fungerer som alle andre udbydere i RAILWISE (甬算). Du logger på RAILWISE (甬算) Zen og får
+Zen fungerer som alle andre udbydere i RAILWISE. Du logger på RAILWISE Zen og får
 din API-nøgle. Den er **helt valgfri** og du behøver ikke bruge den for at bruge
-RAILWISE (甬算).
+RAILWISE.
 
 ---
 
@@ -26,7 +26,7 @@ fungerer godt som kodeagenter. Derudover er de fleste udbydere
 konfigureret meget forskelligt, så du får meget forskellig ydeevne og kvalitet.
 
 :::tip
-Vi testede en udvalgt gruppe modeller og udbydere, der fungerer godt med RAILWISE (甬算).
+Vi testede en udvalgt gruppe modeller og udbydere, der fungerer godt med RAILWISE.
 :::
 
 Så hvis du bruger en model gennem noget som OpenRouter, kan du aldrig være
@@ -41,17 +41,17 @@ For at fikse dette gjorde vi et par ting:
 3. Til sidst benchmarkede vi kombinationen af model/udbyder og kom frem
    til en liste, som vi har lyst til at anbefale.
 
-RAILWISE (甬算) Zen er en AI gateway, der giver dig adgang til disse modeller.
+RAILWISE Zen er en AI gateway, der giver dig adgang til disse modeller.
 
 ---
 
 ## Sådan fungerer det
 
-RAILWISE (甬算) Zen fungerer som alle andre udbydere i RAILWISE (甬算).
+RAILWISE Zen fungerer som alle andre udbydere i RAILWISE.
 
-1. Du logger på **<a href={console}>RAILWISE (甬算) Zen</a>**, tilføjer faktureringsoplysninger
+1. Du logger på **<a href={console}>RAILWISE Zen</a>**, tilføjer faktureringsoplysninger
    og kopierer API-nøglen.
-2. Du kører kommandoen `/connect` i TUI, vælger RAILWISE (甬算) Zen og indsætter API-nøglen.
+2. Du kører kommandoen `/connect` i TUI, vælger RAILWISE Zen og indsætter API-nøglen.
 3. Kør `/models` i TUI for at se listen over modeller, vi anbefaler.
 
 Du opkræves per anmodning, og du kan tilføje kredit til din konto.
@@ -94,7 +94,7 @@ Du kan også få adgang til vores modeller gennem følgende API-endpoints.
 | Qwen3-koder 480B    | qwen3-coder        | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 | Stor sylteagurk     | big-pickle         | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 
-[model-id](/docs/config/#models) i RAILWISE (甬算)-konfigurationen
+[model-id](/docs/config/#models) i RAILWISE-konfigurationen
 bruger formatet `railwise/<model-id>`. For eksempel, for GPT 5.2 Codex, ville du
 bruge `railwise/gpt-5.2-codex` i din konfiguration.
 
@@ -158,10 +158,10 @@ Kreditkortgebyrer overføres til kostpris (4,4 % + $0,30 per transaktion); vi op
 
 De gratis modeller:
 
-- GLM 4.7 Gratis er tilgængelig på RAILWISE (甬算) i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
-- Kimi K2.5 Gratis er tilgængelig på RAILWISE (甬算) i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
-- MiniMax M2.1 Gratis er tilgængelig på RAILWISE (甬算) i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
-- Stor sylteagurk er en stealth-model som er gratis på RAILWISE (甬算) i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
+- GLM 4.7 Gratis er tilgængelig på RAILWISE i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
+- Kimi K2.5 Gratis er tilgængelig på RAILWISE i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
+- MiniMax M2.1 Gratis er tilgængelig på RAILWISE i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
+- Stor sylteagurk er en stealth-model som er gratis på RAILWISE i en begrænset periode. Teamet bruger denne tid til at samle feedback og forbedre modellen.
 
 <a href={email}>Kontakt os</a> hvis du har spørgsmål.
 
@@ -246,9 +246,9 @@ og du vil bruge det i stedet for det Zen giver.
 
 ## Mål
 
-Vi oprettede RAILWISE (甬算) Zen for at:
+Vi oprettede RAILWISE Zen for at:
 
 1. **Benchmarke** de bedste modeller/udbydere for kodningsagenter.
 2. Have adgang til mulighederne for **højeste kvalitet** og ikke nedgradere ydeevnen eller rute til billigere udbydere.
 3. Give videre eventuelle **prisfald** ved at sælge til kostpris; så den eneste mark-up er for at dække vores behandlingsgebyrer.
-4. Have **ingen fastlåsning** ved at lade dig bruge den med en hvilken som helst anden kodeagent. Og lade dig altid bruge en hvilken som helst anden udbyder med RAILWISE (甬算) også.
+4. Have **ingen fastlåsning** ved at lade dig bruge den med en hvilken som helst anden kodeagent. Og lade dig altid bruge en hvilken som helst anden udbyder med RAILWISE også.

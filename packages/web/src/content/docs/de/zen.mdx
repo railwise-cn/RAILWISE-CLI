@@ -1,20 +1,20 @@
 ---
 title: Zen
-description: Kuratierte Modellliste direkt von RAILWISE (甬算).
+description: Kuratierte Modellliste direkt von RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 export const email = `mailto:${config.email}`
 
-RAILWISE (甬算) Zen ist eine vom RAILWISE (甬算)-Team getestete und verifizierte Modellliste.
+RAILWISE Zen ist eine vom RAILWISE-Team getestete und verifizierte Modellliste.
 
 :::note
-RAILWISE (甬算) Zen befindet sich aktuell in der Beta.
+RAILWISE Zen befindet sich aktuell in der Beta.
 :::
 
-Zen funktioniert wie jeder andere Provider in RAILWISE (甬算).
-Du meldest dich bei RAILWISE (甬算) Zen an, holst dir deinen API-Key und nutzt ihn optional.
+Zen funktioniert wie jeder andere Provider in RAILWISE.
+Du meldest dich bei RAILWISE Zen an, holst dir deinen API-Key und nutzt ihn optional.
 
 ---
 
@@ -24,7 +24,7 @@ Es gibt sehr viele Modelle, aber nur ein Teil davon eignet sich wirklich gut als
 Ausserdem konfigurieren Provider Modelle sehr unterschiedlich, was die Qualitaet stark beeinflusst.
 
 :::tip
-Wir haben eine Auswahl aus Modellen und Providern getestet, die gut mit RAILWISE (甬算) funktionieren.
+Wir haben eine Auswahl aus Modellen und Providern getestet, die gut mit RAILWISE funktionieren.
 :::
 
 Wenn du Modelle ueber Gateways wie OpenRouter nutzt, ist oft unklar, ob du die beste Ausfuehrung eines Modells bekommst.
@@ -35,16 +35,16 @@ Um das zu verbessern, haben wir:
 2. Mit Providern zusammengearbeitet, damit diese Modelle korrekt ausgeliefert werden
 3. Modell/Provider-Kombinationen gebenchmarkt und eine empfehlenswerte Liste erstellt
 
-RAILWISE (甬算) Zen ist ein AI-Gateway, das dir Zugriff auf genau diese Modelle gibt.
+RAILWISE Zen ist ein AI-Gateway, das dir Zugriff auf genau diese Modelle gibt.
 
 ---
 
 ## Funktionsweise
 
-RAILWISE (甬算) Zen funktioniert wie jeder andere Provider in RAILWISE (甬算).
+RAILWISE Zen funktioniert wie jeder andere Provider in RAILWISE.
 
-1. Melde dich bei **<a href={console}>RAILWISE (甬算) Zen</a>** an, hinterlege Zahlungsdaten und kopiere deinen API-Key.
-2. Fuehre in der TUI `/connect` aus, waehle RAILWISE (甬算) Zen und fuege den API-Key ein.
+1. Melde dich bei **<a href={console}>RAILWISE Zen</a>** an, hinterlege Zahlungsdaten und kopiere deinen API-Key.
+2. Fuehre in der TUI `/connect` aus, waehle RAILWISE Zen und fuege den API-Key ein.
 3. Starte `/models` in der TUI, um empfohlene Modelle zu sehen.
 
 Abgerechnet wird pro Anfrage, Guthaben kannst du jederzeit aufladen.
@@ -87,7 +87,7 @@ Du kannst unsere Modelle auch ueber die folgenden API-Endpunkte aufrufen.
 | Qwen3 Coder 480B   | qwen3-coder        | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 | Big Pickle         | big-pickle         | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 
-Die [Model-ID](/docs/config/#models) in deiner RAILWISE (甬算)-Konfiguration hat das Format `railwise/<model-id>`.
+Die [Model-ID](/docs/config/#models) in deiner RAILWISE-Konfiguration hat das Format `railwise/<model-id>`.
 Fuer GPT 5.2 Codex verwendest du zum Beispiel `railwise/gpt-5.2-codex`.
 
 ---
@@ -239,9 +239,9 @@ and you want to use that instead of the one that Zen provides.
 
 ## Ziele
 
-Wir haben RAILWISE (甬算) Zen entwickelt, um:
+Wir haben RAILWISE Zen entwickelt, um:
 
 1. Die besten Modell/Provider-Kombinationen fuer Coding-Agenten zu **benchmarken**
 2. Stets **hohe Qualitaet** ohne Downgrades oder versteckte Umleitungen auf billigere Provider zu liefern
 3. **Preissenkungen** zum Selbstkostenpreis weiterzugeben, mit Aufschlag nur fuer Zahlungsgebuehren
-4. **Kein Lock-in** zu erzwingen, damit du Zen mit anderen Coding-Agents und RAILWISE (甬算) weiter mit anderen Providern nutzen kannst
+4. **Kein Lock-in** zu erzwingen, damit du Zen mit anderen Coding-Agents und RAILWISE weiter mit anderen Providern nutzen kannst

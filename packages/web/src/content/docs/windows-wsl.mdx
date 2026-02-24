@@ -1,14 +1,14 @@
 ---
 title: Windows (WSL)
-description: Run RAILWISE (甬算) on Windows using WSL for the best experience.
+description: Run RAILWISE on Windows using WSL for the best experience.
 ---
 
 import { Steps } from "@astrojs/starlight/components"
 
-While RAILWISE (甬算) can run directly on Windows, we recommend using [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) for the best experience. WSL provides a Linux environment that works seamlessly with RAILWISE (甬算)'s features.
+While RAILWISE can run directly on Windows, we recommend using [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) for the best experience. WSL provides a Linux environment that works seamlessly with RAILWISE's features.
 
 :::tip[Why WSL?]
-WSL offers better file system performance, full terminal support, and compatibility with development tools that RAILWISE (甬算) relies on.
+WSL offers better file system performance, full terminal support, and compatibility with development tools that RAILWISE relies on.
 :::
 
 ---
@@ -21,17 +21,17 @@ WSL offers better file system performance, full terminal support, and compatibil
 
    If you haven't already, [install WSL](https://learn.microsoft.com/en-us/windows/wsl/install) using the official Microsoft guide.
 
-2. **Install RAILWISE (甬算) in WSL**
+2. **Install RAILWISE in WSL**
 
-   Once WSL is set up, open your WSL terminal and install RAILWISE (甬算) using one of the [installation methods](/docs/).
+   Once WSL is set up, open your WSL terminal and install RAILWISE using one of the [installation methods](/docs/).
 
    ```bash
    curl -fsSL https://railwise.ai/install | bash
    ```
 
-3. **Use RAILWISE (甬算) from WSL**
+3. **Use RAILWISE from WSL**
 
-   Navigate to your project directory (access Windows files via `/mnt/c/`, `/mnt/d/`, etc.) and run RAILWISE (甬算).
+   Navigate to your project directory (access Windows files via `/mnt/c/`, `/mnt/d/`, etc.) and run RAILWISE.
 
    ```bash
    cd /mnt/c/Users/YourName/project
@@ -44,7 +44,7 @@ WSL offers better file system performance, full terminal support, and compatibil
 
 ## Desktop App + WSL Server
 
-If you prefer using the RAILWISE (甬算) Desktop app but want to run the server in WSL:
+If you prefer using the RAILWISE Desktop app but want to run the server in WSL:
 
 1. **Start the server in WSL** with `--hostname 0.0.0.0` to allow external connections:
 
@@ -78,7 +78,7 @@ For the best web experience on Windows:
    railwise web --hostname 0.0.0.0
    ```
 
-2. **Access from your Windows browser** at `http://localhost:<port>` (RAILWISE (甬算) prints the URL)
+2. **Access from your Windows browser** at `http://localhost:<port>` (RAILWISE prints the URL)
 
 Running `railwise web` from WSL ensures proper file system access and terminal integration while still being accessible from your Windows browser.
 
@@ -100,13 +100,13 @@ railwise
 ```
 
 :::tip
-For the smoothest experience, consider cloning/copying your repo into the WSL filesystem (for example under `~/code/`) and running RAILWISE (甬算) there.
+For the smoothest experience, consider cloning/copying your repo into the WSL filesystem (for example under `~/code/`) and running RAILWISE there.
 :::
 
 ---
 
 ## Tips
 
-- Keep RAILWISE (甬算) running in WSL for projects stored on Windows drives - file access is seamless
-- Use VS Code's [WSL extension](https://code.visualstudio.com/docs/remote/wsl) alongside RAILWISE (甬算) for an integrated development workflow
-- Your RAILWISE (甬算) config and sessions are stored within the WSL environment at `~/.local/share/railwise/`
+- Keep RAILWISE running in WSL for projects stored on Windows drives - file access is seamless
+- Use VS Code's [WSL extension](https://code.visualstudio.com/docs/remote/wsl) alongside RAILWISE for an integrated development workflow
+- Your RAILWISE config and sessions are stored within the WSL environment at `~/.local/share/railwise/`

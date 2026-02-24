@@ -3,7 +3,7 @@ title: Troubleshooting
 description: Common issues and how to resolve them.
 ---
 
-To debug issues with RAILWISE (甬算), start by checking the logs and local data it stores on disk.
+To debug issues with RAILWISE, start by checking the logs and local data it stores on disk.
 
 ---
 
@@ -39,13 +39,13 @@ This directory contains:
 
 ## Desktop app
 
-RAILWISE (甬算) Desktop runs a local RAILWISE (甬算) server (the `railwise-cli` sidecar) in the background. Most issues are caused by a misbehaving plugin, a corrupted cache, or a bad server setting.
+RAILWISE Desktop runs a local RAILWISE server (the `railwise-cli` sidecar) in the background. Most issues are caused by a misbehaving plugin, a corrupted cache, or a bad server setting.
 
 ### Quick checks
 
 - Fully quit and relaunch the app.
 - If the app shows an error screen, click **Restart** and copy the error details.
-- macOS only: `RAILWISE (甬算)` menu -> **Reload Webview** (helps if the UI is blank/frozen).
+- macOS only: `RAILWISE` menu -> **Reload Webview** (helps if the UI is blank/frozen).
 
 ---
 
@@ -72,7 +72,7 @@ If you have plugins configured, temporarily disable them by removing the key or 
 
 #### Check plugin directories
 
-RAILWISE (甬算) can also load local plugins from disk. Temporarily move these out of the way (or rename the folder) and restart the desktop app:
+RAILWISE can also load local plugins from disk. Temporarily move these out of the way (or rename the folder) and restart the desktop app:
 
 - **Global plugins**
   - **macOS/Linux**: `~/.config/railwise/plugins/`
@@ -86,22 +86,22 @@ If the app starts working again, re-enable plugins one at a time to find which o
 
 ### Clear the cache
 
-If disabling plugins doesn't help (or a plugin install is stuck), clear the cache so RAILWISE (甬算) can rebuild it.
+If disabling plugins doesn't help (or a plugin install is stuck), clear the cache so RAILWISE can rebuild it.
 
-1. Quit RAILWISE (甬算) Desktop completely.
+1. Quit RAILWISE Desktop completely.
 2. Delete the cache directory:
 
 - **macOS**: Finder -> `Cmd+Shift+G` -> paste `~/.cache/railwise`
 - **Linux**: delete `~/.cache/railwise` (or run `rm -rf ~/.cache/railwise`)
 - **Windows**: Press `WIN+R` and paste `%USERPROFILE%\.cache\railwise`
 
-3. Restart RAILWISE (甬算) Desktop.
+3. Restart RAILWISE Desktop.
 
 ---
 
 ### Fix server connection issues
 
-RAILWISE (甬算) Desktop can either start its own local server (default) or connect to a server URL you configured.
+RAILWISE Desktop can either start its own local server (default) or connect to a server URL you configured.
 
 If you see a **"Connection Failed"** dialog (or the app never gets past the splash screen), check for a custom server URL.
 
@@ -132,21 +132,21 @@ On Linux, some Wayland setups can cause blank windows or compositor errors.
 
 ### Windows: WebView2 runtime
 
-On Windows, RAILWISE (甬算) Desktop requires the Microsoft Edge **WebView2 Runtime**. If the app opens to a blank window or won't start, install/update WebView2 and try again.
+On Windows, RAILWISE Desktop requires the Microsoft Edge **WebView2 Runtime**. If the app opens to a blank window or won't start, install/update WebView2 and try again.
 
 ---
 
 ### Windows: General performance issues
 
-If you're experiencing slow performance, file access issues, or terminal problems on Windows, try using [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL provides a Linux environment that works more seamlessly with RAILWISE (甬算)'s features.
+If you're experiencing slow performance, file access issues, or terminal problems on Windows, try using [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL provides a Linux environment that works more seamlessly with RAILWISE's features.
 
 ---
 
 ### Notifications not showing
 
-RAILWISE (甬算) Desktop only shows system notifications when:
+RAILWISE Desktop only shows system notifications when:
 
-- notifications are enabled for RAILWISE (甬算) in your OS settings, and
+- notifications are enabled for RAILWISE in your OS settings, and
 - the app window is not focused.
 
 ---
@@ -155,8 +155,8 @@ RAILWISE (甬算) Desktop only shows system notifications when:
 
 If the app won't start and you can't clear settings from inside the UI, reset the desktop app's saved state.
 
-1. Quit RAILWISE (甬算) Desktop.
-2. Find and delete these files (they live in the RAILWISE (甬算) Desktop app data directory):
+1. Quit RAILWISE Desktop.
+2. Find and delete these files (they live in the RAILWISE Desktop app data directory):
 
 - `railwise.settings.dat` (desktop default server URL)
 - `railwise.global.dat` and `railwise.workspace.*.dat` (UI state like recent servers/projects)
@@ -171,7 +171,7 @@ To find the directory quickly:
 
 ## Getting help
 
-If you're experiencing issues with RAILWISE (甬算):
+If you're experiencing issues with RAILWISE:
 
 1. **Report issues on GitHub**
 
@@ -195,7 +195,7 @@ Here are some common issues and how to resolve them.
 
 ---
 
-### RAILWISE (甬算) won't start
+### RAILWISE won't start
 
 1. Check the logs for error messages
 2. Try running with `--print-logs` to see output in the terminal

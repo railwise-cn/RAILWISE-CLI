@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-RAILWISE (甬算) 터미널 사용자 인터페이스를 시작합니다.
+RAILWISE 터미널 사용자 인터페이스를 시작합니다.
 
 ```bash
 railwise [project]
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算)는 [Models.dev](https://models.dev)의 provider 목록을 기반으로 동작하므로, `railwise auth login`으로 원하는 provider의 API 키를 설정할 수 있습니다. 인증 정보는 `~/.local/share/railwise/auth.json`에 저장됩니다.
+RAILWISE는 [Models.dev](https://models.dev)의 provider 목록을 기반으로 동작하므로, `railwise auth login`으로 원하는 provider의 API 키를 설정할 수 있습니다. 인증 정보는 `~/.local/share/railwise/auth.json`에 저장됩니다.
 
 ```bash
 railwise auth login
 ```
 
-RAILWISE (甬算) 시작 시 인증 파일에서 provider 정보를 불러오며, 시스템 환경 변수나 프로젝트의 `.env`에 정의된 키도 함께 로드합니다.
+RAILWISE 시작 시 인증 파일에서 provider 정보를 불러오며, 시스템 환경 변수나 프로젝트의 `.env`에 정의된 키도 함께 로드합니다.
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | models.dev에서 모델 캐시 새로고침                 |
 | `--verbose` | 더 자세한 모델 출력 사용(비용 등 메타데이터 포함) |
 
-`--refresh` 플래그를 사용하면 캐시된 모델 목록을 갱신할 수 있습니다. provider에 새 모델이 추가된 뒤 RAILWISE (甬算)에서 바로 확인하고 싶을 때 유용합니다.
+`--refresh` 플래그를 사용하면 캐시된 모델 목록을 갱신할 수 있습니다. provider에 새 모델이 추가된 뒤 RAILWISE에서 바로 확인하고 싶을 때 유용합니다.
 
 ```bash
 railwise models --refresh
@@ -354,7 +354,7 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 
 ### serve
 
-API 접근용 headless RAILWISE (甬算) 서버를 시작합니다. 전체 HTTP 인터페이스는 [server docs](/docs/server)를 참고하세요.
+API 접근용 headless RAILWISE 서버를 시작합니다. 전체 HTTP 인터페이스는 [server docs](/docs/server)를 참고하세요.
 
 ```bash
 railwise serve
@@ -375,7 +375,7 @@ railwise serve
 
 ### session
 
-RAILWISE (甬算) 세션을 관리합니다.
+RAILWISE 세션을 관리합니다.
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-RAILWISE (甬算) 세션 목록을 표시합니다.
+RAILWISE 세션 목록을 표시합니다.
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-RAILWISE (甬算) 세션의 토큰 사용량과 비용 통계를 표시합니다.
+RAILWISE 세션의 토큰 사용량과 비용 통계를 표시합니다.
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ railwise export [sessionID]
 
 ### import
 
-JSON 파일 또는 RAILWISE (甬算) 공유 URL에서 세션 데이터를 가져옵니다.
+JSON 파일 또는 RAILWISE 공유 URL에서 세션 데이터를 가져옵니다.
 
 ```bash
 railwise import <file>
 ```
 
-로컬 파일이나 RAILWISE (甬算) 공유 URL에서 가져올 수 있습니다.
+로컬 파일이나 RAILWISE 공유 URL에서 가져올 수 있습니다.
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-웹 인터페이스를 포함한 headless RAILWISE (甬算) 서버를 시작합니다.
+웹 인터페이스를 포함한 headless RAILWISE 서버를 시작합니다.
 
 ```bash
 railwise web
 ```
 
-이 명령은 HTTP 서버를 시작하고 웹 브라우저를 열어 웹 인터페이스로 RAILWISE (甬算)에 접속합니다. `RAILWISE_SERVER_PASSWORD`를 설정하면 HTTP basic auth가 활성화됩니다(기본 사용자명: `railwise`).
+이 명령은 HTTP 서버를 시작하고 웹 브라우저를 열어 웹 인터페이스로 RAILWISE에 접속합니다. `RAILWISE_SERVER_PASSWORD`를 설정하면 HTTP basic auth가 활성화됩니다(기본 사용자명: `railwise`).
 
 #### 플래그
 
@@ -491,7 +491,7 @@ railwise acp
 
 ### uninstall
 
-RAILWISE (甬算)를 제거하고 관련 파일을 삭제합니다.
+RAILWISE를 제거하고 관련 파일을 삭제합니다.
 
 ```bash
 railwise uninstall
@@ -551,7 +551,7 @@ railwise CLI는 아래 전역 플래그를 지원합니다.
 
 ## 환경 변수
 
-RAILWISE (甬算)는 환경 변수로도 구성할 수 있습니다.
+RAILWISE는 환경 변수로도 구성할 수 있습니다.
 
 | 변수                                  | 타입    | 설명                                           |
 | ------------------------------------- | ------- | ---------------------------------------------- |

@@ -622,7 +622,7 @@ async fn initialize(app: AppHandle) {
                                 let _ = child.kill();
 
                                 return Err(format!(
-                                    "Failed to spawn RAILWISE (甬算) Server ({err}). Logs:\n{}",
+                                    "Failed to spawn RAILWISE Server ({err}). Logs:\n{}",
                                     get_logs()
                                 ));
                             }

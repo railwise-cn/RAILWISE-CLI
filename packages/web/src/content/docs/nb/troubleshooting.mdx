@@ -3,7 +3,7 @@ title: Feilsøking
 description: Vanlige problemer og hvordan de kan løses.
 ---
 
-For å feilsøke problemer med RAILWISE (甬算), start med å sjekke loggene og lokale data den lagrer på disken.
+For å feilsøke problemer med RAILWISE, start med å sjekke loggene og lokale data den lagrer på disken.
 
 ---
 
@@ -22,7 +22,7 @@ Du kan angi loggnivået med kommandolinjealternativet `--log-level` for å få m
 
 ## Lagring
 
-RAILWISE (甬算) lagrer øktdata og andre applikasjonsdata på disken på:
+RAILWISE lagrer øktdata og andre applikasjonsdata på disken på:
 
 - **macOS/Linux**: `~/.local/share/railwise/`
 - **Windows**: Trykk `WIN+R` og lim inn `%USERPROFILE%\.local\share\railwise`
@@ -39,13 +39,13 @@ Denne katalogen inneholder:
 
 ## Skrivebordsapp
 
-RAILWISE (甬算) Desktop kjører en lokal RAILWISE (甬算)-server (`railwise-cli` sidevognen) i bakgrunnen. De fleste problemene er forårsaket av en plugin som fungerer dårlig, en ødelagt cache eller en dårlig serverinnstilling.
+RAILWISE Desktop kjører en lokal RAILWISE-server (`railwise-cli` sidevognen) i bakgrunnen. De fleste problemene er forårsaket av en plugin som fungerer dårlig, en ødelagt cache eller en dårlig serverinnstilling.
 
 ### Raske sjekker
 
 - Avslutt og start appen på nytt.
 - Hvis appen viser en feilskjerm, klikker du på **Start på nytt** og kopierer feildetaljene.
-- Bare macOS: `RAILWISE (甬算)`-meny -> **Last nettvisning på nytt** (hjelper hvis UI er tom/frosset).
+- Bare macOS: `RAILWISE`-meny -> **Last nettvisning på nytt** (hjelper hvis UI er tom/frosset).
 
 ---
 
@@ -72,7 +72,7 @@ Hvis du har konfigurert plugins, deaktiver dem midlertidig ved å fjerne nøkkel
 
 #### Sjekk plugin-kataloger
 
-RAILWISE (甬算) kan også laste lokale plugins fra disken. Flytt disse midlertidig ut av veien (eller gi nytt navn til mappen) og start skrivebordsappen på nytt:
+RAILWISE kan også laste lokale plugins fra disken. Flytt disse midlertidig ut av veien (eller gi nytt navn til mappen) og start skrivebordsappen på nytt:
 
 - **Globale plugins**
   - **macOS/Linux**: `~/.config/railwise/plugins/`
@@ -86,22 +86,22 @@ Hvis appen begynner å fungere igjen, aktiverer du plugins én om gangen for å 
 
 ### Tøm hurtigbufferen
 
-Hvis deaktivering av plugins ikke hjelper (eller en plugin-installasjon sitter fast), tøm hurtigbufferen slik at RAILWISE (甬算) kan gjenoppbygge den.
+Hvis deaktivering av plugins ikke hjelper (eller en plugin-installasjon sitter fast), tøm hurtigbufferen slik at RAILWISE kan gjenoppbygge den.
 
-1. Avslutt RAILWISE (甬算) Desktop helt.
+1. Avslutt RAILWISE Desktop helt.
 2. Slett hurtigbufferkatalogen:
 
 - **macOS**: Finder -> `Cmd+Shift+G` -> lim inn `~/.cache/railwise`
 - **Linux**: slett `~/.cache/railwise` (eller kjør `rm -rf ~/.cache/railwise`)
 - **Windows**: Trykk `WIN+R` og lim inn `%USERPROFILE%\.cache\railwise`
 
-3. Start RAILWISE (甬算) Desktop på nytt.
+3. Start RAILWISE Desktop på nytt.
 
 ---
 
 ### Løs problemer med servertilkobling
 
-RAILWISE (甬算) Desktop kan enten starte sin egen lokale server (standard) eller koble til en server URL du har konfigurert.
+RAILWISE Desktop kan enten starte sin egen lokale server (standard) eller koble til en server URL du har konfigurert.
 
 Hvis du ser en **"Tilkobling mislyktes"**-dialogboks (eller appen kommer aldri forbi splash-skjermen), se etter en tilpasset server URL.
 
@@ -132,21 +132,21 @@ På Linux kan noen Wayland-oppsett forårsake tomme vinduer eller kompositorfeil
 
 ### Windows: WebView2 kjøretid
 
-På Windows krever RAILWISE (甬算) Desktop Microsoft Edge **WebView2 Runtime**. Hvis appen åpnes i et tomt vindu eller ikke starter, installer/oppdater WebView2 og prøv igjen.
+På Windows krever RAILWISE Desktop Microsoft Edge **WebView2 Runtime**. Hvis appen åpnes i et tomt vindu eller ikke starter, installer/oppdater WebView2 og prøv igjen.
 
 ---
 
 ### Windows: Generelle ytelsesproblemer
 
-Hvis du opplever treg ytelse, problemer med filtilgang eller terminalproblemer på Windows, kan du prøve å bruke [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL gir et Linux-miljø som fungerer mer sømløst med funksjonene til RAILWISE (甬算).
+Hvis du opplever treg ytelse, problemer med filtilgang eller terminalproblemer på Windows, kan du prøve å bruke [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL gir et Linux-miljø som fungerer mer sømløst med funksjonene til RAILWISE.
 
 ---
 
 ### Varsler vises ikke
 
-RAILWISE (甬算) Desktop viser bare systemvarsler når:
+RAILWISE Desktop viser bare systemvarsler når:
 
-- varsler er aktivert for RAILWISE (甬算) i OS-innstillingene dine, og
+- varsler er aktivert for RAILWISE i OS-innstillingene dine, og
 - appvinduet er ikke fokusert.
 
 ---
@@ -155,8 +155,8 @@ RAILWISE (甬算) Desktop viser bare systemvarsler når:
 
 Hvis appen ikke starter og du ikke kan slette innstillingene fra UI-et, tilbakestill skrivebordsappens lagrede tilstand.
 
-1. Avslutt RAILWISE (甬算) Desktop.
-2. Finn og slett disse filene (de finnes i RAILWISE (甬算) Desktop-appens datakatalog):
+1. Avslutt RAILWISE Desktop.
+2. Finn og slett disse filene (de finnes i RAILWISE Desktop-appens datakatalog):
 
 - `railwise.settings.dat` (stasjonær standardserver URL)
 - `railwise.global.dat` og `railwise.workspace.*.dat` (UI tilstand som nylige servere/prosjekter)
@@ -177,7 +177,7 @@ Modeller skal refereres slik: `<providerId>/<modelId>`
 
 ### AI_APICallError og leverandørpakkeproblemer
 
-Hvis du støter på API-anropsfeil, kan dette skyldes utdaterte provider-pakker. RAILWISE (甬算) installerer dynamisk provider-pakker (OpenAI, Anthropic, Google, etc.) etter behov og cacher dem lokalt.
+Hvis du støter på API-anropsfeil, kan dette skyldes utdaterte provider-pakker. RAILWISE installerer dynamisk provider-pakker (OpenAI, Anthropic, Google, etc.) etter behov og cacher dem lokalt.
 
 For å løse problemer med leverandørpakke:
 
@@ -189,9 +189,9 @@ For å løse problemer med leverandørpakke:
 
    På Windows, trykk `WIN+R` og slett: `%USERPROFILE%\.cache\railwise`
 
-2. Start RAILWISE (甬算) på nytt for å installere de nyeste provider-pakkene på nytt
+2. Start RAILWISE på nytt for å installere de nyeste provider-pakkene på nytt
 
-Dette vil tvinge RAILWISE (甬算) til å laste ned de nyeste versjonene av provider-pakkene, som ofte løser kompatibilitetsproblemer med modellparametere og API-endringer.
+Dette vil tvinge RAILWISE til å laste ned de nyeste versjonene av provider-pakkene, som ofte løser kompatibilitetsproblemer med modellparametere og API-endringer.
 
 ---
 
@@ -222,4 +222,4 @@ Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 export DISPLAY=:99.0
 ```
 
-RAILWISE (甬算) vil oppdage om du bruker Wayland og foretrekker `wl-clipboard`, ellers vil den prøve å finne utklippstavle-verktøy i rekkefølgen: `xclip` og `xsel`.
+RAILWISE vil oppdage om du bruker Wayland og foretrekker `wl-clipboard`, ellers vil den prøve å finne utklippstavle-verktøy i rekkefølgen: `xclip` og `xsel`.

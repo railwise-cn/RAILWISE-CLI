@@ -1,30 +1,30 @@
 ---
 title: CLI
-description: OpenCode CLI 选项和命令。
+description: Railwise CLI 选项和命令。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-OpenCode CLI 在不带任何参数运行时，默认启动 [TUI](/docs/tui)。
+Railwise CLI 在不带任何参数运行时，默认启动 [TUI](/docs/tui)。
 
 ```bash
-opencode
+railwise
 ```
 
-但它也接受本页面中记录的命令，使您可以通过编程方式与 OpenCode 进行交互。
+但它也接受本页面中记录的命令，使您可以通过编程方式与 Railwise 进行交互。
 
 ```bash
-opencode run "Explain how closures work in JavaScript"
+railwise run "Explain how closures work in JavaScript"
 ```
 
 ---
 
 ### tui
 
-启动 OpenCode 终端用户界面。
+启动 Railwise 终端用户界面。
 
 ```bash
-opencode [project]
+railwise [project]
 ```
 
 #### 标志
@@ -44,36 +44,36 @@ opencode [project]
 
 ## 命令
 
-OpenCode CLI 还提供以下命令。
+Railwise CLI 还提供以下命令。
 
 ---
 
 ### agent
 
-管理 OpenCode 的代理。
+管理 Railwise 的代理。
 
 ```bash
-opencode agent [command]
+railwise agent [command]
 ```
 
 ---
 
 ### attach
 
-将终端连接到已通过 `serve` 或 `web` 命令启动的 OpenCode 后端服务器。
+将终端连接到已通过 `serve` 或 `web` 命令启动的 Railwise 后端服务器。
 
 ```bash
-opencode attach [url]
+railwise attach [url]
 ```
 
-这允许将 TUI 与远程 OpenCode 后端配合使用。例如：
+这允许将 TUI 与远程 Railwise 后端配合使用。例如：
 
 ```bash
 # Start the backend server for web/mobile access
-opencode web --port 4096 --hostname 0.0.0.0
+railwise web --port 4096 --hostname 0.0.0.0
 
 # In another terminal, attach the TUI to the running backend
-opencode attach http://10.20.30.40:4096
+railwise attach http://10.20.30.40:4096
 ```
 
 #### 标志
@@ -90,7 +90,7 @@ opencode attach http://10.20.30.40:4096
 使用自定义配置创建新的代理。
 
 ```bash
-opencode agent create
+railwise agent create
 ```
 
 此命令将引导您使用自定义系统提示词和工具配置来创建新的代理。
@@ -102,7 +102,7 @@ opencode agent create
 列出所有可用的代理。
 
 ```bash
-opencode agent list
+railwise agent list
 ```
 
 ---
@@ -112,20 +112,20 @@ opencode agent list
 管理提供商的凭据和登录信息的命令。
 
 ```bash
-opencode auth [command]
+railwise auth [command]
 ```
 
 ---
 
 #### login
 
-OpenCode 基于 [Models.dev](https://models.dev) 的提供商列表运行，因此您可以使用 `opencode auth login` 为任何想要使用的提供商配置 API 密钥。密钥存储在 `~/.local/share/opencode/auth.json` 中。
+Railwise 基于 [Models.dev](https://models.dev) 的提供商列表运行，因此您可以使用 `railwise auth login` 为任何想要使用的提供商配置 API 密钥。密钥存储在 `~/.local/share/railwise/auth.json` 中。
 
 ```bash
-opencode auth login
+railwise auth login
 ```
 
-OpenCode 启动时会从凭据文件加载提供商信息，同时也会加载环境变量或项目中 `.env` 文件中定义的密钥。
+Railwise 启动时会从凭据文件加载提供商信息，同时也会加载环境变量或项目中 `.env` 文件中定义的密钥。
 
 ---
 
@@ -134,13 +134,13 @@ OpenCode 启动时会从凭据文件加载提供商信息，同时也会加载�
 列出凭据文件中存储的所有已认证提供商。
 
 ```bash
-opencode auth list
+railwise auth list
 ```
 
 或使用简写版本。
 
 ```bash
-opencode auth ls
+railwise auth ls
 ```
 
 ---
@@ -150,7 +150,7 @@ opencode auth ls
 从凭据文件中清除提供商信息以完成登出。
 
 ```bash
-opencode auth logout
+railwise auth logout
 ```
 
 ---
@@ -160,7 +160,7 @@ opencode auth logout
 管理用于仓库自动化的 GitHub 代理。
 
 ```bash
-opencode github [command]
+railwise github [command]
 ```
 
 ---
@@ -170,7 +170,7 @@ opencode github [command]
 在您的仓库中安装 GitHub 代理。
 
 ```bash
-opencode github install
+railwise github install
 ```
 
 此命令会设置必要的 GitHub Actions 工作流并引导您完成配置过程。[了解更多](/docs/github)。
@@ -182,7 +182,7 @@ opencode github install
 运行 GitHub 代理。通常在 GitHub Actions 中使用。
 
 ```bash
-opencode github run
+railwise github run
 ```
 
 ##### 标志
@@ -199,7 +199,7 @@ opencode github run
 管理 Model Context Protocol 服务器。
 
 ```bash
-opencode mcp [command]
+railwise mcp [command]
 ```
 
 ---
@@ -209,7 +209,7 @@ opencode mcp [command]
 将 MCP 服务器添加到您的配置中。
 
 ```bash
-opencode mcp add
+railwise mcp add
 ```
 
 此命令将引导您添加本地或远程 MCP 服务器。
@@ -221,13 +221,13 @@ opencode mcp add
 列出所有已配置的 MCP 服务器及其连接状态。
 
 ```bash
-opencode mcp list
+railwise mcp list
 ```
 
 或使用简写版本。
 
 ```bash
-opencode mcp ls
+railwise mcp ls
 ```
 
 ---
@@ -237,7 +237,7 @@ opencode mcp ls
 对支持 OAuth 的 MCP 服务器进行认证。
 
 ```bash
-opencode mcp auth [name]
+railwise mcp auth [name]
 ```
 
 如果您不提供服务器名称，系统将提示您从可用的支持 OAuth 的服务器中进行选择。
@@ -245,13 +245,13 @@ opencode mcp auth [name]
 您还可以列出支持 OAuth 的服务器及其认证状态。
 
 ```bash
-opencode mcp auth list
+railwise mcp auth list
 ```
 
 或使用简写版本。
 
 ```bash
-opencode mcp auth ls
+railwise mcp auth ls
 ```
 
 ---
@@ -261,7 +261,7 @@ opencode mcp auth ls
 移除 MCP 服务器的 OAuth 凭据。
 
 ```bash
-opencode mcp logout [name]
+railwise mcp logout [name]
 ```
 
 ---
@@ -271,7 +271,7 @@ opencode mcp logout [name]
 调试 MCP 服务器的 OAuth 连接问题。
 
 ```bash
-opencode mcp debug <name>
+railwise mcp debug <name>
 ```
 
 ---
@@ -281,7 +281,7 @@ opencode mcp debug <name>
 列出已配置提供商的所有可用模型。
 
 ```bash
-opencode models [provider]
+railwise models [provider]
 ```
 
 此命令以 `provider/model` 的格式显示所有已配置提供商中可用的模型。
@@ -291,7 +291,7 @@ opencode models [provider]
 您可以选择传入提供商 ID 来按提供商筛选模型。
 
 ```bash
-opencode models anthropic
+railwise models anthropic
 ```
 
 #### 标志
@@ -301,36 +301,36 @@ opencode models anthropic
 | `--refresh` | 从 models.dev 刷新模型缓存               |
 | `--verbose` | 使用更详细的模型输出（包含费用等元数据） |
 
-使用 `--refresh` 标志可以更新缓存的模型列表。当提供商新增了模型并且您希望在 OpenCode 中看到它们时，此功能非常有用。
+使用 `--refresh` 标志可以更新缓存的模型列表。当提供商新增了模型并且您希望在 Railwise 中看到它们时，此功能非常有用。
 
 ```bash
-opencode models --refresh
+railwise models --refresh
 ```
 
 ---
 
 ### run
 
-以非交互模式运行 OpenCode，直接传入提示词。
+以非交互模式运行 Railwise，直接传入提示词。
 
 ```bash
-opencode run [message..]
+railwise run [message..]
 ```
 
 这对于脚本编写、自动化或无需启动完整 TUI 即可快速获取答案的场景非常有用。例如：
 
-```bash "opencode run"
-opencode run Explain the use of context in Go
+```bash "railwise run"
+railwise run Explain the use of context in Go
 ```
 
-您还可以连接到正在运行的 `opencode serve` 实例，以避免每次运行时 MCP 服务器的冷启动时间：
+您还可以连接到正在运行的 `railwise serve` 实例，以避免每次运行时 MCP 服务器的冷启动时间：
 
 ```bash
 # Start a headless server in one terminal
-opencode serve
+railwise serve
 
 # In another terminal, run commands that attach to it
-opencode run --attach http://localhost:4096 "Explain async/await in JavaScript"
+railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 ```
 
 #### 标志
@@ -347,20 +347,20 @@ opencode run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f` | 附加到消息的文件                                               |
 | `--format`   |      | 格式：default（格式化输出）或 json（原始 JSON 事件）           |
 | `--title`    |      | 会话标题（未提供值时使用截断的提示词）                         |
-| `--attach`   |      | 连接到正在运行的 opencode 服务器（例如 http://localhost:4096） |
+| `--attach`   |      | 连接到正在运行的 railwise 服务器（例如 http://localhost:4096） |
 | `--port`     |      | 本地服务器端口（默认为随机端口）                               |
 
 ---
 
 ### serve
 
-启动无界面的 OpenCode 服务器以提供 API 访问。查看[服务器文档](/docs/server)了解完整的 HTTP 接口。
+启动无界面的 Railwise 服务器以提供 API 访问。查看[服务器文档](/docs/server)了解完整的 HTTP 接口。
 
 ```bash
-opencode serve
+railwise serve
 ```
 
-此命令启动一个 HTTP 服务器，提供对 OpenCode 功能的 API 访问，无需 TUI 界面。设置 `RAILWISE_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `opencode`）。
+此命令启动一个 HTTP 服务器，提供对 Railwise 功能的 API 访问，无需 TUI 界面。设置 `RAILWISE_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `railwise`）。
 
 #### 标志
 
@@ -375,20 +375,20 @@ opencode serve
 
 ### session
 
-管理 OpenCode 会话。
+管理 Railwise 会话。
 
 ```bash
-opencode session [command]
+railwise session [command]
 ```
 
 ---
 
 #### list
 
-列出所有 OpenCode 会话。
+列出所有 Railwise 会话。
 
 ```bash
-opencode session list
+railwise session list
 ```
 
 ##### 标志
@@ -402,10 +402,10 @@ opencode session list
 
 ### stats
 
-显示 OpenCode 会话的 Token 用量和费用统计信息。
+显示 Railwise 会话的 Token 用量和费用统计信息。
 
 ```bash
-opencode stats
+railwise stats
 ```
 
 #### 标志
@@ -424,7 +424,7 @@ opencode stats
 将会话数据导出为 JSON。
 
 ```bash
-opencode export [sessionID]
+railwise export [sessionID]
 ```
 
 如果您不提供会话 ID，系统将提示您从可用的会话中进行选择。
@@ -433,30 +433,30 @@ opencode export [sessionID]
 
 ### import
 
-从 JSON 文件或 OpenCode 分享链接导入会话数据。
+从 JSON 文件或 Railwise 分享链接导入会话数据。
 
 ```bash
-opencode import <file>
+railwise import <file>
 ```
 
-您可以从本地文件或 OpenCode 分享链接导入。
+您可以从本地文件或 Railwise 分享链接导入。
 
 ```bash
-opencode import session.json
-opencode import https://opncd.ai/s/abc123
+railwise import session.json
+railwise import https://opncd.ai/s/abc123
 ```
 
 ---
 
 ### web
 
-启动带有 Web 界面的无界面 OpenCode 服务器。
+启动带有 Web 界面的无界面 Railwise 服务器。
 
 ```bash
-opencode web
+railwise web
 ```
 
-此命令启动一个 HTTP 服务器并打开浏览器，通过 Web 界面访问 OpenCode。设置 `RAILWISE_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `opencode`）。
+此命令启动一个 HTTP 服务器并打开浏览器，通过 Web 界面访问 Railwise。设置 `RAILWISE_SERVER_PASSWORD` 可启用 HTTP 基本认证（用户名默认为 `railwise`）。
 
 #### 标志
 
@@ -474,7 +474,7 @@ opencode web
 启动 ACP（Agent Client Protocol）服务器。
 
 ```bash
-opencode acp
+railwise acp
 ```
 
 此命令启动一个通过 stdin/stdout 使用 nd-JSON 进行通信的 ACP 服务器。
@@ -491,10 +491,10 @@ opencode acp
 
 ### uninstall
 
-卸载 OpenCode 并删除所有相关文件。
+卸载 Railwise 并删除所有相关文件。
 
 ```bash
-opencode uninstall
+railwise uninstall
 ```
 
 #### 标志
@@ -510,22 +510,22 @@ opencode uninstall
 
 ### upgrade
 
-将 OpenCode 更新到最新版本或指定版本。
+将 Railwise 更新到最新版本或指定版本。
 
 ```bash
-opencode upgrade [target]
+railwise upgrade [target]
 ```
 
 更新到最新版本。
 
 ```bash
-opencode upgrade
+railwise upgrade
 ```
 
 更新到指定版本。
 
 ```bash
-opencode upgrade v0.1.48
+railwise upgrade v0.1.48
 ```
 
 #### 标志
@@ -538,7 +538,7 @@ opencode upgrade v0.1.48
 
 ## 全局标志
 
-OpenCode CLI 接受以下全局标志。
+Railwise CLI 接受以下全局标志。
 
 | 标志           | 简写 | 描述                                 |
 | -------------- | ---- | ------------------------------------ |
@@ -551,7 +551,7 @@ OpenCode CLI 接受以下全局标志。
 
 ## 环境变量
 
-OpenCode 可以通过环境变量进行配置。
+Railwise 可以通过环境变量进行配置。
 
 | 变量                                  | 类型    | 描述                                    |
 | ------------------------------------- | ------- | --------------------------------------- |
@@ -577,7 +577,7 @@ OpenCode 可以通过环境变量进行配置。
 | `RAILWISE_CLIENT`                     | string  | 客户端标识符（默认为 `cli`）            |
 | `RAILWISE_ENABLE_EXA`                 | boolean | 启用 Exa 网络搜索工具                   |
 | `RAILWISE_SERVER_PASSWORD`            | string  | 为 `serve`/`web` 启用基本认证           |
-| `RAILWISE_SERVER_USERNAME`            | string  | 覆盖基本认证用户名（默认为 `opencode`） |
+| `RAILWISE_SERVER_USERNAME`            | string  | 覆盖基本认证用户名（默认为 `railwise`） |
 | `RAILWISE_MODELS_URL`                 | string  | 自定义模型配置获取 URL                  |
 
 ---

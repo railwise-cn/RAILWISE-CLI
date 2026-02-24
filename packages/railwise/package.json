@@ -19,7 +19,7 @@
     "db": "bun drizzle-kit"
   },
   "bin": {
-    "railwise": "./bin/opencode"
+    "railwise": "./bin/railwise"
   },
   "randomField": "this-is-a-random-value-12345",
   "exports": {

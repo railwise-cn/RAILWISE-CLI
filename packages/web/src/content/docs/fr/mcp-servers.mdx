@@ -3,7 +3,7 @@ title: Serveurs MCP
 description: Ajoutez des outils MCP locaux et distants.
 ---
 
-Vous pouvez ajouter des outils externes à RAILWISE (甬算) à l'aide du _Model Context Protocol_ ou MCP. RAILWISE (甬算) prend en charge les serveurs locaux et distants.
+Vous pouvez ajouter des outils externes à RAILWISE à l'aide du _Model Context Protocol_ ou MCP. RAILWISE prend en charge les serveurs locaux et distants.
 
 Une fois ajoutés, les outils MCP sont automatiquement disponibles pour le LLM aux côtés des outils intégrés.
 
@@ -23,7 +23,7 @@ Certains serveurs MCP, comme le serveur GitHub MCP, ont tendance à ajouter beau
 
 ## Activation
 
-Vous pouvez définir des serveurs MCP dans votre [RAILWISE (甬算) Config](https://railwise.ai/docs/config/) sous `mcp`. Ajoutez chaque MCP avec un nom unique. Vous pouvez faire référence à ce MCP par son nom lorsque vous demandez le LLM.
+Vous pouvez définir des serveurs MCP dans votre [RAILWISE Config](https://railwise.ai/docs/config/) sous `mcp`. Ajoutez chaque MCP avec un nom unique. Vous pouvez faire référence à ce MCP par son nom lorsque vous demandez le LLM.
 
 ```jsonc title="railwise.jsonc" {6}
 {
@@ -165,7 +165,7 @@ Le champ `url` est l'URL du serveur MCP distant et l'option `headers` vous perme
 
 ## OAuth
 
-RAILWISE (甬算) gère automatiquement l'authentification OAuth pour les serveurs MCP distants. Lorsqu'un serveur nécessite une authentification, RAILWISE (甬算) :
+RAILWISE gère automatiquement l'authentification OAuth pour les serveurs MCP distants. Lorsqu'un serveur nécessite une authentification, RAILWISE :
 
 1. Détecte la réponse 401 et lance le flux OAuth
 2. Utilise **Enregistrement client dynamique (RFC 7591)** s'il est pris en charge par le serveur.
@@ -189,7 +189,7 @@ Pour la plupart des serveurs MCP compatibles OAuth, aucune configuration particu
 }
 ```
 
-Si le serveur nécessite une authentification, RAILWISE (甬算) vous demandera de vous authentifier lorsque vous essayez de l'utiliser pour la première fois. Sinon, vous pouvez [déclencher manuellement le flux](#authenticating) avec `railwise mcp auth <server-name>`.
+Si le serveur nécessite une authentification, RAILWISE vous demandera de vous authentifier lorsque vous essayez de l'utiliser pour la première fois. Sinon, vous pouvez [déclencher manuellement le flux](#authenticating) avec `railwise mcp auth <server-name>`.
 
 ---
 
@@ -238,7 +238,7 @@ Supprimez les informations d'identification stockées :
 railwise mcp logout my-oauth-server
 ```
 
-La commande `mcp auth` ouvrira votre navigateur pour autorisation. Après votre autorisation, RAILWISE (甬算) stockera les jetons en toute sécurité dans `~/.local/share/railwise/mcp-auth.json`.
+La commande `mcp auth` ouvrira votre navigateur pour autorisation. Après votre autorisation, RAILWISE stockera les jetons en toute sécurité dans `~/.local/share/railwise/mcp-auth.json`.
 
 ---
 
@@ -291,7 +291,7 @@ La commande `mcp debug` affiche l'état d'authentification actuel, teste la conn
 
 ## Gestion
 
-Vos MCP sont disponibles sous forme d'outils dans RAILWISE (甬算), aux côtés des outils intégrés. Vous pouvez donc les gérer via la configuration RAILWISE (甬算) comme n'importe quel autre outil.
+Vos MCP sont disponibles sous forme d'outils dans RAILWISE, aux côtés des outils intégrés. Vous pouvez donc les gérer via la configuration RAILWISE comme n'importe quel autre outil.
 
 ---
 
@@ -423,7 +423,7 @@ Après avoir ajouté la configuration, authentifiez-vous auprès de Sentry :
 railwise mcp auth sentry
 ```
 
-Cela ouvrira une fenêtre de navigateur pour terminer le flux OAuth et connecter RAILWISE (甬算) à votre compte Sentry.
+Cela ouvrira une fenêtre de navigateur pour terminer le flux OAuth et connecter RAILWISE à votre compte Sentry.
 
 Une fois authentifié, vous pouvez utiliser les outils Sentry dans vos prompts pour interroger les problèmes, les projets et les données d'erreur.
 
@@ -635,7 +635,7 @@ Le champ `url` est l'URL du serveur MCP distant et l'option `headers` vous perme
 
 ## OAuth
 
-RAILWISE (甬算) gère automatiquement l'authentification OAuth pour les serveurs MCP distants. Lorsqu'un serveur nécessite une authentification, RAILWISE (甬算) :
+RAILWISE gère automatiquement l'authentification OAuth pour les serveurs MCP distants. Lorsqu'un serveur nécessite une authentification, RAILWISE :
 
 1. Détectez la réponse 401 et lancez le flux OAuth
 2. Utilisez **Enregistrement client dynamique (RFC 7591)** s'il est pris en charge par le serveur.
@@ -659,7 +659,7 @@ Pour la plupart des serveurs MCP compatibles OAuth, aucune configuration particu
 }
 ```
 
-Si le serveur nécessite une authentification, RAILWISE (甬算) vous demandera de vous authentifier lorsque vous essayez de l'utiliser pour la première fois. Sinon, vous pouvez [déclencher manuellement le flux](#authenticating) avec `railwise mcp auth <server-name>`.
+Si le serveur nécessite une authentification, RAILWISE vous demandera de vous authentifier lorsque vous essayez de l'utiliser pour la première fois. Sinon, vous pouvez [déclencher manuellement le flux](#authenticating) avec `railwise mcp auth <server-name>`.
 
 ---
 
@@ -708,7 +708,7 @@ Supprimez les informations d'identification stockées :
 railwise mcp logout my-oauth-server
 ```
 
-La commande `mcp auth` ouvrira votre navigateur pour autorisation. Après votre autorisation, RAILWISE (甬算) stockera les jetons en toute sécurité dans `~/.local/share/railwise/mcp-auth.json`.
+La commande `mcp auth` ouvrira votre navigateur pour autorisation. Après votre autorisation, RAILWISE stockera les jetons en toute sécurité dans `~/.local/share/railwise/mcp-auth.json`.
 
 ---
 
@@ -761,7 +761,7 @@ La commande `mcp debug` affiche l'état d'authentification actuel, teste la conn
 
 ## Gérer
 
-Vos MCP sont disponibles sous forme d'outils dans RAILWISE (甬算), aux côtés des outils intégrés. Vous pouvez donc les gérer via la configuration RAILWISE (甬算) comme n'importe quel autre outil.
+Vos MCP sont disponibles sous forme d'outils dans RAILWISE, aux côtés des outils intégrés. Vous pouvez donc les gérer via la configuration RAILWISE comme n'importe quel autre outil.
 
 ---
 
@@ -893,7 +893,7 @@ Après avoir ajouté la configuration, authentifiez-vous auprès de Sentry :
 railwise mcp auth sentry
 ```
 
-Cela ouvrira une fenêtre de navigateur pour terminer le flux OAuth et connecter RAILWISE (甬算) à votre compte Sentry.
+Cela ouvrira une fenêtre de navigateur pour terminer le flux OAuth et connecter RAILWISE à votre compte Sentry.
 
 Une fois authentifié, vous pouvez utiliser les outils Sentry dans vos invites pour interroger les problèmes, les projets et les données d'erreur.
 

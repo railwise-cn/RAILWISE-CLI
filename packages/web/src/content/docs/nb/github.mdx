@@ -3,15 +3,15 @@ title: GitHub
 description: Bruk railwise i GitHub-problemer og pull-forespørsler.
 ---
 
-RAILWISE (甬算) integreres med GitHub-arbeidsflyten din. Nevn `/railwise` eller `/oc` i kommentaren din, og RAILWISE (甬算) vil utføre oppgaver i din GitHub Actions-løper.
+RAILWISE integreres med GitHub-arbeidsflyten din. Nevn `/railwise` eller `/oc` i kommentaren din, og RAILWISE vil utføre oppgaver i din GitHub Actions-løper.
 
 ---
 
 ## Funksjoner
 
-- **Triage saker**: Be RAILWISE (甬算) se på en sak og forklare den for deg.
-- **Fiks og implementer**: Be RAILWISE (甬算) om å fikse en sak eller implementere en funksjon. Den vil jobbe i en ny gren og sende inn en PR med alle endringene.
-- **Sikkert**: RAILWISE (甬算) kjører i GitHub-runners.
+- **Triage saker**: Be RAILWISE se på en sak og forklare den for deg.
+- **Fiks og implementer**: Be RAILWISE om å fikse en sak eller implementere en funksjon. Den vil jobbe i en ny gren og sende inn en PR med alle endringene.
+- **Sikkert**: RAILWISE kjører i GitHub-runners.
 
 ---
 
@@ -63,7 +63,7 @@ Eller du kan sette den opp manuelt.
               fetch-depth: 1
               persist-credentials: false
 
-          - name: Run RAILWISE (甬算)
+          - name: Run RAILWISE
            uses: anomalyco/railwise/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -81,13 +81,13 @@ Eller du kan sette den opp manuelt.
 
 ## Konfigurasjon
 
-- `model`: Modellen som skal brukes med RAILWISE (甬算). Tar formatet `provider/model`. Dette er **obligatorisk**.
+- `model`: Modellen som skal brukes med RAILWISE. Tar formatet `provider/model`. Dette er **obligatorisk**.
 - `agent`: Agenten som skal brukes. Må være en primær agent. Faller tilbake til `default_agent` fra config eller `"build"` hvis ikke funnet.
-- `share`: Om RAILWISE (甬算)-økten skal deles. Standard er **true** for offentlige depoter.
-- `prompt`: Valgfri egendefinert melding for å overstyre standard oppførsel. Bruk dette til å tilpasse hvordan RAILWISE (甬算) behandler forespørsler.
-- `token`: Valgfritt GitHub-tilgangstoken for å utføre operasjoner som å lage kommentarer, foreta endringer og åpne pull-forespørsler. Som standard bruker RAILWISE (甬算) installasjonstilgangstokenet fra RAILWISE (甬算) GitHub-appen, så commits, kommentarer og pull-forespørsler ser ut til å komme fra appen.
+- `share`: Om RAILWISE-økten skal deles. Standard er **true** for offentlige depoter.
+- `prompt`: Valgfri egendefinert melding for å overstyre standard oppførsel. Bruk dette til å tilpasse hvordan RAILWISE behandler forespørsler.
+- `token`: Valgfritt GitHub-tilgangstoken for å utføre operasjoner som å lage kommentarer, foreta endringer og åpne pull-forespørsler. Som standard bruker RAILWISE installasjonstilgangstokenet fra RAILWISE GitHub-appen, så commits, kommentarer og pull-forespørsler ser ut til å komme fra appen.
 
-  Alternativt kan du bruke GitHub Action-løperens [innebygde `GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) uten å installere RAILWISE (甬算) GitHub-appen. Bare sørg for å gi de nødvendige tillatelsene i arbeidsflyten din:
+  Alternativt kan du bruke GitHub Action-løperens [innebygde `GITHUB_TOKEN`](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) uten å installere RAILWISE GitHub-appen. Bare sørg for å gi de nødvendige tillatelsene i arbeidsflyten din:
 
   ```yaml
   permissions:
@@ -103,23 +103,23 @@ Eller du kan sette den opp manuelt.
 
 ## Støttede hendelser
 
-RAILWISE (甬算) kan utløses av følgende GitHub-hendelser:
+RAILWISE kan utløses av følgende GitHub-hendelser:
 
 | Hendelsestype                 | Utløst av                               | Detaljer                                                                                                                |
 | ----------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Kommentar på sak eller PR               | Nevn `/railwise` eller `/oc` i kommentaren din. RAILWISE (甬算) leser kontekst og kan opprette grener, åpne PR-er eller svare. |
-| `pull_request_review_comment` | Kommenter spesifikke kodelinjer i en PR | Nevn `/railwise` eller `/oc` mens du ser gjennom koden. RAILWISE (甬算) mottar filbane, linjenummer og diff-kontekst.          |
-| `issues`                      | Sak åpnet eller redigert                | Utløs RAILWISE (甬算) automatisk når saker opprettes eller endres. Krever `prompt` inngang.                                    |
-| `pull_request`                | PR åpnet eller oppdatert                | Utløs RAILWISE (甬算) automatisk når PR-er åpnes, synkroniseres eller gjenåpnes. Nyttig for automatiserte anmeldelser.         |
-| `schedule`                    | Cron-basert tidsplan                    | Kjør RAILWISE (甬算) etter en tidsplan. Krever `prompt` inngang. Utdata går til logger og PR (ingen sak å kommentere).         |
-| `workflow_dispatch`           | Manuell utløser fra GitHub UI           | Utløs RAILWISE (甬算) på forespørsel via fanen Handlinger. Krever `prompt` inngang. Utdata går til logger og PR-er.            |
+| `issue_comment`               | Kommentar på sak eller PR               | Nevn `/railwise` eller `/oc` i kommentaren din. RAILWISE leser kontekst og kan opprette grener, åpne PR-er eller svare. |
+| `pull_request_review_comment` | Kommenter spesifikke kodelinjer i en PR | Nevn `/railwise` eller `/oc` mens du ser gjennom koden. RAILWISE mottar filbane, linjenummer og diff-kontekst.          |
+| `issues`                      | Sak åpnet eller redigert                | Utløs RAILWISE automatisk når saker opprettes eller endres. Krever `prompt` inngang.                                    |
+| `pull_request`                | PR åpnet eller oppdatert                | Utløs RAILWISE automatisk når PR-er åpnes, synkroniseres eller gjenåpnes. Nyttig for automatiserte anmeldelser.         |
+| `schedule`                    | Cron-basert tidsplan                    | Kjør RAILWISE etter en tidsplan. Krever `prompt` inngang. Utdata går til logger og PR (ingen sak å kommentere).         |
+| `workflow_dispatch`           | Manuell utløser fra GitHub UI           | Utløs RAILWISE på forespørsel via fanen Handlinger. Krever `prompt` inngang. Utdata går til logger og PR-er.            |
 
 ### Eksempel på tidsplan
 
-Kjør RAILWISE (甬算) på en tidsplan for å utføre automatiserte oppgaver:
+Kjør RAILWISE på en tidsplan for å utføre automatiserte oppgaver:
 
 ```yaml title=".github/workflows/railwise-scheduled.yml"
-name: Scheduled RAILWISE (甬算) Task
+name: Scheduled RAILWISE Task
 
 on:
   schedule:
@@ -139,7 +139,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run RAILWISE (甬算)
+      - name: Run RAILWISE
         uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -150,7 +150,7 @@ jobs:
             If you find issues worth addressing, open an issue to track them.
 ```
 
-For planlagte arrangementer er `prompt`-inngangen **påkrevd** siden det ikke er noen kommentarer å trekke ut instruksjoner fra. Planlagte workflows kjører uten brukerkontekst for tillatelsessjekking, så arbeidsflyten må gi `contents: write` og `pull-requests: write` hvis du forventer at RAILWISE (甬算) oppretter grener eller PR-er.
+For planlagte arrangementer er `prompt`-inngangen **påkrevd** siden det ikke er noen kommentarer å trekke ut instruksjoner fra. Planlagte workflows kjører uten brukerkontekst for tillatelsessjekking, så arbeidsflyten må gi `contents: write` og `pull-requests: write` hvis du forventer at RAILWISE oppretter grener eller PR-er.
 
 ---
 
@@ -191,7 +191,7 @@ jobs:
             - Suggest improvements
 ```
 
-For `pull_request`-hendelser, hvis ingen `prompt` er oppgitt, går RAILWISE (甬算) som standard gjennom PR-en.
+For `pull_request`-hendelser, hvis ingen `prompt` er oppgitt, går RAILWISE som standard gjennom PR-en.
 
 ---
 
@@ -252,7 +252,7 @@ For `issues`-hendelser er `prompt`-inngangen **påkrevd** siden det ikke er noen
 
 ## Egendefinerte prompter
 
-Overstyr standardprompten for å tilpasse oppførselen til RAILWISE (甬算) for arbeidsflyten din.
+Overstyr standardprompten for å tilpasse oppførselen til RAILWISE for arbeidsflyten din.
 
 ```yaml title=".github/workflows/railwise.yml"
 - uses: anomalyco/railwise/github@latest
@@ -271,7 +271,7 @@ Dette er nyttig for å håndheve spesifikke vurderingskriterier, kodestandarder 
 
 ## Eksempler
 
-Her er noen eksempler på hvordan du kan bruke RAILWISE (甬算) i GitHub.
+Her er noen eksempler på hvordan du kan bruke RAILWISE i GitHub.
 
 :::tip
 Du kan konfigurere til å bruke en annen triggerfrase enn `@railwise`.
@@ -285,7 +285,7 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@railwise`.
   /railwise explain this issue
   ```
 
-  RAILWISE (甬算) vil lese hele tråden, inkludert alle kommentarer, og svare med en tydelig forklaring.
+  RAILWISE vil lese hele tråden, inkludert alle kommentarer, og svare med en tydelig forklaring.
 
 - **Fiks en sak**
 
@@ -295,7 +295,7 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@railwise`.
   /railwise fix this
   ```
 
-  Og RAILWISE (甬算) vil opprette en ny gren, implementere endringene og åpne en PR med endringene.
+  Og RAILWISE vil opprette en ny gren, implementere endringene og åpne en PR med endringene.
 
 - **Se gjennom PR-er og gjør endringer**
 
@@ -305,18 +305,18 @@ Du kan konfigurere til å bruke en annen triggerfrase enn `@railwise`.
   Delete the attachment from S3 when the note is removed /oc
   ```
 
-  RAILWISE (甬算) vil implementere den forespurte endringen og committe den til samme PR.
+  RAILWISE vil implementere den forespurte endringen og committe den til samme PR.
 
 - **Review av spesifikke kodelinjer**
 
-  Legg igjen en kommentar direkte på kodelinjer i PRs "Filer"-fane. RAILWISE (甬算) oppdager automatisk filen, linjenumrene og diff-konteksten for å gi presise svar.
+  Legg igjen en kommentar direkte på kodelinjer i PRs "Filer"-fane. RAILWISE oppdager automatisk filen, linjenumrene og diff-konteksten for å gi presise svar.
 
   ```
   [Comment on specific lines in Files tab]
   /oc add error handling here
   ```
 
-  Når du kommenterer spesifikke linjer, mottar RAILWISE (甬算):
+  Når du kommenterer spesifikke linjer, mottar RAILWISE:
   - Den nøyaktige filen blir gjennomgått
   - De spesifikke kodelinjene
   - Den omkringliggende diff-konteksten

@@ -1,9 +1,9 @@
 ---
 title: ACP-understøttelse
-description: Brug RAILWISE (甬算) i enhver ACP-kompatibel editor.
+description: Brug RAILWISE i enhver ACP-kompatibel editor.
 ---
 
-RAILWISE (甬算) understøtter [Agent Client Protocol](https://agentclientprotocol.com) eller (ACP), så du kan bruge det direkte i kompatible editorer og IDE'er.
+RAILWISE understøtter [Agent Client Protocol](https://agentclientprotocol.com) eller (ACP), så du kan bruge det direkte i kompatible editorer og IDE'er.
 
 :::tip
 For en liste over editorer og værktøjer, der understøtter ACP, tjek [ACP fremskridtsrapport](https://zed.dev/blog/acp-progress-report#available-now).
@@ -15,9 +15,9 @@ ACP er en åben protokol, der standardiserer kommunikation mellem kodeeditorer o
 
 ## Konfiguration
 
-For at bruge RAILWISE (甬算) via ACP, konfigurer din editor til at køre kommandoen `railwise acp`.
+For at bruge RAILWISE via ACP, konfigurer din editor til at køre kommandoen `railwise acp`.
 
-Kommandoen starter RAILWISE (甬算) som en ACP-kompatibel underproces, der kommunikerer med din editor over JSON-RPC via stdio.
+Kommandoen starter RAILWISE som en ACP-kompatibel underproces, der kommunikerer med din editor over JSON-RPC via stdio.
 
 Nedenfor er eksempler på populære editorer, der understøtter ACP.
 
@@ -30,7 +30,7 @@ Føj til din [Zed](https://zed.dev)-konfiguration (`~/.config/zed/settings.json`
 ```json title="~/.config/zed/settings.json"
 {
   "agent_servers": {
-    "RAILWISE (甬算)": {
+    "RAILWISE": {
       "command": "railwise",
       "args": ["acp"]
     }
@@ -51,7 +51,7 @@ Du kan også binde en tastaturgenvej ved at redigere din `keymap.json`:
         {
           "agent": {
             "custom": {
-              "name": "RAILWISE (甬算)",
+              "name": "RAILWISE",
               "command": {
                 "command": "railwise",
                 "args": ["acp"]
@@ -74,7 +74,7 @@ Tilføj til din [JetBrains IDE](https://www.jetbrains.com/) acp.json i henhold t
 ```json title="acp.json"
 {
   "agent_servers": {
-    "RAILWISE (甬算)": {
+    "RAILWISE": {
       "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
@@ -82,7 +82,7 @@ Tilføj til din [JetBrains IDE](https://www.jetbrains.com/) acp.json i henhold t
 }
 ```
 
-For at åbne den skal du bruge den nye 'RAILWISE (甬算)'-agent i AI Chat-agentvælgeren.
+For at åbne den skal du bruge den nye 'RAILWISE'-agent i AI Chat-agentvælgeren.
 
 ---
 
@@ -121,7 +121,7 @@ Hvis du har brug for at videregive miljøvariabler:
 
 ### CodeCompanion.nvim
 
-For at bruge RAILWISE (甬算) som en ACP-agent i [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), skal du tilføje følgende til din Neovim-konfiguration:
+For at bruge RAILWISE som en ACP-agent i [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim), skal du tilføje følgende til din Neovim-konfiguration:
 
 ```lua
 require("codecompanion").setup({
@@ -136,13 +136,13 @@ require("codecompanion").setup({
 })
 ```
 
-Denne konfiguration sætter CodeCompanion til at bruge RAILWISE (甬算) som ACP-agent til chat.
+Denne konfiguration sætter CodeCompanion til at bruge RAILWISE som ACP-agent til chat.
 
 Hvis du har brug for at sende miljøvariabler (som `RAILWISE_API_KEY`), henvises til [Konfiguration af adaptere: Miljøvariabler](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key) i CodeCompanion.nvim-dokumentationen for alle detaljer.
 
 ## Understøttelse
 
-RAILWISE (甬算) fungerer på samme måde via ACP som i terminalen. Alle funktioner understøtter:
+RAILWISE fungerer på samme måde via ACP som i terminalen. Alle funktioner understøtter:
 
 :::note
 Nogle indbyggede slash-kommandoer som `/undo` og `/redo` er i øjeblikket ikke understøttet.
@@ -150,7 +150,7 @@ Nogle indbyggede slash-kommandoer som `/undo` og `/redo` er i øjeblikket ikke u
 
 - Indbyggede værktøjer (filoperationer, terminalkommandoer osv.)
 - Brugerdefinerede værktøjer og slash-kommandoer
-- MCP-servere konfigureret i din RAILWISE (甬算)-konfiguration
+- MCP-servere konfigureret i din RAILWISE-konfiguration
 - Projektspecifikke regler fra `AGENTS.md`
 - Brugerdefinerede formatere og linters
 - Agenter og tilladelsessystem

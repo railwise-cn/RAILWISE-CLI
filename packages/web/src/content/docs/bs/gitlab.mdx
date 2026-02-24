@@ -1,31 +1,31 @@
 ---
 title: GitLab
-description: Koristite RAILWISE (甬算) u GitLab problemima i zahtjevima za spajanje.
+description: Koristite RAILWISE u GitLab problemima i zahtjevima za spajanje.
 ---
 
-RAILWISE (甬算) se integriše sa vašim GitLab radnim tokom kroz vaš GitLab CI/CD cevovod ili sa GitLab Duo.
-U oba slučaja, RAILWISE (甬算) će se pokrenuti na vašim GitLab pokretačima.
+RAILWISE se integriše sa vašim GitLab radnim tokom kroz vaš GitLab CI/CD cevovod ili sa GitLab Duo.
+U oba slučaja, RAILWISE će se pokrenuti na vašim GitLab pokretačima.
 
 ---
 
 ## GitLab CI
 
-RAILWISE (甬算) radi u redovnom GitLab cevovodu. Možete ga ugraditi u cjevovod kao [CI komponenta](https://docs.gitlab.com/ee/ci/components/)
-Ovdje koristimo CI/CD komponentu kreiranu u zajednici za RAILWISE (甬算) — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
+RAILWISE radi u redovnom GitLab cevovodu. Možete ga ugraditi u cjevovod kao [CI komponenta](https://docs.gitlab.com/ee/ci/components/)
+Ovdje koristimo CI/CD komponentu kreiranu u zajednici za RAILWISE — [nagyv/gitlab-railwise](https://gitlab.com/nagyv/gitlab-railwise).
 
 ---
 
 ### Funkcije
 
-- **Koristite prilagođenu konfiguraciju po poslu**: Konfigurirajte RAILWISE (甬算) s prilagođenim konfiguracijskim direktorijem, na primjer `./config/#custom-directory` da omogućite ili onemogućite funkcionalnost po RAILWISE (甬算) pozivanju.
-- **Minimalno podešavanje**: CI komponenta postavlja RAILWISE (甬算) u pozadini, samo trebate kreirati RAILWISE (甬算) konfiguraciju i početnu prompt.
+- **Koristite prilagođenu konfiguraciju po poslu**: Konfigurirajte RAILWISE s prilagođenim konfiguracijskim direktorijem, na primjer `./config/#custom-directory` da omogućite ili onemogućite funkcionalnost po RAILWISE pozivanju.
+- **Minimalno podešavanje**: CI komponenta postavlja RAILWISE u pozadini, samo trebate kreirati RAILWISE konfiguraciju i početnu prompt.
 - **Fleksibilno**: CI komponenta podržava nekoliko ulaza za prilagođavanje njenog ponašanja
 
 ---
 
 ### Podešavanje
 
-1. Sačuvajte JSON za autentifikaciju RAILWISE (甬算) kao CI varijable okruženja tipa datoteke pod **Postavke** > **CI/CD** > **Varijable**. Obavezno ih označite kao "Maskirane i skrivene".
+1. Sačuvajte JSON za autentifikaciju RAILWISE kao CI varijable okruženja tipa datoteke pod **Postavke** > **CI/CD** > **Varijable**. Obavezno ih označite kao "Maskirane i skrivene".
 2. Dodajte sljedeće u svoju `.gitlab-ci.yml` datoteku.
 
 ```yaml title=".gitlab-ci.yml"
@@ -33,7 +33,7 @@ include:
   - component: $CI_SERVER_FQDN/nagyv/gitlab-railwise/railwise@2
     inputs:
       config_dir: ${CI_PROJECT_DIR}/railwise-config
-      auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE (甬算) authentication JSON
+      auth_json: $RAILWISE_AUTH_JSON # The variable name for your RAILWISE authentication JSON
       command: optional-custom-command
       message: "Your prompt here"
 ```
@@ -44,23 +44,23 @@ Za više unosa i slučajeva upotrebe [pogledajte dokumente docs](https://gitlab.
 
 ## GitLab Duo
 
-RAILWISE (甬算) se integriše sa vašim GitLab tokovom rada.
-Spomenite `@railwise` u komentaru i RAILWISE (甬算) će izvršiti zadatke unutar vašeg GitLab CI cevovoda.
+RAILWISE se integriše sa vašim GitLab tokovom rada.
+Spomenite `@railwise` u komentaru i RAILWISE će izvršiti zadatke unutar vašeg GitLab CI cevovoda.
 
 ---
 
 ### Funkcije
 
-- **Problemi trijaže**: Zamolite RAILWISE (甬算) da ispita problem i objasni vam ga.
-- **Popravi i implementiraj**: Zamolite RAILWISE (甬算) da popravi problem ili implementira funkciju.
+- **Problemi trijaže**: Zamolite RAILWISE da ispita problem i objasni vam ga.
+- **Popravi i implementiraj**: Zamolite RAILWISE da popravi problem ili implementira funkciju.
   To će kreirati novu granu i pokrenuti zahtjev za spajanje s promjenama.
-- **Secure**: RAILWISE (甬算) radi na vašim GitLab pokretačima.
+- **Secure**: RAILWISE radi na vašim GitLab pokretačima.
 
 ---
 
 ### Podešavanje
 
-RAILWISE (甬算) radi u vašem GitLab CI/CD cevovodu, evo šta će vam trebati da ga postavite:
+RAILWISE radi u vašem GitLab CI/CD cevovodu, evo šta će vam trebati da ga postavite:
 :::tip
 Pogledajte [**GitLab dokumente**](https://docs.gitlab.com/user/duo_agent_platform/agent_assistant/) za ažurirane upute.
 :::
@@ -88,7 +88,7 @@ Pogledajte [**GitLab dokumente**](https://docs.gitlab.com/user/duo_agent_platfor
       - apt-get install --yes glab
       - echo "Configuring glab"
       - echo $GITLAB_HOST
-      - echo "Creating RAILWISE (甬算) auth configuration"
+      - echo "Creating RAILWISE auth configuration"
       - mkdir --parents ~/.local/share/railwise
       - |
         cat > ~/.local/share/railwise/auth.json << EOF
@@ -101,10 +101,10 @@ Pogledajte [**GitLab dokumente**](https://docs.gitlab.com/user/duo_agent_platfor
         EOF
       - echo "Configuring git"
       - git config --global user.email "railwise@gitlab.com"
-      - git config --global user.name "RAILWISE (甬算)"
+      - git config --global user.name "RAILWISE"
       - echo "Testing glab"
       - glab issue list
-      - echo "Running RAILWISE (甬算)"
+      - echo "Running RAILWISE"
       - |
         railwise run "
         You are an AI assistant helping with GitLab operations.
@@ -155,7 +155,7 @@ Možete vidjeti [GitLab CLI agenti docs](https://docs.gitlab.com/user/duo_agent_
 
 ### Primjeri
 
-Evo nekoliko primjera kako možete koristiti RAILWISE (甬算) u GitLab.
+Evo nekoliko primjera kako možete koristiti RAILWISE u GitLab.
 :::tip
 Možete konfigurirati da koristite drugu frazu okidača od `@railwise`.
 :::
@@ -167,7 +167,7 @@ Možete konfigurirati da koristite drugu frazu okidača od `@railwise`.
   @railwise explain this issue
 ```
 
-RAILWISE (甬算) će pročitati problem i odgovoriti jasnim objašnjenjem.
+RAILWISE će pročitati problem i odgovoriti jasnim objašnjenjem.
 
 - **Reši problem**
   U izdanju GitLaba recite:
@@ -176,7 +176,7 @@ RAILWISE (甬算) će pročitati problem i odgovoriti jasnim objašnjenjem.
   @railwise fix this
 ```
 
-RAILWISE (甬算) će kreirati novu granu, implementirati promjene i otvoriti zahtjev za spajanje s promjenama.
+RAILWISE će kreirati novu granu, implementirati promjene i otvoriti zahtjev za spajanje s promjenama.
 
 - **Pregledajte zahtjeve za pridruživanje**
   Ostavite sljedeći komentar na zahtjev za spajanje GitLab-a.
@@ -185,4 +185,4 @@ RAILWISE (甬算) će kreirati novu granu, implementirati promjene i otvoriti za
   @railwise review this merge request
 ```
 
-RAILWISE (甬算) će pregledati zahtjev za spajanje i dati povratne informacije.
+RAILWISE će pregledati zahtjev za spajanje i dati povratne informacije.

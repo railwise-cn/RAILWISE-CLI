@@ -43,7 +43,7 @@ void initI18n()
 
 let update: Update | null = null
 
-const deepLinkEvent = "opencode:deep-link"
+const deepLinkEvent = "railwise:deep-link"
 
 const emitDeepLinks = (urls: string[]) => {
   if (urls.length === 0) return
@@ -458,7 +458,7 @@ render(() => {
               variant: "base",
               http: {
                 url: data().url,
-                username: "opencode",
+                username: "railwise",
                 password: data().password ?? undefined,
               },
             }

@@ -1,19 +1,19 @@
 ---
 title: Zen
-description: Kurirana lista modela koje nudi RAILWISE (甬算).
+description: Kurirana lista modela koje nudi RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 export const email = `mailto:${config.email}`
 
-RAILWISE (甬算) Zen je lista testiranih i provjerenih modela koje obezbjeduje RAILWISE (甬算) tim.
+RAILWISE Zen je lista testiranih i provjerenih modela koje obezbjeduje RAILWISE tim.
 
 :::note
-RAILWISE (甬算) Zen je trenutno u beta fazi.
+RAILWISE Zen je trenutno u beta fazi.
 :::
 
-Zen radi kao i svaki drugi provajder u RAILWISE (甬算). Prijavite se u RAILWISE (甬算) Zen i uzmete API kljuc. Ovo je **potpuno opcionalno** i ne morate ga koristiti da biste koristili RAILWISE (甬算).
+Zen radi kao i svaki drugi provajder u RAILWISE. Prijavite se u RAILWISE Zen i uzmete API kljuc. Ovo je **potpuno opcionalno** i ne morate ga koristiti da biste koristili RAILWISE.
 
 ---
 
@@ -22,7 +22,7 @@ Zen radi kao i svaki drugi provajder u RAILWISE (甬算). Prijavite se u RAILWIS
 Postoji veliki broj modela, ali samo mali dio radi dobro kao coding agent. Dodatno, vecina provajdera je drugacije konfigurisana, pa su performanse i kvalitet cesto neujednaceni.
 
 :::tip
-Testirali smo odabranu grupu modela i provajdera koji dobro rade s RAILWISE (甬算).
+Testirali smo odabranu grupu modela i provajdera koji dobro rade s RAILWISE.
 :::
 
 Ako model koristite preko servisa poput OpenRouter-a, cesto ne mozete biti sigurni da dobijate najbolju verziju zeljenog modela.
@@ -33,16 +33,16 @@ Da to rijesimo, uradili smo nekoliko stvari:
 2. Zatim smo saradjivali s nekoliko provajdera da potvrdimo da se modeli isporucuju ispravno.
 3. Na kraju smo benchmarkirali kombinacije model/provajder i sastavili listu koju preporucujemo.
 
-RAILWISE (甬算) Zen je AI gateway koji vam daje pristup tim modelima.
+RAILWISE Zen je AI gateway koji vam daje pristup tim modelima.
 
 ---
 
 ## Kako radi
 
-RAILWISE (甬算) Zen radi kao i svaki drugi provajder u RAILWISE (甬算).
+RAILWISE Zen radi kao i svaki drugi provajder u RAILWISE.
 
-1. Prijavite se na **<a href={console}>RAILWISE (甬算) Zen</a>**, dodajte billing podatke i kopirajte API kljuc.
-2. U TUI-ju pokrenite `/connect`, izaberite RAILWISE (甬算) Zen i zalijepite API kljuc.
+1. Prijavite se na **<a href={console}>RAILWISE Zen</a>**, dodajte billing podatke i kopirajte API kljuc.
+2. U TUI-ju pokrenite `/connect`, izaberite RAILWISE Zen i zalijepite API kljuc.
 3. Pokrenite `/models` u TUI-ju da vidite listu preporucenih modela.
 
 Naplata je po zahtjevu i mozete dodavati kredit na racun.
@@ -85,7 +85,7 @@ Nasim modelima mozete pristupiti i preko sljedecih API endpointa.
 | Qwen3 Coder 480B   | qwen3-coder        | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 | Big Pickle         | big-pickle         | `https://railwise.ai/zen/v1/chat/completions`      | `@ai-sdk/openai-compatible` |
 
-[model id](/docs/config/#models) u RAILWISE (甬算) konfiguraciji koristi format `railwise/<model-id>`. Na primjer, za GPT 5.2 Codex u konfiguraciji koristite `railwise/gpt-5.2-codex`.
+[model id](/docs/config/#models) u RAILWISE konfiguraciji koristi format `railwise/<model-id>`. Na primjer, za GPT 5.2 Codex u konfiguraciji koristite `railwise/gpt-5.2-codex`.
 
 ---
 
@@ -147,10 +147,10 @@ Naknade kartica se prenose po stvarnom trosku (4.4% + $0.30 po transakciji) i ne
 
 Besplatni modeli:
 
-- GLM 4.7 Free je dostupan na RAILWISE (甬算) ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
-- Kimi K2.5 Free je dostupan na RAILWISE (甬算) ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
-- MiniMax M2.1 Free je dostupan na RAILWISE (甬算) ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
-- Big Pickle je stealth model koji je besplatan na RAILWISE (甬算) ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
+- GLM 4.7 Free je dostupan na RAILWISE ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
+- Kimi K2.5 Free je dostupan na RAILWISE ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
+- MiniMax M2.1 Free je dostupan na RAILWISE ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
+- Big Pickle je stealth model koji je besplatan na RAILWISE ograniceno vrijeme. Tim koristi taj period za prikupljanje feedbacka i unapredenje modela.
 
 Ako imate pitanja, <a href={email}>kontaktirajte nas</a>.
 
@@ -228,9 +228,9 @@ Na primjer, vasa organizacija mozda vec ima OpenAI ili Anthropic kljuc i zelite 
 
 ## Ciljevi
 
-RAILWISE (甬算) Zen smo napravili da:
+RAILWISE Zen smo napravili da:
 
 1. **Benchmarkiramo** najbolje kombinacije model/provajder za coding agente.
 2. Omogucimo pristup opcijama **najviseg kvaliteta** bez degradacije performansi i preusmjeravanja na jeftinije provajdere.
 3. Prenesemo svaka **snizenja cijena** prodajom po trosku, tako da je jedini markup pokrice processing naknada.
-4. Obezbijedimo **bez lock-ina** tako da Zen mozete koristiti sa bilo kojim coding agentom, uz slobodu koristenja drugih provajdera u RAILWISE (甬算).
+4. Obezbijedimo **bez lock-ina** tako da Zen mozete koristiti sa bilo kojim coding agentom, uz slobodu koristenja drugih provajdera u RAILWISE.

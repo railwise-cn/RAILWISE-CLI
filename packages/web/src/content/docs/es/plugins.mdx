@@ -1,9 +1,9 @@
 ---
 title: Complementos
-description: Escriba sus propios complementos para extender RAILWISE (甬算).
+description: Escriba sus propios complementos para extender RAILWISE.
 ---
 
-Los complementos le permiten extender RAILWISE (甬算) al conectarse a varios eventos y personalizar el comportamiento. Puede crear complementos para agregar nuevas funciones, integrarlos con servicios externos o modificar el comportamiento predeterminado de RAILWISE (甬算).
+Los complementos le permiten extender RAILWISE al conectarse a varios eventos y personalizar el comportamiento. Puede crear complementos para agregar nuevas funciones, integrarlos con servicios externos o modificar el comportamiento predeterminado de RAILWISE.
 
 Para ver ejemplos, consulte los [complementos](/docs/ecosystem#plugins) creados por la comunidad.
 
@@ -83,7 +83,7 @@ Los complementos locales y las herramientas personalizadas pueden utilizar paque
 }
 ```
 
-RAILWISE (甬算) ejecuta `bun install` al inicio para instalarlos. Luego, sus complementos y herramientas pueden importarlos.
+RAILWISE ejecuta `bun install` al inicio para instalarlos. Luego, sus complementos y herramientas pueden importarlos.
 
 ```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -235,7 +235,7 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 Estamos usando `osascript` para ejecutar AppleScript en macOS. Aquí lo estamos usando para enviar notificaciones.
 
 :::note
-Si está utilizando la aplicación de escritorio RAILWISE (甬算), puede enviar notificaciones del sistema automáticamente cuando una respuesta esté lista o cuando se produzca un error en una sesión.
+Si está utilizando la aplicación de escritorio RAILWISE, puede enviar notificaciones del sistema automáticamente cuando una respuesta esté lista o cuando se produzca un error en una sesión.
 :::
 
 ---

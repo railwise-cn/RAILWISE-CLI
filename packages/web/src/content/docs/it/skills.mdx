@@ -3,7 +3,7 @@ title: "Competenze dell'agente"
 description: "Definisci comportamenti riutilizzabili tramite definizioni in SKILL.md"
 ---
 
-Le skill degli agenti permettono a RAILWISE (甬算) di individuare istruzioni riutilizzabili dal tuo repo o dalla home directory.
+Le skill degli agenti permettono a RAILWISE di individuare istruzioni riutilizzabili dal tuo repo o dalla home directory.
 Le skill vengono caricate on-demand tramite lo strumento nativo `skill`: gli agenti vedono le skill disponibili e possono caricarne il contenuto completo quando serve.
 
 ---
@@ -11,7 +11,7 @@ Le skill vengono caricate on-demand tramite lo strumento nativo `skill`: gli age
 ## Posizione dei file
 
 Crea una cartella per ogni nome di skill e metti un `SKILL.md` al suo interno.
-RAILWISE (甬算) cerca in queste posizioni:
+RAILWISE cerca in queste posizioni:
 
 - Config di progetto: `.railwise/skills/<name>/SKILL.md`
 - Config globale: `~/.config/railwise/skills/<name>/SKILL.md`
@@ -24,7 +24,7 @@ RAILWISE (甬算) cerca in queste posizioni:
 
 ## Discovery
 
-Per i percorsi locali al progetto, RAILWISE (甬算) risale dalla directory di lavoro corrente finche' non raggiunge il worktree git.
+Per i percorsi locali al progetto, RAILWISE risale dalla directory di lavoro corrente finche' non raggiunge il worktree git.
 Carica qualsiasi `skills/*/SKILL.md` corrispondente in `.railwise/` e qualsiasi `.claude/skills/*/SKILL.md` o `.agents/skills/*/SKILL.md` corrispondente lungo il percorso.
 
 Le definizioni globali vengono caricate anche da `~/.config/railwise/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md` e `~/.agents/skills/*/SKILL.md`.
@@ -102,7 +102,7 @@ Ask clarifying questions if the target versioning scheme is unclear.
 
 ## Descrizione strumento
 
-RAILWISE (甬算) elenca le skill disponibili nella descrizione dello strumento `skill`.
+RAILWISE elenca le skill disponibili nella descrizione dello strumento `skill`.
 Ogni voce include il nome della skill e la descrizione:
 
 ```xml

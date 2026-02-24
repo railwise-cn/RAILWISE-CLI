@@ -1,9 +1,9 @@
 ---
 title: Dodaci
-description: Napišite vlastite dodatke za proširenje RAILWISE (甬算).
+description: Napišite vlastite dodatke za proširenje RAILWISE.
 ---
 
-Dodaci vam omogućavaju da proširite RAILWISE (甬算) spajanjem na različite događaje i prilagođavanjem ponašanja. Možete kreirati dodatke za dodavanje novih funkcija, integraciju sa eksternim uslugama ili izmenu zadanog ponašanja RAILWISE (甬算).
+Dodaci vam omogućavaju da proširite RAILWISE spajanjem na različite događaje i prilagođavanjem ponašanja. Možete kreirati dodatke za dodavanje novih funkcija, integraciju sa eksternim uslugama ili izmenu zadanog ponašanja RAILWISE.
 Za primjere, pogledajte [plugins](/docs/ecosystem#plugins) kreirane od strane zajednice.
 
 ---
@@ -76,7 +76,7 @@ Lokalni dodaci i prilagođeni alati mogu koristiti vanjske npm pakete. Dodajte `
 }
 ```
 
-RAILWISE (甬算) pokreće `bun install` pri pokretanju da ih instalira. Vaši dodaci i alati ih zatim mogu uvesti.
+RAILWISE pokreće `bun install` pri pokretanju da ih instalira. Vaši dodaci i alati ih zatim mogu uvesti.
 
 ```ts title=".railwise/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -204,7 +204,7 @@ Dodaci se mogu pretplatiti na događaje kao što je prikazano ispod u odjeljku P
 
 ## Primjeri
 
-Evo nekoliko primjera dodataka koje možete koristiti za proširenje RAILWISE (甬算).
+Evo nekoliko primjera dodataka koje možete koristiti za proširenje RAILWISE.
 
 ### Slanje obavještenja
 
@@ -225,7 +225,7 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 
 Koristimo `osascript` za pokretanje AppleScript-a na macOS-u. Ovdje ga koristimo za slanje obavještenja.
 :::note
-Ako koristite desktop aplikaciju RAILWISE (甬算), ona može automatski slati sistemske obavijesti kada je odgovor spreman ili kada dođe do greške u sesiji.
+Ako koristite desktop aplikaciju RAILWISE, ona može automatski slati sistemske obavijesti kada je odgovor spreman ili kada dođe do greške u sesiji.
 :::
 
 ---

@@ -1,5 +1,5 @@
 {
-  description = "RAILWISE (甬算) development flake";
+  description = "RAILWISE development flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";

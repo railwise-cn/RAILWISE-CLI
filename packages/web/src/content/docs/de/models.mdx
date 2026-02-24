@@ -3,13 +3,13 @@ title: Modelle
 description: Konfigurieren eines LLM-Anbieters und -Modells.
 ---
 
-RAILWISE (甬算) verwendet [AI SDK](https://ai-sdk.dev/) und [Models.dev](https://models.dev) zur Unterstützung von **75+ LLM-Anbietern** und unterstützt die Ausführung lokaler Modelle.
+RAILWISE verwendet [AI SDK](https://ai-sdk.dev/) und [Models.dev](https://models.dev) zur Unterstützung von **75+ LLM-Anbietern** und unterstützt die Ausführung lokaler Modelle.
 
 ---
 
 ## Anbieter
 
-Die meisten gängigen Anbieter sind standardmäßig vorinstalliert. Wenn Sie die Anmeldeinformationen für einen Anbieter über den Befehl `/connect` hinzugefügt haben, sind diese verfügbar, wenn Sie RAILWISE (甬算) starten.
+Die meisten gängigen Anbieter sind standardmäßig vorinstalliert. Wenn Sie die Anmeldeinformationen für einen Anbieter über den Befehl `/connect` hinzugefügt haben, sind diese verfügbar, wenn Sie RAILWISE starten.
 
 Erfahren Sie mehr über [providers](/docs/providers).
 
@@ -35,7 +35,7 @@ Erwägen Sie die Verwendung eines der von uns empfohlenen Modelle.
 
 Allerdings gibt es nur wenige von ihnen, die sowohl gut darin sind, Code zu generieren als auch Tools aufzurufen.
 
-Hier sind mehrere Modelle, die gut mit RAILWISE (甬算) funktionieren, in keiner bestimmten Reihenfolge. (Dies ist weder eine vollständige noch eine unbedingt aktuelle Liste):
+Hier sind mehrere Modelle, die gut mit RAILWISE funktionieren, in keiner bestimmten Reihenfolge. (Dies ist weder eine vollständige noch eine unbedingt aktuelle Liste):
 
 - GPT 5.2
 - GPT 5.1 Kodex
@@ -49,7 +49,7 @@ Hier sind mehrere Modelle, die gut mit RAILWISE (甬算) funktionieren, in keine
 ## Standard festlegen
 
 Um eines davon als Standardmodell festzulegen, können Sie den Schlüssel `model` in Ihrem festlegen
-RAILWISE (甬算) config.
+RAILWISE config.
 
 ```json title="railwise.json" {3}
 {
@@ -58,7 +58,7 @@ RAILWISE (甬算) config.
 }
 ```
 
-Hier ist der vollständige ID `provider_id/model_id`. Wenn Sie beispielsweise [RAILWISE (甬算) Zen](/docs/zen) verwenden, würden Sie `railwise/gpt-5.1-codex` für GPT 5.1 Codex verwenden.
+Hier ist der vollständige ID `provider_id/model_id`. Wenn Sie beispielsweise [RAILWISE Zen](/docs/zen) verwenden, würden Sie `railwise/gpt-5.1-codex` für GPT 5.1 Codex verwenden.
 
 Wenn Sie einen [custom provider](/docs/providers#custom) konfiguriert haben, ist `provider_id` der Schlüssel aus dem `provider`-Teil Ihrer Konfiguration und `model_id` der Schlüssel aus `provider.models`.
 
@@ -137,11 +137,11 @@ Sie können auch benutzerdefinierte Varianten definieren, die integrierte Varian
 
 ## Varianten
 
-Viele Modelle unterstützen mehrere Varianten mit unterschiedlichen Konfigurationen. RAILWISE (甬算) wird mit integrierten Standardvarianten für beliebte Anbieter ausgeliefert.
+Viele Modelle unterstützen mehrere Varianten mit unterschiedlichen Konfigurationen. RAILWISE wird mit integrierten Standardvarianten für beliebte Anbieter ausgeliefert.
 
 ### Integrierte Varianten
 
-RAILWISE (甬算) wird für viele Anbieter mit Standardvarianten ausgeliefert:
+RAILWISE wird für viele Anbieter mit Standardvarianten ausgeliefert:
 
 **Anthropic**:
 
@@ -203,11 +203,11 @@ Verwenden Sie die Tastenkombination `variant_cycle`, um schnell zwischen Variant
 
 ## Laden von Modellen
 
-Wenn RAILWISE (甬算) startet, sucht es nach Modellen in der folgenden Prioritätsreihenfolge:
+Wenn RAILWISE startet, sucht es nach Modellen in der folgenden Prioritätsreihenfolge:
 
 1. Das Befehlszeilenflag `--model` oder `-m`. Das Format ist das gleiche wie in der Konfigurationsdatei: `provider_id/model_id`.
 
-2. Die Modellliste in der RAILWISE (甬算)-Konfiguration.
+2. Die Modellliste in der RAILWISE-Konfiguration.
 
    ```json title="railwise.json"
    {

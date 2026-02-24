@@ -3,7 +3,7 @@ title: MCP servers
 description: Add local and remote MCP tools.
 ---
 
-You can add external tools to RAILWISE (甬算) using the _Model Context Protocol_, or MCP. RAILWISE (甬算) supports both local and remote servers.
+You can add external tools to RAILWISE using the _Model Context Protocol_, or MCP. RAILWISE supports both local and remote servers.
 
 Once added, MCP tools are automatically available to the LLM alongside built-in tools.
 
@@ -23,7 +23,7 @@ Certain MCP servers, like the GitHub MCP server, tend to add a lot of tokens and
 
 ## Enable
 
-You can define MCP servers in your [RAILWISE (甬算) Config](https://railwise.ai/docs/config/) under `mcp`. Add each MCP with a unique name. You can refer to that MCP by name when prompting the LLM.
+You can define MCP servers in your [RAILWISE Config](https://railwise.ai/docs/config/) under `mcp`. Add each MCP with a unique name. You can refer to that MCP by name when prompting the LLM.
 
 ```jsonc title="railwise.jsonc" {6}
 {
@@ -165,7 +165,7 @@ The `url` is the URL of the remote MCP server and with the `headers` option you 
 
 ## OAuth
 
-RAILWISE (甬算) automatically handles OAuth authentication for remote MCP servers. When a server requires authentication, RAILWISE (甬算) will:
+RAILWISE automatically handles OAuth authentication for remote MCP servers. When a server requires authentication, RAILWISE will:
 
 1. Detect the 401 response and initiate the OAuth flow
 2. Use **Dynamic Client Registration (RFC 7591)** if supported by the server
@@ -189,7 +189,7 @@ For most OAuth-enabled MCP servers, no special configuration is needed. Just con
 }
 ```
 
-If the server requires authentication, RAILWISE (甬算) will prompt you to authenticate when you first try to use it. If not, you can [manually trigger the flow](#authenticating) with `railwise mcp auth <server-name>`.
+If the server requires authentication, RAILWISE will prompt you to authenticate when you first try to use it. If not, you can [manually trigger the flow](#authenticating) with `railwise mcp auth <server-name>`.
 
 ---
 
@@ -238,7 +238,7 @@ Remove stored credentials:
 railwise mcp logout my-oauth-server
 ```
 
-The `mcp auth` command will open your browser for authorization. After you authorize, RAILWISE (甬算) will store the tokens securely in `~/.local/share/railwise/mcp-auth.json`.
+The `mcp auth` command will open your browser for authorization. After you authorize, RAILWISE will store the tokens securely in `~/.local/share/railwise/mcp-auth.json`.
 
 ---
 
@@ -291,7 +291,7 @@ The `mcp debug` command shows the current auth status, tests HTTP connectivity, 
 
 ## Manage
 
-Your MCPs are available as tools in RAILWISE (甬算), alongside built-in tools. So you can manage them through the RAILWISE (甬算) config like any other tool.
+Your MCPs are available as tools in RAILWISE, alongside built-in tools. So you can manage them through the RAILWISE config like any other tool.
 
 ---
 
@@ -423,7 +423,7 @@ After adding the configuration, authenticate with Sentry:
 railwise mcp auth sentry
 ```
 
-This will open a browser window to complete the OAuth flow and connect RAILWISE (甬算) to your Sentry account.
+This will open a browser window to complete the OAuth flow and connect RAILWISE to your Sentry account.
 
 Once authenticated, you can use Sentry tools in your prompts to query issues, projects, and error data.
 

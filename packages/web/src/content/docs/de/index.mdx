@@ -1,15 +1,15 @@
 ---
 title: Einführung
-description: Beginnen Sie mit RAILWISE (甬算).
+description: Beginnen Sie mit RAILWISE.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 import config from "../../../../config.mjs"
 export const console = config.console
 
-[**RAILWISE (甬算)**](/) ist ein Open-Source-Coding-Agent für AI. Es ist als terminalbasierte Schnittstelle, Desktop-App oder IDE-Erweiterung verfügbar.
+[**RAILWISE**](/) ist ein Open-Source-Coding-Agent für AI. Es ist als terminalbasierte Schnittstelle, Desktop-App oder IDE-Erweiterung verfügbar.
 
-![RAILWISE (甬算) TUI with the railwise theme](../../../assets/lander/screenshot.png)
+![RAILWISE TUI with the railwise theme](../../../assets/lander/screenshot.png)
 
 Fangen wir an.
 
@@ -17,7 +17,7 @@ Fangen wir an.
 
 #### Voraussetzungen
 
-Um RAILWISE (甬算) in Ihrem Terminal verwenden zu können, benötigen Sie:
+Um RAILWISE in Ihrem Terminal verwenden zu können, benötigen Sie:
 
 1. Ein moderner Terminal-Emulator, zum Beispiel:
    - [WezTerm](https://wezterm.org), cross-platform
@@ -31,7 +31,7 @@ Um RAILWISE (甬算) in Ihrem Terminal verwenden zu können, benötigen Sie:
 
 ## Installation
 
-Der einfachste Weg, RAILWISE (甬算) zu installieren, ist über das Installationsskript.
+Der einfachste Weg, RAILWISE zu installieren, ist über das Installationsskript.
 
 ```bash
 curl -fsSL https://railwise.ai/install | bash
@@ -79,7 +79,7 @@ Sie können es auch mit den folgenden Befehlen installieren:
   brew install anomalyco/tap/railwise
   ```
 
-  > Wir empfehlen die Verwendung des RAILWISE (甬算)-Taps für die aktuellsten Versionen. Die offizielle `brew install railwise`-Formel wird vom Homebrew-Team gepflegt und seltener aktualisiert.
+  > Wir empfehlen die Verwendung des RAILWISE-Taps für die aktuellsten Versionen. Die offizielle `brew install railwise`-Formel wird vom Homebrew-Team gepflegt und seltener aktualisiert.
 
 - **Verwendung von Paru unter Arch Linux**
 
@@ -91,7 +91,7 @@ Sie können es auch mit den folgenden Befehlen installieren:
 #### Windows
 
 :::tip[Empfohlen: Verwenden Sie WSL]
-Für das beste Erlebnis unter Windows empfehlen wir die Verwendung von [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). Es bietet eine bessere Leistung und vollständige Kompatibilität mit den Funktionen von RAILWISE (甬算).
+Für das beste Erlebnis unter Windows empfehlen wir die Verwendung von [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). Es bietet eine bessere Leistung und vollständige Kompatibilität mit den Funktionen von RAILWISE.
 :::
 
 - **Verwendung von Chocolatey**
@@ -124,7 +124,7 @@ Für das beste Erlebnis unter Windows empfehlen wir die Verwendung von [Windows 
   docker run -it --rm ghcr.io/anomalyco/railwise
   ```
 
-Die Unterstützung für die Installation von RAILWISE (甬算) unter Windows mit Bun ist derzeit in Arbeit.
+Die Unterstützung für die Installation von RAILWISE unter Windows mit Bun ist derzeit in Arbeit.
 
 Sie können die Binärdatei auch aus [Releases](https://github.com/anomalyco/railwise/releases) abrufen.
 
@@ -132,12 +132,12 @@ Sie können die Binärdatei auch aus [Releases](https://github.com/anomalyco/rai
 
 ## Konfiguration
 
-Mit RAILWISE (甬算) können Sie jeden LLM-Anbieter verwenden, indem Sie dessen API-Schlüssel konfigurieren.
+Mit RAILWISE können Sie jeden LLM-Anbieter verwenden, indem Sie dessen API-Schlüssel konfigurieren.
 
-Wenn Sie mit der Verwendung von LLM-Anbietern noch nicht vertraut sind, empfehlen wir die Verwendung von [RAILWISE (甬算) Zen](/docs/zen).
-Es handelt sich um eine kuratierte Liste von Modellen, die vom RAILWISE (甬算) Team getestet und verifiziert wurden.
+Wenn Sie mit der Verwendung von LLM-Anbietern noch nicht vertraut sind, empfehlen wir die Verwendung von [RAILWISE Zen](/docs/zen).
+Es handelt sich um eine kuratierte Liste von Modellen, die vom RAILWISE Team getestet und verifiziert wurden.
 
-1. Führen Sie den Befehl `/connect` in TUI aus, wählen Sie RAILWISE (甬算) aus und gehen Sie zu [railwise.ai/auth](https://railwise.ai/auth).
+1. Führen Sie den Befehl `/connect` in TUI aus, wählen Sie RAILWISE aus und gehen Sie zu [railwise.ai/auth](https://railwise.ai/auth).
 
    ```txt
    /connect
@@ -167,32 +167,32 @@ an dem Sie arbeiten möchten.
 cd /path/to/project
 ```
 
-Und führen Sie RAILWISE (甬算) aus.
+Und führen Sie RAILWISE aus.
 
 ```bash
 railwise
 ```
 
-Als nächstes initialisieren Sie RAILWISE (甬算) für das Projekt, indem Sie den folgenden Befehl ausführen.
+Als nächstes initialisieren Sie RAILWISE für das Projekt, indem Sie den folgenden Befehl ausführen.
 
 ```bash frame="none"
 /init
 ```
 
-Dadurch wird RAILWISE (甬算) dazu veranlasst, Ihr Projekt zu analysieren und eine `AGENTS.md`-Datei im Projektstammverzeichnis zu erstellen.
+Dadurch wird RAILWISE dazu veranlasst, Ihr Projekt zu analysieren und eine `AGENTS.md`-Datei im Projektstammverzeichnis zu erstellen.
 
 :::tip
 Sie sollten die `AGENTS.md`-Datei Ihres Projekts an Git übergeben.
 :::
 
-Dies hilft RAILWISE (甬算), die Projektstruktur und die Codierungsmuster zu verstehen
+Dies hilft RAILWISE, die Projektstruktur und die Codierungsmuster zu verstehen
 die verwendet werden.
 
 ---
 
 ## Verwendung
 
-Sie können nun RAILWISE (甬算) verwenden, um an Ihrem Projekt zu arbeiten. Fragen Sie ruhig nach
+Sie können nun RAILWISE verwenden, um an Ihrem Projekt zu arbeiten. Fragen Sie ruhig nach
 allem!
 
 Wenn Sie mit der Verwendung eines AI-Codierungsagenten noch nicht vertraut sind, finden Sie hier einige Beispiele, die hilfreich sein könnten.
@@ -201,7 +201,7 @@ Wenn Sie mit der Verwendung eines AI-Codierungsagenten noch nicht vertraut sind,
 
 ### Fragen stellen
 
-Sie können RAILWISE (甬算) bitten, Ihnen die Codebasis zu erklären.
+Sie können RAILWISE bitten, Ihnen die Codebasis zu erklären.
 
 :::tip
 Verwenden Sie die Taste `@`, um eine Fuzzy-Suche nach Dateien im Projekt durchzuführen.
@@ -217,11 +217,11 @@ Dies ist hilfreich, wenn es einen Teil der Codebasis gibt, an dem Sie nicht gear
 
 ### Funktionen hinzufügen
 
-Sie können RAILWISE (甬算) bitten, Ihrem Projekt neue Funktionen hinzuzufügen. Wir empfehlen jedoch, es zunächst um die Erstellung eines Plans zu bitten.
+Sie können RAILWISE bitten, Ihrem Projekt neue Funktionen hinzuzufügen. Wir empfehlen jedoch, es zunächst um die Erstellung eines Plans zu bitten.
 
 1. **Erstellen Sie einen Plan**
 
-   RAILWISE (甬算) verfügt über einen _Plan Mode_, der seine Fähigkeit, Änderungen vorzunehmen, deaktiviert
+   RAILWISE verfügt über einen _Plan Mode_, der seine Fähigkeit, Änderungen vorzunehmen, deaktiviert
    Schlagen Sie stattdessen vor, wie die Funktion implementiert wird.
 
    Wechseln Sie mit der **Tabulatortaste** dorthin. In der unteren rechten Ecke sehen Sie einen Indikator dafür.
@@ -238,11 +238,11 @@ Sie können RAILWISE (甬算) bitten, Ihrem Projekt neue Funktionen hinzuzufüge
    From this screen, the user can undelete a note or permanently delete it.
    ```
 
-   Sie möchten RAILWISE (甬算) genügend Details geben, um zu verstehen, was Sie wollen. Es hilft
+   Sie möchten RAILWISE genügend Details geben, um zu verstehen, was Sie wollen. Es hilft
    mit ihm zu sprechen, als ob Sie mit einem Junior-Entwickler in Ihrem Team sprechen würden.
 
    :::tip
-   Geben Sie RAILWISE (甬算) reichlich Kontext und Beispiele, damit es versteht, was Sie
+   Geben Sie RAILWISE reichlich Kontext und Beispiele, damit es versteht, was Sie
    wollen.
    :::
 
@@ -259,7 +259,7 @@ Sie können RAILWISE (甬算) bitten, Ihrem Projekt neue Funktionen hinzuzufüge
    Ziehen Sie Bilder per Drag-and-Drop in das Terminal, um sie zur Eingabeaufforderung hinzuzufügen.
    :::
 
-   RAILWISE (甬算) kann alle von Ihnen bereitgestellten Bilder scannen und zur Eingabeaufforderung hinzufügen. Du kannst
+   RAILWISE kann alle von Ihnen bereitgestellten Bilder scannen und zur Eingabeaufforderung hinzufügen. Du kannst
    Ziehen Sie dazu ein Bild per Drag & Drop in das Terminal.
 
 3. **Funktion erstellen**
@@ -281,7 +281,7 @@ Sie können RAILWISE (甬算) bitten, Ihrem Projekt neue Funktionen hinzuzufüge
 
 ### Änderungen vornehmen
 
-Für einfachere Änderungen können Sie RAILWISE (甬算) bitten, es direkt zu erstellen
+Für einfachere Änderungen können Sie RAILWISE bitten, es direkt zu erstellen
 ohne den Plan vorher überprüfen zu müssen.
 
 ```txt frame="none" "@packages/functions/src/settings.ts" "@packages/functions/src/notes.ts"
@@ -290,14 +290,14 @@ handled in the /notes route in @packages/functions/src/notes.ts and implement
 the same logic in @packages/functions/src/settings.ts
 ```
 
-Sie möchten sicherstellen, dass Sie viele Details bereitstellen, damit RAILWISE (甬算) die richtigen
+Sie möchten sicherstellen, dass Sie viele Details bereitstellen, damit RAILWISE die richtigen
 Änderungen vornimmt.
 
 ---
 
 ### Änderungen rückgängig machen
 
-Nehmen wir an, Sie bitten RAILWISE (甬算), einige Änderungen vorzunehmen.
+Nehmen wir an, Sie bitten RAILWISE, einige Änderungen vorzunehmen.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
@@ -310,14 +310,14 @@ mit dem Befehl `/undo`.
 /undo
 ```
 
-RAILWISE (甬算) macht nun die von Ihnen vorgenommenen Änderungen rückgängig und zeigt Ihre ursprüngliche Nachricht
+RAILWISE macht nun die von Ihnen vorgenommenen Änderungen rückgängig und zeigt Ihre ursprüngliche Nachricht
 wieder an.
 
 ```txt frame="none" "@packages/functions/src/api/index.ts"
 Can you refactor the function in @packages/functions/src/api/index.ts?
 ```
 
-Von hier aus können Sie die Eingabeaufforderung anpassen und RAILWISE (甬算) bitten, es erneut zu versuchen.
+Von hier aus können Sie die Eingabeaufforderung anpassen und RAILWISE bitten, es erneut zu versuchen.
 
 :::tip
 Sie können `/undo` mehrmals ausführen, um mehrere Änderungen rückgängig zu machen.
@@ -333,7 +333,7 @@ Oder Sie **können** die Änderungen mit dem Befehl `/redo` wiederholen.
 
 ## Teilen
 
-Die Gespräche, die Sie mit RAILWISE (甬算) führen, können [mit Ihrem Team](/docs/share) geteilt werden.
+Die Gespräche, die Sie mit RAILWISE führen, können [mit Ihrem Team](/docs/share) geteilt werden.
 
 ```bash frame="none"
 /share
@@ -345,12 +345,12 @@ Dadurch wird ein Link zur aktuellen Konversation erstellt und in Ihre Zwischenab
 Gespräche werden standardmäßig nicht geteilt.
 :::
 
-Hier ist ein [Beispielgespräch](https://railwise.ai/s/4XP1fce5) mit RAILWISE (甬算).
+Hier ist ein [Beispielgespräch](https://railwise.ai/s/4XP1fce5) mit RAILWISE.
 
 ---
 
 ## Anpassung
 
-Und das ist es! Sie sind jetzt ein Profi im Umgang mit RAILWISE (甬算).
+Und das ist es! Sie sind jetzt ein Profi im Umgang mit RAILWISE.
 
-Um es zu Ihrem eigenen zu machen, empfehlen wir [ein Theme auszuwählen](/docs/themes), [Keybinds anzupassen](/docs/keybinds), [Code-Formatter zu konfigurieren](/docs/formatters), [eigene Commands zu erstellen](/docs/commands) oder mit der [RAILWISE (甬算)-Konfiguration](/docs/config) zu experimentieren.
+Um es zu Ihrem eigenen zu machen, empfehlen wir [ein Theme auszuwählen](/docs/themes), [Keybinds anzupassen](/docs/keybinds), [Code-Formatter zu konfigurieren](/docs/formatters), [eigene Commands zu erstellen](/docs/commands) oder mit der [RAILWISE-Konfiguration](/docs/config) zu experimentieren.

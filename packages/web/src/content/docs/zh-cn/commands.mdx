@@ -42,13 +42,13 @@ frontmatter 定义命令属性，内容则成为模板。
 
 ## 配置
 
-你可以通过 OpenCode 配置或在 `commands/` 目录中创建 markdown 文件来添加自定义命令。
+你可以通过 Railwise 配置或在 `commands/` 目录中创建 markdown 文件来添加自定义命令。
 
 ---
 
 ### JSON
 
-在 OpenCode [配置](/docs/config)中使用 `command` 选项：
+在 Railwise [配置](/docs/config)中使用 `command` 选项：
 
 ```json title="railwise.jsonc" {4-12}
 {
@@ -79,10 +79,10 @@ frontmatter 定义命令属性，内容则成为模板。
 
 你还可以使用 markdown 文件定义命令。将它们放在：
 
-- 全局：`~/.config/opencode/commands/`
+- 全局：`~/.config/railwise/commands/`
 - 项目级：`.railwise/commands/`
 
-```markdown title="~/.config/opencode/commands/test.md"
+```markdown title="~/.config/railwise/commands/test.md"
 ---
 description: Run tests with coverage
 agent: build
@@ -313,7 +313,7 @@ Check for performance issues and suggest improvements.
 
 ## 内置命令
 
-opencode 包含多个内置命令，如 `/init`、`/undo`、`/redo`、`/share`、`/help`；[了解更多](/docs/tui#commands)。
+railwise 包含多个内置命令，如 `/init`、`/undo`、`/redo`、`/share`、`/help`；[了解更多](/docs/tui#commands)。
 
 :::note
 自定义命令可以覆盖内置命令。

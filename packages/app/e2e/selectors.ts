@@ -46,7 +46,7 @@ export const projectClearNotificationsSelector = (slug: string) =>
 export const projectWorkspacesToggleSelector = (slug: string) =>
   `[data-action="project-workspaces-toggle"][data-project="${slug}"]`
 
-export const titlebarRightSelector = "#opencode-titlebar-right"
+export const titlebarRightSelector = "#railwise-titlebar-right"
 
 export const popoverBodySelector = '[data-slot="popover-body"]'
 

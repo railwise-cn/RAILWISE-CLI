@@ -1,15 +1,15 @@
 ---
 title: Konfiguracja
-description: Ustawienia RAILWISE (甬算) w pliku JSON.
+description: Ustawienia RAILWISE w pliku JSON.
 ---
 
-Możesz dostosować RAILWISE (甬算) za pomocą pliku konfiguracyjnego JSON.
+Możesz dostosować RAILWISE za pomocą pliku konfiguracyjnego JSON.
 
 ---
 
 ## Format
 
-RAILWISE (甬算) obsługuje formaty **JSON** i **JSONC** (JSON z komentarzami).
+RAILWISE obsługuje formaty **JSON** i **JSONC** (JSON z komentarzami).
 
 ```jsonc title="railwise.jsonc"
 {
@@ -94,7 +94,7 @@ Możesz włączyć serwer w konfiguracji projektu:
 
 ### Globalna
 
-Umieść swoją globalną konfigurację RAILWISE (甬算) w `~/.config/railwise/railwise.json`. Użyj jej do ustawień ogólnych dla użytkownika, takich jak motywy, domyślny dostawca lub skróty klawiszowe.
+Umieść swoją globalną konfigurację RAILWISE w `~/.config/railwise/railwise.json`. Użyj jej do ustawień ogólnych dla użytkownika, takich jak motywy, domyślny dostawca lub skróty klawiszowe.
 
 Konfiguracja globalna ma pierwszeństwo przed konfiguracją zdalną.
 
@@ -108,7 +108,7 @@ Dodaj `railwise.json` w katalogu głównym projektu. Konfiguracja projektu ma na
 Dodaj ten plik do kontroli wersji, aby udostępniać konfigurację zespołowi.
 :::
 
-Kiedy RAILWISE (甬算) się uruchamia, szuka pliku konfiguracyjnego w katalogu głównym repozytorium Git.
+Kiedy RAILWISE się uruchamia, szuka pliku konfiguracyjnego w katalogu głównym repozytorium Git.
 
 Może on być przechowywany w Git i mieć ten sam schemat, co konfiguracja globalna.
 
@@ -196,7 +196,7 @@ Dostępne opcje:
 
 - `port` - Port do nasłuchiwania.
 - `hostname` — Nazwa hosta, z którą należy się powiązać. Gdy `mdns` jest włączone i nie ustawiono innej nazwy hosta, domyślnie jest to `0.0.0.0`.
-- `mdns` - Włącz wykrywanie usług mDNS. Dzięki temu inne urządzenia w sieci mogą łatwo znaleźć Twój serwer RAILWISE (甬算).
+- `mdns` - Włącz wykrywanie usług mDNS. Dzięki temu inne urządzenia w sieci mogą łatwo znaleźć Twój serwer RAILWISE.
 - `mdnsDomain` - Niestandardowa nazwa domeny dla usług mDNS. Domyślnie `railwise.local`. Przydatne do uruchamiania wielu instancji w tej samej sieci.
 - `cors` - Dozwolone źródła CORS podczas korzystania z serwera HTTP z przeglądarki. Wartość musi być listą źródeł (schemat + host + opcjonalny port), np. `https://app.example.com`.
 
@@ -235,7 +235,7 @@ Możesz skonfigurować dostawców i modele, których chcesz używać, za pomocą
 }
 ```
 
-Opcja `small_model` konfiguruje oddzielny model do lżejszych zadań, takich jak generowanie tytułów. Domyślnie RAILWISE (甬算) wybiera tańszy model od tego samego dostawcy, jeśli jest dostępny, w przeciwnym razie powraca do modelu głównego.
+Opcja `small_model` konfiguruje oddzielny model do lżejszych zadań, takich jak generowanie tytułów. Domyślnie RAILWISE wybiera tańszy model od tego samego dostawcy, jeśli jest dostępny, w przeciwnym razie powraca do modelu głównego.
 
 Opcje dostawcy mogą zawierać `timeout` i `setCacheKey`:
 
@@ -297,7 +297,7 @@ Token okaziciela (`AWS_BEARER_TOKEN_BEDROCK` lub `/connect`) ma pierwszeństwo p
 
 ### Theme (Motyw)
 
-Skonfiguruj motyw interfejsu RAILWISE (甬算) za pomocą opcji `theme`.
+Skonfiguruj motyw interfejsu RAILWISE za pomocą opcji `theme`.
 
 ```json title="railwise.json"
 {
@@ -347,7 +347,7 @@ Domyślnego agenta można ustawić za pomocą opcji `default_agent`. Określa to
 }
 ```
 
-Agent domyślny musi być agentem typu `primary` (nie `subagent`). Może to być agent wbudowany, taki jak `"build"` lub `"plan"`, albo zdefiniowany przez Ciebie [agent niestandardowy](/docs/agents). Jeśli agent nie istnieje lub jest subagentem, RAILWISE (甬算) powróci do `"build"` z ostrzeżeniem.
+Agent domyślny musi być agentem typu `primary` (nie `subagent`). Może to być agent wbudowany, taki jak `"build"` lub `"plan"`, albo zdefiniowany przez Ciebie [agent niestandardowy](/docs/agents). Jeśli agent nie istnieje lub jest subagentem, RAILWISE powróci do `"build"` z ostrzeżeniem.
 
 Dotyczy to wszystkich interfejsów: TUI, CLI (`railwise run`), aplikacji desktopowej i GitHub Actions.
 
@@ -417,7 +417,7 @@ Możesz dostosować skróty klawiszowe za pomocą opcji `keybinds`.
 
 ### Autoupdate (Automatyczna aktualizacja)
 
-RAILWISE (甬算) może automatycznie pobierać nowe wersje. Możesz to kontrolować za pomocą opcji `autoupdate`.
+RAILWISE może automatycznie pobierać nowe wersje. Możesz to kontrolować za pomocą opcji `autoupdate`.
 
 ```json title="railwise.json"
 {
@@ -427,7 +427,7 @@ RAILWISE (甬算) może automatycznie pobierać nowe wersje. Możesz to kontrolo
 ```
 
 Jeśli nie chcesz automatycznych aktualizacji, ale chcesz być powiadamiany o nowych wersjach, ustaw `autoupdate` na `"notify"`.
-Działa to tylko wtedy, gdy RAILWISE (甬算) nie został zainstalowany przez menedżera pakietów, takiego jak Homebrew.
+Działa to tylko wtedy, gdy RAILWISE nie został zainstalowany przez menedżera pakietów, takiego jak Homebrew.
 
 ---
 
@@ -459,7 +459,7 @@ Możesz skonfigurować formatery kodu za pomocą opcji `formatter`.
 
 ### Permissions (Uprawnienia)
 
-Domyślnie RAILWISE (甬算) **zezwala na wszystkie działania** bez konieczności zatwierdzania. Możesz to zmienić za pomocą opcji `permission`.
+Domyślnie RAILWISE **zezwala na wszystkie działania** bez konieczności zatwierdzania. Możesz to zmienić za pomocą opcji `permission`.
 
 Na przykład, aby wymagać zatwierdzenia dla narzędzi `edit` i `bash`:
 
@@ -530,7 +530,7 @@ Skonfiguruj serwery MCP, których chcesz używać, za pomocą opcji `mcp`.
 
 ### Plugins (Wtyczki)
 
-[Wtyczki](/docs/plugins) rozszerzają RAILWISE (甬算) o niestandardowe narzędzia, hooki i integracje.
+[Wtyczki](/docs/plugins) rozszerzają RAILWISE o niestandardowe narzędzia, hooki i integracje.
 
 Umieść pliki wtyczek w `.railwise/plugins/` lub `~/.config/railwise/plugins/`. Możesz także załadować wtyczkę z npm za pomocą opcji `plugin`.
 
@@ -594,7 +594,7 @@ Możesz określić listę dozwolonych dostawców za pomocą `enabled_providers`.
 }
 ```
 
-Jest to przydatne, gdy chcesz ograniczyć użycie RAILWISE (甬算) tylko do określonych dostawców.
+Jest to przydatne, gdy chcesz ograniczyć użycie RAILWISE tylko do określonych dostawców.
 
 :::note
 `disabled_providers` ma pierwszeństwo przed `enabled_providers`.

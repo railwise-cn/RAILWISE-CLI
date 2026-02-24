@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: RAILWISE (甬算) CLI Optionen und Befehle.
+description: RAILWISE CLI Optionen und Befehle.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-Der RAILWISE (甬算) CLI startet standardmäßig das [TUI](/docs/tui), wenn er ohne Argumente ausgeführt wird.
+Der RAILWISE CLI startet standardmäßig das [TUI](/docs/tui), wenn er ohne Argumente ausgeführt wird.
 
 ```bash
 railwise
 ```
 
-Es akzeptiert aber auch Befehle, wie auf dieser Seite dokumentiert. Dadurch können Sie programmgesteuert mit RAILWISE (甬算) interagieren.
+Es akzeptiert aber auch Befehle, wie auf dieser Seite dokumentiert. Dadurch können Sie programmgesteuert mit RAILWISE interagieren.
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-Starten Sie die Terminalbenutzeroberfläche RAILWISE (甬算).
+Starten Sie die Terminalbenutzeroberfläche RAILWISE.
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## Befehle
 
-Der RAILWISE (甬算) CLI verfügt außerdem über die folgenden Befehle.
+Der RAILWISE CLI verfügt außerdem über die folgenden Befehle.
 
 ---
 
 ### agent
 
-Agenten für RAILWISE (甬算) verwalten.
+Agenten für RAILWISE verwalten.
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-Schließen Sie ein Terminal an einen bereits laufenden RAILWISE (甬算)-Backend-Server an, der über die Befehle `serve` oder `web` gestartet wurde.
+Schließen Sie ein Terminal an einen bereits laufenden RAILWISE-Backend-Server an, der über die Befehle `serve` oder `web` gestartet wurde.
 
 ```bash
 railwise attach [url]
 ```
 
-Dies ermöglicht die Verwendung von TUI mit einem Remote-Backend RAILWISE (甬算). Zum Beispiel:
+Dies ermöglicht die Verwendung von TUI mit einem Remote-Backend RAILWISE. Zum Beispiel:
 
 ```bash
 # Start the backend server for web/mobile access
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算) wird von der Anbieterliste bei [Models.dev](https://models.dev) unterstützt, sodass Sie `railwise auth login` verwenden können, um API-Schlüssel für jeden Anbieter zu konfigurieren, den Sie verwenden möchten. Dies wird in `~/.local/share/railwise/auth.json` gespeichert.
+RAILWISE wird von der Anbieterliste bei [Models.dev](https://models.dev) unterstützt, sodass Sie `railwise auth login` verwenden können, um API-Schlüssel für jeden Anbieter zu konfigurieren, den Sie verwenden möchten. Dies wird in `~/.local/share/railwise/auth.json` gespeichert.
 
 ```bash
 railwise auth login
 ```
 
-Wenn RAILWISE (甬算) startet, lädt es den Anbieter aus der Anmeldeinformationsdatei. Und ob in Ihren Umgebungen Schlüssel sind oder in Ihrem Projekt eine `.env`-Datei vorhanden ist.
+Wenn RAILWISE startet, lädt es den Anbieter aus der Anmeldeinformationsdatei. Und ob in Ihren Umgebungen Schlüssel sind oder in Ihrem Projekt eine `.env`-Datei vorhanden ist.
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | Aktualisieren Sie den Modellcache von models.dev                                      |
 | `--verbose` | Verwenden Sie eine ausführlichere Modellausgabe (einschließlich Metadaten wie Kosten) |
 
-Verwenden Sie das Flag `--refresh`, um die zwischengespeicherte Modellliste zu aktualisieren. Dies ist nützlich, wenn einem Anbieter neue Modelle hinzugefügt wurden und Sie diese in RAILWISE (甬算) sehen möchten.
+Verwenden Sie das Flag `--refresh`, um die zwischengespeicherte Modellliste zu aktualisieren. Dies ist nützlich, wenn einem Anbieter neue Modelle hinzugefügt wurden und Sie diese in RAILWISE sehen möchten.
 
 ```bash
 railwise models --refresh
@@ -311,7 +311,7 @@ railwise models --refresh
 
 ### run
 
-Führen Sie RAILWISE (甬算) im nicht interaktiven Modus aus, indem Sie direkt eine Eingabeaufforderung übergeben.
+Führen Sie RAILWISE im nicht interaktiven Modus aus, indem Sie direkt eine Eingabeaufforderung übergeben.
 
 ```bash
 railwise run [message..]
@@ -347,20 +347,20 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 | `--file`     | `-f` | Datei(en) zum Anhängen an die Nachricht                                                             |
 | `--format`   |      | Format: default (formatiert) oder json (rohe JSON-Ereignisse)                                       |
 | `--title`    |      | Titel für die Sitzung (verwendet eine verkürzte Eingabeaufforderung, wenn kein Wert angegeben wird) |
-| `--attach`   |      | An einen laufenden RAILWISE (甬算)-Server anschließen (z.B. http://localhost:4096)                         |
+| `--attach`   |      | An einen laufenden RAILWISE-Server anschließen (z.B. http://localhost:4096)                         |
 | `--port`     |      | Port für den lokalen Server (standardmäßig zufälliger Port)                                         |
 
 ---
 
 ### serve
 
-Starten Sie einen Headless-RAILWISE (甬算)-Server für den API-Zugriff. Sehen Sie sich die [Server-Dokumentation](/docs/server) für die vollständige HTTP-Schnittstelle an.
+Starten Sie einen Headless-RAILWISE-Server für den API-Zugriff. Sehen Sie sich die [Server-Dokumentation](/docs/server) für die vollständige HTTP-Schnittstelle an.
 
 ```bash
 railwise serve
 ```
 
-Dadurch wird ein HTTP-Server gestartet, der API-Zugriff auf RAILWISE (甬算)-Funktionalität ohne die TUI-Schnittstelle bietet. Legen Sie `RAILWISE_SERVER_PASSWORD` fest, um die HTTP-Basisauthentifizierung zu aktivieren (Benutzername ist standardmäßig `railwise`).
+Dadurch wird ein HTTP-Server gestartet, der API-Zugriff auf RAILWISE-Funktionalität ohne die TUI-Schnittstelle bietet. Legen Sie `RAILWISE_SERVER_PASSWORD` fest, um die HTTP-Basisauthentifizierung zu aktivieren (Benutzername ist standardmäßig `railwise`).
 
 #### Optionen
 
@@ -375,7 +375,7 @@ Dadurch wird ein HTTP-Server gestartet, der API-Zugriff auf RAILWISE (甬算)-Fu
 
 ### session
 
-RAILWISE (甬算)-Sitzungen verwalten.
+RAILWISE-Sitzungen verwalten.
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-Listen Sie alle RAILWISE (甬算)-Sitzungen auf.
+Listen Sie alle RAILWISE-Sitzungen auf.
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-Zeigen Sie Token-Nutzungs- und Kostenstatistiken für Ihre RAILWISE (甬算)-Sitzungen an.
+Zeigen Sie Token-Nutzungs- und Kostenstatistiken für Ihre RAILWISE-Sitzungen an.
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ Wenn Sie keine Sitzungs-ID angeben, werden Sie aufgefordert, eine der verfügbar
 
 ### import
 
-Importieren Sie Sitzungsdaten aus einer JSON-Datei oder einer RAILWISE (甬算)-Freigabe-URL.
+Importieren Sie Sitzungsdaten aus einer JSON-Datei oder einer RAILWISE-Freigabe-URL.
 
 ```bash
 railwise import <file>
 ```
 
-Sie können aus einer lokalen Datei oder einer RAILWISE (甬算)-Freigabe-URL importieren.
+Sie können aus einer lokalen Datei oder einer RAILWISE-Freigabe-URL importieren.
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-Starten Sie einen Headless-RAILWISE (甬算)-Server mit einer Weboberfläche.
+Starten Sie einen Headless-RAILWISE-Server mit einer Weboberfläche.
 
 ```bash
 railwise web
 ```
 
-Dadurch wird ein HTTP-Server gestartet und ein Webbrowser geöffnet, um über eine Webschnittstelle auf RAILWISE (甬算) zuzugreifen. Legen Sie `RAILWISE_SERVER_PASSWORD` fest, um die HTTP-Basisauthentifizierung zu aktivieren (Benutzername ist standardmäßig `railwise`).
+Dadurch wird ein HTTP-Server gestartet und ein Webbrowser geöffnet, um über eine Webschnittstelle auf RAILWISE zuzugreifen. Legen Sie `RAILWISE_SERVER_PASSWORD` fest, um die HTTP-Basisauthentifizierung zu aktivieren (Benutzername ist standardmäßig `railwise`).
 
 #### Optionen
 
@@ -491,7 +491,7 @@ Dieser Befehl startet einen ACP-Server, der über stdin/stdout unter Verwendung 
 
 ### uninstall
 
-Deinstallieren Sie RAILWISE (甬算) und entfernen Sie alle zugehörigen Dateien.
+Deinstallieren Sie RAILWISE und entfernen Sie alle zugehörigen Dateien.
 
 ```bash
 railwise uninstall
@@ -510,7 +510,7 @@ railwise uninstall
 
 ### upgrade
 
-Aktualisiert RAILWISE (甬算) auf die neueste Version oder eine bestimmte Version.
+Aktualisiert RAILWISE auf die neueste Version oder eine bestimmte Version.
 
 ```bash
 railwise upgrade [target]
@@ -538,7 +538,7 @@ railwise upgrade v0.1.48
 
 ## Globale Flags
 
-Der RAILWISE (甬算) CLI akzeptiert die folgenden globalen Flags.
+Der RAILWISE CLI akzeptiert die folgenden globalen Flags.
 
 | Flag           | Kurz | Beschreibung                              |
 | -------------- | ---- | ----------------------------------------- |
@@ -551,7 +551,7 @@ Der RAILWISE (甬算) CLI akzeptiert die folgenden globalen Flags.
 
 ## Umgebungsvariablen
 
-RAILWISE (甬算) kann mithilfe von Umgebungsvariablen konfiguriert werden.
+RAILWISE kann mithilfe von Umgebungsvariablen konfiguriert werden.
 
 | Variable                              | Typ             | Beschreibung                                                                     |
 | ------------------------------------- | --------------- | -------------------------------------------------------------------------------- |

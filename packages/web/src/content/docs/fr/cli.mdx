@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: Options et commandes de la CLI RAILWISE (甬算).
+description: Options et commandes de la CLI RAILWISE.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-La CLI RAILWISE (甬算) démarre par défaut le [TUI](/docs/tui) lorsqu'il est exécuté sans aucun argument.
+La CLI RAILWISE démarre par défaut le [TUI](/docs/tui) lorsqu'il est exécuté sans aucun argument.
 
 ```bash
 railwise
 ```
 
-Mais elle accepte également les commandes documentées sur cette page. Cela vous permet d'interagir avec RAILWISE (甬算) par programme.
+Mais elle accepte également les commandes documentées sur cette page. Cela vous permet d'interagir avec RAILWISE par programme.
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-Démarrez l’interface utilisateur du terminal RAILWISE (甬算).
+Démarrez l’interface utilisateur du terminal RAILWISE.
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## Commandes
 
-La CLI RAILWISE (甬算) dispose également des commandes suivantes.
+La CLI RAILWISE dispose également des commandes suivantes.
 
 ---
 
 ### agent
 
-Gérer les agents pour RAILWISE (甬算).
+Gérer les agents pour RAILWISE.
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-Attachez un terminal à un serveur backend RAILWISE (甬算) déjà en cours d'exécution démarré via les commandes `serve` ou `web`.
+Attachez un terminal à un serveur backend RAILWISE déjà en cours d'exécution démarré via les commandes `serve` ou `web`.
 
 ```bash
 railwise attach [url]
 ```
 
-Cela permet d'utiliser le TUI avec un backend RAILWISE (甬算) distant. Par exemple :
+Cela permet d'utiliser le TUI avec un backend RAILWISE distant. Par exemple :
 
 ```bash
 # Start the backend server for web/mobile access
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算) est alimenté par la liste des fournisseurs sur [Models.dev](https://models.dev), vous pouvez donc utiliser `railwise auth login` pour configurer les clés API pour tout fournisseur que vous souhaitez utiliser. Ceci est stocké dans `~/.local/share/railwise/auth.json`.
+RAILWISE est alimenté par la liste des fournisseurs sur [Models.dev](https://models.dev), vous pouvez donc utiliser `railwise auth login` pour configurer les clés API pour tout fournisseur que vous souhaitez utiliser. Ceci est stocké dans `~/.local/share/railwise/auth.json`.
 
 ```bash
 railwise auth login
 ```
 
-Lorsque RAILWISE (甬算) démarre, il charge les fournisseurs à partir du fichier d'informations d'identification, ainsi que les clés définies dans vos environnements ou un fichier `.env` dans votre projet.
+Lorsque RAILWISE démarre, il charge les fournisseurs à partir du fichier d'informations d'identification, ainsi que les clés définies dans vos environnements ou un fichier `.env` dans votre projet.
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | Actualisez le cache des modèles à partir de models.dev                                     |
 | `--verbose` | Utiliser une sortie de modèle plus détaillée (inclut des métadonnées telles que les coûts) |
 
-Utilisez l'option `--refresh` pour mettre à jour la liste des modèles mis en cache. Ceci est utile lorsque de nouveaux modèles ont été ajoutés à un fournisseur et que vous souhaitez les voir dans RAILWISE (甬算).
+Utilisez l'option `--refresh` pour mettre à jour la liste des modèles mis en cache. Ceci est utile lorsque de nouveaux modèles ont été ajoutés à un fournisseur et que vous souhaitez les voir dans RAILWISE.
 
 ```bash
 railwise models --refresh
@@ -354,13 +354,13 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 
 ### serve
 
-Démarrez un serveur RAILWISE (甬算) sans interface graphique pour un accès API. Consultez le [serveur docs](/docs/server) pour l'interface complète HTTP.
+Démarrez un serveur RAILWISE sans interface graphique pour un accès API. Consultez le [serveur docs](/docs/server) pour l'interface complète HTTP.
 
 ```bash
 railwise serve
 ```
 
-Cela démarre un serveur HTTP qui fournit un accès API aux fonctionnalités d'RAILWISE (甬算) sans l'interface TUI. Définissez `RAILWISE_SERVER_PASSWORD` pour activer l'authentification de base HTTP (le nom d'utilisateur par défaut est `railwise`).
+Cela démarre un serveur HTTP qui fournit un accès API aux fonctionnalités d'RAILWISE sans l'interface TUI. Définissez `RAILWISE_SERVER_PASSWORD` pour activer l'authentification de base HTTP (le nom d'utilisateur par défaut est `railwise`).
 
 #### Options
 
@@ -375,7 +375,7 @@ Cela démarre un serveur HTTP qui fournit un accès API aux fonctionnalités d'R
 
 ### session
 
-Gérer les sessions RAILWISE (甬算).
+Gérer les sessions RAILWISE.
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-Liste toutes les sessions RAILWISE (甬算).
+Liste toutes les sessions RAILWISE.
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-Affichez les statistiques d'utilisation et de coût des jetons pour vos sessions RAILWISE (甬算).
+Affichez les statistiques d'utilisation et de coût des jetons pour vos sessions RAILWISE.
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ Si vous ne fournissez pas d'ID de session, vous serez invité à sélectionner p
 
 ### import
 
-Importez les données de session à partir d'un fichier JSON ou d'une URL de partage RAILWISE (甬算).
+Importez les données de session à partir d'un fichier JSON ou d'une URL de partage RAILWISE.
 
 ```bash
 railwise import <file>
 ```
 
-Vous pouvez importer à partir d'un fichier local ou d'une URL de partage RAILWISE (甬算).
+Vous pouvez importer à partir d'un fichier local ou d'une URL de partage RAILWISE.
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-Démarrez un serveur RAILWISE (甬算) sans interface graphique avec une interface Web.
+Démarrez un serveur RAILWISE sans interface graphique avec une interface Web.
 
 ```bash
 railwise web
 ```
 
-Cela démarre un serveur HTTP et ouvre un navigateur Web pour accéder à RAILWISE (甬算) via une interface Web. Définissez `RAILWISE_SERVER_PASSWORD` pour activer l'authentification de base HTTP (le nom d'utilisateur par défaut est `railwise`).
+Cela démarre un serveur HTTP et ouvre un navigateur Web pour accéder à RAILWISE via une interface Web. Définissez `RAILWISE_SERVER_PASSWORD` pour activer l'authentification de base HTTP (le nom d'utilisateur par défaut est `railwise`).
 
 #### Options
 
@@ -491,7 +491,7 @@ Cette commande démarre un serveur ACP qui communique via stdin/stdout en utilis
 
 ### uninstall
 
-Désinstallez RAILWISE (甬算) et supprimez tous les fichiers associés.
+Désinstallez RAILWISE et supprimez tous les fichiers associés.
 
 ```bash
 railwise uninstall
@@ -551,7 +551,7 @@ La CLI railwise prend les flags globaux suivants.
 
 ## Variables d'environnement
 
-RAILWISE (甬算) peut être configuré à l'aide de variables d'environnement.
+RAILWISE peut être configuré à l'aide de variables d'environnement.
 
 | Variables                             | Type    | Description                                                                       |
 | ------------------------------------- | ------- | --------------------------------------------------------------------------------- |

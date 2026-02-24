@@ -2,7 +2,7 @@
 
 睿威智测 AI 工程测绘多智能体 CLI 系统。
 
-基于 [OpenCode](https://github.com/sst/opencode) 深度定制，面向工程测量、结构监测、地铁监测等测绘业务场景，提供从外业数据采集到内业报告生成的全流程 AI 辅助。
+基于 [Railwise](https://github.com/sst/railwise) 深度定制，面向工程测量、结构监测、地铁监测等测绘业务场景，提供从外业数据采集到内业报告生成的全流程 AI 辅助。
 
 ---
 
@@ -107,7 +107,7 @@ export default tool({
 
 ## 致谢
 
-本项目基于 [OpenCode](https://github.com/sst/opencode)（MIT 协议）构建，感谢 SST 团队的开源贡献。
+本项目基于 [Railwise](https://github.com/sst/railwise)（MIT 协议）构建，感谢 SST 团队的开源贡献。
 
 ## 许可
 

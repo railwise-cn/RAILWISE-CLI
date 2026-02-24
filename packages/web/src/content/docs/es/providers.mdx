@@ -1,17 +1,17 @@
 ---
 title: Proveedores
-description: Usando cualquier proveedor LLM en RAILWISE (甬算).
+description: Usando cualquier proveedor LLM en RAILWISE.
 ---
 
 import config from "../../../../config.mjs"
 export const console = config.console
 
-RAILWISE (甬算) usa el [AI SDK](https://ai-sdk.dev/) y [Models.dev](https://models.dev) para admitir **75+ proveedores LLM** y admite la ejecución de modelos locales.
+RAILWISE usa el [AI SDK](https://ai-sdk.dev/) y [Models.dev](https://models.dev) para admitir **75+ proveedores LLM** y admite la ejecución de modelos locales.
 
 Para agregar un proveedor necesita:
 
 1. Agregue las claves API para el proveedor usando el comando `/connect`.
-2. Configure el proveedor en su configuración RAILWISE (甬算).
+2. Configure el proveedor en su configuración RAILWISE.
 
 ---
 
@@ -24,7 +24,7 @@ en `~/.local/share/railwise/auth.json`.
 
 ### Configuración
 
-Puedes personalizar los proveedores a través de la sección `provider` en tu RAILWISE (甬算)
+Puedes personalizar los proveedores a través de la sección `provider` en tu RAILWISE
 configuración.
 
 ---
@@ -48,13 +48,13 @@ Puede personalizar la URL base para cualquier proveedor configurando la opción 
 
 ---
 
-## RAILWISE (甬算) Zen
+## RAILWISE Zen
 
-RAILWISE (甬算) Zen es una lista de modelos proporcionados por el equipo RAILWISE (甬算) que han sido
-probado y verificado para funcionar bien con RAILWISE (甬算). [Más información](/docs/zen).
+RAILWISE Zen es una lista de modelos proporcionados por el equipo RAILWISE que han sido
+probado y verificado para funcionar bien con RAILWISE. [Más información](/docs/zen).
 
 :::tip
-Si eres nuevo, te recomendamos comenzar con RAILWISE (甬算) Zen.
+Si eres nuevo, te recomendamos comenzar con RAILWISE Zen.
 :::
 
 1. Ejecute el comando `/connect` en TUI, seleccione railwise y diríjase a [railwise.ai/auth](https://railwise.ai/auth).
@@ -80,7 +80,7 @@ Si eres nuevo, te recomendamos comenzar con RAILWISE (甬算) Zen.
    /models
    ```
 
-Funciona como cualquier otro proveedor en RAILWISE (甬算) y su uso es completamente opcional.
+Funciona como cualquier otro proveedor en RAILWISE y su uso es completamente opcional.
 
 ---
 
@@ -124,7 +124,7 @@ lista, no dude en abrir un PR.
 
 ### Amazon Bedrock
 
-Para usar Amazon Bedrock con RAILWISE (甬算):
+Para usar Amazon Bedrock con RAILWISE:
 
 1. Dirígete al **Catálogo de modelos** en la consola Amazon Bedrock y solicita
    Accede a los modelos que desees.
@@ -279,7 +279,7 @@ Para perfiles de inferencia personalizados, utilice el modelo y el nombre del pr
    ```
 
 :::info
-El uso de su suscripción Claude Pro/Max en RAILWISE (甬算) no está oficialmente respaldado por [Anthropic](https://anthropic.com).
+El uso de su suscripción Claude Pro/Max en RAILWISE no está oficialmente respaldado por [Anthropic](https://anthropic.com).
 :::
 
 ##### Usando las teclas API
@@ -663,7 +663,7 @@ GitLab Duo proporciona chat agente basado en IA con capacidades de llamada de he
    #### Uso del token de acceso personal
    1. Vaya a [GitLab Configuración de usuario > Tokens de acceso](https://gitlab.com/-/user_settings/personal_access_tokens)
    2. Haga clic en **Agregar nuevo token**
-   3. Nombre: `RAILWISE (甬算)`, Alcances: `api`
+   3. Nombre: `RAILWISE`, Alcances: `api`
    4. Copie el token (comienza con `glpat-`)
    5. Introdúcelo en la terminal.
 
@@ -686,8 +686,8 @@ para almacenar el token en el almacenamiento de autenticación railwise.
 ##### Autohospedado GitLab
 
 :::note[nota de cumplimiento]
-RAILWISE (甬算) utiliza un modelo pequeño para algunas tareas de IA, como generar el título de la sesión.
-Está configurado para usar gpt-5-nano de forma predeterminada, alojado por Zen. Para bloquear RAILWISE (甬算)
+RAILWISE utiliza un modelo pequeño para algunas tareas de IA, como generar el título de la sesión.
+Está configurado para usar gpt-5-nano de forma predeterminada, alojado por Zen. Para bloquear RAILWISE
 Para usar solo su propia instancia alojada en GitLab, agregue lo siguiente a su
 Archivo `railwise.json`. También se recomienda desactivar el uso compartido de sesiones.
 
@@ -747,7 +747,7 @@ Luego exponga el ID de la aplicación como variable de entorno:
 export GITLAB_OAUTH_CLIENT_ID=your_application_id_here
 ```
 
-Más documentación en la página de inicio de [opencode-gitlab-auth](https://www.npmjs.com/package/@gitlab/opencode-gitlab-auth).
+Más documentación en la página de inicio de [railwise-gitlab-auth](https://www.npmjs.com/package/@gitlab/railwise-gitlab-auth).
 
 ##### Configuración
 
@@ -825,7 +825,7 @@ Algunos modelos deben habilitarse manualmente en su [GitHub configuración del c
 
 ### Google Vertex AI
 
-Para utilizar Google Vertex AI con RAILWISE (甬算):
+Para utilizar Google Vertex AI con RAILWISE:
 
 1. Dirígete a **Model Garden** en Google Cloud Console y verifica el
    Modelos disponibles en su región.
@@ -1007,7 +1007,7 @@ Helicone admite encabezados personalizados para funciones como almacenamiento en
 
 ##### Seguimiento de sesión
 
-La función [Sesiones](https://docs.helicone.ai/features/sessions) de Helicone le permite agrupar solicitudes LLM relacionadas. Utilice el complemento [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) para registrar automáticamente cada conversación RAILWISE (甬算) como una sesión en Helicone.
+La función [Sesiones](https://docs.helicone.ai/features/sessions) de Helicone le permite agrupar solicitudes LLM relacionadas. Utilice el complemento [railwise-helicone-session](https://github.com/H2Shami/railwise-helicone-session) para registrar automáticamente cada conversación RAILWISE como una sesión en Helicone.
 
 ```bash
 npm install -g railwise-helicone-session
@@ -1021,7 +1021,7 @@ Agréguelo a su configuración.
 }
 ```
 
-El complemento inyecta encabezados `Helicone-Session-Id` y `Helicone-Session-Name` en sus solicitudes. En la página Sesiones de Helicone, verá cada conversación RAILWISE (甬算) enumerada como una sesión separada.
+El complemento inyecta encabezados `Helicone-Session-Id` y `Helicone-Session-Name` en sus solicitudes. En la página Sesiones de Helicone, verá cada conversación RAILWISE enumerada como una sesión separada.
 
 ##### Cabeceras comunes de Helicone
 
@@ -1225,7 +1225,7 @@ Para usar Kimi K2 de Moonshot AI:
 Puedes configurar railwise para usar modelos locales a través de Ollama.
 
 :::tip
-Ollama puede configurarse automáticamente para RAILWISE (甬算). Consulte los [documentos de integración de Ollama](https://docs.ollama.com/integrations/railwise) para obtener más detalles.
+Ollama puede configurarse automáticamente para RAILWISE. Consulte los [documentos de integración de Ollama](https://docs.ollama.com/integrations/railwise) para obtener más detalles.
 :::
 
 ```json title="railwise.json" "ollama" {5, 6, 8, 10-14}
@@ -1264,13 +1264,13 @@ Si las llamadas a herramientas no funcionan, intente aumentar `num_ctx` en Ollam
 
 ### Ollama Cloud
 
-Para usar Ollama Cloud con RAILWISE (甬算):
+Para usar Ollama Cloud con RAILWISE:
 
 1. Dirígete a [https://ollama.com/](https://ollama.com/) e inicia sesión o crea una cuenta.
 
 2. Vaya a **Configuración** > **Claves** y haga clic en **Agregar clave API** para generar una nueva clave API.
 
-3. Copie la clave API para usarla en RAILWISE (甬算).
+3. Copie la clave API para usarla en RAILWISE.
 
 4. Ejecute el comando `/connect` y busque **Ollama Cloud**.
 
@@ -1287,7 +1287,7 @@ Para usar Ollama Cloud con RAILWISE (甬算):
    └ enter
    ```
 
-6. **Importante**: Antes de usar modelos en la nube en RAILWISE (甬算), debe obtener la información del modelo localmente:
+6. **Importante**: Antes de usar modelos en la nube en RAILWISE, debe obtener la información del modelo localmente:
 
    ```bash
    ollama pull gpt-oss:20b-cloud
@@ -1335,19 +1335,19 @@ Si ya tiene una clave API, puede seleccionar **Ingresar manualmente la clave API
 
 ---
 
-### RAILWISE (甬算) Zen
+### RAILWISE Zen
 
-RAILWISE (甬算) Zen es una lista de modelos probados y verificados proporcionada por el equipo RAILWISE (甬算). [Más información](/docs/zen).
+RAILWISE Zen es una lista de modelos probados y verificados proporcionada por el equipo RAILWISE. [Más información](/docs/zen).
 
-1. Inicie sesión en **<a href={console}>RAILWISE (甬算) Zen</a>** y haga clic en **Crear API clave**.
+1. Inicie sesión en **<a href={console}>RAILWISE Zen</a>** y haga clic en **Crear API clave**.
 
-2. Ejecute el comando `/connect` y busque **RAILWISE (甬算) Zen**.
+2. Ejecute el comando `/connect` y busque **RAILWISE Zen**.
 
    ```txt
    /connect
    ```
 
-3. Ingrese su clave RAILWISE (甬算) API.
+3. Ingrese su clave RAILWISE API.
 
    ```txt
    ┌ API key
@@ -1512,7 +1512,7 @@ SAP AI Core brinda acceso a más de 40 modelos de OpenAI, Anthropic, Google, Ama
 
 ### Scaleway
 
-Para utilizar [API generativas de Scaleway](https://www.scaleway.com/en/docs/generative-apis/) con RAILWISE (甬算):
+Para utilizar [API generativas de Scaleway](https://www.scaleway.com/en/docs/generative-apis/) con RAILWISE:
 
 1. Dirígete a la [Configuración de IAM de la consola Scaleway](https://console.scaleway.com/iam/api-keys) para generar una nueva clave API.
 
@@ -1873,7 +1873,7 @@ Detalles de configuración:
 - **limit.context**: tokens de entrada máximos que acepta el modelo.
 - **limit.output**: tokens máximos que el modelo puede generar.
 
-Los campos `limit` le permiten a RAILWISE (甬算) comprender cuánto contexto le queda. Los proveedores estándar los extraen de models.dev automáticamente.
+Los campos `limit` le permiten a RAILWISE comprender cuánto contexto le queda. Los proveedores estándar los extraen de models.dev automáticamente.
 
 ---
 

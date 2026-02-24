@@ -3,7 +3,7 @@ title: Fejlfinding
 description: Almindelige problemer, og hvordan de løses.
 ---
 
-For at fejlfinde problemer med RAILWISE (甬算), start med at tjekke logfilerne og de lokale data, den gemmer på disken.
+For at fejlfinde problemer med RAILWISE, start med at tjekke logfilerne og de lokale data, den gemmer på disken.
 
 ---
 
@@ -39,13 +39,13 @@ Denne mappe indeholder:
 
 ## Desktop-app
 
-RAILWISE (甬算) Desktop kører en lokal RAILWISE (甬算)-server (`railwise-cli` sidevognen) i baggrunden. De fleste problemer er forårsaget af et plugin, der fungerer dårligt, en ødelagt cache eller en dårlig serverindstilling.
+RAILWISE Desktop kører en lokal RAILWISE-server (`railwise-cli` sidevognen) i baggrunden. De fleste problemer er forårsaget af et plugin, der fungerer dårligt, en ødelagt cache eller en dårlig serverindstilling.
 
 ### Hurtige tjek
 
 - Afslut og start appen på ny.
 - Hvis appen viser en fejlskærm, klikker du på **Start på ny** og kopierer fejldetaljerne.
-- Kun macOS: `RAILWISE (甬算)`-menu -> **Genindlæs webvisning** (hjælper hvis UI er tom/frosset).
+- Kun macOS: `RAILWISE`-menu -> **Genindlæs webvisning** (hjælper hvis UI er tom/frosset).
 
 ---
 
@@ -72,7 +72,7 @@ Hvis du har konfigureret plugins, deaktiver dem midlertidigt ved at fjerne nøgl
 
 #### Tjek plugin-mapper
 
-RAILWISE (甬算) kan også indlæse lokale plugins fra disken. Flyt disse midlertidigt væk (eller giv mappen nyt navn) og start skrivebordsappen på ny:
+RAILWISE kan også indlæse lokale plugins fra disken. Flyt disse midlertidigt væk (eller giv mappen nyt navn) og start skrivebordsappen på ny:
 
 - **Globale plugins**
   - **macOS/Linux**: `~/.config/railwise/plugins/`
@@ -86,22 +86,22 @@ Hvis appen begynder at fungere igen, aktiverer du plugins én ad gangen for at f
 
 ### Ryd cachen
 
-Hvis deaktivering af plugins ikke hjælper (eller en plugin-installation sidder fast), tøm cachen så RAILWISE (甬算) kan genopbygge den.
+Hvis deaktivering af plugins ikke hjælper (eller en plugin-installation sidder fast), tøm cachen så RAILWISE kan genopbygge den.
 
-1. Afslut RAILWISE (甬算) Desktop helt.
+1. Afslut RAILWISE Desktop helt.
 2. Slet cache-mappen:
 
 - **macOS**: Finder -> `Cmd+Shift+G` -> indsæt `~/.cache/railwise`
 - **Linux**: slet `~/.cache/railwise` (eller kør `rm -rf ~/.cache/railwise`)
 - **Windows**: Tryk `WIN+R` og indsæt `%USERPROFILE%\.cache\railwise`
 
-3. Start RAILWISE (甬算) Desktop på ny.
+3. Start RAILWISE Desktop på ny.
 
 ---
 
 ### Løs problemer med serverforbindelse
 
-RAILWISE (甬算) Desktop kan enten starte sin egen lokale server (standard) eller forbinde til en server URL, du har konfigureret.
+RAILWISE Desktop kan enten starte sin egen lokale server (standard) eller forbinde til en server URL, du har konfigureret.
 
 Hvis du ser en **"Forbindelse mislykkedes"**-dialogboks (eller appen kommer aldrig forbi splash-skærmen), se efter en brugerdefineret server URL.
 
@@ -132,21 +132,21 @@ På Linux kan nogle Wayland-opsætninger forårsage tomme vinduer eller komposit
 
 ### Windows: WebView2-runtime
 
-På Windows kræver RAILWISE (甬算) Desktop Microsoft Edge **WebView2 Runtime**. Hvis appen åbnes i et tomt vindue eller ikke starter, installer/opdater WebView2 og prøv igen.
+På Windows kræver RAILWISE Desktop Microsoft Edge **WebView2 Runtime**. Hvis appen åbnes i et tomt vindue eller ikke starter, installer/opdater WebView2 og prøv igen.
 
 ---
 
 ### Windows: Generelle ydeevneproblemer
 
-Hvis du oplever langsom ydeevne, problemer med filadgang eller terminalproblemer på Windows, kan du prøve at bruge [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL giver et Linux-miljø som fungerer mere sømløst med funktionerne i RAILWISE (甬算).
+Hvis du oplever langsom ydeevne, problemer med filadgang eller terminalproblemer på Windows, kan du prøve at bruge [WSL (Windows Subsystem for Linux)](/docs/windows-wsl). WSL giver et Linux-miljø som fungerer mere sømløst med funktionerne i RAILWISE.
 
 ---
 
 ### Meddelelser vises ikke
 
-RAILWISE (甬算) Desktop viser kun systemvarsler når:
+RAILWISE Desktop viser kun systemvarsler når:
 
-- varsler er aktiveret for RAILWISE (甬算) i dine OS-indstillinger, og
+- varsler er aktiveret for RAILWISE i dine OS-indstillinger, og
 - appvinduet ikke er fokuseret.
 
 ---
@@ -155,8 +155,8 @@ RAILWISE (甬算) Desktop viser kun systemvarsler når:
 
 Hvis appen ikke starter og du ikke kan slette indstillingerne fra UI, nulstil skrivebordsappens gemte tilstand.
 
-1. Afslut RAILWISE (甬算) Desktop.
-2. Find og slet disse filer (de findes i RAILWISE (甬算) Desktop-appens datamappe):
+1. Afslut RAILWISE Desktop.
+2. Find og slet disse filer (de findes i RAILWISE Desktop-appens datamappe):
 
 - `railwise.settings.dat` (skrivebordsstandardserver URL)
 - `railwise.global.dat` og `railwise.workspace.*.dat` (UI tilstand som nylige servere/projekter)
@@ -171,7 +171,7 @@ Sådan finder du mappen hurtigt:
 
 ## Få hjælp
 
-Hvis du oplever problemer med RAILWISE (甬算):
+Hvis du oplever problemer med RAILWISE:
 
 1. **Rapporter problemer på GitHub**
 
@@ -195,7 +195,7 @@ Her er nogle almindelige problemer og hvordan du kan løse dem.
 
 ---
 
-### RAILWISE (甬算) vil ikke starte
+### RAILWISE vil ikke starte
 
 1. Tjek logfilerne for fejlmeddelelser
 2. Prøv at køre med `--print-logs` for at se output i terminalen

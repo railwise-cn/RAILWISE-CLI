@@ -1,15 +1,15 @@
 ---
 title: Formateurs
-description: RAILWISE (甬算) utilise des formateurs spécifiques au langage.
+description: RAILWISE utilise des formateurs spécifiques au langage.
 ---
 
-RAILWISE (甬算) formate automatiquement les fichiers après leur écriture ou leur modification à l'aide de formateurs spécifiques au langage. Cela garantit que le code généré suit les styles de code de votre projet.
+RAILWISE formate automatiquement les fichiers après leur écriture ou leur modification à l'aide de formateurs spécifiques au langage. Cela garantit que le code généré suit les styles de code de votre projet.
 
 ---
 
 ## Formateurs intégrés
 
-RAILWISE (甬算) est livré avec plusieurs formateurs intégrés pour les langages et frameworks populaires. Vous trouverez ci-dessous une liste des formateurs, des extensions de fichiers prises en charge et des commandes ou options de configuration dont il a besoin.
+RAILWISE est livré avec plusieurs formateurs intégrés pour les langages et frameworks populaires. Vous trouverez ci-dessous une liste des formateurs, des extensions de fichiers prises en charge et des commandes ou options de configuration dont il a besoin.
 
 | Formateur            | Extensions                                                                                             | Prérequis                                                                                                             |
 | -------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
@@ -39,13 +39,13 @@ RAILWISE (甬算) est livré avec plusieurs formateurs intégrés pour les langa
 | oxfmt (expérimental) | .js, .jsx, .ts, .tsx                                                                                   | Dépendance `oxfmt` dans `package.json` et un [flag de variable d'environnement expérimental](/docs/cli/#experimental) |
 | ormolu               | .hs                                                                                                    | Commande `ormolu` disponible                                                                                          |
 
-Ainsi, si votre projet a `prettier` dans votre `package.json`, RAILWISE (甬算) l'utilisera automatiquement.
+Ainsi, si votre projet a `prettier` dans votre `package.json`, RAILWISE l'utilisera automatiquement.
 
 ---
 
 ## Comment ça marche
 
-Lorsque RAILWISE (甬算) écrit ou modifie un fichier, il :
+Lorsque RAILWISE écrit ou modifie un fichier, il :
 
 1. Vérifie l'extension du fichier par rapport à tous les formateurs activés.
 2. Exécute la commande de formatage appropriée sur le fichier.
@@ -57,7 +57,7 @@ Ce processus se déroule en arrière-plan, garantissant que vos styles de code s
 
 ## Configuration
 
-Vous pouvez personnaliser les formateurs via la section `formatter` de votre configuration RAILWISE (甬算).
+Vous pouvez personnaliser les formateurs via la section `formatter` de votre configuration RAILWISE.
 
 ```json title="railwise.json"
 {

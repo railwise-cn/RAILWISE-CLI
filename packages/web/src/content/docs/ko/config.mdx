@@ -1,15 +1,15 @@
 ---
 title: Config
-description: Using the RAILWISE (甬算) JSON config.
+description: Using the RAILWISE JSON config.
 ---
 
-JSON config 파일로 RAILWISE (甬算)를 설정할 수 있습니다.
+JSON config 파일로 RAILWISE를 설정할 수 있습니다.
 
 ---
 
 ## 형식
 
-RAILWISE (甬算)는 **JSON**과 **JSONC**(주석이 포함된 JSON) 형식을 모두 지원합니다.
+RAILWISE는 **JSON**과 **JSONC**(주석이 포함된 JSON) 형식을 모두 지원합니다.
 
 ```jsonc title="railwise.jsonc"
 {
@@ -94,7 +94,7 @@ Remote config는 가장 먼저 로드되어 기본 레이어 역할을 합니다
 
 ### Global
 
-전역 RAILWISE (甬算) config는 `~/.config/railwise/railwise.json`에 두세요. theme, provider, keybind 같은 사용자 전체 기본 설정은 전역 config로 관리하세요.
+전역 RAILWISE config는 `~/.config/railwise/railwise.json`에 두세요. theme, provider, keybind 같은 사용자 전체 기본 설정은 전역 config로 관리하세요.
 
 전역 config는 조직의 Remote 기본값을 override합니다.
 
@@ -108,7 +108,7 @@ Remote config는 가장 먼저 로드되어 기본 레이어 역할을 합니다
 프로젝트별 config는 프로젝트 루트에 두세요.
 :::
 
-RAILWISE (甬算) 시작 시 현재 디렉토리에서 config 파일을 찾고, 없으면 가장 가까운 Git 디렉토리까지 상위로 탐색합니다.
+RAILWISE 시작 시 현재 디렉토리에서 config 파일을 찾고, 없으면 가장 가까운 Git 디렉토리까지 상위로 탐색합니다.
 
 이 파일은 Git에 커밋해도 안전하며 전역 config와 동일한 schema를 사용합니다.
 
@@ -196,7 +196,7 @@ config 파일의 schema는 [**`railwise.ai/config.json`**](https://railwise.ai/c
 
 - `port` - 수신할 포트입니다.
 - `hostname` - 수신할 호스트명입니다. `mdns`가 활성화되어 있고 hostname이 없으면 기본값은 `0.0.0.0`입니다.
-- `mdns` - mDNS service discovery를 활성화합니다. 네트워크 내 다른 기기에서 RAILWISE (甬算) server를 찾을 수 있습니다.
+- `mdns` - mDNS service discovery를 활성화합니다. 네트워크 내 다른 기기에서 RAILWISE server를 찾을 수 있습니다.
 - `mdnsDomain` - mDNS service의 custom 도메인 이름입니다. 기본값은 `railwise.local`입니다. 같은 네트워크에서 여러 인스턴스를 실행할 때 유용합니다.
 - `cors` - 브라우저 기반 client에서 HTTP server를 사용할 때 허용할 추가 CORS origin입니다. 값은 전체 origin(scheme + host + optional port) 형식이어야 하며, 예: `https://app.example.com`.
 
@@ -224,7 +224,7 @@ config 파일의 schema는 [**`railwise.ai/config.json`**](https://railwise.ai/c
 
 ### Models
 
-RAILWISE (甬算) config의 `provider`, `model`, `small_model` 옵션으로 사용할 provider와 model을 설정할 수 있습니다.
+RAILWISE config의 `provider`, `model`, `small_model` 옵션으로 사용할 provider와 model을 설정할 수 있습니다.
 
 ```json title="railwise.json"
 {
@@ -235,7 +235,7 @@ RAILWISE (甬算) config의 `provider`, `model`, `small_model` 옵션으로 사�
 }
 ```
 
-`small_model`은 제목 생성 같은 경량 작업에 사용할 별도 model을 설정합니다. 기본적으로 RAILWISE (甬算)는 provider에서 더 저렴한 model을 사용할 수 있으면 우선 사용하고, 없으면 메인 model로 fallback합니다.
+`small_model`은 제목 생성 같은 경량 작업에 사용할 별도 model을 설정합니다. 기본적으로 RAILWISE는 provider에서 더 저렴한 model을 사용할 수 있으면 우선 사용하고, 없으면 메인 model로 fallback합니다.
 
 provider 옵션에는 `timeout`, `setCacheKey`를 포함할 수 있습니다.
 
@@ -297,7 +297,7 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 ### Themes
 
-`theme` 옵션으로 RAILWISE (甬算) config에서 사용할 theme를 설정할 수 있습니다.
+`theme` 옵션으로 RAILWISE config에서 사용할 theme를 설정할 수 있습니다.
 
 ```json title="railwise.json"
 {
@@ -347,7 +347,7 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 }
 ```
 
-기본 agent는 primary agent여야 합니다(subagent 불가). `"build"`, `"plan"` 같은 내장 agent나 직접 정의한 [custom agent](/docs/agents)를 지정할 수 있습니다. 지정한 agent가 없거나 subagent이면 RAILWISE (甬算)는 경고와 함께 `"build"`로 fallback합니다.
+기본 agent는 primary agent여야 합니다(subagent 불가). `"build"`, `"plan"` 같은 내장 agent나 직접 정의한 [custom agent](/docs/agents)를 지정할 수 있습니다. 지정한 agent가 없거나 subagent이면 RAILWISE는 경고와 함께 `"build"`로 fallback합니다.
 
 이 설정은 TUI, CLI(`railwise run`), 데스크톱 앱, GitHub Action 등 모든 인터페이스에 적용됩니다.
 
@@ -417,7 +417,7 @@ Bearer token(`AWS_BEARER_TOKEN_BEDROCK` 또는 `/connect`)은 profile 기반 인
 
 ### Autoupdate
 
-RAILWISE (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합니다. `autoupdate` 옵션으로 비활성화할 수 있습니다.
+RAILWISE는 시작 시 새 업데이트를 자동으로 다운로드합니다. `autoupdate` 옵션으로 비활성화할 수 있습니다.
 
 ```json title="railwise.json"
 {
@@ -459,7 +459,7 @@ RAILWISE (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합
 
 ### Permissions
 
-기본적으로 RAILWISE (甬算)는 **명시적 승인 없이 모든 작업을 허용**합니다. `permission` 옵션으로 이 동작을 바꿀 수 있습니다.
+기본적으로 RAILWISE는 **명시적 승인 없이 모든 작업을 허용**합니다. `permission` 옵션으로 이 동작을 바꿀 수 있습니다.
 
 예를 들어 `edit`, `bash` tool이 사용자 승인을 요구하게 하려면:
 
@@ -532,7 +532,7 @@ RAILWISE (甬算)는 시작 시 새 업데이트를 자동으로 다운로드합
 
 ### Plugins
 
-[Plugins](/docs/plugins)는 custom tool, hook, integration으로 RAILWISE (甬算)를 확장합니다.
+[Plugins](/docs/plugins)는 custom tool, hook, integration으로 RAILWISE를 확장합니다.
 
 plugin 파일은 `.railwise/plugins/` 또는 `~/.config/railwise/plugins/`에 두세요. `plugin` 옵션으로 npm plugin을 로드할 수도 있습니다.
 
@@ -596,7 +596,7 @@ plugin 파일은 `.railwise/plugins/` 또는 `~/.config/railwise/plugins/`에 �
 }
 ```
 
-provider를 하나씩 비활성화하는 대신, RAILWISE (甬算)가 특정 provider만 사용하도록 제한하고 싶을 때 유용합니다.
+provider를 하나씩 비활성화하는 대신, RAILWISE가 특정 provider만 사용하도록 제한하고 싶을 때 유용합니다.
 
 :::note
 `disabled_providers`는 `enabled_providers`보다 우선합니다.

@@ -86,12 +86,12 @@ rustPlatform.buildRustPackage (finalAttrs: {
   # should be removed once binary is renamed or decided otherwise
   # darwin output is a .app bundle so no conflict
   postFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
-    mv $out/bin/RAILWISE (甬算) $out/bin/railwise-desktop
-    sed -i 's|^Exec=RAILWISE (甬算)$|Exec=railwise-desktop|' $out/share/applications/RAILWISE (甬算).desktop
+    mv $out/bin/RAILWISE $out/bin/railwise-desktop
+    sed -i 's|^Exec=RAILWISE$|Exec=railwise-desktop|' $out/share/applications/RAILWISE.desktop
   '';
 
   meta = {
-    description = "RAILWISE (甬算) Desktop App";
+    description = "RAILWISE Desktop App";
     homepage = "https://railwise.ai";
     license = lib.licenses.mit;
     mainProgram = "railwise-desktop";

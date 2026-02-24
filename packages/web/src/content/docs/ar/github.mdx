@@ -1,17 +1,17 @@
 ---
 title: GitHub
-description: استخدم RAILWISE (甬算) في GitHub Issues وPull Requests.
+description: استخدم RAILWISE في GitHub Issues وPull Requests.
 ---
 
-يتكامل RAILWISE (甬算) مع سير عمل GitHub لديك. اذكر `/railwise` أو `/oc` في تعليقك، وسيقوم RAILWISE (甬算) بتنفيذ المهام داخل GitHub Actions runner لديك.
+يتكامل RAILWISE مع سير عمل GitHub لديك. اذكر `/railwise` أو `/oc` في تعليقك، وسيقوم RAILWISE بتنفيذ المهام داخل GitHub Actions runner لديك.
 
 ---
 
 ## الميزات
 
-- **فرز Issues**: اطلب من RAILWISE (甬算) الاطلاع على Issue وشرحها لك.
-- **إصلاح وتنفيذ**: اطلب من RAILWISE (甬算) إصلاح Issue أو تنفيذ ميزة. وسيعمل على فرع جديد ويقدّم PR يضم كل التغييرات.
-- **آمن**: يعمل RAILWISE (甬算) داخل GitHub runners لديك.
+- **فرز Issues**: اطلب من RAILWISE الاطلاع على Issue وشرحها لك.
+- **إصلاح وتنفيذ**: اطلب من RAILWISE إصلاح Issue أو تنفيذ ميزة. وسيعمل على فرع جديد ويقدّم PR يضم كل التغييرات.
+- **آمن**: يعمل RAILWISE داخل GitHub runners لديك.
 
 ---
 
@@ -63,7 +63,7 @@ railwise github install
               fetch-depth: 1
               persist-credentials: false
 
-          - name: Run RAILWISE (甬算)
+          - name: Run RAILWISE
            uses: anomalyco/railwise/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -81,13 +81,13 @@ railwise github install
 
 ## الإعدادات
 
-- `model`: النموذج الذي سيستخدمه RAILWISE (甬算). يأخذ الصيغة `provider/model`. هذا **مطلوب**.
+- `model`: النموذج الذي سيستخدمه RAILWISE. يأخذ الصيغة `provider/model`. هذا **مطلوب**.
 - `agent`: الـagent الذي سيتم استخدامه. يجب أن يكون agent أساسيًا. يعود افتراضيًا إلى `default_agent` من الإعدادات أو `"build"` إذا لم يُعثر عليه.
-- `share`: هل تتم مشاركة جلسة RAILWISE (甬算). القيمة الافتراضية **true** للمستودعات العامة.
-- `prompt`: موجه مخصص اختياري لتجاوز السلوك الافتراضي. استخدمه لتخصيص كيفية معالجة RAILWISE (甬算) للطلبات.
-- `token`: GitHub access token اختياري لتنفيذ عمليات مثل إنشاء التعليقات، وcommit للتغييرات، وفتح Pull Requests. افتراضيًا يستخدم RAILWISE (甬算) installation access token الخاص بـRAILWISE (甬算) GitHub App، لذا تظهر commits والتعليقات وPull Requests وكأنها صادرة من التطبيق.
+- `share`: هل تتم مشاركة جلسة RAILWISE. القيمة الافتراضية **true** للمستودعات العامة.
+- `prompt`: موجه مخصص اختياري لتجاوز السلوك الافتراضي. استخدمه لتخصيص كيفية معالجة RAILWISE للطلبات.
+- `token`: GitHub access token اختياري لتنفيذ عمليات مثل إنشاء التعليقات، وcommit للتغييرات، وفتح Pull Requests. افتراضيًا يستخدم RAILWISE installation access token الخاص بـRAILWISE GitHub App، لذا تظهر commits والتعليقات وPull Requests وكأنها صادرة من التطبيق.
 
-  بدلًا من ذلك، يمكنك استخدام [`GITHUB_TOKEN` المدمج](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) في GitHub Action runner دون تثبيت RAILWISE (甬算) GitHub App. فقط تأكد من منح الأذونات المطلوبة في الـworkflow:
+  بدلًا من ذلك، يمكنك استخدام [`GITHUB_TOKEN` المدمج](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token) في GitHub Action runner دون تثبيت RAILWISE GitHub App. فقط تأكد من منح الأذونات المطلوبة في الـworkflow:
 
   ```yaml
   permissions:
@@ -103,23 +103,23 @@ railwise github install
 
 ## الأحداث المدعومة
 
-يمكن تشغيل RAILWISE (甬算) عبر أحداث GitHub التالية:
+يمكن تشغيل RAILWISE عبر أحداث GitHub التالية:
 
 | نوع الحدث                     | يتم تشغيله عبر                 | التفاصيل                                                                                                |
 | ----------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | تعليق على Issue أو PR          | اذكر `/railwise` أو `/oc` في تعليقك. يقرأ RAILWISE (甬算) السياق ويمكنه إنشاء فروع، وفتح PRs، أو الرد.         |
-| `pull_request_review_comment` | تعليق على أسطر كود محددة في PR | اذكر `/railwise` أو `/oc` أثناء مراجعة الكود. يستلم RAILWISE (甬算) مسار الملف وأرقام الأسطر وسياق الـdiff.    |
-| `issues`                      | فتح Issue أو تعديلها           | تشغيل RAILWISE (甬算) تلقائيًا عند إنشاء Issues أو تعديلها. يتطلب إدخال `prompt`.                              |
-| `pull_request`                | فتح PR أو تحديثه               | تشغيل RAILWISE (甬算) تلقائيًا عند فتح PRs أو مزامنتها أو إعادة فتحها. مفيد للمراجعات الآلية.                  |
-| `schedule`                    | جدول يعتمد على Cron            | تشغيل RAILWISE (甬算) وفق جدول. يتطلب إدخال `prompt`. يذهب الناتج إلى logs وPRs (لا يوجد Issue للتعليق عليها). |
-| `workflow_dispatch`           | تشغيل يدوي من واجهة GitHub     | تشغيل RAILWISE (甬算) عند الطلب عبر Actions tab. يتطلب إدخال `prompt`. يذهب الناتج إلى logs وPRs.              |
+| `issue_comment`               | تعليق على Issue أو PR          | اذكر `/railwise` أو `/oc` في تعليقك. يقرأ RAILWISE السياق ويمكنه إنشاء فروع، وفتح PRs، أو الرد.         |
+| `pull_request_review_comment` | تعليق على أسطر كود محددة في PR | اذكر `/railwise` أو `/oc` أثناء مراجعة الكود. يستلم RAILWISE مسار الملف وأرقام الأسطر وسياق الـdiff.    |
+| `issues`                      | فتح Issue أو تعديلها           | تشغيل RAILWISE تلقائيًا عند إنشاء Issues أو تعديلها. يتطلب إدخال `prompt`.                              |
+| `pull_request`                | فتح PR أو تحديثه               | تشغيل RAILWISE تلقائيًا عند فتح PRs أو مزامنتها أو إعادة فتحها. مفيد للمراجعات الآلية.                  |
+| `schedule`                    | جدول يعتمد على Cron            | تشغيل RAILWISE وفق جدول. يتطلب إدخال `prompt`. يذهب الناتج إلى logs وPRs (لا يوجد Issue للتعليق عليها). |
+| `workflow_dispatch`           | تشغيل يدوي من واجهة GitHub     | تشغيل RAILWISE عند الطلب عبر Actions tab. يتطلب إدخال `prompt`. يذهب الناتج إلى logs وPRs.              |
 
 ### مثال للجدولة
 
-شغّل RAILWISE (甬算) وفق جدول لتنفيذ مهام آلية:
+شغّل RAILWISE وفق جدول لتنفيذ مهام آلية:
 
 ```yaml title=".github/workflows/railwise-scheduled.yml"
-name: Scheduled RAILWISE (甬算) Task
+name: Scheduled RAILWISE Task
 
 on:
   schedule:
@@ -139,7 +139,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run RAILWISE (甬算)
+      - name: Run RAILWISE
         uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -150,7 +150,7 @@ jobs:
             If you find issues worth addressing, open an issue to track them.
 ```
 
-بالنسبة لأحداث `schedule`، يكون إدخال `prompt` **مطلوبًا** لعدم وجود تعليق لاستخراج التعليمات منه. تعمل عمليات الـworkflow المجدولة دون سياق مستخدم للتحقق من الأذونات، لذا يجب أن يمنح الـworkflow صلاحيات `contents: write` و`pull-requests: write` إذا كنت تتوقع أن ينشئ RAILWISE (甬算) فروعًا أو PRs.
+بالنسبة لأحداث `schedule`، يكون إدخال `prompt` **مطلوبًا** لعدم وجود تعليق لاستخراج التعليمات منه. تعمل عمليات الـworkflow المجدولة دون سياق مستخدم للتحقق من الأذونات، لذا يجب أن يمنح الـworkflow صلاحيات `contents: write` و`pull-requests: write` إذا كنت تتوقع أن ينشئ RAILWISE فروعًا أو PRs.
 
 ---
 
@@ -191,7 +191,7 @@ jobs:
             - Suggest improvements
 ```
 
-بالنسبة لأحداث `pull_request`، إذا لم يتم توفير `prompt`، فإن RAILWISE (甬算) يراجع Pull Request افتراضيًا.
+بالنسبة لأحداث `pull_request`، إذا لم يتم توفير `prompt`، فإن RAILWISE يراجع Pull Request افتراضيًا.
 
 ---
 
@@ -252,7 +252,7 @@ jobs:
 
 ## الموجهات المخصصة
 
-قم بتجاوز الموجه الافتراضي لتخصيص سلوك RAILWISE (甬算) ضمن الـworkflow لديك.
+قم بتجاوز الموجه الافتراضي لتخصيص سلوك RAILWISE ضمن الـworkflow لديك.
 
 ```yaml title=".github/workflows/railwise.yml"
 - uses: anomalyco/railwise/github@latest
@@ -271,7 +271,7 @@ jobs:
 
 ## أمثلة
 
-إليك بعض الأمثلة على كيفية استخدام RAILWISE (甬算) في GitHub.
+إليك بعض الأمثلة على كيفية استخدام RAILWISE في GitHub.
 
 - **شرح Issue**
 
@@ -281,7 +281,7 @@ jobs:
   /railwise explain this issue
   ```
 
-  سيقرأ RAILWISE (甬算) كامل النقاش، بما في ذلك جميع التعليقات، ويرد بشرح واضح.
+  سيقرأ RAILWISE كامل النقاش، بما في ذلك جميع التعليقات، ويرد بشرح واضح.
 
 - **إصلاح Issue**
 
@@ -291,7 +291,7 @@ jobs:
   /railwise fix this
   ```
 
-  وسيُنشئ RAILWISE (甬算) فرعًا جديدًا، وينفّذ التغييرات، ويفتح PR يتضمنها.
+  وسيُنشئ RAILWISE فرعًا جديدًا، وينفّذ التغييرات، ويفتح PR يتضمنها.
 
 - **مراجعة PRs وإجراء تغييرات**
 
@@ -301,18 +301,18 @@ jobs:
   Delete the attachment from S3 when the note is removed /oc
   ```
 
-  سينفّذ RAILWISE (甬算) التغيير المطلوب ويعمل له commit إلى نفس PR.
+  سينفّذ RAILWISE التغيير المطلوب ويعمل له commit إلى نفس PR.
 
 - **مراجعة أسطر كود محددة**
 
-  اترك تعليقًا مباشرة على أسطر الكود في تبويب "Files" داخل PR. يكتشف RAILWISE (甬算) تلقائيًا الملف وأرقام الأسطر وسياق الـdiff لتقديم ردود دقيقة.
+  اترك تعليقًا مباشرة على أسطر الكود في تبويب "Files" داخل PR. يكتشف RAILWISE تلقائيًا الملف وأرقام الأسطر وسياق الـdiff لتقديم ردود دقيقة.
 
   ```
   [Comment on specific lines in Files tab]
   /oc add error handling here
   ```
 
-  عند التعليق على أسطر محددة، يستلم RAILWISE (甬算):
+  عند التعليق على أسطر محددة، يستلم RAILWISE:
   - الملف الدقيق الذي تتم مراجعته
   - أسطر الكود المحددة
   - سياق الـdiff المحيط

@@ -1205,11 +1205,11 @@ describe("ProviderTransform.message - strip openai metadata when store=false", (
   })
 
   test("preserves metadata using providerID key when store is false", () => {
-    const opencodeModel = {
+    const railwiseModel = {
       ...openaiModel,
       providerID: "railwise",
       api: {
-        id: "opencode-test",
+        id: "railwise-test",
         url: "https://api.railwise.ai",
         npm: "@ai-sdk/openai-compatible",
       },
@@ -1232,18 +1232,18 @@ describe("ProviderTransform.message - strip openai metadata when store=false", (
       },
     ] as any[]
 
-    const result = ProviderTransform.message(msgs, opencodeModel, { store: false }) as any[]
+    const result = ProviderTransform.message(msgs, railwiseModel, { store: false }) as any[]
 
     expect(result[0].content[0].providerOptions?.opencode?.itemId).toBe("msg_123")
     expect(result[0].content[0].providerOptions?.opencode?.otherOption).toBe("value")
   })
 
   test("preserves itemId across all providerOptions keys", () => {
-    const opencodeModel = {
+    const railwiseModel = {
       ...openaiModel,
       providerID: "railwise",
       api: {
-        id: "opencode-test",
+        id: "railwise-test",
         url: "https://api.railwise.ai",
         npm: "@ai-sdk/openai-compatible",
       },
@@ -1270,7 +1270,7 @@ describe("ProviderTransform.message - strip openai metadata when store=false", (
       },
     ] as any[]
 
-    const result = ProviderTransform.message(msgs, opencodeModel, { store: false }) as any[]
+    const result = ProviderTransform.message(msgs, railwiseModel, { store: false }) as any[]
 
     expect(result[0].providerOptions?.openai?.itemId).toBe("msg_root")
     expect(result[0].providerOptions?.opencode?.itemId).toBe("msg_opencode")

@@ -1,15 +1,15 @@
 ---
 title: Formatters
-description: RAILWISE (甬算) uses language specific formatters.
+description: RAILWISE uses language specific formatters.
 ---
 
-RAILWISE (甬算) automatically formats files after they are written or edited using language-specific formatters. This ensures that the code that is generated follows the code styles of your project.
+RAILWISE automatically formats files after they are written or edited using language-specific formatters. This ensures that the code that is generated follows the code styles of your project.
 
 ---
 
 ## Built-in
 
-RAILWISE (甬算) comes with several built-in formatters for popular languages and frameworks. Below is a list of the formatters, supported file extensions, and commands or config options it needs.
+RAILWISE comes with several built-in formatters for popular languages and frameworks. Below is a list of the formatters, supported file extensions, and commands or config options it needs.
 
 | Formatter            | Extensions                                                                                               | Requirements                                                                                          |
 | -------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -40,13 +40,13 @@ RAILWISE (甬算) comes with several built-in formatters for popular languages a
 | uv                   | .py, .pyi                                                                                                | `uv` command available                                                                                |
 | zig                  | .zig, .zon                                                                                               | `zig` command available                                                                               |
 
-So if your project has `prettier` in your `package.json`, RAILWISE (甬算) will automatically use it.
+So if your project has `prettier` in your `package.json`, RAILWISE will automatically use it.
 
 ---
 
 ## How it works
 
-When RAILWISE (甬算) writes or edits a file, it:
+When RAILWISE writes or edits a file, it:
 
 1. Checks the file extension against all enabled formatters.
 2. Runs the appropriate formatter command on the file.
@@ -58,7 +58,7 @@ This process happens in the background, ensuring your code styles are maintained
 
 ## Configure
 
-You can customize formatters through the `formatter` section in your RAILWISE (甬算) config.
+You can customize formatters through the `formatter` section in your RAILWISE config.
 
 ```json title="railwise.json"
 {

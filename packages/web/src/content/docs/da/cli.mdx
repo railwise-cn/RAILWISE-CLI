@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: RAILWISE (甬算) CLI muligheder og kommandoer.
+description: RAILWISE CLI muligheder og kommandoer.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-RAILWISE (甬算) CLI starter som standard [TUI](/docs/tui), når den kører uden nogen argumenter.
+RAILWISE CLI starter som standard [TUI](/docs/tui), når den kører uden nogen argumenter.
 
 ```bash
 railwise
 ```
 
-Men den accepterer også kommandoer som dokumenteret på denne side. Dette giver dig mulighed for at interagere med RAILWISE (甬算) programmatisk.
+Men den accepterer også kommandoer som dokumenteret på denne side. Dette giver dig mulighed for at interagere med RAILWISE programmatisk.
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-Start RAILWISE (甬算) terminalbrugergrænsefladen.
+Start RAILWISE terminalbrugergrænsefladen.
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## Kommandoer
 
-RAILWISE (甬算) CLI har også følgende kommandoer.
+RAILWISE CLI har også følgende kommandoer.
 
 ---
 
 ### agent
 
-Administrer agenter i RAILWISE (甬算).
+Administrer agenter i RAILWISE.
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-Tilslut en terminal til en allerede kørende RAILWISE (甬算) backend-server startet via `serve` eller `web` kommandoer.
+Tilslut en terminal til en allerede kørende RAILWISE backend-server startet via `serve` eller `web` kommandoer.
 
 ```bash
 railwise attach [url]
 ```
 
-Dette gør det muligt at bruge TUI med en ekstern RAILWISE (甬算) backend. For eksempel:
+Dette gør det muligt at bruge TUI med en ekstern RAILWISE backend. For eksempel:
 
 ```bash
 # Start the backend server for web/mobile access
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算) drives af udbyderlisten på [Models.dev](https://models.dev), så du kan bruge `railwise auth login` til at konfigurere API-nøgler for enhver udbyder, du vil bruge. Dette er gemt i `~/.local/share/railwise/auth.json`.
+RAILWISE drives af udbyderlisten på [Models.dev](https://models.dev), så du kan bruge `railwise auth login` til at konfigurere API-nøgler for enhver udbyder, du vil bruge. Dette er gemt i `~/.local/share/railwise/auth.json`.
 
 ```bash
 railwise auth login
 ```
 
-Når RAILWISE (甬算) starter op, indlæser den udbyderne fra legitimationsfilen. Og hvis der er nogen nøgler defineret i dine miljøer eller en `.env` fil i dit projekt.
+Når RAILWISE starter op, indlæser den udbyderne fra legitimationsfilen. Og hvis der er nogen nøgler defineret i dine miljøer eller en `.env` fil i dit projekt.
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | Opdater modelcachen fra models.dev                                      |
 | `--verbose` | Brug mere detaljeret modeloutput (inkluderer metadata som omkostninger) |
 
-Brug flaget `--refresh` til at opdatere den cachelagrede modelliste. Dette er nyttigt, når nye modeller er blevet tilføjet til en udbyder, og du vil se dem i RAILWISE (甬算).
+Brug flaget `--refresh` til at opdatere den cachelagrede modelliste. Dette er nyttigt, når nye modeller er blevet tilføjet til en udbyder, og du vil se dem i RAILWISE.
 
 ```bash
 railwise models --refresh
@@ -354,7 +354,7 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 
 ### serve
 
-Start en hovedløs RAILWISE (甬算)-server til API-adgang. Tjek [server docs](/docs/server) for den fulde HTTP-grænseflade.
+Start en hovedløs RAILWISE-server til API-adgang. Tjek [server docs](/docs/server) for den fulde HTTP-grænseflade.
 
 ```bash
 railwise serve
@@ -375,7 +375,7 @@ Dette starter en HTTP-server, der giver API-adgang til railwise-funktionalitet u
 
 ### session
 
-Administrator RAILWISE (甬算) sessionsholder.
+Administrator RAILWISE sessionsholder.
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-Liste over alle RAILWISE (甬算) sessioner.
+Liste over alle RAILWISE sessioner.
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-Vis tokenbrug og omkostningsstatistikker for dine RAILWISE (甬算)-sessioner.
+Vis tokenbrug og omkostningsstatistikker for dine RAILWISE-sessioner.
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ Hvis du ikke angiver et sessions-id, bliver du bedt om at vælge mellem tilgæng
 
 ### import
 
-Importer sessionsdata fra en JSON fil eller RAILWISE (甬算) del URL.
+Importer sessionsdata fra en JSON fil eller RAILWISE del URL.
 
 ```bash
 railwise import <file>
 ```
 
-Du kan importere fra en lokal fil eller en RAILWISE (甬算) share URL.
+Du kan importere fra en lokal fil eller en RAILWISE share URL.
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-Start en hovedløs RAILWISE (甬算)-server med en webgrænseflade.
+Start en hovedløs RAILWISE-server med en webgrænseflade.
 
 ```bash
 railwise web
 ```
 
-Dette starter en HTTP-server og åbner en webbrowser for at få adgang til RAILWISE (甬算) via en webgrænseflade. Indstil `RAILWISE_SERVER_PASSWORD` for at aktivere HTTP grundlæggende godkendelse (brugernavn er standard til `railwise`).
+Dette starter en HTTP-server og åbner en webbrowser for at få adgang til RAILWISE via en webgrænseflade. Indstil `RAILWISE_SERVER_PASSWORD` for at aktivere HTTP grundlæggende godkendelse (brugernavn er standard til `railwise`).
 
 #### Flag
 
@@ -491,7 +491,7 @@ Denne kommando starter en ACP-server, der kommunikerer via stdin/stdout ved hjæ
 
 ### uninstall
 
-Afinstaller RAILWISE (甬算) og fjern alle relaterede filer.
+Afinstaller RAILWISE og fjern alle relaterede filer.
 
 ```bash
 railwise uninstall
@@ -510,7 +510,7 @@ railwise uninstall
 
 ### upgrade
 
-Opdaterer RAILWISE (甬算) til den nyeste version eller en specifik version.
+Opdaterer RAILWISE til den nyeste version eller en specifik version.
 
 ```bash
 railwise upgrade [target]
@@ -551,7 +551,7 @@ railwise CLI tager følgende globale flag.
 
 ## Miljøvariabler
 
-RAILWISE (甬算) kan konfigureres ved hjælp af miljøvariabler.
+RAILWISE kan konfigureres ved hjælp af miljøvariabler.
 
 | Variabel                              | Skriv   | Beskrivelse                                                           |
 | ------------------------------------- | ------- | --------------------------------------------------------------------- |

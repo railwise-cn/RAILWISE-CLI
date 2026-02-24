@@ -1,9 +1,9 @@
 ---
 title: ACP 支持
-description: 在任何兼容 ACP 的编辑器中使用 OpenCode。
+description: 在任何兼容 ACP 的编辑器中使用 Railwise。
 ---
 
-OpenCode 支持 [Agent Client Protocol](https://agentclientprotocol.com)（ACP），允许你直接在兼容的编辑器和 IDE 中使用它。
+Railwise 支持 [Agent Client Protocol](https://agentclientprotocol.com)（ACP），允许你直接在兼容的编辑器和 IDE 中使用它。
 
 :::tip
 有关支持 ACP 的编辑器和工具列表，请查看 [ACP 进展报告](https://zed.dev/blog/acp-progress-report#available-now)。
@@ -15,9 +15,9 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
 
 ## 配置
 
-要通过 ACP 使用 OpenCode，请在编辑器中配置运行 `opencode acp` 命令。
+要通过 ACP 使用 Railwise，请在编辑器中配置运行 `railwise acp` 命令。
 
-该命令会将 OpenCode 作为兼容 ACP 的子进程启动，通过 stdio 上的 JSON-RPC 与编辑器进行通信。
+该命令会将 Railwise 作为兼容 ACP 的子进程启动，通过 stdio 上的 JSON-RPC 与编辑器进行通信。
 
 以下是支持 ACP 的常用编辑器的配置示例。
 
@@ -31,7 +31,7 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
 {
   "agent_servers": {
     "RAILWISE": {
-      "command": "opencode",
+      "command": "railwise",
       "args": ["acp"]
     }
   }
@@ -53,7 +53,7 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
             "custom": {
               "name": "RAILWISE",
               "command": {
-                "command": "opencode",
+                "command": "railwise",
                 "args": ["acp"]
               }
             }
@@ -75,7 +75,7 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
 {
   "agent_servers": {
     "RAILWISE": {
-      "command": "/absolute/path/bin/opencode",
+      "command": "/absolute/path/bin/railwise",
       "args": ["acp"]
     }
   }
@@ -93,8 +93,8 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
 ```lua
 {
   acp_providers = {
-    ["opencode"] = {
-      command = "opencode",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" }
     }
   }
@@ -106,8 +106,8 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
 ```lua {6-8}
 {
   acp_providers = {
-    ["opencode"] = {
-      command = "opencode",
+    ["railwise"] = {
+      command = "railwise",
       args = { "acp" },
       env = {
         RAILWISE_API_KEY = os.getenv("RAILWISE_API_KEY")
@@ -121,14 +121,14 @@ ACP 是一个开放协议，用于标准化代码编辑器与 AI 编码代理之
 
 ### CodeCompanion.nvim
 
-要在 [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim) 中将 OpenCode 用作 ACP 代理，请将以下内容添加到你的 Neovim 配置中：
+要在 [CodeCompanion.nvim](https://github.com/olimorris/codecompanion.nvim) 中将 Railwise 用作 ACP 代理，请将以下内容添加到你的 Neovim 配置中：
 
 ```lua
 require("codecompanion").setup({
   interactions = {
     chat = {
       adapter = {
-        name = "opencode",
+        name = "railwise",
         model = "claude-sonnet-4",
       },
     },
@@ -136,13 +136,13 @@ require("codecompanion").setup({
 })
 ```
 
-此配置将 CodeCompanion 设置为使用 OpenCode 作为聊天的 ACP 代理。
+此配置将 CodeCompanion 设置为使用 Railwise 作为聊天的 ACP 代理。
 
 如果需要传递环境变量（如 `RAILWISE_API_KEY`），请参阅 CodeCompanion.nvim 文档中的[配置适配器：环境变量](https://codecompanion.olimorris.dev/getting-started#setting-an-api-key)了解详细信息。
 
 ## 支持
 
-OpenCode 通过 ACP 使用时与在终端中使用的效果完全一致。所有功能均受支持：
+Railwise 通过 ACP 使用时与在终端中使用的效果完全一致。所有功能均受支持：
 
 :::note
 部分内置斜杠命令（如 `/undo` 和 `/redo`）目前暂不支持。
@@ -150,7 +150,7 @@ OpenCode 通过 ACP 使用时与在终端中使用的效果完全一致。所有
 
 - 内置工具（文件操作、终端命令等）
 - 自定义工具和斜杠命令
-- 在 OpenCode 配置中配置的 MCP 服务器
+- 在 Railwise 配置中配置的 MCP 服务器
 - 来自 `AGENTS.md` 的项目级规则
 - 自定义格式化工具和代码检查工具
 - 代理和权限系统

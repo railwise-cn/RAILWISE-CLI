@@ -1,15 +1,15 @@
 ---
 title: Formateri
-description: RAILWISE (甬算) koristi formatere specifične za jezik.
+description: RAILWISE koristi formatere specifične za jezik.
 ---
 
-RAILWISE (甬算) automatski formatira datoteke nakon što su napisane ili uređene pomoću formatera specifičnih za jezik. Ovo osigurava da kod koji se generira prati stilove koda vašeg projekta.
+RAILWISE automatski formatira datoteke nakon što su napisane ili uređene pomoću formatera specifičnih za jezik. Ovo osigurava da kod koji se generira prati stilove koda vašeg projekta.
 
 ---
 
 ## Ugrađeni
 
-RAILWISE (甬算) dolazi sa nekoliko ugrađenih formatera za popularne jezike i okvire. Ispod je lista formatera, podržanih ekstenzija datoteka i naredbi ili opcija konfiguracije koje su mu potrebne.
+RAILWISE dolazi sa nekoliko ugrađenih formatera za popularne jezike i okvire. Ispod je lista formatera, podržanih ekstenzija datoteka i naredbi ili opcija konfiguracije koje su mu potrebne.
 | Formatter | Ekstenzije | Zahtjevi
 |-------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | gofmt | .go | `gofmt` komanda dostupna |
@@ -35,13 +35,13 @@ RAILWISE (甬算) dolazi sa nekoliko ugrađenih formatera za popularne jezike i 
 | shfmt | .sh, .bash | `shfmt` komanda dostupna |
 | pint | .php | `laravel/pint` zavisnost u `composer.json` || oxfmt (Eksperimentalno) | .js, .jsx, .ts, .tsx | `oxfmt` zavisnost u `package.json` i [eksperimentalna env varijabla flag](/docs/cli/#experimental) |
 | ormolu | .hs | `ormolu` komanda dostupna |
-Dakle, ako vaš projekat ima `prettier` u vašem `package.json`, RAILWISE (甬算) će ga automatski koristiti.
+Dakle, ako vaš projekat ima `prettier` u vašem `package.json`, RAILWISE će ga automatski koristiti.
 
 ---
 
 ## Kako radi
 
-Kada RAILWISE (甬算) piše ili uređuje datoteku, on:
+Kada RAILWISE piše ili uređuje datoteku, on:
 
 1. Provjerava ekstenziju datoteke prema svim omogućenim formaterima.
 2. Pokreće odgovarajuću naredbu za formatiranje na datoteci.
@@ -52,7 +52,7 @@ Kada RAILWISE (甬算) piše ili uređuje datoteku, on:
 
 ## Konfiguracija
 
-Možete prilagoditi formatere kroz `formatter` odjeljak u vašoj RAILWISE (甬算) konfiguraciji.
+Možete prilagoditi formatere kroz `formatter` odjeljak u vašoj RAILWISE konfiguraciji.
 
 ```json title="railwise.json"
 {

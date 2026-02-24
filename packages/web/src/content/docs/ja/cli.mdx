@@ -1,17 +1,17 @@
 ---
 title: CLI
-description: RAILWISE (甬算) CLI のオプションとコマンド。
+description: RAILWISE CLI のオプションとコマンド。
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-RAILWISE (甬算) CLI は、引数なしで実行すると、デフォルトで [TUI](/docs/tui) を開始します。
+RAILWISE CLI は、引数なしで実行すると、デフォルトで [TUI](/docs/tui) を開始します。
 
 ```bash
 railwise
 ```
 
-ただし、このページに記載されているようにコマンドも受け入れます。これにより、RAILWISE (甬算) をプログラム的に操作できるようになります。
+ただし、このページに記載されているようにコマンドも受け入れます。これにより、RAILWISE をプログラム的に操作できるようになります。
 
 ```bash
 railwise run "Explain how closures work in JavaScript"
@@ -21,7 +21,7 @@ railwise run "Explain how closures work in JavaScript"
 
 ### tui
 
-RAILWISE (甬算) ターミナルユーザーインターフェイスを開始します。
+RAILWISE ターミナルユーザーインターフェイスを開始します。
 
 ```bash
 railwise [project]
@@ -44,13 +44,13 @@ railwise [project]
 
 ## コマンド
 
-RAILWISE (甬算) CLI には次のコマンドもあります。
+RAILWISE CLI には次のコマンドもあります。
 
 ---
 
 ### agent
 
-RAILWISE (甬算) のエージェントを管理します。
+RAILWISE のエージェントを管理します。
 
 ```bash
 railwise agent [command]
@@ -60,13 +60,13 @@ railwise agent [command]
 
 ### attach
 
-`serve` または `web` コマンドを使用して起動された、すでに実行中の RAILWISE (甬算) バックエンドサーバーにターミナルを接続します。
+`serve` または `web` コマンドを使用して起動された、すでに実行中の RAILWISE バックエンドサーバーにターミナルを接続します。
 
 ```bash
 railwise attach [url]
 ```
 
-これにより、リモート RAILWISE (甬算) バックエンドで TUI を使用できるようになります。例えば：
+これにより、リモート RAILWISE バックエンドで TUI を使用できるようになります。例えば：
 
 ```bash
 # Start the backend server for web/mobile access
@@ -119,13 +119,13 @@ railwise auth [command]
 
 #### login
 
-RAILWISE (甬算) は [Models.dev](https://models.dev) のプロバイダーリストを利用しているため、`railwise auth login` を使用して、使用したいプロバイダーの API キーを構成できます。これは `~/.local/share/railwise/auth.json` に保存されます。
+RAILWISE は [Models.dev](https://models.dev) のプロバイダーリストを利用しているため、`railwise auth login` を使用して、使用したいプロバイダーの API キーを構成できます。これは `~/.local/share/railwise/auth.json` に保存されます。
 
 ```bash
 railwise auth login
 ```
 
-RAILWISE (甬算) が起動すると、認証情報ファイルからプロバイダーがロードされます。また、環境またはプロジェクト内の `.env` ファイルで定義されたキーがあるかどうかも確認します。
+RAILWISE が起動すると、認証情報ファイルからプロバイダーがロードされます。また、環境またはプロジェクト内の `.env` ファイルで定義されたキーがあるかどうかも確認します。
 
 ---
 
@@ -301,7 +301,7 @@ railwise models anthropic
 | `--refresh` | models.dev からモデルキャッシュを更新します。                   |
 | `--verbose` | より詳細なモデル出力を使用します (コストなどのメタデータを含む) |
 
-`--refresh` フラグを使用して、キャッシュされたモデルリストを更新します。これは、新しいモデルがプロバイダーに追加され、それを RAILWISE (甬算) で確認したい場合に便利です。
+`--refresh` フラグを使用して、キャッシュされたモデルリストを更新します。これは、新しいモデルがプロバイダーに追加され、それを RAILWISE で確認したい場合に便利です。
 
 ```bash
 railwise models --refresh
@@ -354,7 +354,7 @@ railwise run --attach http://localhost:4096 "Explain async/await in JavaScript"
 
 ### serve
 
-API アクセスのためにヘッドレス RAILWISE (甬算) サーバーを起動します。完全な HTTP インターフェイスについては、[サーバーのドキュメント](/docs/server) を確認してください。
+API アクセスのためにヘッドレス RAILWISE サーバーを起動します。完全な HTTP インターフェイスについては、[サーバーのドキュメント](/docs/server) を確認してください。
 
 ```bash
 railwise serve
@@ -375,7 +375,7 @@ railwise serve
 
 ### session
 
-RAILWISE (甬算) セッションを管理します。
+RAILWISE セッションを管理します。
 
 ```bash
 railwise session [command]
@@ -385,7 +385,7 @@ railwise session [command]
 
 #### list
 
-すべての RAILWISE (甬算) セッションをリストします。
+すべての RAILWISE セッションをリストします。
 
 ```bash
 railwise session list
@@ -402,7 +402,7 @@ railwise session list
 
 ### stats
 
-RAILWISE (甬算) セッションのトークンの使用状況とコストの統計を表示します。
+RAILWISE セッションのトークンの使用状況とコストの統計を表示します。
 
 ```bash
 railwise stats
@@ -433,13 +433,13 @@ railwise export [sessionID]
 
 ### import
 
-JSON ファイルまたは RAILWISE (甬算) 共有 URL からセッションデータをインポートします。
+JSON ファイルまたは RAILWISE 共有 URL からセッションデータをインポートします。
 
 ```bash
 railwise import <file>
 ```
 
-ローカルファイルまたは RAILWISE (甬算) 共有 URL からインポートできます。
+ローカルファイルまたは RAILWISE 共有 URL からインポートできます。
 
 ```bash
 railwise import session.json
@@ -450,13 +450,13 @@ railwise import https://opncd.ai/s/abc123
 
 ### web
 
-Web インターフェイスを使用してヘッドレス RAILWISE (甬算) サーバーを起動します。
+Web インターフェイスを使用してヘッドレス RAILWISE サーバーを起動します。
 
 ```bash
 railwise web
 ```
 
-これにより、HTTP サーバーが起動し、Web ブラウザが開き、Web インターフェイスを通じて RAILWISE (甬算) にアクセスします。 `RAILWISE_SERVER_PASSWORD` を設定して HTTP 基本認証を有効にします (ユーザー名のデフォルトは `railwise`)。
+これにより、HTTP サーバーが起動し、Web ブラウザが開き、Web インターフェイスを通じて RAILWISE にアクセスします。 `RAILWISE_SERVER_PASSWORD` を設定して HTTP 基本認証を有効にします (ユーザー名のデフォルトは `railwise`)。
 
 #### フラグ
 
@@ -491,7 +491,7 @@ railwise acp
 
 ### uninstall
 
-RAILWISE (甬算) をアンインストールし、関連ファイルをすべて削除します。
+RAILWISE をアンインストールし、関連ファイルをすべて削除します。
 
 ```bash
 railwise uninstall
@@ -551,7 +551,7 @@ railwise CLI は次のグローバルフラグを受け取ります。
 
 ## 環境変数
 
-RAILWISE (甬算) は環境変数を使用して構成できます。
+RAILWISE は環境変数を使用して構成できます。
 
 | 変数                                  | タイプ   | 説明                                                                |
 | ------------------------------------- | -------- | ------------------------------------------------------------------- |

@@ -66,7 +66,7 @@ export async function bootstrapGlobal(input: {
       input.globalSDK.project.list().then((x) => {
         const projects = (x.data ?? [])
           .filter((p) => !!p?.id)
-          .filter((p) => !!p.worktree && !p.worktree.includes("opencode-test"))
+          .filter((p) => !!p.worktree && !p.worktree.includes("railwise-test"))
           .slice()
           .sort((a, b) => cmp(a.id, b.id))
         input.setGlobalStore("project", projects)

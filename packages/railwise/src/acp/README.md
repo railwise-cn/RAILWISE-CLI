@@ -124,7 +124,7 @@ This implementation follows the ACP specification v1:
 - **Session Persistence**: Save and restore full conversation history
 - **Mode Support**: Implement different operational modes (ask, code, etc.)
 - **Enhanced Permissions**: More sophisticated permission handling
- **Terminal Integration**: Full terminal support via railwise's bash tool
+- **Terminal Integration**: Full terminal support via railwise's bash tool
 
 ## Testing
 

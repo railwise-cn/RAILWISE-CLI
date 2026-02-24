@@ -31,7 +31,7 @@ export default defineConfig({
     configSchema(),
     solidJs(),
     starlight({
-      title: "RAILWISE (甬算)",
+      title: "RAILWISE",
       defaultLocale: "root",
       locales: {
         root: {

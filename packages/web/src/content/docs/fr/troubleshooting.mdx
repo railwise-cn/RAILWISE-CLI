@@ -3,7 +3,7 @@ title: Dépannage
 description: Problèmes courants et comment les résoudre.
 ---
 
-Pour déboguer les problèmes avec RAILWISE (甬算), commencez par vérifier les journaux et les données locales qu'il stocke sur le disque.
+Pour déboguer les problèmes avec RAILWISE, commencez par vérifier les journaux et les données locales qu'il stocke sur le disque.
 
 ---
 
@@ -39,13 +39,13 @@ Ce répertoire contient :
 
 ## Application de bureau
 
-RAILWISE (甬算) Desktop exécute un serveur RAILWISE (甬算) local (le side-car `railwise-cli`) en arrière-plan. La plupart des problèmes sont causés par un plugin qui se comporte mal, un cache corrompu ou un mauvais paramètre du serveur.
+RAILWISE Desktop exécute un serveur RAILWISE local (le side-car `railwise-cli`) en arrière-plan. La plupart des problèmes sont causés par un plugin qui se comporte mal, un cache corrompu ou un mauvais paramètre du serveur.
 
 ### Vérifications rapides
 
 - Quittez complètement et relancez l'application.
 - Si l'application affiche un écran d'erreur, cliquez sur **Redémarrer** et copiez les détails de l'erreur.
-- macOS uniquement : menu `RAILWISE (甬算)` -> **Recharger la vue Web** (aide si l'interface utilisateur est vide/gelée).
+- macOS uniquement : menu `RAILWISE` -> **Recharger la vue Web** (aide si l'interface utilisateur est vide/gelée).
 
 ---
 
@@ -72,7 +72,7 @@ Si vous avez configuré des plugins, désactivez-les temporairement en suppriman
 
 #### Vérifiez les répertoires des plugins
 
-RAILWISE (甬算) peut également charger des plugins locaux à partir du disque. Écartez-les temporairement (ou renommez le dossier) et redémarrez l'application de bureau :
+RAILWISE peut également charger des plugins locaux à partir du disque. Écartez-les temporairement (ou renommez le dossier) et redémarrez l'application de bureau :
 
 - **Plugins mondiaux**
   - **macOS/Linux** : `~/.config/railwise/plugins/`
@@ -86,22 +86,22 @@ Si l'application recommence à fonctionner, réactivez les plugins un par un pou
 
 ### Vider le cache
 
-Si la désactivation des plugins ne résout pas le problème (ou si l'installation d'un plugin est bloquée), videz le cache afin que RAILWISE (甬算) puisse le reconstruire.
+Si la désactivation des plugins ne résout pas le problème (ou si l'installation d'un plugin est bloquée), videz le cache afin que RAILWISE puisse le reconstruire.
 
-1. Quittez complètement RAILWISE (甬算) Desktop.
+1. Quittez complètement RAILWISE Desktop.
 2. Supprimez le répertoire cache :
 
 - **macOS** : Finder -> `Cmd+Shift+G` -> coller `~/.cache/railwise`
 - **Linux** : supprimez `~/.cache/railwise` (ou exécutez `rm -rf ~/.cache/railwise`)
 - **Windows** : appuyez sur `WIN+R` et collez `%USERPROFILE%\.cache\railwise`
 
-3. Redémarrez le bureau RAILWISE (甬算).
+3. Redémarrez le bureau RAILWISE.
 
 ---
 
 ### Résoudre les problèmes de connexion au serveur
 
-RAILWISE (甬算) Desktop peut soit démarrer son propre serveur local (par défaut), soit se connecter à un serveur URL que vous avez configuré.
+RAILWISE Desktop peut soit démarrer son propre serveur local (par défaut), soit se connecter à un serveur URL que vous avez configuré.
 
 Si vous voyez une boîte de dialogue **« Échec de la connexion »** (ou si l'application ne dépasse jamais l'écran de démarrage), recherchez un serveur personnalisé URL.
 
@@ -132,21 +132,21 @@ Sur Linux, certaines configurations Wayland peuvent provoquer des fenêtres vide
 
 ### Windows : exécution WebView2
 
-Sur Windows, RAILWISE (甬算) Desktop nécessite Microsoft Edge **WebView2 Runtime**. Si l'application s'ouvre sur une fenêtre vide ou ne démarre pas, installez/mettez à jour WebView2 et réessayez.
+Sur Windows, RAILWISE Desktop nécessite Microsoft Edge **WebView2 Runtime**. Si l'application s'ouvre sur une fenêtre vide ou ne démarre pas, installez/mettez à jour WebView2 et réessayez.
 
 ---
 
 ### Windows : problèmes de performances généraux
 
-Si vous rencontrez des performances lentes, des problèmes d'accès aux fichiers ou des problèmes de terminal sur Windows, essayez d'utiliser [WSL (Windows Sous-système pour Linux)](/docs/windows-wsl). WSL fournit un environnement Linux qui fonctionne de manière plus transparente avec les fonctionnalités de RAILWISE (甬算).
+Si vous rencontrez des performances lentes, des problèmes d'accès aux fichiers ou des problèmes de terminal sur Windows, essayez d'utiliser [WSL (Windows Sous-système pour Linux)](/docs/windows-wsl). WSL fournit un environnement Linux qui fonctionne de manière plus transparente avec les fonctionnalités de RAILWISE.
 
 ---
 
 ### Les notifications ne s'affichent pas
 
-RAILWISE (甬算) Desktop affiche uniquement les notifications système lorsque :
+RAILWISE Desktop affiche uniquement les notifications système lorsque :
 
-- les notifications sont activées pour RAILWISE (甬算) dans les paramètres de votre système d'exploitation, et
+- les notifications sont activées pour RAILWISE dans les paramètres de votre système d'exploitation, et
 - la fenêtre de l'application n'est pas ciblée.
 
 ---
@@ -155,8 +155,8 @@ RAILWISE (甬算) Desktop affiche uniquement les notifications système lorsque�
 
 Si l'application ne démarre pas et que vous ne pouvez pas effacer les paramètres depuis l'interface utilisateur, réinitialisez l'état enregistré de l'application de bureau.
 
-1. Quittez le bureau RAILWISE (甬算).
-2. Recherchez et supprimez ces fichiers (ils se trouvent dans le répertoire de données de l'application RAILWISE (甬算) Desktop) :
+1. Quittez le bureau RAILWISE.
+2. Recherchez et supprimez ces fichiers (ils se trouvent dans le répertoire de données de l'application RAILWISE Desktop) :
 
 - `railwise.settings.dat` (serveur de bureau par défaut URL)
 - `railwise.global.dat` et `railwise.workspace.*.dat` (état de l'interface utilisateur comme les serveurs/projets récents)
@@ -171,7 +171,7 @@ Pour trouver rapidement le répertoire :
 
 ## Obtenir de l'aide
 
-Si vous rencontrez des problèmes avec RAILWISE (甬算) :
+Si vous rencontrez des problèmes avec RAILWISE :
 
 1. **Signaler les problèmes le GitHub**
 
@@ -195,7 +195,7 @@ Voici quelques problèmes courants et comment les résoudre.
 
 ---
 
-### RAILWISE (甬算) ne démarre pas
+### RAILWISE ne démarre pas
 
 1. Vérifiez les journaux pour les messages d'erreur
 2. Essayez d'exécuter avec `--print-logs` pour voir la sortie dans le terminal

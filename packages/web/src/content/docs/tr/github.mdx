@@ -63,7 +63,7 @@ Veya manuel olarak ayarlayabilirsiniz.
               fetch-depth: 1
               persist-credentials: false
 
-          - name: Run RAILWISE (甬算)
+          - name: Run RAILWISE
            uses: anomalyco/railwise/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -119,7 +119,7 @@ railwise aşağıdaki GitHub olayları tarafından tetiklenebilir:
 Otomatik görevleri gerçekleştirmek için railwise'u bir zamanlamaya göre çalıştırın:
 
 ```yaml title=".github/workflows/railwise-scheduled.yml"
-name: Scheduled RAILWISE (甬算) Task
+name: Scheduled RAILWISE Task
 
 on:
   schedule:
@@ -139,7 +139,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run RAILWISE (甬算)
+      - name: Run RAILWISE
         uses: anomalyco/railwise/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

@@ -3,7 +3,7 @@ title: MCP 伺服器
 description: 新增本地和遠端 MCP 工具。
 ---
 
-您可以透過 _Model Context Protocol_（MCP）為 OpenCode 新增外部工具。OpenCode 同時支援本地和遠端伺服器。
+您可以透過 _Model Context Protocol_（MCP）為 Railwise 新增外部工具。Railwise 同時支援本地和遠端伺服器。
 
 新增後，MCP 工具會自動與內建工具一起提供給 LLM 使用。
 
@@ -23,7 +23,7 @@ MCP 伺服器會佔用您的上下文空間，所以請謹慎選擇啟用哪些�
 
 ## 啟用
 
-您可以在 [OpenCode 設定](https://railwise.ai/docs/config/)的 `mcp` 欄位下定義 MCP 伺服器。為每個 MCP 指定一個唯一的名稱，在提示詞中可以透過該名稱來參照對應的 MCP。
+您可以在 [Railwise 設定](https://railwise.ai/docs/config/)的 `mcp` 欄位下定義 MCP 伺服器。為每個 MCP 指定一個唯一的名稱，在提示詞中可以透過該名稱來參照對應的 MCP。
 
 ```jsonc title="railwise.jsonc" {6}
 {
@@ -165,7 +165,7 @@ use the mcp_everything tool to add the number 3 and 4
 
 ## OAuth
 
-OpenCode 會自動處理遠端 MCP 伺服器的 OAuth 身分驗證。當伺服器需要身分驗證時，OpenCode 將：
+Railwise 會自動處理遠端 MCP 伺服器的 OAuth 身分驗證。當伺服器需要身分驗證時，Railwise 將：
 
 1. 偵測 401 回應並啟動 OAuth 流程
 2. 在伺服器支援的情況下使用**動態用戶端註冊（RFC 7591）**
@@ -189,7 +189,7 @@ OpenCode 會自動處理遠端 MCP 伺服器的 OAuth 身分驗證。當伺服�
 }
 ```
 
-如果伺服器需要身分驗證，OpenCode 會在您首次使用時提示您進行認證。您也可以使用 `opencode mcp auth <server-name>` [手動觸發認證流程](#authenticating)。
+如果伺服器需要身分驗證，Railwise 會在您首次使用時提示您進行認證。您也可以使用 `railwise mcp auth <server-name>` [手動觸發認證流程](#authenticating)。
 
 ---
 
@@ -223,22 +223,22 @@ OpenCode 會自動處理遠端 MCP 伺服器的 OAuth 身分驗證。當伺服�
 對特定 MCP 伺服器進行身分驗證：
 
 ```bash
-opencode mcp auth my-oauth-server
+railwise mcp auth my-oauth-server
 ```
 
 列出所有 MCP 伺服器及其認證狀態：
 
 ```bash
-opencode mcp list
+railwise mcp list
 ```
 
 刪除已儲存的憑證：
 
 ```bash
-opencode mcp logout my-oauth-server
+railwise mcp logout my-oauth-server
 ```
 
-`mcp auth` 指令會開啟瀏覽器進行授權。授權完成後，OpenCode 會將 Token 安全地儲存在 `~/.local/share/opencode/mcp-auth.json` 中。
+`mcp auth` 指令會開啟瀏覽器進行授權。授權完成後，Railwise 會將 Token 安全地儲存在 `~/.local/share/railwise/mcp-auth.json` 中。
 
 ---
 
@@ -279,10 +279,10 @@ opencode mcp logout my-oauth-server
 
 ```bash
 # 查看所有支援 OAuth 的伺服器的認證狀態
-opencode mcp auth list
+railwise mcp auth list
 
 # 偵錯特定伺服器的連線和 OAuth 流程
-opencode mcp debug my-oauth-server
+railwise mcp debug my-oauth-server
 ```
 
 `mcp debug` 指令會顯示當前認證狀態、測試 HTTP 連線，並嘗試執行 OAuth 發現流程。
@@ -291,7 +291,7 @@ opencode mcp debug my-oauth-server
 
 ## 管理
 
-您的 MCP 在 OpenCode 中作為工具使用，與內建工具並列。因此，您可以像管理其他工具一樣，透過 OpenCode 設定來管理它們。
+您的 MCP 在 Railwise 中作為工具使用，與內建工具並列。因此，您可以像管理其他工具一樣，透過 Railwise 設定來管理它們。
 
 ---
 
@@ -420,10 +420,10 @@ MCP 伺服器工具在註冊時以伺服器名稱作為前綴，因此要停用�
 新增設定後，使用 Sentry 進行身分驗證：
 
 ```bash
-opencode mcp auth sentry
+railwise mcp auth sentry
 ```
 
-這會開啟瀏覽器視窗完成 OAuth 流程，將 OpenCode 連結到您的 Sentry 帳號。
+這會開啟瀏覽器視窗完成 OAuth 流程，將 Railwise 連結到您的 Sentry 帳號。
 
 認證完成後，您可以在提示詞中使用 Sentry 工具來查詢問題、專案和錯誤資料。
 

@@ -3,7 +3,7 @@ title: MCP serveri
 description: Dodajte lokalne i udaljene MCP alate.
 ---
 
-Možete dodati vanjske alate u RAILWISE (甬算) koristeći _Model Context Protocol_, ili MCP. RAILWISE (甬算) podržava i lokalne i udaljene servere.
+Možete dodati vanjske alate u RAILWISE koristeći _Model Context Protocol_, ili MCP. RAILWISE podržava i lokalne i udaljene servere.
 Jednom dodani, MCP alati su automatski dostupni LLM-u zajedno sa ugrađenim alatima.
 
 ---
@@ -19,7 +19,7 @@ Određeni MCP serveri, poput GitHub MCP servera, mogu dodati mnogo tokena i lako
 
 ## Omogućavanje
 
-Možete definirati MCP servere u vašoj [RAILWISE (甬算) Config](https://railwise.ai/docs/config/) pod `mcp`. Dodajte svaki MCP sa jedinstvenim imenom. Možete se pozvati na taj MCP po imenu kada tražite LLM.
+Možete definirati MCP servere u vašoj [RAILWISE Config](https://railwise.ai/docs/config/) pod `mcp`. Dodajte svaki MCP sa jedinstvenim imenom. Možete se pozvati na taj MCP po imenu kada tražite LLM.
 
 ```jsonc title="railwise.jsonc" {6}
 {
@@ -152,7 +152,7 @@ Dodajte udaljene MCP servere postavljanjem `type` na `"remote"`.
 
 ## OAuth
 
-RAILWISE (甬算) automatski rukuje OAuth autentifikacijom za udaljene MCP servere. Kada server zahtijeva autentifikaciju, RAILWISE (甬算) će:
+RAILWISE automatski rukuje OAuth autentifikacijom za udaljene MCP servere. Kada server zahtijeva autentifikaciju, RAILWISE će:
 
 1. Otkrijte 401 odgovor i pokrenite OAuth tok
 2. Koristite **Dynamic Client Registration (RFC 7591)** ako podržava server
@@ -176,7 +176,7 @@ Za većinu MCP servera sa omogućenim OAuthom nije potrebna posebna konfiguracij
 }
 ```
 
-Ako server zahtijeva autentifikaciju, RAILWISE (甬算) će vas tražiti prijavu pri prvom korištenju. Ako se to ne desi, možete [ručno pokrenuti tok](#authenticating) naredbom `railwise mcp auth <server-name>`.
+Ako server zahtijeva autentifikaciju, RAILWISE će vas tražiti prijavu pri prvom korištenju. Ako se to ne desi, možete [ručno pokrenuti tok](#authenticating) naredbom `railwise mcp auth <server-name>`.
 
 ### Prethodno registrirano
 
@@ -222,7 +222,7 @@ Uklonite pohranjene vjerodajnice:
 railwise mcp logout my-oauth-server
 ```
 
-Komanda `mcp auth` otvara pretraživač za autorizaciju. Nakon odobrenja, RAILWISE (甬算) sigurno čuva tokene u `~/.local/share/railwise/mcp-auth.json`.
+Komanda `mcp auth` otvara pretraživač za autorizaciju. Nakon odobrenja, RAILWISE sigurno čuva tokene u `~/.local/share/railwise/mcp-auth.json`.
 
 #### Onemogućavanje OAuth-a
 
@@ -271,7 +271,7 @@ Komanda `mcp debug` prikazuje trenutni auth status, testira HTTP povezanost i po
 
 ## Upravljanje
 
-Vaši MCP serveri su dostupni kao alati u RAILWISE (甬算), zajedno s ugrađenim alatima. Možete njima upravljati kroz RAILWISE (甬算) konfiguraciju kao i bilo kojim drugim alatom.
+Vaši MCP serveri su dostupni kao alati u RAILWISE, zajedno s ugrađenim alatima. Možete njima upravljati kroz RAILWISE konfiguraciju kao i bilo kojim drugim alatom.
 
 ### Globalno
 
@@ -396,7 +396,7 @@ Nakon dodavanja konfiguracije, autentifikujte se sa Sentry:
 railwise mcp auth sentry
 ```
 
-Ovo će otvoriti prozor pretraživača da završite OAuth tok i povežete RAILWISE (甬算) sa vašim Sentry nalogom.
+Ovo će otvoriti prozor pretraživača da završite OAuth tok i povežete RAILWISE sa vašim Sentry nalogom.
 Nakon provjere autentičnosti, možete koristiti Sentry alate u svojim upitima za upite o problemima, projektima i podacima o greškama.
 
 ```txt "use sentry"

@@ -15,7 +15,7 @@ This extension requires the [railwise CLI](https://railwise.ai) to be installed 
 
 ## Support
 
-This is an early release. If you encounter issues or have feedback, please create an issue at https://github.com/anomalyco/railwise/issues.
+This is an early release. If you encounter issues or have feedback, please create an issue at https://github.com/railwise-cn/RAILWISE-CLI/issues.
 
 ## Development
 

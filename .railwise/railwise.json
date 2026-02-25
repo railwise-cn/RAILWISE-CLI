@@ -1,4 +1,83 @@
 {
   "$schema": "https://railwise.ai/config.json",
-  "default_agent": "chief_manager"
+  "default_agent": "chief_manager",
+  "provider": {
+    "deepseek": {
+      "options": {
+        "baseURL": "https://api.deepseek.com/v1",
+        "apiKey": ""
+      },
+      "models": {
+        "deepseek-chat": {
+          "name": "DeepSeek V3.2",
+          "limit": { "context": 131072, "output": 8192 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "deepseek-reasoner": {
+          "name": "DeepSeek V3.2 (Thinking)",
+          "limit": { "context": 131072, "output": 65536 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    "minimax": {
+      "options": {
+        "baseURL": "https://api.minimax.chat/v1",
+        "apiKey": ""
+      },
+      "models": {
+        "MiniMax-M1": {
+          "name": "MiniMax M1",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "MiniMax-T1": {
+          "name": "MiniMax T1 (Thinking)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    "kimi": {
+      "options": {
+        "baseURL": "https://api.moonshot.cn/v1",
+        "apiKey": ""
+      },
+      "models": {
+        "moonshot-v1-auto": {
+          "name": "Kimi (Auto)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "kimi-k2": {
+          "name": "Kimi K2",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    "zhipuai": {
+      "options": {
+        "baseURL": "https://open.bigmodel.cn/api/paas/v4",
+        "apiKey": ""
+      },
+      "models": {
+        "glm-4-flash-250414": {
+          "name": "GLM-4 Flash (免费)",
+          "limit": { "context": 131072, "output": 4096 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] }
+        },
+        "glm-4-plus": {
+          "name": "GLM-4 Plus",
+          "limit": { "context": 131072, "output": 4096 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] }
+        },
+        "glm-z1-flash": {
+          "name": "GLM Z1 Flash (免费)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    }
+  }
 }

@@ -11,7 +11,7 @@
 ### 环境要求
 
 - [Bun](https://bun.sh) >= 1.3.9
-- API 密钥（Anthropic / OpenAI / Gemini，通过代理或直连）
+- API 密钥（支持多种模型，含国产免费模型）
 
 ### 安装
 
@@ -41,6 +41,50 @@ railwise
 ```bash
 bun run dev
 ```
+
+---
+
+## 模型支持
+
+RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**，无需付费即可使用：
+
+### 免费 / 低价模型（推荐新手）
+
+| 厂商 | 模型 | 免费额度 | 注册地址 |
+|------|------|----------|----------|
+| 智谱 GLM | `glm-4-flash-250414`、`glm-z1-flash` | 永久免费 | [open.bigmodel.cn](https://open.bigmodel.cn) |
+| DeepSeek | `deepseek-chat`（V3.2）、`deepseek-reasoner` | 注册送 500 万 tokens | [platform.deepseek.com](https://platform.deepseek.com) |
+| MiniMax | `MiniMax-M1`、`MiniMax-T1` | 注册送免费额度 | [platform.minimaxi.com](https://platform.minimaxi.com) |
+| Kimi | `moonshot-v1-auto`、`kimi-k2` | 注册送免费额度 | [platform.moonshot.cn](https://platform.moonshot.cn) |
+
+### 付费模型
+
+| 厂商 | 模型 | 说明 |
+|------|------|------|
+| Anthropic | Claude Opus / Sonnet | 最强编码能力 |
+| OpenAI | GPT-4o / o3 | 通用能力强 |
+| Google | Gemini 2.5 Pro / Flash | 超长上下文 |
+
+### 配置方式
+
+编辑 `.railwise/railwise.jsonc`，在 `provider` 中填入对应厂商的 API Key 即可：
+
+```jsonc
+{
+  // 使用 DeepSeek 作为默认模型（免费）
+  "model": "deepseek/deepseek-chat",
+  "provider": {
+    "deepseek": {
+      "options": {
+        "baseURL": "https://api.deepseek.com/v1",
+        "apiKey": "sk-your-deepseek-key"
+      }
+    }
+  }
+}
+```
+
+完整配置示例见 [`.railwise/railwise.jsonc.example`](.railwise/railwise.jsonc.example)。
 
 ---
 

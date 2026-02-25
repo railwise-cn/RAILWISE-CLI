@@ -1,10 +1,12 @@
 {
   "$schema": "https://railwise.ai/config.json",
-  // 默认使用的模型
+  // 默认使用的模型（可改为下方任意免费模型，如 "deepseek/deepseek-chat"）
   "model": "anthropic/claude-sonnet-4-20250514",
   // 启动后默认使用 chief_manager 智能体
   "default_agent": "chief_manager",
   "provider": {
+    // ========== 付费模型 ==========
+
     // Anthropic 直连或代理
     "anthropic": {
       "options": {
@@ -35,6 +37,96 @@
           "name": "Gemini 2.5 Pro",
           "limit": { "context": 1048576, "output": 65536 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
+        }
+      }
+    },
+
+    // ========== 免费 / 低价国产模型 ==========
+    // 以下模型均通过各厂商官方 OpenAI 兼容 API 接入
+    // 注册即送免费额度，适合个人开发者和学习使用
+
+    // DeepSeek（注册送 500 万 tokens）
+    // 注册地址：https://platform.deepseek.com
+    "deepseek": {
+      "options": {
+        "baseURL": "https://api.deepseek.com/v1",
+        "apiKey": "sk-xxxx-YOUR-DEEPSEEK-KEY"
+      },
+      "models": {
+        "deepseek-chat": {
+          "name": "DeepSeek V3.2",
+          "limit": { "context": 131072, "output": 8192 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "deepseek-reasoner": {
+          "name": "DeepSeek V3.2 (Thinking)",
+          "limit": { "context": 131072, "output": 65536 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    // MiniMax（注册送免费额度）
+    // 注册地址：https://platform.minimaxi.com
+    "minimax": {
+      "options": {
+        "baseURL": "https://api.minimax.chat/v1",
+        "apiKey": "YOUR-MINIMAX-KEY"
+      },
+      "models": {
+        "MiniMax-M1": {
+          "name": "MiniMax M1",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "MiniMax-T1": {
+          "name": "MiniMax T1 (Thinking)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    // Kimi / Moonshot AI（注册送免费额度）
+    // 注册地址：https://platform.moonshot.cn
+    "kimi": {
+      "options": {
+        "baseURL": "https://api.moonshot.cn/v1",
+        "apiKey": "sk-xxxx-YOUR-KIMI-KEY"
+      },
+      "models": {
+        "moonshot-v1-auto": {
+          "name": "Kimi (Auto)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "kimi-k2": {
+          "name": "Kimi K2",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    // 智谱 GLM（glm-4-flash / glm-z1-flash 永久免费）
+    // 注册地址：https://open.bigmodel.cn
+    "zhipuai": {
+      "options": {
+        "baseURL": "https://open.bigmodel.cn/api/paas/v4",
+        "apiKey": "YOUR-ZHIPUAI-KEY"
+      },
+      "models": {
+        "glm-4-flash-250414": {
+          "name": "GLM-4 Flash (免费)",
+          "limit": { "context": 131072, "output": 4096 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] }
+        },
+        "glm-4-plus": {
+          "name": "GLM-4 Plus",
+          "limit": { "context": 131072, "output": 4096 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] }
+        },
+        "glm-z1-flash": {
+          "name": "GLM Z1 Flash (免费)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
         }
       }
     }

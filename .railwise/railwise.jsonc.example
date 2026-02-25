@@ -2,6 +2,8 @@
   "$schema": "https://railwise.ai/config.json",
   // 默认使用的模型
   "model": "anthropic/claude-sonnet-4-20250514",
+  // 启动后默认使用 chief_manager 智能体
+  "default_agent": "chief_manager",
   "provider": {
     // Anthropic 直连或代理
     "anthropic": {

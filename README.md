@@ -20,11 +20,25 @@ git clone https://github.com/railwise-cn/RAILWISE-CLI.git
 cd RAILWISE-CLI
 bun install
 
+# 注册全局命令（只需执行一次）
+cd packages/railwise && bun link && cd ../..
+
 # 配置 API 密钥
 cp .railwise/railwise.jsonc.example .railwise/railwise.jsonc
 # 编辑 .railwise/railwise.jsonc，填入你的 API Key
+```
 
-# 启动
+### 启动
+
+注册全局命令后，在任意目录下直接运行：
+
+```bash
+railwise
+```
+
+也可以在项目根目录使用开发模式：
+
+```bash
 bun run dev
 ```
 

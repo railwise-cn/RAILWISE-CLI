@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 const childProcess = require("child_process")
 const fs = require("fs")
@@ -162,6 +162,19 @@ function findBinary(startDir) {
 
 const resolved = findBinary(scriptDir)
 if (!resolved) {
+  // Fallback: run from source via bun for local development
+  const srcEntry = path.resolve(scriptDir, "..", "src", "index.ts")
+  if (fs.existsSync(srcEntry)) {
+    const result = childProcess.spawnSync("bun", ["run", "--conditions=browser", srcEntry, ...process.argv.slice(2)], {
+      stdio: "inherit",
+      cwd: path.resolve(scriptDir, ".."),
+    })
+    if (result.error) {
+      console.error(result.error.message)
+      process.exit(1)
+    }
+    process.exit(typeof result.status === "number" ? result.status : 0)
+  }
   console.error(
     "It seems that your package manager failed to install the right version of the RAILWISE CLI for your platform. You can try manually installing " +
       names.map((n) => `\"${n}\"`).join(" or ") +

@@ -37,7 +37,9 @@ export namespace ToolRegistry {
 
     const matches = await Config.directories().then((dirs) =>
       dirs.flatMap((dir) =>
-        Glob.scanSync("{tool,tools}/*.{js,ts}", { cwd: dir, absolute: true, dot: true, symlink: true }),
+        Glob.scanSync("{tool,tools}/*.{js,ts}", { cwd: dir, absolute: true, dot: true, symlink: true }).filter(
+          (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.js") && !f.endsWith(".spec.ts") && !f.endsWith(".spec.js"),
+        ),
       ),
     )
     if (matches.length) await Config.waitForDependencies()

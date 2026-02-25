@@ -278,7 +278,7 @@
       "name": "railwise",
       "version": "1.2.8",
       "bin": {
-        "railwise": "./bin/opencode",
+        "railwise": "./bin/railwise",
       },
       "dependencies": {
         "@actions/core": "1.11.1",

@@ -107,9 +107,17 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 | 工具 | 功能 |
 |------|------|
 | `survey_calculator` | 水准/导线闭合差校核、最小二乘严密平差、预警等级判定 |
+| `coord_transform` | 高斯-克吕格正反算、七参数布尔莎坐标系转换（CGCS2000/WGS84/西安80/北京54） |
+| `angle_convert` | 角度多格式互转（度分秒/十进制度/弧度/密位/百分度） |
+| `distance_calculator` | 全站仪测距综合归算（气象改正→斜距化平→投影改正） |
+| `pile_stakeout` | 极坐标放样计算、里程桩号偏距计算、批量放样点生成 |
+| `deformation_rate` | 变形速率分析、线性回归趋势预测、多测点对比 |
+| `cross_section` | 隧道收敛量计算、断面超欠挖分析、建筑限界检查 |
 | `monitoring_csv` | 自动化监测 CSV 海量数据清洗与统计 |
 | `format_parser` | 徕卡 GSI-8/GSI-16 及 DAT 格式文件解析 |
 | `chart_generator` | SVG 趋势折线图生成（多测点 + 报警线） |
+| `report_export` | Markdown 转 DOCX 报告导出 |
+| `standard_query` | 工程规范/标准条文智能查询 |
 
 ### 业务命令（SOP 工作流）
 

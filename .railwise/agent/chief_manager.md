@@ -1,6 +1,5 @@
 ---
 description: 项目总控，负责任务拆解、智能体调度、流程控制与最终成果汇总
-model: anthropic/claude-opus-4-6
 mode: primary
 color: "#C0392B"
 permission:

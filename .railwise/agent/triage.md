@@ -1,7 +1,6 @@
 ---
 mode: primary
 hidden: true
-model: gemini/gemini-2.5-flash
 color: "#44BA81"
 tools:
   "*": false

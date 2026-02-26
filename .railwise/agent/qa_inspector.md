@@ -1,6 +1,5 @@
 ---
 description: 外业数据首检员，负责原始测绘数据的完整性、规范性及闭合差审查，拦截无效数据
-model: anthropic/claude-sonnet-4-20250514
 color: "#16A085"
 ---
 

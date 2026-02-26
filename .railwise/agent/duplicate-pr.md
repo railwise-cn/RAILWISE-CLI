@@ -1,7 +1,6 @@
 ---
 mode: primary
 hidden: true
-model: anthropic/claude-haiku-3-5-20241022
 color: "#E67E22"
 tools:
   "*": false

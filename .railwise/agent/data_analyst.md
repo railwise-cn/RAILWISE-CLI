@@ -1,6 +1,5 @@
 ---
 description: 测绘数据处理专家，负责平差计算、变形趋势分析及预警研判
-model: anthropic/claude-sonnet-4-20250514
 color: "#8E44AD"
 ---
 

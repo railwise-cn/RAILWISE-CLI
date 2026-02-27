@@ -1180,6 +1180,13 @@ export namespace Config {
             .describe("Token buffer for compaction. Leaves enough window to avoid overflow during compaction."),
         })
         .optional(),
+      memory: z
+        .object({
+          enabled: z.boolean().optional().describe("Enable cross-session memory (default: true)"),
+          autoCapture: z.boolean().optional().describe("Automatically extract memories from compaction summaries (default: true)"),
+          maxMemories: z.number().int().min(1).max(50).optional().describe("Maximum memories to inject into system prompt (default: 10)"),
+        })
+        .optional(),
       experimental: z
         .object({
           disable_paste_summary: z.boolean().optional(),

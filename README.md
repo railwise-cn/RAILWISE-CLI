@@ -204,6 +204,44 @@ export default tool({
 
 ---
 
+## 跨会话记忆系统
+
+RAILWISE-CLI 内置跨会话记忆系统，自动从会话压缩摘要中提取关键知识（发现、决策、模式、事实），持久化到 SQLite 数据库，并在新会话启动时注入系统提示词。
+
+### 工作原理
+
+1. **自动提取** — 当会话触发压缩（compaction）时，系统自动解析摘要中的 `## Discoveries`、`## Goal`、`## Instructions`、`## Accomplished` 等章节，提取有价值的记忆条目
+2. **去重 & 增强** — 使用 Jaccard 相似度算法检测重复记忆（阈值 0.7），重复条目自动提升置信度而非重复存储
+3. **智能注入** — 新会话启动时，按置信度排序取 Top-N 条记忆，以 `<project-memory>` 标签注入系统提示词
+4. **生命周期管理** — 支持记忆过期、置信度衰减、访问计数跟踪
+
+### 配置
+
+在 `.railwise/railwise.jsonc` 中添加 `memory` 字段：
+
+```jsonc
+{
+  "memory": {
+    "enabled": true,          // 启用/禁用记忆系统（默认: true）
+    "autoCapture": true,      // 自动从压缩摘要提取（默认: true）
+    "maxMemories": 10         // 注入系统提示词的最大记忆数（默认: 10，范围: 1-50）
+  }
+}
+```
+
+### 记忆类别
+
+| 类别 | 说明 | 来源 |
+|------|------|------|
+| `discovery` | 关于项目结构、文件位置的发现 | `## Discoveries` |
+| `decision` | 项目目标与关键决策 | `## Goal` |
+| `pattern` | 编码风格与工作流模式 | `## Instructions` |
+| `fact` | 已完成的工作成果 | `## Accomplished` |
+| `preference` | 用户偏好 | 未来扩展 |
+| `error` | 踩坑与解决方案 | 未来扩展 |
+
+---
+
 ## 致谢
 
 本项目基于 [opencode](https://github.com/sst/opencode)（MIT 协议）构建，感谢 SST 团队的开源贡献。

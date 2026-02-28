@@ -26,6 +26,7 @@ import { SessionRoutes } from "./routes/session"
 import { PtyRoutes } from "./routes/pty"
 import { McpRoutes } from "./routes/mcp"
 import { FileRoutes } from "./routes/file"
+import { Config } from "../config/config"
 import { ConfigRoutes } from "./routes/config"
 import { ExperimentalRoutes } from "./routes/experimental"
 import { ProviderRoutes } from "./routes/provider"
@@ -159,6 +160,9 @@ export namespace Server {
             const providerID = c.req.valid("param").providerID
             const info = c.req.valid("json")
             await Auth.set(providerID, info)
+            if (info.type === "api") {
+              await Config.syncProviderApiKey(providerID, info.key).catch(() => {})
+            }
             return c.json(true)
           },
         )

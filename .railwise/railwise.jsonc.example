@@ -4,6 +4,9 @@
   "model": "anthropic/claude-sonnet-4-20250514",
   // 启动后默认使用 chief_manager 智能体
   "default_agent": "chief_manager",
+  // 只显示以下配置的 provider，避免模型列表中出现大量无关模型
+  // 如需使用其他 provider，在此数组中添加对应 ID 即可
+  "enabled_providers": ["anthropic", "openai", "gemini", "deepseek", "minimax", "kimi", "zhipuai"],
   "provider": {
     // ========== 付费模型 ==========
 
@@ -67,7 +70,10 @@
     },
     // MiniMax（注册送免费额度）
     // 注册地址：https://platform.minimaxi.com
+    // 重要：必须设置 npm 为 @ai-sdk/openai-compatible，因为 models.dev 默认用 anthropic SDK
     "minimax": {
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "https://api.minimax.chat/v1",
       "options": {
         "baseURL": "https://api.minimax.chat/v1",
         "apiKey": "YOUR-MINIMAX-KEY"
@@ -75,11 +81,13 @@
       "models": {
         "MiniMax-M1": {
           "name": "MiniMax M1",
+          "provider": { "npm": "@ai-sdk/openai-compatible" },
           "limit": { "context": 1048576, "output": 65536 },
           "modalities": { "input": ["text"], "output": ["text"] }
         },
         "MiniMax-T1": {
           "name": "MiniMax T1 (Thinking)",
+          "provider": { "npm": "@ai-sdk/openai-compatible" },
           "limit": { "context": 131072, "output": 16384 },
           "modalities": { "input": ["text"], "output": ["text"] }
         }
@@ -88,6 +96,8 @@
     // Kimi / Moonshot AI（注册送免费额度）
     // 注册地址：https://platform.moonshot.cn
     "kimi": {
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "https://api.moonshot.cn/v1",
       "options": {
         "baseURL": "https://api.moonshot.cn/v1",
         "apiKey": "sk-xxxx-YOUR-KIMI-KEY"
@@ -98,8 +108,8 @@
           "limit": { "context": 131072, "output": 16384 },
           "modalities": { "input": ["text"], "output": ["text"] }
         },
-        "kimi-k2": {
-          "name": "Kimi K2",
+        "kimi-k2.5": {
+          "name": "Kimi K2.5",
           "limit": { "context": 131072, "output": 16384 },
           "modalities": { "input": ["text"], "output": ["text"] }
         }

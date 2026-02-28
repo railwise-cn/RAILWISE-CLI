@@ -67,6 +67,7 @@ async function addProvider(database: Record<string, ModelsDev.Provider>) {
   if (prompts.isCancel(key)) throw new UI.CancelledError()
 
   await Auth.set(id, { type: "api", key })
+  await Config.syncProviderApiKey(id, key).catch(() => {})
   prompts.log.success(`Saved credential for ${info?.name ?? id}`)
 
   return id

@@ -1374,6 +1374,50 @@ export namespace Config {
     }),
   )
 
+  export async function syncProviderApiKey(providerID: string, apiKey: string) {
+    const candidates: string[] = [globalConfigFile()]
+
+    if (!Flag.RAILWISE_DISABLE_PROJECT_CONFIG) {
+      const dirs = await Array.fromAsync(
+        Filesystem.up({
+          targets: [".railwise"],
+          start: Instance.directory,
+          stop: Instance.worktree,
+        }),
+      )
+      for (const dir of dirs) {
+        for (const file of ["railwise.jsonc", "railwise.json"]) {
+          candidates.push(path.join(dir, file))
+        }
+      }
+      for (const file of ["railwise.jsonc", "railwise.json"]) {
+        const found = await Filesystem.findUp(file, Instance.directory, Instance.worktree)
+        candidates.push(...found)
+      }
+    }
+
+    for (const filepath of unique(candidates)) {
+      const text = await Filesystem.readText(filepath).catch(() => undefined)
+      if (!text) continue
+
+      const data = parseJsonc(text, [], { allowTrailingComma: true })
+      if (!isRecord(data)) continue
+      if (!isRecord(data.provider)) continue
+      if (!isRecord(data.provider[providerID])) continue
+
+      const updated = patchJsonc(text, {
+        provider: { [providerID]: { options: { apiKey } } },
+      })
+
+      if (filepath.endsWith(".jsonc")) {
+        await Filesystem.write(filepath, updated)
+      } else {
+        await Filesystem.writeJson(filepath, JSON.parse(updated))
+      }
+      log.info("synced apiKey to config", { providerID, path: filepath })
+    }
+  }
+
   export async function get() {
     return state().then((x) => x.config)
   }

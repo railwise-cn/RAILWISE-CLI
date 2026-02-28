@@ -12,6 +12,7 @@ import { Filesystem } from "@/util/filesystem"
 import type { Event } from "@railwise/sdk/v2"
 import type { EventSource } from "./context/sdk"
 import { win32DisableProcessedInput, win32InstallCtrlCGuard } from "./win32"
+import { setup } from "../setup"
 
 declare global {
   const RAILWISE_WORKER_PATH: string
@@ -93,6 +94,8 @@ export const TuiThreadCommand = cmd({
         process.exitCode = 1
         return
       }
+
+      if (process.stdin.isTTY) await setup()
 
       // Resolve relative paths against PWD to preserve behavior when using --cwd flag
       const baseCwd = process.env.PWD ?? process.cwd()

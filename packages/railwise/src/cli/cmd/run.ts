@@ -27,6 +27,7 @@ import { SkillTool } from "../../tool/skill"
 import { BashTool } from "../../tool/bash"
 import { TodoWriteTool } from "../../tool/todo"
 import { Locale } from "../../util/locale"
+import { setup } from "./setup"
 
 type ToolProps<T extends Tool.Info> = {
   input: Tool.InferParameters<T>
@@ -612,6 +613,8 @@ export const RunCommand = cmd({
       const sdk = createRailwiseClient({ baseUrl: args.attach, directory })
       return await execute(sdk)
     }
+
+    if (process.stdin.isTTY) await setup()
 
     await bootstrap(process.cwd(), async () => {
       const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => {

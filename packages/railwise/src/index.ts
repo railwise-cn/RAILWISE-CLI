@@ -29,6 +29,8 @@ import { WebCommand } from "./cli/cmd/web"
 import { PrCommand } from "./cli/cmd/pr"
 import { SessionCommand } from "./cli/cmd/session"
 import { DbCommand } from "./cli/cmd/db"
+import { SetupCommand } from "./cli/cmd/setup"
+import { ProviderCommand } from "./cli/cmd/provider"
 import path from "path"
 import { Global } from "./global"
 import { JsonMigration } from "./storage/json-migration"
@@ -142,6 +144,8 @@ const cli = yargs(hideBin(process.argv))
   .command(PrCommand)
   .command(SessionCommand)
   .command(DbCommand)
+  .command(SetupCommand)
+  .command(ProviderCommand)
   .fail((msg, err) => {
     if (
       msg?.startsWith("Unknown argument") ||

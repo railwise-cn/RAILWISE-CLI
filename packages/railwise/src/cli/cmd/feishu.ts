@@ -9,12 +9,10 @@ import { modify, applyEdits } from "jsonc-parser"
 import path from "path"
 
 const PRESETS: { value: string; label: string; hint: string }[] = [
-  { value: "preset.docx.default", label: "云文档读取 (Docs)", hint: "读取飞书云文档内容" },
-  { value: "preset.wiki.default", label: "知识库 (Wiki)", hint: "读取知识库和企业公开知识库" },
-  { value: "preset.bitable.default", label: "多维表格 (Bitable)", hint: "创建和管理多维表格" },
-  { value: "preset.im.default", label: "即时消息 (IM)", hint: "发送消息到群聊或个人" },
-  { value: "preset.calendar.default", label: "日历 (Calendar)", hint: "管理日程和会议" },
-  { value: "preset.sheets.default", label: "电子表格 (Sheets)", hint: "读取和管理电子表格" },
+  { value: "preset.doc.default", label: "云文档 + 知识库 (Docs & Wiki)", hint: "读取云文档、搜索文档、Wiki 节点" },
+  { value: "preset.base.default", label: "多维表格 (Bitable)", hint: "创建和管理多维表格" },
+  { value: "preset.im.default", label: "即时消息 (IM)", hint: "发送消息、创建群聊、查看成员" },
+  { value: "preset.calendar.default", label: "日历 (Calendar)", hint: "创建日程、查询空闲状态" },
   { value: "preset.task.default", label: "任务 (Task)", hint: "创建和管理飞书任务" },
 ]
 
@@ -79,7 +77,7 @@ export const FeishuCommand = cmd({
             label: p.label,
             hint: p.hint,
           })),
-          initialValues: ["preset.docx.default", "preset.wiki.default", "preset.bitable.default"],
+          initialValues: ["preset.doc.default", "preset.base.default"],
           required: true,
         })
         if (prompts.isCancel(features)) throw new UI.CancelledError()

@@ -55,6 +55,16 @@ if (!Script.preview) {
   const github = Script.github.full
   const ver = Script.version
 
+  for (const name of Object.keys(binaries)) {
+    if (name.includes("linux")) {
+      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise`.nothrow()
+    } else if (name.includes("darwin")) {
+      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise`.nothrow()
+    } else if (name.includes("windows")) {
+      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe`.nothrow()
+    }
+  }
+
   const sha = async (file: string) => {
     try {
       return (await $`sha256sum ./dist/${file} | cut -d' ' -f1`.text()).trim()
@@ -120,7 +130,7 @@ end
     await $`rm -rf ./dist/homebrew-tap`
     await $`git clone ${tap} ./dist/homebrew-tap`
     await Bun.file("./dist/homebrew-tap/railwise.rb").write(formula)
-    await $`cd ./dist/homebrew-tap && git add railwise.rb && git commit -m "Update to v${ver}" && git push`
+    await $`cd ./dist/homebrew-tap && git config user.name "railwise-bot" && git config user.email "bot@railwise.ai" && git add railwise.rb && git commit -m "Update to v${ver}" && git push`
     console.log("Homebrew formula updated")
   } else {
     console.log("GITHUB_TOKEN not set, skipping Homebrew update")

@@ -96,21 +96,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: false
 
-      - name: Package release assets
-        if: inputs.bump || inputs.version
-        run: |
-          cd packages/railwise/dist
-          for dir in railwise-linux-*; do
-            [ -d "$dir" ] && tar -czf "${dir}.tar.gz" -C "$dir/bin" railwise
-          done
-          for dir in railwise-darwin-*; do
-            [ -d "$dir" ] && (cd "$dir/bin" && zip -q "../../${dir}.zip" railwise)
-          done
-          for dir in railwise-windows-*; do
-            [ -d "$dir" ] && zip -q "${dir}.zip" "$dir/bin/railwise.exe"
-          done
-          ls -lh *.tar.gz *.zip 2>/dev/null || true
-
       - name: Create GitHub Release
         if: inputs.bump || inputs.version
         run: |

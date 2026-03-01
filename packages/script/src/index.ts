@@ -1,15 +1,10 @@
 import { $, semver } from "bun"
 import path from "path"
-// ============================================================
-// RAILWISE Distribution Config — 发布前只需修改这里
-// ============================================================
-// TODO: 创建 GitHub repo 后，把下面的占位符替换为你的实际值
-const GITHUB_OWNER = "YOUR_GITHUB_ORG"    // e.g. "railwise-ai"
-const GITHUB_REPO = "railwise"             // GitHub 仓库名
-const NPM_PACKAGE = "railwise-ai"          // npm 发布包名
+const GITHUB_OWNER = "railwise-cn"
+const GITHUB_REPO = "RAILWISE-CLI"
+const NPM_PACKAGE = "railwise-ai"
 const DOCKER_IMAGE = `ghcr.io/${GITHUB_OWNER}/${GITHUB_REPO}`
 const HOMEBREW_TAP = `${GITHUB_OWNER}/homebrew-tap`
-// ============================================================
 
 const rootPkgPath = path.resolve(import.meta.dir, "../../../package.json")
 const rootPkg = await Bun.file(rootPkgPath).json()
@@ -58,8 +53,7 @@ const VERSION = await (async () => {
 
 const team = [
   "actions-user",
-  // TODO: 替换为你团队的 GitHub 用户名
-  "railwise-bot",
+  "railwise-cn",
 ]
 
 export const Script = {

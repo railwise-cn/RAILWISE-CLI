@@ -148,6 +148,16 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
         .finally(() => {
           setModelStore("ready", true)
           if (state.pending) save()
+          // Prune stale entries after providers are loaded
+          queueMicrotask(() => {
+            const validRecent = modelStore.recent.filter((item) => isModelValid(item))
+            const validFavorite = modelStore.favorite.filter((item) => isModelValid(item))
+            if (validRecent.length !== modelStore.recent.length || validFavorite.length !== modelStore.favorite.length) {
+              setModelStore("recent", validRecent)
+              setModelStore("favorite", validFavorite)
+              save()
+            }
+          })
         })
 
       const args = useArgs()
@@ -232,7 +242,7 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
         cycle(direction: 1 | -1) {
           const current = currentModel()
           if (!current) return
-          const recent = modelStore.recent
+          const recent = modelStore.recent.filter((item) => isModelValid(item))
           const index = recent.findIndex((x) => x.providerID === current.providerID && x.modelID === current.modelID)
           if (index === -1) return
           let next = index + direction

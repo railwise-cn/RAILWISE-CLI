@@ -753,6 +753,11 @@ export namespace Provider {
     }
   }
 
+  // Known free models from domestic providers (cost = 0)
+  const FREE_MODELS: Record<string, string[]> = {
+    zhipuai: ["glm-4-flash-250414", "glm-z1-flash"],
+  }
+
   const state = Instance.state(async () => {
     using _ = log.time("state")
     const config = await Config.get()
@@ -762,9 +767,18 @@ export namespace Provider {
     const disabled = new Set(config.disabled_providers ?? [])
     const enabled = config.enabled_providers ? new Set(config.enabled_providers) : null
 
+    // Built-in + free-model providers bypass enabled_providers filtering
+    const builtin = new Set([
+      "github-copilot",
+      "github-copilot-enterprise",
+      "railwise",
+      ...Object.keys(FREE_MODELS),
+    ])
+
     function isProviderAllowed(providerID: string): boolean {
-      if (enabled && !enabled.has(providerID)) return false
       if (disabled.has(providerID)) return false
+      if (builtin.has(providerID)) return true
+      if (enabled && !enabled.has(providerID)) return false
       return true
     }
 
@@ -1003,6 +1017,11 @@ export namespace Provider {
           (configProvider?.whitelist && !configProvider.whitelist.includes(modelID))
         )
           delete provider.models[modelID]
+
+        const freeList = FREE_MODELS[providerID]
+        if (freeList?.includes(modelID)) {
+          model.cost = { input: 0, output: 0, cache: { read: 0, write: 0 } }
+        }
 
         model.variants = mapValues(ProviderTransform.variants(model), (v) => v)
 
@@ -1277,6 +1296,9 @@ export namespace Provider {
       return getModel("railwise", "gpt-5-nano")
     }
 
+    const free = await findFreeModel()
+    if (free) return getModel(free.providerID, free.modelID)
+
     return undefined
   }
 
@@ -1308,13 +1330,34 @@ export namespace Provider {
     }
 
     const provider = Object.values(providers).find((p) => !cfg.provider || Object.keys(cfg.provider).includes(p.id))
-    if (!provider) throw new Error("no providers found")
+    if (!provider) {
+      const free = await findFreeModel()
+      if (free) return free
+      throw new Error("no providers found")
+    }
     const [model] = sort(Object.values(provider.models))
-    if (!model) throw new Error("no models found")
+    if (!model) {
+      const free = await findFreeModel()
+      if (free) return free
+      throw new Error("no models found")
+    }
     return {
       providerID: provider.id,
       modelID: model.id,
     }
+  }
+
+  async function findFreeModel() {
+    const s = await state()
+    const freeProviders = Object.keys(FREE_MODELS)
+    for (const pid of freeProviders) {
+      const p = s.providers[pid]
+      if (!p) continue
+      for (const mid of FREE_MODELS[pid]) {
+        if (p.models[mid]) return { providerID: pid, modelID: mid }
+      }
+    }
+    return undefined
   }
 
   export function parseModel(model: string) {

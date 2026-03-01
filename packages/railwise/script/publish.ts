@@ -49,5 +49,80 @@ const tasks = Object.entries(binaries).map(async ([name]) => {
 await Promise.all(tasks)
 await $`cd ./dist/${pkg.name} && bun pm pack && npm publish *.tgz --access public --tag ${Script.channel}`
 
-// TODO: Docker, AUR, and Homebrew publishing (skipped for now)
-console.log("npm publish complete. Skipping Docker/AUR/Homebrew.")
+console.log("npm publish complete")
+
+if (!Script.preview) {
+  const github = Script.github.full
+  const ver = Script.version
+
+  const sha = async (file: string) => {
+    try {
+      return (await $`sha256sum ./dist/${file} | cut -d' ' -f1`.text()).trim()
+    } catch {
+      return ""
+    }
+  }
+
+  const macX64Sha = await sha("railwise-darwin-x64.zip")
+  const macArm64Sha = await sha("railwise-darwin-arm64.zip")
+  const x64Sha = await sha("railwise-linux-x64.tar.gz")
+  const arm64Sha = await sha("railwise-linux-arm64.tar.gz")
+
+  const formula = `# typed: false
+# frozen_string_literal: true
+
+class Railwise < Formula
+  desc "AI coding agent built for the terminal"
+  homepage "https://github.com/${github}"
+  version "${ver.split("-")[0]}"
+
+  depends_on "ripgrep"
+
+  on_macos do
+    if Hardware::CPU.intel?
+      url "https://github.com/${github}/releases/download/v${ver}/railwise-darwin-x64.zip"
+      sha256 "${macX64Sha}"
+      def install
+        bin.install "railwise"
+      end
+    end
+    if Hardware::CPU.arm?
+      url "https://github.com/${github}/releases/download/v${ver}/railwise-darwin-arm64.zip"
+      sha256 "${macArm64Sha}"
+      def install
+        bin.install "railwise"
+      end
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.intel? and Hardware::CPU.is_64_bit?
+      url "https://github.com/${github}/releases/download/v${ver}/railwise-linux-x64.tar.gz"
+      sha256 "${x64Sha}"
+      def install
+        bin.install "railwise"
+      end
+    end
+    if Hardware::CPU.arm? and Hardware::CPU.is_64_bit?
+      url "https://github.com/${github}/releases/download/v${ver}/railwise-linux-arm64.tar.gz"
+      sha256 "${arm64Sha}"
+      def install
+        bin.install "railwise"
+      end
+    end
+  end
+end
+`
+
+  const token = process.env.GITHUB_TOKEN
+  if (token) {
+    const tap = `https://x-access-token:${token}@github.com/${Script.homebrew}.git`
+    await $`rm -rf ./dist/homebrew-tap`
+    await $`git clone ${tap} ./dist/homebrew-tap`
+    await Bun.file("./dist/homebrew-tap/railwise.rb").write(formula)
+    await $`cd ./dist/homebrew-tap && git add railwise.rb && git commit -m "Update to v${ver}" && git push`
+    console.log("Homebrew formula updated")
+  } else {
+    console.log("GITHUB_TOKEN not set, skipping Homebrew update")
+  }
+}

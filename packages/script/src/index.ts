@@ -3,7 +3,7 @@ import path from "path"
 const GITHUB_OWNER = "railwise-cn"
 const GITHUB_REPO = "RAILWISE-CLI"
 const NPM_PACKAGE = "railwise-ai"
-const DOCKER_IMAGE = `ghcr.io/${GITHUB_OWNER}/${GITHUB_REPO}`
+const DOCKER_IMAGE = `ghcr.io/${GITHUB_OWNER}/${GITHUB_REPO}`.toLowerCase()
 const HOMEBREW_TAP = `${GITHUB_OWNER}/homebrew-tap`
 
 const rootPkgPath = path.resolve(import.meta.dir, "../../../package.json")

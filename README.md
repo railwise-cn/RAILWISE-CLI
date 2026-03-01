@@ -10,35 +10,52 @@
 
 ## 快速开始
 
-### 环境要求
-
-- [Bun](https://bun.sh) >= 1.3.9
-- API 密钥（支持多种模型，含国产免费模型）
-
 ### 安装
+
+**npm（推荐）**
+
+```bash
+npm install -g railwise-ai
+```
+
+**curl（Linux / macOS）**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/main/install.sh | sh
+```
+
+**Homebrew（macOS / Linux）**
+
+```bash
+brew install railwise-cn/tap/railwise
+```
+
+**源码安装（开发者）**
+
+需要 [Bun](https://bun.sh) >= 1.3.9：
 
 ```bash
 git clone https://github.com/railwise-cn/RAILWISE-CLI.git
 cd RAILWISE-CLI
 bun install
-
-# 注册全局命令（只需执行一次）
 cd packages/railwise && bun link && cd ../..
+```
 
-# 配置 API 密钥
+### 配置
+
+```bash
+# 复制配置模板
 cp .railwise/railwise.jsonc.example .railwise/railwise.jsonc
 # 编辑 .railwise/railwise.jsonc，填入你的 API Key
 ```
 
 ### 启动
 
-注册全局命令后，在任意目录下直接运行：
-
 ```bash
 railwise
 ```
 
-也可以在项目根目录使用开发模式：
+开发模式（源码安装）：
 
 ```bash
 bun run dev

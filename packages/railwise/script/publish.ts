@@ -124,15 +124,19 @@ class Railwise < Formula
 end
 `
 
-  const token = process.env.GITHUB_TOKEN
+  const token = process.env.HOMEBREW_TAP_TOKEN || process.env.GITHUB_TOKEN
   if (token) {
-    const tap = `https://x-access-token:${token}@github.com/${Script.homebrew}.git`
-    await $`rm -rf ./dist/homebrew-tap`
-    await $`git clone ${tap} ./dist/homebrew-tap`
-    await Bun.file("./dist/homebrew-tap/railwise.rb").write(formula)
-    await $`cd ./dist/homebrew-tap && git config user.name "railwise-bot" && git config user.email "bot@railwise.ai" && git add railwise.rb && git commit -m "Update to v${ver}" && git push`
-    console.log("Homebrew formula updated")
+    try {
+      const tap = `https://x-access-token:${token}@github.com/${Script.homebrew}.git`
+      await $`rm -rf ./dist/homebrew-tap`
+      await $`git clone ${tap} ./dist/homebrew-tap`
+      await Bun.file("./dist/homebrew-tap/railwise.rb").write(formula)
+      await $`cd ./dist/homebrew-tap && git config user.name "railwise-bot" && git config user.email "bot@railwise.ai" && git add railwise.rb && git commit -m "Update to v${ver}" && git push`
+      console.log("Homebrew formula updated")
+    } catch (e) {
+      console.error("Homebrew update failed (non-blocking):", e instanceof Error ? e.message : e)
+    }
   } else {
-    console.log("GITHUB_TOKEN not set, skipping Homebrew update")
+    console.log("No token set, skipping Homebrew update")
   }
 }

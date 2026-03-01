@@ -12,7 +12,7 @@
     "typecheck": "bun turbo typecheck",
     "prepare": "husky",
     "test": "echo 'do not run tests from root' && exit 1",
-    "postinstall": "mkdir -p .railwise/node_modules && ln -sf ../../packages/nb-railwise .railwise/node_modules/nb-railwise"
+    "postinstall": "node script/postinstall.mjs"
   },
   "workspaces": {
     "packages": [

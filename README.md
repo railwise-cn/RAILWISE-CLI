@@ -213,7 +213,7 @@ npm update -g railwise-ai
 
 > 模型选择逻辑：需要精确计算的智能体使用 DeepSeek V3（数学推理最强），需要长上下文和中文写作的使用 Kimi K2.5（131K 上下文）。可在 `.railwise/agent/*.md` 的 frontmatter 中自定义覆盖。
 
-### 专用工具（24 个）
+### 专用工具（19 个）
 
 #### 基础测量计算
 

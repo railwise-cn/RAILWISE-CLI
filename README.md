@@ -199,15 +199,19 @@ npm update -g railwise-ai
 
 ### 自定义智能体（7 个领域专家）
 
-| 智能体 | 角色 | 职责 |
-|--------|------|------|
-| `chief_manager` | 项目总工 | 任务分发与流程调度 |
-| `solution_architect` | 方案设计师 | 监测方案编制、技术路线规划 |
-| `data_analyst` | 数据分析师 | 平差计算、变形趋势分析、预警研判 |
-| `qa_inspector` | 外业质检员 | 原始数据完整性与闭合差审查 |
-| `qa_reviewer` | 内业审核员 | 报告质量终审 |
-| `technical_writer` | 技术文档员 | 监测日报/周报/月报撰写 |
-| `commercial_specialist` | 商务专员 | 投标文件、计量支付 |
+每个智能体拥有独立的默认模型配置，零配置即可获得最优模型分配：
+
+| 智能体 | 角色 | 默认模型 | 职责 |
+|--------|------|---------|------|
+| `chief_manager` | 项目总工 | Kimi K2.5 | 任务分发、并行调度、质量闸门控制 |
+| `solution_architect` | 方案设计师 | Kimi K2.5 | 监测方案编制、技术路线规划 |
+| `data_analyst` | 数据分析师 | DeepSeek V3 | 平差计算、变形趋势分析、预警研判 |
+| `qa_inspector` | 外业质检员 | DeepSeek V3 | 原始数据完整性与闭合差审查 |
+| `qa_reviewer` | 内业审核员 | Kimi K2.5 | 报告质量终审（最高否决权） |
+| `technical_writer` | 技术文档员 | Kimi K2.5 | 监测日报/周报/月报撰写 |
+| `commercial_specialist` | 商务专员 | Kimi K2.5 | 投标文件、计量支付 |
+
+> 模型选择逻辑：需要精确计算的智能体使用 DeepSeek V3（数学推理最强），需要长上下文和中文写作的使用 Kimi K2.5（131K 上下文）。可在 `.railwise/agent/*.md` 的 frontmatter 中自定义覆盖。
 
 ### 专用工具（24 个）
 
@@ -258,6 +262,24 @@ npm update -g railwise-ai
 | `chart_generator` | SVG 趋势折线图生成（多测点 + 报警线） |
 | `report_export` | Markdown 转 DOCX 报告导出 |
 | `standard_query` | 工程规范/标准条文智能查询 |
+
+### 领域技能包（11 个）
+
+技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
+
+| 技能 | 用途 |
+|------|------|
+| `report-writing` | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照 |
+| `data-analysis` | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级 |
+| `bidding-knowledge` | 投标文件编制：评分办法、资质响应、报价策略 |
+| `standard-reference` | 工程规范速查：GB 50911/GB 50026/JGJ 8 条文索引 |
+| `monitoring-design` | 监测方案设计：测点布设、仪器选型、频率与报警值 |
+| `bun-file-io` | 文件操作：Bun 运行时文件读写最佳实践 |
+| `docx-generation` | Word 导出：Markdown→DOCX 映射、报告模板、命名规范 |
+| `excel-operations` | Excel 导出：Sheet 结构、标准列格式、多期对比表 |
+| `humanizer` | 报告润色：消除 AI 痕迹、注入工程判断、句式变化 |
+| `frontend-design` | 前端 UI：监测平台界面规范、预警四色体系、看板布局 |
+| `canvas-design` | 图表设计：趋势图配色、坐标轴规范、剖面图构造 |
 
 ### 业务命令（SOP 工作流）
 

@@ -153,5 +153,18 @@
       }
     }
   },
+
+  // ========== 系统子代理模型配置 ==========
+  // 以下子代理由系统自动调用（不同于上方 7 个业务智能体）
+  // 未配置的子代理使用全局 "model" 字段的模型
+  "agent": {
+    // explore — 搜索项目代码、理解代码结构
+    "explore": { "model": "deepseek/deepseek-chat" },
+    // general — 通用任务代理
+    "general": { "model": "kimi/kimi-k2.5" }
+  },
+
+  // MCP 服务器配置（如飞书集成、外部数据源等）
+  // 运行 railwise feishu 可自动配置飞书 MCP
   "mcp": {}
 }

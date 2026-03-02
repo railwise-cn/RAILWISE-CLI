@@ -1,3 +1,5 @@
 plans/
 bun.lock
 package.json
+railwise.json
+railwise.jsonc

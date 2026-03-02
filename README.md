@@ -45,8 +45,8 @@ cd packages/railwise && bun link && cd ../..
 
 ```bash
 # 复制配置模板
-cp .railwise/railwise.jsonc.example .railwise/railwise.jsonc
-# 编辑 .railwise/railwise.jsonc，填入你的 API Key
+cp .railwise/railwise.json.example .railwise/railwise.json
+# 编辑 .railwise/railwise.json，填入你的 API Key
 ```
 
 ### 启动
@@ -86,7 +86,7 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 
 ### 配置方式
 
-编辑 `.railwise/railwise.jsonc`，在 `provider` 中填入对应厂商的 API Key 即可：
+编辑 `.railwise/railwise.json`，在 `provider` 中填入对应厂商的 API Key 即可：
 
 ```jsonc
 {
@@ -103,7 +103,7 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 }
 ```
 
-完整配置示例见 [`.railwise/railwise.jsonc.example`](.railwise/railwise.jsonc.example)。
+完整配置示例见 [`.railwise/railwise.json.example`](.railwise/railwise.json.example)。
 
 ---
 
@@ -323,7 +323,7 @@ RAILWISE-CLI/
 │   ├── agent/                  # 智能体 prompt 定义
 │   ├── tool/                   # TypeScript 自定义工具
 │   ├── command/                # SOP 命令模板
-│   └── railwise.jsonc          # 运行时配置（API 密钥，需自行创建）
+│   └── railwise.json           # 运行时配置（API 密钥，需自行创建）
 ├── packages/
 │   ├── railwise/               # CLI 核心引擎
 │   ├── nb-railwise/            # 插件 SDK（工具开发 API）
@@ -370,7 +370,7 @@ RAILWISE-CLI 内置跨会话记忆系统——**用得越多越顺手**。系统
 
 ### 配置
 
-在 `.railwise/railwise.jsonc` 中添加 `memory` 字段：
+在 `.railwise/railwise.json` 中添加 `memory` 字段：
 
 ```jsonc
 {

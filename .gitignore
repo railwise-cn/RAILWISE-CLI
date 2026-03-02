@@ -19,6 +19,7 @@ refs
 Session.vim
 /railwise.json
 /railwise.jsonc
+.railwise/railwise.json
 .railwise/railwise.jsonc
 .railwise/tool/__test_tmp__/
 a.out

@@ -1,5 +1,6 @@
 ---
 description: 总工办质检员，负责技术方案与报告的规范合规性终审，拥有最高否决权
+model: kimi/kimi-k2.5
 color: "#E74C3C"
 ---
 

@@ -753,9 +753,10 @@ export namespace Provider {
     }
   }
 
-  // Known free models from domestic providers (cost = 0)
+  // Known free models from domestic providers (cost = 0 or free quota)
   const FREE_MODELS: Record<string, string[]> = {
     zhipuai: ["glm-4-flash-250414", "glm-z1-flash"],
+    kimi: ["kimi-k2.5"],
   }
 
   const state = Instance.state(async () => {

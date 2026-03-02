@@ -4,6 +4,18 @@
   "model": "anthropic/claude-sonnet-4-20250514",
   // 启动后默认使用 chief_manager 智能体
   "default_agent": "chief_manager",
+
+  // ========== 智能体模型映射（已内置，无需手动配置） ==========
+  // 每个智能体在其 .md 文件的 frontmatter 中已设置推荐模型：
+  //   chief_manager      → kimi/kimi-k2.5       （通用推理、任务拆解）
+  //   solution_architect  → kimi/kimi-k2.5       （长上下文，131K，方案设计）
+  //   data_analyst        → deepseek/deepseek-chat（数学推理最强）
+  //   qa_inspector        → deepseek/deepseek-chat（精确规则判定）
+  //   qa_reviewer         → kimi/kimi-k2.5       （长上下文，文档审阅）
+  //   technical_writer    → kimi/kimi-k2.5       （中文写作，长输出）
+  //   commercial_specialist → kimi/kimi-k2.5     （商务中文写作）
+  // 如需覆盖，在对应 .railwise/agent/*.md 的 frontmatter 中修改 model 字段即可
+  // 若智能体指定的模型不可用，自动回退到上方 "model" 字段的全局默认模型
   // 只显示以下配置的 provider，避免模型列表中出现大量无关模型
   // 如需使用其他 provider，在此数组中添加对应 ID 即可
   "enabled_providers": ["anthropic", "openai", "gemini", "deepseek", "minimax", "kimi", "zhipuai"],
@@ -93,7 +105,7 @@
         }
       }
     },
-    // Kimi / Moonshot AI（注册送免费额度）
+    // Kimi / Moonshot AI（注册送免费额度，kimi-k2.5 为智能体默认模型）
     // 注册地址：https://platform.moonshot.cn
     "kimi": {
       "npm": "@ai-sdk/openai-compatible",

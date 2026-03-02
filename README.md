@@ -74,7 +74,7 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 | 智谱 GLM | `glm-4-flash-250414`、`glm-z1-flash` | 永久免费 | [open.bigmodel.cn](https://open.bigmodel.cn) |
 | DeepSeek | `deepseek-chat`（V3.2）、`deepseek-reasoner` | 注册送 500 万 tokens | [platform.deepseek.com](https://platform.deepseek.com) |
 | MiniMax | `MiniMax-M1`、`MiniMax-T1` | 注册送免费额度 | [platform.minimaxi.com](https://platform.minimaxi.com) |
-| Kimi | `moonshot-v1-auto`、`kimi-k2` | 注册送免费额度 | [platform.moonshot.cn](https://platform.moonshot.cn) |
+| Kimi | `kimi-k2.5`、`moonshot-v1-auto` | 注册送免费额度 | [platform.moonshot.cn](https://platform.moonshot.cn) |
 
 ### 付费模型
 
@@ -104,6 +104,94 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 ```
 
 完整配置示例见 [`.railwise/railwise.jsonc.example`](.railwise/railwise.jsonc.example)。
+
+---
+
+## Windows 安装指南（零基础）
+
+如果你从未接触过编程工具，请按以下步骤操作。全程约 10 分钟。
+
+### 第一步：安装 Node.js
+
+1. 打开浏览器，访问 [https://nodejs.org/zh-cn](https://nodejs.org/zh-cn)
+2. 点击页面上的 **LTS（长期支持版）** 下载按钮（绿色按钮）
+3. 运行下载的安装包（`node-vXX.X.X-x64.msi`），一路点「下一步」即可
+4. **重要**：安装过程中如果出现「Add to PATH」选项，确保勾选 ✅
+
+### 第二步：验证安装
+
+1. 按 `Win + R`，输入 `cmd`，按回车打开命令提示符
+2. 输入以下命令并回车：
+
+```cmd
+node --version
+```
+
+如果显示类似 `v22.x.x` 的版本号，说明安装成功。如果提示「不是内部或外部命令」，请重启电脑后再试。
+
+### 第三步：设置国内镜像（加速下载）
+
+在命令提示符中输入：
+
+```cmd
+npm config set registry https://registry.npmmirror.com
+```
+
+### 第四步：安装 RAILWISE-CLI
+
+```cmd
+npm install -g railwise-ai
+```
+
+安装完成后，输入 `railwise` 验证：
+
+```cmd
+railwise --version
+```
+
+### 第五步：获取 API Key（免费）
+
+RAILWISE-CLI 需要 AI 模型的 API Key 才能工作。推荐使用**免费**的智谱 GLM：
+
+1. 打开 [open.bigmodel.cn](https://open.bigmodel.cn)，用手机号注册
+2. 登录后进入「API keys」页面
+3. 点击「创建 API key」，复制生成的密钥（以 `.xxx` 开头的一长串字符）
+
+### 第六步：配置并启动
+
+```cmd
+railwise
+```
+
+首次启动会进入设置向导，选择 `zhipuai` 作为 provider，粘贴你的 API Key 即可。
+
+系统会自动使用免费的 `glm-4-flash` 模型。如需更强的模型，可按[模型支持](#模型支持)章节配置其他厂商。
+
+### 常见问题
+
+**Q: 提示「railwise 不是内部或外部命令」？**
+
+npm 全局安装目录可能不在系统 PATH 中。运行以下命令查看 npm 全局路径：
+
+```cmd
+npm config get prefix
+```
+
+将输出的路径添加到系统环境变量 PATH 中：右键「此电脑」→ 属性 → 高级系统设置 → 环境变量 → 在 Path 中新增该路径。
+
+**Q: 安装很慢或失败？**
+
+确认已设置国内镜像（第三步）。如果仍然很慢，可尝试：
+
+```cmd
+npm install -g railwise-ai --registry=https://registry.npmmirror.com
+```
+
+**Q: 如何更新到最新版？**
+
+```cmd
+npm update -g railwise-ai
+```
 
 ---
 

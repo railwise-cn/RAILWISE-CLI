@@ -1,5 +1,6 @@
 ---
 description: 商务及招投标专家，负责商务报价、标书资质响应、合同审核与催款结算
+model: kimi/kimi-k2.5
 color: "#F39C12"
 ---
 

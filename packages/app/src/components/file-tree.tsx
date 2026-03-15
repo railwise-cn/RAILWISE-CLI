@@ -256,6 +256,7 @@ export default function FileTree(props: {
   kinds?: ReadonlyMap<string, Kind>
   draggable?: boolean
   tooltip?: boolean
+  hidden?: ReadonlySet<string>
   onFileClick?: (file: FileNode) => void
 
   _filter?: Filter
@@ -388,7 +389,11 @@ export default function FileTree(props: {
   })
 
   const nodes = createMemo(() => {
-    const nodes = file.tree.children(props.path)
+    let nodes = file.tree.children(props.path)
+    const hiddenSet = props.hidden
+    if (hiddenSet && hiddenSet.size > 0) {
+      nodes = nodes.filter((node) => !hiddenSet.has(node.name))
+    }
     const current = filter()
     if (!current) return nodes
 

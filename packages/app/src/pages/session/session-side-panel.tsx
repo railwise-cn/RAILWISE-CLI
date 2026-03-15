@@ -27,6 +27,18 @@ import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/he
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
 
+/** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
+const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
+  ".railwise",
+  ".opencode",
+  ".git",
+  "config",
+  "bin",
+  "app-dist",
+  "node_modules",
+  "serve.log",
+])
+
 export function SessionSidePanel(props: {
   reviewPanel: () => JSX.Element
   activeDiff?: string
@@ -388,6 +400,7 @@ export function SessionSidePanel(props: {
                     path=""
                     modified={diffFiles()}
                     kinds={kinds()}
+                    hidden={HIDDEN_ROOT_ENTRIES}
                     onFileClick={(node) => openTab(file.tab(node.path))}
                   />
                 </Tabs.Content>

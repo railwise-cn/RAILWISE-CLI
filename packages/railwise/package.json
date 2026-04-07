@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "version": "1.2.8",
+  "version": "1.3.0",
   "name": "railwise",
   "type": "module",
   "license": "MIT",

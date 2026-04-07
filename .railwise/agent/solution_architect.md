@@ -1,6 +1,6 @@
 ---
 description: 资深岩土与结构监测工程师，负责监测方案设计、仪器选型与测绘技术路线规划
-model: kimi/kimi-k2.5
+model: gemini/gemini-2.5-pro
 color: "#2980B9"
 ---
 

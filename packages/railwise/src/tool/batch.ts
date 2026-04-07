@@ -1,5 +1,6 @@
 import z from "zod"
 import { Tool } from "./tool"
+import { errorMessage } from "../util/error"
 import DESCRIPTION from "./batch.txt"
 
 const DISALLOWED = new Set(["batch"])
@@ -117,7 +118,7 @@ export const BatchTool = Tool.define("batch", async () => {
             state: {
               status: "error",
               input: call.parameters,
-              error: error instanceof Error ? error.message : String(error),
+              error: errorMessage(error),
               time: {
                 start: callStartTime,
                 end: Date.now(),

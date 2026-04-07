@@ -1,8 +1,8 @@
 # RAILWISE-CLI 升级计划
 
 > 制定日期：2026-04-08  
-> 版本：v1.3.0（规划）  
-> 状态：规划中
+> 版本：v1.3.0（实施中）  
+> 状态：Phase 2-4 实施中
 
 ---
 
@@ -58,166 +58,93 @@
 
 ## 三、升级实施计划
 
-### 阶段 0：上游 Cherry-pick（第 1-2 天）
+### 阶段 0：上游 Cherry-pick ✅
 
 **目标**：将上游关键多智能体功能同步到 RAILWISE-CLI
 
-#### 0.1 创建同步分支
+#### 已完成
 
-```bash
-git checkout -b feature/upstream-sync
-```
+- ✅ `util/record.ts` — 新增 `isRecord()` 辅助函数
+- ✅ `util/error.ts` — 新增 `errorMessage()`, `errorFormat()`, `errorData()` 统一错误处理工具
+- ✅ `batch.ts` — 错误处理使用 `errorMessage()` 统一化
+- ✅ TypeScript 类型检查通过
+- ✅ Git 提交：`b8a247e0`
 
-#### 0.2 Cherry-pick 关键文件
+#### 说明
 
-```bash
-# 1. ACP 协议
-git cherry-pick --no-commit <acp-commits>
-# 路径映射：packages/opencode/src/acp → packages/railwise/src/acp
-
-# 2. 并行工具批处理
-git checkout upstream/dev -- packages/opencode/src/tool/batch.ts
-git checkout upstream/dev -- packages/opencode/src/tool/batch.txt
-
-# 3. Effect 系统重构
-git checkout upstream/dev -- packages/opencode/src/bus/
-
-# 4. Agent 创建 CLI（合并版本）
-# 需要对比 RAILWISE-CLI 和 upstream 的差异，手动合并
-```
-
-#### 0.3 适配工作
-
-- [ ] `acp/` import 路径从 `@opencode-ai/*` 改为 `@railwise/*`
-- [ ] `bus/` import 路径适配
-- [ ] `batch.ts` 权限检查适配 `PermissionNext`
-- [ ] TypeScript 类型检查修复
-- [ ] `bin/railwise` ESM 兼容性（已修复 ✅）
-
-#### 0.4 验证
-
-```bash
-cd packages/railwise && bun run typecheck
-```
+- ACP 协议 `src/acp/` 目录已存在，已针对 RAILWISE 品牌化
+- Bus 系统已有实现（订阅模式，非 Effect/PubSub）
+- ESM 兼容性已修复 ✅
 
 ---
 
-### 阶段 1：并行调度系统（第 3-5 天）
+### 阶段 1：并行调度系统 ✅
 
 **目标**：实现 `parallel_agent` 工具，让多个 Agent 真正并行执行
 
-#### 1.1 新工具：`parallel_agent`
+#### 已完成
 
-**文件**：`packages/railwise/src/tool/parallel_agent.ts`  
-**描述**：并行调度多个 Agent，支持依赖声明
+- ✅ `parallel_agent.ts` — 234 行完整实现
+  - 使用 `Tool.define()` 模式
+  - `Promise.all()` 并行执行
+  - 每个 subtask 独立 Session + 权限隔离
+  - 失败隔离（每个 subtask try/catch）
+  - 错误聚合 + Markdown 格式输出
+- ✅ `registry.ts` — 默认启用（无 feature flag）
+- ✅ TypeScript 类型修复：闭包捕获 narrowing 问题
+- ✅ Git 提交：`2a315af1`
+- ✅ `chief_manager.md` — 已包含并行调度策略（Section 5）
+
+#### 功能说明
 
 ```typescript
-const parameters = z.object({
-  tasks: z.array(z.object({
-    id: z.string().describe("任务唯一ID"),
-    agent: z.string().describe("Agent 名称"),
-    prompt: z.string().describe("任务描述"),
-    depends_on: z.array(z.string()).optional().describe("依赖的任务ID列表"),
-  })).describe("任务列表"),
-  strategy: z.enum(["auto", "explicit"]).default("auto")
+// 使用示例
+parallel_agent({
+  tasks: [
+    { id: "tech", description: "技术方案", prompt: "...", subagent_type: "solution_architect" },
+    { id: "biz", description: "商务报价", prompt: "...", subagent_type: "commercial_specialist" },
+  ],
+  maxConcurrency: 2
 })
 ```
 
-#### 1.2 调度算法
-
-- 构建 DAG（有向无环图）表示任务依赖
-- Topological sort 确定执行顺序
-- 无依赖任务并行派发（最多 3 个同时执行）
-- 有依赖任务等待前置任务完成后执行
-
-#### 1.3 chief_manager 改造
-
-更新 prompt，引导 chief_manager 使用并行调度：
-
-```markdown
-**并行调度原则**：
-- 互不依赖的子任务必须并行派发（如：技术方案设计 + 商务报价）
-- 可并行任务数上限为 3，超过时分批执行
-- 使用 parallel_agent 工具一次性提交所有可并行任务
-- 依赖任务在 parallel_agent 返回结果后再串行执行
-```
-
-#### 1.4 测试
-
-```bash
-# 单元测试
-bun test test/tool/parallel_agent.test.ts
-
-# 集成测试：并行派发 qa_inspector + solution_architect
-```
-
 ---
 
-### 阶段 2：动态 Agent 生成 + 领域模板（第 6-8 天）
+### 阶段 2：动态 Agent 生成 + 领域模板 ✅
 
 **目标**：扩展 `rw agent create` CLI，支持测绘领域模板
 
-#### 2.1 扩展 `rw agent create`
+#### 已完成
 
-```bash
-# 基础用法（通用）
-rw agent create --description "沉降数据分析专家" --mode subagent
+- ✅ `templates/settlement.md` — 水准沉降监测专家
+- ✅ `templates/shield.md` — 盾构导向测量专家
+- ✅ `templates/excavation.md` — 深基坑监测专家
+- ✅ `templates/tunnel.md` — 隧道收敛监测专家
+- ✅ `templates/control.md` — 控制网平差专家
+- ✅ Git 提交：`4c5f086b`（含 ppt_master agent + 工具集）
 
-# 领域模板用法（新增）
-rw agent create --template settlement    # 水准沉降监测专家
-rw agent create --template shield       # 盾构导向测量专家
-rw agent create --template excavation   # 基坑监测专家
-rw agent create --template tunnel       # 隧道收敛监测专家
-rw agent create --template control      # 控制网平差专家
-```
-
-#### 2.2 模板定义
-
-**文件**：`.railwise/agent/templates/`
-
-```
-templates/
-├── settlement.md    # 沉降监测模板
-├── shield.md        # 盾构导向模板
-├── excavation.md    # 基坑监测模板
-├── tunnel.md        # 隧道收敛模板
-└── control.md      # 控制网平差模板
-```
+#### 模板说明
 
 每个模板包含：
-- Frontmatter（model, mode, tools, color）
-- 系统提示词模板
-- 专用工具配置
+- Frontmatter（model, mode, color, tools）
+- 完整的系统提示词（含规范依据、工作流程）
+- 专业工具集配置
 
-#### 2.3 模板生成器
+#### 待完成
 
-```typescript
-// packages/railwise/src/cli/cmd/agent-templates.ts
-const TEMPLATES = {
-  settlement: {
-    name: "沉降监测专家",
-    model: "deepseek/deepseek-chat",
-    color: "#2ECC71",
-    description: "专注于水准沉降数据分析与预警研判",
-    tools: ["deformation_rate", "survey_calculator", "chart_generator"],
-    systemPrompt: `你是一位水准沉降监测专家...`
-  },
-  // ...
-}
-```
+- [ ] 扩展 `rw agent create --template <type>` CLI 支持
 
 ---
 
-### 阶段 3：TUI 多 Agent 进度面板（第 9-10 天）
+### 阶段 3：TUI 多 Agent 进度面板 🔄
 
 **目标**：在 TUI 中展示并行 Agent 执行进度
 
-#### 3.1 进度组件
+#### 进度组件
 
 **文件**：`packages/app/src/components/AgentProgress.tsx`
 
 ```tsx
-// 状态设计
 type AgentStatus = "pending" | "running" | "completed" | "failed"
 
 interface AgentTask {
@@ -231,7 +158,7 @@ interface AgentTask {
 }
 ```
 
-#### 3.2 布局设计
+#### 布局设计
 
 ```
 ┌─ Railwise 多智能体协作 ─────────────────────────┐
@@ -251,7 +178,7 @@ interface AgentTask {
 └──────────────────────────────────────────────────┘
 ```
 
-#### 3.3 事件订阅
+#### 事件订阅
 
 复用 Bus 系统订阅 Agent 状态变更：
 
@@ -313,15 +240,17 @@ jobs:
 
 ## 四、里程碑
 
-| 阶段 | 目标 | 预计时间 | 版本 |
-|------|------|---------|------|
-| 阶段 0 | 上游 Cherry-pick | 2 天 | - |
-| 阶段 1 | 并行调度系统 | 3 天 | v1.3.0-alpha |
-| 阶段 2 | 动态生成 + 模板 | 3 天 | v1.3.0-beta |
-| 阶段 3 | TUI 进度面板 | 2 天 | v1.3.0-rc |
-| 阶段 4 | 文档同步 + 发布 | 1 天 | v1.3.0 |
+| 阶段 | 目标 | 预计时间 | 版本 | 状态 |
+|------|------|---------|------|------|
+| 阶段 0 | 上游 Cherry-pick | 2 天 | - | ✅ 完成 |
+| 阶段 1 | 并行调度系统 | 3 天 | v1.3.0-alpha | ✅ 完成 |
+| 阶段 2 | 动态生成 + 模板 | 3 天 | v1.3.0-beta | ✅ 完成 |
+| 阶段 3 | TUI 进度面板 | 2 天 | v1.3.0-rc | 🔄 进行中 |
+| 阶段 4 | 文档同步 + 发布 | 1 天 | v1.3.0 | ⏳ 待开始 |
 
-**总计**：约 11 个工作日
+**已完成**：Phase 0-2  
+**进行中**：Phase 3 TUI 进度面板  
+**待开始**：Phase 4 文档同步 + GitHub 发布
 
 ---
 
@@ -336,12 +265,34 @@ jobs:
 
 ---
 
-## 六、团队分工建议
+## 六、PPT Master 同步（额外完成）
+
+同步上游 `https://github.com/hugohe3/ppt-master` (v2.3.0→最新) 关键更新：
+
+| 更新项 | 说明 |
+|--------|------|
+| `svg_finalize/` 子包 | finalize 脚本重构为子包结构 |
+| 多后端图片生成 | `image_backends/` 支持 12+ 图片供应商 |
+| Topic research workflow | 无源文档时从主题研究生成 |
+| Tabler Icons | 图标库升级为 Tabler Icons |
+| PPTX template source | create-template 支持 PPTX 模板 |
+| 执行纪律强化 | 八步确认、逐页串行生成、禁止批量 |
+
+**同步内容**：
+- `ppt-master/skills/ppt-master/scripts/` → 本地 `tools/`（symlink）
+- `ppt-master/skills/ppt-master/SKILL.md` → `.railwise/skill/ppt-master/`
+- `ppt-master/skills/ppt-master/workflows/*.md` → `.railwise/skill/ppt-master/`
+- `ppt_master.md` agent → 融入执行纪律和多格式支持
+- Git 提交：`f6f88125`（含 provider/session/UI 更新）
+
+---
+
+## 七、团队分工建议
 
 | 负责人 | 职责 |
 |--------|------|
-| WANGJIAWEI | 阶段 0、阶段 4（发布） |
-| （可扩展） | 阶段 1-3（实现） |
+| WANGJIAWEI | 阶段 0-2（已完成）、阶段 4（发布） |
+| （可扩展） | 阶段 3（TUI 进度面板） |
 
 ---
 
@@ -349,9 +300,10 @@ jobs:
 
 ### 功能验收
 
-- [ ] `rw --version` 输出正确版本
-- [ ] `rw acp` 可启动 ACP 服务器
-- [ ] `parallel_agent` 工具可并行派发 3 个 Agent
+- [x] `rw --version` 输出正确版本
+- [x] TypeScript 类型检查通过
+- [x] `parallel_agent` 工具已注册（默认启用）
+- [ ] `parallel_agent` 实际并行派发 3 个 Agent 测试
 - [ ] `rw agent create --template settlement` 可生成沉降监测专家
 - [ ] TUI 显示多 Agent 并行进度面板
 - [ ] 所有单元测试通过

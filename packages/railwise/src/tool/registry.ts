@@ -4,6 +4,7 @@ import { EditTool } from "./edit"
 import { GlobTool } from "./glob"
 import { GrepTool } from "./grep"
 import { BatchTool } from "./batch"
+import { ParallelAgentTool } from "./parallel_agent"
 import { ReadTool } from "./read"
 import { TaskTool } from "./task"
 import { TodoWriteTool, TodoReadTool } from "./todo"
@@ -119,6 +120,7 @@ export namespace ToolRegistry {
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),
+      ParallelAgentTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_PLAN_MODE && Flag.RAILWISE_CLIENT === "cli" ? [PlanExitTool, PlanEnterTool] : []),
       ...custom,
     ]

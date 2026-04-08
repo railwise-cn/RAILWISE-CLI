@@ -824,17 +824,19 @@ export namespace Provider {
     // extend database from config
     for (const [providerID, provider] of configProviders) {
       const existing = database[providerID]
+      // When config explicitly defines models, use only those (don't inherit snapshot models)
+      const hasConfigModels = provider.models && Object.keys(provider.models).length > 0
       const parsed: Info = {
         id: providerID,
         name: provider.name ?? existing?.name ?? providerID,
         env: provider.env ?? existing?.env ?? [],
         options: mergeDeep(existing?.options ?? {}, provider.options ?? {}),
         source: "config",
-        models: existing?.models ?? {},
+        models: hasConfigModels ? {} : (existing?.models ?? {}),
       }
 
       for (const [modelID, model] of Object.entries(provider.models ?? {})) {
-        const existingModel = parsed.models[model.id ?? modelID]
+        const existingModel = (existing?.models ?? {})[model.id ?? modelID] ?? parsed.models[model.id ?? modelID]
         const name = iife(() => {
           if (model.name) return model.name
           if (model.id && model.id !== modelID) return modelID

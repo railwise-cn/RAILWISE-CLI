@@ -398,7 +398,7 @@ export namespace SessionProcessor {
                 state: {
                   ...part.state,
                   status: "error",
-                  error: "Tool execution aborted",
+                  error: (input.assistantMessage.error as any)?.data?.message ?? "Tool execution aborted",
                   time: {
                     start: Date.now(),
                     end: Date.now(),

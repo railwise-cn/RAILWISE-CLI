@@ -1,18 +1,16 @@
-import { For, Match, Show, Switch, createEffect, createMemo, onCleanup, type JSX } from "solid-js"
+import { For, Show, createEffect, createMemo, onCleanup, type JSX } from "solid-js"
 import { createStore } from "solid-js/store"
 import { createMediaQuery } from "@solid-primitives/media"
 import { useParams } from "@solidjs/router"
 import { Tabs } from "@railwise/ui/tabs"
 import { IconButton } from "@railwise/ui/icon-button"
 import { Tooltip, TooltipKeybind } from "@railwise/ui/tooltip"
-import { ResizeHandle } from "@railwise/ui/resize-handle"
 import { Mark } from "@railwise/ui/logo"
 import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, closestCenter } from "@thisbeyond/solid-dnd"
 import type { DragEvent } from "@thisbeyond/solid-dnd"
 import { ConstrainDragYAxis, getDraggableId } from "@/utils/solid-dnd"
 import { useDialog } from "@railwise/ui/context/dialog"
 
-import FileTree from "@/components/file-tree"
 import { SessionContextUsage } from "@/components/session-context-usage"
 import { DialogSelectFile } from "@/components/dialog-select-file"
 import { SessionContextTab, SortableTab, FileVisual } from "@/components/session"
@@ -26,18 +24,6 @@ import { FileTabContent } from "@/pages/session/file-tabs"
 import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/helpers"
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
-
-/** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
-const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
-  ".railwise",
-  ".opencode",
-  ".git",
-  "config",
-  "bin",
-  "app-dist",
-  "node_modules",
-  "serve.log",
-])
 
 export function SessionSidePanel(props: {
   reviewPanel: () => JSX.Element
@@ -58,8 +44,8 @@ export function SessionSidePanel(props: {
   const view = createMemo(() => layout.view(sessionKey))
 
   const reviewOpen = createMemo(() => isDesktop() && view().reviewPanel.opened())
-  const open = createMemo(() => isDesktop() && (view().reviewPanel.opened() || layout.fileTree.opened()))
-  const reviewTab = createMemo(() => isDesktop() && !layout.fileTree.opened())
+  const open = reviewOpen
+  const reviewTab = createMemo(() => isDesktop())
 
   const info = createMemo(() => (params.id ? sync.session.get(params.id) : undefined))
   const diffs = createMemo(() => (params.id ? (sync.data.session_diff[params.id] ?? []) : []))
@@ -344,80 +330,7 @@ export function SessionSidePanel(props: {
           </div>
         </Show>
 
-        <Show when={layout.fileTree.opened()}>
-          <div id="file-tree-panel" class="relative shrink-0 h-full" style={{ width: `${layout.fileTree.width()}px` }}>
-            <div
-              class="h-full flex flex-col overflow-hidden group/filetree"
-              classList={{ "border-l border-border-weak-base": reviewOpen() }}
-            >
-              <Tabs
-                variant="pill"
-                value={fileTreeTab()}
-                onChange={setFileTreeTabValue}
-                class="h-full"
-                data-scope="filetree"
-              >
-                <Tabs.List>
-                  <Tabs.Trigger value="changes" class="flex-1" classes={{ button: "w-full" }}>
-                    {reviewCount()}{" "}
-                    {language.t(reviewCount() === 1 ? "session.review.change.one" : "session.review.change.other")}
-                  </Tabs.Trigger>
-                  <Tabs.Trigger value="all" class="flex-1" classes={{ button: "w-full" }}>
-                    {language.t("session.files.all")}
-                  </Tabs.Trigger>
-                </Tabs.List>
-                <Tabs.Content value="changes" class="bg-background-stronger px-3 py-0">
-                  <Switch>
-                    <Match when={hasReview()}>
-                      <Show
-                        when={diffsReady()}
-                        fallback={
-                          <div class="px-2 py-2 text-12-regular text-text-weak">
-                            {language.t("common.loading")}
-                            {language.t("common.loading.ellipsis")}
-                          </div>
-                        }
-                      >
-                        <FileTree
-                          path=""
-                          allowed={diffFiles()}
-                          kinds={kinds()}
-                          draggable={false}
-                          active={props.activeDiff}
-                          onFileClick={(node) => props.focusReviewDiff(node.path)}
-                        />
-                      </Show>
-                    </Match>
-                    <Match when={true}>
-                      <div class="mt-8 text-center text-12-regular text-text-weak">
-                        {language.t("session.review.noChanges")}
-                      </div>
-                    </Match>
-                  </Switch>
-                </Tabs.Content>
-                <Tabs.Content value="all" class="bg-background-stronger px-3 py-0">
-                  <FileTree
-                    path=""
-                    modified={diffFiles()}
-                    kinds={kinds()}
-                    hidden={HIDDEN_ROOT_ENTRIES}
-                    onFileClick={(node) => openTab(file.tab(node.path))}
-                  />
-                </Tabs.Content>
-              </Tabs>
-            </div>
-            <ResizeHandle
-              direction="horizontal"
-              edge="start"
-              size={layout.fileTree.width()}
-              min={200}
-              max={480}
-              collapseThreshold={160}
-              onResize={layout.fileTree.resize}
-              onCollapse={layout.fileTree.close}
-            />
-          </div>
-        </Show>
+
       </aside>
     </Show>
   )

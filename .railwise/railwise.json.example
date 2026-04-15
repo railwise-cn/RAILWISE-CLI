@@ -1,0 +1,170 @@
+{
+  "$schema": "https://railwise.ai/config.json",
+  // 默认使用的模型（可改为下方任意免费模型，如 "deepseek/deepseek-chat"）
+  "model": "anthropic/claude-sonnet-4-20250514",
+  // 启动后默认使用 chief_manager 智能体
+  "default_agent": "chief_manager",
+
+  // ========== 智能体模型映射（已内置，无需手动配置） ==========
+  // 每个智能体在其 .md 文件的 frontmatter 中已设置推荐模型：
+  //   chief_manager      → kimi/kimi-k2.5       （通用推理、任务拆解）
+  //   solution_architect  → kimi/kimi-k2.5       （长上下文，131K，方案设计）
+  //   data_analyst        → deepseek/deepseek-chat（数学推理最强）
+  //   qa_inspector        → deepseek/deepseek-chat（精确规则判定）
+  //   qa_reviewer         → kimi/kimi-k2.5       （长上下文，文档审阅）
+  //   technical_writer    → kimi/kimi-k2.5       （中文写作，长输出）
+  //   commercial_specialist → kimi/kimi-k2.5     （商务中文写作）
+  // 如需覆盖，在对应 .railwise/agent/*.md 的 frontmatter 中修改 model 字段即可
+  // 若智能体指定的模型不可用，自动回退到上方 "model" 字段的全局默认模型
+  // 只显示以下配置的 provider，避免模型列表中出现大量无关模型
+  // 如需使用其他 provider，在此数组中添加对应 ID 即可
+  "enabled_providers": ["anthropic", "openai", "gemini", "deepseek", "minimax", "kimi", "zhipuai"],
+  "provider": {
+    // ========== 付费模型 ==========
+
+    // Anthropic 直连或代理
+    "anthropic": {
+      "options": {
+        "baseURL": "https://api.anthropic.com",
+        "apiKey": "sk-ant-xxxx-YOUR-API-KEY-HERE"
+      }
+    },
+    // OpenAI 兼容接口（可接代理）
+    "openai": {
+      "options": {
+        "baseURL": "https://api.openai.com/v1",
+        "apiKey": "sk-xxxx-YOUR-API-KEY-HERE"
+      }
+    },
+    // Gemini（通过 OpenAI 兼容接口或原生接口）
+    "gemini": {
+      "options": {
+        "baseURL": "https://generativelanguage.googleapis.com/v1beta/openai",
+        "apiKey": "YOUR-GEMINI-API-KEY-HERE"
+      },
+      "models": {
+        "gemini-2.5-flash": {
+          "name": "Gemini 2.5 Flash",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
+        },
+        "gemini-2.5-pro": {
+          "name": "Gemini 2.5 Pro",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
+        }
+      }
+    },
+
+    // ========== 免费 / 低价国产模型 ==========
+    // 以下模型均通过各厂商官方 OpenAI 兼容 API 接入
+    // 注册即送免费额度，适合个人开发者和学习使用
+
+    // DeepSeek（注册送 500 万 tokens）
+    // 注册地址：https://platform.deepseek.com
+    "deepseek": {
+      "options": {
+        "baseURL": "https://api.deepseek.com/v1",
+        "apiKey": "sk-xxxx-YOUR-DEEPSEEK-KEY"
+      },
+      "models": {
+        "deepseek-chat": {
+          "name": "DeepSeek V3.2",
+          "limit": { "context": 131072, "output": 8192 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "deepseek-reasoner": {
+          "name": "DeepSeek V3.2 (Thinking)",
+          "limit": { "context": 131072, "output": 65536 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    // MiniMax（注册送免费额度）
+    // 注册地址：https://platform.minimaxi.com
+    // 重要：必须设置 npm 为 @ai-sdk/openai-compatible，因为 models.dev 默认用 anthropic SDK
+    "minimax": {
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "https://api.minimax.chat/v1",
+      "options": {
+        "baseURL": "https://api.minimax.chat/v1",
+        "apiKey": "YOUR-MINIMAX-KEY"
+      },
+      "models": {
+        "MiniMax-M1": {
+          "name": "MiniMax M1",
+          "provider": { "npm": "@ai-sdk/openai-compatible" },
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "MiniMax-T1": {
+          "name": "MiniMax T1 (Thinking)",
+          "provider": { "npm": "@ai-sdk/openai-compatible" },
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    // Kimi / Moonshot AI（注册送免费额度，kimi-k2.5 为智能体默认模型）
+    // 注册地址：https://platform.moonshot.cn
+    "kimi": {
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "https://api.moonshot.cn/v1",
+      "options": {
+        "baseURL": "https://api.moonshot.cn/v1",
+        "apiKey": "sk-xxxx-YOUR-KIMI-KEY"
+      },
+      "models": {
+        "moonshot-v1-auto": {
+          "name": "Kimi (Auto)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        },
+        "kimi-k2.5": {
+          "name": "Kimi K2.5",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
+    // 智谱 GLM（glm-4-flash / glm-z1-flash 永久免费）
+    // 注册地址：https://open.bigmodel.cn
+    "zhipuai": {
+      "options": {
+        "baseURL": "https://open.bigmodel.cn/api/paas/v4",
+        "apiKey": "YOUR-ZHIPUAI-KEY"
+      },
+      "models": {
+        "glm-4-flash-250414": {
+          "name": "GLM-4 Flash (免费)",
+          "limit": { "context": 131072, "output": 4096 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] }
+        },
+        "glm-4-plus": {
+          "name": "GLM-4 Plus",
+          "limit": { "context": 131072, "output": 4096 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] }
+        },
+        "glm-z1-flash": {
+          "name": "GLM Z1 Flash (免费)",
+          "limit": { "context": 131072, "output": 16384 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    }
+  },
+
+  // ========== 系统子代理模型配置 ==========
+  // 以下子代理由系统自动调用（不同于上方 7 个业务智能体）
+  // 未配置的子代理使用全局 "model" 字段的模型
+  "agent": {
+    // explore — 搜索项目代码、理解代码结构
+    "explore": { "model": "deepseek/deepseek-chat" },
+    // general — 通用任务代理
+    "general": { "model": "kimi/kimi-k2.5" }
+  },
+
+  // MCP 服务器配置（如飞书集成、外部数据源等）
+  // 运行 railwise feishu 可自动配置飞书 MCP
+  "mcp": {}
+}

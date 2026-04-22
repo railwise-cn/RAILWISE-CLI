@@ -84,3 +84,25 @@ button#decorum-tb-close,
 div[data-tauri-decorum-tb] {
   height: calc(var(--spacing) * 10) !important;
 }
+
+/* 防止系统级缩放手势，替代 macOS 私有 API */
+* {
+  touch-action: pan-x pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  -webkit-text-size-adjust: none;
+  -webkit-touch-callout: none;
+}
+
+/* 允许文本选择在特定元素 */
+input, textarea, [contenteditable], .selectable-text {
+  -webkit-user-select: text;
+  user-select: text;
+}

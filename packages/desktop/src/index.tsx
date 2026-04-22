@@ -33,6 +33,10 @@ import "./styles.css"
 import { Channel } from "@tauri-apps/api/core"
 import { commands, type InitStep } from "./bindings"
 import { createMenu } from "./menu"
+import { startupTimer } from "./performance"
+
+// At the top of the file, after imports
+startupTimer.startPhase("app-init")
 
 const root = document.getElementById("root")
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
@@ -40,6 +44,10 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 void initI18n()
+
+// Before sidecar operations
+startupTimer.endPhase("app-init")
+startupTimer.startPhase("sidecar-init")
 
 let update: Update | null = null
 
@@ -426,6 +434,10 @@ void listenForDeepLinks()
 render(() => {
   const platform = createPlatform()
 
+  // Around ServerGate initialization
+  startupTimer.endPhase("sidecar-init")
+  startupTimer.startPhase("server-connect")
+
   const [defaultServer] = createResource(() =>
     platform.getDefaultServerUrl?.().then((url) => {
       if (url) return ServerConnection.key({ type: "http", http: { url } })
@@ -447,6 +459,16 @@ render(() => {
     })
   })
 
+  // In the final render
+  startupTimer.endPhase("ui-ready")
+  const report = startupTimer.getReport()
+  console.log(`🚀 RAILWISE Desktop ready in ${report.total.toFixed(2)}ms`)
+
+  // Performance budget check
+  if (report.total > 3000) {
+    console.warn(`⚠️ Startup exceeded 3s budget: ${report.total.toFixed(2)}ms`)
+  }
+
   return (
     <PlatformProvider value={platform}>
       <AppBaseProviders>
@@ -467,6 +489,10 @@ render(() => {
               const cmd = useCommand()
 
               menuTrigger = (id) => cmd.trigger(id)
+
+              // When UI becomes interactive
+              startupTimer.endPhase("server-connect")
+              startupTimer.startPhase("ui-ready")
 
               return null
             }

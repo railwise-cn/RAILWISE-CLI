@@ -11,6 +11,7 @@ import { ThemeProvider } from "@railwise/ui/theme"
 import { MetaProvider } from "@solidjs/meta"
 import { Navigate, Route, Router } from "@solidjs/router"
 import { ErrorBoundary, type JSX, lazy, type ParentProps, Show, Suspense } from "solid-js"
+import { ConnectionStatus } from "@/components/ConnectionStatus"
 import { CommandProvider } from "@/context/command"
 import { CommentsProvider } from "@/context/comments"
 import { FileProvider } from "@/context/file"
@@ -163,6 +164,7 @@ export function AppInterface(props: {
                 <Route path="/session/:id?" component={SessionRoute} />
               </Route>
             </Router>
+            <ConnectionStatus />
           </GlobalSyncProvider>
         </GlobalSDKProvider>
       </ServerKey>

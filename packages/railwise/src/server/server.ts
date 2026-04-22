@@ -523,7 +523,9 @@ export namespace Server {
                 }
               })
 
-              // Send heartbeat every 10s to prevent stalled proxy streams.
+              // Send heartbeat every 8s to keep WebView2 SSE alive on Windows
+              // (must stay under WebView2's idle-disconnect threshold). See
+              // doc §3.8.2 (upstream opencode #13655).
               const heartbeat = setInterval(() => {
                 stream.writeSSE({
                   data: JSON.stringify({
@@ -531,7 +533,7 @@ export namespace Server {
                     properties: {},
                   }),
                 })
-              }, 10_000)
+              }, 8_000)
 
               await new Promise<void>((resolve) => {
                 stream.onAbort(() => {

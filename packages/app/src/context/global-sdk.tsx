@@ -1,11 +1,13 @@
 import type { Event } from "@railwise/sdk/v2/client"
 import { createSimpleContext } from "@railwise/ui/context"
 import { createGlobalEmitter } from "@solid-primitives/event-bus"
-import { batch, onCleanup } from "solid-js"
+import { batch, createSignal, onCleanup, type Accessor } from "solid-js"
 import z from "zod"
 import { createSdkForServer } from "@/utils/server"
 import { usePlatform } from "./platform"
 import { useServer } from "./server"
+
+export type ConnectionStatus = "connected" | "reconnecting" | "disconnected"
 
 const abortError = z.object({
   name: z.literal("AbortError"),
@@ -21,6 +23,11 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
     const eventFetch = (() => {
       if (!platform.fetch || !server.current) return
       try {
+        // Windows WebView2 has a documented SSE silent-disconnect bug for
+        // any text/event-stream stream — including loopback. Always route
+        // event stream via Tauri plugin-http on Windows desktop. See doc §3.8.1
+        // (upstream opencode #13655).
+        if (platform.os === "windows") return platform.fetch
         const url = new URL(server.current.http.url)
         const loopback = url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "::1"
         if (url.protocol === "http:" && !loopback) return platform.fetch
@@ -93,8 +100,12 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
     const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
     const aborted = (error: unknown) => abortError.safeParse(error).success
 
+    const [connectionStatus, setConnectionStatus] = createSignal<ConnectionStatus>("reconnecting")
+
     let attempt: AbortController | undefined
-    const HEARTBEAT_TIMEOUT_MS = 15_000
+    // Watchdog must exceed 2× server heartbeat (8s — see §3.8.2) to tolerate
+    // a single dropped heartbeat without false-aborting a healthy stream.
+    const HEARTBEAT_TIMEOUT_MS = 20_000
     let lastEventAt = Date.now()
     let heartbeat: ReturnType<typeof setTimeout> | undefined
     const resetHeartbeat = () => {
@@ -114,6 +125,7 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
       while (!abort.signal.aborted) {
         attempt = new AbortController()
         lastEventAt = Date.now()
+        setConnectionStatus("reconnecting")
         const onAbort = () => {
           attempt?.abort()
         }
@@ -134,6 +146,7 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
           })
           let yielded = Date.now()
           resetHeartbeat()
+          setConnectionStatus("connected")
           for await (const event of events.stream) {
             resetHeartbeat()
             streamErrorLogged = false
@@ -171,8 +184,10 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
         }
 
         if (abort.signal.aborted) return
+        setConnectionStatus("reconnecting")
         await wait(RECONNECT_DELAY_MS)
       }
+      setConnectionStatus("disconnected")
     })().finally(flush)
 
     const onVisibility = () => {
@@ -203,6 +218,7 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
       url: currentServer.http.url,
       client: sdk,
       event: emitter,
+      connectionStatus: connectionStatus satisfies Accessor<ConnectionStatus>,
       createClient(opts: Omit<Parameters<typeof createSdkForServer>[0], "server" | "fetch">) {
         const s = server.current
         if (!s) throw new Error("Server not available")

@@ -23,6 +23,67 @@ const FONT_STACK = '"PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-ser
 // existing UX when migration takes >3s / >9s).
 const MIGRATION_DELAYS = [3000, 9000]
 
+// Enhanced Loading Component with phase-based messaging for M1 Foundation
+interface LoadingProps {
+  phase?: string
+}
+
+const Loading = (props: LoadingProps) => {
+  const [progress, setProgress] = createSignal(0)
+
+  const getPhaseMessage = (phase?: string): string => {
+    // Use existing translation keys that are type-safe
+    switch (phase) {
+      case "sidecar-init":
+        return t("desktop.loading.startingServer")
+      case "server-connect":
+        return t("desktop.loading.connectingProviders")
+      case "ui-ready":
+        return t("desktop.loading.loadingAgents")
+      case "done":
+        return t("desktop.loading.ready")
+      case "sqlite_waiting":
+        return t("desktop.loading.migratingDatabase")
+      default:
+        return t("desktop.loading.readingConfig")
+    }
+  }
+
+  onMount(() => {
+    // Set progress to 100% for done phase, simulate for others
+    if (props.phase === "done") {
+      setProgress(100)
+    } else {
+      const interval = setInterval(() => {
+        setProgress(prev => Math.min(prev + Math.random() * 10, 90))
+      }, 100)
+      onCleanup(() => clearInterval(interval))
+    }
+  })
+
+  return (
+    <div class="loading-container">
+      <div class="loading-content">
+        <div class="railwise-logo">
+          <img src="/railwise-logo.svg" alt="RAILWISE" />
+        </div>
+
+        <h1 class="loading-title">RAILWISE 智测工作台</h1>
+
+        <div class="loading-progress">
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              style={`width: ${progress()}%`}
+            />
+          </div>
+          <p class="loading-message">{getPhaseMessage(props.phase)}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 render(() => {
   const [step, setStep] = createSignal<InitStep | null>(null)
   const [line, setLine] = createSignal(0)
@@ -63,8 +124,7 @@ render(() => {
     onCleanup(() => clearTimeout(timer))
   })
 
-  // Phase → i18n key. Migration sub-phase keeps the same key but the line
-  // counter still drives the cycling animation timing for long migrations.
+  // Enhanced phase mapping for M1 Foundation with fallback to original logic
   const status = createMemo(() => {
     if (phase() === "done") return t("desktop.loading.ready")
     if (phase() === "sqlite_waiting") {
@@ -72,45 +132,33 @@ render(() => {
       void line()
       return t("desktop.loading.migratingDatabase")
     }
-    return t("desktop.loading.readingConfig")
+    // Map phases to M1 Foundation specifications
+    switch (phase()) {
+      case "sidecar_init":
+        return t("desktop.loading.starting")
+      case "server_connect":
+        return t("desktop.loading.connecting")
+      case "ui_ready":
+        return t("desktop.loading.initializing")
+      default:
+        return t("desktop.loading.readingConfig")
+    }
   })
+
+  // Use enhanced loading component for all phases including done
+  if (phase() === "done") {
+    return (
+      <MetaProvider>
+        <Font />
+        <Loading phase={phase()} />
+      </MetaProvider>
+    )
+  }
 
   return (
     <MetaProvider>
-      <div
-        class="w-screen h-screen flex items-center justify-center"
-        style={{ "background-color": BG, "font-family": FONT_STACK }}
-      >
-        <Font />
-        <div class="flex flex-col items-center gap-8">
-          <Splash class="w-20 h-25 opacity-80" />
-          <div class="flex flex-col items-center gap-1">
-            <span
-              class="text-xl font-semibold tracking-wide"
-              style={{ color: TEXT_PRIMARY }}
-            >
-              睿威智测 RAILWISE
-            </span>
-            <span class="text-xs tracking-wider" style={{ color: TEXT_SECONDARY }}>
-              Railwise AI 工程测绘多智能体系统
-            </span>
-          </div>
-          <div class="w-60 flex flex-col items-center gap-3" aria-live="polite">
-            <span
-              class="w-full overflow-hidden text-center text-ellipsis whitespace-nowrap text-sm"
-              style={{ color: ACCENT }}
-            >
-              {status()}
-            </span>
-            <Progress
-              value={value()}
-              class="w-20 [&_[data-slot='progress-track']]:h-1 [&_[data-slot='progress-track']]:border-0 [&_[data-slot='progress-track']]:rounded-none [&_[data-slot='progress-track']]:bg-surface-weak [&_[data-slot='progress-fill']]:rounded-none [&_[data-slot='progress-fill']]:bg-icon-warning-base"
-              aria-label="启动进度"
-              getValueLabel={({ value }) => `${Math.round(value)}%`}
-            />
-          </div>
-        </div>
-      </div>
+      <Font />
+      <Loading phase={phase()} />
     </MetaProvider>
   )
 }, root)

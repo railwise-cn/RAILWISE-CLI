@@ -459,15 +459,7 @@ render(() => {
     })
   })
 
-  // In the final render
-  startupTimer.endPhase("ui-ready")
-  const report = startupTimer.getReport()
-  console.log(`🚀 RAILWISE Desktop ready in ${report.total.toFixed(2)}ms`)
-
-  // Performance budget check
-  if (report.total > 3000) {
-    console.warn(`⚠️ Startup exceeded 3s budget: ${report.total.toFixed(2)}ms`)
-  }
+  // Remove premature timing calls - UI is not ready yet at this point
 
   return (
     <PlatformProvider value={platform}>
@@ -490,9 +482,21 @@ render(() => {
 
               menuTrigger = (id) => cmd.trigger(id)
 
-              // When UI becomes interactive
+              // UI is now interactive - complete the timing sequence
               startupTimer.endPhase("server-connect")
               startupTimer.startPhase("ui-ready")
+
+              onMount(() => {
+                // UI is fully mounted and interactive
+                startupTimer.endPhase("ui-ready")
+                const report = startupTimer.getReport()
+                console.log(`🚀 RAILWISE Desktop ready in ${report.total.toFixed(2)}ms`)
+
+                // Performance budget check after UI is actually ready
+                if (report.total > 3000) {
+                  console.warn(`⚠️ Startup exceeded 3s budget: ${report.total.toFixed(2)}ms`)
+                }
+              })
 
               return null
             }

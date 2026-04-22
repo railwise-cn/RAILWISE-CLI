@@ -1,9 +1,9 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "睿威智测 RAILWISE Dev",
-  "identifier": "com.railwiseai.desktop.dev",
+  "productName": "RAILWISE 智测工作台",
+  "identifier": "ai.railwise.desktop.dev",
   "mainBinaryName": "railwise",
-  "version": "../package.json",
+  "version": "1.3.0",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
@@ -32,7 +32,10 @@
       "icons/railwise/icon.ico"
     ],
     "active": true,
-    "targets": ["deb", "rpm", "dmg", "nsis", "app"],
+    "targets": "all",
+    "publisher": "睿威科技",
+    "shortDescription": "RAILWISE 工程监测智能工作台",
+    "longDescription": "面向工程测绘、结构监测、地铁线路监测一线工程师的多智能体桌面工作台",
     "externalBin": ["sidecars/railwise-cli"],
     "linux": {
       "rpm": {

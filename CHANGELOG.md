@@ -4,9 +4,81 @@
 
 ---
 
-## [Unreleased] — feat/desktop-v1.3.0-m1
+## v1.3.0 — Desktop 中文化首版
 
-### M1 基建整备（进行中）
+_发布日期: 待发布（feat/desktop-v1.3.0-m1 分支待 review）_
+
+### 新增
+
+- 桌面端整体品牌化为 **睿威智测 RAILWISE**（`packages/desktop/`）
+- macOS 顶部菜单全量中文化：应用 / 文件 / 编辑 / 视图 / 帮助 5 个一级菜单 + 全部子项接入 `t("desktop.menu.*")`
+- 启动加载窗口 3 段中文文案：读取 `.railwise` 配置中 → 数据库迁移中 → 准备就绪；奶白背景 + 暖棕强调
+- RAILWISE 2.0 设计令牌落地（`packages/desktop/src/styles.css`）：`:root` 注入 28+ 变量 + Tailwind v4 `@theme` 块（`rw-` 前缀，避免与 `@railwise/ui` 既有 token 冲突）
+- 系统语言自动检测，无语言时默认中文（`detectLocale()` fallback 由 `en` 改为 `zh`）
+- SSE 连接状态指示器（`packages/app/src/components/ConnectionStatus.tsx`）：右下角浮动徽标，仅在重连 / 断开时显示
+- `scripts/rebrand-audit.ts`：扫描 `opencode` / `anomalyco` / `anomaly.co` / `anomaly-labs` 残留字样，CI 友好（exit 0/1）
+- Linux AppStream metainfo（`packages/desktop/src-tauri/release/appstream.metainfo.xml`）：name / summary / description / URLs 全部品牌化为睿威智测，30 个历史 release tag URL 迁移到 `github.com/railwise-cn/RAILWISE-CLI`
+
+### 变更
+
+- `tauri.conf.json` / `tauri.prod.conf.json`：
+  - `productName` → `睿威智测 RAILWISE Dev` / `睿威智测 RAILWISE`
+  - `identifier` → `com.railwiseai.desktop.dev` / `com.railwiseai.desktop`
+  - `mainBinaryName` → `railwise`（小写）
+  - 图标路径 `icons/dev/*` 与 `icons/prod/*` → `icons/railwise/*`
+  - NSIS 横幅 `assets/nsis-header.bmp` / `nsis-sidebar.bmp` → `*-railwise.bmp`
+  - 更新通道 endpoint 指向 `github.com/railwise-cn/RAILWISE-CLI`
+  - Linux deb metainfo 路径迁移到 `com.railwiseai.desktop.metainfo.xml`
+- `packages/desktop/package.json`：新增 `description`，`version` 1.2.8 → 1.3.0
+- `packages/desktop/src-tauri/Cargo.toml`：`name = "railwise"`、`version = "1.3.0"`、`description / authors` 改为 Railwise AI Team；`edition` 保留 `2024`（与既有工具链匹配，未按文档建议降级到 `2021`）
+- `packages/desktop/src-tauri/Cargo.lock`：`opencode-desktop` → `railwise`，version 同步升至 `1.3.0`（下次 `cargo build` 会重新校验）
+- `packages/desktop/src/loading.tsx`：背景色锁定 `rgb(251,251,249)`，强调色 `rgba(117,86,32,0.9)`，字体 PingFang SC 优先；保留 SQLite 迁移进度条
+- SSE 心跳间隔 10s → 8s（`packages/railwise/src/server/server.ts` + `routes/global.ts`），低于 WebView2 空闲断连阈值
+- `global-sdk.tsx` 心跳监督超时 15s → 20s（>2× 服务端心跳，容忍单次心跳丢失而不误触发 abort）
+- README 头部：`# 睿威智测 RAILWISE` + 三端简介
+
+### 修复
+
+- **Windows WebView2 SSE 静默断流**（上游 opencode #13655）：`packages/app/src/context/global-sdk.tsx` 的 `eventFetch` 选择新增 `platform.os === "windows"` 短路分支，Windows 桌面端无论是否 loopback 均强制走 `@tauri-apps/plugin-http`，绕过 WebView2 网络栈
+- 多开端口冲突：`get_sidecar_port()` 经 `TcpListener::bind("127.0.0.1:0")` 由 OS 分配空闲端口；前端 `ServerGate` 经 `awaitInitialization()` 动态获取 URL，无任何 8787/4096 系列硬编码
+
+### 内部
+
+- 新增 `CHANGELOG.md`（仓库根，本文件）
+- 新增 `icons/railwise/` 目录（从 `icons/dev/` 复制为占位图标，附 `README.md` 标注待设计交付后替换）
+- 新增 `assets/nsis-header-railwise.bmp` / `nsis-sidebar-railwise.bmp` 占位
+- 新增 `packages/app/src/components/ConnectionStatus.tsx`
+- 心跳行内注释统一引用本文档 §3.8.2
+
+### 已知遗留（M7 收尾再处理）
+
+- `packages/opencode/` / `packages/console/` / `.github/workflows/` / `.railwise/agent/` / `.railwise/tool/` / `.vscode/launch.example.json` / `SECURITY.md` 中仍有约 2.8k 处 `opencode` / `anomalyco` 残留 — 不在 Desktop 范围内，待 M7 全量清理（M1 `rebrand-audit.ts` 全仓库扫描已记录）
+- 真实品牌图标（`assets/railwise-logo-1024.png`）与 NSIS 横幅 BMP 由设计团队交付后替换
+- 运行时验证 `bun run dev:desktop`（macOS dev 启动 / Windows VM 30min SSE 长连接）需要在沙盒外执行
+
+---
+
+## §3.9 M1 验收清单（feat/desktop-v1.3.0-m1）
+
+| 序号 | 交付物 | 路径 | 验收结果 |
+|------|--------|------|----------|
+| 1 | 品牌替换（Desktop 范围） | tauri.conf.json / tauri.prod.conf.json / Cargo.toml / package.json / README | ✓ 全部静态字段已替换；`grep packages/desktop/` 无 `opencode/anomalyco` 残留 |
+| 2 | i18n 字典（简体中文） | `packages/desktop/src/i18n/zh.ts` + `en.ts` | ✓ 文档 §3.4.1 全部 key 已添加；`bun typecheck` 通过 |
+| 3 | rebrand-audit 扫描脚本 | `scripts/rebrand-audit.ts` | ✓ 脚本已创建；Desktop 范围扫描 0 处残留；全仓 2866 处属于上游 opencode/console 历史代码（M7 范围） |
+| 4 | Design Tokens CSS | `packages/desktop/src/styles.css` | ✓ 文档 §3.6.1 验证脚本通过：`--bg-primary` = `rgb(251, 251, 249)`，29/28 个必备令牌齐全 |
+| 5 | Tailwind 令牌配置 | `packages/desktop/src/styles.css`（`@theme` 块） | ✓ Tailwind v4 `@theme` 已注入 `rw-` 前缀令牌；`bun typecheck` 无 CSS 解析错误 |
+| 6 | SSE 客户端（Windows 修复） | `packages/app/src/context/global-sdk.tsx` | ✓ `platform.os === "windows"` 强制走 `@tauri-apps/plugin-http`；250ms 自动重连；20s 心跳监督；运行时验证待 Windows VM |
+| 7 | ConnectionStatus 组件 | `packages/app/src/components/ConnectionStatus.tsx` | ✓ 三种状态文案 + 颜色映射文档 §3.8.3；已挂载到 `AppInterface` |
+| 8 | 服务端心跳间隔 | `packages/railwise/src/server/server.ts` + `routes/global.ts` | ✓ `10_000` → `8_000` ms；仅修改 .ts 源文件 |
+| 9 | CHANGELOG 新条目 | `CHANGELOG.md` | ✓ 本文件 v1.3.0 段落 |
+
+---
+
+## v1.3.0 — 详细变更日志（按文档章节顺序）
+
+> 以下条目按 `RAILWISE-Desktop-开发实施文档-v1.0.md` §3.3 ~ §3.9 顺序记录每个 PR 的细节，作为上面 release notes 的补充。
+
+### M1 基建整备（已完成）
 
 #### 品牌替换（§3.3）
 
@@ -55,12 +127,33 @@
 - 前端 `packages/desktop/src/index.tsx::ServerGate` 完全使用 `commands.awaitInitialization()` 返回的 `data().url`，无任何端口硬编码。
 - ⚠ 运行时验证（`bun run dev:desktop`）需要在沙盒外执行：sidecar 编译需要联网拉取 `models.dev` provider snapshot，且部分构建后处理会写 `.git/config`。
 
-### 待办（M1 范围内）
+#### Windows SSE 修复（§3.8）
 
-- §3.8 Windows SSE 强制使用 `@tauri-apps/plugin-http` fetch + UI 状态指示器
-- §3.9 本章交付物清单逐项检验
-- 设计团队提供 `assets/railwise-logo-1024.png` 后重新生成全套图标资源
-- 真实 NSIS 横幅 `nsis-header-railwise.bmp` / `nsis-sidebar-railwise.bmp` 替换
+- `packages/app/src/context/global-sdk.tsx::eventFetch`：`platform.os === "windows"` 时直接调用 `platform.fetch`（路由到 `@tauri-apps/plugin-http`），跳过 WebView2 原生 fetch 的 loopback 长连接问题；其他 OS 仅在远程 HTTP 时强制走 plugin-http。
+- `HEARTBEAT_TIMEOUT_MS` 15s → 20s，>2× 服务端心跳，避免单次心跳丢失误中止。
+- 新增 `connectionStatus` Signal（`"connected" | "reconnecting" | "disconnected"`）：在 SSE 主循环每次 attempt 前置为 `reconnecting`，收到首事件后置为 `connected`，stream 抛出错误后置为 `disconnected`；通过 `useGlobalSDK()` 暴露。
+- 服务端心跳：`packages/railwise/src/server/server.ts` + `packages/railwise/src/server/routes/global.ts` 心跳间隔 `10_000` → `8_000` ms。
+- 新增 `packages/app/src/components/ConnectionStatus.tsx`：右下角浮动徽标，仅在 `reconnecting` / `disconnected` 时显示（黄色脉冲 / 红色圆点），背景奶白半透明 + `--shadow-sm`，角色 `role="status" aria-live="polite"`。
+- 挂载点：`packages/app/src/app.tsx` 的 `GlobalSyncProvider` 内、`Router` 外，跨路由常驻。
+
+#### M1 验收清单（§3.9，已完成）
+
+- Desktop 范围品牌字段全替换 ✓
+- i18n 字典齐全 + `bun typecheck` 通过 ✓
+- `rebrand-audit.ts` 在 `packages/desktop` 内零残留 ✓
+- 设计令牌 28+ 项 + Tailwind `@theme` 注入 ✓
+- SSE 客户端 Windows 修复 + 心跳监督 + ConnectionStatus 组件 ✓
+- 服务端心跳 8s ✓
+- CHANGELOG 本条目 ✓
+- `appstream.metainfo.xml` 全部品牌化（含 30 个历史 release tag URL）✓
+- `Cargo.lock` 中 `opencode-desktop` → `railwise@1.3.0` ✓
+
+### 待办（移交给后续里程碑 / 设计团队）
+
+- 设计团队提供 `assets/railwise-logo-1024.png` 后重新生成全套图标资源（M7 范围）
+- 真实 NSIS 横幅 `nsis-header-railwise.bmp` / `nsis-sidebar-railwise.bmp` 替换（M7 范围）
+- 上游 `packages/opencode/`、`packages/console/`、`.github/workflows/`、`.railwise/agent/`、`.railwise/tool/`、`.vscode/launch.example.json`、`SECURITY.md` 等仍含 `opencode` / `anomalyco` 残留（约 2.8k 处）— M7 全量品牌清理
+- 运行时验证 `bun run dev:desktop`：macOS 启动闪屏 / Windows VM 30 分钟 SSE 长连接（沙盒外执行）
 
 ---
 

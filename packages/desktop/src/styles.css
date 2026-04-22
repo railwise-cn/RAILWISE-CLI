@@ -131,6 +131,27 @@ input, textarea, [contenteditable], .selectable-text {
   margin-bottom: 1.5rem;
 }
 
+.logo-fallback {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--railwise-accent-primary, rgba(117, 86, 32, 0.9));
+  border-radius: var(--railwise-radius-md, 8px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logo-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  font-family: var(--railwise-font-family);
+  letter-spacing: 0.5px;
+}
+
 .loading-title {
   font-size: 1.5rem;
   font-weight: 600;

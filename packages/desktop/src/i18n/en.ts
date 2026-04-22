@@ -38,6 +38,9 @@ export const dict = {
   "desktop.loading.connectingProviders": "Connecting model providers",
   "desktop.loading.startingServer": "Starting local service",
   "desktop.loading.migratingDatabase": "Migrating database",
+  "desktop.loading.starting": "Starting RAILWISE core service...",
+  "desktop.loading.connecting": "Connecting to server...",
+  "desktop.loading.initializing": "Initializing interface...",
   "desktop.loading.ready": "Ready",
 
   "desktop.updater.checkFailed.title": "Update Check Failed",

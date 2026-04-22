@@ -19,33 +19,58 @@ const TEXT_PRIMARY = "rgb(10, 10, 9)"
 const TEXT_SECONDARY = "rgba(47, 38, 24, 0.7)"
 const FONT_STACK = '"PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif'
 
+// Constants for progress animation and migration timing
+const PROGRESS_CAP_PERCENT = 90 // Cap simulated progress at 90% to leave room for completion
+const PROGRESS_UPDATE_INTERVAL = 200 // Update interval in ms (increased from 100ms for performance)
+const PROGRESS_INCREMENT_MIN = 1 // Minimum progress increment per update
+const PROGRESS_INCREMENT_MAX = 8 // Maximum progress increment per update
+
 // Cycle through migration sub-phases for long sqlite_waiting (preserves
 // existing UX when migration takes >3s / >9s).
 const MIGRATION_DELAYS = [3000, 9000]
 
+// Define valid phase types for type safety - based on actual InitStep from bindings
+// Plus additional phases that may be used in extended contexts
+type InitPhase =
+  | "server_waiting" // From bindings.ts InitStep
+  | "sqlite_waiting" // From bindings.ts InitStep
+  | "done"           // From bindings.ts InitStep
+  | "sidecar-init"   // Extended phase for UI consistency
+  | "server-connect" // Extended phase
+  | "ui-ready"       // Extended phase
+
 // Enhanced Loading Component with phase-based messaging for M1 Foundation
 interface LoadingProps {
-  phase?: string
+  phase?: InitPhase
 }
 
 const Loading = (props: LoadingProps) => {
   const [progress, setProgress] = createSignal(0)
+  const [imageLoadError, setImageLoadError] = createSignal(false)
 
-  const getPhaseMessage = (phase?: string): string => {
-    // Use existing translation keys that are type-safe
-    switch (phase) {
-      case "sidecar-init":
-        return t("desktop.loading.startingServer")
-      case "server-connect":
-        return t("desktop.loading.connectingProviders")
-      case "ui-ready":
-        return t("desktop.loading.loadingAgents")
-      case "done":
-        return t("desktop.loading.ready")
-      case "sqlite_waiting":
-        return t("desktop.loading.migratingDatabase")
-      default:
-        return t("desktop.loading.readingConfig")
+  const getPhaseMessage = (phase?: InitPhase): string => {
+    try {
+      // Use existing translation keys that are type-safe
+      switch (phase) {
+        case "sidecar-init":
+          return t("desktop.loading.startingServer")
+        case "server-connect":
+          return t("desktop.loading.connectingProviders")
+        case "server_waiting":
+          return t("desktop.loading.connectingProviders")
+        case "ui-ready":
+          return t("desktop.loading.loadingAgents")
+        case "done":
+          return t("desktop.loading.ready")
+        case "sqlite_waiting":
+          return t("desktop.loading.migratingDatabase")
+        default:
+          return t("desktop.loading.readingConfig")
+      }
+    } catch (error) {
+      // Fallback message if translation fails
+      console.warn("Translation failed for phase:", phase, error)
+      return "Loading..."
     }
   }
 
@@ -54,10 +79,28 @@ const Loading = (props: LoadingProps) => {
     if (props.phase === "done") {
       setProgress(100)
     } else {
-      const interval = setInterval(() => {
-        setProgress(prev => Math.min(prev + Math.random() * 10, 90))
-      }, 100)
-      onCleanup(() => clearInterval(interval))
+      let animationId: number
+      let lastTime = 0
+
+      const animateProgress = (currentTime: number) => {
+        // Only update if enough time has passed (throttle to PROGRESS_UPDATE_INTERVAL)
+        if (currentTime - lastTime >= PROGRESS_UPDATE_INTERVAL) {
+          setProgress(prev => {
+            const increment = PROGRESS_INCREMENT_MIN +
+              Math.random() * (PROGRESS_INCREMENT_MAX - PROGRESS_INCREMENT_MIN)
+            return Math.min(prev + increment, PROGRESS_CAP_PERCENT)
+          })
+          lastTime = currentTime
+        }
+
+        // Continue animation if not at cap and phase is not done
+        if (progress() < PROGRESS_CAP_PERCENT && props.phase !== "done") {
+          animationId = requestAnimationFrame(animateProgress)
+        }
+      }
+
+      animationId = requestAnimationFrame(animateProgress)
+      onCleanup(() => cancelAnimationFrame(animationId))
     }
   })
 
@@ -65,7 +108,17 @@ const Loading = (props: LoadingProps) => {
     <div class="loading-container">
       <div class="loading-content">
         <div class="railwise-logo">
-          <img src="/railwise-logo.svg" alt="RAILWISE" />
+          <img
+            src="/railwise-logo.svg"
+            alt="RAILWISE"
+            onError={() => setImageLoadError(true)}
+            style={imageLoadError() ? { display: "none" } : {}}
+          />
+          {imageLoadError() && (
+            <div class="logo-fallback">
+              <div class="logo-text">RAILWISE</div>
+            </div>
+          )}
         </div>
 
         <h1 class="loading-title">RAILWISE 智测工作台</h1>
@@ -89,7 +142,7 @@ render(() => {
   const [line, setLine] = createSignal(0)
   const [percent, setPercent] = createSignal(0)
 
-  const phase = createMemo(() => step()?.phase)
+  const phase = createMemo(() => step()?.phase as InitPhase | undefined)
 
   const value = createMemo(() => {
     if (phase() === "done") return 100
@@ -124,24 +177,32 @@ render(() => {
     onCleanup(() => clearTimeout(timer))
   })
 
-  // Enhanced phase mapping for M1 Foundation with fallback to original logic
+  // Enhanced phase mapping for M1 Foundation with consistent phase names
   const status = createMemo(() => {
-    if (phase() === "done") return t("desktop.loading.ready")
-    if (phase() === "sqlite_waiting") {
-      // line 0,1,2 — all map to migratingDatabase; cycling implicit via percent.
-      void line()
-      return t("desktop.loading.migratingDatabase")
-    }
-    // Map phases to M1 Foundation specifications
-    switch (phase()) {
-      case "sidecar_init":
-        return t("desktop.loading.starting")
-      case "server_connect":
-        return t("desktop.loading.connecting")
-      case "ui_ready":
-        return t("desktop.loading.initializing")
-      default:
-        return t("desktop.loading.readingConfig")
+    try {
+      if (phase() === "done") return t("desktop.loading.ready")
+      if (phase() === "sqlite_waiting") {
+        // line 0,1,2 — all map to migratingDatabase; cycling implicit via percent.
+        void line()
+        return t("desktop.loading.migratingDatabase")
+      }
+      // Map phases to M1 Foundation specifications (standardized phase names)
+      switch (phase()) {
+        case "sidecar-init":  // Standardized to match UI naming convention
+          return t("desktop.loading.starting")
+        case "server-connect":
+          return t("desktop.loading.connecting")
+        case "server_waiting":
+          return t("desktop.loading.connecting")
+        case "ui-ready":
+          return t("desktop.loading.initializing")
+        default:
+          return t("desktop.loading.readingConfig")
+      }
+    } catch (error) {
+      // Fallback message if translation fails
+      console.warn("Translation failed for main status phase:", phase(), error)
+      return "Loading..."
     }
   })
 

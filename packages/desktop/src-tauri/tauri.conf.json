@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "RAILWISE Dev",
-  "identifier": "ai.railwise.desktop.dev",
-  "mainBinaryName": "RAILWISE",
+  "productName": "睿威智测 RAILWISE Dev",
+  "identifier": "com.railwiseai.desktop.dev",
+  "mainBinaryName": "railwise",
   "version": "../package.json",
   "build": {
     "beforeDevCommand": "bun run dev",
@@ -25,11 +25,11 @@
   },
   "bundle": {
     "icon": [
-      "icons/dev/32x32.png",
-      "icons/dev/128x128.png",
-      "icons/dev/128x128@2x.png",
-      "icons/dev/icon.icns",
-      "icons/dev/icon.ico"
+      "icons/railwise/32x32.png",
+      "icons/railwise/128x128.png",
+      "icons/railwise/128x128@2x.png",
+      "icons/railwise/icon.icns",
+      "icons/railwise/icon.ico"
     ],
     "active": true,
     "targets": ["deb", "rpm", "dmg", "nsis", "app"],
@@ -46,9 +46,9 @@
     },
     "windows": {
       "nsis": {
-        "installerIcon": "icons/dev/icon.ico",
-        "headerImage": "assets/nsis-header.bmp",
-        "sidebarImage": "assets/nsis-sidebar.bmp"
+        "installerIcon": "icons/railwise/icon.ico",
+        "headerImage": "assets/nsis-header-railwise.bmp",
+        "sidebarImage": "assets/nsis-sidebar-railwise.bmp"
       }
     }
   },

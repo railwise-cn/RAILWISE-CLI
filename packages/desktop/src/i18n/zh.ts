@@ -38,7 +38,15 @@ export const dict = {
   "desktop.loading.connectingProviders": "连接模型提供商中",
   "desktop.loading.startingServer": "启动本地服务中",
   "desktop.loading.migratingDatabase": "数据库迁移中",
+  "desktop.loading.starting": "正在启动 RAILWISE 核心服务...",
+  "desktop.loading.connecting": "正在连接服务器...",
+  "desktop.loading.initializing": "正在初始化界面...",
   "desktop.loading.ready": "准备就绪",
+
+  // Error messages
+  "desktop.error.sidecarStart": "无法启动 RAILWISE 核心服务",
+  "desktop.error.connection": "连接服务器失败",
+  "desktop.error.timeout": "启动超时，请重试",
 
   "desktop.updater.checkFailed.title": "检查更新失败",
   "desktop.updater.checkFailed.message": "无法检查更新",

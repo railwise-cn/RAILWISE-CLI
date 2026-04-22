@@ -12,14 +12,4 @@
   /* Derived tokens */
   --railwise-bg-primary: var(--railwise-cream-white);
   --railwise-text-primary: var(--railwise-warm-brown);
-
-  /* Minimal additional tokens for existing functionality */
-  --railwise-bg-secondary: #FFFFFF;
-  --railwise-bg-tertiary: #F5F5F5;
-  --railwise-text-secondary: #757575;
-  --railwise-border-primary: #E0E0E0;
-  --railwise-surface-secondary: #FAFAFA;
-  --railwise-hover-bg: #F5F5F5;
-  --railwise-active-bg: #EEEEEE;
-  --railwise-focus-ring: var(--railwise-info);
 }

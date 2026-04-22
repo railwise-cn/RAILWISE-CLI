@@ -45,11 +45,11 @@
  * 命名前缀 rw- 避免与 @railwise/ui 既有 token (background-* / text-strong 等) 冲突。
  */
 @theme {
-  --color-rw-bg-primary:       #FEFEFE;
+  --color-rw-bg-primary:       var(--railwise-cream-white);
   --color-rw-bg-secondary:     #FFFFFF;
-  --color-rw-text-primary:     #8B4513;
+  --color-rw-text-primary:     var(--railwise-warm-brown);
   --color-rw-text-secondary:   #757575;
-  --color-rw-accent:           #8B4513;
+  --color-rw-accent:           var(--railwise-warm-brown);
   --color-rw-accent-secondary: #654321;
 
   --color-rw-success: #52c41a;
@@ -159,7 +159,7 @@ input, textarea, [contenteditable], .selectable-text {
 .progress-bar {
   width: 100%;
   height: 4px;
-  background: var(--railwise-bg-tertiary);
+  background: #F5F5F5;
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -174,7 +174,7 @@ input, textarea, [contenteditable], .selectable-text {
 
 .loading-message {
   font-size: 0.875rem;
-  color: var(--railwise-text-secondary);
+  color: #757575;
   margin: 0;
   font-family: var(--railwise-font-family);
 }
@@ -195,26 +195,26 @@ body {
 }
 
 .desktop-header {
-  background: var(--railwise-surface-secondary);
-  border-bottom: 1px solid var(--railwise-border-primary);
+  background: #FAFAFA;
+  border-bottom: 1px solid #E0E0E0;
 }
 
 .desktop-sidebar {
-  background: var(--railwise-bg-secondary);
-  border-right: 1px solid var(--railwise-border-primary);
+  background: #FFFFFF;
+  border-right: 1px solid #E0E0E0;
 }
 
 /* Interactive elements */
 button:hover {
-  background: var(--railwise-hover-bg);
+  background: #F5F5F5;
 }
 
 button:active {
-  background: var(--railwise-active-bg);
+  background: #EEEEEE;
 }
 
 button:focus {
-  box-shadow: 0 0 0 2px var(--railwise-focus-ring);
+  box-shadow: 0 0 0 2px var(--railwise-info);
 }
 
 /* Ensure no rust red anywhere */

@@ -8,6 +8,11 @@ import { installCli } from "./cli"
 import { initI18n, t } from "./i18n"
 import { commands } from "./bindings"
 
+const FEEDBACK_URL = "https://github.com/railwise-cn/RAILWISE-CLI/issues/new?template=feature_request.yml"
+const BUG_URL = "https://github.com/railwise-cn/RAILWISE-CLI/issues/new?template=bug_report.yml"
+const DOCS_URL = "https://railwise.ai/docs"
+const FORUM_URL = "https://discord.com/invite/railwise"
+
 export async function createMenu(trigger: (id: string) => void) {
   if (ostype() !== "macos") return
 
@@ -16,7 +21,7 @@ export async function createMenu(trigger: (id: string) => void) {
   const menu = await Menu.new({
     items: [
       await Submenu.new({
-        text: "RAILWISE",
+        text: t("desktop.menu.app"),
         items: [
           await PredefinedMenuItem.new({
             item: { About: null },
@@ -41,147 +46,102 @@ export async function createMenu(trigger: (id: string) => void) {
             },
             text: t("desktop.menu.restart"),
           }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Hide",
-          }),
-          await PredefinedMenuItem.new({
-            item: "HideOthers",
-          }),
-          await PredefinedMenuItem.new({
-            item: "ShowAll",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Quit",
-          }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
+          await PredefinedMenuItem.new({ item: "Hide" }),
+          await PredefinedMenuItem.new({ item: "HideOthers" }),
+          await PredefinedMenuItem.new({ item: "ShowAll" }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
+          await PredefinedMenuItem.new({ item: "Quit" }),
         ].filter(Boolean),
       }),
       await Submenu.new({
-        text: "File",
+        text: t("desktop.menu.file"),
         items: [
           await MenuItem.new({
-            text: "New Session",
+            text: t("desktop.menu.newSession"),
             accelerator: "Shift+Cmd+S",
             action: () => trigger("session.new"),
           }),
           await MenuItem.new({
-            text: "Open Project...",
+            text: t("desktop.menu.openProject"),
             accelerator: "Cmd+O",
             action: () => trigger("project.open"),
           }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
-          await PredefinedMenuItem.new({
-            item: "CloseWindow",
-          }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
+          await PredefinedMenuItem.new({ item: "CloseWindow" }),
         ],
       }),
       await Submenu.new({
-        text: "Edit",
+        text: t("desktop.menu.edit"),
         items: [
-          await PredefinedMenuItem.new({
-            item: "Undo",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Redo",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Cut",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Copy",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Paste",
-          }),
-          await PredefinedMenuItem.new({
-            item: "SelectAll",
-          }),
+          await PredefinedMenuItem.new({ item: "Undo" }),
+          await PredefinedMenuItem.new({ item: "Redo" }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
+          await PredefinedMenuItem.new({ item: "Cut" }),
+          await PredefinedMenuItem.new({ item: "Copy" }),
+          await PredefinedMenuItem.new({ item: "Paste" }),
+          await PredefinedMenuItem.new({ item: "SelectAll" }),
         ],
       }),
       await Submenu.new({
-        text: "View",
+        text: t("desktop.menu.view"),
         items: [
           await MenuItem.new({
             action: () => trigger("sidebar.toggle"),
-            text: "Toggle Sidebar",
+            text: t("desktop.menu.toggleSidebar"),
             accelerator: "Cmd+B",
           }),
           await MenuItem.new({
             action: () => trigger("terminal.toggle"),
-            text: "Toggle Terminal",
+            text: t("desktop.menu.toggleTerminal"),
             accelerator: "Ctrl+`",
           }),
           await MenuItem.new({
             action: () => trigger("fileTree.toggle"),
-            text: "Toggle File Tree",
+            text: t("desktop.menu.toggleFileTree"),
           }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
           await MenuItem.new({
             action: () => trigger("common.goBack"),
-            text: "Back",
+            text: t("desktop.menu.back"),
           }),
           await MenuItem.new({
             action: () => trigger("common.goForward"),
-            text: "Forward",
+            text: t("desktop.menu.forward"),
           }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
           await MenuItem.new({
             action: () => trigger("session.previous"),
-            text: "Previous Session",
+            text: t("desktop.menu.previousSession"),
             accelerator: "Option+ArrowUp",
           }),
           await MenuItem.new({
             action: () => trigger("session.next"),
-            text: "Next Session",
+            text: t("desktop.menu.nextSession"),
             accelerator: "Option+ArrowDown",
           }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
         ],
       }),
       await Submenu.new({
-        text: "Help",
+        text: t("desktop.menu.help"),
         items: [
-          // missing native macos search
           await MenuItem.new({
-            action: () => openUrl("https://railwise.ai/docs"),
-            text: "RAILWISE Documentation",
-          }),
-          await MenuItem.new({
-            action: () => openUrl("https://discord.com/invite/railwise"),
-            text: "Support Forum",
-          }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
-          }),
-          // await MenuItem.new({
-          //   text: "Release Notes",
-          // }),
-          await PredefinedMenuItem.new({
-            item: "Separator",
+            action: () => openUrl(DOCS_URL),
+            text: t("desktop.menu.documentation"),
           }),
           await MenuItem.new({
-            action: () => openUrl("https://github.com/anomalyco/railwise/issues/new?template=feature_request.yml"),
-            text: "Share Feedback",
+            action: () => openUrl(FORUM_URL),
+            text: t("desktop.menu.supportForum"),
+          }),
+          await PredefinedMenuItem.new({ item: "Separator" }),
+          await MenuItem.new({
+            action: () => openUrl(FEEDBACK_URL),
+            text: t("desktop.menu.shareFeedback"),
           }),
           await MenuItem.new({
-            action: () => openUrl("https://github.com/anomalyco/railwise/issues/new?template=bug_report.yml"),
-            text: "Report a Bug",
+            action: () => openUrl(BUG_URL),
+            text: t("desktop.menu.reportBug"),
           }),
         ],
       }),

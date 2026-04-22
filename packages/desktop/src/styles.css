@@ -1,3 +1,6 @@
+/* Import design tokens */
+@import "./tokens.css";
+
 /* packages/desktop/src/styles.css
  * RAILWISE 2.0 Design Tokens — 奶白基调 · 暖棕强调
  * 来源: 开发实施文档 §2.8 / §3.6
@@ -167,7 +170,7 @@ input, textarea, [contenteditable], .selectable-text {
 .progress-bar {
   width: 100%;
   height: 4px;
-  background: #f0f0f0;
+  background: var(--railwise-bg-tertiary);
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -186,3 +189,44 @@ input, textarea, [contenteditable], .selectable-text {
   margin: 0;
   font-family: var(--railwise-font-family);
 }
+
+/* Desktop App Base Styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--railwise-bg-primary);
+  color: var(--railwise-text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Desktop components using design tokens */
+.desktop-container {
+  background: var(--railwise-bg-primary);
+  color: var(--railwise-text-primary);
+}
+
+.desktop-header {
+  background: var(--railwise-surface-secondary);
+  border-bottom: 1px solid var(--railwise-border-primary);
+}
+
+.desktop-sidebar {
+  background: var(--railwise-bg-secondary);
+  border-right: 1px solid var(--railwise-border-primary);
+}
+
+/* Interactive elements */
+button:hover {
+  background: var(--railwise-hover-bg);
+}
+
+button:active {
+  background: var(--railwise-active-bg);
+}
+
+button:focus {
+  box-shadow: 0 0 0 2px var(--railwise-focus-ring);
+}
+
+/* Ensure no rust red anywhere */
+/* #C0392B is explicitly forbidden per document */

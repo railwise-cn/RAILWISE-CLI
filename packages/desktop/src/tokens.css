@@ -1,0 +1,62 @@
+/**
+ * RAILWISE Desktop Design Tokens
+ * 基于 2.0 设计规范：奶白 + 暖棕 基调
+ */
+
+:root {
+  /* Base Palette - 奶白+暖棕 */
+  --railwise-cream-white: #FEFEFE;
+  --railwise-warm-brown: #8B4513;
+  --railwise-warm-brown-light: #A0522D;
+  --railwise-warm-brown-dark: #654321;
+
+  /* Neutral Scale */
+  --railwise-gray-50: #FAFAFA;
+  --railwise-gray-100: #F5F5F5;
+  --railwise-gray-200: #EEEEEE;
+  --railwise-gray-300: #E0E0E0;
+  --railwise-gray-400: #BDBDBD;
+  --railwise-gray-500: #9E9E9E;
+  --railwise-gray-600: #757575;
+  --railwise-gray-700: #616161;
+  --railwise-gray-800: #424242;
+  --railwise-gray-900: #212121;
+
+  /* Functional Colors (Document Approved) */
+  --railwise-success: #52c41a;
+  --railwise-warning: #faad14;
+  --railwise-error: #ff4d4f;
+  --railwise-info: #1890ff;
+
+  /* Semantic Tokens */
+  --railwise-bg-primary: var(--railwise-cream-white);
+  --railwise-bg-secondary: var(--railwise-gray-50);
+  --railwise-bg-tertiary: var(--railwise-gray-100);
+
+  --railwise-text-primary: var(--railwise-warm-brown);
+  --railwise-text-secondary: var(--railwise-gray-600);
+  --railwise-text-tertiary: var(--railwise-gray-500);
+  --railwise-text-inverse: var(--railwise-cream-white);
+
+  --railwise-border-primary: var(--railwise-gray-300);
+  --railwise-border-secondary: var(--railwise-gray-200);
+
+  --railwise-surface-primary: var(--railwise-cream-white);
+  --railwise-surface-secondary: var(--railwise-gray-50);
+  --railwise-surface-accent: var(--railwise-warm-brown);
+
+  /* Interactive States */
+  --railwise-hover-bg: var(--railwise-gray-100);
+  --railwise-active-bg: var(--railwise-gray-200);
+  --railwise-focus-ring: var(--railwise-info);
+}
+
+/* Dark Mode Tokens (Future) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --railwise-bg-primary: #1a1a1a;
+    --railwise-bg-secondary: #2d2d2d;
+    --railwise-text-primary: #f5f5f5;
+    --railwise-text-secondary: #b3b3b3;
+  }
+}

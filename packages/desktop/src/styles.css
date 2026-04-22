@@ -9,20 +9,9 @@
  * ──────────────────────────────────────── */
 
 :root {
-  /* ── 色彩系统 ──────────────────────────── */
-  --railwise-bg-primary:       rgb(251, 251, 249);     /* 奶白主背景 */
-  --railwise-bg-secondary:     rgb(255, 255, 255);     /* 纯白卡片背景 */
-
-  --railwise-text-primary:     rgb(10, 10, 9);         /* 主文本 */
-  --railwise-text-secondary:   rgb(47, 38, 24);        /* 次文本 */
-
-  --railwise-accent-primary:   rgba(117, 86, 32, 0.9); /* 主强调（暖棕） */
-  --railwise-accent-secondary: rgb(95, 70, 24);        /* 次强调（深暖棕） */
-
-  --railwise-color-success:    #52c41a;
-  --railwise-color-warning:    #faad14;
-  --railwise-color-error:      #ff4d4f;
-  --railwise-color-info:       #1890ff;
+  /* Additional design system tokens (using imported base tokens) */
+  --railwise-accent-primary:   var(--railwise-warm-brown); /* 主强调（暖棕） */
+  --railwise-accent-secondary: #654321;                 /* 次强调（深暖棕） */
 
   /* ── 字体系统 ──────────────────────────── */
   --railwise-font-family:      "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
@@ -56,12 +45,12 @@
  * 命名前缀 rw- 避免与 @railwise/ui 既有 token (background-* / text-strong 等) 冲突。
  */
 @theme {
-  --color-rw-bg-primary:       rgb(251, 251, 249);
-  --color-rw-bg-secondary:     rgb(255, 255, 255);
-  --color-rw-text-primary:     rgb(10, 10, 9);
-  --color-rw-text-secondary:   rgb(47, 38, 24);
-  --color-rw-accent:           rgba(117, 86, 32, 0.9);
-  --color-rw-accent-secondary: rgb(95, 70, 24);
+  --color-rw-bg-primary:       #FEFEFE;
+  --color-rw-bg-secondary:     #FFFFFF;
+  --color-rw-text-primary:     #8B4513;
+  --color-rw-text-secondary:   #757575;
+  --color-rw-accent:           #8B4513;
+  --color-rw-accent-secondary: #654321;
 
   --color-rw-success: #52c41a;
   --color-rw-warning: #faad14;
@@ -117,7 +106,7 @@ input, textarea, [contenteditable], .selectable-text {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--railwise-bg-primary, #FEFEFE);
+  background: var(--railwise-bg-primary);
   z-index: 9999;
   font-family: var(--railwise-font-family);
 }
@@ -141,7 +130,7 @@ input, textarea, [contenteditable], .selectable-text {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--railwise-accent-primary, rgba(117, 86, 32, 0.9));
+  background: var(--railwise-accent-primary);
   border-radius: var(--railwise-radius-md, 8px);
   margin-left: auto;
   margin-right: auto;
@@ -158,7 +147,7 @@ input, textarea, [contenteditable], .selectable-text {
 .loading-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--railwise-text-primary, #8B4513);
+  color: var(--railwise-text-primary);
   margin-bottom: 2rem;
   font-family: var(--railwise-font-family);
 }
@@ -178,14 +167,14 @@ input, textarea, [contenteditable], .selectable-text {
 
 .progress-fill {
   height: 100%;
-  background: var(--railwise-color-info, #1890ff);
+  background: var(--railwise-info);
   transition: width 0.3s ease;
   border-radius: inherit;
 }
 
 .loading-message {
   font-size: 0.875rem;
-  color: var(--railwise-text-secondary, #666);
+  color: var(--railwise-text-secondary);
   margin: 0;
   font-family: var(--railwise-font-family);
 }

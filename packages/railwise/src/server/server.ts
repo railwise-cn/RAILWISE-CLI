@@ -25,6 +25,7 @@ import { ProjectRoutes } from "./routes/project"
 import { SessionRoutes } from "./routes/session"
 import { PtyRoutes } from "./routes/pty"
 import { McpRoutes } from "./routes/mcp"
+import { AgentStudioRoutes } from "./routes/agent-studio"
 import { FileRoutes } from "./routes/file"
 import { Config } from "../config/config"
 import { ConfigRoutes } from "./routes/config"
@@ -237,6 +238,7 @@ export namespace Server {
         .route("/question", QuestionRoutes())
         .route("/provider", ProviderRoutes())
         .route("/", FileRoutes())
+        .route("/agent-studio", AgentStudioRoutes())
         .route("/mcp", McpRoutes())
         .route("/tui", TuiRoutes())
         .post(

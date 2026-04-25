@@ -35,6 +35,7 @@ type InitPhase =
   | "server_waiting" // From bindings.ts InitStep
   | "sqlite_waiting" // From bindings.ts InitStep
   | "done"           // From bindings.ts InitStep
+  | "app-init"       // Enhanced phase for M1 Foundation
   | "sidecar-init"   // Extended phase for UI consistency
   | "server-connect" // Extended phase
   | "ui-ready"       // Extended phase
@@ -50,22 +51,24 @@ const Loading = (props: LoadingProps) => {
 
   const getPhaseMessage = (phase?: InitPhase): string => {
     try {
-      // Use existing translation keys that are type-safe
+      // Enhanced phase messages with Chinese for better UX
       switch (phase) {
+        case "app-init":
+          return "初始化应用程序..."
         case "sidecar-init":
-          return t("desktop.loading.startingServer")
+          return "启动本地服务器..."
         case "server-connect":
-          return t("desktop.loading.connectingProviders")
+          return "连接到服务器..."
         case "server_waiting":
-          return t("desktop.loading.connectingProviders")
+          return "等待服务器响应..."
         case "ui-ready":
-          return t("desktop.loading.loadingAgents")
+          return "准备用户界面..."
         case "done":
-          return t("desktop.loading.ready")
+          return "启动完成！"
         case "sqlite_waiting":
-          return t("desktop.loading.migratingDatabase")
+          return "正在迁移数据库..."
         default:
-          return t("desktop.loading.readingConfig")
+          return "正在读取配置..."
       }
     } catch (error) {
       // Fallback message if translation fails
@@ -74,33 +77,61 @@ const Loading = (props: LoadingProps) => {
     }
   }
 
+  // Calculate realistic progress based on phase and expected timing
+  const calculatePhaseProgress = (phase?: InitPhase): number => {
+    switch (phase) {
+      case "app-init":
+        return 15 // Fast initialization
+      case "sidecar-init":
+        return 40 // Major work happening
+      case "server_waiting":
+      case "server-connect":
+        return 65 // Server connection
+      case "sqlite_waiting":
+        return 80 // Database migration can take time
+      case "ui-ready":
+        return 95 // Almost ready
+      case "done":
+        return 100
+      default:
+        return 5 // Initial state
+    }
+  }
+
   onMount(() => {
-    // Set progress to 100% for done phase, simulate for others
+    // Set target progress based on current phase
+    const targetProgress = calculatePhaseProgress(props.phase)
+
     if (props.phase === "done") {
       setProgress(100)
-    } else {
+    } else if (targetProgress > 0) {
+      // Animate to the target progress for this phase
       let animationId: number
-      let lastTime = 0
+      const startProgress = progress()
+      const progressDiff = targetProgress - startProgress
+      const duration = 800 // 800ms animation duration
 
-      const animateProgress = (currentTime: number) => {
-        // Only update if enough time has passed (throttle to PROGRESS_UPDATE_INTERVAL)
-        if (currentTime - lastTime >= PROGRESS_UPDATE_INTERVAL) {
-          setProgress(prev => {
-            const increment = PROGRESS_INCREMENT_MIN +
-              Math.random() * (PROGRESS_INCREMENT_MAX - PROGRESS_INCREMENT_MIN)
-            return Math.min(prev + increment, PROGRESS_CAP_PERCENT)
-          })
-          lastTime = currentTime
-        }
+      const startTime = performance.now()
 
-        // Continue animation if not at cap and phase is not done
-        if (progress() < PROGRESS_CAP_PERCENT && props.phase !== "done") {
-          animationId = requestAnimationFrame(animateProgress)
+      const animateToTarget = (currentTime: number) => {
+        const elapsed = currentTime - startTime
+        const progressRatio = Math.min(elapsed / duration, 1)
+
+        // Ease-out animation
+        const easedRatio = 1 - Math.pow(1 - progressRatio, 3)
+        const newProgress = startProgress + (progressDiff * easedRatio)
+
+        setProgress(Math.min(newProgress, PROGRESS_CAP_PERCENT))
+
+        if (progressRatio < 1 && props.phase !== "done") {
+          animationId = requestAnimationFrame(animateToTarget)
         }
       }
 
-      animationId = requestAnimationFrame(animateProgress)
-      onCleanup(() => cancelAnimationFrame(animationId))
+      if (progressDiff > 0) {
+        animationId = requestAnimationFrame(animateToTarget)
+        onCleanup(() => cancelAnimationFrame(animationId))
+      }
     }
   })
 

@@ -32,3 +32,12 @@ railwise-dev
 logs/
 *.bun-build
 output/
+
+# Sub-projects pending integration (RAILWISE-Desktop M1)
+packages/desktop-electron/
+packages/opencode/
+packages/server/
+packages/app/e2e/*.d.ts
+packages/app/e2e/*.d.ts.map
+packages/app/e2e/*.js
+packages/app/e2e/*.js.map

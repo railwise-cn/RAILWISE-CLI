@@ -33,10 +33,57 @@ import "./styles.css"
 import { Channel } from "@tauri-apps/api/core"
 import { commands, type InitStep } from "./bindings"
 import { createMenu } from "./menu"
-import { startupTimer } from "./performance"
+import { StartupTimer, DEFAULT_BUDGETS } from "./performance"
+
+// Create startup timer with performance budget and retry callback
+const handleBudgetExceeded = async (phase: string, phaseData: any): Promise<boolean> => {
+  console.log(`🔄 Budget exceeded for ${phase}, attempting recovery...`)
+
+  switch (phase) {
+    case 'sidecar-init':
+      // Kill stuck sidecar and retry with fresh port
+      try {
+        await commands.killSidecar()
+        console.log('🔄 Killed stuck sidecar, retrying with fresh port')
+        return true
+      } catch (error) {
+        console.error('Failed to kill sidecar:', error)
+        return false
+      }
+
+    case 'server-connect':
+      // Retry with cached server URL if available
+      try {
+        const cachedUrl = await commands.getDefaultServerUrl()
+        if (cachedUrl) {
+          console.log('🔄 Retrying with cached server URL:', cachedUrl)
+          return true
+        }
+      } catch (error) {
+        console.error('Failed to get cached URL:', error)
+      }
+      return false
+
+    case 'app-init':
+      // Critical failure - restart with minimal setup
+      console.error('❌ App initialization failed, this is critical')
+      return false
+
+    case 'ui-ready':
+      // Continue with degraded experience
+      console.warn('⚠️ UI ready timeout - continuing with degraded experience')
+      return false
+
+    default:
+      return false
+  }
+}
+
+// Initialize timer with budget and retry callback
+const performanceTimer = new StartupTimer(DEFAULT_BUDGETS, handleBudgetExceeded)
 
 // At the top of the file, after imports
-startupTimer.startPhase("app-init")
+performanceTimer.startPhase("app-init")
 
 const root = document.getElementById("root")
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
@@ -45,9 +92,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 void initI18n()
 
-// Before sidecar operations
-startupTimer.endPhase("app-init")
-startupTimer.startPhase("sidecar-init")
+// Complete app initialization phase
+performanceTimer.endPhase("app-init").catch(console.error)
 
 let update: Update | null = null
 
@@ -434,10 +480,6 @@ void listenForDeepLinks()
 render(() => {
   const platform = createPlatform()
 
-  // Around ServerGate initialization
-  startupTimer.endPhase("sidecar-init")
-  startupTimer.startPhase("server-connect")
-
   const [defaultServer] = createResource(() =>
     platform.getDefaultServerUrl?.().then((url) => {
       if (url) return ServerConnection.key({ type: "http", http: { url } })
@@ -482,20 +524,38 @@ render(() => {
 
               menuTrigger = (id) => cmd.trigger(id)
 
-              // UI is now interactive - complete the timing sequence
-              startupTimer.endPhase("server-connect")
-              startupTimer.startPhase("ui-ready")
+              // UI is now interactive - server connection is complete
+              performanceTimer.endPhase("server-connect").then(() => {
+                performanceTimer.startPhase("ui-ready")
+              }).catch(console.error)
 
               onMount(() => {
                 // UI is fully mounted and interactive
-                startupTimer.endPhase("ui-ready")
-                const report = startupTimer.getReport()
-                console.log(`🚀 RAILWISE Desktop ready in ${report.total.toFixed(2)}ms`)
+                performanceTimer.endPhase("ui-ready").then((result) => {
+                  const report = performanceTimer.getReport()
 
-                // Performance budget check after UI is actually ready
-                if (report.total > 3000) {
-                  console.warn(`⚠️ Startup exceeded 3s budget: ${report.total.toFixed(2)}ms`)
-                }
+                  // Enhanced startup completion reporting
+                  const statusIcon = report.budgetStatus === 'ok' ? '🚀' :
+                                   report.budgetStatus === 'warning' ? '⚠️' : '🚨'
+
+                  console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <3000ms)`)
+
+                  // Log individual phase performance
+                  report.phases.forEach(phase => {
+                    if (phase.duration) {
+                      const status = phase.status === 'completed' ? '✅' :
+                                   phase.status === 'exceeded' ? '⚠️' :
+                                   phase.status === 'failed' ? '❌' : '🔄'
+                      console.log(`  ${status} ${phase.name}: ${phase.duration.toFixed(2)}ms${phase.budget ? ` (budget: ${phase.budget}ms)` : ''}`)
+                    }
+                  })
+
+                  // Performance telemetry for analysis
+                  if (report.budgetStatus !== 'ok') {
+                    const exceededPhases = report.phases.filter(p => p.status === 'exceeded' || p.status === 'failed')
+                    console.warn(`Performance issues detected:`, exceededPhases.map(p => `${p.name}: ${p.duration}ms`))
+                  }
+                }).catch(console.error)
               })
 
               return null
@@ -519,7 +579,19 @@ type ServerReadyData = { url: string; password: string | null }
 
 // Gate component that waits for the server to be ready
 function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.Element }) {
-  const [serverData] = createResource(() => commands.awaitInitialization(new Channel<InitStep>() as any))
+  const [serverData] = createResource(async () => {
+    // Start timing the actual sidecar initialization
+    performanceTimer.startPhase("sidecar-init")
+    try {
+      const result = await commands.awaitInitialization(new Channel<InitStep>() as any)
+      await performanceTimer.endPhase("sidecar-init")
+      performanceTimer.startPhase("server-connect")
+      return result
+    } catch (error) {
+      await performanceTimer.endPhase("sidecar-init")
+      throw error
+    }
+  })
 
   return (
     <Show

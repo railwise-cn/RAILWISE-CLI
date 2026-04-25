@@ -10,6 +10,8 @@
     "predev": "bun ./scripts/predev.ts",
     "dev": "vite",
     "build": "bun run typecheck && vite build",
+    "build:analyze": "bun run build && bun run analyze",
+    "analyze": "bun ./scripts/analyze-performance.ts",
     "preview": "vite preview",
     "tauri": "tauri"
   },

@@ -15,9 +15,31 @@ export default defineConfig({
     // Improves production stack traces
     keepNames: true,
   },
-  // build: {
-  // sourcemap: true,
-  // },
+  build: {
+    // sourcemap: true,
+    // Performance optimizations for startup
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching
+          'solid': ['solid-js'],
+          'tauri': ['@tauri-apps/api'],
+          'railwise-app': ['@railwise/app'],
+          'railwise-ui': ['@railwise/ui']
+        }
+      }
+    },
+    // Performance budget warnings
+    chunkSizeWarningLimit: 1000, // Warn for chunks > 1MB
+    // Enable bundle analysis in development
+    ...(process.env.ANALYZE && {
+      rollupOptions: {
+        output: {
+          manualChunks: undefined // Let rollup-plugin-visualizer handle this
+        }
+      }
+    })
+  },
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,

@@ -217,5 +217,4 @@ button:focus {
   box-shadow: 0 0 0 2px var(--railwise-info);
 }
 
-/* Ensure no rust red anywhere */
-/* #C0392B is explicitly forbidden per document */
+/* Visual compliance: No prohibited colors allowed */

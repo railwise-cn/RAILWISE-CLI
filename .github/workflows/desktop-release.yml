@@ -61,6 +61,41 @@ jobs:
         with:
           workspaces: packages/desktop/src-tauri
 
+      - name: Validate release secrets
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+          SIGNPATH_ORG_ID: ${{ secrets.SIGNPATH_ORG_ID }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          missing=()
+          for secret in TAURI_SIGNING_PRIVATE_KEY TAURI_SIGNING_PRIVATE_KEY_PASSWORD; do
+            if [ -z "${!secret}" ]; then missing+=("$secret"); fi
+          done
+          if [ "${{ matrix.platform }}" = "darwin" ]; then
+            for secret in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_KEYCHAIN_PASSWORD APPLE_ID APPLE_ID_PASSWORD APPLE_TEAM_ID APPLE_SIGNING_IDENTITY; do
+              if [ -z "${!secret}" ]; then missing+=("$secret"); fi
+            done
+          fi
+          if [ "${{ matrix.platform }}" = "windows" ]; then
+            for secret in SIGNPATH_API_TOKEN SIGNPATH_ORG_ID; do
+              if [ -z "${!secret}" ]; then missing+=("$secret"); fi
+            done
+          fi
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Missing required release secrets for %s/%s:\n' "${{ matrix.platform }}" "${{ matrix.target }}"
+            printf ' - %s\n' "${missing[@]}"
+            exit 1
+          fi
+
       - name: Install Linux deps
         if: matrix.platform == 'linux'
         run: |
@@ -73,7 +108,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build sidecar
-        run: bun --cwd packages/desktop run predev --target ${{ matrix.target }}
+        run: bun --cwd packages/desktop run predev -- --target ${{ matrix.target }}
 
       - name: macOS Import Certificate
         if: matrix.platform == 'darwin'
@@ -96,7 +131,7 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-        run: bun --cwd packages/desktop run tauri build --target ${{ matrix.target }} --config tauri.prod.conf.json
+        run: bun --cwd packages/desktop run tauri -- build --target ${{ matrix.target }} --config tauri.prod.conf.json
 
       - name: Upload unsigned Windows installer
         if: matrix.platform == 'windows'
@@ -104,7 +139,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-railwise-desktop-windows
-          path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
+          path: |
+            packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
+            packages/desktop/src-tauri/target/release/bundle/nsis/*.exe
           if-no-files-found: error
 
       - name: Sign Windows Installer (SignPath)
@@ -131,7 +168,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: railwise-desktop-${{ matrix.target }}
-          path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle
+          path: |
+            packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle
+            packages/desktop/src-tauri/target/release/bundle
           if-no-files-found: error
           retention-days: 30
 

@@ -133,8 +133,17 @@ check(
 )
 check(
   "release build command",
-  contains(workflow, ["bun --cwd packages/desktop run tauri build", "--config tauri.prod.conf.json"]),
-  "production Tauri config is used",
+  contains(workflow, [
+    "bun --cwd packages/desktop run predev -- --target",
+    "bun --cwd packages/desktop run tauri -- build",
+    "--config tauri.prod.conf.json",
+  ]),
+  "production Tauri config is used and CLI args are passed through Bun",
+)
+check(
+  "release secret preflight",
+  contains(workflow, ["Validate release secrets", "Missing required release secrets", "TAURI_SIGNING_PRIVATE_KEY"]),
+  "workflow fails early with explicit missing-secret diagnostics",
 )
 check(
   "release artifact coverage",

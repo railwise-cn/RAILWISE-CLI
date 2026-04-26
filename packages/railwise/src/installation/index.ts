@@ -7,6 +7,9 @@ import { Log } from "../util/log"
 import { iife } from "@/util/iife"
 import { Flag } from "../flag/flag"
 
+declare const RAILWISE_VERSION: string | undefined
+declare const RAILWISE_CHANNEL: string | undefined
+
 export namespace Installation {
   const log = Log.create({ service: "installation" })
 

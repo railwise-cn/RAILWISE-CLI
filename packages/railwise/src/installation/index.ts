@@ -121,8 +121,6 @@ export namespace Installation {
   )
 
   async function getBrewFormula() {
-    const tapFormula = await $`brew list --formula anomalyco/tap/railwise`.throws(false).quiet().text()
-    if (tapFormula.includes("railwise")) return "anomalyco/tap/railwise"
     const coreFormula = await $`brew list --formula railwise`.throws(false).quiet().text()
     if (coreFormula.includes("railwise")) return "railwise"
     return "railwise"
@@ -148,16 +146,6 @@ export namespace Installation {
         break
       case "brew": {
         const formula = await getBrewFormula()
-        if (formula.includes("/")) {
-          cmd =
-            $`brew tap anomalyco/tap && cd "$(brew --repo anomalyco/tap)" && git pull --ff-only && brew upgrade ${formula}`.env(
-              {
-                HOMEBREW_NO_AUTO_UPDATE: "1",
-                ...process.env,
-              },
-            )
-          break
-        }
         cmd = $`brew upgrade ${formula}`.env({
           HOMEBREW_NO_AUTO_UPDATE: "1",
           ...process.env,
@@ -251,7 +239,7 @@ export namespace Installation {
         .then((data: any) => data.version)
     }
 
-    return fetch("https://api.github.com/repos/anomalyco/railwise/releases/latest")
+    return fetch("https://api.github.com/repos/railwise-cn/RAILWISE-CLI/releases/latest")
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText)
         return res.json()

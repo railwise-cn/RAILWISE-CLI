@@ -5,12 +5,12 @@ export const Mark = (props: { class?: string }) => {
     <svg
       data-component="logo-mark"
       classList={{ [props.class ?? ""]: !!props.class }}
-      viewBox="0 0 16 20"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path data-slot="logo-logo-mark-shadow" d="M12 16H4V8H12V16Z" fill="var(--icon-weak-base)" />
-      <path data-slot="logo-logo-mark-o" d="M12 4H4V16H12V4ZM16 20H0V0H16V20Z" fill="var(--icon-strong-base)" />
+      <path d="M4 20V4H14C17.3 4 19.4 5.8 19.4 8.8C19.4 11 18.2 12.5 16.2 13.2L20 20H15.2L11.8 13.8H8.2V20H4Z" fill="var(--icon-strong-base)" />
+      <path d="M8.2 10.4H13.4C14.6 10.4 15.2 9.8 15.2 8.9C15.2 7.9 14.6 7.4 13.4 7.4H8.2V10.4Z" fill="var(--icon-weak-base)" />
     </svg>
   )
 }
@@ -25,8 +25,8 @@ export const Splash = (props: Pick<ComponentProps<"svg">, "ref" | "class">) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M60 80H20V40H60V80Z" fill="var(--icon-base)" />
-      <path d="M60 20H20V80H60V20ZM80 100H0V0H80V100Z" fill="var(--icon-strong-base)" />
+      <path d="M14 86V14H50C64 14 73 22 73 35C73 44 68 51 59 54L74 86H54L41 58H33V86H14Z" fill="var(--icon-strong-base)" />
+      <path d="M33 43H48C53 43 56 40 56 35C56 30 53 27 48 27H33V43Z" fill="var(--icon-base)" />
     </svg>
   )
 }
@@ -35,28 +35,14 @@ export const Logo = (props: { class?: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 234 42"
+      viewBox="0 0 320 64"
       fill="none"
       classList={{ [props.class ?? ""]: !!props.class }}
     >
-      <g>
-        <path d="M18 30H6V18H18V30Z" fill="var(--icon-weak-base)" />
-        <path d="M18 12H6V30H18V12ZM24 36H0V6H24V36Z" fill="var(--icon-base)" />
-        <path d="M48 30H36V18H48V30Z" fill="var(--icon-weak-base)" />
-        <path d="M36 30H48V12H36V30ZM54 36H36V42H30V6H54V36Z" fill="var(--icon-base)" />
-        <path d="M84 24V30H66V24H84Z" fill="var(--icon-weak-base)" />
-        <path d="M84 24H66V30H84V36H60V6H84V24ZM66 18H78V12H66V18Z" fill="var(--icon-base)" />
-        <path d="M108 36H96V18H108V36Z" fill="var(--icon-weak-base)" />
-        <path d="M108 12H96V36H90V6H108V12ZM114 36H108V12H114V36Z" fill="var(--icon-base)" />
-        <path d="M144 30H126V18H144V30Z" fill="var(--icon-weak-base)" />
-        <path d="M144 12H126V30H144V36H120V6H144V12Z" fill="var(--icon-strong-base)" />
-        <path d="M168 30H156V18H168V30Z" fill="var(--icon-weak-base)" />
-        <path d="M168 12H156V30H168V12ZM174 36H150V6H174V36Z" fill="var(--icon-strong-base)" />
-        <path d="M198 30H186V18H198V30Z" fill="var(--icon-weak-base)" />
-        <path d="M198 12H186V30H198V12ZM204 36H180V6H198V0H204V36Z" fill="var(--icon-strong-base)" />
-        <path d="M234 24V30H216V24H234Z" fill="var(--icon-weak-base)" />
-        <path d="M216 12V18H228V12H216ZM234 24H216V30H234V36H210V6H234V24Z" fill="var(--icon-strong-base)" />
-      </g>
+      <rect x="0" y="8" width="48" height="48" rx="6" fill="var(--icon-strong-base)" />
+      <path d="M12 46V18H30C36 18 40 21.4 40 26.7C40 30.7 37.8 33.5 34.2 34.8L42 46H32.5L25.8 35.8H20.5V46H12Z" fill="var(--surface-base)" />
+      <path d="M20.5 29.5H29.2C31.2 29.5 32.2 28.5 32.2 26.9C32.2 25.2 31.2 24.3 29.2 24.3H20.5V29.5Z" fill="var(--icon-weak-base)" />
+      <text x="64" y="42" fill="var(--icon-strong-base)" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="0">RAILWISE</text>
     </svg>
   )
 }

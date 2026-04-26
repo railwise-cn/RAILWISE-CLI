@@ -19,7 +19,7 @@
     ],
     "withGlobalTauri": true,
     "security": {
-      "csp": "default-src 'self' tauri: https://tauri.localhost; script-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; style-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; img-src 'self' data: blob: tauri: https://tauri.localhost; font-src 'self' tauri: https://tauri.localhost; connect-src 'self' tauri: https://tauri.localhost ws://localhost:* http://localhost:* http://127.0.0.1:*; media-src 'self' tauri: https://tauri.localhost"
+      "csp": "default-src 'self' tauri: https://tauri.localhost; script-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; style-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; img-src 'self' data: blob: asset: tauri: https://tauri.localhost https: http://localhost:* http://127.0.0.1:*; font-src 'self' tauri: https://tauri.localhost; connect-src 'self' tauri: https://tauri.localhost https: ws://localhost:* http://localhost:* http://127.0.0.1:*; media-src 'self' tauri: https://tauri.localhost"
     },
     "macOSPrivateApi": false
   },
@@ -45,13 +45,32 @@
       }
     },
     "macOS": {
-      "entitlements": "./entitlements.plist"
+      "entitlements": "./entitlements.plist",
+      "dmg": {
+        "background": "assets/dmg-background.png",
+        "windowSize": {
+          "width": 660,
+          "height": 440
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 220
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 220
+        }
+      }
     },
     "windows": {
       "nsis": {
         "installerIcon": "icons/railwise/icon.ico",
         "headerImage": "assets/nsis-header-railwise.bmp",
-        "sidebarImage": "assets/nsis-sidebar-railwise.bmp"
+        "sidebarImage": "assets/nsis-sidebar-railwise.bmp",
+        "displayLanguageSelector": false,
+        "languages": ["SimpChinese"],
+        "installMode": "currentUser",
+        "startMenuFolder": "RAILWISE"
       }
     }
   },

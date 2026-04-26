@@ -9,6 +9,22 @@
  * ──────────────────────────────────────── */
 
 :root {
+  /* Document §2.8 canonical aliases used by desktop feature work */
+  --bg-primary: rgb(251, 251, 249);
+  --bg-secondary: rgb(255, 255, 255);
+  --text-primary: rgb(10, 10, 9);
+  --text-secondary: rgb(47, 38, 24);
+  --accent-primary: rgba(117, 86, 32, 0.9);
+  --accent-secondary: rgb(95, 70, 24);
+  --success: #52c41a;
+  --warning: #faad14;
+  --error: #ff4d4f;
+  --info: #1890ff;
+  --radius-md: 8px;
+  --space-md: 16px;
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+
   /* Additional design system tokens (using imported base tokens) */
   --railwise-accent-primary:   var(--railwise-warm-brown); /* 主强调（暖棕） */
   --railwise-accent-secondary: #654321;                 /* 次强调（深暖棕） */
@@ -91,6 +107,23 @@ html, body {
   height: 100%;
   -webkit-text-size-adjust: none;
   -webkit-touch-callout: none;
+}
+
+#root,
+.railwise-app-shell {
+  width: 100%;
+  height: 100%;
+}
+
+.desktop-settings-button {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 60;
+  border: 1px solid rgba(47, 38, 24, 0.14);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 28px rgba(47, 38, 24, 0.14);
+  backdrop-filter: blur(10px);
 }
 
 /* 允许文本选择在特定元素 */
@@ -177,6 +210,128 @@ input, textarea, [contenteditable], .selectable-text {
   color: #757575;
   margin: 0;
   font-family: var(--railwise-font-family);
+}
+
+.railwise-update-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(10, 10, 9, 0.3);
+  font-family: var(--font-family);
+}
+
+.railwise-update-card {
+  width: min(100%, 400px);
+  padding: 24px;
+  border: 1px solid rgba(117, 86, 32, 0.12);
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.railwise-update-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.railwise-update-mark {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(117, 86, 32, 0.1);
+  color: rgb(95, 70, 24);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.railwise-update-title {
+  color: rgb(10, 10, 9);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.railwise-update-subtitle {
+  margin-top: 2px;
+  color: rgb(47, 38, 24);
+  font-size: 12px;
+}
+
+.railwise-update-notes {
+  max-height: 180px;
+  overflow: auto;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(117, 86, 32, 0.04);
+  color: rgba(47, 38, 24, 0.75);
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.railwise-update-progress {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: rgba(117, 86, 32, 0.08);
+  padding: 10px 12px;
+  color: rgb(95, 70, 24);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.railwise-update-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.railwise-update-later,
+.railwise-update-primary {
+  border: 0;
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+
+.railwise-update-later {
+  background: transparent;
+  color: rgba(47, 38, 24, 0.45);
+  font-size: 13px;
+}
+
+.railwise-update-later:hover {
+  background: transparent;
+  color: rgba(47, 38, 24, 0.7);
+}
+
+.railwise-update-primary {
+  padding: 8px 20px;
+  border-radius: 8px;
+  background: rgb(95, 70, 24);
+  color: white;
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: 0 2px 6px rgba(95, 70, 24, 0.25);
+}
+
+.railwise-update-primary:hover {
+  background: rgba(95, 70, 24, 0.85);
+}
+
+.railwise-update-primary:disabled,
+.railwise-update-later:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 /* Desktop App Base Styles */

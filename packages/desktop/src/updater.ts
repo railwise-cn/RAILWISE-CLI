@@ -1,51 +1,89 @@
-import { check } from "@tauri-apps/plugin-updater"
+import { check, type Update } from "@tauri-apps/plugin-updater"
 import { relaunch } from "@tauri-apps/plugin-process"
-import { ask, message } from "@tauri-apps/plugin-dialog"
 import { type as ostype } from "@tauri-apps/plugin-os"
 
 import { initI18n, t } from "./i18n"
 import { commands } from "./bindings"
 
 export const UPDATER_ENABLED = window.__RAILWISE__?.updaterEnabled ?? false
+export const updaterCheckEvent = "railwise:update-check"
 
-export async function runUpdater({ alertOnFail }: { alertOnFail: boolean }) {
+export type MockUpdate = { version: string; notes: string }
+export type UpdaterCheckDetail = { alertOnFail: boolean; mock?: MockUpdate }
+type UpdaterStatus = "none" | "check_failed" | "download_failed"
+
+export type DownloadedUpdate = {
+  update: Update
+  notes: string
+}
+
+export function runUpdater(detail: UpdaterCheckDetail) {
+  window.dispatchEvent(new CustomEvent(updaterCheckEvent, { detail }))
+}
+
+export function createMockUpdate(input: MockUpdate): DownloadedUpdate {
+  return {
+    update: {
+      available: true,
+      currentVersion: "0.0.0",
+      version: input.version,
+      body: input.notes,
+      rawJson: {},
+      download: async () => undefined,
+      install: async () => undefined,
+      downloadAndInstall: async () => undefined,
+      close: async () => undefined,
+    } as Update,
+    notes: input.notes,
+  }
+}
+
+export async function checkForUpdate(opts: {
+  alertOnFail: boolean
+  onStatus?: (status: UpdaterStatus) => void | Promise<void>
+}): Promise<DownloadedUpdate | undefined> {
+  if (!UPDATER_ENABLED) {
+    if (opts.alertOnFail) await opts.onStatus?.("none")
+    return undefined
+  }
+
   await initI18n()
 
   let update
   try {
     update = await check()
   } catch {
-    if (alertOnFail)
-      await message(t("desktop.updater.checkFailed.message"), { title: t("desktop.updater.checkFailed.title") })
-    return
+    if (opts.alertOnFail) await opts.onStatus?.("check_failed")
+    return undefined
   }
 
   if (!update) {
-    if (alertOnFail) await message(t("desktop.updater.none.message"), { title: t("desktop.updater.none.title") })
-    return
+    if (opts.alertOnFail) await opts.onStatus?.("none")
+    return undefined
   }
 
   try {
     await update.download()
   } catch {
-    if (alertOnFail)
-      await message(t("desktop.updater.downloadFailed.message"), { title: t("desktop.updater.downloadFailed.title") })
-    return
+    if (opts.alertOnFail) await opts.onStatus?.("download_failed")
+    return undefined
   }
 
-  const shouldUpdate = await ask(t("desktop.updater.downloaded.prompt", { version: update.version }), {
-    title: t("desktop.updater.downloaded.title"),
-  })
-  if (!shouldUpdate) return
+  return {
+    update,
+    notes: update.body?.trim() || t("desktop.updater.readyToInstall"),
+  }
+}
 
+export async function installUpdate(update: NonNullable<Awaited<ReturnType<typeof check>>>) {
   try {
     if (ostype() === "windows") await commands.killSidecar()
     await update.install()
   } catch {
-    await message(t("desktop.updater.installFailed.message"), { title: t("desktop.updater.installFailed.title") })
-    return
+    return false
   }
 
   await commands.killSidecar()
   await relaunch()
+  return true
 }

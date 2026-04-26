@@ -86,7 +86,7 @@ export const GlobalRoutes = lazy(() =>
 
           // Send heartbeat every 8s to keep WebView2 SSE alive on Windows
           // (must stay under WebView2's idle-disconnect threshold). See
-          // doc §3.8.2 (upstream opencode #13655).
+          // doc §3.8.2 (WebView2 idle disconnect mitigation).
           const heartbeat = setInterval(() => {
             stream.writeSSE({
               data: JSON.stringify({

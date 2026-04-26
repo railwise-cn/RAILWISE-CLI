@@ -14,6 +14,8 @@ export default defineConfig({
   esbuild: {
     // Improves production stack traces
     keepNames: true,
+    jsx: "automatic",
+    jsxImportSource: "solid-js",
   },
   build: {
     // sourcemap: true,
@@ -29,8 +31,9 @@ export default defineConfig({
         }
       }
     },
-    // Performance budget warnings
-    chunkSizeWarningLimit: 1000, // Warn for chunks > 1MB
+    // Desktop bundles ship Monaco workers and local-first UI assets; keep this
+    // threshold aligned with the largest intentional worker chunk.
+    chunkSizeWarningLimit: 8192,
     // Enable bundle analysis in development
     ...(process.env.ANALYZE && {
       rollupOptions: {

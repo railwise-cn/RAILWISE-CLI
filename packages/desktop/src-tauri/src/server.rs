@@ -188,11 +188,20 @@ pub async fn check_health(url: &str, password: Option<&str>) -> bool {
 
 pub async fn check_health_with_retry(url: &str, password: Option<&str>, max_retries: u32) -> bool {
     for attempt in 1..=max_retries {
-        tracing::debug!("Health check attempt {}/{} for {}", attempt, max_retries, url);
+        tracing::debug!(
+            "Health check attempt {}/{} for {}",
+            attempt,
+            max_retries,
+            url
+        );
 
         if check_health(url, password).await {
             if attempt > 1 {
-                tracing::info!("Health check succeeded on attempt {}/{}", attempt, max_retries);
+                tracing::info!(
+                    "Health check succeeded on attempt {}/{}",
+                    attempt,
+                    max_retries
+                );
             }
             return true;
         }
@@ -204,7 +213,11 @@ pub async fn check_health_with_retry(url: &str, password: Option<&str>, max_retr
         }
     }
 
-    tracing::warn!("Health check failed after {} attempts for {}", max_retries, url);
+    tracing::warn!(
+        "Health check failed after {} attempts for {}",
+        max_retries,
+        url
+    );
     false
 }
 

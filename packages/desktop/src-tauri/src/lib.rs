@@ -1,11 +1,14 @@
+mod cad;
 mod cli;
 mod constants;
+mod crash;
 #[cfg(target_os = "linux")]
 pub mod linux_display;
 #[cfg(target_os = "linux")]
 pub mod linux_windowing;
 mod logging;
 mod markdown;
+mod office;
 mod server;
 mod window_customizer;
 mod windows;
@@ -426,8 +429,37 @@ fn wsl_path(path: String, mode: Option<WslPathMode>) -> Result<String, String> {
     Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
 }
 
+#[tauri::command]
+#[specta::specta]
+async fn git_log_agent(name: String, directory: String) -> Result<String, String> {
+    let agent_path = format!(".railwise/agent/{name}.md");
+    let output = tokio::process::Command::new("git")
+        .args(["log", "--oneline", "-10", "--", &agent_path])
+        .current_dir(directory)
+        .output()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
+#[tauri::command]
+#[specta::specta]
+async fn git_diff_agent(name: String, directory: String) -> Result<String, String> {
+    let agent_path = format!(".railwise/agent/{name}.md");
+    let output = tokio::process::Command::new("git")
+        .args(["diff", "HEAD", "--", &agent_path])
+        .current_dir(directory)
+        .output()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let crash = crash::init();
     let builder = make_specta_builder();
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
@@ -460,6 +492,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(crate::window_customizer::PinchZoomDisablePlugin)
@@ -484,6 +517,10 @@ pub fn run() {
 
     if UPDATER_ENABLED {
         builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
+    }
+
+    if let Some(client) = crash.as_ref() {
+        builder = builder.plugin(tauri_plugin_sentry::init_with_no_injection(client));
     }
 
     builder
@@ -512,9 +549,17 @@ fn make_specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             get_display_backend,
             set_display_backend,
             markdown::parse_markdown_command,
+            cad::parse_dxf,
+            cad::convert_dwg_to_dxf,
+            office::read_text_file,
+            office::convert_pptx_to_images,
+            office::convert_sheet_to_csv,
+            office::convert_docx_to_html,
             check_app_exists,
             wsl_path,
-            resolve_app_path
+            resolve_app_path,
+            git_log_agent,
+            git_diff_agent
         ])
         .events(tauri_specta::collect_events![
             LoadingWindowComplete,

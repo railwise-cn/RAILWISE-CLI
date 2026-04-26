@@ -2,6 +2,7 @@
 
 import {
   AppBaseProviders,
+  DialogSettings,
   AppInterface,
   handleNotificationClick,
   type Platform,
@@ -11,6 +12,7 @@ import {
 } from "@railwise/app"
 import { Splash } from "@railwise/ui/logo"
 import type { AsyncStorage } from "@solid-primitives/storage"
+import { Navigate, Route } from "@solidjs/router"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { readImage } from "@tauri-apps/plugin-clipboard-manager"
 import { getCurrent, onOpenUrl } from "@tauri-apps/plugin-deep-link"
@@ -22,26 +24,113 @@ import { type as ostype } from "@tauri-apps/plugin-os"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { open as shellOpen } from "@tauri-apps/plugin-shell"
 import { Store } from "@tauri-apps/plugin-store"
-import { check, type Update } from "@tauri-apps/plugin-updater"
-import { type Accessor, createResource, type JSX, onCleanup, onMount, Show } from "solid-js"
+import { type Accessor, createResource, createSignal, lazy, type JSX, onCleanup, onMount, Show, Suspense } from "solid-js"
 import { render } from "solid-js/web"
 import pkg from "../package.json"
 import { initI18n, t } from "./i18n"
-import { UPDATER_ENABLED } from "./updater"
+import { checkForUpdate, installUpdate, type DownloadedUpdate, updaterCheckEvent, UPDATER_ENABLED } from "./updater"
+import { UpdateController } from "./update-controller"
 import { webviewZoom } from "./webview-zoom"
 import "./styles.css"
 import { Channel } from "@tauri-apps/api/core"
+import { IconButton } from "@railwise/ui/icon-button"
+import { useDialog } from "@railwise/ui/context/dialog"
 import { commands, type InitStep } from "./bindings"
 import { createMenu } from "./menu"
+import { StartupTimer, DEFAULT_BUDGETS } from "./performance"
+import { installTelemetry, track } from "./lib/telemetry"
+
+const Dashboard = lazy(() => import("./pages/dashboard"))
+const Workspace = lazy(() => import("./pages/workspace"))
+const WorkspaceDiff = lazy(() => import("./pages/workspace/diff"))
+const Loading = () => <div class="size-full" />
+const DashboardRoute = () => (
+  <Suspense fallback={<Loading />}>
+    <Dashboard />
+  </Suspense>
+)
+const WorkspaceRoute = () => (
+  <Suspense fallback={<Loading />}>
+    <Workspace />
+  </Suspense>
+)
+const WorkspaceDiffRoute = () => (
+  <Suspense fallback={<Loading />}>
+    <WorkspaceDiff />
+  </Suspense>
+)
+const DashboardRedirect = () => <Navigate href="/dashboard" />
+
+function ensureStandaloneLanding() {
+  if (location.hash === "#/dashboard") return
+  if (location.hash.startsWith("#/workspace")) return
+  history.replaceState(null, "", `${location.pathname}${location.search}#/dashboard`)
+}
+
+// Create startup timer with performance budget and retry callback
+const handleBudgetExceeded = async (phase: string, phaseData: any): Promise<boolean> => {
+  console.log(`🔄 Budget exceeded for ${phase}, attempting recovery...`)
+
+  switch (phase) {
+    case 'sidecar-init':
+      // Kill stuck sidecar and retry with fresh port
+      try {
+        await commands.killSidecar()
+        console.log('🔄 Killed stuck sidecar, retrying with fresh port')
+        return true
+      } catch (error) {
+        console.error('Failed to kill sidecar:', error)
+        return false
+      }
+
+    case 'server-connect':
+      // Retry with cached server URL if available
+      try {
+        const cachedUrl = await commands.getDefaultServerUrl()
+        if (cachedUrl) {
+          console.log('🔄 Retrying with cached server URL:', cachedUrl)
+          return true
+        }
+      } catch (error) {
+        console.error('Failed to get cached URL:', error)
+      }
+      return false
+
+    case 'app-init':
+      // Critical failure - restart with minimal setup
+      console.error('❌ App initialization failed, this is critical')
+      return false
+
+    case 'ui-ready':
+      // Continue with degraded experience
+      console.warn('⚠️ UI ready timeout - continuing with degraded experience')
+      return false
+
+    default:
+      return false
+  }
+}
+
+// Initialize timer with budget and retry callback
+const performanceTimer = new StartupTimer(DEFAULT_BUDGETS, handleBudgetExceeded)
+
+// At the top of the file, after imports
+performanceTimer.startPhase("app-init")
+installTelemetry()
 
 const root = document.getElementById("root")
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(t("error.dev.rootNotFound"))
 }
 
+ensureStandaloneLanding()
+
 void initI18n()
 
-let update: Update | null = null
+// Complete app initialization phase
+performanceTimer.endPhase("app-init").catch(console.error)
+
+let update: DownloadedUpdate | null = null
 
 const deepLinkEvent = "railwise:deep-link"
 
@@ -294,22 +383,15 @@ const createPlatform = (): Platform => {
     })(),
 
     checkUpdate: async () => {
-      if (!UPDATER_ENABLED) return { updateAvailable: false }
-      const next = await check().catch(() => null)
+      const next = await checkForUpdate({ alertOnFail: false })
       if (!next) return { updateAvailable: false }
-      const ok = await next
-        .download()
-        .then(() => true)
-        .catch(() => false)
-      if (!ok) return { updateAvailable: false }
       update = next
-      return { updateAvailable: true, version: next.version }
+      return { updateAvailable: true, version: next.update.version }
     },
 
     update: async () => {
       if (!UPDATER_ENABLED || !update) return
-      if (ostype() === "windows") await commands.killSidecar().catch(() => undefined)
-      await update.install().catch(() => undefined)
+      await installUpdate(update.update)
     },
 
     restart: async () => {
@@ -345,6 +427,7 @@ const createPlatform = (): Platform => {
     },
 
     fetch: (input, init) => {
+      if (window.__RAILWISE__?.browserHarness) return globalThis.fetch(input, init)
       if (input instanceof Request) {
         return tauriFetch(input)
       } else {
@@ -423,6 +506,32 @@ createMenu((id) => {
 })
 void listenForDeepLinks()
 
+function dispatchMockUpdate(args: Record<string, unknown> | undefined) {
+  window.dispatchEvent(
+    new CustomEvent(updaterCheckEvent, {
+      detail: {
+        alertOnFail: false,
+        mock: {
+          notes: String(args?.notes ?? ""),
+          version: String(args?.version ?? "99.0.0"),
+        },
+      },
+    }),
+  )
+}
+
+if (import.meta.env.DEV) {
+  const previous = window.__TAURI_INVOKE__
+  window.__TAURI_INVOKE__ = async (command, args) => {
+    if (command === "rw_mock_update_available") {
+      dispatchMockUpdate(args)
+      return null
+    }
+
+    return previous?.(command, args)
+  }
+}
+
 render(() => {
   const platform = createPlatform()
 
@@ -447,9 +556,12 @@ render(() => {
     })
   })
 
+  // Remove premature timing calls - UI is not ready yet at this point
+
   return (
     <PlatformProvider value={platform}>
       <AppBaseProviders>
+        <UpdateController />
         <ServerGate>
           {(data) => {
             const server: ServerConnection.Sidecar = {
@@ -465,17 +577,112 @@ render(() => {
 
             function Inner() {
               const cmd = useCommand()
+              const dialog = useDialog()
+              const [sidecar, setSidecar] = createSignal<"ready" | "restarting">("ready")
 
               menuTrigger = (id) => cmd.trigger(id)
 
-              return null
+              // UI is now interactive - server connection is complete
+              performanceTimer.endPhase("server-connect").then(() => {
+                performanceTimer.startPhase("ui-ready")
+              }).catch(console.error)
+
+              onMount(() => {
+                if (import.meta.env.DEV) {
+                  const previous = window.__TAURI_INVOKE__
+                  window.__TAURI_INVOKE__ = async (command, args) => {
+                    if (command === "rw_mock_update_available") {
+                      dispatchMockUpdate(args)
+                      return null
+                    }
+
+                    if (command === "rw_kill_sidecar_for_test") {
+                      setSidecar("restarting")
+                      window.setTimeout(() => setSidecar("ready"), 500)
+                      return null
+                    }
+
+                    return previous?.(command, args)
+                  }
+
+                  onCleanup(() => {
+                    window.__TAURI_INVOKE__ = previous
+                  })
+                }
+
+                // UI is fully mounted and interactive
+                performanceTimer.endPhase("ui-ready").then((result) => {
+                  const report = performanceTimer.getReport()
+
+                  // Enhanced startup completion reporting
+                  const statusIcon = report.budgetStatus === 'ok' ? '🚀' :
+                                   report.budgetStatus === 'warning' ? '⚠️' : '🚨'
+
+                  console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <3000ms)`)
+
+                  // Log individual phase performance
+                  report.phases.forEach(phase => {
+                    if (phase.duration) {
+                      const status = phase.status === 'completed' ? '✅' :
+                                   phase.status === 'exceeded' ? '⚠️' :
+                                   phase.status === 'failed' ? '❌' : '🔄'
+                      console.log(`  ${status} ${phase.name}: ${phase.duration.toFixed(2)}ms${phase.budget ? ` (budget: ${phase.budget}ms)` : ''}`)
+                    }
+                  })
+
+                  // Performance telemetry for analysis
+                  track("desktop_startup", {
+                    status: report.budgetStatus,
+                    total: Math.round(report.total),
+                    route: location.hash || location.pathname,
+                  })
+
+                  if (report.budgetStatus !== 'ok') {
+                    const exceededPhases = report.phases.filter(p => p.status === 'exceeded' || p.status === 'failed')
+                    console.warn(`Performance issues detected:`, exceededPhases.map(p => `${p.name}: ${p.duration}ms`))
+                  }
+                }).catch(console.error)
+              })
+
+              return (
+                <>
+                  <span hidden data-testid="sidecar-status" data-state={sidecar()} />
+                  <IconButton
+                    icon="settings-gear"
+                    variant="secondary"
+                    size="large"
+                    class="desktop-settings-button"
+                    aria-label="设置"
+                    data-testid="desktop-settings-button"
+                    onClick={() => dialog.show(() => <DialogSettings />)}
+                  />
+                </>
+              )
             }
 
             return (
               <Show when={!defaultServer.loading}>
-                <AppInterface defaultServer={defaultServer.latest ?? ServerConnection.key(server)} servers={[server]}>
-                  <Inner />
-                </AppInterface>
+                <div class="railwise-app-shell" data-testid="app-shell">
+                  <AppInterface
+                    defaultPath="/dashboard"
+                    defaultServer={defaultServer.latest ?? ServerConnection.key(server)}
+                    routes={
+                      <>
+                        <Route path="/dashboard" component={DashboardRoute} />
+                        <Route path="/dashboard/*rest" component={DashboardRedirect} />
+                        <Route path="/workspace" component={WorkspaceRoute} />
+                        <Route path="/workspace/diff" component={WorkspaceDiffRoute} />
+                        <Route path="/workspace/*rest" component={WorkspaceRoute} />
+                        <Route path="*rest" component={DashboardRedirect} />
+                      </>
+                    }
+                    servers={[server]}
+                    standalonePaths={["/dashboard", "/workspace", "/agents"]}
+                    workbenchRoutes={false}
+                  >
+                    <Inner />
+                  </AppInterface>
+                </div>
               </Show>
             )
           }}
@@ -489,7 +696,19 @@ type ServerReadyData = { url: string; password: string | null }
 
 // Gate component that waits for the server to be ready
 function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.Element }) {
-  const [serverData] = createResource(() => commands.awaitInitialization(new Channel<InitStep>() as any))
+  const [serverData] = createResource(async () => {
+    // Start timing the actual sidecar initialization
+    performanceTimer.startPhase("sidecar-init")
+    try {
+      const result = await commands.awaitInitialization(new Channel<InitStep>() as any)
+      await performanceTimer.endPhase("sidecar-init")
+      performanceTimer.startPhase("server-connect")
+      return result
+    } catch (error) {
+      await performanceTimer.endPhase("sidecar-init")
+      throw error
+    }
+  })
 
   return (
     <Show

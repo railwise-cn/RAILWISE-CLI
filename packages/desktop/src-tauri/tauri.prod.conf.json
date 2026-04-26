@@ -1,25 +1,52 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "RAILWISE",
-  "identifier": "ai.railwise.desktop",
+  "productName": "睿威智测 RAILWISE",
+  "identifier": "com.railwiseai.desktop",
+  "mainBinaryName": "railwise",
   "bundle": {
     "createUpdaterArtifacts": true,
     "icon": [
-      "icons/prod/32x32.png",
-      "icons/prod/128x128.png",
-      "icons/prod/128x128@2x.png",
-      "icons/prod/icon.icns",
-      "icons/prod/icon.ico"
+      "icons/railwise/32x32.png",
+      "icons/railwise/128x128.png",
+      "icons/railwise/128x128@2x.png",
+      "icons/railwise/icon.icns",
+      "icons/railwise/icon.ico"
     ],
     "windows": {
       "nsis": {
-        "installerIcon": "icons/prod/icon.ico"
+        "installerIcon": "icons/railwise/icon.ico",
+        "headerImage": "assets/nsis-header-railwise.bmp",
+        "sidebarImage": "assets/nsis-sidebar-railwise.bmp",
+        "displayLanguageSelector": false,
+        "languages": ["SimpChinese"],
+        "installMode": "currentUser",
+        "startMenuFolder": "RAILWISE"
+      }
+    },
+    "macOS": {
+      "entitlements": "./entitlements.plist",
+      "dmg": {
+        "background": "assets/dmg-background.png",
+        "windowSize": {
+          "width": 660,
+          "height": 440
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 220
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 220
+        }
       }
     },
     "linux": {
       "deb": {
+        "depends": ["libwebkit2gtk-4.1-0"],
+        "section": "science",
         "files": {
-          "/usr/share/metainfo/ai.railwise.railwise.metainfo.xml": "release/appstream.metainfo.xml"
+          "/usr/share/metainfo/com.railwiseai.desktop.metainfo.xml": "release/appstream.metainfo.xml"
         }
       },
       "rpm": {
@@ -32,7 +59,10 @@
   "plugins": {
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYwMDM5Nzg5OUMzOUExMDQKUldRRW9UbWNpWmNEOENYT01CV0lhOXR1UFhpaXJsK1Z3aU9lZnNtNzE0TDROWVMwVW9XQnFOelkK",
-      "endpoints": ["https://github.com/anomalyco/railwise/releases/latest/download/latest.json"]
+      "endpoints": ["https://updates.railwise.cn/desktop/{{target}}/{{current_version}}"],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

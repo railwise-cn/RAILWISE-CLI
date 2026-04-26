@@ -49,7 +49,7 @@ impl MainWindow {
             .unwrap_or(false);
         let decorations = use_decorations();
         let window_builder = base_window_config(
-            WebviewWindowBuilder::new(app, Self::LABEL, WebviewUrl::App("/".into())),
+            WebviewWindowBuilder::new(app, Self::LABEL, WebviewUrl::App("/#/dashboard".into())),
             app,
             decorations,
         )

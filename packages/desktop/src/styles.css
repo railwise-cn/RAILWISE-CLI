@@ -1,3 +1,90 @@
+/* Import design tokens */
+@import "./tokens.css";
+
+/* packages/desktop/src/styles.css
+ * RAILWISE 2.0 Design Tokens — 奶白基调 · 暖棕强调
+ * 来源: 开发实施文档 §2.8 / §3.6
+ * Tailwind v4 已通过 @railwise/app -> @railwise/ui/styles/tailwind 引入，
+ * 本文件只追加 :root 变量与 @theme 映射，不重复 @import "tailwindcss"。
+ * ──────────────────────────────────────── */
+
+:root {
+  /* Document §2.8 canonical aliases used by desktop feature work */
+  --bg-primary: rgb(251, 251, 249);
+  --bg-secondary: rgb(255, 255, 255);
+  --text-primary: rgb(10, 10, 9);
+  --text-secondary: rgb(47, 38, 24);
+  --accent-primary: rgba(117, 86, 32, 0.9);
+  --accent-secondary: rgb(95, 70, 24);
+  --success: #52c41a;
+  --warning: #faad14;
+  --error: #ff4d4f;
+  --info: #1890ff;
+  --radius-md: 8px;
+  --space-md: 16px;
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+
+  /* Additional design system tokens (using imported base tokens) */
+  --railwise-accent-primary:   var(--railwise-warm-brown); /* 主强调（暖棕） */
+  --railwise-accent-secondary: #654321;                 /* 次强调（深暖棕） */
+
+  /* ── 字体系统 ──────────────────────────── */
+  --railwise-font-family:      "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  --railwise-font-size-xs:     12px;
+  --railwise-font-size-sm:     14px;
+  --railwise-font-size-base:   16px;
+  --railwise-font-size-lg:     18px;
+  --railwise-font-size-xl:     20px;
+  --railwise-font-size-xxl:    24px;
+
+  /* ── 空间系统 ──────────────────────────── */
+  --railwise-space-xs:  4px;
+  --railwise-space-sm:  8px;
+  --railwise-space-md:  16px;
+  --railwise-space-lg:  24px;
+  --railwise-space-xl:  32px;
+  --railwise-space-xxl: 48px;
+
+  /* ── 圆角 ──────────────────────────────── */
+  --railwise-radius-sm: 4px;
+  --railwise-radius-md: 8px;
+  --railwise-radius-lg: 12px;
+
+  /* ── 阴影 ──────────────────────────────── */
+  --railwise-shadow-sm: 0 1px 2px  rgba(0, 0, 0, 0.05);
+  --railwise-shadow-md: 0 4px 6px  rgba(0, 0, 0, 0.07);
+  --railwise-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.10);
+}
+
+/* Tailwind v4 token bridge — 把 RAILWISE 设计令牌暴露成 utility class
+ * 命名前缀 rw- 避免与 @railwise/ui 既有 token (background-* / text-strong 等) 冲突。
+ */
+@theme {
+  --color-rw-bg-primary:       var(--railwise-cream-white);
+  --color-rw-bg-secondary:     #FFFFFF;
+  --color-rw-text-primary:     var(--railwise-warm-brown);
+  --color-rw-text-secondary:   #757575;
+  --color-rw-accent:           var(--railwise-warm-brown);
+  --color-rw-accent-secondary: #654321;
+
+  --color-rw-success: #52c41a;
+  --color-rw-warning: #faad14;
+  --color-rw-error:   #ff4d4f;
+  --color-rw-info:    #1890ff;
+
+  --radius-rw-sm: 4px;
+  --radius-rw-md: 8px;
+  --radius-rw-lg: 12px;
+
+  --shadow-rw-sm: 0 1px 2px  rgba(0, 0, 0, 0.05);
+  --shadow-rw-md: 0 4px 6px  rgba(0, 0, 0, 0.07);
+  --shadow-rw-lg: 0 10px 15px rgba(0, 0, 0, 0.10);
+
+  --font-rw-sans: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+}
+
+/* Decorum 自定义标题栏按钮高度（继承自 v1.2.x） */
 button.decorum-tb-btn,
 button#decorum-tb-minimize,
 button#decorum-tb-maximize,
@@ -5,3 +92,284 @@ button#decorum-tb-close,
 div[data-tauri-decorum-tb] {
   height: calc(var(--spacing) * 10) !important;
 }
+
+/* 防止系统级缩放手势，替代 macOS 私有 API */
+* {
+  touch-action: pan-x pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  -webkit-text-size-adjust: none;
+  -webkit-touch-callout: none;
+}
+
+#root,
+.railwise-app-shell {
+  width: 100%;
+  height: 100%;
+}
+
+.desktop-settings-button {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 60;
+  border: 1px solid rgba(47, 38, 24, 0.14);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 28px rgba(47, 38, 24, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+/* 允许文本选择在特定元素 */
+input, textarea, [contenteditable], .selectable-text {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ── RAILWISE M1 Foundation Enhanced Loading Styles ──────────────────────── */
+.loading-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--railwise-bg-primary);
+  z-index: 9999;
+  font-family: var(--railwise-font-family);
+}
+
+.loading-content {
+  text-align: center;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.railwise-logo img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+}
+
+.logo-fallback {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--railwise-accent-primary);
+  border-radius: var(--railwise-radius-md, 8px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logo-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  font-family: var(--railwise-font-family);
+  letter-spacing: 0.5px;
+}
+
+.loading-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--railwise-text-primary);
+  margin-bottom: 2rem;
+  font-family: var(--railwise-font-family);
+}
+
+.loading-progress {
+  width: 100%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #F5F5F5;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--railwise-info);
+  transition: width 0.3s ease;
+  border-radius: inherit;
+}
+
+.loading-message {
+  font-size: 0.875rem;
+  color: #757575;
+  margin: 0;
+  font-family: var(--railwise-font-family);
+}
+
+.railwise-update-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(10, 10, 9, 0.3);
+  font-family: var(--font-family);
+}
+
+.railwise-update-card {
+  width: min(100%, 400px);
+  padding: 24px;
+  border: 1px solid rgba(117, 86, 32, 0.12);
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.railwise-update-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.railwise-update-mark {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(117, 86, 32, 0.1);
+  color: rgb(95, 70, 24);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.railwise-update-title {
+  color: rgb(10, 10, 9);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.railwise-update-subtitle {
+  margin-top: 2px;
+  color: rgb(47, 38, 24);
+  font-size: 12px;
+}
+
+.railwise-update-notes {
+  max-height: 180px;
+  overflow: auto;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(117, 86, 32, 0.04);
+  color: rgba(47, 38, 24, 0.75);
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.railwise-update-progress {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: rgba(117, 86, 32, 0.08);
+  padding: 10px 12px;
+  color: rgb(95, 70, 24);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.railwise-update-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.railwise-update-later,
+.railwise-update-primary {
+  border: 0;
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+
+.railwise-update-later {
+  background: transparent;
+  color: rgba(47, 38, 24, 0.45);
+  font-size: 13px;
+}
+
+.railwise-update-later:hover {
+  background: transparent;
+  color: rgba(47, 38, 24, 0.7);
+}
+
+.railwise-update-primary {
+  padding: 8px 20px;
+  border-radius: 8px;
+  background: rgb(95, 70, 24);
+  color: white;
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: 0 2px 6px rgba(95, 70, 24, 0.25);
+}
+
+.railwise-update-primary:hover {
+  background: rgba(95, 70, 24, 0.85);
+}
+
+.railwise-update-primary:disabled,
+.railwise-update-later:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Desktop App Base Styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--railwise-bg-primary);
+  color: var(--railwise-text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Desktop components using design tokens */
+.desktop-container {
+  background: var(--railwise-bg-primary);
+  color: var(--railwise-text-primary);
+}
+
+.desktop-header {
+  background: #FAFAFA;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.desktop-sidebar {
+  background: #FFFFFF;
+  border-right: 1px solid #E0E0E0;
+}
+
+/* Interactive elements */
+button:hover {
+  background: #F5F5F5;
+}
+
+button:active {
+  background: #EEEEEE;
+}
+
+button:focus {
+  box-shadow: 0 0 0 2px var(--railwise-info);
+}
+
+/* Visual compliance: No prohibited colors allowed */

@@ -14,10 +14,35 @@ export default defineConfig({
   esbuild: {
     // Improves production stack traces
     keepNames: true,
+    jsx: "automatic",
+    jsxImportSource: "solid-js",
   },
-  // build: {
-  // sourcemap: true,
-  // },
+  build: {
+    // sourcemap: true,
+    // Performance optimizations for startup
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching
+          'solid': ['solid-js'],
+          'tauri': ['@tauri-apps/api'],
+          'railwise-app': ['@railwise/app'],
+          'railwise-ui': ['@railwise/ui']
+        }
+      }
+    },
+    // Desktop bundles ship Monaco workers and local-first UI assets; keep this
+    // threshold aligned with the largest intentional worker chunk.
+    chunkSizeWarningLimit: 8192,
+    // Enable bundle analysis in development
+    ...(process.env.ANALYZE && {
+      rollupOptions: {
+        output: {
+          manualChunks: undefined // Let rollup-plugin-visualizer handle this
+        }
+      }
+    })
+  },
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,

@@ -119,7 +119,7 @@ export const dict = {
   // Existing translations...
   "desktop.menu.app": "睿威智测",
   "desktop.menu.checkForUpdates": "检查更新",
-  "desktop.menu.installCli": "安装命令行工具", 
+  "desktop.menu.installCli": "安装命令行工具",
   "desktop.menu.reloadWebview": "重新加载界面",
   "desktop.menu.restart": "重启应用",
   "desktop.menu.file": "文件",
@@ -131,14 +131,14 @@ export const dict = {
   "desktop.menu.help": "帮助",
   "desktop.menu.documentation": "RAILWISE 使用文档",
   "desktop.menu.supportForum": "支持论坛",
-  "desktop.menu.shareFeedback": "提交反馈", 
+  "desktop.menu.shareFeedback": "提交反馈",
   "desktop.menu.reportBug": "报告问题",
-  
+
   // Error messages
   "desktop.error.sidecarStart": "无法启动 RAILWISE 核心服务",
   "desktop.error.connection": "连接服务器失败",
   "desktop.error.timeout": "启动超时，请重试",
-  
+
   // Loading states
   "desktop.loading.starting": "正在启动 RAILWISE 核心服务...",
   "desktop.loading.connecting": "正在连接服务器...",
@@ -193,38 +193,38 @@ export interface StartupPhase {
 export class StartupTimer {
   private phases: Map<string, StartupPhase> = new Map()
   private startTime = performance.now()
-  
+
   startPhase(name: string): void {
     this.phases.set(name, {
       name,
       startTime: performance.now()
     })
   }
-  
+
   endPhase(name: string): number {
     const phase = this.phases.get(name)
     if (!phase) {
       console.warn(`Phase ${name} not found`)
       return 0
     }
-    
+
     const endTime = performance.now()
     const duration = endTime - phase.startTime
-    
+
     this.phases.set(name, {
       ...phase,
       endTime,
       duration
     })
-    
+
     console.log(`📊 ${name}: ${duration.toFixed(2)}ms`)
     return duration
   }
-  
+
   getTotalTime(): number {
     return performance.now() - this.startTime
   }
-  
+
   getReport(): { phases: StartupPhase[], total: number } {
     return {
       phases: Array.from(this.phases.values()),
@@ -251,7 +251,7 @@ startupTimer.endPhase("app-init")
 startupTimer.startPhase("sidecar-init")
 
 // Around ServerGate initialization
-startupTimer.endPhase("sidecar-init") 
+startupTimer.endPhase("sidecar-init")
 startupTimer.startPhase("server-connect")
 
 // When UI becomes interactive
@@ -320,12 +320,12 @@ interface LoadingProps {
 
 export const Loading: Component<LoadingProps> = (props) => {
   const [progress, setProgress] = createSignal(0)
-  
+
   const getPhaseMessage = (phase?: string): string => {
     switch (phase) {
       case "sidecar-init":
         return t("desktop.loading.starting")
-      case "server-connect": 
+      case "server-connect":
         return t("desktop.loading.connecting")
       case "ui-ready":
         return t("desktop.loading.initializing")
@@ -333,28 +333,28 @@ export const Loading: Component<LoadingProps> = (props) => {
         return t("desktop.loading.starting")
     }
   }
-  
+
   onMount(() => {
     // Simulate progress for better UX
     const interval = setInterval(() => {
       setProgress(prev => Math.min(prev + Math.random() * 10, 90))
     }, 100)
-    
+
     return () => clearInterval(interval)
   })
-  
+
   return (
     <div class="loading-container">
       <div class="loading-content">
         <div class="railwise-logo">
           <img src="/railwise-logo.svg" alt="RAILWISE" />
         </div>
-        
+
         <h1 class="loading-title">RAILWISE 智测工作台</h1>
-        
+
         <div class="loading-progress">
           <div class="progress-bar">
-            <div 
+            <div
               class="progress-fill"
               style={`width: ${progress()}%`}
             />
@@ -470,7 +470,7 @@ Create `packages/desktop/src/tokens.css`:
   --railwise-warm-brown: #8B4513;
   --railwise-warm-brown-light: #A0522D;
   --railwise-warm-brown-dark: #654321;
-  
+
   /* Neutral Scale */
   --railwise-gray-50: #FAFAFA;
   --railwise-gray-100: #F5F5F5;
@@ -482,30 +482,30 @@ Create `packages/desktop/src/tokens.css`:
   --railwise-gray-700: #616161;
   --railwise-gray-800: #424242;
   --railwise-gray-900: #212121;
-  
+
   /* Functional Colors (Document Approved) */
   --railwise-success: #52c41a;
   --railwise-warning: #faad14;
   --railwise-error: #ff4d4f;
   --railwise-info: #1890ff;
-  
+
   /* Semantic Tokens */
   --railwise-bg-primary: var(--railwise-cream-white);
   --railwise-bg-secondary: var(--railwise-gray-50);
   --railwise-bg-tertiary: var(--railwise-gray-100);
-  
+
   --railwise-text-primary: var(--railwise-warm-brown);
   --railwise-text-secondary: var(--railwise-gray-600);
   --railwise-text-tertiary: var(--railwise-gray-500);
   --railwise-text-inverse: var(--railwise-cream-white);
-  
+
   --railwise-border-primary: var(--railwise-gray-300);
   --railwise-border-secondary: var(--railwise-gray-200);
-  
+
   --railwise-surface-primary: var(--railwise-cream-white);
   --railwise-surface-secondary: var(--railwise-gray-50);
   --railwise-surface-accent: var(--railwise-warm-brown);
-  
+
   /* Interactive States */
   --railwise-hover-bg: var(--railwise-gray-100);
   --railwise-active-bg: var(--railwise-gray-200);
@@ -592,7 +592,7 @@ Expected: Consistent cream white + warm brown theme, no visual regressions
 - [ ] **Step 6: Commit visual token system**
 
 ```bash
-git add packages/desktop/src/tokens.css packages/desktop/src/styles.css  
+git add packages/desktop/src/tokens.css packages/desktop/src/styles.css
 git commit -m "feat(desktop): implement design token system with 2.0 奶白+暖棕 palette for M1"
 ```
 
@@ -618,7 +618,7 @@ Edit `packages/desktop/src/index.tsx` to streamline initialization:
 // Optimize the startup flow for < 3s target
 const optimizedStartup = async () => {
   startupTimer.startPhase("sidecar-cleanup")
-  
+
   try {
     // Quick cleanup - don't wait too long
     await Promise.race([
@@ -628,26 +628,26 @@ const optimizedStartup = async () => {
   } catch (e) {
     console.log("Sidecar cleanup skipped (not running)")
   }
-  
+
   startupTimer.endPhase("sidecar-cleanup")
   startupTimer.startPhase("sidecar-start")
-  
+
   // Start sidecar with timeout
   const initialization = await Promise.race([
     commands.awaitInitialization(),
-    new Promise((_, reject) => 
+    new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Initialization timeout")), 2000)
     )
   ])
-  
+
   startupTimer.endPhase("sidecar-start")
   startupTimer.startPhase("server-health")
-  
+
   // Quick server health check
   const serverUrl = await commands.getDefaultServerUrl()
-  
+
   startupTimer.endPhase("server-health")
-  
+
   return { initialization, serverUrl }
 }
 
@@ -661,13 +661,13 @@ const [startupResult] = createResource(optimizedStartup)
 // Error handling with localized messages
 const handleStartupError = (error: Error) => {
   let message = t("desktop.error.connection")
-  
+
   if (error.message.includes("timeout")) {
     message = t("desktop.error.timeout")
   } else if (error.message.includes("sidecar")) {
-    message = t("desktop.error.sidecarStart") 
+    message = t("desktop.error.sidecarStart")
   }
-  
+
   console.error("Startup error:", error)
   // Show user-friendly error in Chinese
   return message
@@ -723,7 +723,7 @@ echo "1. Running type check..."
 bun turbo typecheck
 echo "✅ Type check passed"
 
-# Test 2: Build verification  
+# Test 2: Build verification
 echo "2. Building desktop package..."
 bun run --cwd packages/desktop build
 echo "✅ Build successful"
@@ -798,7 +798,7 @@ Expected: Consistent startup < 3s across multiple runs
 
 Manual verification:
 - [ ] App shows "RAILWISE 智测工作台" in title and about
-- [ ] All menus display in Chinese 
+- [ ] All menus display in Chinese
 - [ ] Startup completes in < 3s consistently
 - [ ] No rust red (#C0392B) colors visible
 - [ ] Visual theme follows cream white + warm brown palette
@@ -813,9 +813,9 @@ git commit -m "test(desktop): add M1 verification script and complete foundation
 - [ ] **Step 6: Tag M1 completion**
 
 ```bash
-git tag -a "desktop-m1-complete" -m "RAILWISE Desktop M1 Foundation Complete: 
+git tag -a "desktop-m1-complete" -m "RAILWISE Desktop M1 Foundation Complete:
 - ✅ Brand replacement with 睿威智测 identity
-- ✅ Complete Chinese menu localization  
+- ✅ Complete Chinese menu localization
 - ✅ Startup optimization < 3s requirement met
 - ✅ Visual token compliance with 2.0 奶白+暖棕 palette
 - ✅ No prohibited rust red (#C0392B) usage
@@ -830,7 +830,7 @@ Ready for M2 Agent Studio development phase."
 
 **M1 Requirements (per spec document):**
 - [ ] ✅ Brand replacement complete - "RAILWISE 智测工作台" throughout app
-- [ ] ✅ All menus in Chinese - 菜单全中文 requirement met  
+- [ ] ✅ All menus in Chinese - 菜单全中文 requirement met
 - [ ] ✅ Startup < 3s interactive - Performance budget enforced
 - [ ] ✅ Visual compliance - No rust red, proper 2.0 palette inheritance
 - [ ] ✅ Type checking passes - `bun turbo typecheck` zero errors

@@ -6,10 +6,10 @@ type: implementation-spec
 
 # RAILWISE Desktop M1 Foundation Completion Design
 
-**Date**: 2026-04-22  
-**Target**: RAILWISE Desktop v1.3.0 Milestone 1  
-**Repository**: RAILWISE-CLI monorepo  
-**Branch**: feat/desktop-v1.3.0-m1  
+**Date**: 2026-04-22
+**Target**: RAILWISE Desktop v1.3.0 Milestone 1
+**Repository**: RAILWISE-CLI monorepo
+**Branch**: feat/desktop-v1.3.0-m1
 
 ## Overview
 
@@ -24,7 +24,7 @@ This specification defines the completion of Milestone 1 (M1) foundation work fo
 
 **Already Implemented**:
 - ✅ Basic Tauri 2 + SolidJS infrastructure
-- ✅ Chinese i18n framework (`packages/desktop/src/i18n/zh.ts`)  
+- ✅ Chinese i18n framework (`packages/desktop/src/i18n/zh.ts`)
 - ✅ Menu structure with partial Chinese translations
 - ✅ Branch `feat/desktop-v1.3.0-m1` active
 
@@ -65,7 +65,7 @@ This specification defines the completion of Milestone 1 (M1) foundation work fo
 ### 2. Complete Chinese Internationalization
 
 **Purpose**: Achieve 100% Chinese localization for desktop UI elements
-**Why**: Document requires "菜单全中文" as M1 requirement  
+**Why**: Document requires "菜单全中文" as M1 requirement
 **How to apply**: Systematic audit and completion of all user-facing text
 
 #### Components
@@ -75,7 +75,7 @@ This specification defines the completion of Milestone 1 (M1) foundation work fo
 // Target coverage in packages/desktop/src/i18n/zh.ts
 const requiredTranslations = {
   "desktop.menu.*": "All menu items",
-  "desktop.dialog.*": "File picker dialogs", 
+  "desktop.dialog.*": "File picker dialogs",
   "desktop.error.*": "Error messages",
   "desktop.loading.*": "Loading states",
   "desktop.status.*": "Connection status"
@@ -89,7 +89,7 @@ const requiredTranslations = {
 - Update checker and installation messages
 
 **Loading State Text**
-- Splash screen text in `packages/desktop/src/loading.tsx`  
+- Splash screen text in `packages/desktop/src/loading.tsx`
 - Server initialization messages
 - "正在启动 RAILWISE 核心服务..." style messages
 
@@ -106,7 +106,7 @@ const requiredTranslations = {
 // Optimize this flow in packages/desktop/src/index.tsx
 const startupPipeline = [
   "killSidecar", // Clean previous instance
-  "awaitInitialization", // Start new sidecar  
+  "awaitInitialization", // Start new sidecar
   "getDefaultServerUrl", // Negotiate port
   "ServerGate health check", // Verify connectivity
   "AppInterface ready" // UI interactive
@@ -118,7 +118,7 @@ const startupPipeline = [
 - Configurable timeout thresholds
 - Performance budget enforcement (< 3s total)
 
-**Asset Loading Optimization**  
+**Asset Loading Optimization**
 - Audit bundle size of initial load
 - Lazy load non-critical desktop-specific components
 - Optimize `@railwise/app` dependency loading
@@ -147,14 +147,14 @@ const startupPipeline = [
 :root {
   /* 2.0 Base Palette - 奶白+暖棕 */
   --railwise-cream-white: #FEFEFE;
-  --railwise-warm-brown: #8B4513; 
-  
+  --railwise-warm-brown: #8B4513;
+
   /* Functional Colors (allowed) */
   --railwise-success: #52c41a;
   --railwise-warning: #faad14;
   --railwise-error: #ff4d4f;
   --railwise-info: #1890ff;
-  
+
   /* Derived tokens */
   --railwise-bg-primary: var(--railwise-cream-white);
   --railwise-text-primary: var(--railwise-warm-brown);
@@ -173,7 +173,7 @@ const startupPipeline = [
 2. Audit and update visual assets (icons, splash, NSIS)
 3. Verify menu branding consistency
 
-### Phase 2: i18n Completion (Est. 2-3 commits)  
+### Phase 2: i18n Completion (Est. 2-3 commits)
 1. Audit existing `zh.ts` translations for completeness
 2. Add missing desktop-specific translations
 3. Localize error messages and loading states
@@ -186,7 +186,7 @@ const startupPipeline = [
 
 ### Phase 4: Visual Compliance (Est. 2-3 commits)
 1. Audit CSS for rust red usage and hardcoded colors
-2. Implement proper design token structure  
+2. Implement proper design token structure
 3. Verify component inheritance and consistency
 
 ## Testing Strategy
@@ -229,7 +229,7 @@ const startupPipeline = [
 - Tauri 2.9.5 + Bun 1.3.9 version lock
 
 **Constraint Adherence**:
-- 核心零侵入: No modifications to `packages/railwise/src/` 
+- 核心零侵入: No modifications to `packages/railwise/src/`
 - 视觉令牌单一来源: Only reference CSS variables from existing system
 - Windows 专项约束: Maintain SSE fetch via `@tauri-apps/plugin-http`
 
@@ -238,7 +238,7 @@ const startupPipeline = [
 **Startup Performance Risk**: If < 3s proves difficult on Windows
 - **Mitigation**: Implement progressive loading, optimize sidecar startup sequence
 
-**i18n Completeness Risk**: Missing translations discovered late  
+**i18n Completeness Risk**: Missing translations discovered late
 - **Mitigation**: Systematic audit process, automated translation coverage checks
 
 **Visual Compliance Risk**: Inherited styles violate color rules

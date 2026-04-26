@@ -1,6 +1,5 @@
 ---
 description: ALWAYS use this when writing docs
-model: openai/gpt-5.1
 color: "#38A3EE"
 ---
 

@@ -9,13 +9,17 @@ import { Dialog } from "@railwise/ui/dialog"
 import { InlineInput } from "@railwise/ui/inline-input"
 import { SessionTurn } from "@railwise/ui/session-turn"
 import type { UserMessage } from "@railwise/sdk/v2"
+import type { Part as SDKPart } from "@railwise/sdk/v2/client"
 import { showToast } from "@railwise/ui/toast"
+import { base64Encode } from "@railwise/util/encode"
 import { shouldMarkBoundaryGesture, normalizeWheelDelta } from "@/pages/session/message-gesture"
 import { SessionContextUsage } from "@/components/session-context-usage"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { useLanguage } from "@/context/language"
+import { usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
+import { extractPromptFromParts } from "@/utils/prompt"
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
   const current = target instanceof Element ? target : undefined
@@ -79,6 +83,7 @@ export function MessageTimeline(props: {
   const params = useParams()
   const navigate = useNavigate()
   const sdk = useSDK()
+  const prompt = usePrompt()
   const sync = useSync()
   const dialog = useDialog()
   const language = useLanguage()
@@ -270,6 +275,79 @@ export function MessageTimeline(props: {
     const id = parentID()
     if (!id) return
     navigate(`/${params.dir}/session/${id}`)
+  }
+
+  function MessageActions(props: { messageID: string; parts: SDKPart[] }) {
+    const session = () => sessionID()
+    const restored = () =>
+      extractPromptFromParts(props.parts, {
+        directory: sdk.directory,
+        attachmentName: language.t("common.attachment"),
+      })
+
+    const fork = async () => {
+      const id = session()
+      if (!id) return
+
+      await sdk.client.session
+        .fork({ sessionID: id, messageID: props.messageID })
+        .then((result) => {
+          if (!result.data) {
+            showToast({ title: language.t("common.requestFailed") })
+            return
+          }
+          navigate(`/${base64Encode(sdk.directory)}/session/${result.data.id}`)
+          requestAnimationFrame(() => prompt.set(restored()))
+        })
+        .catch((err) => {
+          showToast({
+            title: language.t("common.requestFailed"),
+            description: errorMessage(err),
+          })
+        })
+    }
+
+    const revert = async () => {
+      const id = session()
+      if (!id) return
+
+      await sdk.client.session
+        .revert({ sessionID: id, messageID: props.messageID })
+        .then(() => {
+          prompt.set(restored())
+          void sync.session.sync(id)
+        })
+        .catch((err) => {
+          showToast({
+            title: language.t("common.requestFailed"),
+            description: errorMessage(err),
+          })
+        })
+    }
+
+    return (
+      <div
+        data-component="railwise-message-actions"
+        class="pointer-events-none absolute right-1.5 top-1.5 z-10 flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 focus-within:opacity-100"
+      >
+        <button
+          type="button"
+          class="pointer-events-auto rounded-[5px] border border-[rgba(117,86,32,0.15)] bg-white px-2 py-1 text-[11px] font-semibold text-[rgba(47,38,24,0.7)] shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:border-[rgba(117,86,32,0.35)] hover:bg-[rgba(117,86,32,0.04)] hover:text-[rgb(47,38,24)]"
+          title="从此处分叉新会话"
+          onClick={fork}
+        >
+          分叉
+        </button>
+        <button
+          type="button"
+          class="pointer-events-auto rounded-[5px] border border-[rgba(117,86,32,0.15)] bg-white px-2 py-1 text-[11px] font-semibold text-[rgba(47,38,24,0.7)] shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:border-[rgba(117,86,32,0.35)] hover:bg-[rgba(117,86,32,0.04)] hover:text-[rgb(47,38,24)]"
+          title="回退到此消息，丢弃后续上下文"
+          onClick={revert}
+        >
+          回退
+        </button>
+      </div>
+    )
   }
 
   function DialogDeleteSession(props: { sessionID: string }) {
@@ -535,8 +613,9 @@ export function MessageTimeline(props: {
                     sessionID={sessionID() ?? ""}
                     messageID={message.id}
                     lastUserMessageID={props.lastUserMessageID}
+                    actions={(input) => <MessageActions messageID={input.message.id} parts={input.parts} />}
                     classes={{
-                      root: "min-w-0 w-full relative",
+                      root: "group min-w-0 w-full relative",
                       content: "flex flex-col justify-between !overflow-visible",
                       container: "w-full px-4 md:px-5",
                     }}

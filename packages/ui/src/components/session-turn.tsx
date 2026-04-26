@@ -4,7 +4,7 @@ import { useDiffComponent } from "../context/diff"
 
 import { Binary } from "@railwise/util/binary"
 import { getDirectory, getFilename } from "@railwise/util/path"
-import { createEffect, createMemo, createSignal, For, on, ParentProps, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, on, ParentProps, Show, type JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { AssistantParts, Message } from "./message-part"
 import { Card } from "./card"
@@ -94,6 +94,27 @@ function visible(part: PartType) {
   return false
 }
 
+const palette: Record<string, string> = {
+  primary: "var(--text-interactive-base, #1890ff)",
+  secondary: "var(--text-base, rgb(47, 38, 24))",
+  accent: "var(--rw-accent, rgba(117, 86, 32, 0.9))",
+  success: "var(--rw-success, #52c41a)",
+  warning: "var(--rw-warning, #faad14)",
+  error: "var(--rw-error, #ff4d4f)",
+  info: "var(--rw-info, #1890ff)",
+  ask: "var(--icon-agent-ask-base, rgba(117, 86, 32, 0.9))",
+  build: "var(--icon-agent-build-base, rgba(117, 86, 32, 0.9))",
+  docs: "var(--icon-agent-docs-base, rgba(117, 86, 32, 0.9))",
+  plan: "var(--icon-agent-plan-base, rgba(117, 86, 32, 0.9))",
+}
+
+function color(name: string | undefined, custom: string | undefined) {
+  const value = custom?.trim()
+  if (value) return palette[value] ?? value
+  if (!name) return "var(--rw-accent, rgba(117, 86, 32, 0.9))"
+  return palette[name] ?? palette[name.toLowerCase()] ?? "var(--rw-accent, rgba(117, 86, 32, 0.9))"
+}
+
 export function SessionTurn(
   props: ParentProps<{
     sessionID: string
@@ -105,6 +126,7 @@ export function SessionTurn(
       content?: string
       container?: string
     }
+    actions?: (input: { message: MessageType; parts: PartType[] }) => JSX.Element
   }>,
 ) {
   const data = useData()
@@ -247,6 +269,12 @@ export function SessionTurn(
     if (working()) return null
     return showAssistantCopyPartID() ?? null
   })
+  const agent = createMemo(() => {
+    const name = message()?.agent
+    if (!name) return
+    return data.store.agent?.find((item) => item.name === name)
+  })
+  const tint = createMemo(() => color(message()?.agent, agent()?.color))
   const assistantVisible = createMemo(() =>
     assistantMessages().reduce((count, message) => {
       const parts = list(data.store.part?.[message.id], emptyParts)
@@ -274,11 +302,23 @@ export function SessionTurn(
               <div
                 ref={autoScroll.contentRef}
                 data-message={msg().id}
+                data-agent={msg().agent}
                 data-slot="session-turn-message-container"
                 class={props.classes?.container}
+                style={{ "--rw-agent-color": tint() }}
               >
+                <Show when={msg().system?.trim()}>
+                  {(system) => (
+                    <div data-message-role="system">
+                      <span class="message-text" title={system()}>
+                        {system()}
+                      </span>
+                    </div>
+                  )}
+                </Show>
                 <div data-slot="session-turn-message-content" aria-live="off">
                   <Message message={msg()} parts={parts()} interrupted={interrupted()} />
+                  {props.actions?.({ message: msg(), parts: parts() })}
                 </div>
                 <Show when={working() && assistantVisible() === 0 && !error()}>
                   <div data-slot="session-turn-thinking">

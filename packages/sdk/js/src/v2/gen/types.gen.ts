@@ -926,6 +926,22 @@ export type EventPtyDeleted = {
   }
 }
 
+export type EventAgentUpdated = {
+  type: "agent.updated"
+  properties: {
+    name: string
+  }
+}
+
+export type EventAgentWorkflowCompleted = {
+  type: "agent.workflow.completed"
+  properties: {
+    workflowId: string
+    sessionId: string
+    durationMs: number
+  }
+}
+
 export type EventWorktreeReady = {
   type: "worktree.ready"
   properties: {
@@ -983,6 +999,8 @@ export type Event =
   | EventPtyUpdated
   | EventPtyExited
   | EventPtyDeleted
+  | EventAgentUpdated
+  | EventAgentWorkflowCompleted
   | EventWorktreeReady
   | EventWorktreeFailed
 
@@ -1865,6 +1883,20 @@ export type Config = {
      */
     reserved?: number
   }
+  memory?: {
+    /**
+     * Enable cross-session memory (default: true)
+     */
+    enabled?: boolean
+    /**
+     * Automatically extract memories from compaction summaries (default: true)
+     */
+    autoCapture?: boolean
+    /**
+     * Maximum memories to inject into system prompt (default: 10)
+     */
+    maxMemories?: number
+  }
   experimental?: {
     disable_paste_summary?: boolean
     /**
@@ -2111,6 +2143,74 @@ export type ProviderAuthAuthorization = {
   instructions: string
 }
 
+export type DashboardProjectCard = {
+  id: string
+  name: string
+  type: "metro" | "excavation" | "bridge" | "slope" | "highrise"
+  status: "active" | "completed" | "paused" | "error"
+  progress: number
+  lastActivity: string
+  activeTaskCount: number
+  description?: string
+  pointCount: number
+  alertCount: number
+  bboxJson?: string
+}
+
+export type DashboardAlert = {
+  id: string
+  projectId: string
+  pointId?: string
+  level: "warn" | "error"
+  message: string
+  time: string
+}
+
+export type DashboardSessionBrief = {
+  id: string
+  directory: string
+  title: string
+  time: {
+    updated: number
+  }
+}
+
+export type DashboardActiveAgent = {
+  sessionId: string
+  agentName: string
+  startedAt: string
+  status: "running" | "waiting" | "error"
+}
+
+export type DashboardSummary = {
+  projects: Array<DashboardProjectCard>
+  alerts: Array<DashboardAlert>
+  recentSessions: Array<DashboardSessionBrief>
+  activeAgents: Array<DashboardActiveAgent>
+}
+
+export type RailwiseTemplateVariable = {
+  key: string
+  label: string
+  type: "text" | "number" | "date" | "select" | "mileage"
+  placeholder?: string
+  required?: boolean
+  options?: Array<string>
+}
+
+export type RailwiseTemplate = {
+  id: string
+  name: string
+  category: "report" | "bid" | "data" | "ppt"
+  description: string
+  agent: string
+  prompt: string
+  variables?: Array<RailwiseTemplateVariable>
+  version?: string
+  filePath?: string
+  updatedAt?: number
+}
+
 export type Symbol = {
   name: string
   kind: number
@@ -2155,6 +2255,94 @@ export type File = {
   added: number
   removed: number
   status: "added" | "deleted" | "modified"
+}
+
+export type AgentListItem = {
+  name: string
+  description?: string
+  mode: "subagent" | "primary" | "all"
+  native?: boolean
+  hidden?: boolean
+  topP?: number
+  temperature?: number
+  color?: string
+  permission: PermissionRuleset
+  model?: {
+    modelID: string
+    providerID: string
+  }
+  variant?: string
+  prompt?: string
+  options: {
+    [key: string]: unknown
+  }
+  steps?: number
+  /**
+   * Absolute path of the backing .md file.
+   */
+  filePath?: string
+  /**
+   * Message count by this agent in the last 7 days.
+   */
+  callCount7d?: number
+}
+
+export type WorkflowNode = {
+  id: string
+  agent: string
+  label: string
+  color: string
+  x: number
+  y: number
+}
+
+export type WorkflowEdge = {
+  from: string
+  to: string
+  kind: "serial" | "parallel" | "optional"
+  label?: string
+}
+
+export type WorkflowPreset = {
+  id: string
+  name: string
+  description: string
+  nodes: Array<WorkflowNode>
+  edges: Array<WorkflowEdge>
+}
+
+export type AgentDetail = {
+  name: string
+  description?: string
+  mode: "subagent" | "primary" | "all"
+  native?: boolean
+  hidden?: boolean
+  topP?: number
+  temperature?: number
+  color?: string
+  permission: PermissionRuleset
+  model?: {
+    modelID: string
+    providerID: string
+  }
+  variant?: string
+  prompt?: string
+  options: {
+    [key: string]: unknown
+  }
+  steps?: number
+  filePath?: string
+  /**
+   * Full markdown source including frontmatter.
+   */
+  rawMarkdown: string
+}
+
+export type WorkflowRun = {
+  sessionId: string
+  sessionTitle: string
+  workflowId: string
+  agentNames: Array<string>
 }
 
 export type McpStatusConnected = {
@@ -4193,6 +4381,186 @@ export type ProviderOauthCallbackResponses = {
 
 export type ProviderOauthCallbackResponse = ProviderOauthCallbackResponses[keyof ProviderOauthCallbackResponses]
 
+export type DashboardSummaryData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/dashboard/summary"
+}
+
+export type DashboardSummaryResponses = {
+  /**
+   * Dashboard summary
+   */
+  200: DashboardSummary
+}
+
+export type DashboardSummaryResponse = DashboardSummaryResponses[keyof DashboardSummaryResponses]
+
+export type DashboardProjectsData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/dashboard/projects"
+}
+
+export type DashboardProjectsResponses = {
+  /**
+   * ProjectCard[]
+   */
+  200: Array<DashboardProjectCard>
+}
+
+export type DashboardProjectsResponse = DashboardProjectsResponses[keyof DashboardProjectsResponses]
+
+export type DashboardProjectPointsData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/dashboard/projects/{id}/points"
+}
+
+export type DashboardProjectPointsErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type DashboardProjectPointsError = DashboardProjectPointsErrors[keyof DashboardProjectPointsErrors]
+
+export type DashboardProjectPointsResponses = {
+  /**
+   * GeoJSON FeatureCollection
+   */
+  200: {
+    type: "FeatureCollection"
+    features: Array<unknown>
+  }
+}
+
+export type DashboardProjectPointsResponse = DashboardProjectPointsResponses[keyof DashboardProjectPointsResponses]
+
+export type DashboardProjectTimeseriesData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+    metric?: "settlement" | "displacement"
+    days?: number
+  }
+  url: "/dashboard/projects/{id}/timeseries"
+}
+
+export type DashboardProjectTimeseriesErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type DashboardProjectTimeseriesError = DashboardProjectTimeseriesErrors[keyof DashboardProjectTimeseriesErrors]
+
+export type DashboardProjectTimeseriesResponses = {
+  /**
+   * [[timestamps], [values]]
+   */
+  200: Array<Array<number>>
+}
+
+export type DashboardProjectTimeseriesResponse =
+  DashboardProjectTimeseriesResponses[keyof DashboardProjectTimeseriesResponses]
+
+export type TilesGetData = {
+  body?: never
+  path: {
+    z: number
+    x: number
+    y: number
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/tiles/{z}/{x}/{y}"
+}
+
+export type TilesGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type TilesGetError = TilesGetErrors[keyof TilesGetErrors]
+
+export type TilesGetResponses = {
+  /**
+   * MBTiles tile bytes
+   */
+  200: unknown
+}
+
+export type TemplatesListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/templates/list"
+}
+
+export type TemplatesListResponses = {
+  /**
+   * Railwise business templates
+   */
+  200: Array<RailwiseTemplate>
+}
+
+export type TemplatesListResponse = TemplatesListResponses[keyof TemplatesListResponses]
+
+export type TemplatesGetData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/templates/{id}"
+}
+
+export type TemplatesGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type TemplatesGetError = TemplatesGetErrors[keyof TemplatesGetErrors]
+
+export type TemplatesGetResponses = {
+  /**
+   * Railwise business template
+   */
+  200: RailwiseTemplate
+}
+
+export type TemplatesGetResponse = TemplatesGetResponses[keyof TemplatesGetResponses]
+
 export type FindTextData = {
   body?: never
   path?: never
@@ -4324,6 +4692,139 @@ export type FileStatusResponses = {
 }
 
 export type FileStatusResponse = FileStatusResponses[keyof FileStatusResponses]
+
+export type AgentStudioListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/list"
+}
+
+export type AgentStudioListResponses = {
+  /**
+   * Agent list
+   */
+  200: Array<AgentListItem>
+}
+
+export type AgentStudioListResponse = AgentStudioListResponses[keyof AgentStudioListResponses]
+
+export type AgentStudioWorkflowPresetsData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/presets"
+}
+
+export type AgentStudioWorkflowPresetsResponses = {
+  /**
+   * Workflow preset array
+   */
+  200: Array<WorkflowPreset>
+}
+
+export type AgentStudioWorkflowPresetsResponse =
+  AgentStudioWorkflowPresetsResponses[keyof AgentStudioWorkflowPresetsResponses]
+
+export type AgentStudioGetData = {
+  body?: never
+  path: {
+    name: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/{name}"
+}
+
+export type AgentStudioGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioGetError = AgentStudioGetErrors[keyof AgentStudioGetErrors]
+
+export type AgentStudioGetResponses = {
+  /**
+   * Agent detail
+   */
+  200: AgentDetail
+}
+
+export type AgentStudioGetResponse = AgentStudioGetResponses[keyof AgentStudioGetResponses]
+
+export type AgentStudioUpdateData = {
+  body?: {
+    rawMarkdown: string
+  }
+  path: {
+    name: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/{name}"
+}
+
+export type AgentStudioUpdateErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioUpdateError = AgentStudioUpdateErrors[keyof AgentStudioUpdateErrors]
+
+export type AgentStudioUpdateResponses = {
+  /**
+   * Write succeeded
+   */
+  200: boolean
+}
+
+export type AgentStudioUpdateResponse = AgentStudioUpdateResponses[keyof AgentStudioUpdateResponses]
+
+export type AgentStudioWorkflowRunData = {
+  body?: {
+    workflowId: string
+    input?: {
+      [key: string]: unknown
+    }
+  }
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/run"
+}
+
+export type AgentStudioWorkflowRunErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type AgentStudioWorkflowRunError = AgentStudioWorkflowRunErrors[keyof AgentStudioWorkflowRunErrors]
+
+export type AgentStudioWorkflowRunResponses = {
+  /**
+   * Workflow accepted
+   */
+  200: WorkflowRun
+}
+
+export type AgentStudioWorkflowRunResponse = AgentStudioWorkflowRunResponses[keyof AgentStudioWorkflowRunResponses]
 
 export type McpStatusData = {
   body?: never

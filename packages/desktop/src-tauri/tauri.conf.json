@@ -1,9 +1,9 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "RAILWISE Dev",
+  "productName": "RAILWISE 智测工作台",
   "identifier": "ai.railwise.desktop.dev",
-  "mainBinaryName": "RAILWISE",
-  "version": "../package.json",
+  "mainBinaryName": "railwise",
+  "version": "1.3.0",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
@@ -19,20 +19,23 @@
     ],
     "withGlobalTauri": true,
     "security": {
-      "csp": null
+      "csp": "default-src 'self' tauri: https://tauri.localhost; script-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; style-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; img-src 'self' data: blob: asset: tauri: https://tauri.localhost https: http://localhost:* http://127.0.0.1:*; font-src 'self' tauri: https://tauri.localhost; connect-src 'self' tauri: https://tauri.localhost https: ws://localhost:* http://localhost:* http://127.0.0.1:*; media-src 'self' tauri: https://tauri.localhost"
     },
-    "macOSPrivateApi": true
+    "macOSPrivateApi": false
   },
   "bundle": {
     "icon": [
-      "icons/dev/32x32.png",
-      "icons/dev/128x128.png",
-      "icons/dev/128x128@2x.png",
-      "icons/dev/icon.icns",
-      "icons/dev/icon.ico"
+      "icons/railwise/32x32.png",
+      "icons/railwise/128x128.png",
+      "icons/railwise/128x128@2x.png",
+      "icons/railwise/icon.icns",
+      "icons/railwise/icon.ico"
     ],
     "active": true,
-    "targets": ["deb", "rpm", "dmg", "nsis", "app"],
+    "targets": "all",
+    "publisher": "睿威科技",
+    "shortDescription": "RAILWISE 工程监测智能工作台",
+    "longDescription": "面向工程测绘、结构监测、地铁线路监测一线工程师的多智能体桌面工作台",
     "externalBin": ["sidecars/railwise-cli"],
     "linux": {
       "rpm": {
@@ -42,13 +45,32 @@
       }
     },
     "macOS": {
-      "entitlements": "./entitlements.plist"
+      "entitlements": "./entitlements.plist",
+      "dmg": {
+        "background": "assets/dmg-background.png",
+        "windowSize": {
+          "width": 660,
+          "height": 440
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 220
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 220
+        }
+      }
     },
     "windows": {
       "nsis": {
-        "installerIcon": "icons/dev/icon.ico",
-        "headerImage": "assets/nsis-header.bmp",
-        "sidebarImage": "assets/nsis-sidebar.bmp"
+        "installerIcon": "icons/railwise/icon.ico",
+        "headerImage": "assets/nsis-header-railwise.bmp",
+        "sidebarImage": "assets/nsis-sidebar-railwise.bmp",
+        "displayLanguageSelector": false,
+        "languages": ["SimpChinese"],
+        "installMode": "currentUser",
+        "startMenuFolder": "RAILWISE"
       }
     }
   },

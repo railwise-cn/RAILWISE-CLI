@@ -39,10 +39,13 @@
     "updater:default",
     "dialog:default",
     "process:default",
+    "sentry:default",
     "store:default",
     "window-state:default",
     "os:default",
     "notification:default",
+    "sql:default",
+    "sql:allow-execute",
     {
       "identifier": "http:default",
       "allow": [{ "url": "http://*" }, { "url": "https://*" }, { "url": "http://*:*/*" }]

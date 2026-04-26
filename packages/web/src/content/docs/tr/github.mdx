@@ -3,7 +3,7 @@ title: GitHub
 description: GitHub sorunlarında ve çekme isteklerinde railwise'u kullanın.
 ---
 
-railwise, GitHub iş akışınızla bütünleşir. Yorumunuzda `/railwise` veya `/oc`'den bahsedin; railwise, GitHub Actions çalıştırıcınızdaki görevleri yürütecektir.
+railwise, GitHub iş akışınızla bütünleşir. Yorumunuzda `/railwise`'den bahsedin; railwise, GitHub Actions çalıştırıcınızdaki görevleri yürütecektir.
 
 ---
 
@@ -51,7 +51,6 @@ Veya manuel olarak ayarlayabilirsiniz.
    jobs:
      railwise:
        if: |
-         contains(github.event.comment.body, '/oc') ||
          contains(github.event.comment.body, '/railwise')
        runs-on: ubuntu-latest
        permissions:
@@ -64,7 +63,7 @@ Veya manuel olarak ayarlayabilirsiniz.
               persist-credentials: false
 
           - name: Run RAILWISE
-           uses: anomalyco/railwise/github@latest
+           uses: railwise-cn/RAILWISE-CLI/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
            with:
@@ -107,8 +106,8 @@ railwise aşağıdaki GitHub olayları tarafından tetiklenebilir:
 
 | Olay Tipi                     | Tetikleyen                                    | Detaylar                                                                                                                                            |
 | ----------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Bir soruna veya halkla ilişkilere yorum yapın | Yorumunuzda `/railwise` veya `/oc`'den bahsedin. railwise bağlamı okur ve şubeler oluşturabilir, PR'leri açabilir veya yanıt verebilir.             |
-| `pull_request_review_comment` | PR'deki belirli kod satırlarına yorum yapın   | Kodu incelerken `/railwise` veya `/oc`'den bahsedin. railwise dosya yolunu, satır numaralarını ve fark içeriğini alır.                              |
+| `issue_comment`               | Bir soruna veya halkla ilişkilere yorum yapın | Yorumunuzda `/railwise`'den bahsedin. railwise bağlamı okur ve şubeler oluşturabilir, PR'leri açabilir veya yanıt verebilir.             |
+| `pull_request_review_comment` | PR'deki belirli kod satırlarına yorum yapın   | Kodu incelerken `/railwise`'den bahsedin. railwise dosya yolunu, satır numaralarını ve fark içeriğini alır.                              |
 | `issues`                      | Sayı açıldı veya düzenlendi                   | Sorunlar oluşturulduğunda veya değiştirildiğinde railwise'u otomatik olarak tetikleyin. `prompt` girişi gerektirir.                                 |
 | `pull_request`                | PR açıldı veya güncellendi                    | PR'ler açıldığında, senkronize edildiğinde veya yeniden açıldığında railwise'u otomatik olarak tetikleyin. Otomatik incelemeler için kullanışlıdır. |
 | `schedule`                    | Cron tabanlı program                          | railwise'u bir programa göre çalıştırın. `prompt` girişi gerektirir. Çıktı, günlüklere ve PR'lere gider (yorum yapılacak bir sorun yoktur).         |
@@ -140,7 +139,7 @@ jobs:
           persist-credentials: false
 
       - name: Run RAILWISE
-        uses: anomalyco/railwise/github@latest
+        uses: railwise-cn/RAILWISE-CLI/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         with:
@@ -177,7 +176,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: anomalyco/railwise/github@latest
+      - uses: railwise-cn/RAILWISE-CLI/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -233,7 +232,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: anomalyco/railwise/github@latest
+      - uses: railwise-cn/RAILWISE-CLI/github@latest
         if: steps.check.outputs.result == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -255,7 +254,7 @@ jobs:
 railwise'un davranışını iş akışınız için özelleştirmek için varsayılan istemi geçersiz kılın.
 
 ```yaml title=".github/workflows/railwise.yml"
-- uses: anomalyco/railwise/github@latest
+- uses: railwise-cn/RAILWISE-CLI/github@latest
   with:
     model: anthropic/claude-sonnet-4-5
     prompt: |
@@ -298,7 +297,7 @@ GitHub'da railwise'u nasıl kullanabileceğinize dair bazı örnekleri burada bu
   GitHub PR'a aşağıdaki yorumu bırakın.
 
   ```
-  Delete the attachment from S3 when the note is removed /oc
+  Delete the attachment from S3 when the note is removed /railwise
   ```
 
   railwise istenen değişikliği uygulayacak ve aynı PR'ye uygulayacaktır.
@@ -309,7 +308,7 @@ GitHub'da railwise'u nasıl kullanabileceğinize dair bazı örnekleri burada bu
 
   ```
   [Comment on specific lines in Files tab]
-  /oc add error handling here
+  /railwise add error handling here
   ```
 
   Belirli satırlara yorum yaparken railwise şunları alır:

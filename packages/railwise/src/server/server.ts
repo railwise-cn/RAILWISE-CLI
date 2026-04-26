@@ -25,6 +25,10 @@ import { ProjectRoutes } from "./routes/project"
 import { SessionRoutes } from "./routes/session"
 import { PtyRoutes } from "./routes/pty"
 import { McpRoutes } from "./routes/mcp"
+import { AgentStudioRoutes } from "./routes/agent-studio"
+import { DashboardRoutes } from "./routes/dashboard"
+import { TilesRoutes } from "./routes/tiles"
+import { TemplateRoutes } from "./routes/templates"
 import { FileRoutes } from "./routes/file"
 import { Config } from "../config/config"
 import { ConfigRoutes } from "./routes/config"
@@ -208,7 +212,7 @@ export namespace Server {
           })()
           return Instance.provide({
             directory,
-            init: InstanceBootstrap,
+            init: c.req.path.startsWith("/templates") ? undefined : InstanceBootstrap,
             async fn() {
               return next()
             },
@@ -236,7 +240,11 @@ export namespace Server {
         .route("/permission", PermissionRoutes())
         .route("/question", QuestionRoutes())
         .route("/provider", ProviderRoutes())
+        .route("/dashboard", DashboardRoutes())
+        .route("/tiles", TilesRoutes())
+        .route("/templates", TemplateRoutes())
         .route("/", FileRoutes())
+        .route("/agent-studio", AgentStudioRoutes())
         .route("/mcp", McpRoutes())
         .route("/tui", TuiRoutes())
         .post(
@@ -523,7 +531,9 @@ export namespace Server {
                 }
               })
 
-              // Send heartbeat every 10s to prevent stalled proxy streams.
+              // Send heartbeat every 8s to keep WebView2 SSE alive on Windows
+              // (must stay under WebView2's idle-disconnect threshold). See
+              // doc §3.8.2 (WebView2 idle disconnect mitigation).
               const heartbeat = setInterval(() => {
                 stream.writeSSE({
                   data: JSON.stringify({
@@ -531,7 +541,7 @@ export namespace Server {
                     properties: {},
                   }),
                 })
-              }, 10_000)
+              }, 8_000)
 
               await new Promise<void>((resolve) => {
                 stream.onAbort(() => {

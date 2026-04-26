@@ -114,13 +114,20 @@ pub fn spawn_local_server(
         let timestamp = Instant::now();
 
         let ready = async {
-            loop {
-                tokio::time::sleep(Duration::from_millis(100)).await;
+            // Optimized health check with exponential backoff
+            let mut interval = Duration::from_millis(50); // Start faster
+            let max_interval = Duration::from_millis(500);
 
+            loop {
                 if check_health(&url, Some(&password)).await {
                     tracing::info!(elapsed = ?timestamp.elapsed(), "Server ready");
                     return Ok(());
                 }
+
+                tokio::time::sleep(interval).await;
+
+                // Exponential backoff for less aggressive polling
+                interval = std::cmp::min(interval * 2, max_interval);
             }
         };
 
@@ -150,7 +157,8 @@ pub async fn check_health(url: &str, password: Option<&str>) -> bool {
         return false;
     };
 
-    let mut builder = reqwest::Client::builder().timeout(Duration::from_secs(3));
+    // Reduced timeout from 3s to 1s for faster failure detection
+    let mut builder = reqwest::Client::builder().timeout(Duration::from_secs(1));
 
     if url_is_localhost(&url) {
         // Some environments set proxy variables (HTTP_PROXY/HTTPS_PROXY/ALL_PROXY) without
@@ -176,6 +184,41 @@ pub async fn check_health(url: &str, password: Option<&str>) -> bool {
         .await
         .map(|r| r.status().is_success())
         .unwrap_or(false)
+}
+
+pub async fn check_health_with_retry(url: &str, password: Option<&str>, max_retries: u32) -> bool {
+    for attempt in 1..=max_retries {
+        tracing::debug!(
+            "Health check attempt {}/{} for {}",
+            attempt,
+            max_retries,
+            url
+        );
+
+        if check_health(url, password).await {
+            if attempt > 1 {
+                tracing::info!(
+                    "Health check succeeded on attempt {}/{}",
+                    attempt,
+                    max_retries
+                );
+            }
+            return true;
+        }
+
+        if attempt < max_retries {
+            // Exponential backoff: 100ms, 200ms, 400ms
+            let delay = Duration::from_millis(100 * (2_u64.pow(attempt - 1)));
+            tokio::time::sleep(delay).await;
+        }
+    }
+
+    tracing::warn!(
+        "Health check failed after {} attempts for {}",
+        max_retries,
+        url
+    );
+    false
 }
 
 fn url_is_localhost(url: &reqwest::Url) -> bool {

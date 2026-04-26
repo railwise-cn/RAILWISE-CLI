@@ -31,15 +31,11 @@ impl<R: Runtime> Plugin<R> for PinchZoomDisablePlugin {
             }
 
             #[cfg(target_os = "macos")]
-            unsafe {
-                use objc2::rc::Retained;
-                use objc2_web_kit::WKWebView;
-
-                // Get the WKWebView pointer and disable magnification gestures
-                // This prevents Cmd+Ctrl+scroll and pinch-to-zoom from changing the zoom level
-                let wk_webview: Retained<WKWebView> =
-                    Retained::retain(_webview.inner().cast()).unwrap();
-                wk_webview.setAllowsMagnification(false);
+            {
+                // Note: Previously used private APIs to disable magnification gestures.
+                // This functionality is now handled by CSS touch-action and meta viewport settings
+                // for App Store compatibility. See index.html for zoom prevention implementation.
+                tracing::debug!("macOS zoom gesture handling delegated to frontend CSS");
             }
         });
     }

@@ -1,10 +1,9 @@
 import { Component, For, Match, Show, Switch } from "solid-js"
 import { FileIcon } from "@railwise/ui/file-icon"
-import { Icon } from "@railwise/ui/icon"
 import { getDirectory, getFilename } from "@railwise/util/path"
 
 export type AtOption =
-  | { type: "agent"; name: string; display: string }
+  | { type: "agent"; name: string; display: string; color?: string }
   | { type: "file"; path: string; display: string; recent?: boolean }
 
 export interface SlashCommand {
@@ -63,7 +62,13 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         onClick={() => props.onAtSelect(item)}
                         onMouseEnter={() => props.setAtActive(key)}
                       >
-                        <Icon name="brain" size="small" class="text-icon-info-active shrink-0" />
+                        <span
+                          data-agent-avatar
+                          class="flex size-5 shrink-0 items-center justify-center rounded-[6px] text-[11px] font-semibold text-white"
+                          style={{ "background-color": item.color ?? "var(--rw-accent, rgba(117, 86, 32, 0.9))" }}
+                        >
+                          {item.name[0]?.toUpperCase()}
+                        </span>
                         <span class="text-14-regular text-text-strong whitespace-nowrap">@{item.name}</span>
                       </button>
                     )

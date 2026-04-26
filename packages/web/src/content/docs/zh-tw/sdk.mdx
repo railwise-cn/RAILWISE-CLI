@@ -28,9 +28,9 @@ npm install @railwise/sdk
 建立一個 railwise 實例：
 
 ```javascript
-import { createOpencode } from "@railwise/sdk"
+import { createRailwise } from "@railwise/sdk"
 
-const { client } = await createOpencode()
+const { client } = await createRailwise()
 ```
 
 這會同時啟動伺服器和用戶端。
@@ -52,9 +52,9 @@ const { client } = await createOpencode()
 您可以傳入一個設定物件來自訂行為。實例仍然會讀取您的 `railwise.json`，但您可以透過內嵌方式覆寫或新增設定：
 
 ```javascript
-import { createOpencode } from "@railwise/sdk"
+import { createRailwise } from "@railwise/sdk"
 
-const railwise = await createOpencode({
+const railwise = await createRailwise({
   hostname: "127.0.0.1",
   port: 4096,
   config: {

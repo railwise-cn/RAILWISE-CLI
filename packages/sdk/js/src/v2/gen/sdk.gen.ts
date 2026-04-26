@@ -4,6 +4,14 @@ import { client } from "./client.gen.js"
 import { buildClientParams, type Client, type Options as Options2, type TDataShape } from "./client/index.js"
 import type {
   AgentPartInput,
+  AgentStudioGetErrors,
+  AgentStudioGetResponses,
+  AgentStudioListResponses,
+  AgentStudioUpdateErrors,
+  AgentStudioUpdateResponses,
+  AgentStudioWorkflowPresetsResponses,
+  AgentStudioWorkflowRunErrors,
+  AgentStudioWorkflowRunResponses,
   AppAgentsResponses,
   AppLogErrors,
   AppLogResponses,
@@ -19,6 +27,12 @@ import type {
   ConfigProvidersResponses,
   ConfigUpdateErrors,
   ConfigUpdateResponses,
+  DashboardProjectPointsErrors,
+  DashboardProjectPointsResponses,
+  DashboardProjectsResponses,
+  DashboardProjectTimeseriesErrors,
+  DashboardProjectTimeseriesResponses,
+  DashboardSummaryResponses,
   EventSubscribeResponses,
   EventTuiCommandExecute,
   EventTuiPromptAppend,
@@ -141,7 +155,12 @@ import type {
   SessionUpdateErrors,
   SessionUpdateResponses,
   SubtaskPartInput,
+  TemplatesGetErrors,
+  TemplatesGetResponses,
+  TemplatesListResponses,
   TextPartInput,
+  TilesGetErrors,
+  TilesGetResponses,
   ToolIdsErrors,
   ToolIdsResponses,
   ToolListErrors,
@@ -2166,6 +2185,200 @@ export class Provider extends HeyApiClient {
   }
 }
 
+export class Project2 extends HeyApiClient {
+  /**
+   * 监测点 GeoJSON
+   */
+  public points<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      DashboardProjectPointsResponses,
+      DashboardProjectPointsErrors,
+      ThrowOnError
+    >({
+      url: "/dashboard/projects/{id}/points",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * 时序数据（uPlot 格式）
+   */
+  public timeseries<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+      metric?: "settlement" | "displacement"
+      days?: number
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+            { in: "query", key: "metric" },
+            { in: "query", key: "days" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      DashboardProjectTimeseriesResponses,
+      DashboardProjectTimeseriesErrors,
+      ThrowOnError
+    >({
+      url: "/dashboard/projects/{id}/timeseries",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Dashboard extends HeyApiClient {
+  /**
+   * 仪表板摘要
+   */
+  public summary<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<DashboardSummaryResponses, unknown, ThrowOnError>({
+      url: "/dashboard/summary",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * 项目列表（含 bbox）
+   */
+  public projects<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<DashboardProjectsResponses, unknown, ThrowOnError>({
+      url: "/dashboard/projects",
+      ...options,
+      ...params,
+    })
+  }
+
+  private _project?: Project2
+  get project(): Project2 {
+    return (this._project ??= new Project2({ client: this.client }))
+  }
+}
+
+export class Tiles extends HeyApiClient {
+  /**
+   * 离线地图瓦片
+   */
+  public get<ThrowOnError extends boolean = false>(
+    parameters: {
+      z: number
+      x: number
+      y: number
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "z" },
+            { in: "path", key: "x" },
+            { in: "path", key: "y" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<TilesGetResponses, TilesGetErrors, ThrowOnError>({
+      url: "/tiles/{z}/{x}/{y}",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Templates extends HeyApiClient {
+  /**
+   * 业务模板列表
+   *
+   * Reads .railwise/templates*.json from the active project on each request.
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<TemplatesListResponses, unknown, ThrowOnError>({
+      url: "/templates/list",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * 业务模板详情
+   */
+  public get<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<TemplatesGetResponses, TemplatesGetErrors, ThrowOnError>({
+      url: "/templates/{id}",
+      ...options,
+      ...params,
+    })
+  }
+}
+
 export class Find extends HeyApiClient {
   /**
    * Find text
@@ -2342,6 +2555,159 @@ export class File extends HeyApiClient {
       ...options,
       ...params,
     })
+  }
+}
+
+export class Workflow extends HeyApiClient {
+  /**
+   * List built-in workflow presets
+   */
+  public presets<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioWorkflowPresetsResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/workflow/presets",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Trigger workflow run
+   *
+   * Creates a real session seeded with the selected workflow plan for chief_manager dispatch.
+   */
+  public run<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+      workflowId?: string
+      input?: {
+        [key: string]: unknown
+      }
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "body", key: "workflowId" },
+            { in: "body", key: "input" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      AgentStudioWorkflowRunResponses,
+      AgentStudioWorkflowRunErrors,
+      ThrowOnError
+    >({
+      url: "/agent-studio/workflow/run",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+}
+
+export class AgentStudio extends HeyApiClient {
+  /**
+   * List all agents
+   *
+   * Returns visible Agent.Info entries with backing file paths and recent call counts.
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioListResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/list",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Get agent detail
+   */
+  public get<ThrowOnError extends boolean = false>(
+    parameters: {
+      name: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "name" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<AgentStudioGetResponses, AgentStudioGetErrors, ThrowOnError>({
+      url: "/agent-studio/{name}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Update agent markdown
+   *
+   * Writes .railwise/agent/:name.md and publishes agent.updated for hot refresh.
+   */
+  public update<ThrowOnError extends boolean = false>(
+    parameters: {
+      name: string
+      directory?: string
+      rawMarkdown?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "name" },
+            { in: "query", key: "directory" },
+            { in: "body", key: "rawMarkdown" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).put<AgentStudioUpdateResponses, AgentStudioUpdateErrors, ThrowOnError>({
+      url: "/agent-studio/{name}",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+
+  private _workflow?: Workflow
+  get workflow(): Workflow {
+    return (this._workflow ??= new Workflow({ client: this.client }))
   }
 }
 
@@ -3256,6 +3622,21 @@ export class RailwiseClient extends HeyApiClient {
     return (this._provider ??= new Provider({ client: this.client }))
   }
 
+  private _dashboard?: Dashboard
+  get dashboard(): Dashboard {
+    return (this._dashboard ??= new Dashboard({ client: this.client }))
+  }
+
+  private _tiles?: Tiles
+  get tiles(): Tiles {
+    return (this._tiles ??= new Tiles({ client: this.client }))
+  }
+
+  private _templates?: Templates
+  get templates(): Templates {
+    return (this._templates ??= new Templates({ client: this.client }))
+  }
+
   private _find?: Find
   get find(): Find {
     return (this._find ??= new Find({ client: this.client }))
@@ -3264,6 +3645,11 @@ export class RailwiseClient extends HeyApiClient {
   private _file?: File
   get file(): File {
     return (this._file ??= new File({ client: this.client }))
+  }
+
+  private _agentStudio?: AgentStudio
+  get agentStudio(): AgentStudio {
+    return (this._agentStudio ??= new AgentStudio({ client: this.client }))
   }
 
   private _mcp?: Mcp

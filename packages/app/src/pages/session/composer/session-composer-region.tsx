@@ -1,8 +1,10 @@
-import { Show, createEffect, createMemo } from "solid-js"
+import { Show, createEffect, createMemo, createSignal } from "solid-js"
 import { useParams } from "@solidjs/router"
 import { PromptInput } from "@/components/prompt-input"
+import { TemplateDrawer, useTemplateDrawerShortcut } from "@/components/session/template-drawer"
 import { useLanguage } from "@/context/language"
 import { usePrompt } from "@/context/prompt"
+import { useSDK } from "@/context/sdk"
 import { getSessionHandoff, setSessionHandoff } from "@/pages/session/handoff"
 import { SessionPermissionDock } from "@/pages/session/composer/session-permission-dock"
 import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
@@ -20,8 +22,11 @@ export function SessionComposerRegion(props: {
   setPromptDockRef: (el: HTMLDivElement) => void
 }) {
   const params = useParams()
+  const sdk = useSDK()
   const prompt = usePrompt()
   const language = useLanguage()
+  const [templates, setTemplates] = createSignal(false)
+  let editor: HTMLDivElement | undefined
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
   const handoffPrompt = createMemo(() => getSessionHandoff(sessionKey())?.prompt)
@@ -42,6 +47,21 @@ export function SessionComposerRegion(props: {
     if (!prompt.ready()) return
     setSessionHandoff(sessionKey(), { prompt: previewPrompt() })
   })
+
+  useTemplateDrawerShortcut(() => setTemplates(true))
+
+  const applyTemplate = (input: { agent: string; prompt: string }) => {
+    const agent = `@${input.agent}`
+    const text = `\n${input.prompt}`
+    prompt.set(
+      [
+        { type: "agent", name: input.agent, content: agent, start: 0, end: agent.length },
+        { type: "text", content: text, start: agent.length, end: agent.length + text.length },
+      ],
+      agent.length + text.length,
+    )
+    requestAnimationFrame(() => editor?.focus())
+  }
 
   return (
     <div
@@ -113,11 +133,30 @@ export function SessionComposerRegion(props: {
                 "mt-0": !props.state.dock() || props.state.closing(),
               }}
             >
+              <div class="mb-2 flex justify-end">
+                <button
+                  type="button"
+                  data-action="session-template-drawer"
+                  class="rounded-md border border-[rgba(117,86,32,0.18)] bg-white px-3 py-1.5 text-[12px] font-semibold text-[rgb(95,70,24)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-[rgba(117,86,32,0.04)]"
+                  onClick={() => setTemplates(true)}
+                >
+                  业务模板
+                </button>
+              </div>
               <PromptInput
-                ref={props.inputRef}
+                ref={(el) => {
+                  editor = el
+                  props.inputRef(el)
+                }}
                 newSessionWorktree={props.newSessionWorktree}
                 onNewSessionWorktreeReset={props.onNewSessionWorktreeReset}
                 onSubmit={props.onSubmit}
+              />
+              <TemplateDrawer
+                open={templates()}
+                directory={sdk.directory}
+                onClose={() => setTemplates(false)}
+                onSend={applyTemplate}
               />
             </div>
           </Show>

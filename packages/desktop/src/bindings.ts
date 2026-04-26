@@ -15,9 +15,17 @@ export const commands = {
 	getDisplayBackend: () => __TAURI_INVOKE<"wayland" | "auto" | null>("get_display_backend"),
 	setDisplayBackend: (backend: LinuxDisplayBackend) => __TAURI_INVOKE<null>("set_display_backend", { backend }),
 	parseMarkdownCommand: (markdown: string) => __TAURI_INVOKE<string>("parse_markdown_command", { markdown }),
+	parseDxf: (path: string) => __TAURI_INVOKE<DxfDocument>("parse_dxf", { path }),
+	convertDwgToDxf: (path: string) => __TAURI_INVOKE<string>("convert_dwg_to_dxf", { path }),
+	readTextFile: (path: string) => __TAURI_INVOKE<string>("read_text_file", { path }),
+	convertPptxToImages: (path: string) => __TAURI_INVOKE<OfficeImage[]>("convert_pptx_to_images", { path }),
+	convertSheetToCsv: (path: string) => __TAURI_INVOKE<string>("convert_sheet_to_csv", { path }),
+	convertDocxToHtml: (path: string) => __TAURI_INVOKE<string>("convert_docx_to_html", { path }),
 	checkAppExists: (appName: string) => __TAURI_INVOKE<boolean>("check_app_exists", { appName }),
 	wslPath: (path: string, mode: "windows" | "linux" | null) => __TAURI_INVOKE<string>("wsl_path", { path, mode }),
 	resolveAppPath: (appName: string) => __TAURI_INVOKE<string | null>("resolve_app_path", { appName }),
+	gitLogAgent: (name: string, directory: string) => __TAURI_INVOKE<string>("git_log_agent", { name, directory }),
+	gitDiffAgent: (name: string, directory: string) => __TAURI_INVOKE<string>("git_diff_agent", { name, directory }),
 };
 
 /** Events */
@@ -27,11 +35,44 @@ export const events = {
 };
 
 /* Types */
+export type DxfBounds = {
+		minX: number,
+		minY: number,
+		maxX: number,
+		maxY: number,
+	};
+
+export type DxfDocument = {
+		sourcePath: string,
+		layers: DxfLayer[],
+		entities: DxfEntity[],
+		bounds: DxfBounds,
+		totalEntityCount: number,
+	};
+
+export type DxfEntity = { kind: "line"; id: string; layer: string; color: number; start: DxfPoint; end: DxfPoint } | { kind: "circle"; id: string; layer: string; color: number; center: DxfPoint; radius: number } | { kind: "arc"; id: string; layer: string; color: number; center: DxfPoint; radius: number; startAngle: number; endAngle: number } | { kind: "polyline"; id: string; layer: string; color: number; points: DxfPoint[]; closed: boolean } | { kind: "text"; id: string; layer: string; color: number; insert: DxfPoint; value: string; height: number };
+
+export type DxfLayer = {
+		name: string,
+		color: number,
+		visible: boolean,
+	};
+
+export type DxfPoint = {
+		x: number,
+		y: number,
+	};
+
 export type InitStep = { phase: "server_waiting" } | { phase: "sqlite_waiting" } | { phase: "done" };
 
 export type LinuxDisplayBackend = "wayland" | "auto";
 
 export type LoadingWindowComplete = null;
+
+export type OfficeImage = {
+		path: string,
+		name: string,
+	};
 
 export type ServerReadyData = {
 		url: string,

@@ -16,26 +16,43 @@ async function mbtiles(dir: string) {
   db.close()
 }
 
+function restore(home: string | undefined) {
+  if (home === undefined) {
+    delete process.env.RAILWISE_TEST_HOME
+    return
+  }
+  process.env.RAILWISE_TEST_HOME = home
+}
+
 describe("server.routes.tiles", () => {
   test("serves local mbtiles with tms row lookup", async () => {
     await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
     process.env.RAILWISE_TEST_HOME = tmp.path
-    await mbtiles(tmp.path)
+    try {
+      await mbtiles(tmp.path)
 
-    const response = await TilesRoutes().request("http://railwise.test/1/1/1")
+      const response = await TilesRoutes().request("http://railwise.test/1/1/1")
 
-    expect(response.status).toBe(200)
-    expect(response.headers.get("content-type")).toBe("image/png")
-    expect(response.headers.get("x-railwise-tile-source")).toBe("local-mbtiles")
-    expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([1, 2, 3]))
+      expect(response.status).toBe(200)
+      expect(response.headers.get("content-type")).toBe("image/png")
+      expect(response.headers.get("x-railwise-tile-source")).toBe("local-mbtiles")
+      expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([1, 2, 3]))
+    } finally {
+      restore(home)
+    }
   })
 
   test("returns 404 when offline cache is missing", async () => {
     await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
     process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      const response = await TilesRoutes().request("http://railwise.test/1/1/1")
 
-    const response = await TilesRoutes().request("http://railwise.test/1/1/1")
-
-    expect(response.status).toBe(404)
+      expect(response.status).toBe(404)
+    } finally {
+      restore(home)
+    }
   })
 })

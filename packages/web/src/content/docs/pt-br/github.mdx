@@ -3,7 +3,7 @@ title: GitHub
 description: Use o railwise em problemas e pull-requests do GitHub.
 ---
 
-O railwise integra-se ao seu fluxo de trabalho do GitHub. Mencione `/railwise` ou `/oc` em seu comentário, e o railwise executará tarefas dentro do seu runner do GitHub Actions.
+O railwise integra-se ao seu fluxo de trabalho do GitHub. Mencione `/railwise` em seu comentário, e o railwise executará tarefas dentro do seu runner do GitHub Actions.
 
 ---
 
@@ -51,7 +51,6 @@ Ou você pode configurá-lo manualmente.
    jobs:
      railwise:
        if: |
-         contains(github.event.comment.body, '/oc') ||
          contains(github.event.comment.body, '/railwise')
        runs-on: ubuntu-latest
        permissions:
@@ -64,7 +63,7 @@ Ou você pode configurá-lo manualmente.
               persist-credentials: false
 
           - name: Run RAILWISE
-           uses: anomalyco/railwise/github@latest
+           uses: railwise-cn/RAILWISE-CLI/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
            with:
@@ -107,8 +106,8 @@ O railwise pode ser acionado pelos seguintes eventos do GitHub:
 
 | Tipo de Evento                | Acionado Por                                        | Detalhes                                                                                                                               |
 | ----------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Comentário em um problema ou PR                     | Mencione `/railwise` ou `/oc` em seu comentário. O railwise lê o contexto e pode criar branches, abrir PRs ou responder.               |
-| `pull_request_review_comment` | Comentário em linhas de código específicas em um PR | Mencione `/railwise` ou `/oc` enquanto revisa o código. O railwise recebe o caminho do arquivo, números das linhas e contexto do diff. |
+| `issue_comment`               | Comentário em um problema ou PR                     | Mencione `/railwise` em seu comentário. O railwise lê o contexto e pode criar branches, abrir PRs ou responder.               |
+| `pull_request_review_comment` | Comentário em linhas de código específicas em um PR | Mencione `/railwise` enquanto revisa o código. O railwise recebe o caminho do arquivo, números das linhas e contexto do diff. |
 | `issues`                      | Problema aberto ou editado                          | Aciona automaticamente o railwise quando problemas são criados ou modificados. Requer entrada de `prompt`.                             |
 | `pull_request`                | PR aberto ou atualizado                             | Aciona automaticamente o railwise quando PRs são abertos, sincronizados ou reabertos. Útil para revisões automatizadas.                |
 | `schedule`                    | Cron baseado em agendamento                         | Execute o railwise em um cronograma. Requer entrada de `prompt`. A saída vai para logs e PRs (sem problema para comentar).             |
@@ -140,7 +139,7 @@ jobs:
           persist-credentials: false
 
        - name: Run RAILWISE
-         uses: anomalyco/railwise/github@latest
+         uses: railwise-cn/RAILWISE-CLI/github@latest
          env:
            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
          with:
@@ -177,7 +176,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-       - uses: anomalyco/railwise/github@latest
+       - uses: railwise-cn/RAILWISE-CLI/github@latest
          env:
            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -233,7 +232,7 @@ jobs:
         with:
           persist-credentials: false
 
-       - uses: anomalyco/railwise/github@latest
+       - uses: railwise-cn/RAILWISE-CLI/github@latest
          if: steps.check.outputs.result == 'true'
          env:
            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -255,7 +254,7 @@ Para eventos de `issues`, a entrada `prompt` é **obrigatória** uma vez que nã
 Substitua o prompt padrão para personalizar o comportamento do railwise para seu fluxo de trabalho.
 
 ```yaml title=".github/workflows/railwise.yml"
-- uses: anomalyco/railwise/github@latest
+- uses: railwise-cn/RAILWISE-CLI/github@latest
   with:
     model: anthropic/claude-sonnet-4-5
     prompt: |
@@ -298,7 +297,7 @@ Aqui estão alguns exemplos de como você pode usar o railwise no GitHub.
   Deixe o seguinte comentário em um PR do GitHub.
 
   ```
-  Delete the attachment from S3 when the note is removed /oc
+  Delete the attachment from S3 when the note is removed /railwise
   ```
 
   O railwise implementará a alteração solicitada e a confirmará no mesmo PR.
@@ -309,7 +308,7 @@ Aqui estão alguns exemplos de como você pode usar o railwise no GitHub.
 
   ```
   [Comentário em linhas específicas na aba Files]
-  /oc add error handling here
+  /railwise add error handling here
   ```
 
   Ao comentar sobre linhas específicas, o railwise recebe:

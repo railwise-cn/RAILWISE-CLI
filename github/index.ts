@@ -243,8 +243,8 @@ function createRailwise() {
 function assertPayloadKeyword() {
   const payload = useContext().payload as IssueCommentEvent | PullRequestReviewCommentEvent
   const body = payload.comment.body.trim()
-  if (!body.match(/(?:^|\s)(?:\/railwise|\/oc)(?=$|\s)/)) {
-    throw new Error("Comments must mention `/railwise` or `/oc`")
+  if (!body.match(/(?:^|\s)\/railwise(?=$|\s)/)) {
+    throw new Error("Comments must mention `/railwise`")
   }
 }
 
@@ -417,19 +417,19 @@ async function getUserPrompt() {
 
   let prompt = (() => {
     const body = payload.comment.body.trim()
-    if (body === "/railwise" || body === "/oc") {
+    if (body === "/railwise") {
       if (reviewContext) {
         return `Review this code change and suggest improvements for the commented lines:\n\nFile: ${reviewContext.file}\nLines: ${reviewContext.line}\n\n${reviewContext.diffHunk}`
       }
       return "Summarize this thread"
     }
-    if (body.includes("/railwise") || body.includes("/oc")) {
+    if (body.includes("/railwise")) {
       if (reviewContext) {
         return `${body}\n\nContext: You are reviewing a comment on file "${reviewContext.file}" at line ${reviewContext.line}.\n\nDiff context:\n${reviewContext.diffHunk}`
       }
       return body
     }
-    throw new Error("Comments must mention `/railwise` or `/oc`")
+    throw new Error("Comments must mention `/railwise`")
   })()
 
   // Handle images

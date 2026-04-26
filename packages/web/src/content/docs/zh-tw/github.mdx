@@ -3,7 +3,7 @@ title: GitHub
 description: 在 GitHub Issue 和 Pull Request 中使用 Railwise。
 ---
 
-Railwise 可以與您的 GitHub 工作流程整合。在評論中提及 `/railwise` 或 `/oc`，Railwise 就會在您的 GitHub Actions Runner 中執行任務。
+Railwise 可以與您的 GitHub 工作流程整合。在評論中提及 `/railwise`，Railwise 就會在您的 GitHub Actions Runner 中執行任務。
 
 ---
 
@@ -51,7 +51,6 @@ railwise github install
    jobs:
      railwise:
        if: |
-         contains(github.event.comment.body, '/oc') ||
          contains(github.event.comment.body, '/railwise')
        runs-on: ubuntu-latest
        permissions:
@@ -64,7 +63,7 @@ railwise github install
               persist-credentials: false
 
           - name: Run Railwise
-           uses: anomalyco/railwise/github@latest
+           uses: railwise-cn/RAILWISE-CLI/github@latest
            env:
              ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
            with:
@@ -107,8 +106,8 @@ Railwise 可以由以下 GitHub 事件觸發：
 
 | 事件類型                      | 觸發方式                       | 詳情                                                                                      |
 | ----------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------- |
-| `issue_comment`               | 在 Issue 或 PR 上發表評論      | 在評論中提及 `/railwise` 或 `/oc`。Railwise 會讀取上下文，並可建立分支、提交 PR 或回覆。  |
-| `pull_request_review_comment` | 在 PR 中對特定程式碼行發表評論 | 在程式碼審查時提及 `/railwise` 或 `/oc`。Railwise 會接收檔案路徑、行號和 diff 上下文。    |
+| `issue_comment`               | 在 Issue 或 PR 上發表評論      | 在評論中提及 `/railwise`。Railwise 會讀取上下文，並可建立分支、提交 PR 或回覆。  |
+| `pull_request_review_comment` | 在 PR 中對特定程式碼行發表評論 | 在程式碼審查時提及 `/railwise`。Railwise 會接收檔案路徑、行號和 diff 上下文。    |
 | `issues`                      | Issue 被建立或編輯             | 在 Issue 建立或修改時自動觸發 Railwise。需要提供 `prompt` 輸入。                          |
 | `pull_request`                | PR 被建立或更新                | 在 PR 被開啟、同步或重新開啟時自動觸發 Railwise。適用於自動化審查情境。                   |
 | `schedule`                    | 基於 Cron 的定時任務           | 按排程執行 Railwise。需要提供 `prompt` 輸入。輸出會寫入日誌和 PR（沒有 Issue 可供評論）。 |
@@ -140,7 +139,7 @@ jobs:
           persist-credentials: false
 
       - name: Run Railwise
-        uses: anomalyco/railwise/github@latest
+        uses: railwise-cn/RAILWISE-CLI/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         with:
@@ -177,7 +176,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: anomalyco/railwise/github@latest
+      - uses: railwise-cn/RAILWISE-CLI/github@latest
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -233,7 +232,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: anomalyco/railwise/github@latest
+      - uses: railwise-cn/RAILWISE-CLI/github@latest
         if: steps.check.outputs.result == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -255,7 +254,7 @@ jobs:
 覆寫預設提示詞，以便為您的工作流程自訂 Railwise 的行為。
 
 ```yaml title=".github/workflows/railwise.yml"
-- uses: anomalyco/railwise/github@latest
+- uses: railwise-cn/RAILWISE-CLI/github@latest
   with:
     model: anthropic/claude-sonnet-4-5
     prompt: |
@@ -298,7 +297,7 @@ jobs:
   在 GitHub PR 上留下以下評論：
 
   ```
-  Delete the attachment from S3 when the note is removed /oc
+  Delete the attachment from S3 when the note is removed /railwise
   ```
 
   Railwise 會實作所請求的變更並將其提交到同一個 PR 中。
@@ -309,7 +308,7 @@ jobs:
 
   ```
   [Comment on specific lines in Files tab]
-  /oc add error handling here
+  /railwise add error handling here
   ```
 
   當您對特定程式碼行發表評論時，Railwise 會接收到：

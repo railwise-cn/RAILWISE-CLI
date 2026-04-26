@@ -27,7 +27,7 @@ Leave the following comment on a GitHub issue. railwise will create a new branch
 Leave the following comment on a GitHub PR. railwise will implement the requested change and commit it to the same PR.
 
 ```
-Delete the attachment from S3 when the note is removed /oc
+/railwise delete the attachment from S3 when the note is removed
 ```
 
 #### Review specific code lines
@@ -36,7 +36,7 @@ Leave a comment directly on code lines in the PR's "Files" tab. railwise will au
 
 ```
 [Comment on specific lines in Files tab]
-/oc add error handling here
+/railwise add error handling here
 ```
 
 When commenting on specific lines, railwise receives:
@@ -75,7 +75,6 @@ This will walk you through installing the GitHub app, creating the workflow, and
    jobs:
      railwise:
        if: |
-         contains(github.event.comment.body, '/oc') ||
          contains(github.event.comment.body, '/railwise')
        runs-on: ubuntu-latest
        permissions:

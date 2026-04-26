@@ -23,6 +23,10 @@ export interface Settings {
     autoSave: boolean
     releaseNotes: boolean
   }
+  privacy: {
+    telemetry: boolean
+    telemetryPrompted: boolean
+  }
   updates: {
     startup: boolean
   }
@@ -42,6 +46,10 @@ const defaultSettings: Settings = {
   general: {
     autoSave: true,
     releaseNotes: true,
+  },
+  privacy: {
+    telemetry: false,
+    telemetryPrompted: false,
   },
   updates: {
     startup: true,
@@ -125,6 +133,19 @@ export const { use: useSettings, provider: SettingsProvider } = createSimpleCont
         startup: withFallback(() => store.updates?.startup, defaultSettings.updates.startup),
         setStartup(value: boolean) {
           setStore("updates", "startup", value)
+        },
+      },
+      privacy: {
+        telemetry: withFallback(() => store.privacy?.telemetry, defaultSettings.privacy.telemetry),
+        setTelemetry(value: boolean) {
+          setStore("privacy", "telemetry", value)
+        },
+        telemetryPrompted: withFallback(
+          () => store.privacy?.telemetryPrompted,
+          defaultSettings.privacy.telemetryPrompted,
+        ),
+        setTelemetryPrompted(value: boolean) {
+          setStore("privacy", "telemetryPrompted", value)
         },
       },
       appearance: {

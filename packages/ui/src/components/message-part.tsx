@@ -165,6 +165,49 @@ export type ToolInfo = {
   subtitle?: string
 }
 
+const toolLabels: Record<string, string> = {
+  bash: "终端执行",
+  read: "读取文件",
+  read_file: "读取文件",
+  write: "写入文件",
+  write_file: "写入文件",
+  edit: "编辑文件",
+  edit_file: "编辑文件",
+  create_file: "创建文件",
+  delete_file: "删除文件",
+  move_file: "移动文件",
+  copy_file: "复制文件",
+  list: "列出目录",
+  list_directory: "列出目录",
+  glob: "文件匹配",
+  grep: "文本检索",
+  webfetch: "网页获取",
+  web_fetch: "网页获取",
+  task: "子任务分发",
+  dispatch_agent: "调度智能体",
+  apply_patch: "应用补丁",
+  todowrite: "更新待办",
+  todoread: "读取待办",
+  question: "问题确认",
+  rw_import_csv: "导入测量 CSV",
+  rw_export_report: "导出监测报告",
+  rw_adjust_calc: "平差计算",
+  rw_trend_analysis: "趋势分析",
+  rw_open_dxf: "打开 DXF 图纸",
+  rw_layer_switch: "切换图层",
+  rw_gps_transform: "坐标系转换",
+  rw_qa_check: "数据质检",
+  rw_gen_ppt: "生成汇报 PPT",
+  rw_bid_template: "标书模板填充",
+  rw_compliance: "规范合规审查",
+  rw_map_tile: "地图瓦片加载",
+  rw_offline_cache: "离线缓存写入",
+}
+
+function toolLabel(tool: string) {
+  return toolLabels[tool] ?? toolLabels[tool.toLowerCase()] ?? tool
+}
+
 export function getToolInfo(tool: string, input: any = {}): ToolInfo {
   const i18n = useI18n()
   switch (tool) {
@@ -248,7 +291,7 @@ export function getToolInfo(tool: string, input: any = {}): ToolInfo {
     default:
       return {
         icon: "mcp",
-        title: tool,
+        title: toolLabel(tool),
       }
   }
 }
@@ -447,9 +490,9 @@ function contextToolSummary(parts: ToolPart[]) {
   const search = parts.filter((part) => part.tool === "glob" || part.tool === "grep").length
   const list = parts.filter((part) => part.tool === "list").length
   return [
-    read ? `${read} ${read === 1 ? "read" : "reads"}` : undefined,
-    search ? `${search} ${search === 1 ? "search" : "searches"}` : undefined,
-    list ? `${list} ${list === 1 ? "list" : "lists"}` : undefined,
+    read ? `${read} 次读取` : undefined,
+    search ? `${search} 次检索` : undefined,
+    list ? `${list} 次列表` : undefined,
   ].filter((value): value is string => !!value)
 }
 

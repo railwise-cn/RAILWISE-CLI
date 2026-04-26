@@ -8,12 +8,14 @@ import type {
   QuestionRequest,
   QuestionAnswer,
   ProviderListResponse,
+  Agent,
 } from "@railwise/sdk/v2"
 import { createSimpleContext } from "./helper"
 import { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr"
 
 type Data = {
   provider?: ProviderListResponse
+  agent?: Agent[]
   session: Session[]
   session_status: {
     [sessionID: string]: SessionStatus

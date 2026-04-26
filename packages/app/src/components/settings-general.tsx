@@ -13,6 +13,8 @@ import { useSettings, monoFontFamily } from "@/context/settings"
 import { playSound, SOUND_OPTIONS } from "@/utils/sound"
 import { Link } from "./link"
 
+const TELEMETRY_EVENT = "railwise:telemetry-enabled"
+
 let demoSoundState = {
   cleanup: undefined as (() => void) | undefined,
   timeout: undefined as NodeJS.Timeout | undefined,
@@ -416,6 +418,31 @@ export const SettingsGeneral: Component = () => {
     </div>
   )
 
+  const PrivacySection = () => {
+    const setTelemetry = (checked: boolean) => {
+      settings.privacy.setTelemetry(checked)
+      settings.privacy.setTelemetryPrompted(true)
+      window.dispatchEvent(new CustomEvent(TELEMETRY_EVENT, { detail: { enabled: checked } }))
+    }
+
+    return (
+      <div class="flex flex-col gap-1">
+        <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.general.section.privacy")}</h3>
+
+        <div class="bg-surface-raised-base px-4 rounded-lg">
+          <SettingsRow
+            title={language.t("settings.privacy.telemetry.title")}
+            description={language.t("settings.privacy.telemetry.description")}
+          >
+            <div data-action="settings-telemetry">
+              <Switch checked={settings.privacy.telemetry()} onChange={setTelemetry} />
+            </div>
+          </SettingsRow>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div class="flex flex-col h-full overflow-y-auto no-scrollbar px-4 pb-10 sm:px-10 sm:pb-10">
       <div class="sticky top-0 z-10 bg-[linear-gradient(to_bottom,var(--surface-raised-stronger-non-alpha)_calc(100%_-_24px),transparent)]">
@@ -460,6 +487,8 @@ export const SettingsGeneral: Component = () => {
         </Show>*/}
 
         <UpdatesSection />
+
+        <PrivacySection />
 
         <Show when={linux()}>
           {(_) => {

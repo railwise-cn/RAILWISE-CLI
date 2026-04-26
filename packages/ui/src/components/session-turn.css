@@ -31,6 +31,7 @@
   }
 
   [data-slot="session-turn-message-content"] {
+    position: relative;
     margin-top: 0;
     width: 100%;
     min-width: 0;

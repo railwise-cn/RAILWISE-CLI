@@ -30,7 +30,6 @@ import { setSessionHandoff } from "@/pages/session/handoff"
 /** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
 const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
   ".railwise",
-  ".opencode",
   ".git",
   "config",
   "bin",

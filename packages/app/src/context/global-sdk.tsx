@@ -25,8 +25,7 @@ export const { use: useGlobalSDK, provider: GlobalSDKProvider } = createSimpleCo
       try {
         // Windows WebView2 has a documented SSE silent-disconnect bug for
         // any text/event-stream stream — including loopback. Always route
-        // event stream via Tauri plugin-http on Windows desktop. See doc §3.8.1
-        // (upstream opencode #13655).
+        // event stream via Tauri plugin-http on Windows desktop. See doc §3.8.1.
         if (platform.os === "windows") return platform.fetch
         const url = new URL(server.current.http.url)
         const loopback = url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "::1"

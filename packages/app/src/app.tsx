@@ -1,4 +1,5 @@
 import "@/index.css"
+import "@/styles/railwise-theme.css"
 import { Code } from "@railwise/ui/code"
 import { I18nProvider } from "@railwise/ui/context"
 import { CodeComponentProvider } from "@railwise/ui/context/code"
@@ -9,11 +10,13 @@ import { Diff } from "@railwise/ui/diff"
 import { Font } from "@railwise/ui/font"
 import { ThemeProvider } from "@railwise/ui/theme"
 import { MetaProvider } from "@solidjs/meta"
-import { Navigate, Route, Router } from "@solidjs/router"
-import { ErrorBoundary, type JSX, lazy, type ParentProps, Show, Suspense } from "solid-js"
+import { Navigate, Route, Router, useLocation } from "@solidjs/router"
+import { createMemo, ErrorBoundary, type JSX, lazy, type ParentProps, Show, Suspense } from "solid-js"
 import { ConnectionStatus } from "@/components/ConnectionStatus"
+import { TelemetryConsent } from "@/components/telemetry-consent"
 import { CommandProvider } from "@/context/command"
 import { CommentsProvider } from "@/context/comments"
+import { EventsProvider } from "@/context/events"
 import { FileProvider } from "@/context/file"
 import { GlobalSDKProvider } from "@/context/global-sdk"
 import { GlobalSyncProvider } from "@/context/global-sync"
@@ -34,6 +37,8 @@ import { ErrorPage } from "./pages/error"
 
 const Home = lazy(() => import("@/pages/home"))
 const Session = lazy(() => import("@/pages/session"))
+const AgentsIndex = lazy(() => import("@/pages/agents/index"))
+const AgentDetail = lazy(() => import("@/pages/agents/[name]"))
 const Loading = () => <div class="size-full" />
 
 const HomeRoute = () => (
@@ -52,6 +57,18 @@ const SessionRoute = () => (
 
 const SessionIndexRoute = () => <Navigate href="session" />
 
+const AgentsIndexRoute = () => (
+  <Suspense fallback={<Loading />}>
+    <AgentsIndex />
+  </Suspense>
+)
+
+const AgentDetailRoute = () => (
+  <Suspense fallback={<Loading />}>
+    <AgentDetail />
+  </Suspense>
+)
+
 function UiI18nBridge(props: ParentProps) {
   const language = useLanguage()
   return <I18nProvider value={{ locale: language.locale, t: language.t }}>{props.children}</I18nProvider>
@@ -60,10 +77,12 @@ function UiI18nBridge(props: ParentProps) {
 declare global {
   interface Window {
     __RAILWISE__?: {
+      browserHarness?: boolean
       updaterEnabled?: boolean
       deepLinks?: string[]
       wsl?: boolean
     }
+    __TAURI_INVOKE__?: (command: string, args?: Record<string, unknown>) => Promise<unknown>
   }
 }
 
@@ -72,20 +91,30 @@ function MarkedProviderWithNativeParser(props: ParentProps) {
   return <MarkedProvider nativeParser={platform.parseMarkdown}>{props.children}</MarkedProvider>
 }
 
-function AppShellProviders(props: ParentProps) {
+function AppShellProviders(props: ParentProps<{ standalonePaths?: string[] }>) {
+  const location = useLocation()
+  const standalone = createMemo(
+    () => props.standalonePaths?.some((path) => location.pathname === path || location.pathname.startsWith(`${path}/`)) ?? false,
+  )
+
   return (
     <SettingsProvider>
+      <TelemetryConsent />
       <PermissionProvider>
         <LayoutProvider>
-          <NotificationProvider>
-            <ModelsProvider>
-              <CommandProvider>
-                <HighlightsProvider>
-                  <Layout>{props.children}</Layout>
-                </HighlightsProvider>
-              </CommandProvider>
-            </ModelsProvider>
-          </NotificationProvider>
+          <EventsProvider>
+            <NotificationProvider>
+              <ModelsProvider>
+                <CommandProvider>
+                  <HighlightsProvider>
+                    <Show when={!standalone()} fallback={props.children}>
+                      <Layout>{props.children}</Layout>
+                    </Show>
+                  </HighlightsProvider>
+                </CommandProvider>
+              </ModelsProvider>
+            </NotificationProvider>
+          </EventsProvider>
         </LayoutProvider>
       </PermissionProvider>
     </SettingsProvider>
@@ -104,9 +133,9 @@ function SessionProviders(props: ParentProps) {
   )
 }
 
-function RouterRoot(props: ParentProps<{ appChildren?: JSX.Element }>) {
+function RouterRoot(props: ParentProps<{ appChildren?: JSX.Element; standalonePaths?: string[] }>) {
   return (
-    <AppShellProviders>
+    <AppShellProviders standalonePaths={props.standalonePaths}>
       {props.appChildren}
       {props.children}
     </AppShellProviders>
@@ -148,6 +177,10 @@ function ServerKey(props: ParentProps) {
 export function AppInterface(props: {
   children?: JSX.Element
   defaultServer: ServerConnection.Key
+  defaultPath?: string
+  routes?: JSX.Element
+  standalonePaths?: string[]
+  workbenchRoutes?: boolean
   servers?: Array<ServerConnection.Any>
 }) {
   return (
@@ -156,13 +189,25 @@ export function AppInterface(props: {
         <GlobalSDKProvider>
           <GlobalSyncProvider>
             <Router
-              root={(routerProps) => <RouterRoot appChildren={props.children}>{routerProps.children}</RouterRoot>}
+              root={(routerProps) => (
+                <RouterRoot appChildren={props.children} standalonePaths={props.standalonePaths}>
+                  {routerProps.children}
+                </RouterRoot>
+              )}
             >
-              <Route path="/" component={HomeRoute} />
-              <Route path="/:dir" component={DirectoryLayout}>
-                <Route path="/" component={SessionIndexRoute} />
-                <Route path="/session/:id?" component={SessionRoute} />
-              </Route>
+              <Route path="/" component={() => <Navigate href={props.defaultPath ?? "/home"} />} />
+              <Route path="/agents" component={AgentsIndexRoute} />
+              <Route path="/agents/:name" component={AgentDetailRoute} />
+              {props.routes}
+              {(props.workbenchRoutes ?? true) && (
+                <>
+                  <Route path="/home" component={HomeRoute} />
+                  <Route path="/:dir" component={DirectoryLayout}>
+                    <Route path="/" component={SessionIndexRoute} />
+                    <Route path="/session/:id?" component={SessionRoute} />
+                  </Route>
+                </>
+              )}
             </Router>
             <ConnectionStatus />
           </GlobalSyncProvider>

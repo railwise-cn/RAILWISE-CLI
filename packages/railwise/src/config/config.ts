@@ -29,7 +29,6 @@ import { Bus } from "@/bus"
 import { GlobalBus } from "@/bus/global"
 import { Event } from "../server/event"
 import { Glob } from "../util/glob"
-import { PackageRegistry } from "@/bun/registry"
 import { proxied } from "@/util/proxied"
 import { iife } from "@/util/iife"
 import { Control } from "@/control"
@@ -264,17 +263,24 @@ export namespace Config {
     await Promise.all(deps)
   }
 
+  function dependencyVersion() {
+    if (!Installation.isLocal()) return Installation.VERSION
+    return undefined
+  }
+
   export async function installDependencies(dir: string) {
     const pkg = path.join(dir, "package.json")
-    const targetVersion = Installation.isLocal() ? "*" : Installation.VERSION
+    const targetVersion = dependencyVersion()
 
     const json = await Filesystem.readJson<{ dependencies?: Record<string, string> }>(pkg).catch(() => ({
       dependencies: {},
     }))
-    json.dependencies = {
+    const dependencies = {
       ...json.dependencies,
-      "nb-railwise": targetVersion,
-    }
+      ...(targetVersion ? { "nb-railwise": targetVersion } : {}),
+    } as Record<string, string>
+    if (!targetVersion) delete dependencies["nb-railwise"]
+    json.dependencies = dependencies
     await Filesystem.writeJson(pkg, json)
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
@@ -323,18 +329,10 @@ export namespace Config {
     const parsed = await Filesystem.readJson<{ dependencies?: Record<string, string> }>(pkg).catch(() => null)
     const dependencies = parsed?.dependencies ?? {}
     const depVersion = dependencies["nb-railwise"]
+    const targetVersion = dependencyVersion()
+    if (!targetVersion) return false
     if (!depVersion) return true
 
-    const targetVersion = Installation.isLocal() ? "latest" : Installation.VERSION
-    if (targetVersion === "latest") {
-      const isOutdated = await PackageRegistry.isOutdated("nb-railwise", depVersion, dir)
-      if (!isOutdated) return false
-      log.info("Cached version is outdated, proceeding with install", {
-        pkg: "nb-railwise",
-        cachedVersion: depVersion,
-      })
-      return true
-    }
     if (depVersion === targetVersion) return false
     return true
   }
@@ -1183,8 +1181,17 @@ export namespace Config {
       memory: z
         .object({
           enabled: z.boolean().optional().describe("Enable cross-session memory (default: true)"),
-          autoCapture: z.boolean().optional().describe("Automatically extract memories from compaction summaries (default: true)"),
-          maxMemories: z.number().int().min(1).max(50).optional().describe("Maximum memories to inject into system prompt (default: 10)"),
+          autoCapture: z
+            .boolean()
+            .optional()
+            .describe("Automatically extract memories from compaction summaries (default: true)"),
+          maxMemories: z
+            .number()
+            .int()
+            .min(1)
+            .max(50)
+            .optional()
+            .describe("Maximum memories to inject into system prompt (default: 10)"),
         })
         .optional(),
       experimental: z

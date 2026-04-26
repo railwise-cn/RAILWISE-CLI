@@ -768,18 +768,13 @@ export namespace Provider {
     const disabled = new Set(config.disabled_providers ?? [])
     const enabled = config.enabled_providers ? new Set(config.enabled_providers) : null
 
-    // Built-in + free-model providers bypass enabled_providers filtering
-    const builtin = new Set([
-      "github-copilot",
-      "github-copilot-enterprise",
-      "railwise",
-      ...Object.keys(FREE_MODELS),
-    ])
+    // Built-in + free-model providers autoload unless an explicit provider allowlist exists.
+    const builtin = new Set(["github-copilot", "github-copilot-enterprise", "railwise", ...Object.keys(FREE_MODELS)])
 
     function isProviderAllowed(providerID: string): boolean {
       if (disabled.has(providerID)) return false
-      if (builtin.has(providerID)) return true
       if (enabled && !enabled.has(providerID)) return false
+      if (builtin.has(providerID)) return true
       return true
     }
 
@@ -1077,11 +1072,11 @@ export namespace Provider {
       const baseURL = loadBaseURL(model, options)
       if (baseURL !== undefined) options["baseURL"] = baseURL
       if (!options["apiKey"] && provider.key) options["apiKey"] = provider.key
-      if (model.headers)
-        options["headers"] = {
-          ...options["headers"],
-          ...model.headers,
-        }
+      options["headers"] = {
+        "user-agent": Installation.USER_AGENT,
+        ...options["headers"],
+        ...model.headers,
+      }
 
       const key = Bun.hash.xxHash32(JSON.stringify({ providerID: model.providerID, npm: model.api.npm, options }))
       const existing = s.sdk.get(key)
@@ -1130,8 +1125,9 @@ export namespace Provider {
         }
         log.info("fetch called", { url: String(input).slice(0, 80), hasTls: true })
         const result = fetchFn(input, finalOpts)
-        result.then((r: any) => log.info("fetch responded", { status: r.status, url: String(input).slice(0, 60) }))
-             .catch((e: any) => log.error("fetch failed", { error: String(e), url: String(input).slice(0, 60) }))
+        result
+          .then((r: any) => log.info("fetch responded", { status: r.status, url: String(input).slice(0, 60) }))
+          .catch((e: any) => log.error("fetch failed", { error: String(e), url: String(input).slice(0, 60) }))
         return result
       }
 

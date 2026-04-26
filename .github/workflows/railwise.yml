@@ -11,7 +11,7 @@ jobs:
     if: |
       contains(github.event.comment.body, ' /railwise') ||
       startsWith(github.event.comment.body, '/railwise')
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read

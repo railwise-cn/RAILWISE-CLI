@@ -48,22 +48,6 @@ const WorkflowSchema = z
   })
   .meta({ ref: "WorkflowPreset" })
 
-const AgentListItemSchema = Agent.Info.extend({
-  filePath: z.string().optional().meta({
-    description: "Absolute path of the backing .md file.",
-  }),
-  callCount7d: z.number().int().optional().meta({
-    description: "Message count by this agent in the last 7 days.",
-  }),
-}).meta({ ref: "AgentListItem" })
-
-const AgentDetailSchema = Agent.Info.extend({
-  filePath: z.string().optional(),
-  rawMarkdown: z.string().meta({
-    description: "Full markdown source including frontmatter.",
-  }),
-}).meta({ ref: "AgentDetail" })
-
 const WorkflowRunSchema = z
   .object({
     sessionId: z.string(),
@@ -120,24 +104,30 @@ function calls() {
       .where(gte(MessageTable.time_created, Date.now() - 7 * 24 * 60 * 60 * 1000))
       .all(),
   )
-  return rows.reduce((acc, row) => acc.set(row.data.agent, (acc.get(row.data.agent) ?? 0) + 1), new Map<string, number>())
+  return rows.reduce(
+    (acc, row) => acc.set(row.data.agent, (acc.get(row.data.agent) ?? 0) + 1),
+    new Map<string, number>(),
+  )
 }
 
 function prompt(workflow: (typeof presets)[number], input?: Record<string, unknown>) {
   const nodes = workflow.nodes.map((node, index) => `${index + 1}. ${node.label} (@${node.agent})`).join("\n")
   const edges = workflow.edges.map((edge) => `${edge.from} -> ${edge.to}: ${edge.label ?? edge.kind}`).join("\n")
   const payload = input && Object.keys(input).length > 0 ? `\n\n输入参数：\n${JSON.stringify(input, null, 2)}` : ""
-  return [
-    `请按「${workflow.name}」执行工程测绘工作流。`,
-    workflow.description,
-    `节点：\n${nodes}`,
-    `依赖关系：\n${edges}`,
-    "请先输出 WBS、并行/串行关系、质量闸门和预期成果，再按节点推进。",
-  ].join("\n\n") + payload
+  return (
+    [
+      `请按「${workflow.name}」执行工程测绘工作流。`,
+      workflow.description,
+      `节点：\n${nodes}`,
+      `依赖关系：\n${edges}`,
+      "请先输出 WBS、并行/串行关系、质量闸门和预期成果，再按节点推进。",
+    ].join("\n\n") + payload
+  )
 }
 
 async function seed(workflow: (typeof presets)[number], sessionId: string, input?: Record<string, unknown>) {
-  const agentName = workflow.nodes.find((node) => node.agent === "chief_manager")?.agent ?? workflow.nodes[0]?.agent ?? "build"
+  const agentName =
+    workflow.nodes.find((node) => node.agent === "chief_manager")?.agent ?? workflow.nodes[0]?.agent ?? "build"
   const agent = await Agent.get(agentName)
   const messageId = Identifier.ascending("message")
   await Session.updateMessage({
@@ -158,8 +148,25 @@ async function seed(workflow: (typeof presets)[number], sessionId: string, input
   })
 }
 
-export const AgentStudioRoutes = lazy(() =>
-  new Hono()
+export const AgentStudioRoutes = lazy(() => {
+  const schema = {
+    list: Agent.Info.extend({
+      filePath: z.string().optional().meta({
+        description: "Absolute path of the backing .md file.",
+      }),
+      callCount7d: z.number().int().optional().meta({
+        description: "Message count by this agent in the last 7 days.",
+      }),
+    }).meta({ ref: "AgentListItem" }),
+    detail: Agent.Info.extend({
+      filePath: z.string().optional(),
+      rawMarkdown: z.string().meta({
+        description: "Full markdown source including frontmatter.",
+      }),
+    }).meta({ ref: "AgentDetail" }),
+  }
+
+  return new Hono()
     .get(
       "/list",
       describeRoute({
@@ -171,7 +178,7 @@ export const AgentStudioRoutes = lazy(() =>
             description: "Agent list",
             content: {
               "application/json": {
-                schema: resolver(AgentListItemSchema.array()),
+                schema: resolver(schema.list.array()),
               },
             },
           },
@@ -222,7 +229,7 @@ export const AgentStudioRoutes = lazy(() =>
           200: {
             description: "Agent detail",
             content: {
-              "application/json": { schema: resolver(AgentDetailSchema) },
+              "application/json": { schema: resolver(schema.detail) },
             },
           },
           ...errors(404),
@@ -311,5 +318,5 @@ export const AgentStudioRoutes = lazy(() =>
           agentNames: [...new Set(workflow.nodes.map((node) => node.agent))],
         })
       },
-    ),
-)
+    )
+})

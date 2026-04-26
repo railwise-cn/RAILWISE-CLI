@@ -16,7 +16,7 @@
           {
             "group": "Getting started",
             "pages": ["index", "quickstart", "development"],
-            "openapi": "openapi.json"
+            "openapi": "https://railwise.ai/openapi.json"
           }
         ]
       }
@@ -30,14 +30,14 @@
   "navbar": {
     "links": [
       {
-        "label": "GitHub",
-        "href": "https://github.com/railwise-cn/RAILWISE-CLI"
+        "label": "Support",
+        "href": "mailto:hi@mintlify.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "文档",
-      "href": "https://github.com/railwise-cn/RAILWISE-CLI#readme"
+      "label": "Dashboard",
+      "href": "https://dashboard.mintlify.com"
     }
   },
   "contextual": {
@@ -45,7 +45,9 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/railwise-cn/RAILWISE-CLI"
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://linkedin.com/company/mintlify"
     }
   }
 }

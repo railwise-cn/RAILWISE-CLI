@@ -1,0 +1,15 @@
+:root {
+  /* 2.0 Base Palette - 奶白+暖棕 */
+  --railwise-cream-white: #FEFEFE;
+  --railwise-warm-brown: #8B4513;
+
+  /* Functional Colors (allowed) */
+  --railwise-success: #52c41a;
+  --railwise-warning: #faad14;
+  --railwise-error: #ff4d4f;
+  --railwise-info: #1890ff;
+
+  /* Derived tokens */
+  --railwise-bg-primary: var(--railwise-cream-white);
+  --railwise-text-primary: var(--railwise-warm-brown);
+}

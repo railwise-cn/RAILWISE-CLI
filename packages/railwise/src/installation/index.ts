@@ -7,11 +7,6 @@ import { Log } from "../util/log"
 import { iife } from "@/util/iife"
 import { Flag } from "../flag/flag"
 
-declare global {
-  const RAILWISE_VERSION: string
-  const RAILWISE_CHANNEL: string
-}
-
 export namespace Installation {
   const log = Log.create({ service: "installation" })
 

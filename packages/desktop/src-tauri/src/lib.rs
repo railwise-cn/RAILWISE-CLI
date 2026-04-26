@@ -655,7 +655,8 @@ async fn initialize(app: AppHandle) {
                     let app = app.clone();
                     Some(
                         async move {
-                            let res = timeout(Duration::from_secs(30), health_check.0).await;
+                            // Reduced timeout from 30s to 2s for faster failure detection
+                            let res = timeout(Duration::from_secs(2), health_check.0).await;
                             let err = match res {
                                 Ok(Ok(Ok(()))) => None,
                                 Ok(Ok(Err(e))) => Some(e),
@@ -775,26 +776,31 @@ async fn setup_server_connection(app: AppHandle) -> ServerConnection {
 
     tracing::info!(?custom_url, "Attempting server connection");
 
-    if let Some(url) = custom_url
-        && server::check_health_or_ask_retry(&app, &url).await
-    {
-        tracing::info!(%url, "Connected to custom server");
-        return ServerConnection::Existing { url: url.clone() };
+    // Try custom URL with retry logic if configured
+    if let Some(url) = custom_url {
+        if server::check_health_with_retry(&url, None, 2).await {
+            tracing::info!(%url, "Connected to custom server");
+            return ServerConnection::Existing { url: url.clone() };
+        } else {
+            tracing::warn!(%url, "Custom server not available, falling back to local server");
+        }
     }
 
-    let local_port = get_sidecar_port();
+    // Try existing local server with retry
     let hostname = "127.0.0.1";
+    let local_port = get_sidecar_port();
     let local_url = format!("http://{hostname}:{local_port}");
 
-    tracing::debug!(url = %local_url, "Checking health of local server");
-    if server::check_health(&local_url, None).await {
+    tracing::debug!(url = %local_url, "Checking health of local server with retry");
+    if server::check_health_with_retry(&local_url, None, 2).await {
         tracing::info!(url = %local_url, "Health check OK, using existing server");
         return ServerConnection::Existing { url: local_url };
     }
 
+    // Spawn new local server with fallback port strategy
     let password = uuid::Uuid::new_v4().to_string();
 
-    tracing::info!("Spawning new local server");
+    tracing::info!(port = local_port, "Spawning new local server");
     let (child, health_check) =
         server::spawn_local_server(app, hostname.to_string(), local_port, password.clone());
 
@@ -811,13 +817,33 @@ fn get_sidecar_port() -> u32 {
         .map(|s| s.to_string())
         .or_else(|| std::env::var("RAILWISE_PORT").ok())
         .and_then(|port_str| port_str.parse().ok())
-        .unwrap_or_else(|| {
-            TcpListener::bind("127.0.0.1:0")
-                .expect("Failed to bind to find free port")
-                .local_addr()
-                .expect("Failed to get local address")
-                .port()
-        }) as u32
+        .unwrap_or_else(|| find_free_port()) as u32
+}
+
+fn find_free_port() -> u32 {
+    // Try a few common port ranges for RAILWISE, fallback to system allocation
+    let preferred_ports = [3000, 3001, 3002, 8080, 8081, 8082];
+
+    for &port in &preferred_ports {
+        if port_is_available(port) {
+            tracing::debug!("Using preferred port {}", port);
+            return port;
+        }
+    }
+
+    // Fallback to system-allocated port
+    let port = TcpListener::bind("127.0.0.1:0")
+        .expect("Failed to bind to find free port")
+        .local_addr()
+        .expect("Failed to get local address")
+        .port();
+
+    tracing::debug!("Using system-allocated port {}", port);
+    port as u32
+}
+
+fn port_is_available(port: u32) -> bool {
+    TcpListener::bind(format!("127.0.0.1:{}", port)).is_ok()
 }
 
 fn sqlite_file_exists() -> bool {

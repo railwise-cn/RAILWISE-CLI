@@ -1,6 +1,5 @@
 ---
 description: Translate content for a specified locale while preserving technical terms
-model: gemini/gemini-2.5-flash
 mode: subagent
 ---
 

@@ -72,35 +72,32 @@ const LOCALES: readonly Locale[] = [
 ]
 
 function detectLocale(): Locale {
-  if (typeof navigator !== "object") return "en"
+  if (typeof navigator !== "object") return "zh"
 
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
   for (const language of languages) {
     if (!language) continue
-    if (language.toLowerCase().startsWith("zh")) {
-      if (language.toLowerCase().includes("hant")) return "zht"
+    const lower = language.toLowerCase()
+    if (lower.startsWith("zh")) {
+      if (lower.includes("hant")) return "zht"
       return "zh"
     }
-    if (language.toLowerCase().startsWith("ko")) return "ko"
-    if (language.toLowerCase().startsWith("de")) return "de"
-    if (language.toLowerCase().startsWith("es")) return "es"
-    if (language.toLowerCase().startsWith("fr")) return "fr"
-    if (language.toLowerCase().startsWith("da")) return "da"
-    if (language.toLowerCase().startsWith("ja")) return "ja"
-    if (language.toLowerCase().startsWith("pl")) return "pl"
-    if (language.toLowerCase().startsWith("ru")) return "ru"
-    if (language.toLowerCase().startsWith("ar")) return "ar"
-    if (
-      language.toLowerCase().startsWith("no") ||
-      language.toLowerCase().startsWith("nb") ||
-      language.toLowerCase().startsWith("nn")
-    )
-      return "no"
-    if (language.toLowerCase().startsWith("pt")) return "br"
-    if (language.toLowerCase().startsWith("bs")) return "bs"
+    if (lower.startsWith("en")) return "en"
+    if (lower.startsWith("ko")) return "ko"
+    if (lower.startsWith("de")) return "de"
+    if (lower.startsWith("es")) return "es"
+    if (lower.startsWith("fr")) return "fr"
+    if (lower.startsWith("da")) return "da"
+    if (lower.startsWith("ja")) return "ja"
+    if (lower.startsWith("pl")) return "pl"
+    if (lower.startsWith("ru")) return "ru"
+    if (lower.startsWith("ar")) return "ar"
+    if (lower.startsWith("no") || lower.startsWith("nb") || lower.startsWith("nn")) return "no"
+    if (lower.startsWith("pt")) return "br"
+    if (lower.startsWith("bs")) return "bs"
   }
 
-  return "en"
+  return "zh"
 }
 
 function parseLocale(value: unknown): Locale | null {

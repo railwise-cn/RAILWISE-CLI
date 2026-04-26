@@ -1,5 +1,5 @@
 import { useFilteredList } from "@railwise/ui/hooks"
-import { createEffect, on, Component, Show, onCleanup, Switch, Match, createMemo, createSignal } from "solid-js"
+import { createEffect, on, Component, Show, onCleanup, Switch, Match, createMemo, createSignal, For } from "solid-js"
 import { createStore } from "solid-js/store"
 import { createFocusSignal } from "@solid-primitives/active-element"
 import { useLocal } from "@/context/local"
@@ -52,6 +52,7 @@ import { PromptImageAttachments } from "./prompt-input/image-attachments"
 import { PromptDragOverlay } from "./prompt-input/drag-overlay"
 import { promptPlaceholder } from "./prompt-input/placeholder"
 import { ImagePreview } from "@railwise/ui/image-preview"
+import { agentColor } from "@/utils/agent"
 
 interface PromptInputProps {
   class?: string
@@ -59,6 +60,14 @@ interface PromptInputProps {
   newSessionWorktree?: string
   onNewSessionWorktreeReset?: () => void
   onSubmit?: () => void
+}
+
+type PromptQueueEntry = {
+  id: string
+  prompt: Prompt
+  mode: "normal" | "shell"
+  preview: string
+  createdAt: number
 }
 
 const EXAMPLES = [
@@ -220,6 +229,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     savedPrompt: Prompt | null
     placeholder: number
     draggingType: "image" | "@mention" | null
+    queue: PromptQueueEntry[]
+    queueDragging?: string
+    queueSending?: string
     mode: "normal" | "shell"
     applyingHistory: boolean
   }>({
@@ -228,6 +240,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     savedPrompt: null,
     placeholder: Math.floor(Math.random() * EXAMPLES.length),
     draggingType: null,
+    queue: [],
+    queueDragging: undefined,
+    queueSending: undefined,
     mode: "normal",
     applyingHistory: false,
   })
@@ -236,6 +251,70 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     if (store.mode === "shell") return 0
     return prompt.context.items().filter((item) => !!item.comment?.trim()).length
   })
+
+  const clonePrompt = (parts: Prompt): Prompt =>
+    parts.map((part) => {
+      if (part.type === "file") return { ...part, selection: part.selection ? { ...part.selection } : undefined }
+      return { ...part }
+    })
+
+  const promptPreview = (parts: Prompt) =>
+    parts
+      .map((part) => {
+        if (part.type === "file") return `[${part.path}]`
+        if (part.type === "agent") return `@${part.name}`
+        if (part.type === "image") return `[${part.filename}]`
+        return part.content
+      })
+      .join("")
+      .replace(/\s+/g, " ")
+      .trim()
+
+  const queueCurrentPrompt = () => {
+    if (!params.id) return
+    if (store.mode !== "normal") return
+
+    const current = prompt.current()
+    const preview = promptPreview(current)
+    if (!preview) return
+
+    setStore("queue", (items) => [
+      ...items,
+      {
+        id: `queue-${Date.now()}-${items.length}`,
+        prompt: clonePrompt(current),
+        mode: store.mode,
+        preview,
+        createdAt: Date.now(),
+      },
+    ])
+    prompt.reset()
+    setStore("popover", null)
+    requestAnimationFrame(() => editorRef?.focus())
+  }
+
+  const removeQueuedPrompt = (id: string) => {
+    setStore("queue", (items) => items.filter((item) => item.id !== id))
+  }
+
+  const moveQueuedPrompt = (target: string) => {
+    const source = store.queueDragging
+    if (!source || source === target) return
+
+    setStore("queue", (items) => {
+      const from = items.findIndex((item) => item.id === source)
+      const to = items.findIndex((item) => item.id === target)
+      if (from < 0 || to < 0) return items
+
+      const moving = items[from]
+      if (!moving) return items
+
+      const next = items.filter((item) => item.id !== source)
+      next.splice(to, 0, moving)
+      return next
+    })
+    setStore("queueDragging", undefined)
+  }
 
   const contextItems = createMemo(() => {
     const items = prompt.context.items()
@@ -412,7 +491,12 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
   const agentList = createMemo(() =>
     sync.data.agent
       .filter((agent) => !agent.hidden && agent.mode !== "primary")
-      .map((agent): AtOption => ({ type: "agent", name: agent.name, display: agent.name })),
+      .map((agent): AtOption => ({
+        type: "agent",
+        name: agent.name,
+        display: agent.name,
+        color: agentColor(agent.name, agent.color),
+      })),
   )
   const agentNames = createMemo(() => local.agent.list().map((agent) => agent.name))
 
@@ -879,6 +963,30 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     onSubmit: props.onSubmit,
   })
 
+  createEffect(() => {
+    if (working()) return
+    if (!params.id) return
+    if (store.queueSending) return
+    if (prompt.dirty()) return
+    if (commentCount() > 0) return
+
+    const entry = store.queue[0]
+    if (!entry) return
+
+    setStore("queueSending", entry.id)
+    setStore("queue", (items) => items.slice(1))
+    prompt.set(clonePrompt(entry.prompt), promptLength(entry.prompt))
+    setStore("mode", entry.mode)
+    setStore("popover", null)
+
+    queueMicrotask(() => {
+      const event = new Event("submit", { cancelable: true })
+      void Promise.resolve(handleSubmit(event)).finally(() => {
+        setStore("queueSending", undefined)
+      })
+    })
+  })
+
   const handleKeyDown = (event: KeyboardEvent) => {
     if ((event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "u") {
       event.preventDefault()
@@ -952,6 +1060,12 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         event.preventDefault()
         return
       }
+    }
+
+    if (event.key === "Enter" && event.altKey && !event.ctrlKey && !event.metaKey) {
+      queueCurrentPrompt()
+      event.preventDefault()
+      return
     }
 
     // Handle Shift+Enter BEFORE IME check - Shift+Enter is never used for IME input
@@ -1059,6 +1173,39 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
           type={store.draggingType}
           label={language.t(store.draggingType === "@mention" ? "prompt.dropzone.file.label" : "prompt.dropzone.label")}
         />
+        <Show when={store.queue.length > 0}>
+          <div class="flex flex-wrap gap-1.5 px-3 pt-2 pb-0">
+            <For each={store.queue.slice(0, 5)}>
+              {(entry, index) => (
+                <div
+                  draggable
+                  onDragStart={() => setStore("queueDragging", entry.id)}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={() => moveQueuedPrompt(entry.id)}
+                  class="flex max-w-[220px] cursor-grab select-none items-center gap-1.5 rounded-full border border-[rgba(24,144,255,0.25)] bg-[rgba(24,144,255,0.06)] px-2.5 py-1 text-[12px] text-[rgb(24,100,200)]"
+                  title={entry.preview}
+                >
+                  <span class="font-mono text-[10px] text-[rgba(24,144,255,0.55)]">#{index() + 1}</span>
+                  <span class="min-w-0 flex-1 truncate">{entry.preview}</span>
+                  <button
+                    type="button"
+                    data-action="prompt-queue"
+                    class="ml-0.5 leading-none text-[rgba(24,144,255,0.5)] transition-colors hover:text-[#1890ff]"
+                    onClick={() => removeQueuedPrompt(entry.id)}
+                    aria-label="移除排队指令"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </For>
+            <Show when={store.queue.length > 5}>
+              <span class="rounded-full bg-[rgba(24,144,255,0.06)] px-2.5 py-1 text-[12px] text-[rgb(24,100,200)]">
+                +{store.queue.length - 5}
+              </span>
+            </Show>
+          </div>
+        </Show>
         <PromptContextItems
           items={contextItems()}
           active={(item) => {
@@ -1087,7 +1234,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
             if (!(target instanceof HTMLElement)) return
             if (
               target.closest(
-                '[data-action="prompt-attach"], [data-action="prompt-submit"], [data-action="prompt-permissions"]',
+                '[data-action="prompt-attach"], [data-action="prompt-submit"], [data-action="prompt-queue"], [data-action="prompt-permissions"]',
               )
             ) {
               return
@@ -1172,6 +1319,21 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                   <Icon name="plus" class="size-4.5" />
                 </Button>
               </TooltipKeybind>
+
+              <Tooltip placement="top" value="排队发送 Alt+Enter">
+                <Button
+                  data-action="prompt-queue"
+                  type="button"
+                  variant="ghost"
+                  class="h-8 px-2 text-[12px] font-semibold text-[rgb(24,100,200)]"
+                  onClick={queueCurrentPrompt}
+                  disabled={store.mode !== "normal" || !params.id || !prompt.dirty()}
+                  tabIndex={store.mode === "normal" ? undefined : -1}
+                  aria-label="排队发送"
+                >
+                  排队
+                </Button>
+              </Tooltip>
 
               <Tooltip
                 placement="top"

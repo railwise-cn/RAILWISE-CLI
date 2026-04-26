@@ -6,6 +6,8 @@ import { bundledLanguages, type BundledLanguage } from "shiki"
 import { createSimpleContext } from "./helper"
 import { getSharedHighlighter, registerCustomTheme, ThemeRegistrationResolved } from "@pierre/diffs"
 
+const CODE_THEME = "github-dark-dimmed"
+
 registerCustomTheme("RAILWISE", () => {
   return Promise.resolve({
     name: "RAILWISE",
@@ -428,7 +430,7 @@ async function highlightCodeBlocks(html: string): Promise<string> {
   const matches = [...html.matchAll(codeBlockRegex)]
   if (matches.length === 0) return html
 
-  const highlighter = await getSharedHighlighter({ themes: ["RAILWISE"], langs: [] })
+  const highlighter = await getSharedHighlighter({ themes: [CODE_THEME], langs: [] })
 
   let result = html
   for (const match of matches) {
@@ -450,7 +452,7 @@ async function highlightCodeBlocks(html: string): Promise<string> {
 
     const highlighted = highlighter.codeToHtml(code, {
       lang: language,
-      theme: "RAILWISE",
+      theme: CODE_THEME,
       tabindex: false,
     })
     result = result.replace(fullMatch, () => highlighted)
@@ -479,7 +481,7 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
       }),
       markedShiki({
         async highlight(code, lang) {
-          const highlighter = await getSharedHighlighter({ themes: ["RAILWISE"], langs: [] })
+          const highlighter = await getSharedHighlighter({ themes: [CODE_THEME], langs: [] })
           if (!(lang in bundledLanguages)) {
             lang = "text"
           }
@@ -488,7 +490,7 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
           }
           return highlighter.codeToHtml(code, {
             lang: lang || "text",
-            theme: "RAILWISE",
+            theme: CODE_THEME,
             tabindex: false,
           })
         },

@@ -1,0 +1,12 @@
+name = "railwise-desktop-update-server"
+main = "index.js"
+compatibility_date = "2026-04-26"
+
+routes = [
+  { pattern = "updates.railwise.cn/desktop/*", zone_name = "railwise.cn" }
+]
+
+[[kv_namespaces]]
+binding = "UPDATE_KV"
+id = "REPLACE_WITH_PRODUCTION_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"

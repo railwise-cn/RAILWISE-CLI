@@ -46,5 +46,24 @@
       { "from": "n1", "to": "n2", "kind": "serial", "label": "项目结构与重点内容" },
       { "from": "n2", "to": "n3", "kind": "serial", "label": "PPT 初稿" }
     ]
+  },
+  {
+    "id": "cpiii-resurvey-wiki",
+    "name": "CPIII 规范查询与复测预案",
+    "description": "围绕 CPIII 复测任务串联规范 Wiki、专业校核、知识沉淀和总控编排。",
+    "nodes": [
+      { "id": "n1", "agent": "source_ingestor", "label": "资料入库", "color": "#0891B2", "x": 40, "y": 90 },
+      { "id": "n2", "agent": "norm_librarian", "label": "规范查询", "color": "#2563EB", "x": 230, "y": 90 },
+      { "id": "n3", "agent": "cpiii_specialist", "label": "CPIII 校核", "color": "#7C3AED", "x": 420, "y": 90 },
+      { "id": "n4", "agent": "knowledge_curator", "label": "Wiki 沉淀", "color": "#16A34A", "x": 230, "y": 230 },
+      { "id": "n5", "agent": "chief_manager", "label": "交付编排", "color": "rgb(10,10,9)", "x": 610, "y": 150 }
+    ],
+    "edges": [
+      { "from": "n1", "to": "n2", "kind": "serial", "label": "Raw/Index" },
+      { "from": "n2", "to": "n3", "kind": "serial", "label": "条文引用" },
+      { "from": "n2", "to": "n4", "kind": "parallel", "label": "查询记录" },
+      { "from": "n3", "to": "n5", "kind": "serial", "label": "复测预案" },
+      { "from": "n4", "to": "n5", "kind": "optional", "label": "知识更新" }
+    ]
   }
 ]

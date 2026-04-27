@@ -1,0 +1,36 @@
+import { expect, test } from "bun:test"
+import { tmpdir } from "../fixture/fixture"
+import { Instance } from "../../src/project/instance"
+import { Agent } from "../../src/agent/agent"
+import { ToolRegistry } from "../../src/tool/registry"
+import presets from "../../src/agent/workflow-presets.json"
+
+test("M8 industry agents and wiki tools are available by default", async () => {
+  await using tmp = await tmpdir()
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const agents = await Agent.list()
+      const names = agents.map((agent) => agent.name)
+      expect(names).toContain("norm_librarian")
+      expect(names).toContain("source_ingestor")
+      expect(names).toContain("knowledge_curator")
+      expect(names).toContain("cpiii_specialist")
+
+      const ids = await ToolRegistry.ids()
+      expect(ids).toContain("tool_wiki_query")
+      expect(ids).toContain("tool_norm_cite")
+    },
+  })
+})
+
+test("CPIII resurvey workflow preset wires the industry agents", () => {
+  const workflow = presets.find((item) => item.id === "cpiii-resurvey-wiki")
+  expect(workflow?.nodes.map((node) => node.agent)).toEqual([
+    "source_ingestor",
+    "norm_librarian",
+    "cpiii_specialist",
+    "knowledge_curator",
+    "chief_manager",
+  ])
+})

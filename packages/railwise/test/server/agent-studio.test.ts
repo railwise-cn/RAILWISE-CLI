@@ -18,6 +18,46 @@ function restore(home: string | undefined) {
 }
 
 describe("server.routes.agent-studio", () => {
+  test("lists M8 wiki agents and CPIII workflow preset", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const response = await AgentStudioRoutes().request("http://railwise.test/list")
+          const list = (await response.json()) as { name: string; hidden?: boolean }[]
+          const names = list.map((agent) => agent.name)
+
+          expect(response.status).toBe(200)
+          expect(names).toContain("norm_librarian")
+          expect(names).toContain("source_ingestor")
+          expect(names).toContain("knowledge_curator")
+          expect(names).toContain("cpiii_specialist")
+
+          const presetResponse = await AgentStudioRoutes().request("http://railwise.test/workflow/presets")
+          const workflows = (await presetResponse.json()) as {
+            id: string
+            nodes: { agent: string }[]
+          }[]
+          const workflow = workflows.find((item) => item.id === "cpiii-resurvey-wiki")
+
+          expect(presetResponse.status).toBe(200)
+          expect(workflow?.nodes.map((node) => node.agent)).toEqual([
+            "source_ingestor",
+            "norm_librarian",
+            "cpiii_specialist",
+            "knowledge_curator",
+            "chief_manager",
+          ])
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
   test("workflow run creates a seeded session and updates recent call counts", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME

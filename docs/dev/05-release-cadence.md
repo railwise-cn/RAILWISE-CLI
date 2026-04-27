@@ -16,6 +16,18 @@ RC2 在 P0/P1 清零后发布，验证期 3 天。回归范围必须包含崩溃
 
 GA 发布版本为 `desktop/v1.3.0` 起步。更新服务器按 10%、30%、100% 灰度推进，每阶段间隔 24 小时。GitHub Release 需要附 changelog，内网分发由管理员通过私有更新服务器推送。
 
+## GitHub Actions 发布
+
+桌面正式包由 `Desktop Release` workflow 生成。管理员可以通过 `workflow_dispatch` 手动输入版本号，也可以推送 `desktop/v*` 标签触发。
+
+首次 GA 推荐使用手动触发：
+
+```bash
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref main -f version=1.3.0
+```
+
+触发前必须完成发布 secrets 配置。完整清单和配置命令见 `docs/admin/06-desktop-release-runbook.md`。
+
 ## 发布前检查
 
 ```bash
@@ -27,7 +39,7 @@ cd packages/desktop/src-tauri && cargo check
 cd packages/desktop && bun run test:e2e
 ```
 
-发布前还必须执行品牌残留扫描，确保当前 UI、桌面壳和交付文档不再出现旧工作台命名。
+发布前还必须执行品牌残留扫描，确保当前 UI、桌面壳和交付文档不再出现历史命名残留。
 
 仓库根目录的总体验收入口会串联品牌残留扫描、M6 发布配置、M7 内测验收、更新分发服务验收和各 package typecheck：
 
@@ -46,3 +58,13 @@ bun run desktop:verify:ga
 ```bash
 bun run desktop:verify:ga -- --full
 ```
+
+## 发布阻断项
+
+以下任一项失败时不得进入 GA：
+
+- `Desktop Release` workflow 在 `Validate release secrets` 步骤提示缺少 secret。
+- macOS codesign 或 notarization 失败。
+- Windows SignPath 签名失败。
+- draft Release 缺少 Windows、macOS 或 Linux 任一平台产物。
+- 更新服务器 manifest 未包含新版本签名和下载地址。

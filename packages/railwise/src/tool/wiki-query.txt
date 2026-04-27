@@ -1,0 +1,3 @@
+Search the RAILWISE norm Wiki.
+
+Use this for engineering-survey standard lookups where the answer must come from the local norm Wiki instead of model memory. Provide a focused natural-language query and optionally a scope such as a norm id or wiki subdirectory.

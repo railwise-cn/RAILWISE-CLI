@@ -28,6 +28,12 @@ gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref main -f 
 
 触发前必须完成发布 secrets 配置。完整清单和配置命令见 `docs/admin/06-desktop-release-runbook.md`。
 
+触发前可用本地门禁确认 GitHub secret 名称已配置：
+
+```bash
+bun run desktop:release-secrets
+```
+
 ## 发布前检查
 
 ```bash

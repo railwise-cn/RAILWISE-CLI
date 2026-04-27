@@ -69,7 +69,13 @@ base64 -i certificate.p12 -o certificate.p12.base64
 配置后检查 secret 名称：
 
 ```bash
-gh secret list --repo railwise-cn/RAILWISE-CLI
+bun run desktop:release-secrets
+```
+
+也可以检查其他仓库：
+
+```bash
+bun run desktop:release-secrets -- --repo owner/name
 ```
 
 ## 发布前本地检查

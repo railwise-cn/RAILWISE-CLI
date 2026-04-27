@@ -1093,8 +1093,22 @@ export default function Layout(props: ParentProps) {
     return meta?.worktree ?? directory
   }
 
+  function rememberProjectSession(directory: string, id: string) {
+    setStore("lastProjectSession", projectRoot(directory), { directory, id, at: Date.now() })
+  }
+
+  function rememberCurrentSession() {
+    const dir = params.dir
+    const id = params.id
+    if (!dir || !id) return
+    const directory = decode64(dir)
+    if (!directory) return
+    rememberProjectSession(directory, id)
+  }
+
   function navigateToProject(directory: string | undefined) {
     if (!directory) return
+    rememberCurrentSession()
     const root = projectRoot(directory)
     server.projects.touch(root)
 
@@ -1458,8 +1472,7 @@ export default function Layout(props: ParentProps) {
         if (!dir || !id) return
         const directory = decode64(dir)
         if (!directory) return
-        const at = Date.now()
-        setStore("lastProjectSession", projectRoot(directory), { directory, id, at })
+        rememberProjectSession(directory, id)
         notification.session.markViewed(id)
         const expanded = untrack(() => store.workspaceExpanded[directory])
         if (expanded === false) {

@@ -168,7 +168,10 @@ export namespace Agent {
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({
+            tool_wiki_ingest: "allow",
             tool_wiki_query: "allow",
+            tool_wiki_lint: "allow",
+            tool_wiki_index: "allow",
             tool_norm_cite: "allow",
           }),
           user,
@@ -184,7 +187,15 @@ export namespace Agent {
         color: "#0891B2",
         prompt: PROMPT_SOURCE_INGESTOR,
         steps: 18,
-        permission: PermissionNext.merge(defaults, user),
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_wiki_ingest: "allow",
+            tool_wiki_index: "allow",
+            tool_wiki_lint: "allow",
+          }),
+          user,
+        ),
         options: {},
         mode: "subagent",
         native: true,
@@ -199,7 +210,10 @@ export namespace Agent {
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({
+            tool_wiki_ingest: "allow",
             tool_wiki_query: "allow",
+            tool_wiki_lint: "allow",
+            tool_wiki_index: "allow",
             tool_norm_cite: "allow",
           }),
           user,

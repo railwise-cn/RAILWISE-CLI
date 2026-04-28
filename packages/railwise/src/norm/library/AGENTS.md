@@ -12,3 +12,12 @@ This bundled library is a minimal demonstration corpus for M8-0. Production depl
 ## Citation Rule
 
 All answers that rely on a standard clause must include `参照 [规范编号] 第 [章节号] 条`.
+
+## Wiki Frontmatter
+
+Ingested Wiki pages should include:
+
+- `source_raw`: relative Raw markdown path.
+- `norm_clause_id`: `<norm id> <clause id>` when the page claims a standard clause.
+- `source_hash`: Raw text hash captured during ingest.
+- `last_ingest_at`: ISO timestamp for the latest ingest.

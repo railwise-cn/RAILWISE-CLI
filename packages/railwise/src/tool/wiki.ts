@@ -27,6 +27,13 @@ export const WikiQueryTool = Tool.define("tool_wiki_query", {
             score: hit.score,
             summary: hit.summary,
             citations: hit.citations,
+            sourceRaw: hit.sourceRaw,
+            normClauseId: hit.normClauseId,
+            citationTriples: hit.citations.map((item) => ({
+              wiki_page_path: hit.path,
+              raw_source_md: hit.sourceRaw,
+              norm_clause_id: `${item.norm} ${item.clause}`,
+            })),
           })),
           logged,
         },
@@ -37,6 +44,60 @@ export const WikiQueryTool = Tool.define("tool_wiki_query", {
         query: params.query,
         hitCount: hits.length,
         logged,
+      },
+    }
+  },
+})
+
+export const WikiIngestTool = Tool.define("tool_wiki_ingest", {
+  description: "Ingest a Raw layer markdown file into the RAILWISE norm Wiki and update index/log files.",
+  parameters: z.object({
+    rawPath: z.string().min(1).describe("Raw markdown path inside the norm library, e.g. raw/TB10101-2018/demo.md"),
+    title: z.string().optional().describe("Optional title override for generated Wiki pages."),
+    types: z
+      .enum(["clause", "formula", "term", "case", "project", "faq"])
+      .array()
+      .optional()
+      .describe("Wiki page types to create. Defaults to clause when a norm citation is found, otherwise case."),
+    appendLog: z.boolean().optional().describe("Append an ingest log entry when using a project norm library."),
+  }),
+  async execute(params) {
+    const result = await NormWiki.ingest(params)
+    return {
+      title: "Wiki Ingest",
+      output: JSON.stringify(result, null, 2),
+      metadata: {
+        rawPath: result.rawPath,
+        pageCount: result.pages.length,
+      },
+    }
+  },
+})
+
+export const WikiIndexTool = Tool.define("tool_wiki_index", {
+  description: "Regenerate wiki/index.md from the current RAILWISE norm Wiki pages.",
+  parameters: z.object({}),
+  async execute() {
+    const result = await NormWiki.index()
+    return {
+      title: "Wiki Index",
+      output: JSON.stringify(result, null, 2),
+      metadata: result,
+    }
+  },
+})
+
+export const WikiLintTool = Tool.define("tool_wiki_lint", {
+  description: "Check the RAILWISE norm Wiki for missing Raw links, missing citations, missing index entries, and broken links.",
+  parameters: z.object({}),
+  async execute() {
+    const result = await NormWiki.lint()
+    return {
+      title: "Wiki Lint",
+      output: JSON.stringify(result, null, 2),
+      metadata: {
+        ok: result.ok,
+        problemCount: result.problemCount,
       },
     }
   },

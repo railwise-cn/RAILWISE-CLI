@@ -30,7 +30,7 @@ import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
 import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
 import { MineruParseTool } from "./mineru"
-import { AdjustmentIndirectTool } from "./adjustment"
+import { AdjustmentConditionTool, AdjustmentIndirectTool } from "./adjustment"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -128,6 +128,7 @@ export namespace ToolRegistry {
       NormDiffTool,
       NormCiteTool,
       AdjustmentIndirectTool,
+      AdjustmentConditionTool,
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),

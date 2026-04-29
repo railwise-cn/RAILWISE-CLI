@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { AdjustmentConditionTool, AdjustmentIndirectTool } from "../../src/tool/adjustment"
+import { AdjustmentConditionTool, AdjustmentIndirectTool, GrossErrorDetectionTool } from "../../src/tool/adjustment"
 
 function ctx() {
   return {
@@ -71,4 +71,59 @@ test("condition adjustment distributes level-loop closure by observation weights
   expect(result.conditions.find((item) => item.name === "loop closure")?.misclosureAfter).toBeCloseTo(0, 9)
   expect(result.statistics.degreesOfFreedom).toBe(1)
   expect(result.statistics.unitWeightStdDev).toBeCloseTo(0.002, 9)
+})
+
+test("gross error detection flags standardized residual outliers", async () => {
+  const tool = await GrossErrorDetectionTool.init()
+  const result = JSON.parse(
+    (
+      await tool.execute(
+        {
+          sigma0: 0.002,
+          threshold: 3,
+          residuals: [
+            { name: "baseline_north", residual: 0.001, weight: 1 },
+            { name: "baseline_east", residual: -0.012, weight: 1 },
+            { name: "closure_vector", residual: 0.0005, weight: 4 },
+          ],
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    grossErrors: { name: string; statistic: number }[]
+    statistics: { grossErrorCount: number; maxStatistic: number }
+  }
+
+  expect(result.grossErrors.map((item) => item.name)).toEqual(["baseline_east"])
+  expect(result.grossErrors[0]?.statistic).toBeCloseTo(6, 9)
+  expect(result.statistics.grossErrorCount).toBe(1)
+  expect(result.statistics.maxStatistic).toBeCloseTo(6, 9)
+})
+
+test("gross error detection can run preliminary indirect adjustment", async () => {
+  const tool = await GrossErrorDetectionTool.init()
+  const result = JSON.parse(
+    (
+      await tool.execute(
+        {
+          threshold: 3,
+          unknowns: ["x", "y"],
+          equations: [
+            { name: "x observed", coefficients: { x: 1 }, observed: 10 },
+            { name: "y observed", coefficients: { y: 1 }, observed: 20 },
+            { name: "sum observed", coefficients: { x: 1, y: 1 }, observed: 30.003 },
+          ],
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    grossErrors: unknown[]
+    preliminary: { statistics: { degreesOfFreedom: number; unitWeightStdDev: number } }
+  }
+
+  expect(result.grossErrors).toEqual([])
+  expect(result.preliminary.statistics.degreesOfFreedom).toBe(1)
+  expect(result.preliminary.statistics.unitWeightStdDev).toBeCloseTo(0.0017320508, 9)
 })

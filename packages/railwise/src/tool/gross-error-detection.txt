@@ -1,0 +1,8 @@
+Use this tool to detect suspected gross errors from survey adjustment residuals.
+
+The tool supports two modes:
+
+1. Provide residuals from tool_adjustment_indirect with sigma0.
+2. Provide unknowns and equations so the tool can run a preliminary indirect adjustment and screen the resulting residuals.
+
+It computes Baarda-style standardized residual statistics. A residual is flagged when abs(residual) * sqrt(weight) / sigma0 is greater than the threshold. Use this before reporting final adjustment quality, and route flagged observations for field review instead of silently accepting them.

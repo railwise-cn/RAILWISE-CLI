@@ -45,6 +45,13 @@ describe("norm wiki", () => {
         expect(await Bun.file(path.join(tmp.path, ".railwise", "norm-library", "wiki", "log.md")).text()).toContain(
           "基坑监测报警阈值",
         )
+        expect(await NormWiki.logs()).toMatchObject([
+          {
+            kind: "query",
+            title: "基坑监测报警阈值",
+            paths: ["wiki/clauses/gb50497-threshold.md"],
+          },
+        ])
       },
     })
   })
@@ -80,6 +87,13 @@ describe("norm wiki", () => {
         const root = path.join(tmp.path, ".railwise", "norm-library")
         expect(await Bun.file(path.join(root, "wiki", "index.md")).text()).toContain("clauses/gb50497-2019-8-0-7.md")
         expect(await Bun.file(path.join(root, "wiki", "log.md")).text()).toContain("ingest | 基坑监测报警阈值")
+        expect(await NormWiki.logs()).toMatchObject([
+          {
+            kind: "ingest",
+            title: "基坑监测报警阈值",
+            paths: ["wiki/clauses/gb50497-2019-8-0-7.md"],
+          },
+        ])
         expect(await NormWiki.lint()).toEqual({ ok: true, problemCount: 0, problems: [] })
       },
     })

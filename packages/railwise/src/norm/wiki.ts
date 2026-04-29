@@ -46,6 +46,14 @@ export namespace NormWiki {
     normClauseId?: string
   }
 
+  export type LogEntry = {
+    kind: "query" | "ingest" | "other"
+    timestamp?: string
+    title: string
+    paths: string[]
+    raw: string
+  }
+
   export type LintProblem = {
     type:
       | "missing_raw"
@@ -464,6 +472,47 @@ export namespace NormWiki {
     const previous = (await exists(file)) ? await Bun.file(file).text() : "# Query Log\n\n"
     await Bun.write(file, previous.endsWith("\n") ? previous + line : `${previous}\n${line}`)
     return true
+  }
+
+  function logEntry(line: string): LogEntry | undefined {
+    const query = line.match(/^- ([^ ]+) query="((?:\\.|[^"])*)" hits=(.*)$/)
+    if (query) {
+      return {
+        kind: "query",
+        timestamp: query[1],
+        title: query[2].replace(/\\"/g, '"'),
+        paths: query[3].split(",").map((item) => item.trim()).filter(Boolean),
+        raw: line,
+      }
+    }
+    const ingest = line.match(/^## \[([^\]]+)] ingest \| (.+) \| pages=(.*)$/)
+    if (ingest) {
+      return {
+        kind: "ingest",
+        timestamp: ingest[1],
+        title: ingest[2].trim(),
+        paths: ingest[3].split(",").map((item) => item.trim()).filter(Boolean),
+        raw: line,
+      }
+    }
+    const title = line.replace(/^[-# ]+/, "").trim()
+    if (!title) return undefined
+    return { kind: "other", title, paths: [], raw: line }
+  }
+
+  export async function logs(input: { limit?: number; source?: string } = {}) {
+    const source = input.source ?? (await root())
+    const file = path.join(source, "wiki", "log.md")
+    if (!(await exists(file))) return []
+    const limit = Math.max(1, Math.min(input.limit ?? 10, 50))
+    return (await Bun.file(file).text())
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("- ") || line.startsWith("## ["))
+      .map(logEntry)
+      .filter((entry): entry is LogEntry => Boolean(entry))
+      .reverse()
+      .slice(0, limit)
   }
 
   export function cite(input: { norm: string; clause: string; text: string }) {

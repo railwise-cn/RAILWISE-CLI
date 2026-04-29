@@ -4,6 +4,7 @@ import { NormWiki } from "@/norm/wiki"
 
 import QUERY_DESCRIPTION from "./wiki-query.txt"
 import SEARCH_DESCRIPTION from "./norm-search.txt"
+import DIFF_DESCRIPTION from "./norm-diff.txt"
 import CITE_DESCRIPTION from "./norm-cite.txt"
 
 export const WikiQueryTool = Tool.define("tool_wiki_query", {
@@ -129,6 +130,32 @@ export const NormSearchTool = Tool.define("tool_norm_search", {
       metadata: {
         query: params.query,
         resultCount: results.length,
+      },
+    }
+  },
+})
+
+export const NormDiffTool = Tool.define("tool_norm_diff", {
+  description: DIFF_DESCRIPTION,
+  parameters: z.object({
+    fromScope: z.string().min(1).describe("Base norm/version scope, e.g. TB10101-2018."),
+    toScope: z.string().min(1).describe("Target norm/version scope, e.g. TB10101-2024."),
+    writeReport: z.boolean().optional().describe("Write a markdown change report to wiki/changes. Defaults to true."),
+  }),
+  async execute(params) {
+    const result = await NormWiki.diff({
+      fromScope: params.fromScope,
+      toScope: params.toScope,
+      writeReport: params.writeReport !== false,
+    })
+    return {
+      title: "Norm Diff",
+      output: JSON.stringify(result, null, 2),
+      metadata: {
+        fromScope: result.fromScope,
+        toScope: result.toScope,
+        changeCount: result.changeCount,
+        reportPath: result.reportPath,
       },
     }
   },

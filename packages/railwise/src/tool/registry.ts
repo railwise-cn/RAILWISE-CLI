@@ -28,7 +28,7 @@ import { Truncate } from "./truncation"
 import { PlanExitTool, PlanEnterTool } from "./plan"
 import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
-import { NormCiteTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
+import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
 import { MineruParseTool } from "./mineru"
 
 export namespace ToolRegistry {
@@ -124,6 +124,7 @@ export namespace ToolRegistry {
       WikiIndexTool,
       WikiLintTool,
       NormSearchTool,
+      NormDiffTool,
       NormCiteTool,
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),

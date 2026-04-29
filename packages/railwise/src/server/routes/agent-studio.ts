@@ -13,6 +13,8 @@ import { Instance } from "../../project/instance"
 import { Session } from "../../session"
 import { MessageTable } from "../../session/session.sql"
 import { Database, gte } from "../../storage/db"
+import { AdjustmentIndirectTool } from "../../tool/adjustment"
+import { ToolRegistry } from "../../tool/registry"
 import { lazy } from "../../util/lazy"
 import { errors } from "../error"
 
@@ -58,6 +60,22 @@ const WorkflowRunSchema = z
     agentNames: z.string().array(),
   })
   .meta({ ref: "WorkflowRun" })
+
+const WorkflowCheckSchema = z
+  .object({
+    workflowId: z.string(),
+    ok: z.boolean(),
+    generatedAt: z.string(),
+    checks: z
+      .object({
+        id: z.string(),
+        label: z.string(),
+        status: z.enum(["ok", "warn", "fail"]),
+        detail: z.string(),
+      })
+      .array(),
+  })
+  .meta({ ref: "WorkflowCheck" })
 
 const WikiReportSchema = z
   .object({
@@ -277,6 +295,91 @@ function cpiii() {
   ].join("\n")
 }
 
+function item(input: { id: string; label: string; status: "ok" | "warn" | "fail"; detail: string }) {
+  return input
+}
+
+async function adjustmentCheck() {
+  const tool = await AdjustmentIndirectTool.init()
+  const result = await tool.execute(
+    {
+      unknowns: ["dN_CP301", "dE_CP301"],
+      equations: [
+        { name: "baseline_north", coefficients: { dN_CP301: 1 }, observed: 0.002, weight: 1 },
+        { name: "baseline_east", coefficients: { dE_CP301: 1 }, observed: -0.001, weight: 1 },
+        { name: "closure_vector", coefficients: { dN_CP301: 1, dE_CP301: 1 }, observed: 0.0005, weight: 0.8 },
+      ],
+    },
+    {
+      sessionID: "workflow-check",
+      messageID: "workflow-check",
+      agent: "agent-studio",
+      abort: new AbortController().signal,
+      messages: [],
+      metadata() {},
+      async ask() {},
+    },
+  )
+  const data = JSON.parse(result.output) as {
+    statistics?: { observationCount?: number; unknownCount?: number; unitWeightStdDev?: number }
+  }
+  return data.statistics
+}
+
+async function check(workflow: (typeof presets)[number]) {
+  const agents = await Agent.list().then((items) => new Set(items.map((agent) => agent.name)))
+  const ids = await ToolRegistry.ids().then((items) => new Set(items))
+  const root = await NormWiki.root()
+  const pages = await NormWiki.pages(root)
+  const raws = await NormWiki.raws(root)
+  const logs = await NormWiki.logs({ source: root, limit: 1 })
+  const index = await Bun.file(path.join(root, "wiki", "index.md")).exists()
+  const missing = workflow.nodes.map((node) => node.agent).filter((agent) => !agents.has(agent))
+  const tools = ["tool_wiki_query", "tool_norm_search", "tool_norm_cite", "tool_adjustment_indirect"]
+  const missingTools = tools.filter((tool) => !ids.has(tool))
+  const stats = ids.has("tool_adjustment_indirect") ? await adjustmentCheck().catch(() => undefined) : undefined
+  const checks = [
+    item({
+      id: "agents",
+      label: "智能体",
+      status: missing.length ? "fail" : "ok",
+      detail: missing.length ? `缺少 ${missing.join(", ")}` : `${workflow.nodes.length} 个节点已注册`,
+    }),
+    item({
+      id: "tools",
+      label: "工具",
+      status: missingTools.length ? "fail" : "ok",
+      detail: missingTools.length ? `缺少 ${missingTools.join(", ")}` : `${tools.length} 个核心工具已注册`,
+    }),
+    item({
+      id: "norm",
+      label: "规范库",
+      status: pages.length && raws.length && index ? "ok" : "fail",
+      detail: `${pages.length} Wiki 页，${raws.length} Raw 源，index ${index ? "存在" : "缺失"}`,
+    }),
+    item({
+      id: "adjustment",
+      label: "平差工具",
+      status: stats ? "ok" : "fail",
+      detail: stats
+        ? `${stats.observationCount ?? 0} 条观测、${stats.unknownCount ?? 0} 个未知数，sigma0=${(stats.unitWeightStdDev ?? 0).toPrecision(3)}`
+        : "样例平差未通过",
+    }),
+    item({
+      id: "activity",
+      label: "Wiki 活动",
+      status: logs.length ? "ok" : "warn",
+      detail: logs.length ? "已有查询/维护记录" : "暂无查询/维护记录，首次运行后会生成",
+    }),
+  ]
+  return {
+    workflowId: workflow.id,
+    ok: checks.every((check) => check.status !== "fail"),
+    generatedAt: new Date().toISOString(),
+    checks,
+  }
+}
+
 export const AgentStudioRoutes = lazy(() => {
   const schema = {
     list: Agent.Info.extend({
@@ -367,6 +470,31 @@ export const AgentStudioRoutes = lazy(() => {
         },
       }),
       async (c) => c.json(await wikiStatus()),
+    )
+    .get(
+      "/workflow/check/:id",
+      describeRoute({
+        summary: "Check workflow readiness",
+        description: "Runs deterministic readiness checks for the selected workflow preset.",
+        operationId: "agentStudio.workflow.check",
+        responses: {
+          200: {
+            description: "Workflow readiness check",
+            content: {
+              "application/json": {
+                schema: resolver(WorkflowCheckSchema),
+              },
+            },
+          },
+          ...errors(404),
+        },
+      }),
+      validator("param", z.object({ id: z.string().min(1) })),
+      async (c) => {
+        const workflow = presets.find((item) => item.id === c.req.valid("param").id)
+        if (!workflow) return c.json({ error: "workflow not found" }, 404)
+        return c.json(await check(workflow))
+      },
     )
     .get(
       "/wiki/report",
@@ -461,7 +589,7 @@ export const AgentStudioRoutes = lazy(() => {
       "/workflow/run",
       describeRoute({
         summary: "Trigger workflow run",
-        description: "Creates a real session seeded with the selected workflow plan for chief_manager dispatch.",
+        description: "Creates a real session and returns the selected workflow prompt for user review.",
         operationId: "agentStudio.workflow.run",
         responses: {
           200: {

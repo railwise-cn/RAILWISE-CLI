@@ -37,6 +37,7 @@ describe("server.routes.agent-studio", () => {
           expect(names).toContain("cpiii_specialist")
           expect(names).toContain("adjustment_computer")
           expect(names).toContain("railway_norm_consultant")
+          expect(names).toContain("chief_manager")
 
           const presetResponse = await AgentStudioRoutes().request("http://railwise.test/workflow/presets")
           const workflows = (await presetResponse.json()) as {
@@ -135,6 +136,56 @@ describe("server.routes.agent-studio", () => {
       })
     } finally {
       restore(home)
+    }
+  })
+
+  test("checks CPIII workflow readiness with deterministic tool coverage", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    const library = process.env.RAILWISE_NORM_LIBRARY
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    delete process.env.RAILWISE_NORM_LIBRARY
+    try {
+      const root = path.join(tmp.path, ".railwise", "norm-library")
+      await mkdir(path.join(root, "wiki", "clauses"), { recursive: true })
+      await mkdir(path.join(root, "raw"), { recursive: true })
+      await Bun.write(
+        path.join(root, "raw", "tb10601.md"),
+        "# TB10601 CPIII Raw\n\n参照 TB10601 第 3.1 条，CPIII 控制网应复测。",
+      )
+      await Bun.write(
+        path.join(root, "wiki", "clauses", "cpiii.md"),
+        "# CPIII 复测\n\n参照 TB10601 第 3.1 条，CPIII 控制网应复测。",
+      )
+      await Bun.write(
+        path.join(root, "wiki", "index.md"),
+        "# RAILWISE Norm Wiki Index\n\n- [CPIII 复测](clauses/cpiii.md): TB10601 3.1\n",
+      )
+
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const response = await AgentStudioRoutes().request(
+            "http://railwise.test/workflow/check/cpiii-resurvey-wiki",
+          )
+          const result = (await response.json()) as {
+            ok: boolean
+            checks: { id: string; status: string; detail: string }[]
+          }
+
+          expect(response.status).toBe(200)
+          expect(result.ok).toBe(true)
+          expect(result.checks.find((item) => item.id === "agents")?.status).toBe("ok")
+          expect(result.checks.find((item) => item.id === "tools")?.status).toBe("ok")
+          expect(result.checks.find((item) => item.id === "norm")?.status).toBe("ok")
+          expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("sigma0=")
+          expect(result.checks.find((item) => item.id === "activity")?.status).toBe("warn")
+        },
+      })
+    } finally {
+      restore(home)
+      if (library === undefined) delete process.env.RAILWISE_NORM_LIBRARY
+      else process.env.RAILWISE_NORM_LIBRARY = library
     }
   })
 

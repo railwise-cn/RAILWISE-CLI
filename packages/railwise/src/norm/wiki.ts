@@ -67,6 +67,25 @@ export namespace NormWiki {
     reportPath?: string
   }
 
+  export type DiffChange = {
+    type: "added" | "removed" | "modified" | "superseded"
+    key: string
+    title: string
+    fromPath?: string
+    toPath?: string
+    fromHash?: string
+    toHash?: string
+    summary: string
+  }
+
+  export type DiffResult = {
+    fromScope: string
+    toScope: string
+    changeCount: number
+    changes: DiffChange[]
+    reportPath?: string
+  }
+
   const dirs = {
     clause: "clauses",
     formula: "formulas",
@@ -273,6 +292,18 @@ export namespace NormWiki {
     return page.normClauseId ?? (first ? `${first.norm} ${first.clause}` : undefined)
   }
 
+  function clausekey(page: Page) {
+    const first = page.citations[0]
+    if (first?.clause) return first.clause
+    const id = page.normClauseId?.split(/\s+/).slice(1).join(" ")
+    return id || pagekey(page.title)
+  }
+
+  function scoped(page: Page, scope: string) {
+    const key = normkey(scope)
+    return normkey(`${page.path} ${page.title} ${page.sourceRaw ?? ""} ${page.normClauseId ?? ""} ${page.text}`).includes(key)
+  }
+
   function values(text: string) {
     return [
       ...new Set(
@@ -323,6 +354,54 @@ export namespace NormWiki {
     const file = path.join(source, rel)
     await fs.mkdir(path.dirname(file), { recursive: true })
     await Bun.write(file, `${lintReport(problems)}\n`)
+    return rel
+  }
+
+  function diffReport(input: { fromScope: string; toScope: string; changes: DiffChange[] }) {
+    const groups = Object.entries(
+      input.changes.reduce(
+        (acc, change) => ({
+          ...acc,
+          [change.type]: [...(acc[change.type] ?? []), change],
+        }),
+        {} as Record<DiffChange["type"], DiffChange[]>,
+      ),
+    ).sort(([a], [b]) => a.localeCompare(b))
+    return [
+      "# RAILWISE Norm Wiki Change Report",
+      "",
+      `Generated: ${new Date().toISOString()}`,
+      `From: ${input.fromScope}`,
+      `To: ${input.toScope}`,
+      `Change count: ${input.changes.length}`,
+      "",
+      "## Summary",
+      "",
+      ...(groups.length ? groups.map(([type, items]) => `- ${type}: ${items.length}`) : ["- no changes detected"]),
+      "",
+      "## Changes",
+      "",
+      ...(groups.length
+        ? groups.flatMap(([type, items]) => [
+            `### ${type}`,
+            "",
+            ...items.map((item) => `- ${item.key} | ${item.title}: ${item.summary}`),
+            "",
+          ])
+        : ["No changes were detected.", ""]),
+    ].join("\n")
+  }
+
+  async function writeDiffReport(source: string, input: { fromScope: string; toScope: string; changes: DiffChange[] }) {
+    if (source === bundled) return undefined
+    const rel = path.join(
+      "wiki",
+      "changes",
+      `diff-${slug(input.fromScope)}-to-${slug(input.toScope)}-${new Date().toISOString().slice(0, 10)}.md`,
+    )
+    const file = path.join(source, rel)
+    await fs.mkdir(path.dirname(file), { recursive: true })
+    await Bun.write(file, `${diffReport(input)}\n`)
     return rel
   }
 
@@ -496,6 +575,75 @@ export namespace NormWiki {
       await Bun.write(file, previous.endsWith("\n") ? previous + line : `${previous}\n${line}`)
     }
     return { rawPath: rel, pages: created, index: indexed.path }
+  }
+
+  export async function diff(input: {
+    fromScope: string
+    toScope: string
+    source?: string
+    writeReport?: boolean
+  }): Promise<DiffResult> {
+    const source = input.source ?? (await root())
+    const all = await pages(source)
+    const from = all.filter((page) => scoped(page, input.fromScope))
+    const to = all.filter((page) => scoped(page, input.toScope))
+    const base = new Map(from.map((page) => [clausekey(page), page]))
+    const target = new Map(to.map((page) => [clausekey(page), page]))
+    const keys = [...new Set([...base.keys(), ...target.keys()])].sort((a, b) => a.localeCompare(b))
+    const changes = keys.flatMap((key): DiffChange[] => {
+        const before = base.get(key)
+        const after = target.get(key)
+        if (!before && after) {
+          return [
+            {
+              type: "added",
+              key,
+              title: after.title,
+              toPath: after.path,
+              toHash: after.sourceHash ?? hash(after.text),
+              summary: `Added in ${input.toScope}: ${after.path}`,
+            },
+          ]
+        }
+        if (before && !after) {
+          return [
+            {
+              type: "removed",
+              key,
+              title: before.title,
+              fromPath: before.path,
+              fromHash: before.sourceHash ?? hash(before.text),
+              summary: `Removed from ${input.toScope}: ${before.path}`,
+            },
+          ]
+        }
+        if (!before || !after) return []
+        const old = before.sourceHash ?? hash(before.text)
+        const next = after.sourceHash ?? hash(after.text)
+        if (old === next && !before.supersededBy) return []
+        return [
+          {
+            type: before.supersededBy ? "superseded" : "modified",
+            key,
+            title: after.title,
+            fromPath: before.path,
+            toPath: after.path,
+            fromHash: old,
+            toHash: next,
+            summary: before.supersededBy
+              ? `${before.path} is superseded by ${before.supersededBy}.`
+              : `Content changed between ${before.path} and ${after.path}.`,
+          },
+        ]
+      })
+    const reportPath = input.writeReport ? await writeDiffReport(source, { ...input, changes }) : undefined
+    return {
+      fromScope: input.fromScope,
+      toScope: input.toScope,
+      changeCount: changes.length,
+      changes,
+      ...(reportPath && { reportPath }),
+    }
   }
 
   export async function lint(input: { source?: string; writeReport?: boolean } = {}): Promise<LintResult> {

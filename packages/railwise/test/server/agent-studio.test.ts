@@ -130,7 +130,9 @@ describe("server.routes.agent-studio", () => {
           expect(result.prompt).toContain("tool_wiki_query")
           expect(result.prompt).toContain("appendLog")
           expect(result.prompt).toContain("tool_adjustment_indirect")
+          expect(result.prompt).toContain("tool_adjustment_condition")
           expect(result.prompt).toContain('"unknowns"')
+          expect(result.prompt).toContain('"conditions"')
           expect(result.prompt).toContain("wiki/log.md")
         },
       })
@@ -179,6 +181,7 @@ describe("server.routes.agent-studio", () => {
           expect(result.checks.find((item) => item.id === "tools")?.status).toBe("ok")
           expect(result.checks.find((item) => item.id === "norm")?.status).toBe("ok")
           expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("sigma0=")
+          expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("条件")
           expect(result.checks.find((item) => item.id === "activity")?.status).toBe("warn")
         },
       })

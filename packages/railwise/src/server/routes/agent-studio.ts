@@ -13,7 +13,7 @@ import { Instance } from "../../project/instance"
 import { Session } from "../../session"
 import { MessageTable } from "../../session/session.sql"
 import { Database, gte } from "../../storage/db"
-import { AdjustmentIndirectTool } from "../../tool/adjustment"
+import { AdjustmentConditionTool, AdjustmentIndirectTool } from "../../tool/adjustment"
 import { ToolRegistry } from "../../tool/registry"
 import { lazy } from "../../util/lazy"
 import { errors } from "../error"
@@ -276,7 +276,7 @@ function prompt(workflow: (typeof presets)[number], input?: Record<string, unkno
 }
 
 function cpiii() {
-  const sample = {
+  const indirect = {
     unknowns: ["dN_CP301", "dE_CP301"],
     equations: [
       { name: "baseline_north", coefficients: { dN_CP301: 1 }, observed: 0.002, weight: 1 },
@@ -284,14 +284,24 @@ function cpiii() {
       { name: "closure_vector", coefficients: { dN_CP301: 1, dE_CP301: 1 }, observed: 0.0005, weight: 0.8 },
     ],
   }
+  const condition = {
+    observations: [
+      { name: "dh1", value: 100.001 },
+      { name: "dh2", value: 200.002, weight: 4 },
+      { name: "dh3", value: -300.006 },
+    ],
+    conditions: [{ name: "loop_closure", coefficients: { dh1: 1, dh2: 1, dh3: 1 } }],
+  }
   return [
     "CPIII 工具执行包：",
     '1. norm_librarian 先调用 tool_wiki_query({"query":"CPIII 复测限差 平面 高程 控制网","scope":"CPIII","limit":5,"appendLog":true})，无命中再调用 tool_norm_search。',
     "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
-    "3. adjustment_computer 调用 tool_adjustment_indirect，先用下列观测方程跑通平差链路，再替换为项目实测方程：",
-    JSON.stringify(sample, null, 2),
-    "4. cpiii_specialist 汇总规范意见、平差成果、残差异常和复测建议，不在模型中手算控制网。",
-    "5. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
+    "3. adjustment_computer 对参数估计类任务调用 tool_adjustment_indirect，先用下列观测方程跑通平差链路，再替换为项目实测方程：",
+    JSON.stringify(indirect, null, 2),
+    "4. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
+    JSON.stringify(condition, null, 2),
+    "5. cpiii_specialist 汇总规范意见、平差成果、闭合差残差异常和复测建议，不在模型中手算控制网。",
+    "6. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
   ].join("\n")
 }
 
@@ -300,8 +310,9 @@ function item(input: { id: string; label: string; status: "ok" | "warn" | "fail"
 }
 
 async function adjustmentCheck() {
-  const tool = await AdjustmentIndirectTool.init()
-  const result = await tool.execute(
+  const indirect = await AdjustmentIndirectTool.init()
+  const condition = await AdjustmentConditionTool.init()
+  const indirectResult = await indirect.execute(
     {
       unknowns: ["dN_CP301", "dE_CP301"],
       equations: [
@@ -320,10 +331,35 @@ async function adjustmentCheck() {
       async ask() {},
     },
   )
-  const data = JSON.parse(result.output) as {
+  const conditionResult = await condition.execute(
+    {
+      observations: [
+        { name: "dh1", value: 100.001 },
+        { name: "dh2", value: 200.002, weight: 4 },
+        { name: "dh3", value: -300.006 },
+      ],
+      conditions: [{ name: "loop_closure", coefficients: { dh1: 1, dh2: 1, dh3: 1 } }],
+    },
+    {
+      sessionID: "workflow-check",
+      messageID: "workflow-check",
+      agent: "agent-studio",
+      abort: new AbortController().signal,
+      messages: [],
+      metadata() {},
+      async ask() {},
+    },
+  )
+  const indirectData = JSON.parse(indirectResult.output) as {
     statistics?: { observationCount?: number; unknownCount?: number; unitWeightStdDev?: number }
   }
-  return data.statistics
+  const conditionData = JSON.parse(conditionResult.output) as {
+    statistics?: { observationCount?: number; conditionCount?: number; unitWeightStdDev?: number }
+  }
+  return {
+    indirect: indirectData.statistics,
+    condition: conditionData.statistics,
+  }
 }
 
 async function check(workflow: (typeof presets)[number]) {
@@ -335,9 +371,18 @@ async function check(workflow: (typeof presets)[number]) {
   const logs = await NormWiki.logs({ source: root, limit: 1 })
   const index = await Bun.file(path.join(root, "wiki", "index.md")).exists()
   const missing = workflow.nodes.map((node) => node.agent).filter((agent) => !agents.has(agent))
-  const tools = ["tool_wiki_query", "tool_norm_search", "tool_norm_cite", "tool_adjustment_indirect"]
+  const tools = [
+    "tool_wiki_query",
+    "tool_norm_search",
+    "tool_norm_cite",
+    "tool_adjustment_indirect",
+    "tool_adjustment_condition",
+  ]
   const missingTools = tools.filter((tool) => !ids.has(tool))
-  const stats = ids.has("tool_adjustment_indirect") ? await adjustmentCheck().catch(() => undefined) : undefined
+  const stats =
+    ids.has("tool_adjustment_indirect") && ids.has("tool_adjustment_condition")
+      ? await adjustmentCheck().catch(() => undefined)
+      : undefined
   const checks = [
     item({
       id: "agents",
@@ -362,8 +407,8 @@ async function check(workflow: (typeof presets)[number]) {
       label: "平差工具",
       status: stats ? "ok" : "fail",
       detail: stats
-        ? `${stats.observationCount ?? 0} 条观测、${stats.unknownCount ?? 0} 个未知数，sigma0=${(stats.unitWeightStdDev ?? 0).toPrecision(3)}`
-        : "样例平差未通过",
+        ? `间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
+        : "样例平差或条件平差未通过",
     }),
     item({
       id: "activity",

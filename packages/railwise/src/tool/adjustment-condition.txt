@@ -1,0 +1,9 @@
+Use this tool when survey observations must be corrected to satisfy explicit closure or condition equations.
+
+Provide observations with names, observed values, and optional weights. Provide one or more condition equations using observation names as coefficients. Each condition is interpreted as:
+
+sum(coefficient * adjusted_observation) + constant = 0
+
+The tool returns corrections, adjusted observations, before/after misclosures, weighted correction sum, degrees of freedom, and unit weight standard deviation.
+
+Use this for deterministic condition adjustment such as level-loop closure, triangle angle closure, route closure, and other condition-equation checks. Use tool_adjustment_indirect when the problem is better expressed as unknown parameters and observation equations.

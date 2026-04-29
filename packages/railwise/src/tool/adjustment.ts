@@ -1,7 +1,8 @@
 import z from "zod"
 import { Tool } from "./tool"
 
-import DESCRIPTION from "./adjustment-indirect.txt"
+import CONDITION_DESCRIPTION from "./adjustment-condition.txt"
+import INDIRECT_DESCRIPTION from "./adjustment-indirect.txt"
 
 type Equation = {
   name?: string
@@ -57,7 +58,7 @@ function inverse(lhs: number[][]) {
 }
 
 export const AdjustmentIndirectTool = Tool.define("tool_adjustment_indirect", {
-  description: DESCRIPTION,
+  description: INDIRECT_DESCRIPTION,
   parameters: z.object({
     unknowns: z.array(z.string().min(1)).min(1).max(20).describe("Unknown parameter names in solution order."),
     equations: z
@@ -107,6 +108,95 @@ export const AdjustmentIndirectTool = Tool.define("tool_adjustment_indirect", {
     }
     return {
       title: "Indirect Adjustment",
+      output: JSON.stringify(result, null, 2),
+      metadata: result.statistics,
+    }
+  },
+})
+
+export const AdjustmentConditionTool = Tool.define("tool_adjustment_condition", {
+  description: CONDITION_DESCRIPTION,
+  parameters: z.object({
+    observations: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          value: z.number().describe("Observed value before correction."),
+          weight: z.number().positive().optional().describe("Observation weight. Defaults to 1."),
+        }),
+      )
+      .min(1)
+      .max(500),
+    conditions: z
+      .array(
+        z.object({
+          name: z.string().optional(),
+          coefficients: z
+            .record(z.string(), z.number())
+            .describe("Condition coefficients by observation name. The adjusted observations must satisfy sum(a_i * L_i) + constant = 0."),
+          constant: z.number().optional().describe("Constant term in the condition equation. Defaults to 0."),
+        }),
+      )
+      .min(1)
+      .max(100),
+  }),
+  async execute(params) {
+    if (params.conditions.length > params.observations.length) {
+      throw new Error("condition count must be less than or equal to observation count")
+    }
+    const names = new Set(params.observations.map((observation) => observation.name))
+    if (names.size !== params.observations.length) throw new Error("observation names must be unique")
+    const missing = params.conditions
+      .flatMap((condition) => Object.keys(condition.coefficients))
+      .filter((name) => !names.has(name))
+    if (missing.length) throw new Error(`condition references unknown observations: ${[...new Set(missing)].join(", ")}`)
+
+    const matrix = params.conditions.map((condition) =>
+      params.observations.map((observation) => condition.coefficients[observation.name] ?? 0),
+    )
+    const values = params.observations.map((observation) => observation.value)
+    const weights = params.observations.map((observation) => observation.weight ?? 1)
+    const misclosures = matrix.map(
+      (item, index) =>
+        item.reduce((acc, value, j) => acc + value * values[j], 0) + (params.conditions[index]?.constant ?? 0),
+    )
+    const lhs = matrix.map((a) =>
+      matrix.map((b) => a.reduce((acc, value, index) => acc + (value * b[index]) / weights[index], 0)),
+    )
+    const multipliers = solve(lhs, misclosures)
+    const corrections = params.observations.map(
+      (_, index) => -matrix.reduce((acc, item, j) => acc + item[index] * multipliers[j], 0) / weights[index],
+    )
+    const adjusted = values.map((value, index) => value + corrections[index])
+    const after = matrix.map(
+      (item, index) =>
+        item.reduce((acc, value, j) => acc + value * adjusted[j], 0) + (params.conditions[index]?.constant ?? 0),
+    )
+    const weightedCorrectionSum = corrections.reduce((acc, correction, index) => acc + weights[index] * correction ** 2, 0)
+    const sigma0 = Math.sqrt(weightedCorrectionSum / params.conditions.length)
+    const result = {
+      observations: params.observations.map((observation, index) => ({
+        name: observation.name,
+        observed: observation.value,
+        correction: corrections[index],
+        adjusted: adjusted[index],
+        weight: weights[index],
+      })),
+      conditions: params.conditions.map((condition, index) => ({
+        name: condition.name ?? `condition${index + 1}`,
+        misclosureBefore: misclosures[index],
+        misclosureAfter: after[index],
+      })),
+      statistics: {
+        observationCount: params.observations.length,
+        conditionCount: params.conditions.length,
+        degreesOfFreedom: params.conditions.length,
+        weightedCorrectionSum,
+        unitWeightStdDev: sigma0,
+      },
+    }
+    return {
+      title: "Condition Adjustment",
       output: JSON.stringify(result, null, 2),
       metadata: result.statistics,
     }

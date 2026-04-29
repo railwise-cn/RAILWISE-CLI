@@ -5,6 +5,7 @@ This bundled library is a minimal demonstration corpus for M8-0. Production depl
 ## Structure
 
 - `raw/`: immutable MinerU or manually reviewed source markdown.
+- `raw/manifest.jsonl`: append-only source ingestion manifest created before Wiki curation.
 - `wiki/`: curated pages used by agents.
 - `wiki/index.md`: navigation index.
 - `wiki/log.md`: query and maintenance log.

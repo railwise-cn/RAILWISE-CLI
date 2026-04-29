@@ -1,0 +1,10 @@
+Use this tool to convert survey data files into RAILWISE tool payloads before adjustment.
+
+For the M9 MVP, this tool parses COSA .in2-style plane-control text and normalized linear equation rows exported from COSA/NASEW preprocessing. It returns parsed points, station observations, warnings, and when enough linear equations are present, a ready-to-run tool_adjustment_indirect payload.
+
+Accepted normalized equation rows:
+
+unknowns,dN_CP301,dE_CP301
+equation,baseline_north,dN_CP301=1,observed=0.002,weight=1
+
+Use the returned next.tool and next.args instead of hand-copying equations into tool_adjustment_indirect. If only raw station observations are parsed, ask for approximate coordinates or a preprocessing export before solving.

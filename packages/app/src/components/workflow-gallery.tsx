@@ -1,4 +1,6 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js"
+import { useNavigate } from "@solidjs/router"
+import { base64Encode } from "@railwise/util/encode"
 import { Icon } from "@railwise/ui/icon"
 import { Markdown } from "@railwise/ui/markdown"
 import { WorkflowCanvas } from "@/components/workflow-canvas"
@@ -28,6 +30,7 @@ function logPaths(entry: WikiLogEntry) {
 
 export function WorkflowGallery() {
   const api = useAgentStudioApi()
+  const navigate = useNavigate()
   const platform = usePlatform()
   const [items, setItems] = createSignal<Workflow[]>([])
   const [active, setActive] = createSignal("")
@@ -136,6 +139,7 @@ export function WorkflowGallery() {
     setBusy(true)
     const result = await api.run(workflow.id).finally(() => setBusy(false))
     setNotice(`已导入预设，Session: ${result.sessionTitle ?? result.sessionId}`)
+    navigate(`/${base64Encode(result.directory)}/session/${result.sessionId}`)
   }
 
   return (

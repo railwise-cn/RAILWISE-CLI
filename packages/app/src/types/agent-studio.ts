@@ -32,6 +32,7 @@ export type WorkflowRun = {
   sessionId: string
   sessionTitle?: string
   workflowId?: string
+  directory: string
   agentNames?: string[]
 }
 

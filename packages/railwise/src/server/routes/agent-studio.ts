@@ -13,7 +13,7 @@ import { Instance } from "../../project/instance"
 import { Session } from "../../session"
 import { MessageTable } from "../../session/session.sql"
 import { Database, gte } from "../../storage/db"
-import { AdjustmentConditionTool, AdjustmentIndirectTool } from "../../tool/adjustment"
+import { AdjustmentConditionTool, AdjustmentIndirectTool, GrossErrorDetectionTool } from "../../tool/adjustment"
 import { FormatConverterTool } from "../../tool/format"
 import { ToolRegistry } from "../../tool/registry"
 import { lazy } from "../../util/lazy"
@@ -306,10 +306,11 @@ function cpiii() {
     "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
     "3. adjustment_computer 先调用 tool_format_converter 解析 COSA .in2 / CSV / NASEW 预处理文本，使用返回的 next.args 调用 tool_adjustment_indirect：",
     JSON.stringify({ sourceFormat: "cosa-in2", content: cpiiiCosa() }, null, 2),
-    "4. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
+    "4. adjustment_computer 将 tool_adjustment_indirect 的 residuals 和 sigma0 交给 tool_gross_error_detection，标记疑似粗差后再输出最终质量意见。",
+    "5. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
     JSON.stringify(condition, null, 2),
-    "5. cpiii_specialist 汇总规范意见、平差成果、闭合差残差异常和复测建议，不在模型中手算控制网。",
-    "6. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
+    "6. cpiii_specialist 汇总规范意见、平差成果、粗差/闭合差残差异常和复测建议，不在模型中手算控制网。",
+    "7. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
   ].join("\n")
 }
 
@@ -320,6 +321,7 @@ function item(input: { id: string; label: string; status: "ok" | "warn" | "fail"
 async function adjustmentCheck() {
   const format = await FormatConverterTool.init()
   const indirect = await AdjustmentIndirectTool.init()
+  const gross = await GrossErrorDetectionTool.init()
   const condition = await AdjustmentConditionTool.init()
   const converted = await format.execute(
     {
@@ -357,6 +359,26 @@ async function adjustmentCheck() {
       async ask() {},
     },
   )
+  const indirectData = JSON.parse(indirectResult.output) as {
+    residuals: { name: string; residual: number; weight: number }[]
+    statistics?: { observationCount?: number; unknownCount?: number; unitWeightStdDev?: number }
+  }
+  const grossResult = await gross.execute(
+    {
+      residuals: indirectData.residuals,
+      sigma0: indirectData.statistics?.unitWeightStdDev,
+      threshold: 3,
+    },
+    {
+      sessionID: "workflow-check",
+      messageID: "workflow-check",
+      agent: "agent-studio",
+      abort: new AbortController().signal,
+      messages: [],
+      metadata() {},
+      async ask() {},
+    },
+  )
   const conditionResult = await condition.execute(
     {
       observations: [
@@ -376,14 +398,15 @@ async function adjustmentCheck() {
       async ask() {},
     },
   )
-  const indirectData = JSON.parse(indirectResult.output) as {
-    statistics?: { observationCount?: number; unknownCount?: number; unitWeightStdDev?: number }
+  const grossData = JSON.parse(grossResult.output) as {
+    statistics?: { grossErrorCount?: number; maxStatistic?: number }
   }
   const conditionData = JSON.parse(conditionResult.output) as {
     statistics?: { observationCount?: number; conditionCount?: number; unitWeightStdDev?: number }
   }
   return {
     indirect: indirectData.statistics,
+    gross: grossData.statistics,
     condition: conditionData.statistics,
   }
 }
@@ -404,10 +427,14 @@ async function check(workflow: (typeof presets)[number]) {
     "tool_format_converter",
     "tool_adjustment_indirect",
     "tool_adjustment_condition",
+    "tool_gross_error_detection",
   ]
   const missingTools = tools.filter((tool) => !ids.has(tool))
   const stats =
-    ids.has("tool_format_converter") && ids.has("tool_adjustment_indirect") && ids.has("tool_adjustment_condition")
+    ids.has("tool_format_converter") &&
+    ids.has("tool_adjustment_indirect") &&
+    ids.has("tool_adjustment_condition") &&
+    ids.has("tool_gross_error_detection")
       ? await adjustmentCheck().catch(() => undefined)
       : undefined
   const checks = [
@@ -434,7 +461,7 @@ async function check(workflow: (typeof presets)[number]) {
       label: "平差工具",
       status: stats ? "ok" : "fail",
       detail: stats
-        ? `间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
+        ? `间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
         : "样例平差或条件平差未通过",
     }),
     item({

@@ -2,7 +2,15 @@ import { expect, test } from "bun:test"
 import fs from "fs/promises"
 import path from "path"
 import { Instance } from "../../src/project/instance"
-import { NormCiteTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "../../src/tool/wiki"
+import {
+  NormCiteTool,
+  NormDiffTool,
+  NormSearchTool,
+  WikiIndexTool,
+  WikiIngestTool,
+  WikiLintTool,
+  WikiQueryTool,
+} from "../../src/tool/wiki"
 import { tmpdir } from "../fixture/fixture"
 
 function ctx() {
@@ -120,6 +128,61 @@ test("wiki maintenance tools ingest, index, and lint project wiki", async () => 
       })
       expect(await Bun.file(path.join(tmp.path, ".railwise", "norm-library", report.reportPath)).text()).toContain(
         "no problems found",
+      )
+    },
+  })
+})
+
+test("norm diff tool writes change reports", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      const wiki = path.join(dir, ".railwise", "norm-library", "wiki", "clauses")
+      await fs.mkdir(wiki, { recursive: true })
+      await Bun.write(
+        path.join(wiki, "old.md"),
+        [
+          "---",
+          "norm_clause_id: TB10101-2018 5.4.3",
+          "source_hash: old",
+          "---",
+          "",
+          "# Old CPIII",
+          "",
+          "Reference: TB10101-2018, clause 5.4.3",
+          "",
+        ].join("\n"),
+      )
+      await Bun.write(
+        path.join(wiki, "new.md"),
+        [
+          "---",
+          "norm_clause_id: TB10101-2024 5.4.3",
+          "source_hash: new",
+          "---",
+          "",
+          "# New CPIII",
+          "",
+          "Reference: TB10101-2024, clause 5.4.3",
+          "",
+        ].join("\n"),
+      )
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const tool = await NormDiffTool.init()
+      const result = JSON.parse(
+        (await tool.execute({ fromScope: "TB10101-2018", toScope: "TB10101-2024" }, ctx())).output,
+      ) as { changeCount: number; reportPath: string; changes: { type: string }[] }
+
+      expect(result.changeCount).toBe(1)
+      expect(result.changes[0]?.type).toBe("modified")
+      expect(result.reportPath).toBe(
+        `wiki/changes/diff-tb10101-2018-to-tb10101-2024-${new Date().toISOString().slice(0, 10)}.md`,
+      )
+      expect(await Bun.file(path.join(tmp.path, ".railwise", "norm-library", result.reportPath)).text()).toContain(
+        "Change count: 1",
       )
     },
   })

@@ -152,6 +152,91 @@ describe("norm wiki", () => {
     })
   })
 
+  test("diff writes norm version change reports", async () => {
+    await using tmp = await tmpdir({
+      init: async (dir) => {
+        const wiki = path.join(dir, ".railwise", "norm-library", "wiki", "clauses")
+        await fs.mkdir(wiki, { recursive: true })
+        await Bun.write(
+          path.join(wiki, "tb10101-2018-5-4-3.md"),
+          [
+            "---",
+            "norm_clause_id: TB10101-2018 5.4.3",
+            "source_hash: old-hash",
+            "supersededBy: wiki/clauses/tb10101-2024-5-4-3.md",
+            "---",
+            "",
+            "# CPIII 点位精度 2018",
+            "",
+            "参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点相对点位中误差不得超过 1 mm。",
+            "",
+          ].join("\n"),
+        )
+        await Bun.write(
+          path.join(wiki, "tb10101-2018-7-1-1.md"),
+          [
+            "---",
+            "norm_clause_id: TB10101-2018 7.1.1",
+            "source_hash: removed-hash",
+            "---",
+            "",
+            "# 旧版删除条文",
+            "",
+            "Reference: TB10101-2018, clause 7.1.1",
+            "",
+          ].join("\n"),
+        )
+        await Bun.write(
+          path.join(wiki, "tb10101-2024-5-4-3.md"),
+          [
+            "---",
+            "norm_clause_id: TB10101-2024 5.4.3",
+            "source_hash: new-hash",
+            "---",
+            "",
+            "# CPIII 点位精度 2024",
+            "",
+            "参照 TB10101-2024 第 5.4.3 条，CPIII 相邻点相对点位中误差不得超过 0.8 mm。",
+            "",
+          ].join("\n"),
+        )
+        await Bun.write(
+          path.join(wiki, "tb10101-2024-8-2-1.md"),
+          [
+            "---",
+            "norm_clause_id: TB10101-2024 8.2.1",
+            "source_hash: added-hash",
+            "---",
+            "",
+            "# 新增条文",
+            "",
+            "Reference: TB10101-2024, clause 8.2.1",
+            "",
+          ].join("\n"),
+        )
+      },
+    })
+    await Instance.provide({
+      directory: tmp.path,
+      fn: async () => {
+        const result = await NormWiki.diff({ fromScope: "TB10101-2018", toScope: "TB10101-2024", writeReport: true })
+        const types = result.changes.map((change) => change.type)
+
+        expect(result.changeCount).toBe(3)
+        expect(types).toContain("superseded")
+        expect(types).toContain("removed")
+        expect(types).toContain("added")
+        expect(result.reportPath).toBe(
+          `wiki/changes/diff-tb10101-2018-to-tb10101-2024-${new Date().toISOString().slice(0, 10)}.md`,
+        )
+        const written = await Bun.file(path.join(tmp.path, ".railwise", "norm-library", result.reportPath!)).text()
+        expect(written).toContain("# RAILWISE Norm Wiki Change Report")
+        expect(written).toContain("superseded")
+        expect(written).toContain("8.2.1")
+      },
+    })
+  })
+
   test("formats mandatory citation", () => {
     expect(NormWiki.cite({ norm: "TB10101-2018", clause: "5.4.3", text: "CPIII 相邻点限差为 1 mm。" })).toBe(
       "参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点限差为 1 mm。",

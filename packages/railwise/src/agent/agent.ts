@@ -17,6 +17,8 @@ import PROMPT_NORM_LIBRARIAN from "./prompt/norm-librarian.txt"
 import PROMPT_SOURCE_INGESTOR from "./prompt/source-ingestor.txt"
 import PROMPT_KNOWLEDGE_CURATOR from "./prompt/knowledge-curator.txt"
 import PROMPT_CPIII_SPECIALIST from "./prompt/cpiii-specialist.txt"
+import PROMPT_ADJUSTMENT_COMPUTER from "./prompt/adjustment-computer.txt"
+import PROMPT_RAILWAY_NORM_CONSULTANT from "./prompt/railway-norm-consultant.txt"
 import { PermissionNext } from "@/permission/next"
 import { mergeDeep, pipe, sortBy, values } from "remeda"
 import { Global } from "@/global"
@@ -236,6 +238,48 @@ export namespace Agent {
         color: "#7C3AED",
         prompt: PROMPT_CPIII_SPECIALIST,
         steps: 28,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_diff: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      adjustment_computer: {
+        name: "adjustment_computer",
+        description:
+          "Runs deterministic indirect least-squares adjustment and reports residuals, precision statistics, and quality flags.",
+        color: "#DC2626",
+        prompt: PROMPT_ADJUSTMENT_COMPUTER,
+        steps: 24,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_adjustment_indirect: "allow",
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      railway_norm_consultant: {
+        name: "railway_norm_consultant",
+        description:
+          "Consults railway surveying standards, compares norm versions, and produces citation-ready compliance language.",
+        color: "#EA580C",
+        prompt: PROMPT_RAILWAY_NORM_CONSULTANT,
+        steps: 22,
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({

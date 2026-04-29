@@ -60,6 +60,13 @@ export namespace NormWiki {
     message: string
   }
 
+  export type LintResult = {
+    ok: boolean
+    problemCount: number
+    problems: LintProblem[]
+    reportPath?: string
+  }
+
   const dirs = {
     clause: "clauses",
     formula: "formulas",
@@ -276,6 +283,49 @@ export namespace NormWiki {
     ]
   }
 
+  function lintReport(problems: LintProblem[]) {
+    const groups = Object.entries(
+      problems.reduce(
+        (acc, problem) => ({
+          ...acc,
+          [problem.type]: [...(acc[problem.type] ?? []), problem],
+        }),
+        {} as Record<LintProblem["type"], LintProblem[]>,
+      ),
+    ).sort(([a], [b]) => a.localeCompare(b))
+    return [
+      "# RAILWISE Norm Wiki Lint Report",
+      "",
+      `Generated: ${new Date().toISOString()}`,
+      `Status: ${problems.length === 0 ? "ok" : "needs_attention"}`,
+      `Problem count: ${problems.length}`,
+      "",
+      "## Summary",
+      "",
+      ...(groups.length ? groups.map(([type, items]) => `- ${type}: ${items.length}`) : ["- no problems found"]),
+      "",
+      "## Problems",
+      "",
+      ...(groups.length
+        ? groups.flatMap(([type, items]) => [
+            `### ${type}`,
+            "",
+            ...items.map((item) => `- ${item.path}: ${item.message}`),
+            "",
+          ])
+        : ["No lint findings were detected.", ""]),
+    ].join("\n")
+  }
+
+  async function writeLintReport(source: string, problems: LintProblem[]) {
+    if (source === bundled) return undefined
+    const rel = path.join("wiki", "changes", `lint-${new Date().toISOString().slice(0, 10)}.md`)
+    const file = path.join(source, rel)
+    await fs.mkdir(path.dirname(file), { recursive: true })
+    await Bun.write(file, `${lintReport(problems)}\n`)
+    return rel
+  }
+
   export async function search(input: { query: string; normFilter?: string[]; topK?: number; source?: string }) {
     const limit = Math.max(1, Math.min(input.topK ?? 5, 20))
     const filter = input.normFilter?.map(normkey)
@@ -448,7 +498,7 @@ export namespace NormWiki {
     return { rawPath: rel, pages: created, index: indexed.path }
   }
 
-  export async function lint(input: { source?: string } = {}) {
+  export async function lint(input: { source?: string; writeReport?: boolean } = {}): Promise<LintResult> {
     const source = input.source ?? (await root())
     const items = await pages(source)
     const index = await Bun.file(path.join(source, "wiki", "index.md")).text().catch(() => "")
@@ -557,6 +607,7 @@ export namespace NormWiki {
                 }) satisfies LintProblem,
             )
     problems.push(...conflicts, ...orphans)
-    return { ok: problems.length === 0, problemCount: problems.length, problems }
+    const reportPath = input.writeReport ? await writeLintReport(source, problems) : undefined
+    return { ok: problems.length === 0, problemCount: problems.length, problems, ...(reportPath && { reportPath }) }
   }
 }

@@ -85,6 +85,7 @@ describe("server.routes.agent-studio", () => {
 
           expect(response.status).toBe(200)
           expect(result.sessionTitle).toBe("工作流：地铁月度监测报告流水线")
+          expect(result.directory).toBe(tmp.path)
           expect(result.agentNames).toContain("chief_manager")
 
           const session = await Session.get(result.sessionId)
@@ -93,6 +94,7 @@ describe("server.routes.agent-studio", () => {
           expect(session.title).toBe(result.sessionTitle)
           expect(messages[0]?.info.agent).toBe("chief_manager")
           expect(messages[0]?.parts[0]?.type).toBe("text")
+          expect(messages[0]?.parts[0]?.type === "text" ? messages[0].parts[0].synthetic : true).toBeUndefined()
           expect(messages[0]?.parts[0]?.type === "text" ? messages[0].parts[0].text : "").toContain(
             "地铁月度监测报告流水线",
           )
@@ -101,6 +103,40 @@ describe("server.routes.agent-studio", () => {
           const list = (await listResponse.json()) as { name: string; callCount7d?: number }[]
           const chief = list.find((agent: { name: string }) => agent.name === "chief_manager")
           expect(chief?.callCount7d).toBeGreaterThanOrEqual(1)
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
+  test("CPIII workflow run seeds an executable tool package", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const response = await AgentStudioRoutes().request("http://railwise.test/workflow/run", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki" }),
+          })
+          const result = await response.json()
+          const messages = await Session.messages({ sessionID: result.sessionId })
+          const text = messages[0]?.parts[0]?.type === "text" ? messages[0].parts[0].text : ""
+
+          expect(response.status).toBe(200)
+          expect(result.directory).toBe(tmp.path)
+          expect(result.agentNames).toContain("adjustment_computer")
+          expect(result.agentNames).toContain("railway_norm_consultant")
+          expect(text).toContain("CPIII 工具执行包")
+          expect(text).toContain("tool_wiki_query")
+          expect(text).toContain("appendLog")
+          expect(text).toContain("tool_adjustment_indirect")
+          expect(text).toContain('"unknowns"')
+          expect(text).toContain("wiki/log.md")
         },
       })
     } finally {

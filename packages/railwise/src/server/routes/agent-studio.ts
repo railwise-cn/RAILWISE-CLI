@@ -54,6 +54,7 @@ const WorkflowRunSchema = z
     sessionId: z.string(),
     sessionTitle: z.string(),
     workflowId: z.string(),
+    directory: z.string(),
     agentNames: z.string().array(),
   })
   .meta({ ref: "WorkflowRun" })
@@ -242,6 +243,7 @@ function prompt(workflow: (typeof presets)[number], input?: Record<string, unkno
   const nodes = workflow.nodes.map((node, index) => `${index + 1}. ${node.label} (@${node.agent})`).join("\n")
   const edges = workflow.edges.map((edge) => `${edge.from} -> ${edge.to}: ${edge.label ?? edge.kind}`).join("\n")
   const payload = input && Object.keys(input).length > 0 ? `\n\n输入参数：\n${JSON.stringify(input, null, 2)}` : ""
+  const pack = workflow.id === "cpiii-resurvey-wiki" ? `\n\n${cpiii()}` : ""
   return (
     [
       `请按「${workflow.name}」执行工程测绘工作流。`,
@@ -249,8 +251,30 @@ function prompt(workflow: (typeof presets)[number], input?: Record<string, unkno
       `节点：\n${nodes}`,
       `依赖关系：\n${edges}`,
       "请先输出 WBS、并行/串行关系、质量闸门和预期成果，再按节点推进。",
-    ].join("\n\n") + payload
+    ].join("\n\n") +
+    pack +
+    payload
   )
+}
+
+function cpiii() {
+  const sample = {
+    unknowns: ["dN_CP301", "dE_CP301"],
+    equations: [
+      { name: "baseline_north", coefficients: { dN_CP301: 1 }, observed: 0.002, weight: 1 },
+      { name: "baseline_east", coefficients: { dE_CP301: 1 }, observed: -0.001, weight: 1 },
+      { name: "closure_vector", coefficients: { dN_CP301: 1, dE_CP301: 1 }, observed: 0.0005, weight: 0.8 },
+    ],
+  }
+  return [
+    "CPIII 工具执行包：",
+    '1. norm_librarian 先调用 tool_wiki_query({"query":"CPIII 复测限差 平面 高程 控制网","scope":"CPIII","limit":5,"appendLog":true})，无命中再调用 tool_norm_search。',
+    "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
+    "3. adjustment_computer 调用 tool_adjustment_indirect，先用下列观测方程跑通平差链路，再替换为项目实测方程：",
+    JSON.stringify(sample, null, 2),
+    "4. cpiii_specialist 汇总规范意见、平差成果、残差异常和复测建议，不在模型中手算控制网。",
+    "5. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
+  ].join("\n")
 }
 
 async function seed(workflow: (typeof presets)[number], sessionId: string, input?: Record<string, unknown>) {
@@ -272,7 +296,6 @@ async function seed(workflow: (typeof presets)[number], sessionId: string, input
     messageID: messageId,
     type: "text",
     text: prompt(workflow, input),
-    synthetic: true,
   })
 }
 
@@ -492,6 +515,7 @@ export const AgentStudioRoutes = lazy(() => {
           sessionId: session.id,
           sessionTitle: title,
           workflowId: workflow.id,
+          directory: Instance.directory,
           agentNames: [...new Set(workflow.nodes.map((node) => node.agent))],
         })
       },

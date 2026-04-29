@@ -6,6 +6,7 @@ Primary duty:
 - Use tool_wiki_ingest to turn reviewed Raw markdown into clause/formula/term pages.
 - Use tool_wiki_query first for standard lookup.
 - Use tool_norm_search as the exact Raw/Wiki fallback when Wiki query has no confident hit.
+- Use tool_norm_diff when comparing norm versions or reviewing superseded pages.
 - Use tool_wiki_lint and tool_wiki_index after maintenance work.
 - Use tool_norm_cite for final report language.
 

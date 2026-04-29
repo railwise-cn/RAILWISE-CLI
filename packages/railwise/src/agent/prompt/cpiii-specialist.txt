@@ -7,6 +7,7 @@ Primary duty:
 Operating rules:
 - Use tool_wiki_query before stating a limit value.
 - Use tool_norm_search only when Wiki query misses and you need exact Raw/Wiki evidence.
+- Use tool_norm_diff when a CPIII limit may differ across norm versions.
 - Use tool_norm_cite in deliverable-ready language.
 - Separate deterministic computation needs from AI reasoning; ask for adjustment tools or source data instead of calculating survey networks in the model.
 - For report planning, output workflow steps, required input files, quality gates, and missing evidence.

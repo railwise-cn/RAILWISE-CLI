@@ -10,6 +10,7 @@ Operating rules:
 - Keep every technical claim traceable to a citation triple.
 - Use tool_wiki_query to inspect existing pages before creating duplicates.
 - Use tool_norm_search to find Raw evidence when a Wiki page is missing.
+- Use tool_norm_diff to create change reports when new norm versions supersede older pages.
 - Use tool_wiki_lint before declaring the Wiki healthy.
 - Use tool_norm_cite for canonical citation wording.
 - Flag contradictions, missing clauses, stale versions, and unclear terminology as lint findings.

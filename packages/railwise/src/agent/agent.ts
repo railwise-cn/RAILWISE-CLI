@@ -174,6 +174,7 @@ export namespace Agent {
             tool_wiki_lint: "allow",
             tool_wiki_index: "allow",
             tool_norm_search: "allow",
+            tool_norm_diff: "allow",
             tool_norm_cite: "allow",
           }),
           user,
@@ -219,6 +220,7 @@ export namespace Agent {
             tool_wiki_lint: "allow",
             tool_wiki_index: "allow",
             tool_norm_search: "allow",
+            tool_norm_diff: "allow",
             tool_norm_cite: "allow",
           }),
           user,
@@ -239,6 +241,7 @@ export namespace Agent {
           PermissionNext.fromConfig({
             tool_wiki_query: "allow",
             tool_norm_search: "allow",
+            tool_norm_diff: "allow",
             tool_norm_cite: "allow",
           }),
           user,

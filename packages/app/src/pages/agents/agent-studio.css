@@ -260,6 +260,67 @@
   line-height: 1.35;
 }
 
+.workflow-wiki {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(320px, 1.2fr);
+  gap: 14px;
+  border-block: 1px solid var(--agent-border);
+  padding: 14px 0;
+}
+
+.workflow-wiki__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.workflow-wiki__stats div {
+  min-width: 0;
+}
+
+.workflow-wiki__stats span,
+.workflow-wiki__reports > span {
+  display: block;
+  color: var(--agent-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.workflow-wiki__stats strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--agent-text);
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workflow-wiki__reports {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.workflow-wiki__reports code,
+.workflow-wiki__reports small {
+  overflow: hidden;
+  color: var(--agent-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workflow-wiki__reports code {
+  border-radius: 6px;
+  background: var(--agent-soft);
+  padding: 4px 6px;
+}
+
 .workflow-canvas {
   overflow: hidden;
   border: 1px solid var(--agent-border);
@@ -485,9 +546,14 @@
   }
 
   .agent-toolbar__controls,
-  .workflow-tabs {
+  .workflow-tabs,
+  .workflow-wiki {
     grid-template-columns: 1fr;
     width: 100%;
+  }
+
+  .workflow-wiki__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .agent-toolbar__controls {

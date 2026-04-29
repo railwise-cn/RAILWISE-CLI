@@ -168,6 +168,7 @@ export namespace Agent {
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({
+            tool_mineru_parse: "allow",
             tool_wiki_ingest: "allow",
             tool_wiki_query: "allow",
             tool_wiki_lint: "allow",
@@ -190,6 +191,7 @@ export namespace Agent {
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({
+            tool_mineru_parse: "allow",
             tool_wiki_ingest: "allow",
             tool_wiki_index: "allow",
             tool_wiki_lint: "allow",
@@ -210,6 +212,7 @@ export namespace Agent {
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({
+            tool_mineru_parse: "allow",
             tool_wiki_ingest: "allow",
             tool_wiki_query: "allow",
             tool_wiki_lint: "allow",

@@ -85,6 +85,68 @@ describe("norm wiki", () => {
     })
   })
 
+  test("lint reports conflicts, projected links, stale pages, and orphans", async () => {
+    await using tmp = await tmpdir({
+      init: async (dir) => {
+        const root = path.join(dir, ".railwise", "norm-library")
+        const raw = path.join(root, "raw", "TB10101-2018")
+        const wiki = path.join(root, "wiki", "clauses")
+        await fs.mkdir(raw, { recursive: true })
+        await fs.mkdir(wiki, { recursive: true })
+        await Bun.write(path.join(raw, "a.md"), "# Raw A\n")
+        await Bun.write(path.join(raw, "b.md"), "# Raw B\n")
+        await Bun.write(
+          path.join(wiki, "page-a.md"),
+          [
+            "---",
+            "source_raw: raw/TB10101-2018/a.md",
+            "norm_clause_id: TB10101-2018 5.4.3",
+            "---",
+            "",
+            "# CPIII 精度 A",
+            "",
+            "参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点相对点位中误差不得超过 1 mm。",
+            "",
+            "See [CPIII 精度 B](page-b.md) and [[未建术语页]].",
+            "",
+          ].join("\n"),
+        )
+        await Bun.write(
+          path.join(wiki, "page-b.md"),
+          [
+            "---",
+            "source_raw: raw/TB10101-2018/b.md",
+            "norm_clause_id: TB10101-2018 5.4.3",
+            "supersededBy: wiki/clauses/page-c.md",
+            "---",
+            "",
+            "# CPIII 精度 B",
+            "",
+            "参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点相对点位中误差不得超过 2 mm。",
+            "",
+          ].join("\n"),
+        )
+        await Bun.write(
+          path.join(root, "wiki", "index.md"),
+          ["# Index", "", "- clauses/page-a.md", "- clauses/page-b.md", ""].join("\n"),
+        )
+      },
+    })
+    await Instance.provide({
+      directory: tmp.path,
+      fn: async () => {
+        const report = await NormWiki.lint()
+        const types = report.problems.map((problem) => problem.type)
+
+        expect(report.ok).toBe(false)
+        expect(types).toContain("conflict")
+        expect(types).toContain("projected_page")
+        expect(types).toContain("stale_page")
+        expect(types).toContain("orphan_page")
+      },
+    })
+  })
+
   test("formats mandatory citation", () => {
     expect(NormWiki.cite({ norm: "TB10101-2018", clause: "5.4.3", text: "CPIII 相邻点限差为 1 mm。" })).toBe(
       "参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点限差为 1 mm。",

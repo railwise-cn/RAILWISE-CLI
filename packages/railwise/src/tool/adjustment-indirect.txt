@@ -1,0 +1,8 @@
+Use this for deterministic indirect least-squares adjustment. The model should not solve survey networks from memory or by hand.
+
+Provide:
+- unknowns: ordered parameter names, e.g. ["x", "y", "h"]
+- equations: observation equations where coefficients map unknown names to design-matrix values and observed is the measured value
+- weight: optional positive observation weight, defaults to 1
+
+The tool returns adjusted unknown values, residuals, weighted residual sum, degrees of freedom, and unit weight standard deviation. Use tool_wiki_query or tool_norm_cite separately for norm thresholds and report wording.

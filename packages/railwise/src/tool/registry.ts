@@ -31,6 +31,7 @@ import { Glob } from "../util/glob"
 import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
 import { MineruParseTool } from "./mineru"
 import { AdjustmentConditionTool, AdjustmentIndirectTool } from "./adjustment"
+import { FormatConverterTool } from "./format"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -127,6 +128,7 @@ export namespace ToolRegistry {
       NormSearchTool,
       NormDiffTool,
       NormCiteTool,
+      FormatConverterTool,
       AdjustmentIndirectTool,
       AdjustmentConditionTool,
       ApplyPatchTool,

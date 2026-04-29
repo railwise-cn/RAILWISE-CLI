@@ -29,6 +29,7 @@ import { PlanExitTool, PlanEnterTool } from "./plan"
 import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
 import { NormCiteTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
+import { MineruParseTool } from "./mineru"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -117,6 +118,7 @@ export namespace ToolRegistry {
       WebSearchTool,
       CodeSearchTool,
       SkillTool,
+      MineruParseTool,
       WikiQueryTool,
       WikiIngestTool,
       WikiIndexTool,

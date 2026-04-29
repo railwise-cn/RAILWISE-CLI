@@ -1,0 +1,10 @@
+Detect local MinerU availability and prepare source documents for the RAILWISE norm-library Raw layer.
+
+Use this before Wiki ingestion when source_ingestor receives a PDF, DOCX, PPTX, XLSX, scanned image, or reviewed markdown export.
+
+Behavior:
+- For .md, .markdown, and .txt inputs, copy the reviewed text into .railwise/norm-library/raw and append raw/manifest.jsonl.
+- For other formats, detect local MinerU commands on PATH (mineru or magic-pdf) and report whether native parsing can be wired.
+- If MinerU is not available, return a clear markdown fallback instruction instead of inventing parsed content.
+
+The Raw layer is immutable source evidence. Do not rewrite technical clauses during this step. After a successful markdown fallback, call tool_wiki_ingest with the returned rawPath.

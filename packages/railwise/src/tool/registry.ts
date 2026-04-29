@@ -30,7 +30,7 @@ import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
 import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
 import { MineruParseTool } from "./mineru"
-import { AdjustmentConditionTool, AdjustmentIndirectTool } from "./adjustment"
+import { AdjustmentConditionTool, AdjustmentIndirectTool, GrossErrorDetectionTool } from "./adjustment"
 import { FormatConverterTool } from "./format"
 
 export namespace ToolRegistry {
@@ -131,6 +131,7 @@ export namespace ToolRegistry {
       FormatConverterTool,
       AdjustmentIndirectTool,
       AdjustmentConditionTool,
+      GrossErrorDetectionTool,
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),

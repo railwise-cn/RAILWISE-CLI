@@ -187,6 +187,26 @@ describe("server.routes.agent-studio", () => {
           )
           expect(status.reports.find((report) => report.kind === "lint")?.problemCount).toBe(2)
           expect(status.reports.find((report) => report.kind === "diff")?.changeCount).toBe(1)
+
+          const detailResponse = await AgentStudioRoutes().request(
+            "http://railwise.test/wiki/report?path=wiki%2Fchanges%2Flint-2026-04-29.md",
+          )
+          const detail = (await detailResponse.json()) as {
+            path: string
+            rawMarkdown: string
+            problemCount?: number
+          }
+
+          expect(detailResponse.status).toBe(200)
+          expect(detail.path).toBe("wiki/changes/lint-2026-04-29.md")
+          expect(detail.problemCount).toBe(2)
+          expect(detail.rawMarkdown).toContain("Problem count: 2")
+
+          const escapeResponse = await AgentStudioRoutes().request(
+            "http://railwise.test/wiki/report?path=..%2Fraw%2Ftb10601.md",
+          )
+
+          expect(escapeResponse.status).toBe(404)
         },
       })
     } finally {

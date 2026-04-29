@@ -84,6 +84,10 @@ const WikiStatusSchema = z
   })
   .meta({ ref: "WikiStatus" })
 
+const WikiReportDetailSchema = WikiReportSchema.extend({
+  rawMarkdown: z.string(),
+}).meta({ ref: "WikiReportDetail" })
+
 function file(name: string) {
   return path.join(Instance.worktree, ".railwise", "agent", `${name}.md`)
 }
@@ -152,31 +156,50 @@ function count(text: string, label: string) {
   if (Number.isFinite(value)) return value
 }
 
+async function report(root: string, source: string) {
+  const text = await Bun.file(source).text()
+  const info = await stat(source)
+  const kind = reportKind(path.basename(source))
+  return {
+    path: path.relative(root, source),
+    absolutePath: source,
+    kind,
+    title: text.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? path.basename(source),
+    generatedAt: match(text, "Generated"),
+    status: match(text, "Status"),
+    problemCount: kind === "lint" ? count(text, "Problem count") : undefined,
+    changeCount: kind === "diff" ? count(text, "Change count") : undefined,
+    updatedAt: info.mtime.toISOString(),
+    rawMarkdown: text,
+  }
+}
+
 async function reports(root: string) {
   const dir = path.join(root, "wiki", "changes")
   const entries = await readdir(dir, { withFileTypes: true }).catch(() => [])
   const items = await Promise.all(
     entries
       .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
-      .map(async (entry) => {
-        const source = path.join(dir, entry.name)
-        const text = await Bun.file(source).text()
-        const info = await stat(source)
-        const kind = reportKind(entry.name)
-        return {
-          path: path.relative(root, source),
-          absolutePath: source,
-          kind,
-          title: text.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? entry.name,
-          generatedAt: match(text, "Generated"),
-          status: match(text, "Status"),
-          problemCount: kind === "lint" ? count(text, "Problem count") : undefined,
-          changeCount: kind === "diff" ? count(text, "Change count") : undefined,
-          updatedAt: info.mtime.toISOString(),
-        }
-      }),
+      .map((entry) => report(root, path.join(dir, entry.name))),
   )
-  return items.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.path.localeCompare(b.path))
+  return items
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.path.localeCompare(b.path))
+    .map((item) => {
+      const { rawMarkdown, ...summary } = item
+      return summary
+    })
+}
+
+async function reportDetail(input: string) {
+  const root = await NormWiki.root()
+  const rel = path.normalize(input)
+  const prefix = path.join("wiki", "changes") + path.sep
+  if (path.isAbsolute(rel) || rel.startsWith("..") || !rel.startsWith(prefix) || !rel.endsWith(".md")) return
+  const source = path.join(root, rel)
+  const inside = path.relative(root, source)
+  if (inside.startsWith("..") || path.isAbsolute(inside)) return
+  if (!(await Bun.file(source).exists())) return
+  return report(root, source)
 }
 
 async function wikiStatus() {
@@ -328,6 +351,36 @@ export const AgentStudioRoutes = lazy(() => {
         },
       }),
       async (c) => c.json(await wikiStatus()),
+    )
+    .get(
+      "/wiki/report",
+      describeRoute({
+        summary: "Get norm Wiki report detail",
+        description: "Returns a single lint/diff report markdown file from wiki/changes.",
+        operationId: "agentStudio.wiki.report",
+        responses: {
+          200: {
+            description: "Norm Wiki report detail",
+            content: {
+              "application/json": {
+                schema: resolver(WikiReportDetailSchema),
+              },
+            },
+          },
+          ...errors(400, 404),
+        },
+      }),
+      validator(
+        "query",
+        z.object({
+          path: z.string().min(1),
+        }),
+      ),
+      async (c) => {
+        const found = await reportDetail(c.req.valid("query").path)
+        if (!found) return c.json({ error: "report not found" }, 404)
+        return c.json(found)
+      },
     )
     .get(
       "/:name",

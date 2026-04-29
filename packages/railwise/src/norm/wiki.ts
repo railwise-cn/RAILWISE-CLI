@@ -211,7 +211,10 @@ export namespace NormWiki {
     const files = await Glob.scan("**/*.md", { cwd: dir, absolute: true, dot: true })
     return Promise.all(
       files
-        .filter((file) => !file.endsWith("log.md") && !file.endsWith("index.md"))
+        .filter((file) => {
+          const rel = path.relative(dir, file)
+          return !rel.endsWith("log.md") && !rel.endsWith("index.md") && !rel.startsWith(`changes${path.sep}`)
+        })
         .map(async (file) => {
           const text = await Bun.file(file).text()
           const fm = frontmatter(text)

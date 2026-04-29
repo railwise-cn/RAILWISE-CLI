@@ -103,4 +103,99 @@ describe("server.routes.agent-studio", () => {
       restore(home)
     }
   })
+
+  test("reports norm wiki status and recent change reports", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    const library = process.env.RAILWISE_NORM_LIBRARY
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    delete process.env.RAILWISE_NORM_LIBRARY
+    try {
+      const root = path.join(tmp.path, ".railwise", "norm-library")
+      await mkdir(path.join(root, "wiki", "clauses"), { recursive: true })
+      await mkdir(path.join(root, "wiki", "changes"), { recursive: true })
+      await mkdir(path.join(root, "raw"), { recursive: true })
+      await Bun.write(
+        path.join(root, "raw", "tb10601.md"),
+        "# TB10601 CPIII Raw\n\n参照 TB10601 第 3.1 条，CPIII 控制网应复测。",
+      )
+      await Bun.write(
+        path.join(root, "wiki", "clauses", "cpiii.md"),
+        [
+          "---",
+          "source_raw: raw/tb10601.md",
+          "norm_clause_id: TB10601 3.1",
+          "source_hash: raw-hash",
+          "---",
+          "",
+          "# CPIII 复测",
+          "",
+          "参照 TB10601 第 3.1 条，CPIII 控制网应复测。",
+          "",
+        ].join("\n"),
+      )
+      await Bun.write(
+        path.join(root, "wiki", "index.md"),
+        "# RAILWISE Norm Wiki Index\n\n- [CPIII 复测](clauses/cpiii.md): TB10601 3.1\n",
+      )
+      await Bun.write(
+        path.join(root, "wiki", "changes", "lint-2026-04-29.md"),
+        [
+          "# RAILWISE Norm Wiki Lint Report",
+          "",
+          "Generated: 2026-04-29T00:00:00.000Z",
+          "Status: needs_attention",
+          "Problem count: 2",
+          "",
+        ].join("\n"),
+      )
+      await Bun.write(
+        path.join(root, "wiki", "changes", "diff-tb10601-to-tb10601-2026-04-29.md"),
+        [
+          "# RAILWISE Norm Wiki Change Report",
+          "",
+          "Generated: 2026-04-29T00:00:00.000Z",
+          "From: TB10601",
+          "To: TB10601",
+          "Change count: 1",
+          "",
+        ].join("\n"),
+      )
+
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const response = await AgentStudioRoutes().request("http://railwise.test/wiki/status")
+          const status = (await response.json()) as {
+            readonly: boolean
+            pageCount: number
+            rawCount: number
+            indexPath?: string
+            reportCount: number
+            reports: { path: string; kind: string; problemCount?: number; changeCount?: number }[]
+          }
+
+          expect(response.status).toBe(200)
+          expect(status.readonly).toBe(false)
+          expect(status.pageCount).toBe(1)
+          expect(status.rawCount).toBe(1)
+          expect(status.indexPath).toBe("wiki/index.md")
+          expect(status.reportCount).toBe(2)
+          expect(status.reports.map((report) => report.path)).toContain("wiki/changes/lint-2026-04-29.md")
+          expect(status.reports.map((report) => report.path)).toContain(
+            "wiki/changes/diff-tb10601-to-tb10601-2026-04-29.md",
+          )
+          expect(status.reports.find((report) => report.kind === "lint")?.problemCount).toBe(2)
+          expect(status.reports.find((report) => report.kind === "diff")?.changeCount).toBe(1)
+        },
+      })
+    } finally {
+      restore(home)
+      if (library === undefined) {
+        delete process.env.RAILWISE_NORM_LIBRARY
+      } else {
+        process.env.RAILWISE_NORM_LIBRARY = library
+      }
+    }
+  })
 })

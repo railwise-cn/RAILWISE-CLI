@@ -2,13 +2,14 @@ import { Hono } from "hono"
 import { describeRoute, resolver, validator } from "hono-openapi"
 import matter from "gray-matter"
 import path from "path"
-import { mkdir } from "fs/promises"
+import { mkdir, readdir, stat } from "fs/promises"
 import z from "zod"
 import { Agent } from "../../agent/agent"
 import { AgentUpdated } from "../../agent/agent-events"
 import presets from "../../agent/workflow-presets.json" with { type: "json" }
 import { Bus } from "../../bus"
 import { Identifier } from "../../id/id"
+import { NormWiki } from "../../norm/wiki"
 import { Instance } from "../../project/instance"
 import { Session } from "../../session"
 import { MessageTable } from "../../session/session.sql"
@@ -56,6 +57,32 @@ const WorkflowRunSchema = z
     agentNames: z.string().array(),
   })
   .meta({ ref: "WorkflowRun" })
+
+const WikiReportSchema = z
+  .object({
+    path: z.string(),
+    absolutePath: z.string(),
+    kind: z.enum(["lint", "diff", "other"]),
+    title: z.string(),
+    generatedAt: z.string().optional(),
+    status: z.string().optional(),
+    problemCount: z.number().int().optional(),
+    changeCount: z.number().int().optional(),
+    updatedAt: z.string(),
+  })
+  .meta({ ref: "WikiReport" })
+
+const WikiStatusSchema = z
+  .object({
+    root: z.string(),
+    readonly: z.boolean(),
+    pageCount: z.number().int(),
+    rawCount: z.number().int(),
+    indexPath: z.string().optional(),
+    reportCount: z.number().int(),
+    reports: z.array(WikiReportSchema),
+  })
+  .meta({ ref: "WikiStatus" })
 
 function file(name: string) {
   return path.join(Instance.worktree, ".railwise", "agent", `${name}.md`)
@@ -108,6 +135,69 @@ function calls() {
     (acc, row) => acc.set(row.data.agent, (acc.get(row.data.agent) ?? 0) + 1),
     new Map<string, number>(),
   )
+}
+
+function reportKind(name: string) {
+  if (name.startsWith("lint-")) return "lint" as const
+  if (name.startsWith("diff-")) return "diff" as const
+  return "other" as const
+}
+
+function match(text: string, label: string) {
+  return text.match(new RegExp(`^${label}:\\s*(.+)$`, "m"))?.[1]?.trim()
+}
+
+function count(text: string, label: string) {
+  const value = Number(match(text, label))
+  if (Number.isFinite(value)) return value
+}
+
+async function reports(root: string) {
+  const dir = path.join(root, "wiki", "changes")
+  const entries = await readdir(dir, { withFileTypes: true }).catch(() => [])
+  const items = await Promise.all(
+    entries
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+      .map(async (entry) => {
+        const source = path.join(dir, entry.name)
+        const text = await Bun.file(source).text()
+        const info = await stat(source)
+        const kind = reportKind(entry.name)
+        return {
+          path: path.relative(root, source),
+          absolutePath: source,
+          kind,
+          title: text.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? entry.name,
+          generatedAt: match(text, "Generated"),
+          status: match(text, "Status"),
+          problemCount: kind === "lint" ? count(text, "Problem count") : undefined,
+          changeCount: kind === "diff" ? count(text, "Change count") : undefined,
+          updatedAt: info.mtime.toISOString(),
+        }
+      }),
+  )
+  return items.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.path.localeCompare(b.path))
+}
+
+async function wikiStatus() {
+  const root = await NormWiki.root()
+  const pages = await NormWiki.pages(root)
+  const raws = await NormWiki.raws(root)
+  const items = await reports(root)
+  const index = path.join(root, "wiki", "index.md")
+  const readonly =
+    !Bun.env.RAILWISE_NORM_LIBRARY &&
+    root !== path.join(Instance.directory, ".railwise", "norm-library") &&
+    root !== path.join(Instance.worktree, ".railwise", "norm-library")
+  return {
+    root,
+    readonly,
+    pageCount: pages.length,
+    rawCount: raws.length,
+    indexPath: (await Bun.file(index).exists()) ? path.relative(root, index) : undefined,
+    reportCount: items.length,
+    reports: items.slice(0, 8),
+  }
 }
 
 function prompt(workflow: (typeof presets)[number], input?: Record<string, unknown>) {
@@ -219,6 +309,25 @@ export const AgentStudioRoutes = lazy(() => {
         },
       }),
       (c) => c.json(presets),
+    )
+    .get(
+      "/wiki/status",
+      describeRoute({
+        summary: "Get norm Wiki status",
+        description: "Returns current norm library counts and recent lint/diff change reports.",
+        operationId: "agentStudio.wiki.status",
+        responses: {
+          200: {
+            description: "Norm Wiki status",
+            content: {
+              "application/json": {
+                schema: resolver(WikiStatusSchema),
+              },
+            },
+          },
+        },
+      }),
+      async (c) => c.json(await wikiStatus()),
     )
     .get(
       "/:name",

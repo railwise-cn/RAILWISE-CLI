@@ -4,7 +4,7 @@ import { Markdown } from "@railwise/ui/markdown"
 import { WorkflowCanvas } from "@/components/workflow-canvas"
 import { usePlatform } from "@/context/platform"
 import { useAgentStudioApi } from "@/pages/agents/api"
-import type { WikiReport, WikiReportDetail, WikiStatus } from "@/types/agent-studio"
+import type { WikiLogEntry, WikiReport, WikiReportDetail, WikiStatus } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 
 type ReportKind = "all" | Extract<WikiReport["kind"], "lint" | "diff">
@@ -14,6 +14,17 @@ const filters: { kind: ReportKind; label: string }[] = [
   { kind: "lint", label: "Lint" },
   { kind: "diff", label: "Diff" },
 ]
+
+function logLabel(kind: WikiLogEntry["kind"]) {
+  if (kind === "query") return "查询"
+  if (kind === "ingest") return "入库"
+  return "维护"
+}
+
+function logPaths(entry: WikiLogEntry) {
+  if (!entry.paths.length) return "无关联页面"
+  return entry.paths.slice(0, 2).join("、")
+}
 
 export function WorkflowGallery() {
   const api = useAgentStudioApi()
@@ -212,6 +223,23 @@ export function WorkflowGallery() {
                   )}
                 </For>
               </Show>
+            </Show>
+          </div>
+          <div class="workflow-wiki__activity">
+            <div class="workflow-wiki__activity-bar">
+              <span>最近 Wiki 活动</span>
+              <small>{wiki()?.logCount ?? 0} 条记录</small>
+            </div>
+            <Show when={wiki()?.logs.length} fallback={<small>暂无查询/维护记录</small>}>
+              <For each={wiki()?.logs ?? []}>
+                {(item) => (
+                  <div class="workflow-wiki__log" title={item.raw}>
+                    <strong>{logLabel(item.kind)}</strong>
+                    <span>{item.title}</span>
+                    <small>{logPaths(item)}</small>
+                  </div>
+                )}
+              </For>
             </Show>
           </div>
           <Show when={reportPath()}>

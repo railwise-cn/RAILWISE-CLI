@@ -47,6 +47,14 @@ export type WikiReport = {
   updatedAt: string
 }
 
+export type WikiLogEntry = {
+  kind: "query" | "ingest" | "other"
+  timestamp?: string
+  title: string
+  paths: string[]
+  raw: string
+}
+
 export type WikiStatus = {
   root: string
   readonly: boolean
@@ -55,6 +63,8 @@ export type WikiStatus = {
   indexPath?: string
   reportCount: number
   reports: WikiReport[]
+  logCount: number
+  logs: WikiLogEntry[]
 }
 
 export type WikiReportDetail = WikiReport & {

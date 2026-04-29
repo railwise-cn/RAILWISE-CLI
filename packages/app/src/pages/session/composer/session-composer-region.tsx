@@ -26,6 +26,7 @@ export function SessionComposerRegion(props: {
   const prompt = usePrompt()
   const language = useLanguage()
   const [templates, setTemplates] = createSignal(false)
+  const [applied, setApplied] = createSignal("")
   let editor: HTMLDivElement | undefined
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
@@ -45,7 +46,19 @@ export function SessionComposerRegion(props: {
 
   createEffect(() => {
     if (!prompt.ready()) return
+    if (handoffPrompt()?.trim() && applied() !== sessionKey() && !prompt.dirty()) return
     setSessionHandoff(sessionKey(), { prompt: previewPrompt() })
+  })
+
+  createEffect(() => {
+    if (!prompt.ready()) return
+    const text = handoffPrompt()?.trim()
+    if (!text) return
+    const key = sessionKey()
+    if (applied() === key) return
+    if (prompt.dirty()) return
+    prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
+    setApplied(key)
   })
 
   useTemplateDrawerShortcut(() => setTemplates(true))

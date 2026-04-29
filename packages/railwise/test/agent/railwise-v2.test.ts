@@ -18,6 +18,7 @@ test("M8 industry agents and wiki tools are available by default", async () => {
       expect(names).toContain("cpiii_specialist")
       expect(names).toContain("adjustment_computer")
       expect(names).toContain("railway_norm_consultant")
+      expect(names).toContain("chief_manager")
 
       const ids = await ToolRegistry.ids()
       expect(ids).toContain("tool_adjustment_indirect")

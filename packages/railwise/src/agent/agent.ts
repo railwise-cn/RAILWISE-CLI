@@ -19,6 +19,7 @@ import PROMPT_KNOWLEDGE_CURATOR from "./prompt/knowledge-curator.txt"
 import PROMPT_CPIII_SPECIALIST from "./prompt/cpiii-specialist.txt"
 import PROMPT_ADJUSTMENT_COMPUTER from "./prompt/adjustment-computer.txt"
 import PROMPT_RAILWAY_NORM_CONSULTANT from "./prompt/railway-norm-consultant.txt"
+import PROMPT_CHIEF_MANAGER from "./prompt/chief-manager.txt"
 import { PermissionNext } from "@/permission/next"
 import { mergeDeep, pipe, sortBy, values } from "remeda"
 import { Global } from "@/global"
@@ -92,6 +93,30 @@ export namespace Agent {
           }),
           user,
         ),
+        mode: "primary",
+        native: true,
+      },
+      chief_manager: {
+        name: "chief_manager",
+        description:
+          "Coordinates engineering workflow execution, delegates to specialist agents, and manages delivery quality gates.",
+        color: "rgb(10,10,9)",
+        prompt: PROMPT_CHIEF_MANAGER,
+        steps: 32,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            question: "allow",
+            task: "allow",
+            todowrite: "allow",
+            todoread: "allow",
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
         mode: "primary",
         native: true,
       },

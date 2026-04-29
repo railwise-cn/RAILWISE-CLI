@@ -1,5 +1,5 @@
 import type { Workflow } from "@/types/workflow"
-import type { AgentStudioDetail, AgentStudioItem, WorkflowRun } from "@/types/agent-studio"
+import type { AgentStudioDetail, AgentStudioItem, WikiStatus, WorkflowRun } from "@/types/agent-studio"
 import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 
@@ -36,6 +36,7 @@ export function useAgentStudioApi() {
         body: JSON.stringify({ rawMarkdown }),
       }),
     presets: () => request<Workflow[]>("/workflow/presets"),
+    wikiStatus: () => request<WikiStatus>("/wiki/status"),
     run: (workflowId: string) =>
       request<WorkflowRun>("/workflow/run", {
         method: "POST",

@@ -34,3 +34,25 @@ export type WorkflowRun = {
   workflowId?: string
   agentNames?: string[]
 }
+
+export type WikiReport = {
+  path: string
+  absolutePath: string
+  kind: "lint" | "diff" | "other"
+  title: string
+  generatedAt?: string
+  status?: string
+  problemCount?: number
+  changeCount?: number
+  updatedAt: string
+}
+
+export type WikiStatus = {
+  root: string
+  readonly: boolean
+  pageCount: number
+  rawCount: number
+  indexPath?: string
+  reportCount: number
+  reports: WikiReport[]
+}

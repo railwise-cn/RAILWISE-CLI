@@ -26,4 +26,4 @@ Ingested Wiki pages should include:
 
 ## Lint Rules
 
-`tool_wiki_lint` checks traceability, index coverage, broken markdown links, projected wiki links, orphan pages, stale pages, and conflicting numeric claims for the same `norm_clause_id`.
+`tool_wiki_lint` checks traceability, index coverage, broken markdown links, projected wiki links, orphan pages, stale pages, and conflicting numeric claims for the same `norm_clause_id`. Project libraries should persist each run as `wiki/changes/lint-YYYY-MM-DD.md` for review.

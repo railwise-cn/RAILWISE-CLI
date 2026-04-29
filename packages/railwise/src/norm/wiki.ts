@@ -34,6 +34,17 @@ export namespace NormWiki {
     summary: string
   }
 
+  export type SearchHit = {
+    normId: string
+    chapter: string
+    title: string
+    content: string
+    score: number
+    path: string
+    sourceRaw?: string
+    normClauseId?: string
+  }
+
   export type LintProblem = {
     type: "missing_raw" | "missing_citation" | "missing_index" | "broken_link"
     path: string
@@ -210,6 +221,58 @@ export namespace NormWiki {
       .filter((page) => !scope || page.path.toLowerCase().includes(scope) || page.text.toLowerCase().includes(scope))
       .map((page) => ({ ...page, score: score(page, input.query), summary: summary(page.text, input.query) }))
       .filter((page) => page.score > 0)
+      .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path))
+      .slice(0, limit)
+  }
+
+  function normkey(text: string) {
+    return text.toLowerCase().replace(/\s+/g, "")
+  }
+
+  export async function search(input: { query: string; normFilter?: string[]; topK?: number; source?: string }) {
+    const limit = Math.max(1, Math.min(input.topK ?? 5, 20))
+    const filter = input.normFilter?.map(normkey)
+    const entries = [
+      ...(await pages(input.source)).map((page) => ({
+        path: page.path,
+        title: page.title,
+        text: page.text,
+        citations: page.citations,
+        sourceRaw: page.sourceRaw,
+        normClauseId: page.normClauseId,
+      })),
+      ...(await raws(input.source)).map((raw) => ({
+        path: raw.path,
+        title: raw.title,
+        text: raw.text,
+        citations: raw.citations,
+        sourceRaw: raw.path,
+        normClauseId: raw.citations[0] ? `${raw.citations[0].norm} ${raw.citations[0].clause}` : undefined,
+      })),
+    ]
+    return entries
+      .filter(
+        (entry) =>
+          !filter?.length ||
+          entry.citations.some((item) => filter.includes(normkey(item.norm))) ||
+          filter.some((item) => normkey(entry.path).includes(item)),
+      )
+      .map((entry) => {
+        const refs = entry.citations
+        const first = refs[0]
+        const parts = entry.normClauseId?.split(/\s+/)
+        return {
+          normId: first?.norm ?? parts?.[0] ?? entry.path.split("/")[1]?.toUpperCase() ?? "UNKNOWN",
+          chapter: first?.clause ?? parts?.slice(1).join(" ") ?? "",
+          title: entry.title,
+          content: summary(entry.text, input.query),
+          score: score({ ...entry, path: entry.path }, input.query),
+          path: entry.path,
+          sourceRaw: entry.sourceRaw,
+          normClauseId: entry.normClauseId,
+        } satisfies SearchHit
+      })
+      .filter((hit) => hit.score > 0)
       .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path))
       .slice(0, limit)
   }

@@ -1,7 +1,8 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js"
+import { Markdown } from "@railwise/ui/markdown"
 import { WorkflowCanvas } from "@/components/workflow-canvas"
 import { useAgentStudioApi } from "@/pages/agents/api"
-import type { WikiStatus } from "@/types/agent-studio"
+import type { WikiReportDetail, WikiStatus } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 
 export function WorkflowGallery() {
@@ -12,8 +13,26 @@ export function WorkflowGallery() {
   const [notice, setNotice] = createSignal("")
   const [wiki, setWiki] = createSignal<WikiStatus>()
   const [wikiError, setWikiError] = createSignal("")
+  const [report, setReport] = createSignal<WikiReportDetail>()
+  const [reportPath, setReportPath] = createSignal("")
+  const [reportBusy, setReportBusy] = createSignal(false)
+  const [reportError, setReportError] = createSignal("")
   const current = createMemo(() => items().find((item) => item.id === active()) ?? items()[0])
   const wikiActive = createMemo(() => current()?.id === "cpiii-resurvey-wiki")
+
+  async function loadReport(path: string) {
+    setReportPath(path)
+    setReportBusy(true)
+    setReportError("")
+    setReport(undefined)
+    await api
+      .wikiReport(path)
+      .then((detail) => {
+        if (reportPath() === path) setReport(detail)
+      })
+      .catch((err: unknown) => setReportError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setReportBusy(false))
+  }
 
   onMount(() => {
     void api.presets().then((presets) => {
@@ -25,6 +44,7 @@ export function WorkflowGallery() {
       .then((status) => {
         setWiki(status)
         setWikiError("")
+        if (status.reports[0]) void loadReport(status.reports[0].path)
       })
       .catch((err: unknown) => setWikiError(err instanceof Error ? err.message : String(err)))
   })
@@ -89,18 +109,38 @@ export function WorkflowGallery() {
               <Show when={wiki()?.reports.length} fallback={<small>暂无 lint/diff 报告</small>}>
                 <For each={wiki()?.reports ?? []}>
                   {(report) => (
-                    <code title={report.absolutePath}>
+                    <button
+                      type="button"
+                      class="workflow-wiki__report"
+                      classList={{ active: reportPath() === report.path }}
+                      title={report.absolutePath}
+                      aria-pressed={reportPath() === report.path}
+                      onClick={() => void loadReport(report.path)}
+                    >
                       {report.kind}
                       {" · "}
                       {report.path}
                       {report.problemCount !== undefined ? ` · ${report.problemCount} 问题` : ""}
                       {report.changeCount !== undefined ? ` · ${report.changeCount} 变更` : ""}
-                    </code>
+                    </button>
                   )}
                 </For>
               </Show>
             </Show>
           </div>
+          <Show when={reportPath()}>
+            <article class="workflow-wiki__preview" data-testid="workflow-wiki-report-preview">
+              <header>
+                <span>{report()?.path ?? reportPath()}</span>
+                <small>{reportBusy() ? "加载中" : (report()?.generatedAt ?? report()?.updatedAt ?? "")}</small>
+              </header>
+              <Show when={!reportError()} fallback={<p>{reportError()}</p>}>
+                <Show when={report()} fallback={<small>正在读取报告内容...</small>}>
+                  {(item) => <Markdown text={item().rawMarkdown} />}
+                </Show>
+              </Show>
+            </article>
+          </Show>
         </div>
       </Show>
       <Show when={current()}>{(workflow) => <WorkflowCanvas workflow={workflow()} />}</Show>

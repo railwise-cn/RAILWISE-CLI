@@ -305,7 +305,7 @@
   gap: 6px;
 }
 
-.workflow-wiki__reports code,
+.workflow-wiki__report,
 .workflow-wiki__reports small {
   overflow: hidden;
   color: var(--agent-muted);
@@ -315,10 +315,64 @@
   white-space: nowrap;
 }
 
-.workflow-wiki__reports code {
+.workflow-wiki__report {
+  border: 0;
   border-radius: 6px;
   background: var(--agent-soft);
   padding: 4px 6px;
+  text-align: left;
+}
+
+.workflow-wiki__report.active,
+.workflow-wiki__report:hover {
+  color: var(--agent-text);
+  background: color-mix(in srgb, var(--agent-accent) 14%, var(--agent-surface));
+}
+
+.workflow-wiki__preview {
+  grid-column: 1 / -1;
+  min-height: 180px;
+  max-height: 360px;
+  overflow: auto;
+  border-top: 1px solid var(--agent-border);
+  padding-top: 14px;
+}
+
+.workflow-wiki__preview header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.workflow-wiki__preview header span {
+  color: var(--agent-text);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.workflow-wiki__preview header small,
+.workflow-wiki__preview :where(p, li, small) {
+  color: var(--agent-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.workflow-wiki__preview :where(h1, h2, h3) {
+  margin: 0 0 10px;
+  color: var(--agent-text);
+}
+
+.workflow-wiki__preview :where(pre, code) {
+  border-radius: 6px;
+  background: var(--agent-soft);
+  color: var(--agent-text);
+}
+
+.workflow-wiki__preview pre {
+  overflow: auto;
+  padding: 10px;
 }
 
 .workflow-canvas {

@@ -288,6 +288,7 @@ export namespace Agent {
           defaults,
           PermissionNext.fromConfig({
             tool_adjustment_indirect: "allow",
+            tool_adjustment_condition: "allow",
             tool_wiki_query: "allow",
             tool_norm_search: "allow",
             tool_norm_cite: "allow",

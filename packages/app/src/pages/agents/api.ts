@@ -4,6 +4,7 @@ import type {
   AgentStudioItem,
   WikiReportDetail,
   WikiStatus,
+  WorkflowCheck,
   WorkflowRun,
 } from "@/types/agent-studio"
 import { usePlatform } from "@/context/platform"
@@ -42,6 +43,7 @@ export function useAgentStudioApi() {
         body: JSON.stringify({ rawMarkdown }),
       }),
     presets: () => request<Workflow[]>("/workflow/presets"),
+    workflowCheck: (workflowId: string) => request<WorkflowCheck>(`/workflow/check/${encodeURIComponent(workflowId)}`),
     wikiStatus: () => request<WikiStatus>("/wiki/status"),
     wikiReport: (path: string) => request<WikiReportDetail>(`/wiki/report?path=${encodeURIComponent(path)}`),
     run: (workflowId: string) =>

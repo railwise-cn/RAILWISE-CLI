@@ -37,6 +37,18 @@ export type WorkflowRun = {
   agentNames?: string[]
 }
 
+export type WorkflowCheck = {
+  workflowId: string
+  ok: boolean
+  generatedAt: string
+  checks: {
+    id: string
+    label: string
+    status: "ok" | "warn" | "fail"
+    detail: string
+  }[]
+}
+
 export type WikiReport = {
   path: string
   absolutePath: string

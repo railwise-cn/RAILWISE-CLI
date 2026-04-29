@@ -299,6 +299,76 @@
   white-space: nowrap;
 }
 
+.workflow-check {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.workflow-check__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.workflow-check__bar span {
+  color: var(--agent-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.workflow-check__bar small,
+.workflow-check > small {
+  color: var(--agent-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.workflow-check__item {
+  display: grid;
+  min-height: 32px;
+  grid-template-columns: 54px 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  background: var(--agent-soft);
+  padding: 6px 8px;
+}
+
+.workflow-check__item strong,
+.workflow-check__item span,
+.workflow-check__item small {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workflow-check__item strong {
+  color: var(--agent-text);
+  font-weight: 650;
+}
+
+.workflow-check__item span {
+  color: var(--agent-accent);
+  font-weight: 650;
+}
+
+.workflow-check__item small {
+  color: var(--agent-muted);
+}
+
+.workflow-check__item.warn span {
+  color: #a16207;
+}
+
+.workflow-check__item.fail span {
+  color: #b91c1c;
+}
+
 .workflow-wiki__reports {
   display: flex;
   min-width: 0;
@@ -747,6 +817,14 @@
 
   .workflow-wiki__log {
     grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .workflow-check__item {
+    grid-template-columns: 54px minmax(0, 1fr);
+  }
+
+  .workflow-check__item small {
+    grid-column: 2;
   }
 
   .workflow-wiki__log small {

@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, onMount, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { useNavigate } from "@solidjs/router"
 import { base64Encode } from "@railwise/util/encode"
 import { Icon } from "@railwise/ui/icon"
@@ -7,7 +7,7 @@ import { WorkflowCanvas } from "@/components/workflow-canvas"
 import { usePlatform } from "@/context/platform"
 import { useAgentStudioApi } from "@/pages/agents/api"
 import { setSessionHandoff } from "@/pages/session/handoff"
-import type { WikiLogEntry, WikiReport, WikiReportDetail, WikiStatus } from "@/types/agent-studio"
+import type { WikiLogEntry, WikiReport, WikiReportDetail, WikiStatus, WorkflowCheck } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 
 type ReportKind = "all" | Extract<WikiReport["kind"], "lint" | "diff">
@@ -29,6 +29,12 @@ function logPaths(entry: WikiLogEntry) {
   return entry.paths.slice(0, 2).join("、")
 }
 
+function statusLabel(status: WorkflowCheck["checks"][number]["status"]) {
+  if (status === "ok") return "通过"
+  if (status === "warn") return "提示"
+  return "阻塞"
+}
+
 export function WorkflowGallery() {
   const api = useAgentStudioApi()
   const navigate = useNavigate()
@@ -43,6 +49,9 @@ export function WorkflowGallery() {
   const [reportPath, setReportPath] = createSignal("")
   const [reportBusy, setReportBusy] = createSignal(false)
   const [reportError, setReportError] = createSignal("")
+  const [check, setCheck] = createSignal<WorkflowCheck>()
+  const [checking, setChecking] = createSignal(false)
+  const [checkError, setCheckError] = createSignal("")
   const [kind, setKind] = createSignal<ReportKind>("all")
   const [copied, setCopied] = createSignal(false)
   const current = createMemo(() => items().find((item) => item.id === active()) ?? items()[0])
@@ -134,6 +143,26 @@ export function WorkflowGallery() {
       .catch((err: unknown) => setWikiError(err instanceof Error ? err.message : String(err)))
   })
 
+  createEffect(() => {
+    const workflow = current()
+    if (!workflow) return
+    const id = workflow.id
+    setCheck(undefined)
+    setCheckError("")
+    setChecking(true)
+    void api
+      .workflowCheck(id)
+      .then((result) => {
+        if (current()?.id === id) setCheck(result)
+      })
+      .catch((err: unknown) => {
+        if (current()?.id === id) setCheckError(err instanceof Error ? err.message : String(err))
+      })
+      .finally(() => {
+        if (current()?.id === id) setChecking(false)
+      })
+  })
+
   async function run() {
     const workflow = current()
     if (!workflow) return
@@ -190,6 +219,25 @@ export function WorkflowGallery() {
               <span>模式</span>
               <strong>{wiki()?.readonly === undefined ? "-" : wiki()?.readonly ? "只读" : "项目库"}</strong>
             </div>
+          </div>
+          <div class="workflow-check" data-testid="workflow-check">
+            <div class="workflow-check__bar">
+              <span>工具链检查</span>
+              <small>{checking() ? "检查中" : check()?.ok ? "就绪" : "需处理"}</small>
+            </div>
+            <Show when={!checkError()} fallback={<small title={checkError()}>检查暂不可用</small>}>
+              <Show when={check()?.checks.length} fallback={<small>等待检查结果</small>}>
+                <For each={check()?.checks ?? []}>
+                  {(item) => (
+                    <div class={`workflow-check__item ${item.status}`}>
+                      <strong>{item.label}</strong>
+                      <span>{statusLabel(item.status)}</span>
+                      <small>{item.detail}</small>
+                    </div>
+                  )}
+                </For>
+              </Show>
+            </Show>
           </div>
           <div class="workflow-wiki__reports">
             <div class="workflow-wiki__reports-bar">

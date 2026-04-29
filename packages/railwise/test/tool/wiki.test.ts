@@ -2,7 +2,7 @@ import { expect, test } from "bun:test"
 import fs from "fs/promises"
 import path from "path"
 import { Instance } from "../../src/project/instance"
-import { NormCiteTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "../../src/tool/wiki"
+import { NormCiteTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "../../src/tool/wiki"
 import { tmpdir } from "../fixture/fixture"
 
 function ctx() {
@@ -47,6 +47,28 @@ test("wiki tools query pages and format citations", async () => {
           )
         ).output,
       ).toBe("参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点相对点位中误差不得超过 1 mm。")
+
+      const search = await NormSearchTool.init()
+      const found = JSON.parse(
+        (
+          await search.execute(
+            {
+              query: "相邻点相对点位中误差 1 mm",
+              normFilter: ["TB10101-2018"],
+            },
+            ctx(),
+          )
+        ).output,
+      ) as {
+        results: { normId: string; chapter: string; path: string; sourceRaw?: string; normClauseId?: string }[]
+      }
+      expect(found.results[0]).toMatchObject({
+        normId: "TB10101-2018",
+        chapter: "5.4.3",
+        path: "wiki/clauses/cpiii-precision.md",
+        sourceRaw: "raw/TB10101-2018/tb10101-demo.md",
+        normClauseId: "TB10101-2018 5.4.3",
+      })
     },
   })
 })

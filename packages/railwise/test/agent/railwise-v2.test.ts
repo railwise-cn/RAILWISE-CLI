@@ -23,6 +23,7 @@ test("M8 industry agents and wiki tools are available by default", async () => {
       expect(ids).toContain("tool_wiki_ingest")
       expect(ids).toContain("tool_wiki_index")
       expect(ids).toContain("tool_wiki_lint")
+      expect(ids).toContain("tool_norm_search")
       expect(ids).toContain("tool_norm_cite")
     },
   })

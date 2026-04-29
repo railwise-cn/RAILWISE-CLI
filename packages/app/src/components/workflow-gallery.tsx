@@ -1,12 +1,23 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js"
+import { Icon } from "@railwise/ui/icon"
 import { Markdown } from "@railwise/ui/markdown"
 import { WorkflowCanvas } from "@/components/workflow-canvas"
+import { usePlatform } from "@/context/platform"
 import { useAgentStudioApi } from "@/pages/agents/api"
-import type { WikiReportDetail, WikiStatus } from "@/types/agent-studio"
+import type { WikiReport, WikiReportDetail, WikiStatus } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
+
+type ReportKind = "all" | Extract<WikiReport["kind"], "lint" | "diff">
+
+const filters: { kind: ReportKind; label: string }[] = [
+  { kind: "all", label: "全部" },
+  { kind: "lint", label: "Lint" },
+  { kind: "diff", label: "Diff" },
+]
 
 export function WorkflowGallery() {
   const api = useAgentStudioApi()
+  const platform = usePlatform()
   const [items, setItems] = createSignal<Workflow[]>([])
   const [active, setActive] = createSignal("")
   const [busy, setBusy] = createSignal(false)
@@ -17,8 +28,16 @@ export function WorkflowGallery() {
   const [reportPath, setReportPath] = createSignal("")
   const [reportBusy, setReportBusy] = createSignal(false)
   const [reportError, setReportError] = createSignal("")
+  const [kind, setKind] = createSignal<ReportKind>("all")
+  const [copied, setCopied] = createSignal(false)
   const current = createMemo(() => items().find((item) => item.id === active()) ?? items()[0])
   const wikiActive = createMemo(() => current()?.id === "cpiii-resurvey-wiki")
+  const reports = createMemo(() => wiki()?.reports ?? [])
+  const visible = createMemo(() => {
+    if (kind() === "all") return reports()
+    return reports().filter((item) => item.kind === kind())
+  })
+  const selected = createMemo(() => report() ?? reports().find((item) => item.path === reportPath()))
 
   async function loadReport(path: string) {
     setReportPath(path)
@@ -32,6 +51,57 @@ export function WorkflowGallery() {
       })
       .catch((err: unknown) => setReportError(err instanceof Error ? err.message : String(err)))
       .finally(() => setReportBusy(false))
+  }
+
+  function selectKind(value: ReportKind) {
+    setKind(value)
+    const next = value === "all" ? reports()[0] : reports().find((item) => item.kind === value)
+    if (next) {
+      void loadReport(next.path)
+      return
+    }
+    setReport(undefined)
+    setReportPath("")
+    setReportError("")
+  }
+
+  function fallbackCopy(text: string) {
+    const area = document.createElement("textarea")
+    area.value = text
+    area.setAttribute("readonly", "")
+    area.style.position = "fixed"
+    area.style.inset = "-9999px auto auto -9999px"
+    document.body.append(area)
+    area.select()
+    document.execCommand("copy")
+    area.remove()
+  }
+
+  async function copyReportPath() {
+    const path = selected()?.absolutePath ?? reportPath()
+    if (!path) return
+    const write = navigator.clipboard?.writeText
+    await (write ? write.call(navigator.clipboard, path) : Promise.resolve(fallbackCopy(path)))
+      .then(() => {
+        setCopied(true)
+        setNotice("已复制报告路径")
+        window.setTimeout(() => setCopied(false), 1500)
+      })
+      .catch(() => {
+        fallbackCopy(path)
+        setCopied(true)
+        setNotice("已复制报告路径")
+        window.setTimeout(() => setCopied(false), 1500)
+      })
+  }
+
+  function openReportPath() {
+    const path = selected()?.absolutePath
+    if (!path || !platform.openPath) return
+    void platform
+      .openPath(path)
+      .then(() => setNotice("已打开报告文件"))
+      .catch((err: unknown) => setReportError(err instanceof Error ? err.message : String(err)))
   }
 
   onMount(() => {
@@ -104,24 +174,40 @@ export function WorkflowGallery() {
             </div>
           </div>
           <div class="workflow-wiki__reports">
-            <span>最近变更报告</span>
+            <div class="workflow-wiki__reports-bar">
+              <span>最近变更报告</span>
+              <div class="workflow-wiki__filters" aria-label="报告类型筛选">
+                <For each={filters}>
+                  {(item) => (
+                    <button
+                      type="button"
+                      classList={{ active: kind() === item.kind }}
+                      aria-pressed={kind() === item.kind}
+                      onClick={() => selectKind(item.kind)}
+                    >
+                      {item.label}
+                    </button>
+                  )}
+                </For>
+              </div>
+            </div>
             <Show when={!wikiError()} fallback={<small title={wikiError()}>Wiki 状态暂不可用</small>}>
-              <Show when={wiki()?.reports.length} fallback={<small>暂无 lint/diff 报告</small>}>
-                <For each={wiki()?.reports ?? []}>
-                  {(report) => (
+              <Show when={visible().length} fallback={<small>暂无 lint/diff 报告</small>}>
+                <For each={visible()}>
+                  {(item) => (
                     <button
                       type="button"
                       class="workflow-wiki__report"
-                      classList={{ active: reportPath() === report.path }}
-                      title={report.absolutePath}
-                      aria-pressed={reportPath() === report.path}
-                      onClick={() => void loadReport(report.path)}
+                      classList={{ active: reportPath() === item.path }}
+                      title={item.absolutePath}
+                      aria-pressed={reportPath() === item.path}
+                      onClick={() => void loadReport(item.path)}
                     >
-                      {report.kind}
+                      {item.kind}
                       {" · "}
-                      {report.path}
-                      {report.problemCount !== undefined ? ` · ${report.problemCount} 问题` : ""}
-                      {report.changeCount !== undefined ? ` · ${report.changeCount} 变更` : ""}
+                      {item.path}
+                      {item.problemCount !== undefined ? ` · ${item.problemCount} 问题` : ""}
+                      {item.changeCount !== undefined ? ` · ${item.changeCount} 变更` : ""}
                     </button>
                   )}
                 </For>
@@ -131,8 +217,22 @@ export function WorkflowGallery() {
           <Show when={reportPath()}>
             <article class="workflow-wiki__preview" data-testid="workflow-wiki-report-preview">
               <header>
-                <span>{report()?.path ?? reportPath()}</span>
-                <small>{reportBusy() ? "加载中" : (report()?.generatedAt ?? report()?.updatedAt ?? "")}</small>
+                <div>
+                  <span>{selected()?.path ?? reportPath()}</span>
+                  <small>{reportBusy() ? "加载中" : (selected()?.generatedAt ?? selected()?.updatedAt ?? "")}</small>
+                </div>
+                <div class="workflow-wiki__preview-actions">
+                  <button type="button" class="workflow-wiki__action" onClick={() => void copyReportPath()}>
+                    <Icon name={copied() ? "check" : "copy"} size="small" />
+                    <span>{copied() ? "已复制" : "复制路径"}</span>
+                  </button>
+                  <Show when={platform.openPath && selected()?.absolutePath}>
+                    <button type="button" class="workflow-wiki__action" onClick={openReportPath}>
+                      <Icon name="open-file" size="small" />
+                      <span>打开原文件</span>
+                    </button>
+                  </Show>
+                </div>
               </header>
               <Show when={!reportError()} fallback={<p>{reportError()}</p>}>
                 <Show when={report()} fallback={<small>正在读取报告内容...</small>}>

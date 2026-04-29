@@ -8,7 +8,6 @@ import { Agent } from "../../agent/agent"
 import { AgentUpdated } from "../../agent/agent-events"
 import presets from "../../agent/workflow-presets.json" with { type: "json" }
 import { Bus } from "../../bus"
-import { Identifier } from "../../id/id"
 import { NormWiki } from "../../norm/wiki"
 import { Instance } from "../../project/instance"
 import { Session } from "../../session"
@@ -55,6 +54,7 @@ const WorkflowRunSchema = z
     sessionTitle: z.string(),
     workflowId: z.string(),
     directory: z.string(),
+    prompt: z.string(),
     agentNames: z.string().array(),
   })
   .meta({ ref: "WorkflowRun" })
@@ -277,28 +277,6 @@ function cpiii() {
   ].join("\n")
 }
 
-async function seed(workflow: (typeof presets)[number], sessionId: string, input?: Record<string, unknown>) {
-  const agentName =
-    workflow.nodes.find((node) => node.agent === "chief_manager")?.agent ?? workflow.nodes[0]?.agent ?? "build"
-  const agent = await Agent.get(agentName)
-  const messageId = Identifier.ascending("message")
-  await Session.updateMessage({
-    id: messageId,
-    sessionID: sessionId,
-    role: "user",
-    time: { created: Date.now() },
-    agent: agentName,
-    model: agent?.model ?? { providerID: "railwise", modelID: "workflow" },
-  })
-  await Session.updatePart({
-    id: Identifier.ascending("part"),
-    sessionID: sessionId,
-    messageID: messageId,
-    type: "text",
-    text: prompt(workflow, input),
-  })
-}
-
 export const AgentStudioRoutes = lazy(() => {
   const schema = {
     list: Agent.Info.extend({
@@ -510,12 +488,13 @@ export const AgentStudioRoutes = lazy(() => {
         if (!workflow) return c.json({ error: `workflow "${body.workflowId}" not found` }, 400)
         const title = `工作流：${workflow.name}`
         const session = await Session.create({ title })
-        await seed(workflow, session.id, body.input)
+        const text = prompt(workflow, body.input)
         return c.json({
           sessionId: session.id,
           sessionTitle: title,
           workflowId: workflow.id,
           directory: Instance.directory,
+          prompt: text,
           agentNames: [...new Set(workflow.nodes.map((node) => node.agent))],
         })
       },

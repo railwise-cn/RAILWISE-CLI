@@ -62,7 +62,7 @@ describe("server.routes.agent-studio", () => {
     }
   })
 
-  test("workflow run creates a seeded session and updates recent call counts", async () => {
+  test("workflow run creates a session and returns a reusable prompt", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME
     process.env.RAILWISE_TEST_HOME = tmp.path
@@ -86,23 +86,19 @@ describe("server.routes.agent-studio", () => {
           expect(response.status).toBe(200)
           expect(result.sessionTitle).toBe("工作流：地铁月度监测报告流水线")
           expect(result.directory).toBe(tmp.path)
+          expect(result.prompt).toContain("地铁月度监测报告流水线")
           expect(result.agentNames).toContain("chief_manager")
 
           const session = await Session.get(result.sessionId)
           const messages = await Session.messages({ sessionID: result.sessionId })
 
           expect(session.title).toBe(result.sessionTitle)
-          expect(messages[0]?.info.agent).toBe("chief_manager")
-          expect(messages[0]?.parts[0]?.type).toBe("text")
-          expect(messages[0]?.parts[0]?.type === "text" ? messages[0].parts[0].synthetic : true).toBeUndefined()
-          expect(messages[0]?.parts[0]?.type === "text" ? messages[0].parts[0].text : "").toContain(
-            "地铁月度监测报告流水线",
-          )
+          expect(messages).toEqual([])
 
           const listResponse = await AgentStudioRoutes().request("http://railwise.test/list")
           const list = (await listResponse.json()) as { name: string; callCount7d?: number }[]
           const chief = list.find((agent: { name: string }) => agent.name === "chief_manager")
-          expect(chief?.callCount7d).toBeGreaterThanOrEqual(1)
+          expect(chief?.callCount7d).toBe(0)
         },
       })
     } finally {
@@ -124,19 +120,17 @@ describe("server.routes.agent-studio", () => {
             body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki" }),
           })
           const result = await response.json()
-          const messages = await Session.messages({ sessionID: result.sessionId })
-          const text = messages[0]?.parts[0]?.type === "text" ? messages[0].parts[0].text : ""
 
           expect(response.status).toBe(200)
           expect(result.directory).toBe(tmp.path)
           expect(result.agentNames).toContain("adjustment_computer")
           expect(result.agentNames).toContain("railway_norm_consultant")
-          expect(text).toContain("CPIII 工具执行包")
-          expect(text).toContain("tool_wiki_query")
-          expect(text).toContain("appendLog")
-          expect(text).toContain("tool_adjustment_indirect")
-          expect(text).toContain('"unknowns"')
-          expect(text).toContain("wiki/log.md")
+          expect(result.prompt).toContain("CPIII 工具执行包")
+          expect(result.prompt).toContain("tool_wiki_query")
+          expect(result.prompt).toContain("appendLog")
+          expect(result.prompt).toContain("tool_adjustment_indirect")
+          expect(result.prompt).toContain('"unknowns"')
+          expect(result.prompt).toContain("wiki/log.md")
         },
       })
     } finally {

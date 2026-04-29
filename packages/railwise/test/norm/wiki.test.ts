@@ -135,14 +135,19 @@ describe("norm wiki", () => {
     await Instance.provide({
       directory: tmp.path,
       fn: async () => {
-        const report = await NormWiki.lint()
+        const report = await NormWiki.lint({ writeReport: true })
         const types = report.problems.map((problem) => problem.type)
 
         expect(report.ok).toBe(false)
+        expect(report.reportPath).toBe(`wiki/changes/lint-${new Date().toISOString().slice(0, 10)}.md`)
         expect(types).toContain("conflict")
         expect(types).toContain("projected_page")
         expect(types).toContain("stale_page")
         expect(types).toContain("orphan_page")
+        const written = await Bun.file(path.join(tmp.path, ".railwise", "norm-library", report.reportPath!)).text()
+        expect(written).toContain("# RAILWISE Norm Wiki Lint Report")
+        expect(written).toContain("projected_page")
+        expect(written).toContain("conflict")
       },
     })
   })

@@ -110,8 +110,17 @@ test("wiki maintenance tools ingest, index, and lint project wiki", async () => 
         ok: boolean
         problemCount: number
         problems: unknown[]
+        reportPath: string
       }
-      expect(report).toEqual({ ok: true, problemCount: 0, problems: [] })
+      expect(report).toMatchObject({
+        ok: true,
+        problemCount: 0,
+        problems: [],
+        reportPath: `wiki/changes/lint-${new Date().toISOString().slice(0, 10)}.md`,
+      })
+      expect(await Bun.file(path.join(tmp.path, ".railwise", "norm-library", report.reportPath)).text()).toContain(
+        "no problems found",
+      )
     },
   })
 })

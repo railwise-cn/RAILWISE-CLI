@@ -56,3 +56,7 @@ export type WikiStatus = {
   reportCount: number
   reports: WikiReport[]
 }
+
+export type WikiReportDetail = WikiReport & {
+  rawMarkdown: string
+}

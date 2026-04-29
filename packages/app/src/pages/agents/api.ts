@@ -1,5 +1,11 @@
 import type { Workflow } from "@/types/workflow"
-import type { AgentStudioDetail, AgentStudioItem, WikiStatus, WorkflowRun } from "@/types/agent-studio"
+import type {
+  AgentStudioDetail,
+  AgentStudioItem,
+  WikiReportDetail,
+  WikiStatus,
+  WorkflowRun,
+} from "@/types/agent-studio"
 import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 
@@ -37,6 +43,7 @@ export function useAgentStudioApi() {
       }),
     presets: () => request<Workflow[]>("/workflow/presets"),
     wikiStatus: () => request<WikiStatus>("/wiki/status"),
+    wikiReport: (path: string) => request<WikiReportDetail>(`/wiki/report?path=${encodeURIComponent(path)}`),
     run: (workflowId: string) =>
       request<WorkflowRun>("/workflow/run", {
         method: "POST",

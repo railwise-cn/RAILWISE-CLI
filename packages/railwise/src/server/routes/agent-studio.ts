@@ -14,6 +14,7 @@ import { Session } from "../../session"
 import { MessageTable } from "../../session/session.sql"
 import { Database, gte } from "../../storage/db"
 import { AdjustmentConditionTool, AdjustmentIndirectTool } from "../../tool/adjustment"
+import { FormatConverterTool } from "../../tool/format"
 import { ToolRegistry } from "../../tool/registry"
 import { lazy } from "../../util/lazy"
 import { errors } from "../error"
@@ -275,15 +276,22 @@ function prompt(workflow: (typeof presets)[number], input?: Record<string, unkno
   )
 }
 
+function cpiiiCosa() {
+  return [
+    "3.5,5,5",
+    "CP300,4003.855,2903.360",
+    "CP301,4094.969,3854.515",
+    "CP300",
+    "CP301,L,0",
+    "CP301,S,339.366",
+    "unknowns,dN_CP301,dE_CP301",
+    "equation,baseline_north,dN_CP301=1,observed=0.002,weight=1",
+    "equation,baseline_east,dE_CP301=1,observed=-0.001,weight=1",
+    "equation,closure_vector,dN_CP301=1,dE_CP301=1,observed=0.0005,weight=0.8",
+  ].join("\n")
+}
+
 function cpiii() {
-  const indirect = {
-    unknowns: ["dN_CP301", "dE_CP301"],
-    equations: [
-      { name: "baseline_north", coefficients: { dN_CP301: 1 }, observed: 0.002, weight: 1 },
-      { name: "baseline_east", coefficients: { dE_CP301: 1 }, observed: -0.001, weight: 1 },
-      { name: "closure_vector", coefficients: { dN_CP301: 1, dE_CP301: 1 }, observed: 0.0005, weight: 0.8 },
-    ],
-  }
   const condition = {
     observations: [
       { name: "dh1", value: 100.001 },
@@ -296,8 +304,8 @@ function cpiii() {
     "CPIII 工具执行包：",
     '1. norm_librarian 先调用 tool_wiki_query({"query":"CPIII 复测限差 平面 高程 控制网","scope":"CPIII","limit":5,"appendLog":true})，无命中再调用 tool_norm_search。',
     "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
-    "3. adjustment_computer 对参数估计类任务调用 tool_adjustment_indirect，先用下列观测方程跑通平差链路，再替换为项目实测方程：",
-    JSON.stringify(indirect, null, 2),
+    "3. adjustment_computer 先调用 tool_format_converter 解析 COSA .in2 / CSV / NASEW 预处理文本，使用返回的 next.args 调用 tool_adjustment_indirect：",
+    JSON.stringify({ sourceFormat: "cosa-in2", content: cpiiiCosa() }, null, 2),
     "4. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
     JSON.stringify(condition, null, 2),
     "5. cpiii_specialist 汇总规范意见、平差成果、闭合差残差异常和复测建议，不在模型中手算控制网。",
@@ -310,17 +318,35 @@ function item(input: { id: string; label: string; status: "ok" | "warn" | "fail"
 }
 
 async function adjustmentCheck() {
+  const format = await FormatConverterTool.init()
   const indirect = await AdjustmentIndirectTool.init()
   const condition = await AdjustmentConditionTool.init()
-  const indirectResult = await indirect.execute(
+  const converted = await format.execute(
     {
-      unknowns: ["dN_CP301", "dE_CP301"],
-      equations: [
-        { name: "baseline_north", coefficients: { dN_CP301: 1 }, observed: 0.002, weight: 1 },
-        { name: "baseline_east", coefficients: { dE_CP301: 1 }, observed: -0.001, weight: 1 },
-        { name: "closure_vector", coefficients: { dN_CP301: 1, dE_CP301: 1 }, observed: 0.0005, weight: 0.8 },
-      ],
+      sourceFormat: "cosa-in2",
+      content: cpiiiCosa(),
     },
+    {
+      sessionID: "workflow-check",
+      messageID: "workflow-check",
+      agent: "agent-studio",
+      abort: new AbortController().signal,
+      messages: [],
+      metadata() {},
+      async ask() {},
+    },
+  )
+  const payload = JSON.parse(converted.output) as {
+    next?: {
+      args: {
+        unknowns: string[]
+        equations: { name?: string; coefficients: Record<string, number>; observed: number; weight?: number }[]
+      }
+    }
+  }
+  if (!payload.next) throw new Error("format converter did not produce adjustment payload")
+  const indirectResult = await indirect.execute(
+    payload.next.args,
     {
       sessionID: "workflow-check",
       messageID: "workflow-check",
@@ -375,12 +401,13 @@ async function check(workflow: (typeof presets)[number]) {
     "tool_wiki_query",
     "tool_norm_search",
     "tool_norm_cite",
+    "tool_format_converter",
     "tool_adjustment_indirect",
     "tool_adjustment_condition",
   ]
   const missingTools = tools.filter((tool) => !ids.has(tool))
   const stats =
-    ids.has("tool_adjustment_indirect") && ids.has("tool_adjustment_condition")
+    ids.has("tool_format_converter") && ids.has("tool_adjustment_indirect") && ids.has("tool_adjustment_condition")
       ? await adjustmentCheck().catch(() => undefined)
       : undefined
   const checks = [

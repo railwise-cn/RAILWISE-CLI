@@ -35,6 +35,8 @@ describe("server.routes.agent-studio", () => {
           expect(names).toContain("source_ingestor")
           expect(names).toContain("knowledge_curator")
           expect(names).toContain("cpiii_specialist")
+          expect(names).toContain("adjustment_computer")
+          expect(names).toContain("railway_norm_consultant")
 
           const presetResponse = await AgentStudioRoutes().request("http://railwise.test/workflow/presets")
           const workflows = (await presetResponse.json()) as {
@@ -47,6 +49,8 @@ describe("server.routes.agent-studio", () => {
           expect(workflow?.nodes.map((node) => node.agent)).toEqual([
             "source_ingestor",
             "norm_librarian",
+            "railway_norm_consultant",
+            "adjustment_computer",
             "cpiii_specialist",
             "knowledge_curator",
             "chief_manager",

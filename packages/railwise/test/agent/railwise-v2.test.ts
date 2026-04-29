@@ -16,8 +16,11 @@ test("M8 industry agents and wiki tools are available by default", async () => {
       expect(names).toContain("source_ingestor")
       expect(names).toContain("knowledge_curator")
       expect(names).toContain("cpiii_specialist")
+      expect(names).toContain("adjustment_computer")
+      expect(names).toContain("railway_norm_consultant")
 
       const ids = await ToolRegistry.ids()
+      expect(ids).toContain("tool_adjustment_indirect")
       expect(ids).toContain("tool_mineru_parse")
       expect(ids).toContain("tool_wiki_query")
       expect(ids).toContain("tool_wiki_ingest")
@@ -35,6 +38,8 @@ test("CPIII resurvey workflow preset wires the industry agents", () => {
   expect(workflow?.nodes.map((node) => node.agent)).toEqual([
     "source_ingestor",
     "norm_librarian",
+    "railway_norm_consultant",
+    "adjustment_computer",
     "cpiii_specialist",
     "knowledge_curator",
     "chief_manager",

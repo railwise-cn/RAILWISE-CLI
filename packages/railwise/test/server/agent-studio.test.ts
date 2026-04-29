@@ -139,6 +139,16 @@ describe("server.routes.agent-studio", () => {
         "# RAILWISE Norm Wiki Index\n\n- [CPIII 复测](clauses/cpiii.md): TB10601 3.1\n",
       )
       await Bun.write(
+        path.join(root, "wiki", "log.md"),
+        [
+          "# Query Log",
+          "",
+          '- 2026-04-29T00:00:00.000Z query="CPIII 高程精度要求" hits=wiki/clauses/cpiii.md',
+          "## [2026-04-29] ingest | CPIII 复测 | pages=wiki/clauses/cpiii.md",
+          "",
+        ].join("\n"),
+      )
+      await Bun.write(
         path.join(root, "wiki", "changes", "lint-2026-04-29.md"),
         [
           "# RAILWISE Norm Wiki Lint Report",
@@ -173,6 +183,8 @@ describe("server.routes.agent-studio", () => {
             indexPath?: string
             reportCount: number
             reports: { path: string; kind: string; problemCount?: number; changeCount?: number }[]
+            logCount: number
+            logs: { kind: string; title: string; paths: string[] }[]
           }
 
           expect(response.status).toBe(200)
@@ -185,6 +197,17 @@ describe("server.routes.agent-studio", () => {
           expect(status.reports.map((report) => report.path)).toContain(
             "wiki/changes/diff-tb10601-to-tb10601-2026-04-29.md",
           )
+          expect(status.logCount).toBe(2)
+          expect(status.logs[0]).toMatchObject({
+            kind: "ingest",
+            title: "CPIII 复测",
+            paths: ["wiki/clauses/cpiii.md"],
+          })
+          expect(status.logs[1]).toMatchObject({
+            kind: "query",
+            title: "CPIII 高程精度要求",
+            paths: ["wiki/clauses/cpiii.md"],
+          })
           expect(status.reports.find((report) => report.kind === "lint")?.problemCount).toBe(2)
           expect(status.reports.find((report) => report.kind === "diff")?.changeCount).toBe(1)
 

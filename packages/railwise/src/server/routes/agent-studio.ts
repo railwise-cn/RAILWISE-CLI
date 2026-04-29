@@ -72,6 +72,16 @@ const WikiReportSchema = z
   })
   .meta({ ref: "WikiReport" })
 
+const WikiLogSchema = z
+  .object({
+    kind: z.enum(["query", "ingest", "other"]),
+    timestamp: z.string().optional(),
+    title: z.string(),
+    paths: z.string().array(),
+    raw: z.string(),
+  })
+  .meta({ ref: "WikiLogEntry" })
+
 const WikiStatusSchema = z
   .object({
     root: z.string(),
@@ -81,6 +91,8 @@ const WikiStatusSchema = z
     indexPath: z.string().optional(),
     reportCount: z.number().int(),
     reports: z.array(WikiReportSchema),
+    logCount: z.number().int(),
+    logs: z.array(WikiLogSchema),
   })
   .meta({ ref: "WikiStatus" })
 
@@ -207,6 +219,7 @@ async function wikiStatus() {
   const pages = await NormWiki.pages(root)
   const raws = await NormWiki.raws(root)
   const items = await reports(root)
+  const logs = await NormWiki.logs({ source: root, limit: 50 })
   const index = path.join(root, "wiki", "index.md")
   const readonly =
     !Bun.env.RAILWISE_NORM_LIBRARY &&
@@ -220,6 +233,8 @@ async function wikiStatus() {
     indexPath: (await Bun.file(index).exists()) ? path.relative(root, index) : undefined,
     reportCount: items.length,
     reports: items.slice(0, 8),
+    logCount: logs.length,
+    logs: logs.slice(0, 5),
   }
 }
 

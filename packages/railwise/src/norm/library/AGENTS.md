@@ -22,3 +22,8 @@ Ingested Wiki pages should include:
 - `norm_clause_id`: `<norm id> <clause id>` when the page claims a standard clause.
 - `source_hash`: Raw text hash captured during ingest.
 - `last_ingest_at`: ISO timestamp for the latest ingest.
+- `supersededBy`: optional Wiki page path when a clause page is replaced by a newer page.
+
+## Lint Rules
+
+`tool_wiki_lint` checks traceability, index coverage, broken markdown links, projected wiki links, orphan pages, stale pages, and conflicting numeric claims for the same `norm_clause_id`.

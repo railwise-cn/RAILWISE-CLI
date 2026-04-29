@@ -3,6 +3,7 @@ import { Tool } from "./tool"
 import { NormWiki } from "@/norm/wiki"
 
 import QUERY_DESCRIPTION from "./wiki-query.txt"
+import SEARCH_DESCRIPTION from "./norm-search.txt"
 import CITE_DESCRIPTION from "./norm-cite.txt"
 
 export const WikiQueryTool = Tool.define("tool_wiki_query", {
@@ -98,6 +99,32 @@ export const WikiLintTool = Tool.define("tool_wiki_lint", {
       metadata: {
         ok: result.ok,
         problemCount: result.problemCount,
+      },
+    }
+  },
+})
+
+export const NormSearchTool = Tool.define("tool_norm_search", {
+  description: SEARCH_DESCRIPTION,
+  parameters: z.object({
+    query: z.string().min(1).describe("Natural-language or exact keyword query, e.g. CPIII 高程精度要求"),
+    normFilter: z.array(z.string()).optional().describe("Optional norm ids, e.g. TB10101-2018 or GB50026."),
+    norm_filter: z.array(z.string()).optional().describe("Alias for normFilter."),
+    topK: z.number().int().min(1).max(20).optional().describe("Maximum results. Defaults to 5."),
+    top_k: z.number().int().min(1).max(20).optional().describe("Alias for topK."),
+  }),
+  async execute(params) {
+    const results = await NormWiki.search({
+      query: params.query,
+      normFilter: params.normFilter ?? params.norm_filter,
+      topK: params.topK ?? params.top_k,
+    })
+    return {
+      title: "Norm Search",
+      output: JSON.stringify({ query: params.query, results }, null, 2),
+      metadata: {
+        query: params.query,
+        resultCount: results.length,
       },
     }
   },

@@ -89,7 +89,8 @@ export const WikiIndexTool = Tool.define("tool_wiki_index", {
 })
 
 export const WikiLintTool = Tool.define("tool_wiki_lint", {
-  description: "Check the RAILWISE norm Wiki for missing Raw links, missing citations, missing index entries, and broken links.",
+  description:
+    "Check the RAILWISE norm Wiki for missing Raw links, missing citations, missing index entries, broken/projected links, orphan pages, stale pages, and numeric conflicts.",
   parameters: z.object({}),
   async execute() {
     const result = await NormWiki.lint()

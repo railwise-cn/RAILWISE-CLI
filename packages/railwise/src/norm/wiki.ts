@@ -27,6 +27,7 @@ export namespace NormWiki {
     normClauseId?: string
     sourceHash?: string
     lastIngestAt?: string
+    supersededBy?: string
   }
 
   export type Hit = Page & {
@@ -46,7 +47,15 @@ export namespace NormWiki {
   }
 
   export type LintProblem = {
-    type: "missing_raw" | "missing_citation" | "missing_index" | "broken_link"
+    type:
+      | "missing_raw"
+      | "missing_citation"
+      | "missing_index"
+      | "broken_link"
+      | "projected_page"
+      | "orphan_page"
+      | "conflict"
+      | "stale_page"
     path: string
     message: string
   }
@@ -189,6 +198,7 @@ export namespace NormWiki {
             normClauseId: fm.meta.norm_clause_id,
             sourceHash: fm.meta.source_hash,
             lastIngestAt: fm.meta.last_ingest_at,
+            supersededBy: fm.meta.supersededBy ?? fm.meta.superseded_by,
           }
         }),
     )
@@ -227,6 +237,43 @@ export namespace NormWiki {
 
   function normkey(text: string) {
     return text.toLowerCase().replace(/\s+/g, "")
+  }
+
+  function pagekey(text: string) {
+    return (
+      text
+        .toLowerCase()
+        .replace(/\.md$/, "")
+        .replace(/[^a-z0-9\u4e00-\u9fff]+/g, "") || slug(text)
+    )
+  }
+
+  function linkpath(page: Page, link: string) {
+    if (link.startsWith("http") || link.startsWith("#")) return undefined
+    const clean = link.split("#")[0]?.split("?")[0]
+    if (!clean) return undefined
+    const rel = path.normalize(path.join(path.dirname(page.path), clean))
+    if (rel.startsWith("..") || path.isAbsolute(rel)) return undefined
+    return rel
+  }
+
+  function wikilinks(text: string) {
+    return Array.from(text.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)).map((match) => match[1].trim())
+  }
+
+  function clauseid(page: Page) {
+    const first = page.citations[0]
+    return page.normClauseId ?? (first ? `${first.norm} ${first.clause}` : undefined)
+  }
+
+  function values(text: string) {
+    return [
+      ...new Set(
+        Array.from(text.matchAll(/(-?\d+(?:\.\d+)?)\s*(mm|cm|m|%|毫米|厘米|米)/gi)).map(
+          (match) => `${Number(match[1])} ${match[2].toLowerCase()}`,
+        ),
+      ),
+    ]
   }
 
   export async function search(input: { query: string; normFilter?: string[]; topK?: number; source?: string }) {
@@ -405,24 +452,49 @@ export namespace NormWiki {
     const source = input.source ?? (await root())
     const items = await pages(source)
     const index = await Bun.file(path.join(source, "wiki", "index.md")).text().catch(() => "")
+    const paths = new Set(items.map((page) => page.path))
+    const aliases = new Map(
+      items.flatMap((page) => [
+        [pagekey(page.title), page.path],
+        [pagekey(path.basename(page.path)), page.path],
+      ]),
+    )
+    const incoming = new Map(items.map((page) => [page.path, new Set<string>()]))
     const problems = (
       await Promise.all(
         items.map(async (page) => {
           const raw = page.sourceRaw ? path.join(source, page.sourceRaw) : undefined
           const missingRaw = page.sourceRaw && !(await exists(raw!))
-          const links = Array.from(page.text.matchAll(/\[[^\]]+\]\(([^)]+)\)/g))
-            .map((match) => match[1])
-            .filter((link) => !link.startsWith("http") && !link.startsWith("#"))
-          const broken = await Promise.all(
-            links.map(async (link) => {
-              const target = path.normalize(path.join(source, path.dirname(page.path), link))
-              return (await exists(target)) ? undefined : ({
+          const links = Array.from(page.text.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)).map((match) => match[1])
+          const broken = links.flatMap((link): LintProblem[] => {
+            const target = linkpath(page, link)
+            if (!target) return []
+            if (paths.has(target)) {
+              incoming.get(target)?.add(page.path)
+              return []
+            }
+            return [
+              {
                 type: "broken_link",
                 path: page.path,
                 message: `Missing linked page: ${link}`,
-              } satisfies LintProblem)
-            }),
-          )
+              },
+            ]
+          })
+          const projected = wikilinks(page.text).flatMap((link): LintProblem[] => {
+            const target = aliases.get(pagekey(link))
+            if (target) {
+              incoming.get(target)?.add(page.path)
+              return []
+            }
+            return [
+              {
+                type: "projected_page",
+                path: page.path,
+                message: `Wiki link has no matching page: ${link}`,
+              },
+            ]
+          })
           return [
             !page.sourceRaw && page.path.includes("/clauses/")
               ? { type: "missing_raw", path: page.path, message: "Clause page has no source_raw frontmatter." }
@@ -434,13 +506,57 @@ export namespace NormWiki {
             !index.includes(page.path.replace(/^wiki\//, ""))
               ? { type: "missing_index", path: page.path, message: "Page is not referenced by wiki/index.md." }
               : undefined,
+            page.supersededBy
+              ? { type: "stale_page", path: page.path, message: `Page is superseded by ${page.supersededBy}.` }
+              : undefined,
             ...broken,
+            ...projected,
           ]
         }),
       )
     )
       .flat()
       .filter((item): item is LintProblem => Boolean(item))
+    const conflicts = Object.values(
+      items.reduce(
+        (acc, page) => {
+          const id = clauseid(page)
+          if (!id) return acc
+          return {
+            ...acc,
+            [id]: [...(acc[id] ?? []), page],
+          }
+        },
+        {} as Record<string, Page[]>,
+      ),
+    )
+      .filter((group) => group.length > 1)
+      .map((group) => ({
+        pages: group,
+        claims: group.flatMap((page) => values(page.text).map((value) => ({ page, value }))),
+      }))
+      .filter((group) => new Set(group.claims.map((claim) => claim.value)).size > 1)
+      .map((group) => ({
+        type: "conflict",
+        path: group.pages[0].path,
+        message: `Conflicting numeric claims for ${clauseid(group.pages[0])}: ${group.claims
+          .map((claim) => `${claim.value} in ${claim.page.path}`)
+          .join("; ")}`,
+      }) satisfies LintProblem)
+    const orphans =
+      items.length < 2
+        ? []
+        : items
+            .filter((page) => (incoming.get(page.path)?.size ?? 0) === 0)
+            .map(
+              (page) =>
+                ({
+                  type: "orphan_page",
+                  path: page.path,
+                  message: "Page has no incoming links from other Wiki pages.",
+                }) satisfies LintProblem,
+            )
+    problems.push(...conflicts, ...orphans)
     return { ok: problems.length === 0, problemCount: problems.length, problems }
   }
 }

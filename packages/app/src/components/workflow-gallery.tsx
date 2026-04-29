@@ -6,6 +6,7 @@ import { Markdown } from "@railwise/ui/markdown"
 import { WorkflowCanvas } from "@/components/workflow-canvas"
 import { usePlatform } from "@/context/platform"
 import { useAgentStudioApi } from "@/pages/agents/api"
+import { setSessionHandoff } from "@/pages/session/handoff"
 import type { WikiLogEntry, WikiReport, WikiReportDetail, WikiStatus } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 
@@ -139,6 +140,8 @@ export function WorkflowGallery() {
     setBusy(true)
     const result = await api.run(workflow.id).finally(() => setBusy(false))
     setNotice(`已导入预设，Session: ${result.sessionTitle ?? result.sessionId}`)
+    const key = `${base64Encode(result.directory)}/${result.sessionId}`
+    setSessionHandoff(key, { prompt: result.prompt })
     navigate(`/${base64Encode(result.directory)}/session/${result.sessionId}`)
   }
 

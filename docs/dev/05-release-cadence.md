@@ -15,11 +15,15 @@ Core 变更必须说明兼容性：
 - Agent/workflow/delivery package 契约是否变更
 - 数据库或本地文件格式是否迁移
 
+共同前置门禁见 [../admin/08-core-compatibility-gate.md](../admin/08-core-compatibility-gate.md)。
+
 ## CLI
 
 RAILWISE CLI 按 npm/binary 包节奏发布，验收重点是命令、脚本化、CI 和无头运行。
 
 CLI 发布不得被 Desktop 签名、公证、安装器或自动更新阻塞。
+
+CLI 发布 runbook 见 [../admin/07-cli-release-runbook.md](../admin/07-cli-release-runbook.md)。
 
 CLI 发布前检查：
 
@@ -54,7 +58,7 @@ GA 发布版本为 `desktop/v1.3.0` 起步。更新服务器按 10%、30%、100%
 首次 GA 推荐使用手动触发：
 
 ```bash
-gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref main -f version=1.3.0
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0
 ```
 
 触发前必须完成发布 secrets 配置。完整清单和配置命令见 `docs/admin/06-desktop-release-runbook.md`。

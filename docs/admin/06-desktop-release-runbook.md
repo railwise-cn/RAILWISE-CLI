@@ -2,6 +2,8 @@
 
 本文档用于管理员配置并执行 RAILWISE Desktop 的 GitHub Actions 发布流程。发布流程会构建 Windows、macOS Apple Silicon、macOS Intel 和 Linux 安装包，并创建 draft GitHub Release。
 
+本文档只覆盖 Desktop 安装器、签名、公证、更新服务器和 GA gates。CLI npm/binary 发布不走本 runbook，见 [07-cli-release-runbook.md](./07-cli-release-runbook.md)。
+
 ## 前置权限
 
 执行人需要具备以下权限：
@@ -98,7 +100,7 @@ bun run desktop:verify:ga -- --full
 手动触发 `Desktop Release` workflow：
 
 ```bash
-gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref main -f version=1.3.0
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0
 ```
 
 或推送发布标签：

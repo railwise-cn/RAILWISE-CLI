@@ -213,9 +213,9 @@ rg -n "Product line|product line|产品线" .github CONTRIBUTING.md docs/dev
 
 ### P2 Release Docs Split
 
-- CLI release docs 独立。
-- Desktop release runbook 只保留桌面签名、公证、更新、安装器和 GA gates。
-- Core compatibility notes 作为 CLI 和 Desktop 共同前置门禁。
+- [x] CLI release docs 独立，见 [../admin/07-cli-release-runbook.md](../admin/07-cli-release-runbook.md)。
+- [x] Desktop release runbook 只保留桌面签名、公证、更新、安装器和 GA gates。
+- [x] Core compatibility notes 作为 CLI 和 Desktop 共同前置门禁，见 [../admin/08-core-compatibility-gate.md](../admin/08-core-compatibility-gate.md)。
 
 验收：
 
@@ -249,3 +249,4 @@ rg -n "CLI|Desktop|Core|desktop/v|npm|notarization|codesign" docs/admin docs/dev
 - [x] App shell 文案边界已扫描并修正。
 - [x] CLI 命令边界已扫描，未发现 Desktop-only 依赖。
 - [x] Delivery package Core API、Desktop/App UI、CLI export 边界已归档。
+- [x] Release docs 已按 CLI、Desktop、Core compatibility 拆分。

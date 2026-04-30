@@ -170,6 +170,12 @@ cd packages/desktop && bun run typecheck
 - 浏览器预览只能作为 UI iteration，不作为 GA 验收。
 - 本地文件、sidecar、updater、窗口、菜单必须在原生路径里验证。
 
+当前状态：
+
+- Desktop 壳已启用 standalone session route，工作流预设可从 Agent Studio 进入 Session 交付页，不回落到 Dashboard。
+- Desktop E2E harness 已覆盖 CPIII 预设导入、交付验收和 delivery package 导出清单展示。
+- Native Tauri 二进制验收仍待执行，不能用浏览器 harness 代替 GA 验收。
+
 验收：
 
 ```bash

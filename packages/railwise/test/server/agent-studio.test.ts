@@ -212,7 +212,9 @@ describe("server.routes.agent-studio", () => {
   test("reports format sample coverage diagnostics", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME
+    const library = process.env.RAILWISE_NORM_LIBRARY
     process.env.RAILWISE_TEST_HOME = tmp.path
+    delete process.env.RAILWISE_NORM_LIBRARY
     try {
       await Instance.provide({
         directory: tmp.path,
@@ -233,6 +235,12 @@ describe("server.routes.agent-studio", () => {
               equationCount: number
               unknowns: string[]
             }[]
+            artifacts: {
+              markdownPath: string
+              absoluteMarkdownPath: string
+              jsonPath: string
+              absoluteJsonPath: string
+            }
           }
           const damaged = result.samples.find((sample) => sample.id === "south-damaged")
           const cosa = result.samples.find((sample) => sample.id === "cosa-in2")
@@ -249,10 +257,50 @@ describe("server.routes.agent-studio", () => {
           expect(damaged?.detectedFormat).toBe("south-in")
           expect(damaged?.ready).toBe(true)
           expect(damaged?.warningLines).toEqual([6, 7])
+          expect(result.artifacts.markdownPath.startsWith("wiki/changes/format-coverage-")).toBe(true)
+          expect(result.artifacts.markdownPath.endsWith(".md")).toBe(true)
+          expect(result.artifacts.jsonPath).toBe(result.artifacts.markdownPath.replace(/\.md$/, ".json"))
+
+          const markdown = await Bun.file(result.artifacts.absoluteMarkdownPath).text()
+          const json = (await Bun.file(result.artifacts.absoluteJsonPath).json()) as {
+            sampleCount: number
+            warningCount: number
+          }
+
+          expect(markdown).toContain("# RAILWISE Format Coverage Report")
+          expect(markdown).toContain("Ready count: 6")
+          expect(markdown).toContain("JSON attachment: ")
+          expect(markdown).toContain("South .in damaged but usable")
+          expect(json.sampleCount).toBe(6)
+          expect(json.warningCount).toBe(2)
+
+          const statusResponse = await AgentStudioRoutes().request("http://railwise.test/wiki/status")
+          const status = (await statusResponse.json()) as {
+            reports: {
+              path: string
+              kind: string
+              sampleCount?: number
+              readyCount?: number
+              warningCount?: number
+              jsonPath?: string
+            }[]
+          }
+          const report = status.reports.find((item) => item.kind === "format")
+
+          expect(report?.path).toBe(result.artifacts.markdownPath)
+          expect(report?.sampleCount).toBe(6)
+          expect(report?.readyCount).toBe(6)
+          expect(report?.warningCount).toBe(2)
+          expect(report?.jsonPath).toBe(result.artifacts.jsonPath)
         },
       })
     } finally {
       restore(home)
+      if (library === undefined) {
+        delete process.env.RAILWISE_NORM_LIBRARY
+      } else {
+        process.env.RAILWISE_NORM_LIBRARY = library
+      }
     }
   })
 

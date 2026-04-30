@@ -90,12 +90,18 @@ const WikiReportSchema = z
   .object({
     path: z.string(),
     absolutePath: z.string(),
-    kind: z.enum(["lint", "diff", "other"]),
+    kind: z.enum(["lint", "diff", "format", "other"]),
     title: z.string(),
     generatedAt: z.string().optional(),
     status: z.string().optional(),
     problemCount: z.number().int().optional(),
     changeCount: z.number().int().optional(),
+    sampleCount: z.number().int().optional(),
+    readyCount: z.number().int().optional(),
+    formatCount: z.number().int().optional(),
+    coveredFormatCount: z.number().int().optional(),
+    warningCount: z.number().int().optional(),
+    jsonPath: z.string().optional(),
     updatedAt: z.string(),
   })
   .meta({ ref: "WikiReport" })
@@ -149,6 +155,15 @@ const FormatSampleReportSchema = z
   })
   .meta({ ref: "FormatSampleReport" })
 
+const FormatCoverageArtifactsSchema = z
+  .object({
+    markdownPath: z.string(),
+    absoluteMarkdownPath: z.string(),
+    jsonPath: z.string(),
+    absoluteJsonPath: z.string(),
+  })
+  .meta({ ref: "FormatCoverageArtifacts" })
+
 const FormatCoverageReportSchema = z
   .object({
     generatedAt: z.string(),
@@ -158,9 +173,12 @@ const FormatCoverageReportSchema = z
     coveredFormatCount: z.number().int(),
     warningCount: z.number().int(),
     samples: FormatSampleReportSchema.array(),
+    artifacts: FormatCoverageArtifactsSchema.optional(),
   })
   .meta({ ref: "FormatCoverageReport" })
 
+type FormatCoverageReport = z.infer<typeof FormatCoverageReportSchema>
+type FormatCoverageCore = Omit<FormatCoverageReport, "artifacts">
 type FormatConverted = {
   detectedFormat?: string
   points?: unknown[]
@@ -177,6 +195,27 @@ type FormatConverted = {
 
 function file(name: string) {
   return path.join(Instance.worktree, ".railwise", "agent", `${name}.md`)
+}
+
+function localNormRoot() {
+  return path.join(Instance.directory, ".railwise", "norm-library")
+}
+
+function worktreeNormRoot() {
+  return path.join(Instance.worktree, ".railwise", "norm-library")
+}
+
+async function reportRoots() {
+  const root = await NormWiki.root()
+  return [...new Set([root, localNormRoot(), worktreeNormRoot()])]
+}
+
+async function writableNormRoot() {
+  const root = await NormWiki.root()
+  const local = localNormRoot()
+  const worktree = worktreeNormRoot()
+  if (Bun.env.RAILWISE_NORM_LIBRARY || root === local || root === worktree) return root
+  return local
 }
 
 function model(agent: Agent.Info) {
@@ -231,6 +270,7 @@ function calls() {
 function reportKind(name: string) {
   if (name.startsWith("lint-")) return "lint" as const
   if (name.startsWith("diff-")) return "diff" as const
+  if (name.startsWith("format-coverage-")) return "format" as const
   return "other" as const
 }
 
@@ -256,6 +296,12 @@ async function report(root: string, source: string) {
     status: match(text, "Status"),
     problemCount: kind === "lint" ? count(text, "Problem count") : undefined,
     changeCount: kind === "diff" ? count(text, "Change count") : undefined,
+    sampleCount: kind === "format" ? count(text, "Sample count") : undefined,
+    readyCount: kind === "format" ? count(text, "Ready count") : undefined,
+    formatCount: kind === "format" ? count(text, "Format count") : undefined,
+    coveredFormatCount: kind === "format" ? count(text, "Covered format count") : undefined,
+    warningCount: kind === "format" ? count(text, "Warning count") : undefined,
+    jsonPath: kind === "format" ? match(text, "JSON attachment") : undefined,
     updatedAt: info.mtime.toISOString(),
     rawMarkdown: text,
   }
@@ -278,22 +324,28 @@ async function reports(root: string) {
 }
 
 async function reportDetail(input: string) {
-  const root = await NormWiki.root()
   const rel = path.normalize(input)
   const prefix = path.join("wiki", "changes") + path.sep
   if (path.isAbsolute(rel) || rel.startsWith("..") || !rel.startsWith(prefix) || !rel.endsWith(".md")) return
-  const source = path.join(root, rel)
-  const inside = path.relative(root, source)
-  if (inside.startsWith("..") || path.isAbsolute(inside)) return
-  if (!(await Bun.file(source).exists())) return
-  return report(root, source)
+  for (const root of (await reportRoots()).reverse()) {
+    const source = path.join(root, rel)
+    const inside = path.relative(root, source)
+    if (inside.startsWith("..") || path.isAbsolute(inside)) continue
+    if (await Bun.file(source).exists()) return report(root, source)
+  }
 }
 
 async function wikiStatus() {
   const root = await NormWiki.root()
   const pages = await NormWiki.pages(root)
   const raws = await NormWiki.raws(root)
-  const items = await reports(root)
+  const items = [
+    ...new Map(
+      (await Promise.all((await reportRoots()).map((root) => reports(root))))
+        .flat()
+        .map((report) => [report.path, report] as const),
+    ).values(),
+  ].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.path.localeCompare(b.path))
   const logs = await NormWiki.logs({ source: root, limit: 50 })
   const index = path.join(root, "wiki", "index.md")
   const readonly =
@@ -373,7 +425,8 @@ function cpiii() {
     "8. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
     JSON.stringify(condition, null, 2),
     "9. cpiii_specialist 汇总规范意见、平差成果、自由网/粗差/稳健平差/方差分量/闭合差残差异常和复测建议，不在模型中手算控制网。",
-    "10. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
+    `10. technical_writer 在复测预案和技术报告附件中引用格式兼容性质检报告 wiki/changes/${artifactBase(new Date().toISOString())}.md 及同名 JSON，说明支持格式覆盖、样本可用率和损坏行 warning。`,
+    "11. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
   ].join("\n")
 }
 
@@ -412,7 +465,7 @@ async function formatCorpus() {
   )
 }
 
-function coverage(corpus: Awaited<ReturnType<typeof formatCorpus>>) {
+function coverage(corpus: Awaited<ReturnType<typeof formatCorpus>>): FormatCoverageCore {
   const samples = corpus.map((entry) => {
     const warnings = entry.converted.warnings ?? []
     const next = entry.converted.next
@@ -448,6 +501,92 @@ function coverage(corpus: Awaited<ReturnType<typeof formatCorpus>>) {
     warningCount: samples.reduce((sum, sample) => sum + sample.warningCount, 0),
     samples,
   }
+}
+
+function artifactBase(generatedAt: string) {
+  return `format-coverage-${generatedAt.slice(0, 10)}`
+}
+
+function cell(value: string | number | boolean | undefined) {
+  return String(value ?? "-").replaceAll("|", "\\|").replaceAll("\n", "<br>")
+}
+
+function markdown(report: FormatCoverageCore, jsonPath: string) {
+  const rows = report.samples.map((sample) =>
+    [
+      sample.label,
+      sample.expectedFormat,
+      sample.detectedFormat,
+      sample.ready ? "ready" : "blocked",
+      sample.pointCount,
+      sample.observationCount,
+      sample.equationCount,
+      sample.unknowns.join(", ") || "-",
+      sample.warningCount ? `${sample.warningCount} (${sample.warningLines.join(", ") || "no line"})` : "0",
+      sample.nextTool ?? "-",
+    ]
+      .map(cell)
+      .join(" | "),
+  )
+  const warnings = report.samples
+    .filter((sample) => sample.warnings.length)
+    .flatMap((sample) => [
+      `### ${sample.label}`,
+      "",
+      ...sample.warnings.map((warning) => `- ${warning}`),
+      "",
+    ])
+  return [
+    "# RAILWISE Format Coverage Report",
+    "",
+    `Generated: ${report.generatedAt}`,
+    `Status: ${report.readyCount === report.sampleCount && report.coveredFormatCount === report.formatCount ? "ready" : "needs_attention"}`,
+    `Sample count: ${report.sampleCount}`,
+    `Ready count: ${report.readyCount}`,
+    `Format count: ${report.formatCount}`,
+    `Covered format count: ${report.coveredFormatCount}`,
+    `Warning count: ${report.warningCount}`,
+    `JSON attachment: ${jsonPath}`,
+    "",
+    "## Delivery Use",
+    "",
+    "- 用作 CPIII 复测预案与技术报告的格式兼容性质检附件。",
+    "- 技术报告引用本 Markdown 摘要，工程归档系统引用同名 JSON 保留机器可读诊断。",
+    "- warning 行号必须进入外业数据首检意见，避免损坏行在报告链路中被静默吞掉。",
+    "",
+    "## Sample Coverage",
+    "",
+    "| Sample | Expected | Detected | Ready | Points | Observations | Equations | Unknowns | Warnings | Next Tool |",
+    "| --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |",
+    ...rows.map((row) => `| ${row} |`),
+    "",
+    "## Warning Details",
+    "",
+    ...(warnings.length ? warnings : ["No warnings.", ""]),
+  ].join("\n")
+}
+
+async function persist(report: FormatCoverageCore) {
+  const root = await writableNormRoot()
+  const dir = path.join(root, "wiki", "changes")
+  const base = artifactBase(report.generatedAt)
+  const md = path.join(dir, `${base}.md`)
+  const json = path.join(dir, `${base}.json`)
+  const jsonPath = path.relative(root, json)
+  await mkdir(dir, { recursive: true })
+  await Bun.write(json, `${JSON.stringify(report, null, 2)}\n`)
+  await Bun.write(md, markdown(report, jsonPath))
+  return {
+    markdownPath: path.relative(root, md),
+    absoluteMarkdownPath: md,
+    jsonPath,
+    absoluteJsonPath: json,
+  }
+}
+
+async function formatReport() {
+  const data = coverage(await formatCorpus())
+  return { ...data, artifacts: await persist(data) }
 }
 
 async function adjustmentCheck() {
@@ -713,7 +852,7 @@ export const AgentStudioRoutes = lazy(() => {
       "/wiki/status",
       describeRoute({
         summary: "Get norm Wiki status",
-        description: "Returns current norm library counts and recent lint/diff change reports.",
+        description: "Returns current norm library counts and recent change or quality reports.",
         operationId: "agentStudio.wiki.status",
         responses: {
           200: {
@@ -732,7 +871,8 @@ export const AgentStudioRoutes = lazy(() => {
       "/format/report",
       describeRoute({
         summary: "Get format sample coverage report",
-        description: "Runs the built-in survey format sample corpus and returns parser readiness diagnostics.",
+        description:
+          "Runs the built-in survey format sample corpus, writes Markdown/JSON quality attachments, and returns parser readiness diagnostics.",
         operationId: "agentStudio.format.report",
         responses: {
           200: {
@@ -745,7 +885,7 @@ export const AgentStudioRoutes = lazy(() => {
           },
         },
       }),
-      async (c) => c.json(coverage(await formatCorpus())),
+      async (c) => c.json(await formatReport()),
     )
     .get(
       "/workflow/check/:id",

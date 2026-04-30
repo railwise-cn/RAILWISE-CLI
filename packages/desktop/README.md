@@ -25,6 +25,14 @@ bun run --cwd packages/desktop dev
 
 Use this only for UI iteration. Desktop acceptance must run through the native Tauri shell because sidecar startup, local file commands, updater behavior, and platform integration are part of the product.
 
+To verify the native shell without building a real sidecar binary:
+
+```bash
+bun run --cwd packages/desktop check:tauri
+```
+
+The command prepares a local check-only sidecar stub before running `cargo check`, so plain Rust validation does not require release artifacts.
+
 ## Build
 
 To create a production `dist/` and build the native app bundle:

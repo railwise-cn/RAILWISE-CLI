@@ -177,9 +177,11 @@ App shell 是共享 UI，不是商业产品边界。
 
 ### A1 Shared UI Boundaries
 
-- 检查 `packages/app` 中是否存在 Desktop-only 文案。
-- 将 Desktop-only 文案移动到 `packages/desktop` 或通过 Desktop 配置注入。
-- 保留 browser preview 所需的通用 UI。
+- [x] 检查 `packages/app` 中是否存在 Desktop-only 文案。
+- [x] 将 Desktop-only 文案移动到 `packages/desktop` 或通过 Desktop 配置注入。
+- [x] 保留 browser preview 所需的通用 UI。
+
+审查记录见 [08-app-shell-boundary-audit.md](./08-app-shell-boundary-audit.md)。
 
 验收：
 
@@ -242,5 +244,4 @@ rg -n "CLI|Desktop|Core|desktop/v|npm|notarization|codesign" docs/admin docs/dev
 - [ ] Core contract backlog 待拆 issue。
 - [ ] CLI export/headless backlog 待拆 issue。
 - [ ] Desktop GA blockers 待继续执行。
-- [ ] App shell 文案边界待扫描。
-
+- [x] App shell 文案边界已扫描并修正。

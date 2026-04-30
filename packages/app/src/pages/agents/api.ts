@@ -7,6 +7,7 @@ import type {
   WikiStatus,
   WorkflowAcceptance,
   WorkflowCheck,
+  WorkflowDeliveryArchive,
   WorkflowRun,
   WorkflowSession,
 } from "@/types/agent-studio"
@@ -51,6 +52,12 @@ export function useAgentStudioApi() {
       request<WorkflowSession>(`/workflow/session/${encodeURIComponent(sessionId)}`),
     workflowAcceptance: (workflowId: string, sessionId: string) =>
       request<WorkflowAcceptance>("/workflow/acceptance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workflowId, sessionId }),
+      }),
+    workflowDeliveryArchive: (workflowId: string, sessionId: string) =>
+      request<WorkflowDeliveryArchive>("/workflow/delivery/archive", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ workflowId, sessionId }),

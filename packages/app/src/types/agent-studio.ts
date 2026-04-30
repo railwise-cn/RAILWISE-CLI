@@ -73,6 +73,15 @@ export type WorkflowAcceptance = {
   }[]
 }
 
+export type WorkflowDeliveryArchive = {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  generatedAt: string
+  markdownPath: string
+  absoluteMarkdownPath: string
+}
+
 export type WorkflowSession = {
   sessionId: string
   workflowId: string
@@ -81,6 +90,7 @@ export type WorkflowSession = {
   updatedAt: string
   artifacts?: WorkflowRunArtifact[]
   acceptance?: WorkflowAcceptance
+  delivery?: WorkflowDeliveryArchive
 }
 
 export type FormatSampleReport = {

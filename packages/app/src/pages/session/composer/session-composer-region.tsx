@@ -75,6 +75,7 @@ export function SessionComposerRegion(props: {
   const [acceptanceError, setAcceptanceError] = createSignal("")
   const [artifactNotice, setArtifactNotice] = createSignal("")
   const [accepting, setAccepting] = createSignal(false)
+  const [archiving, setArchiving] = createSignal(false)
   const [stored, setStored] = createSignal<WorkflowSession>()
   const [submitRequest, setSubmitRequest] = createSignal(0)
   let editor: HTMLDivElement | undefined
@@ -92,6 +93,7 @@ export function SessionComposerRegion(props: {
     () => handoff()?.workflowName ?? stored()?.workflowName ?? sessionTitle()?.replace(/^工作流：/, ""),
   )
   const artifacts = createMemo(() => handoff()?.artifacts ?? stored()?.artifacts ?? [])
+  const delivery = createMemo(() => stored()?.delivery)
   const canAccept = createMemo(() => Boolean(params.id && workflowId() === "cpiii-resurvey-wiki"))
 
   const previewPrompt = () =>
@@ -185,6 +187,31 @@ export function SessionComposerRegion(props: {
       .finally(() => setAccepting(false))
   }
 
+  const runArchive = () => {
+    const id = params.id
+    const workflow = workflowId()
+    if (!id || !workflow) return
+    setArchiving(true)
+    setAcceptanceError("")
+    void api
+      .workflowDeliveryArchive(workflow, id)
+      .then((result) => {
+        setStored((info) => ({
+          sessionId: info?.sessionId ?? result.sessionId,
+          workflowId: info?.workflowId ?? result.workflowId,
+          workflowName: info?.workflowName ?? result.workflowName,
+          createdAt: info?.createdAt ?? result.generatedAt,
+          updatedAt: result.generatedAt,
+          artifacts: info?.artifacts,
+          acceptance: info?.acceptance ?? acceptance(),
+          delivery: result,
+        }))
+        setArtifactNotice("已导出交付摘要")
+      })
+      .catch((err: unknown) => setAcceptanceError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setArchiving(false))
+  }
+
   const copyPath = (value: string) => {
     const write = navigator.clipboard?.writeText
     void (write ? write.call(navigator.clipboard, value) : Promise.resolve(fallbackCopy(value)))
@@ -236,8 +263,9 @@ export function SessionComposerRegion(props: {
   }
 
   const workflowActionLabel = createMemo(() => {
+    if (archiving()) return "导出中"
     if (accepting()) return "验收中"
-    if (acceptance()?.ok) return "已通过"
+    if (acceptance()?.ok) return delivery() ? "重新导出" : "导出摘要"
     if (workflowStage() === "failed") return "继续返工"
     if (workflowStage() === "pending") return "开始执行"
     if (workflowStage() === "running") return working() ? "执行中" : "等待输出"
@@ -245,7 +273,7 @@ export function SessionComposerRegion(props: {
   })
 
   const workflowActionIcon = createMemo(() => {
-    if (acceptance()?.ok) return "check" as const
+    if (acceptance()?.ok) return "archive" as const
     if (workflowStage() === "failed") return "edit" as const
     if (workflowStage() === "pending") return "arrow-up" as const
     if (workflowStage() === "running") return "enter" as const
@@ -253,7 +281,8 @@ export function SessionComposerRegion(props: {
   })
 
   const workflowActionDisabled = createMemo(() => {
-    if (accepting() || acceptance()?.ok) return true
+    if (accepting() || archiving()) return true
+    if (acceptance()?.ok) return false
     if (workflowStage() === "pending") return !hasDraft()
     if (workflowStage() === "running") return true
     return false
@@ -261,6 +290,10 @@ export function SessionComposerRegion(props: {
 
   const runWorkflowAction = () => {
     if (workflowActionDisabled()) return
+    if (acceptance()?.ok) {
+      runArchive()
+      return
+    }
     if (workflowStage() === "pending") {
       setSubmitRequest((value) => value + 1)
       return
@@ -469,6 +502,45 @@ export function SessionComposerRegion(props: {
                           )}
                         </For>
                       </div>
+                    </Show>
+                    <Show when={delivery()}>
+                      {(item) => (
+                        <div
+                          class="mt-2 rounded-md border border-[rgba(31,118,71,0.18)] bg-[rgba(31,118,71,0.05)] px-2 py-1.5 text-12-regular"
+                          data-testid="workflow-delivery-archive"
+                        >
+                          <div class="mb-1 flex flex-wrap items-center justify-between gap-2">
+                            <strong class="text-[rgb(31,118,71)]">交付摘要</strong>
+                            <span class="text-11-regular text-text-weak">{item().generatedAt}</span>
+                          </div>
+                          <div class="grid items-center gap-1 md:grid-cols-[72px_1fr_auto]">
+                            <span class="text-text-weak">Markdown</span>
+                            <code class="min-w-0 truncate text-11-regular text-text-base" title={item().markdownPath}>
+                              {item().markdownPath}
+                            </code>
+                            <div class="flex items-center gap-1">
+                              <button
+                                type="button"
+                                class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                title="复制路径"
+                                onClick={() => copyPath(item().markdownPath)}
+                              >
+                                <Icon name="copy" size="small" />
+                              </button>
+                              <Show when={platform.openPath}>
+                                <button
+                                  type="button"
+                                  class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                  title="打开文件"
+                                  onClick={() => openPath(item().absoluteMarkdownPath)}
+                                >
+                                  <Icon name="open-file" size="small" />
+                                </button>
+                              </Show>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </Show>
                     <Show when={acceptance()}>
                       {(result) => (

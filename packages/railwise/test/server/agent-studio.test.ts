@@ -357,6 +357,10 @@ describe("server.routes.agent-studio", () => {
           const session = await Session.create({ title: "CPIII archive" })
           const md = "wiki/changes/format-coverage-2026-04-30.md"
           const json = "wiki/changes/format-coverage-2026-04-30.json"
+          const root = path.join(tmp.path, ".railwise", "norm-library")
+          await mkdir(path.join(root, "wiki", "changes"), { recursive: true })
+          await Bun.write(path.join(root, md), "# Format coverage\n")
+          await Bun.write(path.join(root, json), '{"ready":true}\n')
           const user = await writeUser(
             session.id,
             `工作流附件：\n- 格式兼容性质检报告 Markdown: ${md}\n- 格式兼容性质检报告 JSON: ${json}`,
@@ -393,25 +397,53 @@ describe("server.routes.agent-studio", () => {
             body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki", sessionId: session.id }),
           })
           const result = (await archived.json()) as {
+            directoryPath: string
+            absoluteDirectoryPath: string
             markdownPath: string
             absoluteMarkdownPath: string
+            manifestPath: string
+            absoluteManifestPath: string
+            fileCount: number
+            files: { kind: string; path: string; copied: boolean; sourcePath?: string }[]
           }
           const markdown = await Bun.file(result.absoluteMarkdownPath).text()
+          const manifest = (await Bun.file(result.absoluteManifestPath).json()) as {
+            delivery: { fileCount: number }
+            references: { path: string }[]
+          }
           const metadataResponse = await AgentStudioRoutes().request(
             `http://railwise.test/workflow/session/${session.id}`,
           )
           const metadata = (await metadataResponse.json()) as {
-            delivery: { markdownPath: string }
+            delivery: { directoryPath: string; markdownPath: string; manifestPath: string; fileCount: number }
           }
 
           expect(accepted.status).toBe(200)
           expect(archived.status).toBe(200)
-          expect(result.markdownPath).toContain(".railwise/workflow-deliveries/")
+          expect(result.directoryPath).toContain(".railwise/workflow-deliveries/")
+          expect(result.markdownPath).toContain("/summary.md")
+          expect(result.manifestPath).toContain("/manifest.json")
+          expect(result.fileCount).toBe(4)
+          expect(result.files.filter((file) => file.copied)).toHaveLength(4)
+          expect(result.files.find((file) => file.sourcePath === md)?.path).toContain("artifact-01.md")
+          expect(result.files.find((file) => file.sourcePath === json)?.path).toContain("artifact-02.json")
           expect(markdown).toContain("# CPIII 规范查询与复测预案 交付摘要")
+          expect(markdown).toContain("## 交付包文件")
           expect(markdown).toContain(md)
           expect(markdown).toContain(json)
           expect(markdown).toContain("## 验收检查")
+          expect(await Bun.file(path.join(result.absoluteDirectoryPath, "artifact-01.md")).text()).toContain(
+            "Format coverage",
+          )
+          expect(await Bun.file(path.join(result.absoluteDirectoryPath, "artifact-02.json")).json()).toEqual({
+            ready: true,
+          })
+          expect(manifest.delivery.fileCount).toBe(4)
+          expect(manifest.references.map((reference) => reference.path)).toContain(md)
           expect(metadata.delivery.markdownPath).toBe(result.markdownPath)
+          expect(metadata.delivery.directoryPath).toBe(result.directoryPath)
+          expect(metadata.delivery.manifestPath).toBe(result.manifestPath)
+          expect(metadata.delivery.fileCount).toBe(4)
         },
       })
     } finally {

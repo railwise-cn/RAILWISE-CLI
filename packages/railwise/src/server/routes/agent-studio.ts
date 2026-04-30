@@ -119,14 +119,31 @@ const WorkflowAcceptanceSchema = z
   })
   .meta({ ref: "WorkflowAcceptance" })
 
+const WorkflowDeliveryFileSchema = z
+  .object({
+    kind: z.enum(["summary", "manifest", "artifact"]),
+    label: z.string(),
+    path: z.string(),
+    absolutePath: z.string(),
+    sourcePath: z.string().optional(),
+    copied: z.boolean(),
+  })
+  .meta({ ref: "WorkflowDeliveryFile" })
+
 const WorkflowDeliveryArchiveSchema = z
   .object({
     sessionId: z.string(),
     workflowId: z.string(),
     workflowName: z.string(),
     generatedAt: z.string(),
+    directoryPath: z.string().optional(),
+    absoluteDirectoryPath: z.string().optional(),
     markdownPath: z.string(),
     absoluteMarkdownPath: z.string(),
+    manifestPath: z.string().optional(),
+    absoluteManifestPath: z.string().optional(),
+    fileCount: z.number().int().optional(),
+    files: WorkflowDeliveryFileSchema.array().optional(),
   })
   .meta({ ref: "WorkflowDeliveryArchive" })
 
@@ -238,8 +255,10 @@ type FormatCoverageReport = z.infer<typeof FormatCoverageReportSchema>
 type FormatCoverageCore = Omit<FormatCoverageReport, "artifacts">
 type WorkflowRunArtifact = z.infer<typeof WorkflowRunArtifactSchema>
 type WorkflowAcceptance = z.infer<typeof WorkflowAcceptanceSchema>
+type WorkflowDeliveryFile = z.infer<typeof WorkflowDeliveryFileSchema>
 type WorkflowDeliveryArchive = z.infer<typeof WorkflowDeliveryArchiveSchema>
 type WorkflowSession = z.infer<typeof WorkflowSessionSchema>
+type DeliveryReference = { label: string; path: string; absolutePath?: string }
 type FormatConverted = {
   detectedFormat?: string
   points?: unknown[]
@@ -282,8 +301,16 @@ function workflowSessionPath(sessionId: string) {
   return path.join(workflowSessionDir(), `${safeSessionId(sessionId)}.json`)
 }
 
+function workflowDeliveryPackageDir(sessionId: string) {
+  return path.join(workflowDeliveryDir(), safeSessionId(sessionId))
+}
+
 function workflowDeliveryPath(sessionId: string) {
-  return path.join(workflowDeliveryDir(), `${safeSessionId(sessionId)}.md`)
+  return path.join(workflowDeliveryPackageDir(sessionId), "summary.md")
+}
+
+function workflowDeliveryManifestPath(sessionId: string) {
+  return path.join(workflowDeliveryPackageDir(sessionId), "manifest.json")
 }
 
 async function workflowSession(sessionId: string) {
@@ -958,11 +985,11 @@ async function sessionText(sessionId: string) {
   return messages.map((message) => message.parts.map(partText).join("\n")).join("\n")
 }
 
-function deliveryReferences(artifacts: WorkflowRunArtifact[], text: string) {
+function deliveryReferences(artifacts: WorkflowRunArtifact[], text: string): DeliveryReference[] {
   if (artifacts.length)
     return artifacts.flatMap((artifact) => [
-      { label: `${artifact.title} Markdown`, path: artifact.markdownPath },
-      { label: `${artifact.title} JSON`, path: artifact.jsonPath },
+      { label: `${artifact.title} Markdown`, path: artifact.markdownPath, absolutePath: artifact.absoluteMarkdownPath },
+      { label: `${artifact.title} JSON`, path: artifact.jsonPath, absolutePath: artifact.absoluteJsonPath },
     ])
   const source = artifactPaths(text)
   return [
@@ -971,10 +998,45 @@ function deliveryReferences(artifacts: WorkflowRunArtifact[], text: string) {
   ]
 }
 
+function packageArtifactName(index: number, source: string) {
+  return `artifact-${String(index + 1).padStart(2, "0")}${path.extname(source) || ".txt"}`
+}
+
+async function referenceAbsolutePath(reference: DeliveryReference) {
+  if (reference.absolutePath && (await Bun.file(reference.absolutePath).exists())) return reference.absolutePath
+  const found = await Promise.all(
+    (await reportRoots()).map(async (root) => {
+      const candidate = path.join(root, reference.path)
+      if (await Bun.file(candidate).exists()) return candidate
+    }),
+  )
+  return found.find(Boolean)
+}
+
+async function packageFiles(dir: string, references: DeliveryReference[]) {
+  await mkdir(dir, { recursive: true })
+  return Promise.all(
+    references.map(async (reference, index): Promise<WorkflowDeliveryFile> => {
+      const source = await referenceAbsolutePath(reference)
+      const target = path.join(dir, packageArtifactName(index, reference.path))
+      if (source) await Bun.write(target, Bun.file(source))
+      return {
+        kind: "artifact",
+        label: reference.label,
+        path: path.relative(Instance.directory, target),
+        absolutePath: target,
+        sourcePath: reference.path,
+        copied: Boolean(source),
+      }
+    }),
+  )
+}
+
 function deliveryMarkdown(input: {
   delivery: WorkflowDeliveryArchive
   acceptance: WorkflowAcceptance
-  references: { label: string; path: string }[]
+  references: DeliveryReference[]
+  files: WorkflowDeliveryFile[]
 }) {
   return [
     `# ${input.delivery.workflowName} 交付摘要`,
@@ -982,6 +1044,9 @@ function deliveryMarkdown(input: {
     `- 会话 ID: ${input.delivery.sessionId}`,
     `- 工作流 ID: ${input.delivery.workflowId}`,
     `- 导出时间: ${input.delivery.generatedAt}`,
+    `- 交付目录: ${input.delivery.directoryPath ?? "-"}`,
+    `- Manifest: ${input.delivery.manifestPath ?? "-"}`,
+    `- 包内文件数: ${input.delivery.fileCount ?? 0}`,
     "",
     "## 验收结论",
     "- 状态: 通过",
@@ -990,8 +1055,17 @@ function deliveryMarkdown(input: {
     "",
     "## 附件引用",
     ...(input.references.length
-      ? input.references.map((item) => `- ${item.label}: ${item.path}`)
+      ? input.references.map((item) => {
+          const copy = input.files.find((file) => file.sourcePath === item.path)
+          const packaged = copy?.copied ? `（包内副本: ${copy.path}）` : "（源文件未找到，未复制）"
+          return `- ${item.label}: ${item.path}${packaged}`
+        })
       : ["- 暂无已登记附件。"]),
+    "",
+    "## 交付包文件",
+    "| 文件 | 类型 | 路径 |",
+    "|---|---|---|",
+    ...input.files.map((item) => `| ${markdownCell(item.label)} | ${markdownCell(item.kind)} | ${markdownCell(item.path)} |`),
     "",
     "## 验收检查",
     "| 检查项 | 状态 | 说明 |",
@@ -1097,24 +1171,50 @@ async function archiveDelivery(input: { workflowId: string; sessionId: string })
 
   const current = (await workflowSession(input.sessionId)) ?? stored
   const source = await sessionText(input.sessionId)
+  const dir = workflowDeliveryPackageDir(input.sessionId)
   const file = workflowDeliveryPath(input.sessionId)
+  const manifest = workflowDeliveryManifestPath(input.sessionId)
+  const references = deliveryReferences(current?.artifacts ?? [], source)
+  const artifacts = await packageFiles(dir, references)
+  const summary: WorkflowDeliveryFile = {
+    kind: "summary",
+    label: "交付摘要 Markdown",
+    path: path.relative(Instance.directory, file),
+    absolutePath: file,
+    copied: true,
+  }
+  const manifestFile: WorkflowDeliveryFile = {
+    kind: "manifest",
+    label: "交付清单 JSON",
+    path: path.relative(Instance.directory, manifest),
+    absolutePath: manifest,
+    copied: true,
+  }
+  const files = [summary, ...artifacts, manifestFile]
   const delivery: WorkflowDeliveryArchive = {
     sessionId: input.sessionId,
     workflowId: workflow.id,
     workflowName: current?.workflowName ?? workflow.name,
     generatedAt: new Date().toISOString(),
-    markdownPath: path.relative(Instance.directory, file),
+    directoryPath: path.relative(Instance.directory, dir),
+    absoluteDirectoryPath: dir,
+    markdownPath: summary.path,
     absoluteMarkdownPath: file,
+    manifestPath: manifestFile.path,
+    absoluteManifestPath: manifest,
+    fileCount: files.filter((item) => item.copied).length,
+    files,
   }
-  await mkdir(workflowDeliveryDir(), { recursive: true })
   await Bun.write(
     file,
     deliveryMarkdown({
       delivery,
       acceptance: result,
-      references: deliveryReferences(current?.artifacts ?? [], source),
+      references,
+      files,
     }),
   )
+  await Bun.write(manifest, `${JSON.stringify({ delivery, acceptance: result, references }, null, 2)}\n`)
   await saveWorkflowSession({
     sessionId: input.sessionId,
     workflowId: workflow.id,

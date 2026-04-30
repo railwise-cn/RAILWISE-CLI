@@ -19,6 +19,7 @@ Desktop 壳使用 Tauri 2，前端使用 SolidJS 和 Vite。浏览器 harness �
 ```bash
 cd packages/app && bun run typecheck
 cd packages/desktop && bun run typecheck
+cd packages/desktop && bun run check:tauri
 cd packages/desktop && bun run build
 cd packages/desktop && bun run test:e2e
 ```

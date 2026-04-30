@@ -258,7 +258,7 @@ Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复
 
 ### P1: PR 和 backlog 重组
 
-- [ ] 当前 draft PR 标注为 Core + Desktop mixed delivery，保持 draft。
+- [x] 当前 draft PR 标注为 Core + Desktop mixed delivery，保持 draft。
 - [ ] 从当前 PR 拆出后续 issue/任务：Core、CLI、Desktop、Docs 四类。
 - [ ] Desktop GA blockers 只保留签名、公证、更新、E2E、视觉和安装器。
 - [ ] CLI backlog 只保留命令、脚本、CI、无头运行和开发者文档。
@@ -268,7 +268,7 @@ Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复
 - [ ] 检查 `packages/app` 中 Desktop-only 文案，迁移到 `packages/desktop`。
 - [ ] 检查 CLI 命令是否依赖 Desktop 路径或桌面配置。
 - [ ] 将 delivery package 的 Core API、Desktop UI、CLI export 分别归档。
-- [ ] 为 PR 模板或提交规范增加产品线标签。
+- [x] 为 PR 模板或提交规范增加产品线标签。
 
 ### P3: 发版流水线分离
 

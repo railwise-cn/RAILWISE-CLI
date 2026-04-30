@@ -18,12 +18,13 @@ import type {
 } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 
-type ReportKind = "all" | Extract<WikiReport["kind"], "lint" | "diff">
+type ReportKind = "all" | Extract<WikiReport["kind"], "lint" | "diff" | "format">
 
 const filters: { kind: ReportKind; label: string }[] = [
   { kind: "all", label: "全部" },
   { kind: "lint", label: "Lint" },
   { kind: "diff", label: "Diff" },
+  { kind: "format", label: "Format" },
 ]
 
 function logLabel(kind: WikiLogEntry["kind"]) {
@@ -51,6 +52,19 @@ function warningLabel(sample: FormatSampleReport) {
 
 function sampleStats(sample: FormatSampleReport) {
   return `${sample.pointCount} 点 · ${sample.observationCount} 观测 · ${sample.equationCount} 方程 · ${sample.unknowns.length} 未知数`
+}
+
+function reportLabel(report: WikiReport) {
+  if (report.kind === "format") {
+    return `${report.kind} · ${report.path} · ${report.readyCount ?? "-"}/${report.sampleCount ?? "-"} 样本 · warning ${report.warningCount ?? "-"}`
+  }
+  return [
+    `${report.kind} · ${report.path}`,
+    report.problemCount !== undefined ? `${report.problemCount} 问题` : "",
+    report.changeCount !== undefined ? `${report.changeCount} 变更` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ")
 }
 
 export function WorkflowGallery() {
@@ -148,26 +162,34 @@ export function WorkflowGallery() {
       .catch((err: unknown) => setReportError(err instanceof Error ? err.message : String(err)))
   }
 
+  function loadWiki(path?: string) {
+    void api
+      .wikiStatus()
+      .then((status) => {
+        setWiki(status)
+        setWikiError("")
+        const next = path ?? status.reports[0]?.path
+        if (next) void loadReport(next)
+      })
+      .catch((err: unknown) => setWikiError(err instanceof Error ? err.message : String(err)))
+  }
+
   onMount(() => {
     void api.presets().then((presets) => {
       setItems(presets)
       setActive(presets[0]?.id ?? "")
     })
     void api
-      .wikiStatus()
-      .then((status) => {
-        setWiki(status)
-        setWikiError("")
-        if (status.reports[0]) void loadReport(status.reports[0].path)
-      })
-      .catch((err: unknown) => setWikiError(err instanceof Error ? err.message : String(err)))
-    void api
       .formatReport()
       .then((report) => {
         setFormat(report)
         setFormatError("")
+        loadWiki(report.artifacts?.markdownPath)
       })
-      .catch((err: unknown) => setFormatError(err instanceof Error ? err.message : String(err)))
+      .catch((err: unknown) => {
+        setFormatError(err instanceof Error ? err.message : String(err))
+        loadWiki()
+      })
   })
 
   createEffect(() => {
@@ -312,7 +334,7 @@ export function WorkflowGallery() {
               </div>
             </div>
             <Show when={!wikiError()} fallback={<small title={wikiError()}>Wiki 状态暂不可用</small>}>
-              <Show when={visible().length} fallback={<small>暂无 lint/diff 报告</small>}>
+              <Show when={visible().length} fallback={<small>暂无报告</small>}>
                 <For each={visible()}>
                   {(item) => (
                     <button
@@ -323,11 +345,7 @@ export function WorkflowGallery() {
                       aria-pressed={reportPath() === item.path}
                       onClick={() => void loadReport(item.path)}
                     >
-                      {item.kind}
-                      {" · "}
-                      {item.path}
-                      {item.problemCount !== undefined ? ` · ${item.problemCount} 问题` : ""}
-                      {item.changeCount !== undefined ? ` · ${item.changeCount} 变更` : ""}
+                      {reportLabel(item)}
                     </button>
                   )}
                 </For>

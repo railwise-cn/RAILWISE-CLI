@@ -76,17 +76,29 @@ export type FormatCoverageReport = {
   coveredFormatCount: number
   warningCount: number
   samples: FormatSampleReport[]
+  artifacts?: {
+    markdownPath: string
+    absoluteMarkdownPath: string
+    jsonPath: string
+    absoluteJsonPath: string
+  }
 }
 
 export type WikiReport = {
   path: string
   absolutePath: string
-  kind: "lint" | "diff" | "other"
+  kind: "lint" | "diff" | "format" | "other"
   title: string
   generatedAt?: string
   status?: string
   problemCount?: number
   changeCount?: number
+  sampleCount?: number
+  readyCount?: number
+  formatCount?: number
+  coveredFormatCount?: number
+  warningCount?: number
+  jsonPath?: string
   updatedAt: string
 }
 

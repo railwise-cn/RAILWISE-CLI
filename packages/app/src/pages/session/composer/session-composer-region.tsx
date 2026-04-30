@@ -14,10 +14,16 @@ import { SessionPermissionDock } from "@/pages/session/composer/session-permissi
 import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
 import type { SessionComposerState } from "@/pages/session/composer/session-composer-state"
 import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
-import type { WorkflowAcceptance, WorkflowRunArtifact, WorkflowSession } from "@/types/agent-studio"
+import type {
+  WorkflowAcceptance,
+  WorkflowDeliveryArchive,
+  WorkflowRunArtifact,
+  WorkflowSession,
+} from "@/types/agent-studio"
 
 type AcceptanceStatus = WorkflowAcceptance["checks"][number]["status"]
 type WorkflowStage = "imported" | "pending" | "running" | "review" | "failed" | "passed"
+type DeliveryRow = { label: string; path: string; absolute: string | undefined; folder: boolean }
 
 const workflowSteps: { id: WorkflowStage; label: string }[] = [
   { id: "imported", label: "已导入" },
@@ -206,7 +212,7 @@ export function SessionComposerRegion(props: {
           acceptance: info?.acceptance ?? acceptance(),
           delivery: result,
         }))
-        setArtifactNotice("已导出交付摘要")
+        setArtifactNotice("已导出交付包")
       })
       .catch((err: unknown) => setAcceptanceError(err instanceof Error ? err.message : String(err)))
       .finally(() => setArchiving(false))
@@ -215,10 +221,10 @@ export function SessionComposerRegion(props: {
   const copyPath = (value: string) => {
     const write = navigator.clipboard?.writeText
     void (write ? write.call(navigator.clipboard, value) : Promise.resolve(fallbackCopy(value)))
-      .then(() => setArtifactNotice("已复制附件路径"))
+      .then(() => setArtifactNotice("已复制路径"))
       .catch(() => {
         fallbackCopy(value)
-        setArtifactNotice("已复制附件路径")
+        setArtifactNotice("已复制路径")
       })
   }
 
@@ -226,7 +232,7 @@ export function SessionComposerRegion(props: {
     if (!value || !platform.openPath) return
     void platform
       .openPath(value)
-      .then(() => setArtifactNotice("已打开附件文件"))
+      .then(() => setArtifactNotice("已打开路径"))
       .catch((err: unknown) => setArtifactNotice(err instanceof Error ? err.message : String(err)))
   }
 
@@ -234,6 +240,22 @@ export function SessionComposerRegion(props: {
     { label: "Markdown", path: artifact.markdownPath, absolute: artifact.absoluteMarkdownPath },
     { label: "JSON", path: artifact.jsonPath, absolute: artifact.absoluteJsonPath },
   ]
+
+  const deliveryRows = (item: WorkflowDeliveryArchive) => {
+    const rows: (DeliveryRow | undefined)[] = [
+      item.directoryPath
+        ? { label: "目录", path: item.directoryPath, absolute: item.absoluteDirectoryPath, folder: true }
+        : undefined,
+      { label: "摘要", path: item.markdownPath, absolute: item.absoluteMarkdownPath, folder: false },
+      item.manifestPath
+        ? { label: "清单", path: item.manifestPath, absolute: item.absoluteManifestPath, folder: false }
+        : undefined,
+    ]
+    return rows.filter((row): row is DeliveryRow => Boolean(row?.path))
+  }
+
+  const deliveryFileCount = (item: WorkflowDeliveryArchive) =>
+    item.fileCount ?? item.files?.filter((file) => file.copied).length ?? 1
 
   const buildReworkPrompt = () => {
     const result = acceptance()
@@ -510,35 +532,44 @@ export function SessionComposerRegion(props: {
                           data-testid="workflow-delivery-archive"
                         >
                           <div class="mb-1 flex flex-wrap items-center justify-between gap-2">
-                            <strong class="text-[rgb(31,118,71)]">交付摘要</strong>
-                            <span class="text-11-regular text-text-weak">{item().generatedAt}</span>
-                          </div>
-                          <div class="grid items-center gap-1 md:grid-cols-[72px_1fr_auto]">
-                            <span class="text-text-weak">Markdown</span>
-                            <code class="min-w-0 truncate text-11-regular text-text-base" title={item().markdownPath}>
-                              {item().markdownPath}
-                            </code>
-                            <div class="flex items-center gap-1">
-                              <button
-                                type="button"
-                                class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
-                                title="复制路径"
-                                onClick={() => copyPath(item().markdownPath)}
-                              >
-                                <Icon name="copy" size="small" />
-                              </button>
-                              <Show when={platform.openPath}>
-                                <button
-                                  type="button"
-                                  class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
-                                  title="打开文件"
-                                  onClick={() => openPath(item().absoluteMarkdownPath)}
-                                >
-                                  <Icon name="open-file" size="small" />
-                                </button>
-                              </Show>
+                            <div class="flex min-w-0 items-center gap-2">
+                              <strong class="text-[rgb(31,118,71)]">交付包</strong>
+                              <span class="rounded-sm bg-background-base px-1.5 py-0.5 text-11-regular text-text-weak">
+                                {deliveryFileCount(item())} 个文件
+                              </span>
                             </div>
+                            <span class="shrink-0 text-11-regular text-text-weak">{item().generatedAt}</span>
                           </div>
+                          <For each={deliveryRows(item())}>
+                            {(row) => (
+                              <div class="grid items-center gap-1 py-0.5 md:grid-cols-[72px_1fr_auto]">
+                                <span class="text-text-weak">{row.label}</span>
+                                <code class="min-w-0 truncate text-11-regular text-text-base" title={row.path}>
+                                  {row.path}
+                                </code>
+                                <div class="flex items-center gap-1">
+                                  <button
+                                    type="button"
+                                    class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                    title="复制路径"
+                                    onClick={() => copyPath(row.path)}
+                                  >
+                                    <Icon name="copy" size="small" />
+                                  </button>
+                                  <Show when={platform.openPath && row.absolute}>
+                                    <button
+                                      type="button"
+                                      class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                      title={row.folder ? "打开目录" : "打开文件"}
+                                      onClick={() => openPath(row.absolute)}
+                                    >
+                                      <Icon name={row.folder ? "folder" : "open-file"} size="small" />
+                                    </button>
+                                  </Show>
+                                </div>
+                              </div>
+                            )}
+                          </For>
                         </div>
                       )}
                     </Show>

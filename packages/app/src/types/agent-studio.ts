@@ -78,8 +78,21 @@ export type WorkflowDeliveryArchive = {
   workflowId: string
   workflowName: string
   generatedAt: string
+  directoryPath?: string
+  absoluteDirectoryPath?: string
   markdownPath: string
   absoluteMarkdownPath: string
+  manifestPath?: string
+  absoluteManifestPath?: string
+  fileCount?: number
+  files?: {
+    kind: "summary" | "manifest" | "artifact"
+    label: string
+    path: string
+    absolutePath: string
+    sourcePath?: string
+    copied: boolean
+  }[]
 }
 
 export type WorkflowSession = {

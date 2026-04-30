@@ -204,8 +204,9 @@ jobs:
             const hasVerifySection = /### How did you verify your code works\?/.test(body);
             const hasChecklistSection = /### Checklist/.test(body);
             const hasIssueSection = /### Issue for this PR/.test(body);
+            const hasProductLineSection = /### Product line/.test(body);
 
-            if (!hasWhatSection || !hasTypeSection || !hasVerifySection || !hasChecklistSection || !hasIssueSection) {
+            if (!hasWhatSection || !hasTypeSection || !hasVerifySection || !hasChecklistSection || !hasIssueSection || !hasProductLineSection) {
               issues.push(`PR description is missing required template sections. Please use the [PR template](${template}).`);
             }
 
@@ -227,6 +228,16 @@ jobs:
               const hasCheckedBox = /- \[x\]/i.test(typeContent);
               if (!hasCheckedBox) {
                 issues.push('No "Type of change" checkbox is checked. Please select at least one.');
+              }
+            }
+
+            // Check: at least one product line is checked
+            if (hasProductLineSection) {
+              const productMatch = body.match(/### Product line\s*\n([\s\S]*?)(?=###|$)/);
+              const productContent = productMatch ? productMatch[1] : '';
+              const hasCheckedBox = /- \[x\]/i.test(productContent);
+              if (!hasCheckedBox) {
+                issues.push('No "Product line" checkbox is checked. Please select Core, CLI, Desktop, App shell, Docs, or CI/release infrastructure.');
               }
             }
 

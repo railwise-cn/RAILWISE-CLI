@@ -35,9 +35,36 @@ type Header = {
   names: Record<string, string>
 }
 
+const aliases: Record<string, string> = {
+  "点名": "name",
+  "点号": "pointid",
+  "点id": "pointid",
+  "点": "point",
+  "北坐标": "northing",
+  "纵坐标": "northing",
+  "北": "northing",
+  "东坐标": "easting",
+  "横坐标": "easting",
+  "东": "easting",
+  "测站": "station",
+  "起点": "frompoint",
+  "源点": "frompoint",
+  "目标": "target",
+  "照准点": "target",
+  "终点": "topoint",
+  "观测类型": "type",
+  "类型": "type",
+  "观测值": "value",
+  "观测": "observed",
+  "值": "value",
+  "右端": "rhs",
+  "权": "weight",
+  "权重": "weight",
+}
+
 function num(value: string | undefined) {
   if (value === undefined) return
-  const parsed = Number(value)
+  const parsed = Number(value.replace(/^\+/, "").replace(/["']/g, ""))
   if (Number.isFinite(parsed)) return parsed
 }
 
@@ -58,11 +85,12 @@ function tokens(line: string) {
 }
 
 function tag(value: string | undefined) {
-  return value?.replace(/^@/, "").replace(/[:：]$/, "").toLowerCase()
+  return value?.replace(/^@/, "").replace(/^["']|["']$/g, "").replace(/[:：]$/, "").toLowerCase()
 }
 
 function key(value: string | undefined) {
-  return tag(value)?.replace(/[\s_.-]/g, "")
+  const valueKey = tag(value)?.replace(/[\s_.-]/g, "")
+  return valueKey ? (aliases[valueKey] ?? valueKey) : undefined
 }
 
 function has(line: string, patterns: string[]) {
@@ -90,7 +118,8 @@ function detect(lines: string[], sourceFormat?: SourceFormat) {
 }
 
 function table(parts: string[]) {
-  const columns = Object.fromEntries(parts.map((part, index) => [key(part) ?? "", index]).filter(([name]) => name))
+  const pairs = parts.map((part, index) => [key(part) ?? "", index] as const).filter(([name]) => name)
+  const columns = Object.fromEntries(pairs)
   const names = Object.fromEntries(parts.map((part) => [key(part) ?? "", part]).filter(([name]) => name))
   const keys = new Set(Object.keys(columns))
   if (
@@ -106,7 +135,11 @@ function table(parts: string[]) {
   ) {
     return { kind: "observation", columns, names } satisfies Header
   }
-  if (keys.has("observed") || keys.has("rhs") || (keys.has("l") && (keys.has("name") || keys.has("id")))) {
+  if (
+    keys.has("observed") ||
+    keys.has("rhs") ||
+    ((keys.has("l") || keys.has("value")) && (keys.has("name") || keys.has("id")))
+  ) {
     return { kind: "equation", columns, names } satisfies Header
   }
 }
@@ -183,6 +216,7 @@ function equation(parts: string[], table?: Header) {
     })
     const observed = num(field(parts, table.columns, ["observed", "rhs", "l", "value"]))
     if (observed === undefined) return
+    if (Object.keys(coefficients).length === 0) return
     return {
       name: field(parts, table.columns, ["name", "id"]),
       coefficients,
@@ -215,12 +249,37 @@ function equation(parts: string[], table?: Header) {
     coefficients[split[0]] = value
   })
   if (values.observed === undefined) return
+  if (Object.keys(coefficients).length === 0) return
   return {
     name: name ?? parts.find((part) => part.startsWith("name="))?.slice("name=".length),
     coefficients,
     observed: values.observed,
     weight: values.weight,
   } satisfies Equation
+}
+
+function section(parts: string[]) {
+  if (parts.length !== 1) return false
+  return [
+    "nasew",
+    "nasewdat",
+    "south",
+    "南方平差易",
+    "leica",
+    "lgo",
+    "leicalgo",
+    "trimble",
+    "tbc",
+    "points",
+    "observations",
+    "measurements",
+    "equations",
+    "coords",
+  ].includes(key(parts[0]) ?? "")
+}
+
+function useful(parts: string[]) {
+  return parts.some((part) => num(part) !== undefined) || parts.some((part) => part.includes("="))
 }
 
 function parse(lines: string[]) {
@@ -232,8 +291,9 @@ function parse(lines: string[]) {
   const headerValues =
     lines[0] && tokens(lines[0]).every((part) => num(part) !== undefined) ? tokens(lines[0]).map(Number) : []
   const state = lines.reduce(
-    (acc, line) => {
+    (acc, line, index) => {
       const parts = tokens(line)
+      if (section(parts)) return { station: undefined, table: undefined }
       const tableHeader = table(parts)
       if (tableHeader) return { ...acc, table: tableHeader }
       if (["unknowns", "unknown", "unk", "params", "parameters"].includes(key(parts[0]) ?? "")) {
@@ -244,7 +304,11 @@ function parse(lines: string[]) {
       }
       if (["equation", "eq", "equ", "adj"].includes(key(parts[0]) ?? "") || acc.table?.kind === "equation") {
         const item = equation(parts, acc.table)
-        if (item) equations.push(item)
+        if (item) {
+          equations.push(item)
+          return acc
+        }
+        warnings.push(`Line ${index + 1} was skipped because the equation row is incomplete or has no coefficients.`)
         return acc
       }
       const known = point(parts, acc.table)
@@ -258,6 +322,7 @@ function parse(lines: string[]) {
         observations.push(measured)
         return acc
       }
+      if (useful(parts)) warnings.push(`Line ${index + 1} was skipped because it did not match a supported point, observation, or equation row.`)
       return acc
     },
     { station: undefined as string | undefined, table: undefined as Header | undefined },

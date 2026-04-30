@@ -141,3 +141,52 @@ test("format converter recognizes M9 vendor format variants", async () => {
     }),
   )
 })
+
+test("format converter keeps usable rows and warns on damaged real-world rows", async () => {
+  const tool = await FormatConverterTool.init()
+  const converted = JSON.parse(
+    (
+      await tool.execute(
+        {
+          sourceFormat: "auto",
+          content: [
+            "南方平差易",
+            "点号,纵坐标,横坐标",
+            "CP300,4003.855,2903.360",
+            "测站,目标,类型,观测值,权",
+            "CP300,CP301,S,339.366,1",
+            "BROKEN,10,not-a-supported-row",
+            "EQU damaged observed=1",
+            "Name,dN_CP301,观测值,权",
+            "baseline_north,1,0.002,1",
+          ].join("\n"),
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    detectedFormat: string
+    points: { name: string; x: number; y: number }[]
+    observations: { station: string; target: string; type: string; value: number; weight?: number }[]
+    warnings: string[]
+    next: {
+      args: {
+        unknowns: string[]
+        equations: { name?: string; coefficients: Record<string, number>; observed: number; weight?: number }[]
+      }
+    }
+  }
+
+  expect(converted.detectedFormat).toBe("south-in")
+  expect(converted.points).toContainEqual({ name: "CP300", x: 4003.855, y: 2903.36 })
+  expect(converted.observations).toContainEqual({ station: "CP300", target: "CP301", type: "S", value: 339.366, weight: 1 })
+  expect(converted.next.args.unknowns).toEqual(["dN_CP301"])
+  expect(converted.next.args.equations[0]).toEqual({
+    name: "baseline_north",
+    coefficients: { dN_CP301: 1 },
+    observed: 0.002,
+    weight: 1,
+  })
+  expect(converted.warnings.some((item) => item.includes("Line 6"))).toBe(true)
+  expect(converted.warnings.some((item) => item.includes("Line 7"))).toBe(true)
+})

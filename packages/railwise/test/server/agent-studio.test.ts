@@ -164,6 +164,10 @@ describe("server.routes.agent-studio", () => {
           expect(result.prompt).toContain(`格式兼容性质检报告 Markdown: ${artifact.markdownPath}`)
           expect(result.prompt).toContain(`格式兼容性质检报告 JSON: ${artifact.jsonPath}`)
           expect(result.prompt).toContain(`本地 Markdown: ${artifact.absoluteMarkdownPath}`)
+          expect(result.prompt).toContain("交付验收硬性要求")
+          expect(result.prompt).toContain("technical_writer 的复测预案或技术报告必须包含「附件引用」小节")
+          expect(result.prompt).toContain("knowledge_curator 的维护摘要必须记录同一组 Markdown 与 JSON 路径")
+          expect(result.prompt).toContain("不完整交付")
           expect(result.prompt).toContain("wiki/log.md")
 
           const markdown = await Bun.file(artifact.absoluteMarkdownPath).text()

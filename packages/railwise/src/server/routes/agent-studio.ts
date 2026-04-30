@@ -413,7 +413,11 @@ function attach(text: string, artifacts: WorkflowRunArtifact[]) {
       `- 本地 Markdown: ${item.absoluteMarkdownPath}`,
       `- 本地 JSON: ${item.absoluteJsonPath}`,
     ]),
-    "请把上述附件路径传给 technical_writer 和 knowledge_curator，并在最终交付物中引用 Markdown 摘要与同名 JSON。",
+    "交付验收硬性要求：",
+    "- chief_manager 必须把上述附件路径逐字传给 technical_writer 和 knowledge_curator。",
+    "- technical_writer 的复测预案或技术报告必须包含「附件引用」小节，并逐字列出 Markdown 与 JSON 两个路径。",
+    "- knowledge_curator 的维护摘要必须记录同一组 Markdown 与 JSON 路径，并说明是否已进入 Wiki 变更报告。",
+    "- 若任一交付物缺少上述路径，chief_manager 必须判定为不完整交付并要求返工。",
   ].join("\n")
 }
 
@@ -461,8 +465,8 @@ function cpiii(artifact?: WorkflowRunArtifact) {
     "8. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
     JSON.stringify(condition, null, 2),
     "9. cpiii_specialist 汇总规范意见、平差成果、自由网/粗差/稳健平差/方差分量/闭合差残差异常和复测建议，不在模型中手算控制网。",
-    `10. technical_writer 在复测预案和技术报告附件中引用格式兼容性质检报告 ${md} 及 ${json}，说明支持格式覆盖、样本可用率和损坏行 warning。`,
-    "11. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
+    `10. technical_writer 在复测预案和技术报告的「附件引用」小节中逐字引用格式兼容性质检报告 ${md} 及 ${json}，说明支持格式覆盖、样本可用率和损坏行 warning。`,
+    `11. knowledge_curator 检查 wiki/log.md 的查询记录，并在维护摘要中记录 ${md} 与 ${json}；若路径缺失或未进入变更报告，输出阻塞项而不是通过验收。`,
   ].join("\n")
 }
 

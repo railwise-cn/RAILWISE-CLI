@@ -71,6 +71,17 @@ railwise
 bun run dev
 ```
 
+### 无头工作流
+
+CLI 工作流命令面向脚本和 CI，输出始终是 JSON，不依赖 Desktop 工作台：
+
+```bash
+railwise workflow run cpiii-resurvey-wiki --input-json '{"project":"沪杭高铁 CPIII 复测"}' --wait
+railwise workflow export <session-id> --workflow cpiii-resurvey-wiki
+```
+
+`--wait` 会执行交付验收检查；验收失败时 `ok=false` 且命令以非零退出码结束。`--archive` 可在验收通过后直接写出 delivery package，并在 JSON 中返回 `summary.md`、`manifest.json` 和附件路径。
+
 ---
 
 ## 模型支持

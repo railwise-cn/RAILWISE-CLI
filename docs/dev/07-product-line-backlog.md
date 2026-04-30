@@ -145,10 +145,16 @@ bun run desktop:verify:ga -- --full
 
 ### D2 Desktop Delivery Package UX
 
-- Session 页面清楚展示 delivery package 状态。
-- Workspace 能审阅 summary、manifest、artifact list。
-- 用户能重新导出交付包。
-- 错误状态提供可行动的提示。
+- [x] Session 页面清楚展示 delivery package 状态。
+- [x] Session 交付面板能审阅 summary、manifest、artifact list。
+- [x] 用户能重新导出交付包。
+- [x] 错误状态提供可行动的提示。
+
+当前状态：
+
+- App shell 的 Session 交付面板显示交付包完整性、导出时间、summary、manifest、包内文件和写入状态。
+- 包内文件支持复制路径；在 Desktop 壳中可直接打开已写入文件或交付目录。
+- 缺失文件会提示用户重新导出或检查源文件可读性。
 
 验收：
 

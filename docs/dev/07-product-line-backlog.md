@@ -99,6 +99,7 @@ cd packages/railwise && bun test --timeout 30000 test/cli test/server
 
 - CLI quickstart 只讲安装、模型、配置、命令和 CI。
 - 不混入 Desktop dashboard、Workspace、installer、updater 承诺。
+- CLI 命令边界审查记录见 [09-cli-boundary-audit.md](./09-cli-boundary-audit.md)。
 
 验收：
 
@@ -245,3 +246,4 @@ rg -n "CLI|Desktop|Core|desktop/v|npm|notarization|codesign" docs/admin docs/dev
 - [ ] CLI export/headless backlog 待拆 issue。
 - [ ] Desktop GA blockers 待继续执行。
 - [x] App shell 文案边界已扫描并修正。
+- [x] CLI 命令边界已扫描，未发现 Desktop-only 依赖。

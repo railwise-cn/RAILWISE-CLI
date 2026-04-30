@@ -266,7 +266,7 @@ Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复
 ### P2: 代码边界硬化
 
 - [x] 检查 `packages/app` 中 Desktop-only 文案，迁移到 `packages/desktop` 或通过平台元数据注入。
-- [ ] 检查 CLI 命令是否依赖 Desktop 路径或桌面配置。
+- [x] 检查 CLI 命令是否依赖 Desktop 路径或桌面配置。
 - [ ] 将 delivery package 的 Core API、Desktop UI、CLI export 分别归档。
 - [x] 为 PR 模板或提交规范增加产品线标签。
 

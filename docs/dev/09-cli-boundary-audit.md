@@ -17,6 +17,7 @@ CLI 命令保持在自己的产品边界内：
 - `upgrade`: 更新 CLI 安装本身，不触碰 Desktop release / updater。
 - `export`: 导出会话 JSON，不触碰 Desktop 交付包 UI。
 - `run`: 通过 Core server、SDK、工具和权限系统执行无头任务。
+- `workflow`: 通过 Core workflow routes 启动预置工作流、检查验收、按 session id 导出 delivery package JSON。
 
 `packages/railwise` 可以被 Desktop 作为 sidecar 复用，但 CLI 命令不能反向引用 `packages/desktop`、Desktop 配置或 Desktop 发布流程。
 
@@ -75,11 +76,18 @@ rg -n "RAILWISE_CLIENT|RAILWISE_DESKTOP|TAURI|DESKTOP|desktop" packages/railwise
 
 ---
 
-## 4. 后续
+## 4. 当前进展
 
-CLI 的下一步不是接入 Desktop 交付包 UI，而是单独设计 headless export/run 能力：
+CLI 的 headless workflow MVP 已落地：
 
-- `railwise workflow export` 或等价命令。
-- JSON 输出和非零退出码。
-- 不引入 Desktop-only 依赖。
-- 验收放在 `packages/railwise` 的 CLI 测试中。
+- `railwise workflow run <workflowID>` 创建 workflow session，输出 prompt、agentNames 和 artifact paths。
+- `railwise workflow run --wait` 执行 delivery acceptance 检查，失败时输出 `ok=false` 并返回非零退出码。
+- `railwise workflow run --archive` 在验收通过后写出 delivery package。
+- `railwise workflow export <sessionID>` 按 session id 导出已验收的 delivery package。
+- 输出为 JSON，适合脚本和 CI 使用。
+- 覆盖测试位于 `packages/railwise/test/cli/workflow.test.ts`。
+
+后续增强不应接入 Desktop 交付包 UI，而应继续保持 CLI/Core 边界：
+
+- 如果 Core 增加完整非交互多智能体执行器，`railwise workflow run` 可以在现有 JSON 契约上追加 executor 状态。
+- 如果 delivery package 版本升级，先走 Core compatibility gate，再更新 CLI 输出字段文档。

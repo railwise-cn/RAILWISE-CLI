@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test"
 import {
   AdjustmentConditionTool,
+  AdjustmentFreeNetworkTool,
   AdjustmentIndirectTool,
   AdjustmentRobustTool,
   GrossErrorDetectionTool,
@@ -131,6 +132,39 @@ test("gross error detection can run preliminary indirect adjustment", async () =
   expect(result.grossErrors).toEqual([])
   expect(result.preliminary.statistics.degreesOfFreedom).toBe(1)
   expect(result.preliminary.statistics.unitWeightStdDev).toBeCloseTo(0.0017320508, 9)
+})
+
+test("free network adjustment solves datum-constrained rank deficient equations", async () => {
+  const tool = await AdjustmentFreeNetworkTool.init()
+  const result = JSON.parse(
+    (
+      await tool.execute(
+        {
+          unknowns: ["x1", "x2"],
+          equations: [
+            { name: "baseline_a", coefficients: { x1: -1, x2: 1 }, observed: 10 },
+            { name: "baseline_b", coefficients: { x1: -1, x2: 1 }, observed: 10.02 },
+          ],
+          constraints: [{ name: "centroid", coefficients: { x1: 1, x2: 1 }, value: 0 }],
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    unknowns: { name: string; value: number }[]
+    residuals: { name: string; residual: number }[]
+    constraints: { name: string; residual: number }[]
+    statistics: { datumConstraintCount: number; degreesOfFreedom: number; unitWeightStdDev: number }
+  }
+
+  expect(result.unknowns.find((item) => item.name === "x1")?.value).toBeCloseTo(-5.005, 9)
+  expect(result.unknowns.find((item) => item.name === "x2")?.value).toBeCloseTo(5.005, 9)
+  expect(result.residuals.find((item) => item.name === "baseline_a")?.residual).toBeCloseTo(0.01, 9)
+  expect(result.residuals.find((item) => item.name === "baseline_b")?.residual).toBeCloseTo(-0.01, 9)
+  expect(result.constraints.find((item) => item.name === "centroid")?.residual).toBeCloseTo(0, 9)
+  expect(result.statistics.datumConstraintCount).toBe(1)
+  expect(result.statistics.degreesOfFreedom).toBe(1)
+  expect(result.statistics.unitWeightStdDev).toBeCloseTo(Math.sqrt(0.0002), 9)
 })
 
 test("robust adjustment downweights an outlying observation", async () => {

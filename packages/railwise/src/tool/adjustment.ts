@@ -2,6 +2,7 @@ import z from "zod"
 import { Tool } from "./tool"
 
 import CONDITION_DESCRIPTION from "./adjustment-condition.txt"
+import FREE_NETWORK_DESCRIPTION from "./adjustment-free-network.txt"
 import GROSS_ERROR_DESCRIPTION from "./gross-error-detection.txt"
 import INDIRECT_DESCRIPTION from "./adjustment-indirect.txt"
 import ROBUST_DESCRIPTION from "./adjustment-robust.txt"
@@ -20,8 +21,18 @@ type Residual = {
   standardDeviation?: number
 }
 
+type Constraint = {
+  name?: string
+  coefficients: Record<string, number>
+  value?: number
+}
+
 function row(equation: Equation, unknowns: string[]) {
   return unknowns.map((name) => equation.coefficients[name] ?? 0)
+}
+
+function constraint(input: Constraint, unknowns: string[]) {
+  return unknowns.map((name) => input.coefficients[name] ?? 0)
 }
 
 function normal(input: { matrix: number[][]; observed: number[]; weights: number[] }) {
@@ -94,6 +105,59 @@ function indirect(input: { unknowns: string[]; equations: Equation[] }) {
     statistics: {
       observationCount: input.equations.length,
       unknownCount: input.unknowns.length,
+      degreesOfFreedom,
+      weightedResidualSum,
+      unitWeightStdDev: sigma0,
+    },
+  }
+}
+
+function free(input: { unknowns: string[]; equations: Equation[]; constraints: Constraint[] }) {
+  if (!input.constraints.length) throw new Error("datum constraints are required for free network adjustment")
+  if (input.equations.length + input.constraints.length < input.unknowns.length) {
+    throw new Error("equations plus datum constraints must be greater than or equal to unknown count")
+  }
+  const known = new Set(input.unknowns)
+  const missing = input.constraints.flatMap((item) => Object.keys(item.coefficients)).filter((name) => !known.has(name))
+  if (missing.length) throw new Error(`datum constraints reference unknown parameters: ${[...new Set(missing)].join(", ")}`)
+
+  const matrix = input.equations.map((equation) => row(equation, input.unknowns))
+  const observed = input.equations.map((equation) => equation.observed)
+  const weights = input.equations.map((equation) => equation.weight ?? 1)
+  const system = normal({ matrix, observed, weights })
+  const constraints = input.constraints.map((item) => constraint(item, input.unknowns))
+  const lhs = [
+    ...system.lhs.map((item, index) => [...item, ...constraints.map((datum) => datum[index])]),
+    ...constraints.map((item) => [...item, ...Array.from({ length: input.constraints.length }, () => 0)]),
+  ]
+  const solution = solve(lhs, [...system.rhs, ...input.constraints.map((item) => item.value ?? 0)])
+  const values = solution.slice(0, input.unknowns.length)
+  const residuals = matrix.map((item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index])
+  const weightedResidualSum = residuals.reduce((acc, residual, index) => acc + weights[index] * residual ** 2, 0)
+  const degreesOfFreedom = input.equations.length - input.unknowns.length + input.constraints.length
+  const sigma0 = degreesOfFreedom > 0 ? Math.sqrt(weightedResidualSum / degreesOfFreedom) : 0
+  const qxx = inverse(lhs).slice(0, input.unknowns.length).map((item) => item.slice(0, input.unknowns.length))
+  return {
+    method: "constrained_free_network_adjustment",
+    unknowns: input.unknowns.map((name, index) => ({
+      name,
+      value: values[index],
+      standardDeviation: sigma0 * Math.sqrt(Math.max(qxx[index]?.[index] ?? 0, 0)),
+    })),
+    residuals: input.equations.map((equation, index) => ({
+      name: equation.name ?? `v${index + 1}`,
+      residual: residuals[index],
+      weight: weights[index],
+    })),
+    constraints: input.constraints.map((item, index) => ({
+      name: item.name ?? `datum${index + 1}`,
+      value: item.value ?? 0,
+      residual: constraints[index].reduce((acc, value, j) => acc + value * values[j], 0) - (item.value ?? 0),
+    })),
+    statistics: {
+      observationCount: input.equations.length,
+      unknownCount: input.unknowns.length,
+      datumConstraintCount: input.constraints.length,
       degreesOfFreedom,
       weightedResidualSum,
       unitWeightStdDev: sigma0,
@@ -258,6 +322,43 @@ export const AdjustmentIndirectTool = Tool.define("tool_adjustment_indirect", {
     const result = indirect(params)
     return {
       title: "Indirect Adjustment",
+      output: JSON.stringify(result, null, 2),
+      metadata: result.statistics,
+    }
+  },
+})
+
+export const AdjustmentFreeNetworkTool = Tool.define("tool_adjustment_free_network", {
+  description: FREE_NETWORK_DESCRIPTION,
+  parameters: z.object({
+    unknowns: z.array(z.string().min(1)).min(1).max(50).describe("Unknown parameter names in solution order."),
+    equations: z
+      .array(
+        z.object({
+          name: z.string().optional(),
+          coefficients: z.record(z.string(), z.number()).describe("Design row coefficients by unknown name."),
+          observed: z.number().describe("Observed value on the right-hand side of the equation."),
+          weight: z.number().positive().optional().describe("Observation weight. Defaults to 1."),
+        }),
+      )
+      .min(1)
+      .max(1000),
+    constraints: z
+      .array(
+        z.object({
+          name: z.string().optional(),
+          coefficients: z.record(z.string(), z.number()).describe("Datum constraint coefficients by unknown name."),
+          value: z.number().optional().describe("Right-hand side of the datum constraint. Defaults to 0."),
+        }),
+      )
+      .min(1)
+      .max(100)
+      .describe("Minimum datum constraints that remove free-network rank defect."),
+  }),
+  async execute(params) {
+    const result = free(params)
+    return {
+      title: "Free Network Adjustment",
       output: JSON.stringify(result, null, 2),
       metadata: result.statistics,
     }

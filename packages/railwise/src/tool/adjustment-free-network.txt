@@ -1,0 +1,16 @@
+Run deterministic constrained free-network least-squares adjustment.
+
+Use this when an engineering survey network has datum defects, for example relative baseline equations that determine shape but not absolute origin. The tool solves the normal equation with explicit datum constraints using a KKT system.
+
+Inputs:
+- unknowns: ordered unknown parameter names.
+- equations: observation equations with coefficients, observed value, and optional weight.
+- constraints: minimum datum constraints that remove rank defect, such as centroid constraints, fixed datum components, or inner constraints from preprocessing.
+
+Output:
+- adjusted unknown values and standard deviations.
+- residuals and weights for observation equations.
+- datum constraint residuals.
+- observation count, unknown count, datum constraint count, degrees of freedom, weighted residual sum, and unit weight standard deviation.
+
+Do not invent datum constraints. If the user has not supplied a free-network datum definition, ask for fixed components, centroid constraints, or preprocessing metadata before computing.

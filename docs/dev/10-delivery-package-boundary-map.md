@@ -59,6 +59,33 @@ cd packages/railwise && bun test --timeout 30000 test/server/agent-studio.test.t
 cd packages/sdk/js && bun run typecheck
 ```
 
+### 2.1 Delivery manifest contract
+
+The Core archive endpoint owns the on-disk delivery package contract:
+
+- Root manifest kind: `railwise.workflow.delivery`
+- Root manifest version: `1`
+- Delivery package version: `delivery.version = 1`
+- Summary file: `summary.md`
+- Manifest file: `manifest.json`
+- File list order: summary, copied artifacts, manifest
+- Copied artifact names: `artifact-01.*`, `artifact-02.*`, ...
+
+`manifest.json` must include:
+
+- `kind`
+- `version`
+- `delivery`
+- `acceptance`
+- `references`
+
+Compatibility rules:
+
+- New optional manifest fields are allowed without blocking CLI or Desktop.
+- Removing or renaming required fields blocks both CLI and Desktop until a compatibility reader exists.
+- Increment `delivery.version` when package layout or required field semantics change.
+- Increment root `version` when manifest-level fields or compatibility rules change.
+
 ---
 
 ## 3. Desktop / App UI 边界

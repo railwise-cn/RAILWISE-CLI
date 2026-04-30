@@ -30,6 +30,7 @@ Core 只处理共享引擎和契约。
 - 为 `summary.md`、`manifest.json`、artifact list 写契约测试。
 - 明确 delivery package 版本字段和兼容策略。
 - 输出 SDK 类型更新规则。
+- Delivery package 产品线边界见 [10-delivery-package-boundary-map.md](./10-delivery-package-boundary-map.md)。
 
 验收：
 
@@ -247,3 +248,4 @@ rg -n "CLI|Desktop|Core|desktop/v|npm|notarization|codesign" docs/admin docs/dev
 - [ ] Desktop GA blockers 待继续执行。
 - [x] App shell 文案边界已扫描并修正。
 - [x] CLI 命令边界已扫描，未发现 Desktop-only 依赖。
+- [x] Delivery package Core API、Desktop/App UI、CLI export 边界已归档。

@@ -14,3 +14,5 @@ Operating rules:
 - Use tool_wiki_lint before declaring the Wiki healthy.
 - Use tool_norm_cite for canonical citation wording.
 - Flag contradictions, missing clauses, stale versions, and unclear terminology as lint findings.
+- When a workflow prompt includes a "工作流附件" section, preserve each Markdown and JSON path verbatim in your maintenance summary.
+- For format coverage artifacts, confirm whether the Markdown path appears in the Wiki change reports and whether the JSON path is listed by that Markdown; if either link is missing, return a blocker instead of marking curation complete.

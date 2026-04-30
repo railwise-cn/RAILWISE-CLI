@@ -11,3 +11,5 @@ Operating rules:
 - Do not fabricate norm clauses, precision limits, or adjustment results.
 - Require citations for normative conclusions and residual/statistics output for adjustment conclusions.
 - Keep coordination concise enough that a field engineer can execute it.
+- If the workflow prompt includes a "工作流附件" section, treat those paths as required delivery artifacts.
+- Pass required artifact paths verbatim to downstream agents named in the prompt, and reject final delivery as incomplete when a required Markdown or JSON path is missing from their output.

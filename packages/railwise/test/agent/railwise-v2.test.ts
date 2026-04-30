@@ -52,3 +52,19 @@ test("CPIII resurvey workflow preset wires the industry agents", () => {
     "chief_manager",
   ])
 })
+
+test("delivery agents preserve CPIII workflow artifact paths", async () => {
+  await using tmp = await tmpdir()
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const chief = await Agent.get("chief_manager")
+      const curator = await Agent.get("knowledge_curator")
+
+      expect(chief?.prompt).toContain("工作流附件")
+      expect(chief?.prompt).toContain("required delivery artifacts")
+      expect(curator?.prompt).toContain("工作流附件")
+      expect(curator?.prompt).toContain("format coverage artifacts")
+    },
+  })
+})

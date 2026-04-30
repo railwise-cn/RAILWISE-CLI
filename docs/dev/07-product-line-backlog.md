@@ -243,9 +243,9 @@ rg -n "CLI|Desktop|Core|desktop/v|npm|notarization|codesign" docs/admin docs/dev
 - [x] PR 模板已加入产品线选择。
 - [x] PR 合规检查已加入产品线选择检查。
 - [x] 当前 draft PR 已更新产品线说明。
-- [ ] Core contract backlog 待拆 issue。
-- [ ] CLI export/headless backlog 待拆 issue。
-- [ ] Desktop GA blockers 待继续执行。
+- [x] Core contract backlog 已拆为 [#13](https://github.com/railwise-cn/RAILWISE-CLI/issues/13)。
+- [x] CLI export/headless backlog 已拆为 [#14](https://github.com/railwise-cn/RAILWISE-CLI/issues/14)。
+- [x] Desktop GA blockers 已拆为 [#15](https://github.com/railwise-cn/RAILWISE-CLI/issues/15)。
 - [x] App shell 文案边界已扫描并修正。
 - [x] CLI 命令边界已扫描，未发现 Desktop-only 依赖。
 - [x] Delivery package Core API、Desktop/App UI、CLI export 边界已归档。

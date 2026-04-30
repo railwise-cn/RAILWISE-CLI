@@ -293,6 +293,7 @@ function parse(lines: string[]) {
   const state = lines.reduce(
     (acc, line, index) => {
       const parts = tokens(line)
+      if (index === 0 && headerValues.length) return acc
       if (section(parts)) return { station: undefined, table: undefined }
       const tableHeader = table(parts)
       if (tableHeader) return { ...acc, table: tableHeader }

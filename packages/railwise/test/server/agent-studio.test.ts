@@ -4,6 +4,8 @@ import path from "path"
 import { AgentStudioRoutes } from "../../src/server/routes/agent-studio"
 import { Instance } from "../../src/project/instance"
 import { Session } from "../../src/session"
+import { Identifier } from "../../src/id/id"
+import type { MessageV2 } from "../../src/session/message-v2"
 import { tmpdir } from "../fixture/fixture"
 import { Log } from "../../src/util/log"
 
@@ -15,6 +17,67 @@ function restore(home: string | undefined) {
     return
   }
   process.env.RAILWISE_TEST_HOME = home
+}
+
+async function writeUser(sessionID: string, text: string) {
+  const message = await Session.updateMessage({
+    id: Identifier.ascending("message"),
+    role: "user",
+    sessionID,
+    agent: "chief_manager",
+    model: {
+      providerID: "test",
+      modelID: "test",
+    },
+    time: {
+      created: Date.now(),
+    },
+  })
+  await Session.updatePart({
+    id: Identifier.ascending("part"),
+    messageID: message.id,
+    sessionID,
+    type: "text",
+    text,
+  })
+  return message
+}
+
+async function writeAssistant(sessionID: string, parentID: string, text: string) {
+  const message = await Session.updateMessage({
+    id: Identifier.ascending("message"),
+    role: "assistant",
+    sessionID,
+    mode: "build",
+    agent: "chief_manager",
+    path: {
+      cwd: ".",
+      root: ".",
+    },
+    cost: 0,
+    tokens: {
+      output: 0,
+      input: 0,
+      reasoning: 0,
+      cache: { read: 0, write: 0 },
+    },
+    modelID: "test",
+    providerID: "test",
+    parentID,
+    time: {
+      created: Date.now(),
+      completed: Date.now(),
+    },
+    finish: "end_turn",
+  } satisfies MessageV2.Assistant)
+  await Session.updatePart({
+    id: Identifier.ascending("part"),
+    messageID: message.id,
+    sessionID,
+    type: "text",
+    text,
+  })
+  return message
 }
 
 describe("server.routes.agent-studio", () => {
@@ -189,6 +252,109 @@ describe("server.routes.agent-studio", () => {
       } else {
         process.env.RAILWISE_NORM_LIBRARY = library
       }
+    }
+  })
+
+  test("accepts completed CPIII delivery with artifacts citations and tool summary", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const session = await Session.create({ title: "CPIII acceptance" })
+          const md = "wiki/changes/format-coverage-2026-04-30.md"
+          const json = "wiki/changes/format-coverage-2026-04-30.json"
+          const user = await writeUser(
+            session.id,
+            `工作流附件：\n- 格式兼容性质检报告 Markdown: ${md}\n- 格式兼容性质检报告 JSON: ${json}`,
+          )
+          await writeAssistant(
+            session.id,
+            user.id,
+            [
+              "# CPIII 复测预案",
+              "",
+              "## 附件引用",
+              `- 格式兼容性质检报告 Markdown: ${md}`,
+              `- 格式兼容性质检报告 JSON: ${json}`,
+              "",
+              "## 规范引用",
+              "- wiki_page_path: wiki/clauses/cpiii-precision.md",
+              "- raw_source_md: raw/tb10601.md",
+              "- norm_clause_id: TB10601-3.1",
+              "",
+              "## 工具结果摘要",
+              "- 格式样本 6/6 可用，warning 2 条。",
+              "- sigma0、残差、自由网、粗差、稳健、方差分量、条件平差均已汇总。",
+            ].join("\n"),
+          )
+
+          const response = await AgentStudioRoutes().request("http://railwise.test/workflow/acceptance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki", sessionId: session.id }),
+          })
+          const result = (await response.json()) as {
+            ok: boolean
+            messageCount: number
+            checks: { id: string; status: string; detail: string }[]
+          }
+
+          expect(response.status).toBe(200)
+          expect(result.ok).toBe(true)
+          expect(result.messageCount).toBe(2)
+          expect(result.checks.find((check) => check.id === "artifacts")?.status).toBe("ok")
+          expect(result.checks.find((check) => check.id === "artifact-section")?.status).toBe("ok")
+          expect(result.checks.find((check) => check.id === "norm-citation")?.status).toBe("ok")
+          expect(result.checks.find((check) => check.id === "tool-summary")?.status).toBe("ok")
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
+  test("rejects CPIII delivery missing final artifact references", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const session = await Session.create({ title: "CPIII incomplete delivery" })
+          const user = await writeUser(
+            session.id,
+            [
+              "工作流附件：",
+              "- 格式兼容性质检报告 Markdown: wiki/changes/format-coverage-2026-04-30.md",
+              "- 格式兼容性质检报告 JSON: wiki/changes/format-coverage-2026-04-30.json",
+            ].join("\n"),
+          )
+          await writeAssistant(session.id, user.id, "完成 CPIII 复测预案，后续可补充附件。")
+
+          const response = await AgentStudioRoutes().request("http://railwise.test/workflow/acceptance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki", sessionId: session.id }),
+          })
+          const result = (await response.json()) as {
+            ok: boolean
+            checks: { id: string; status: string; detail: string }[]
+          }
+
+          expect(response.status).toBe(200)
+          expect(result.ok).toBe(false)
+          expect(result.checks.find((check) => check.id === "artifacts")?.status).toBe("fail")
+          expect(result.checks.find((check) => check.id === "artifact-section")?.status).toBe("fail")
+          expect(result.checks.find((check) => check.id === "norm-citation")?.status).toBe("fail")
+          expect(result.checks.find((check) => check.id === "tool-summary")?.status).toBe("fail")
+        },
+      })
+    } finally {
+      restore(home)
     }
   })
 

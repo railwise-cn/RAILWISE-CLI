@@ -11,6 +11,7 @@ import { Bus } from "../../bus"
 import { NormWiki } from "../../norm/wiki"
 import { Instance } from "../../project/instance"
 import { Session } from "../../session"
+import type { MessageV2 } from "../../session/message-v2"
 import { MessageTable } from "../../session/session.sql"
 import { Database, gte } from "../../storage/db"
 import {
@@ -97,6 +98,26 @@ const WorkflowCheckSchema = z
       .array(),
   })
   .meta({ ref: "WorkflowCheck" })
+
+const WorkflowAcceptanceCheckSchema = z
+  .object({
+    id: z.string(),
+    label: z.string(),
+    status: z.enum(["ok", "warn", "fail"]),
+    detail: z.string(),
+  })
+  .meta({ ref: "WorkflowAcceptanceCheck" })
+
+const WorkflowAcceptanceSchema = z
+  .object({
+    workflowId: z.string(),
+    sessionId: z.string(),
+    ok: z.boolean(),
+    generatedAt: z.string(),
+    messageCount: z.number().int(),
+    checks: WorkflowAcceptanceCheckSchema.array(),
+  })
+  .meta({ ref: "WorkflowAcceptance" })
 
 const WikiReportSchema = z
   .object({
@@ -831,6 +852,99 @@ async function check(workflow: (typeof presets)[number]) {
   }
 }
 
+function partText(part: MessageV2.Part) {
+  if (part.type !== "text" || part.ignored || part.synthetic) return ""
+  return part.text
+}
+
+function artifactPaths(text: string) {
+  return {
+    markdown: [...new Set(text.match(/wiki\/changes\/format-coverage-\d{4}-\d{2}-\d{2}\.md/g) ?? [])],
+    json: [...new Set(text.match(/wiki\/changes\/format-coverage-\d{4}-\d{2}-\d{2}\.json/g) ?? [])],
+  }
+}
+
+function includesAll(text: string, values: string[]) {
+  return values.length > 0 && values.every((value) => text.includes(value))
+}
+
+async function acceptance(input: { workflowId: string; sessionId: string }) {
+  const workflow = presets.find((item) => item.id === input.workflowId)
+  if (!workflow) throw new Error(`workflow "${input.workflowId}" not found`)
+  const messages = await Session.messages({ sessionID: input.sessionId })
+  const user = messages
+    .filter((message) => message.info.role === "user")
+    .map((message) => message.parts.map(partText).join("\n"))
+    .join("\n")
+  const assistant = messages
+    .filter((message) => message.info.role === "assistant")
+    .map((message) => message.parts.map(partText).join("\n").trim())
+    .filter(Boolean)
+  const final = assistant.at(-1) ?? ""
+  const source = artifactPaths([user, ...assistant].join("\n"))
+  const expected = {
+    markdown: source.markdown,
+    json: source.json,
+  }
+  const toolMarkers = [
+    "sigma0",
+    "残差",
+    "warning",
+    "样本",
+    "格式",
+    "自由网",
+    "粗差",
+    "稳健",
+    "方差分量",
+    "条件",
+  ]
+  const present = toolMarkers.filter((marker) => final.includes(marker))
+  const citation = /wiki_page_path|raw_source_md|norm_clause_id|tool_norm_cite|TB\d{4,}/.test(final)
+  const checks = [
+    item({
+      id: "messages",
+      label: "会话输出",
+      status: final ? "ok" : "fail",
+      detail: final ? `检测到 ${assistant.length} 条助手输出` : "尚未检测到助手最终输出",
+    }),
+    item({
+      id: "artifacts",
+      label: "附件引用",
+      status: includesAll(final, expected.markdown) && includesAll(final, expected.json) ? "ok" : "fail",
+      detail:
+        expected.markdown.length && expected.json.length
+          ? `Markdown ${expected.markdown.length} 个，JSON ${expected.json.length} 个；最终输出${includesAll(final, expected.markdown) && includesAll(final, expected.json) ? "已逐字引用" : "缺少逐字引用"}`
+          : "未在会话中找到格式覆盖 Markdown/JSON 附件路径",
+    }),
+    item({
+      id: "artifact-section",
+      label: "附件小节",
+      status: final.includes("附件引用") && final.includes("格式兼容性质检报告") ? "ok" : "fail",
+      detail: final.includes("附件引用") ? "包含附件引用小节" : "缺少「附件引用」小节",
+    }),
+    item({
+      id: "norm-citation",
+      label: "规范引用",
+      status: citation ? "ok" : "fail",
+      detail: citation ? "包含规范引用标记或 TB 标准编号" : "缺少 wiki_page_path/raw_source_md/norm_clause_id 或 TB 标准编号",
+    }),
+    item({
+      id: "tool-summary",
+      label: "工具结果摘要",
+      status: present.length >= 5 ? "ok" : "fail",
+      detail: `命中 ${present.length}/${toolMarkers.length} 个摘要标记：${present.join("、") || "无"}`,
+    }),
+  ]
+  return {
+    workflowId: workflow.id,
+    sessionId: input.sessionId,
+    ok: checks.every((check) => check.status !== "fail"),
+    generatedAt: new Date().toISOString(),
+    messageCount: messages.length,
+    checks,
+  }
+}
+
 export const AgentStudioRoutes = lazy(() => {
   const schema = {
     list: Agent.Info.extend({
@@ -965,6 +1079,38 @@ export const AgentStudioRoutes = lazy(() => {
         const workflow = presets.find((item) => item.id === c.req.valid("param").id)
         if (!workflow) return c.json({ error: "workflow not found" }, 404)
         return c.json(await check(workflow))
+      },
+    )
+    .post(
+      "/workflow/acceptance",
+      describeRoute({
+        summary: "Check workflow delivery acceptance",
+        description: "Validates a completed session against workflow-specific delivery requirements.",
+        operationId: "agentStudio.workflow.acceptance",
+        responses: {
+          200: {
+            description: "Workflow delivery acceptance result",
+            content: {
+              "application/json": {
+                schema: resolver(WorkflowAcceptanceSchema),
+              },
+            },
+          },
+          ...errors(400),
+        },
+      }),
+      validator(
+        "json",
+        z.object({
+          workflowId: z.string(),
+          sessionId: z.string(),
+        }),
+      ),
+      async (c) => {
+        const body = c.req.valid("json")
+        const workflow = presets.find((item) => item.id === body.workflowId)
+        if (!workflow) return c.json({ error: `workflow "${body.workflowId}" not found` }, 400)
+        return c.json(await acceptance(body))
       },
     )
     .get(

@@ -72,10 +72,10 @@ CLI 只处理命令行和无头自动化。它不承担 Desktop GA 的安装、�
 
 ### CL1 Workflow Delivery Export Command
 
-- 设计 `railwise workflow export` 或等价命令。
-- 支持按 session id 导出 delivery package。
-- 输出机器可读 JSON，适合 CI 使用。
-- 不引入 Desktop-only 依赖。
+- [x] 设计 `railwise workflow export` 命令。
+- [x] 支持按 session id 导出 delivery package。
+- [x] 输出机器可读 JSON，适合 CI 使用。
+- [x] 不引入 Desktop-only 依赖。
 
 验收：
 
@@ -86,9 +86,9 @@ cd packages/railwise && bun test --timeout 30000 test/cli
 
 ### CL2 Headless Workflow Run
 
-- 支持无头启动 workflow preset。
-- 支持等待验收结果和非零退出码。
-- 支持输出 artifact 路径。
+- [x] 支持无头启动 workflow preset。
+- [x] 支持等待验收结果和非零退出码。
+- [x] 支持输出 artifact 路径。
 
 验收：
 
@@ -98,9 +98,9 @@ cd packages/railwise && bun test --timeout 30000 test/cli test/server
 
 ### CL3 CLI Documentation
 
-- CLI quickstart 只讲安装、模型、配置、命令和 CI。
-- 不混入 Desktop dashboard、Workspace、installer、updater 承诺。
-- CLI 命令边界审查记录见 [09-cli-boundary-audit.md](./09-cli-boundary-audit.md)。
+- [x] README CLI quickstart 只讲安装、模型、配置、命令和 CI。
+- [x] 不混入 Desktop dashboard、Workspace、installer、updater 承诺。
+- [x] CLI 命令边界审查记录见 [09-cli-boundary-audit.md](./09-cli-boundary-audit.md)。
 
 验收：
 
@@ -245,6 +245,7 @@ rg -n "CLI|Desktop|Core|desktop/v|npm|notarization|codesign" docs/admin docs/dev
 - [x] 当前 draft PR 已更新产品线说明。
 - [x] Core contract backlog 已拆为 [#13](https://github.com/railwise-cn/RAILWISE-CLI/issues/13)。
 - [x] CLI export/headless backlog 已拆为 [#14](https://github.com/railwise-cn/RAILWISE-CLI/issues/14)。
+- [x] `railwise workflow run/export` CLI MVP 已落地并用真实 CLI 入口 smoke 覆盖。
 - [x] Desktop GA blockers 已拆为 [#15](https://github.com/railwise-cn/RAILWISE-CLI/issues/15)。
 - [x] App shell 文案边界已扫描并修正。
 - [x] CLI 命令边界已扫描，未发现 Desktop-only 依赖。

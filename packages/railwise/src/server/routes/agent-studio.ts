@@ -329,7 +329,7 @@ function cpiii() {
     "CPIII 工具执行包：",
     '1. norm_librarian 先调用 tool_wiki_query({"query":"CPIII 复测限差 平面 高程 控制网","scope":"CPIII","limit":5,"appendLog":true})，无命中再调用 tool_norm_search。',
     "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
-    "3. adjustment_computer 先调用 tool_format_converter 解析 COSA .in2 / CSV / NASEW 预处理文本，使用返回的 next.args 调用 tool_adjustment_indirect：",
+    "3. adjustment_computer 先调用 tool_format_converter 解析 COSA .in2/.in1、NASEW .dat、南方 .in、LGO ASCII、TBC CSV 或通用 CSV，使用返回的 next.args 调用 tool_adjustment_indirect：",
     JSON.stringify({ sourceFormat: "cosa-in2", content: cpiiiCosa() }, null, 2),
     "4. adjustment_computer 对秩亏相对网或自由网任务调用 tool_adjustment_free_network，必须显式传入基准约束：",
     JSON.stringify(network, null, 2),
@@ -370,6 +370,68 @@ async function adjustmentCheck() {
       metadata() {},
       async ask() {},
     },
+  )
+  const vendorSamples = [
+    {
+      sourceFormat: "nasew-dat",
+      content: [
+        "NASEW DAT",
+        "P CP300 4003.855 2903.360",
+        "OBS CP300 CP301 DIST 339.366 1",
+        "UNK dN_CP301",
+        "EQ baseline_north dN_CP301=1 observed=0.002 weight=1",
+      ].join("\n"),
+    },
+    {
+      sourceFormat: "south-in",
+      content: [
+        "南方平差易",
+        "ZD CP300 4003.855 2903.360",
+        "GC CP300 CP301 S 339.366 1",
+        "PARAMS dN_CP301",
+        "EQU baseline_north dN_CP301=1 L=0.002 P=1",
+      ].join("\n"),
+    },
+    {
+      sourceFormat: "lgo-asc",
+      content: [
+        "LEICA LGO",
+        "POINT CP300 4003.855 2903.360",
+        "BASELINE CP300 CP301 GNSS 0.002 1",
+        "UNKNOWN dN_CP301",
+        "ADJ baseline_north dN_CP301=1 RHS=0.002 W=1",
+      ].join("\n"),
+    },
+    {
+      sourceFormat: "tbc-csv",
+      content: [
+        "Point ID,Northing,Easting",
+        "CP300,4003.855,2903.360",
+        "From Point,To Point,Type,Value,Weight",
+        "CP300,CP301,DIST,339.366,1",
+        "Name,dN_CP301,Observed,Weight",
+        "baseline_north,1,0.002,1",
+      ].join("\n"),
+    },
+  ] as const
+  const vendorResults = await Promise.all(
+    vendorSamples.map((sample) =>
+      format.execute(
+        {
+          sourceFormat: "auto",
+          content: sample.content,
+        },
+        {
+          sessionID: "workflow-check",
+          messageID: "workflow-check",
+          agent: "agent-studio",
+          abort: new AbortController().signal,
+          messages: [],
+          metadata() {},
+          async ask() {},
+        },
+      ),
+    ),
   )
   const payload = JSON.parse(converted.output) as {
     next?: {
@@ -510,7 +572,13 @@ async function adjustmentCheck() {
   const conditionData = JSON.parse(conditionResult.output) as {
     statistics?: { observationCount?: number; conditionCount?: number; unitWeightStdDev?: number }
   }
+  const detected = vendorResults.map((result) => JSON.parse(result.output) as { detectedFormat?: string; next?: unknown })
   return {
+    format: {
+      supportedFormatCount: 1 + detected.length,
+      readyFormatCount: 1 + detected.filter((item) => item.next).length,
+      detectedFormats: ["cosa-in2", ...detected.map((item) => item.detectedFormat ?? "unknown")],
+    },
     indirect: indirectData.statistics,
     gross: grossData.statistics,
     free: freeData.statistics,
@@ -576,7 +644,7 @@ async function check(workflow: (typeof presets)[number]) {
       label: "平差工具",
       status: stats ? "ok" : "fail",
       detail: stats
-        ? `间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；自由网 ${stats.free?.observationCount ?? 0} 条观测、${stats.free?.datumConstraintCount ?? 0} 个基准约束，sigma0=${(stats.free?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；稳健 ${stats.robust?.iterationCount ?? 0} 次迭代、降权 ${stats.robust?.downweightedCount ?? 0} 项；方差分量 ${stats.variance?.groupCount ?? 0} 类，ref=${(stats.variance?.referenceVarianceFactor ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
+        ? `格式 ${stats.format?.readyFormatCount ?? 0}/${stats.format?.supportedFormatCount ?? 0} 种可转平差；间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；自由网 ${stats.free?.observationCount ?? 0} 条观测、${stats.free?.datumConstraintCount ?? 0} 个基准约束，sigma0=${(stats.free?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；稳健 ${stats.robust?.iterationCount ?? 0} 次迭代、降权 ${stats.robust?.downweightedCount ?? 0} 项；方差分量 ${stats.variance?.groupCount ?? 0} 类，ref=${(stats.variance?.referenceVarianceFactor ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
         : "样例平差或条件平差未通过",
     }),
     item({

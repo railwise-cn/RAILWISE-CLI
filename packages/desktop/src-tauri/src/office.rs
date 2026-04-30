@@ -90,7 +90,9 @@ pub async fn convert_docx_to_html(path: String) -> Result<String, String> {
         .filter_map(Result::ok)
         .map(|entry| entry.path())
         .find(|path| extension(path) == "html")
-        .ok_or_else(|| "DOCX 转换未生成 HTML，请确认本机 LibreOffice 支持 HTML 导出。".to_string())?;
+        .ok_or_else(|| {
+            "DOCX 转换未生成 HTML，请确认本机 LibreOffice 支持 HTML 导出。".to_string()
+        })?;
 
     fs::read_to_string(&html).map_err(|err| format!("读取 DOCX HTML 失败：{err}"))
 }
@@ -141,4 +143,39 @@ fn extension(path: &Path) -> String {
         .and_then(|value| value.to_str())
         .unwrap_or("")
         .to_ascii_lowercase()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn read_text_file_returns_file_contents() {
+        let path = std::env::temp_dir().join(format!("railwise-text-{}.txt", uuid::Uuid::new_v4()));
+        fs::write(&path, "RAILWISE native file smoke").expect("write file");
+
+        let content =
+            futures::executor::block_on(read_text_file(path.to_string_lossy().to_string()))
+                .expect("read text file");
+
+        assert_eq!(content, "RAILWISE native file smoke");
+        let _ = fs::remove_file(path);
+    }
+
+    #[test]
+    fn read_text_file_reports_missing_path() {
+        let path =
+            std::env::temp_dir().join(format!("railwise-missing-{}.txt", uuid::Uuid::new_v4()));
+        let err = futures::executor::block_on(read_text_file(path.to_string_lossy().to_string()))
+            .expect_err("missing path should fail");
+
+        assert!(err.contains("读取文件失败"));
+    }
+
+    #[test]
+    fn extension_is_case_insensitive() {
+        assert_eq!(extension(Path::new("survey.CSV")), "csv");
+        assert_eq!(extension(Path::new("drawing.DXF")), "dxf");
+        assert_eq!(extension(Path::new("no-extension")), "");
+    }
 }

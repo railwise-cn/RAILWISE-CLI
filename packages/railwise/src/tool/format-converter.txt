@@ -1,10 +1,16 @@
 Use this tool to convert survey data files into RAILWISE tool payloads before adjustment.
 
-For the M9 MVP, this tool parses COSA .in2-style plane-control text and normalized linear equation rows exported from COSA/NASEW preprocessing. It returns parsed points, station observations, warnings, and when enough linear equations are present, a ready-to-run tool_adjustment_indirect payload.
+For the M9 MVP, this tool parses COSA .in2/.in1, NASEW .dat, 南方平差易 .in, Leica LGO ASCII, Trimble TBC CSV, and normalized linear equation rows exported from preprocessing. It returns detected format, parsed points, station observations, warnings, and when enough linear equations are present, a ready-to-run tool_adjustment_indirect payload.
 
 Accepted normalized equation rows:
 
 unknowns,dN_CP301,dE_CP301
 equation,baseline_north,dN_CP301=1,observed=0.002,weight=1
+
+Accepted vendor-flavored aliases:
+- NASEW: P/POINT rows, OBS rows, UNK/UNKNOWN rows, EQ/EQU rows.
+- 南方: ZD point rows, GC observation rows, PARAMS rows, EQU rows with L/P aliases.
+- LGO: POINT rows, BASELINE rows, UNKNOWN rows, ADJ rows with RHS/W aliases.
+- TBC CSV: Point ID/Northing/Easting tables, From Point/To Point observation tables, and equation tables with Observed/Weight columns.
 
 Use the returned next.tool and next.args instead of hand-copying equations into tool_adjustment_indirect. If only raw station observations are parsed, ask for approximate coordinates or a preprocessing export before solving.

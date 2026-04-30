@@ -26,6 +26,15 @@ type Observation = {
   weight?: number
 }
 
+const SourceFormatSchema = z.enum(["auto", "cosa-in2", "csv", "nasew-dat", "south-in", "lgo-asc", "tbc-csv"])
+type SourceFormat = z.infer<typeof SourceFormatSchema>
+
+type Header = {
+  kind: "point" | "observation" | "equation"
+  columns: Record<string, number>
+  names: Record<string, string>
+}
+
 function num(value: string | undefined) {
   if (value === undefined) return
   const parsed = Number(value)
@@ -41,17 +50,146 @@ function clean(content: string) {
 }
 
 function tokens(line: string) {
-  return line
-    .split(/[,\t]+/)
+  const value = line.replace(/[，；]/g, ",")
+  return value
+    .split(/[,\t;]/.test(value) ? /[,\t;]+/ : /[ ]+/)
     .map((item) => item.trim())
     .filter(Boolean)
 }
 
 function tag(value: string | undefined) {
-  return value?.replace(/^@/, "").toLowerCase()
+  return value?.replace(/^@/, "").replace(/[:：]$/, "").toLowerCase()
 }
 
-function equation(parts: string[]) {
+function key(value: string | undefined) {
+  return tag(value)?.replace(/[\s_.-]/g, "")
+}
+
+function has(line: string, patterns: string[]) {
+  const value = line.toLowerCase()
+  return patterns.some((pattern) => value.includes(pattern))
+}
+
+function detect(lines: string[], sourceFormat?: SourceFormat) {
+  if (sourceFormat && sourceFormat !== "auto") return sourceFormat
+  const text = lines.join("\n")
+  if (has(text, ["nasew", "nasew.dat"]) || lines.some((line) => ["nasew", "na"].includes(key(tokens(line)[0]) ?? ""))) {
+    return "nasew-dat"
+  }
+  if (has(text, ["南方", "south"]) || lines.some((line) => ["zd", "gc", "南方平差易"].includes(key(tokens(line)[0]) ?? ""))) {
+    return "south-in"
+  }
+  if (has(text, ["leica", "lgo"]) || lines.some((line) => ["lgo", "leica", "baseline"].includes(key(tokens(line)[0]) ?? ""))) {
+    return "lgo-asc"
+  }
+  if (has(text, ["trimble", " tbc", "point id"]) || lines.some((line) => ["pointid", "frompoint"].includes(key(tokens(line)[0]) ?? ""))) {
+    return "tbc-csv"
+  }
+  if (lines.some((line) => ["unknowns", "equation", "eq"].includes(key(tokens(line)[0]) ?? ""))) return "csv"
+  return "cosa-in2"
+}
+
+function table(parts: string[]) {
+  const columns = Object.fromEntries(parts.map((part, index) => [key(part) ?? "", index]).filter(([name]) => name))
+  const names = Object.fromEntries(parts.map((part) => [key(part) ?? "", part]).filter(([name]) => name))
+  const keys = new Set(Object.keys(columns))
+  if (
+    ["name", "point", "pointid", "id"].some((item) => keys.has(item)) &&
+    ["x", "y", "northing", "easting", "n", "e"].some((item) => keys.has(item))
+  ) {
+    return { kind: "point", columns, names } satisfies Header
+  }
+  if (
+    ["station", "from", "frompoint", "source"].some((item) => keys.has(item)) &&
+    ["target", "to", "topoint"].some((item) => keys.has(item)) &&
+    ["type", "obs", "observation"].some((item) => keys.has(item))
+  ) {
+    return { kind: "observation", columns, names } satisfies Header
+  }
+  if (keys.has("observed") || keys.has("rhs") || (keys.has("l") && (keys.has("name") || keys.has("id")))) {
+    return { kind: "equation", columns, names } satisfies Header
+  }
+}
+
+function field(parts: string[], columns: Record<string, number>, names: string[]) {
+  return names.flatMap((name) => {
+    const index = columns[name]
+    return index === undefined ? [] : [parts[index]]
+  })[0]
+}
+
+function point(parts: string[], table?: Header) {
+  if (table?.kind === "point") {
+    const name = field(parts, table.columns, ["name", "point", "pointid", "id"])
+    const x = num(field(parts, table.columns, ["x", "northing", "n"]))
+    const y = num(field(parts, table.columns, ["y", "easting", "e"]))
+    if (name && x !== undefined && y !== undefined) return { name, x, y } satisfies Point
+  }
+  const first = key(parts[0])
+  if (["point", "pt", "p", "coord", "coordinate", "known", "station", "zd"].includes(first ?? "")) {
+    const x = num(parts[2])
+    const y = num(parts[3])
+    if (parts[1] && x !== undefined && y !== undefined) return { name: parts[1], x, y } satisfies Point
+  }
+  if (parts.length >= 3 && num(parts[0]) === undefined && num(parts[1]) !== undefined && num(parts[2]) !== undefined) {
+    return { name: parts[0], x: num(parts[1]) ?? 0, y: num(parts[2]) ?? 0 } satisfies Point
+  }
+}
+
+function observation(parts: string[], station: string | undefined, table?: Header) {
+  if (table?.kind === "observation") {
+    const from = field(parts, table.columns, ["station", "from", "frompoint", "source"])
+    const to = field(parts, table.columns, ["target", "to", "topoint"])
+    const type = field(parts, table.columns, ["type", "obs", "observation"])
+    const value = num(field(parts, table.columns, ["value", "observed", "l", "distance", "angle"]))
+    const weight = num(field(parts, table.columns, ["weight", "p", "w"]))
+    if (from && to && type && value !== undefined) {
+      return { station: from, target: to, type: type.toUpperCase(), value, weight } satisfies Observation
+    }
+  }
+  const first = key(parts[0])
+  if (["obs", "observation", "measure", "measurement", "m", "gc", "baseline", "vector"].includes(first ?? "")) {
+    const value = num(parts[4])
+    if (parts[1] && parts[2] && parts[3] && value !== undefined) {
+      return {
+        station: parts[1],
+        target: parts[2],
+        type: parts[3].toUpperCase(),
+        value,
+        weight: num(parts[5]),
+      } satisfies Observation
+    }
+  }
+  if (station && parts.length >= 3 && ["l", "s", "direction", "distance", "angle", "azimuth"].includes(key(parts[1]) ?? "")) {
+    return {
+      station,
+      target: parts[0],
+      type: parts[1].toUpperCase(),
+      value: num(parts[2]) ?? 0,
+      weight: num(parts[3]),
+    } satisfies Observation
+  }
+}
+
+function equation(parts: string[], table?: Header) {
+  if (table?.kind === "equation") {
+    const coefficients: Record<string, number> = {}
+    const reserved = new Set(["name", "id", "observed", "rhs", "l", "value", "weight", "p", "w"])
+    Object.entries(table.columns).forEach(([name, index]) => {
+      if (reserved.has(name)) return
+      const value = num(parts[index])
+      if (value === undefined) return
+      coefficients[parts[index]?.includes("=") ? parts[index].split("=")[0] : (table.names[name] ?? name)] = value
+    })
+    const observed = num(field(parts, table.columns, ["observed", "rhs", "l", "value"]))
+    if (observed === undefined) return
+    return {
+      name: field(parts, table.columns, ["name", "id"]),
+      coefficients,
+      observed,
+      weight: num(field(parts, table.columns, ["weight", "p", "w"])),
+    } satisfies Equation
+  }
   const coefficients: Record<string, number> = {}
   const name = parts[1]?.includes("=") ? undefined : parts[1]
   const start = name ? 2 : 1
@@ -61,13 +199,17 @@ function equation(parts: string[]) {
       if (split.length !== 2) return []
       const value = num(split[1])
       if (value === undefined) return []
-      return [[split[0].toLowerCase(), value] as const]
+      const name = key(split[0]) ?? ""
+      const mapped = { obs: "observed", rhs: "observed", l: "observed", value: "observed", p: "weight", w: "weight" }[
+        name
+      ]
+      return [[mapped ?? name, value] as const]
     }),
   )
   parts.slice(start).forEach((part) => {
     const split = part.split("=")
     if (split.length !== 2) return
-    if (["name", "observed", "weight"].includes(split[0].toLowerCase())) return
+    if (["name", "observed", "obs", "rhs", "l", "value", "weight", "p", "w"].includes(key(split[0]) ?? "")) return
     const value = num(split[1])
     if (value === undefined) return
     coefficients[split[0]] = value
@@ -87,42 +229,41 @@ function parse(lines: string[]) {
   const points = [] as Point[]
   const observations = [] as Observation[]
   const warnings = [] as string[]
-  const header = lines[0] && tokens(lines[0]).every((part) => num(part) !== undefined) ? tokens(lines[0]).map(Number) : []
-  const stations = lines.reduce(
+  const headerValues =
+    lines[0] && tokens(lines[0]).every((part) => num(part) !== undefined) ? tokens(lines[0]).map(Number) : []
+  const state = lines.reduce(
     (acc, line) => {
       const parts = tokens(line)
-      const first = tag(parts[0])
-      if (first === "unknowns") {
+      const tableHeader = table(parts)
+      if (tableHeader) return { ...acc, table: tableHeader }
+      if (["unknowns", "unknown", "unk", "params", "parameters"].includes(key(parts[0]) ?? "")) {
         parts.slice(1).forEach((name) => {
           if (!unknowns.includes(name)) unknowns.push(name)
         })
         return acc
       }
-      if (first === "equation" || first === "eq") {
-        const item = equation(parts)
+      if (["equation", "eq", "equ", "adj"].includes(key(parts[0]) ?? "") || acc.table?.kind === "equation") {
+        const item = equation(parts, acc.table)
         if (item) equations.push(item)
         return acc
       }
-      if (parts.length >= 3 && num(parts[0]) === undefined && num(parts[1]) !== undefined && num(parts[2]) !== undefined) {
-        points.push({ name: parts[0], x: num(parts[1]) ?? 0, y: num(parts[2]) ?? 0 })
+      const known = point(parts, acc.table)
+      if (known) {
+        points.push(known)
         return acc
       }
-      if (parts.length === 1 && num(parts[0]) === undefined) return parts[0]
-      if (acc && parts.length >= 3 && ["l", "s", "direction", "distance"].includes(tag(parts[1]) ?? "")) {
-        observations.push({
-          station: acc,
-          target: parts[0],
-          type: parts[1].toUpperCase(),
-          value: num(parts[2]) ?? 0,
-          weight: num(parts[3]),
-        })
+      if (parts.length === 1 && num(parts[0]) === undefined) return { station: parts[0], table: undefined }
+      const measured = observation(parts, acc.station, acc.table)
+      if (measured) {
+        observations.push(measured)
+        return acc
       }
       return acc
     },
-    undefined as string | undefined,
+    { station: undefined as string | undefined, table: undefined as Header | undefined },
   )
-  if (!stations && observations.length === 0 && points.length === 0 && equations.length === 0) {
-    warnings.push("No COSA station observations or normalized equations were detected.")
+  if (!state.station && observations.length === 0 && points.length === 0 && equations.length === 0) {
+    warnings.push("No supported survey observations or normalized equations were detected.")
   }
   if (!unknowns.length) {
     equations
@@ -135,7 +276,7 @@ function parse(lines: string[]) {
     warnings.push("Raw COSA station observations were parsed, but linear adjustment equations were not present.")
   }
   return {
-    header,
+    header: headerValues,
     points,
     observations,
     adjustment: equations.length ? { unknowns, equations } : undefined,
@@ -156,7 +297,7 @@ export const FormatConverterTool = Tool.define("tool_format_converter", {
   parameters: z.object({
     inputPath: z.string().optional().describe("Source survey file path, relative to the worktree or absolute."),
     content: z.string().optional().describe("Inline survey file content. Use this for small pasted .in2/.csv snippets."),
-    sourceFormat: z.enum(["auto", "cosa-in2", "csv"]).optional().describe("Source format. Defaults to auto."),
+    sourceFormat: SourceFormatSchema.optional().describe("Source format. Defaults to auto."),
     targetFormat: z
       .enum(["adjustment-indirect"])
       .optional()
@@ -165,6 +306,7 @@ export const FormatConverterTool = Tool.define("tool_format_converter", {
   async execute(params) {
     const input = await source(params)
     const lines = clean(input.content)
+    const detectedFormat = detect(lines, params.sourceFormat)
     const result = parse(lines)
     return {
       title: "Format Converter",
@@ -172,6 +314,7 @@ export const FormatConverterTool = Tool.define("tool_format_converter", {
         {
           sourcePath: input.path,
           sourceFormat: params.sourceFormat ?? "auto",
+          detectedFormat,
           targetFormat: params.targetFormat ?? "adjustment-indirect",
           lineCount: lines.length,
           ...result,

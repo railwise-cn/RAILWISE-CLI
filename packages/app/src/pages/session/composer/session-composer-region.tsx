@@ -17,6 +17,16 @@ import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
 import type { WorkflowAcceptance, WorkflowRunArtifact, WorkflowSession } from "@/types/agent-studio"
 
 type AcceptanceStatus = WorkflowAcceptance["checks"][number]["status"]
+type WorkflowStage = "imported" | "pending" | "running" | "review" | "failed" | "passed"
+
+const workflowSteps: { id: WorkflowStage; label: string }[] = [
+  { id: "imported", label: "已导入" },
+  { id: "pending", label: "待发送" },
+  { id: "running", label: "执行中" },
+  { id: "review", label: "待验收" },
+  { id: "failed", label: "需返工" },
+  { id: "passed", label: "已通过" },
+]
 
 function acceptanceLabel(status: AcceptanceStatus) {
   if (status === "ok") return "通过"
@@ -66,6 +76,7 @@ export function SessionComposerRegion(props: {
   const [artifactNotice, setArtifactNotice] = createSignal("")
   const [accepting, setAccepting] = createSignal(false)
   const [stored, setStored] = createSignal<WorkflowSession>()
+  const [submitRequest, setSubmitRequest] = createSignal(0)
   let editor: HTMLDivElement | undefined
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
@@ -94,6 +105,22 @@ export function SessionComposerRegion(props: {
       })
       .join("")
       .trim()
+  const messages = createMemo(() => (params.id ? (sync.data.message[params.id] ?? []) : []))
+  const userMessageCount = createMemo(() => messages().filter((message) => message.role === "user").length)
+  const assistantMessageCount = createMemo(() => messages().filter((message) => message.role === "assistant").length)
+  const sessionStatus = createMemo(() => sync.data.session_status[params.id ?? ""] ?? { type: "idle" })
+  const working = createMemo(() => sessionStatus()?.type !== "idle")
+  const hasDraft = createMemo(() => prompt.ready() && previewPrompt().length > 0)
+  const workflowStage = createMemo<WorkflowStage>(() => {
+    if (acceptance()?.ok) return "passed"
+    if (acceptance()) return "failed"
+    if (working()) return "running"
+    if (assistantMessageCount() > 0) return "review"
+    if (userMessageCount() > 0) return "running"
+    return "pending"
+  })
+  const workflowStepIndex = createMemo(() => workflowSteps.findIndex((step) => step.id === workflowStage()))
+  const failedChecks = createMemo(() => acceptance()?.checks.filter((item) => item.status === "fail") ?? [])
 
   createEffect(() => {
     const id = params.id
@@ -180,6 +207,70 @@ export function SessionComposerRegion(props: {
     { label: "Markdown", path: artifact.markdownPath, absolute: artifact.absoluteMarkdownPath },
     { label: "JSON", path: artifact.jsonPath, absolute: artifact.absoluteJsonPath },
   ]
+
+  const buildReworkPrompt = () => {
+    const result = acceptance()
+    const checks = failedChecks().length
+      ? failedChecks()
+      : (result?.checks.filter((item) => item.status !== "ok") ?? [])
+    const attachmentLines = artifacts().flatMap((artifact) =>
+      artifactRows(artifact).map((row) => `- ${artifact.title} ${row.label}: ${row.path}`),
+    )
+
+    return [
+      "请继续返工 CPIII 复测交付，优先修复以下验收阻塞项：",
+      ...(checks.length
+        ? checks.map((item, index) => `${index + 1}. ${item.label}: ${item.detail}`)
+        : ["1. 重新核对验收输出，补齐缺失信息。"]),
+      "",
+      "必须保留并逐字引用以下附件路径：",
+      ...(attachmentLines.length ? attachmentLines : ["- 暂无已登记附件，请先生成并登记交付附件。"]),
+      "",
+      "完成后请再次输出包含「附件引用」「规范引用」「工具结果摘要」的小节，并明确哪些阻塞项已经修复。",
+    ].join("\n")
+  }
+
+  const applyReworkPrompt = () => {
+    applyTemplate({ agent: "chief_manager", prompt: buildReworkPrompt() })
+    setArtifactNotice("已生成返工指令")
+  }
+
+  const workflowActionLabel = createMemo(() => {
+    if (accepting()) return "验收中"
+    if (acceptance()?.ok) return "已通过"
+    if (workflowStage() === "failed") return "继续返工"
+    if (workflowStage() === "pending") return "开始执行"
+    if (workflowStage() === "running") return working() ? "执行中" : "等待输出"
+    return "交付验收"
+  })
+
+  const workflowActionIcon = createMemo(() => {
+    if (acceptance()?.ok) return "check" as const
+    if (workflowStage() === "failed") return "edit" as const
+    if (workflowStage() === "pending") return "arrow-up" as const
+    if (workflowStage() === "running") return "enter" as const
+    return "checklist" as const
+  })
+
+  const workflowActionDisabled = createMemo(() => {
+    if (accepting() || acceptance()?.ok) return true
+    if (workflowStage() === "pending") return !hasDraft()
+    if (workflowStage() === "running") return true
+    return false
+  })
+
+  const runWorkflowAction = () => {
+    if (workflowActionDisabled()) return
+    if (workflowStage() === "pending") {
+      setSubmitRequest((value) => value + 1)
+      return
+    }
+    if (workflowStage() === "failed") {
+      applyReworkPrompt()
+      return
+    }
+    runAcceptance()
+  }
 
   return (
     <div
@@ -279,12 +370,59 @@ export function SessionComposerRegion(props: {
                       <button
                         type="button"
                         data-testid="workflow-acceptance-btn"
-                        disabled={accepting()}
-                        class="shrink-0 rounded-md border border-[rgba(117,86,32,0.18)] bg-white px-3 py-1.5 text-[12px] font-semibold text-[rgb(95,70,24)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-[rgba(117,86,32,0.04)] disabled:opacity-60"
-                        onClick={runAcceptance}
+                        data-action="workflow-primary-action"
+                        disabled={workflowActionDisabled()}
+                        classList={{
+                          "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[12px] font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors disabled:opacity-60": true,
+                          "border-[rgba(160,42,42,0.22)] bg-[rgba(160,42,42,0.06)] text-text-danger-base hover:bg-[rgba(160,42,42,0.09)]":
+                            workflowStage() === "failed",
+                          "border-[rgba(31,118,71,0.25)] bg-[rgba(31,118,71,0.07)] text-[rgb(31,118,71)] hover:bg-[rgba(31,118,71,0.1)]":
+                            workflowStage() === "passed",
+                          "border-[rgba(117,86,32,0.18)] bg-white text-[rgb(95,70,24)] hover:bg-[rgba(117,86,32,0.04)]":
+                            workflowStage() !== "failed" && workflowStage() !== "passed",
+                        }}
+                        onClick={runWorkflowAction}
                       >
-                        {accepting() ? "验收中" : "交付验收"}
+                        <Icon name={workflowActionIcon()} size="small" />
+                        <span>{workflowActionLabel()}</span>
                       </button>
+                    </div>
+                    <div class="mt-2 flex flex-wrap items-center gap-1.5" data-testid="workflow-status-bar">
+                      <For each={workflowSteps}>
+                        {(step, index) => {
+                          const active = () => workflowStage() === step.id
+                          const done = () => index() < workflowStepIndex()
+                          const danger = () => active() && step.id === "failed"
+                          const success = () => active() && step.id === "passed"
+                          return (
+                            <div
+                              data-state={active() ? "active" : done() ? "done" : "todo"}
+                              classList={{
+                                "flex h-7 min-w-0 items-center gap-1.5 rounded-md border px-2 text-11-medium": true,
+                                "border-[rgba(31,118,71,0.22)] bg-[rgba(31,118,71,0.06)] text-[rgb(31,118,71)]":
+                                  done() || success(),
+                                "border-[rgba(160,42,42,0.22)] bg-[rgba(160,42,42,0.06)] text-text-danger-base":
+                                  danger(),
+                                "border-[rgba(117,86,32,0.18)] bg-[rgba(117,86,32,0.05)] text-[rgb(95,70,24)]":
+                                  active() && !danger() && !success(),
+                                "border-border-weak-base bg-background-base text-text-weak":
+                                  !active() && !done(),
+                              }}
+                            >
+                              <span
+                                classList={{
+                                  "size-1.5 shrink-0 rounded-full": true,
+                                  "bg-[rgb(31,118,71)]": done() || success(),
+                                  "bg-text-danger-base": danger(),
+                                  "bg-[rgb(117,86,32)]": active() && !danger() && !success(),
+                                  "bg-border-strong-base": !active() && !done(),
+                                }}
+                              />
+                              <span class="whitespace-nowrap">{step.label}</span>
+                            </div>
+                          )
+                        }}
+                      </For>
                     </div>
                     <Show when={artifacts().length}>
                       <div class="mt-2 grid gap-1" data-testid="workflow-artifact-list">
@@ -371,6 +509,7 @@ export function SessionComposerRegion(props: {
                 newSessionWorktree={props.newSessionWorktree}
                 onNewSessionWorktreeReset={props.onNewSessionWorktreeReset}
                 onSubmit={props.onSubmit}
+                submitRequest={submitRequest}
               />
               <TemplateDrawer
                 open={templates()}

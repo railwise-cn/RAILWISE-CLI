@@ -60,6 +60,7 @@ interface PromptInputProps {
   newSessionWorktree?: string
   onNewSessionWorktreeReset?: () => void
   onSubmit?: () => void
+  submitRequest?: () => number
 }
 
 type PromptQueueEntry = {
@@ -962,6 +963,16 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     onNewSessionWorktreeReset: props.onNewSessionWorktreeReset,
     onSubmit: props.onSubmit,
   })
+
+  createEffect(
+    on(
+      () => props.submitRequest?.(),
+      (request) => {
+        if (!request) return
+        void handleSubmit(new Event("submit", { cancelable: true }))
+      },
+    ),
+  )
 
   createEffect(() => {
     if (working()) return

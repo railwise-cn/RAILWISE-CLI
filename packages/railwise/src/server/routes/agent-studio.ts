@@ -119,6 +119,18 @@ const WorkflowAcceptanceSchema = z
   })
   .meta({ ref: "WorkflowAcceptance" })
 
+const WorkflowSessionSchema = z
+  .object({
+    sessionId: z.string(),
+    workflowId: z.string(),
+    workflowName: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    artifacts: WorkflowRunArtifactSchema.array().optional(),
+    acceptance: WorkflowAcceptanceSchema.optional(),
+  })
+  .meta({ ref: "WorkflowSession" })
+
 const WikiReportSchema = z
   .object({
     path: z.string(),
@@ -213,6 +225,8 @@ const FormatCoverageReportSchema = z
 type FormatCoverageReport = z.infer<typeof FormatCoverageReportSchema>
 type FormatCoverageCore = Omit<FormatCoverageReport, "artifacts">
 type WorkflowRunArtifact = z.infer<typeof WorkflowRunArtifactSchema>
+type WorkflowAcceptance = z.infer<typeof WorkflowAcceptanceSchema>
+type WorkflowSession = z.infer<typeof WorkflowSessionSchema>
 type FormatConverted = {
   detectedFormat?: string
   points?: unknown[]
@@ -237,6 +251,41 @@ function localNormRoot() {
 
 function worktreeNormRoot() {
   return path.join(Instance.worktree, ".railwise", "norm-library")
+}
+
+function workflowSessionDir() {
+  return path.join(Instance.directory, ".railwise", "workflow-sessions")
+}
+
+function workflowSessionPath(sessionId: string) {
+  return path.join(workflowSessionDir(), `${sessionId.replace(/[^A-Za-z0-9_.-]/g, "_")}.json`)
+}
+
+async function workflowSession(sessionId: string) {
+  const source = workflowSessionPath(sessionId)
+  const file = Bun.file(source)
+  if (!(await file.exists())) return
+  return WorkflowSessionSchema.parse(await file.json())
+}
+
+async function saveWorkflowSession(input: {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  artifacts?: WorkflowRunArtifact[]
+  acceptance?: WorkflowAcceptance
+}) {
+  const now = new Date().toISOString()
+  const prev = await workflowSession(input.sessionId)
+  const next: WorkflowSession = {
+    ...prev,
+    ...input,
+    createdAt: prev?.createdAt ?? now,
+    updatedAt: now,
+  }
+  await mkdir(workflowSessionDir(), { recursive: true })
+  await Bun.write(workflowSessionPath(input.sessionId), `${JSON.stringify(next, null, 2)}\n`)
+  return next
 }
 
 async function reportRoots() {
@@ -935,7 +984,7 @@ async function acceptance(input: { workflowId: string; sessionId: string }) {
       detail: `命中 ${present.length}/${toolMarkers.length} 个摘要标记：${present.join("、") || "无"}`,
     }),
   ]
-  return {
+  const result = {
     workflowId: workflow.id,
     sessionId: input.sessionId,
     ok: checks.every((check) => check.status !== "fail"),
@@ -943,6 +992,13 @@ async function acceptance(input: { workflowId: string; sessionId: string }) {
     messageCount: messages.length,
     checks,
   }
+  await saveWorkflowSession({
+    sessionId: input.sessionId,
+    workflowId: workflow.id,
+    workflowName: workflow.name,
+    acceptance: result,
+  })
+  return result
 }
 
 export const AgentStudioRoutes = lazy(() => {
@@ -1079,6 +1135,36 @@ export const AgentStudioRoutes = lazy(() => {
         const workflow = presets.find((item) => item.id === c.req.valid("param").id)
         if (!workflow) return c.json({ error: "workflow not found" }, 404)
         return c.json(await check(workflow))
+      },
+    )
+    .get(
+      "/workflow/session/:sessionId",
+      describeRoute({
+        summary: "Get workflow session metadata",
+        description: "Returns persisted workflow artifacts and the latest delivery acceptance result for a session.",
+        operationId: "agentStudio.workflow.session",
+        responses: {
+          200: {
+            description: "Workflow session metadata",
+            content: {
+              "application/json": {
+                schema: resolver(WorkflowSessionSchema),
+              },
+            },
+          },
+          ...errors(404),
+        },
+      }),
+      validator(
+        "param",
+        z.object({
+          sessionId: z.string(),
+        }),
+      ),
+      async (c) => {
+        const info = await workflowSession(c.req.valid("param").sessionId)
+        if (!info) return c.json({ error: "workflow session not found" }, 404)
+        return c.json(info)
       },
     )
     .post(
@@ -1235,6 +1321,12 @@ export const AgentStudioRoutes = lazy(() => {
         const session = await Session.create({ title })
         const artifacts = await runArtifacts(workflow)
         const text = prompt(workflow, body.input, artifacts)
+        await saveWorkflowSession({
+          sessionId: session.id,
+          workflowId: workflow.id,
+          workflowName: workflow.name,
+          artifacts,
+        })
         return c.json({
           sessionId: session.id,
           sessionTitle: title,

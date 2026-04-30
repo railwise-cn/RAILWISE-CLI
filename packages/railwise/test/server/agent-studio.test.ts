@@ -186,7 +186,9 @@ describe("server.routes.agent-studio", () => {
             body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki" }),
           })
           const result = (await response.json()) as {
+            sessionId: string
             directory: string
+            workflowId: string
             agentNames: string[]
             prompt: string
             artifacts: {
@@ -202,6 +204,7 @@ describe("server.routes.agent-studio", () => {
 
           expect(response.status).toBe(200)
           expect(result.directory).toBe(tmp.path)
+          expect(result.workflowId).toBe("cpiii-resurvey-wiki")
           expect(result.agentNames).toContain("adjustment_computer")
           expect(result.agentNames).toContain("railway_norm_consultant")
           expect(artifact.kind).toBe("format-coverage")
@@ -243,6 +246,22 @@ describe("server.routes.agent-studio", () => {
           expect(markdown).toContain("Ready count: 6")
           expect(json.sampleCount).toBe(6)
           expect(json.warningCount).toBe(2)
+
+          const metadataResponse = await AgentStudioRoutes().request(
+            `http://railwise.test/workflow/session/${result.sessionId}`,
+          )
+          const metadata = (await metadataResponse.json()) as {
+            sessionId: string
+            workflowId: string
+            workflowName: string
+            artifacts: typeof result.artifacts
+          }
+
+          expect(metadataResponse.status).toBe(200)
+          expect(metadata.sessionId).toBe(result.sessionId)
+          expect(metadata.workflowId).toBe("cpiii-resurvey-wiki")
+          expect(metadata.workflowName).toBe("CPIII 规范查询与复测预案")
+          expect(metadata.artifacts[0]?.markdownPath).toBe(artifact.markdownPath)
         },
       })
     } finally {
@@ -309,6 +328,17 @@ describe("server.routes.agent-studio", () => {
           expect(result.checks.find((check) => check.id === "artifact-section")?.status).toBe("ok")
           expect(result.checks.find((check) => check.id === "norm-citation")?.status).toBe("ok")
           expect(result.checks.find((check) => check.id === "tool-summary")?.status).toBe("ok")
+
+          const metadataResponse = await AgentStudioRoutes().request(
+            `http://railwise.test/workflow/session/${session.id}`,
+          )
+          const metadata = (await metadataResponse.json()) as {
+            acceptance: { ok: boolean; messageCount: number }
+          }
+
+          expect(metadataResponse.status).toBe(200)
+          expect(metadata.acceptance.ok).toBe(true)
+          expect(metadata.acceptance.messageCount).toBe(2)
         },
       })
     } finally {

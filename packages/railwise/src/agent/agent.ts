@@ -289,6 +289,7 @@ export namespace Agent {
           PermissionNext.fromConfig({
             tool_format_converter: "allow",
             tool_adjustment_indirect: "allow",
+            tool_adjustment_robust: "allow",
             tool_adjustment_condition: "allow",
             tool_gross_error_detection: "allow",
             tool_wiki_query: "allow",

@@ -1,15 +1,32 @@
-import { Show, createEffect, createMemo, createSignal } from "solid-js"
+import { For, Show, createEffect, createMemo, createSignal } from "solid-js"
 import { useParams } from "@solidjs/router"
 import { PromptInput } from "@/components/prompt-input"
 import { TemplateDrawer, useTemplateDrawerShortcut } from "@/components/session/template-drawer"
 import { useLanguage } from "@/context/language"
 import { usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
+import { useSync } from "@/context/sync"
+import { useAgentStudioApi } from "@/pages/agents/api"
 import { getSessionHandoff, setSessionHandoff } from "@/pages/session/handoff"
 import { SessionPermissionDock } from "@/pages/session/composer/session-permission-dock"
 import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
 import type { SessionComposerState } from "@/pages/session/composer/session-composer-state"
 import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
+import type { WorkflowAcceptance } from "@/types/agent-studio"
+
+type AcceptanceStatus = WorkflowAcceptance["checks"][number]["status"]
+
+function acceptanceLabel(status: AcceptanceStatus) {
+  if (status === "ok") return "通过"
+  if (status === "warn") return "提示"
+  return "阻塞"
+}
+
+function acceptanceTone(status: AcceptanceStatus) {
+  if (status === "ok") return "text-[rgb(31,118,71)]"
+  if (status === "warn") return "text-[rgb(146,94,15)]"
+  return "text-text-danger-base"
+}
 
 export function SessionComposerRegion(props: {
   state: SessionComposerState
@@ -22,15 +39,29 @@ export function SessionComposerRegion(props: {
   setPromptDockRef: (el: HTMLDivElement) => void
 }) {
   const params = useParams()
+  const api = useAgentStudioApi()
   const sdk = useSDK()
+  const sync = useSync()
   const prompt = usePrompt()
   const language = useLanguage()
   const [templates, setTemplates] = createSignal(false)
   const [applied, setApplied] = createSignal("")
+  const [acceptance, setAcceptance] = createSignal<WorkflowAcceptance>()
+  const [acceptanceError, setAcceptanceError] = createSignal("")
+  const [accepting, setAccepting] = createSignal(false)
   let editor: HTMLDivElement | undefined
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
-  const handoffPrompt = createMemo(() => getSessionHandoff(sessionKey())?.prompt)
+  const handoff = createMemo(() => getSessionHandoff(sessionKey()))
+  const handoffPrompt = createMemo(() => handoff()?.prompt)
+  const sessionTitle = createMemo(() => (params.id ? sync.session.get(params.id)?.title : undefined))
+  const workflowId = createMemo(() => {
+    const id = handoff()?.workflowId
+    if (id) return id
+    if (sessionTitle()?.includes("CPIII 规范查询与复测预案")) return "cpiii-resurvey-wiki"
+  })
+  const workflowName = createMemo(() => handoff()?.workflowName ?? sessionTitle()?.replace(/^工作流：/, ""))
+  const canAccept = createMemo(() => Boolean(params.id && workflowId() === "cpiii-resurvey-wiki"))
 
   const previewPrompt = () =>
     prompt
@@ -43,6 +74,12 @@ export function SessionComposerRegion(props: {
       })
       .join("")
       .trim()
+
+  createEffect(() => {
+    sessionKey()
+    setAcceptance(undefined)
+    setAcceptanceError("")
+  })
 
   createEffect(() => {
     if (!prompt.ready()) return
@@ -74,6 +111,19 @@ export function SessionComposerRegion(props: {
       agent.length + text.length,
     )
     requestAnimationFrame(() => editor?.focus())
+  }
+
+  const runAcceptance = () => {
+    const id = params.id
+    const workflow = workflowId()
+    if (!id || !workflow) return
+    setAccepting(true)
+    setAcceptanceError("")
+    void api
+      .workflowAcceptance(workflow, id)
+      .then(setAcceptance)
+      .catch((err: unknown) => setAcceptanceError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setAccepting(false))
   }
 
   return (
@@ -146,7 +196,58 @@ export function SessionComposerRegion(props: {
                 "mt-0": !props.state.dock() || props.state.closing(),
               }}
             >
-              <div class="mb-2 flex justify-end">
+              <div class="mb-2 flex flex-wrap items-start justify-between gap-2">
+                <Show when={canAccept()}>
+                  <div
+                    class="min-w-0 flex-1 rounded-md border border-border-weak-base bg-background-base/70 px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                    data-testid="workflow-acceptance-panel"
+                  >
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <div class="min-w-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-12-regular text-text-weak">
+                        <span class="text-12-medium text-text-strong truncate">
+                          {workflowName() ?? "工作流"} · 交付验收
+                        </span>
+                        <Show when={acceptance()}>
+                          {(result) => (
+                            <>
+                              <span class={result().ok ? "text-[rgb(31,118,71)]" : "text-text-danger-base"}>
+                                {result().ok ? "通过" : "需返工"}
+                              </span>
+                              <span>{result().messageCount} 条消息</span>
+                            </>
+                          )}
+                        </Show>
+                        <Show when={acceptanceError()}>
+                          {(message) => <span class="text-text-danger-base truncate">{message()}</span>}
+                        </Show>
+                      </div>
+                      <button
+                        type="button"
+                        data-testid="workflow-acceptance-btn"
+                        disabled={accepting()}
+                        class="shrink-0 rounded-md border border-[rgba(117,86,32,0.18)] bg-white px-3 py-1.5 text-[12px] font-semibold text-[rgb(95,70,24)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-[rgba(117,86,32,0.04)] disabled:opacity-60"
+                        onClick={runAcceptance}
+                      >
+                        {accepting() ? "验收中" : "交付验收"}
+                      </button>
+                    </div>
+                    <Show when={acceptance()}>
+                      {(result) => (
+                        <div class="mt-2 grid gap-1" data-testid="workflow-acceptance-result">
+                          <For each={result().checks}>
+                            {(item) => (
+                              <div class="grid gap-1 rounded-md bg-surface-base px-2 py-1.5 text-12-regular md:grid-cols-[96px_56px_1fr]">
+                                <strong class="text-text-strong">{item.label}</strong>
+                                <span class={acceptanceTone(item.status)}>{acceptanceLabel(item.status)}</span>
+                                <small class="min-w-0 text-text-weak">{item.detail}</small>
+                              </div>
+                            )}
+                          </For>
+                        </div>
+                      )}
+                    </Show>
+                  </div>
+                </Show>
                 <button
                   type="button"
                   data-action="session-template-drawer"

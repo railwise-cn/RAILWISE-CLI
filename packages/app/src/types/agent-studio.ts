@@ -57,6 +57,20 @@ export type WorkflowCheck = {
   }[]
 }
 
+export type WorkflowAcceptance = {
+  workflowId: string
+  sessionId: string
+  ok: boolean
+  generatedAt: string
+  messageCount: number
+  checks: {
+    id: string
+    label: string
+    status: "ok" | "warn" | "fail"
+    detail: string
+  }[]
+}
+
 export type FormatSampleReport = {
   id: string
   label: string

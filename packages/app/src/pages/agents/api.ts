@@ -5,6 +5,7 @@ import type {
   FormatCoverageReport,
   WikiReportDetail,
   WikiStatus,
+  WorkflowAcceptance,
   WorkflowCheck,
   WorkflowRun,
 } from "@/types/agent-studio"
@@ -45,6 +46,12 @@ export function useAgentStudioApi() {
       }),
     presets: () => request<Workflow[]>("/workflow/presets"),
     workflowCheck: (workflowId: string) => request<WorkflowCheck>(`/workflow/check/${encodeURIComponent(workflowId)}`),
+    workflowAcceptance: (workflowId: string, sessionId: string) =>
+      request<WorkflowAcceptance>("/workflow/acceptance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workflowId, sessionId }),
+      }),
     formatReport: () => request<FormatCoverageReport>("/format/report"),
     wikiStatus: () => request<WikiStatus>("/wiki/status"),
     wikiReport: (path: string) => request<WikiReportDetail>(`/wiki/report?path=${encodeURIComponent(path)}`),

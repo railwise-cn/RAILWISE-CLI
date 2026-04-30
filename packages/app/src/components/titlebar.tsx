@@ -13,27 +13,27 @@ import { useCommand } from "@/context/command"
 import { useLanguage } from "@/context/language"
 import { applyPath, backPath, forwardPath } from "./titlebar-history"
 
-type TauriDesktopWindow = {
+type NativeDesktopWindow = {
   startDragging?: () => Promise<void>
   toggleMaximize?: () => Promise<void>
 }
 
-type TauriThemeWindow = {
+type NativeThemeWindow = {
   setTheme?: (theme?: "light" | "dark" | null) => Promise<void>
 }
 
-type TauriApi = {
+type NativeShellApi = {
   window?: {
-    getCurrentWindow?: () => TauriDesktopWindow
+    getCurrentWindow?: () => NativeDesktopWindow
   }
   webviewWindow?: {
-    getCurrentWebviewWindow?: () => TauriThemeWindow
+    getCurrentWebviewWindow?: () => NativeThemeWindow
   }
 }
 
-const tauriApi = () => (window as unknown as { __TAURI__?: TauriApi }).__TAURI__
-const currentDesktopWindow = () => tauriApi()?.window?.getCurrentWindow?.()
-const currentThemeWindow = () => tauriApi()?.webviewWindow?.getCurrentWebviewWindow?.()
+const nativeApi = () => (window as unknown as { __TAURI__?: NativeShellApi }).__TAURI__
+const currentDesktopWindow = () => nativeApi()?.window?.getCurrentWindow?.()
+const currentThemeWindow = () => nativeApi()?.webviewWindow?.getCurrentWebviewWindow?.()
 
 export function Titlebar() {
   const layout = useLayout()

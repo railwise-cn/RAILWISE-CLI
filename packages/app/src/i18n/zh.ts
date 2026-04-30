@@ -446,7 +446,7 @@ export const dict = {
   "error.page.action.checkUpdates": "检查更新",
   "error.page.action.updateTo": "更新到 {{version}}",
   "error.page.report.prefix": "请将此错误报告给 RAILWISE 团队",
-  "error.page.report.discord": "在 Discord 上",
+  "error.page.report.link": "支持渠道",
   "error.page.version": "版本：{{version}}",
   "error.dev.rootNotFound": "未找到根元素。你是不是忘了把它添加到 index.html？或者 id 属性拼写错了？",
   "error.globalSync.connectFailed": "无法连接到服务器。是否有服务器正在 `{{url}}` 运行？",
@@ -579,17 +579,17 @@ export const dict = {
   "sidebar.project.viewAllSessions": "查看全部会话",
   "sidebar.project.clearNotifications": "清除通知",
 
-  "app.name.desktop": "RAILWISE Desktop",
+  "app.name": "RAILWISE",
 
-  "settings.section.desktop": "桌面",
+  "settings.section.application": "应用",
   "settings.section.server": "服务器",
 
   "settings.tab.general": "通用",
   "settings.tab.shortcuts": "快捷键",
 
-  "settings.desktop.section.wsl": "WSL",
-  "settings.desktop.wsl.title": "WSL 集成",
-  "settings.desktop.wsl.description": "在 Windows 的 WSL 环境中运行 RAILWISE 服务器。",
+  "settings.platform.section.wsl": "WSL",
+  "settings.platform.wsl.title": "WSL 集成",
+  "settings.platform.wsl.description": "在 Windows 的 WSL 环境中运行 RAILWISE 服务器。",
 
   "settings.general.section.appearance": "外观",
   "settings.general.section.notifications": "系统通知",

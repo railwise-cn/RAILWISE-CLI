@@ -15,6 +15,7 @@ import { MessageTable } from "../../session/session.sql"
 import { Database, gte } from "../../storage/db"
 import {
   AdjustmentConditionTool,
+  AdjustmentFreeNetworkTool,
   AdjustmentIndirectTool,
   AdjustmentRobustTool,
   GrossErrorDetectionTool,
@@ -297,6 +298,14 @@ function cpiiiCosa() {
 }
 
 function cpiii() {
+  const network = {
+    unknowns: ["dN_CP300", "dN_CP301"],
+    equations: [
+      { name: "relative_a", coefficients: { dN_CP300: -1, dN_CP301: 1 }, observed: 10 },
+      { name: "relative_b", coefficients: { dN_CP300: -1, dN_CP301: 1 }, observed: 10.02 },
+    ],
+    constraints: [{ name: "centroid", coefficients: { dN_CP300: 1, dN_CP301: 1 }, value: 0 }],
+  }
   const condition = {
     observations: [
       { name: "dh1", value: 100.001 },
@@ -311,12 +320,14 @@ function cpiii() {
     "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
     "3. adjustment_computer 先调用 tool_format_converter 解析 COSA .in2 / CSV / NASEW 预处理文本，使用返回的 next.args 调用 tool_adjustment_indirect：",
     JSON.stringify({ sourceFormat: "cosa-in2", content: cpiiiCosa() }, null, 2),
-    "4. adjustment_computer 将 tool_adjustment_indirect 的 residuals 和 sigma0 交给 tool_gross_error_detection，标记疑似粗差后再输出最终质量意见。",
-    "5. adjustment_computer 若发现疑似粗差但需要保留观测参与解算，调用 tool_adjustment_robust 输出 IGGIII 降权后的稳健平差结果。",
-    "6. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
+    "4. adjustment_computer 对秩亏相对网或自由网任务调用 tool_adjustment_free_network，必须显式传入基准约束：",
+    JSON.stringify(network, null, 2),
+    "5. adjustment_computer 将 tool_adjustment_indirect 的 residuals 和 sigma0 交给 tool_gross_error_detection，标记疑似粗差后再输出最终质量意见。",
+    "6. adjustment_computer 若发现疑似粗差但需要保留观测参与解算，调用 tool_adjustment_robust 输出 IGGIII 降权后的稳健平差结果。",
+    "7. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
     JSON.stringify(condition, null, 2),
-    "7. cpiii_specialist 汇总规范意见、平差成果、粗差/稳健平差/闭合差残差异常和复测建议，不在模型中手算控制网。",
-    "8. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
+    "8. cpiii_specialist 汇总规范意见、平差成果、自由网/粗差/稳健平差/闭合差残差异常和复测建议，不在模型中手算控制网。",
+    "9. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
   ].join("\n")
 }
 
@@ -327,6 +338,7 @@ function item(input: { id: string; label: string; status: "ok" | "warn" | "fail"
 async function adjustmentCheck() {
   const format = await FormatConverterTool.init()
   const indirect = await AdjustmentIndirectTool.init()
+  const free = await AdjustmentFreeNetworkTool.init()
   const gross = await GrossErrorDetectionTool.init()
   const robust = await AdjustmentRobustTool.init()
   const condition = await AdjustmentConditionTool.init()
@@ -386,6 +398,25 @@ async function adjustmentCheck() {
       async ask() {},
     },
   )
+  const freeResult = await free.execute(
+    {
+      unknowns: ["dN_CP300", "dN_CP301"],
+      equations: [
+        { name: "relative_a", coefficients: { dN_CP300: -1, dN_CP301: 1 }, observed: 10 },
+        { name: "relative_b", coefficients: { dN_CP300: -1, dN_CP301: 1 }, observed: 10.02 },
+      ],
+      constraints: [{ name: "centroid", coefficients: { dN_CP300: 1, dN_CP301: 1 }, value: 0 }],
+    },
+    {
+      sessionID: "workflow-check",
+      messageID: "workflow-check",
+      agent: "agent-studio",
+      abort: new AbortController().signal,
+      messages: [],
+      metadata() {},
+      async ask() {},
+    },
+  )
   const robustResult = await robust.execute(
     {
       unknowns: ["dN_CP301"],
@@ -432,6 +463,9 @@ async function adjustmentCheck() {
   const grossData = JSON.parse(grossResult.output) as {
     statistics?: { grossErrorCount?: number; maxStatistic?: number }
   }
+  const freeData = JSON.parse(freeResult.output) as {
+    statistics?: { observationCount?: number; datumConstraintCount?: number; unitWeightStdDev?: number }
+  }
   const robustData = JSON.parse(robustResult.output) as {
     statistics?: { iterationCount?: number; downweightedCount?: number }
   }
@@ -441,6 +475,7 @@ async function adjustmentCheck() {
   return {
     indirect: indirectData.statistics,
     gross: grossData.statistics,
+    free: freeData.statistics,
     robust: robustData.statistics,
     condition: conditionData.statistics,
   }
@@ -461,6 +496,7 @@ async function check(workflow: (typeof presets)[number]) {
     "tool_norm_cite",
     "tool_format_converter",
     "tool_adjustment_indirect",
+    "tool_adjustment_free_network",
     "tool_adjustment_robust",
     "tool_adjustment_condition",
     "tool_gross_error_detection",
@@ -469,6 +505,7 @@ async function check(workflow: (typeof presets)[number]) {
   const stats =
     ids.has("tool_format_converter") &&
     ids.has("tool_adjustment_indirect") &&
+    ids.has("tool_adjustment_free_network") &&
     ids.has("tool_adjustment_robust") &&
     ids.has("tool_adjustment_condition") &&
     ids.has("tool_gross_error_detection")
@@ -498,7 +535,7 @@ async function check(workflow: (typeof presets)[number]) {
       label: "平差工具",
       status: stats ? "ok" : "fail",
       detail: stats
-        ? `间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；稳健 ${stats.robust?.iterationCount ?? 0} 次迭代、降权 ${stats.robust?.downweightedCount ?? 0} 项；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
+        ? `间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；自由网 ${stats.free?.observationCount ?? 0} 条观测、${stats.free?.datumConstraintCount ?? 0} 个基准约束，sigma0=${(stats.free?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；稳健 ${stats.robust?.iterationCount ?? 0} 次迭代、降权 ${stats.robust?.downweightedCount ?? 0} 项；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
         : "样例平差或条件平差未通过",
     }),
     item({

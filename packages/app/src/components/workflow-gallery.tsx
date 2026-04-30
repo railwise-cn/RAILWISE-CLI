@@ -7,7 +7,15 @@ import { WorkflowCanvas } from "@/components/workflow-canvas"
 import { usePlatform } from "@/context/platform"
 import { useAgentStudioApi } from "@/pages/agents/api"
 import { setSessionHandoff } from "@/pages/session/handoff"
-import type { WikiLogEntry, WikiReport, WikiReportDetail, WikiStatus, WorkflowCheck } from "@/types/agent-studio"
+import type {
+  FormatCoverageReport,
+  FormatSampleReport,
+  WikiLogEntry,
+  WikiReport,
+  WikiReportDetail,
+  WikiStatus,
+  WorkflowCheck,
+} from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 
 type ReportKind = "all" | Extract<WikiReport["kind"], "lint" | "diff">
@@ -35,6 +43,16 @@ function statusLabel(status: WorkflowCheck["checks"][number]["status"]) {
   return "阻塞"
 }
 
+function warningLabel(sample: FormatSampleReport) {
+  if (!sample.warningCount) return "无 warning"
+  if (!sample.warningLines.length) return `warning ${sample.warningCount}`
+  return `warning ${sample.warningCount} · 行 ${sample.warningLines.join("、")}`
+}
+
+function sampleStats(sample: FormatSampleReport) {
+  return `${sample.pointCount} 点 · ${sample.observationCount} 观测 · ${sample.equationCount} 方程 · ${sample.unknowns.length} 未知数`
+}
+
 export function WorkflowGallery() {
   const api = useAgentStudioApi()
   const navigate = useNavigate()
@@ -52,6 +70,8 @@ export function WorkflowGallery() {
   const [check, setCheck] = createSignal<WorkflowCheck>()
   const [checking, setChecking] = createSignal(false)
   const [checkError, setCheckError] = createSignal("")
+  const [format, setFormat] = createSignal<FormatCoverageReport>()
+  const [formatError, setFormatError] = createSignal("")
   const [kind, setKind] = createSignal<ReportKind>("all")
   const [copied, setCopied] = createSignal(false)
   const current = createMemo(() => items().find((item) => item.id === active()) ?? items()[0])
@@ -141,6 +161,13 @@ export function WorkflowGallery() {
         if (status.reports[0]) void loadReport(status.reports[0].path)
       })
       .catch((err: unknown) => setWikiError(err instanceof Error ? err.message : String(err)))
+    void api
+      .formatReport()
+      .then((report) => {
+        setFormat(report)
+        setFormatError("")
+      })
+      .catch((err: unknown) => setFormatError(err instanceof Error ? err.message : String(err)))
   })
 
   createEffect(() => {
@@ -233,6 +260,33 @@ export function WorkflowGallery() {
                       <strong>{item.label}</strong>
                       <span>{statusLabel(item.status)}</span>
                       <small>{item.detail}</small>
+                    </div>
+                  )}
+                </For>
+              </Show>
+            </Show>
+          </div>
+          <div class="workflow-format" data-testid="workflow-format-report">
+            <div class="workflow-format__bar">
+              <span>格式样本覆盖</span>
+              <small>
+                {format()
+                  ? `${format()?.readyCount}/${format()?.sampleCount} 可用 · ${format()?.coveredFormatCount}/${format()?.formatCount} 格式`
+                  : "加载中"}
+              </small>
+            </div>
+            <Show when={!formatError()} fallback={<small title={formatError()}>格式样本暂不可用</small>}>
+              <Show when={format()?.samples.length} fallback={<small>等待样本报告</small>}>
+                <For each={format()?.samples ?? []}>
+                  {(sample) => (
+                    <div class={`workflow-format__sample ${sample.ready ? "ok" : "fail"}`} title={sample.warnings.join("\n")}>
+                      <strong>{sample.label}</strong>
+                      <span>{sample.detectedFormat}</span>
+                      <small>
+                        {sampleStats(sample)}
+                        {" · "}
+                        {warningLabel(sample)}
+                      </small>
                     </div>
                   )}
                 </For>

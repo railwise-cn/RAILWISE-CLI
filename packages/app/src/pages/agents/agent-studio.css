@@ -280,7 +280,8 @@
 
 .workflow-wiki__stats span,
 .workflow-wiki__reports-bar > span,
-.workflow-wiki__activity-bar > span {
+.workflow-wiki__activity-bar > span,
+.workflow-format__bar > span {
   display: block;
   color: var(--agent-muted);
   font-size: 11px;
@@ -367,6 +368,69 @@
 
 .workflow-check__item.fail span {
   color: #b91c1c;
+}
+
+.workflow-format {
+  display: flex;
+  min-width: 0;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--agent-border);
+  padding-top: 12px;
+}
+
+.workflow-format__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.workflow-format__bar small,
+.workflow-format > small {
+  color: var(--agent-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.workflow-format__sample {
+  display: grid;
+  min-height: 34px;
+  grid-template-columns: minmax(160px, 0.9fr) 96px minmax(0, 1.2fr);
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  background: var(--agent-soft);
+  padding: 6px 8px;
+}
+
+.workflow-format__sample strong,
+.workflow-format__sample span,
+.workflow-format__sample small {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workflow-format__sample strong {
+  color: var(--agent-text);
+  font-weight: 650;
+}
+
+.workflow-format__sample span {
+  color: var(--agent-accent);
+  font-weight: 650;
+}
+
+.workflow-format__sample.fail span {
+  color: #b91c1c;
+}
+
+.workflow-format__sample small {
+  color: var(--agent-muted);
 }
 
 .workflow-wiki__reports {
@@ -810,6 +874,7 @@
 
   .workflow-wiki__reports-bar,
   .workflow-wiki__activity-bar,
+  .workflow-format__bar,
   .workflow-wiki__preview header {
     align-items: stretch;
     flex-direction: column;
@@ -823,8 +888,16 @@
     grid-template-columns: 54px minmax(0, 1fr);
   }
 
+  .workflow-format__sample {
+    grid-template-columns: minmax(0, 1fr) 84px;
+  }
+
   .workflow-check__item small {
     grid-column: 2;
+  }
+
+  .workflow-format__sample small {
+    grid-column: 1 / -1;
   }
 
   .workflow-wiki__log small {

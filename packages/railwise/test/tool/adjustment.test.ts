@@ -20,6 +20,211 @@ function ctx() {
   }
 }
 
+function read(output: string) {
+  return JSON.parse(output) as {
+    method?: string
+    statistics: Record<string, unknown>
+  } & Record<string, unknown>
+}
+
+test("survey adjustment tools expose stable workflow result contracts", async () => {
+  const rows = await Promise.all(
+    [
+      async () => {
+        const tool = await AdjustmentIndirectTool.init()
+        const result = await tool.execute(
+          {
+            unknowns: ["x", "y"],
+            equations: [
+              { name: "x observed", coefficients: { x: 1 }, observed: 10 },
+              { name: "y observed", coefficients: { y: 1 }, observed: 20 },
+              { name: "sum observed", coefficients: { x: 1, y: 1 }, observed: 30.003 },
+            ],
+          },
+          ctx(),
+        )
+        const data = read(result.output)
+        expect(result.metadata).toMatchObject(data.statistics)
+        return {
+          title: result.title,
+          method: data.method ?? null,
+          keys: Object.keys(data).sort(),
+          stats: data.statistics,
+        }
+      },
+      async () => {
+        const tool = await AdjustmentFreeNetworkTool.init()
+        const result = await tool.execute(
+          {
+            unknowns: ["x1", "x2"],
+            equations: [
+              { name: "baseline_a", coefficients: { x1: -1, x2: 1 }, observed: 10 },
+              { name: "baseline_b", coefficients: { x1: -1, x2: 1 }, observed: 10.02 },
+            ],
+            constraints: [{ name: "centroid", coefficients: { x1: 1, x2: 1 }, value: 0 }],
+          },
+          ctx(),
+        )
+        const data = read(result.output)
+        expect(result.metadata).toMatchObject(data.statistics)
+        return {
+          title: result.title,
+          method: data.method ?? null,
+          keys: Object.keys(data).sort(),
+          stats: data.statistics,
+        }
+      },
+      async () => {
+        const tool = await VarianceComponentTool.init()
+        const result = await tool.execute(
+          {
+            unknowns: ["x"],
+            referenceGroup: "distance",
+            equations: [
+              { name: "distance_a", group: "distance", coefficients: { x: 1 }, observed: 10 },
+              { name: "distance_b", group: "distance", coefficients: { x: 1 }, observed: 10.02 },
+              { name: "angle_a", group: "angle", coefficients: { x: 1 }, observed: 10.5 },
+              { name: "angle_b", group: "angle", coefficients: { x: 1 }, observed: 9.5 },
+            ],
+          },
+          ctx(),
+        )
+        const data = read(result.output)
+        expect(result.metadata).toMatchObject(data.statistics)
+        return {
+          title: result.title,
+          method: data.method ?? null,
+          keys: Object.keys(data).sort(),
+          stats: data.statistics,
+        }
+      },
+      async () => {
+        const tool = await AdjustmentRobustTool.init()
+        const result = await tool.execute(
+          {
+            unknowns: ["x"],
+            equations: [
+              { name: "clean_a", coefficients: { x: 1 }, observed: 10 },
+              { name: "clean_b", coefficients: { x: 1 }, observed: 10.01 },
+              { name: "clean_c", coefficients: { x: 1 }, observed: 9.99 },
+              { name: "clean_d", coefficients: { x: 1 }, observed: 10 },
+              { name: "outlier", coefficients: { x: 1 }, observed: 13 },
+            ],
+            k0: 0.8,
+            k1: 1.6,
+            minWeightFactor: 0.05,
+          },
+          ctx(),
+        )
+        const data = read(result.output)
+        expect(result.metadata).toMatchObject(data.statistics)
+        return {
+          title: result.title,
+          method: data.method ?? null,
+          keys: Object.keys(data).sort(),
+          stats: data.statistics,
+        }
+      },
+      async () => {
+        const tool = await GrossErrorDetectionTool.init()
+        const result = await tool.execute(
+          {
+            sigma0: 0.002,
+            threshold: 3,
+            residuals: [
+              { name: "baseline_north", residual: 0.001, weight: 1 },
+              { name: "baseline_east", residual: -0.012, weight: 1 },
+              { name: "closure_vector", residual: 0.0005, weight: 4 },
+            ],
+          },
+          ctx(),
+        )
+        const data = read(result.output)
+        expect(result.metadata).toMatchObject(data.statistics)
+        return {
+          title: result.title,
+          method: data.method ?? null,
+          keys: Object.keys(data).sort(),
+          stats: data.statistics,
+        }
+      },
+      async () => {
+        const tool = await AdjustmentConditionTool.init()
+        const result = await tool.execute(
+          {
+            observations: [
+              { name: "dh1", value: 100.001 },
+              { name: "dh2", value: 200.002, weight: 4 },
+              { name: "dh3", value: -300.006 },
+            ],
+            conditions: [{ name: "loop closure", coefficients: { dh1: 1, dh2: 1, dh3: 1 } }],
+          },
+          ctx(),
+        )
+        const data = read(result.output)
+        expect(result.metadata).toMatchObject(data.statistics)
+        return {
+          title: result.title,
+          method: data.method ?? null,
+          keys: Object.keys(data).sort(),
+          stats: data.statistics,
+        }
+      },
+    ].map((run) => run()),
+  )
+
+  expect(rows).toMatchObject([
+    {
+      title: "Indirect Adjustment",
+      method: null,
+      keys: ["residuals", "statistics", "unknowns"],
+      stats: { observationCount: 3, unknownCount: 2, degreesOfFreedom: 1 },
+    },
+    {
+      title: "Free Network Adjustment",
+      method: "constrained_free_network_adjustment",
+      keys: ["constraints", "method", "residuals", "statistics", "unknowns"],
+      stats: { observationCount: 2, unknownCount: 2, datumConstraintCount: 1, degreesOfFreedom: 1 },
+    },
+    {
+      title: "Variance Component Estimation",
+      method: "helmert_variance_component_estimation",
+      keys: ["components", "method", "referenceGroup", "residuals", "statistics", "unknowns"],
+      stats: { observationCount: 4, unknownCount: 1, groupCount: 2, degreesOfFreedom: 3 },
+    },
+    {
+      title: "Robust Adjustment",
+      method: "iggiii_robust_adjustment",
+      keys: [
+        "converged",
+        "downweighted",
+        "iterations",
+        "k0",
+        "k1",
+        "method",
+        "minWeightFactor",
+        "residuals",
+        "statistics",
+        "tolerance",
+        "unknowns",
+      ],
+      stats: { observationCount: 5, unknownCount: 1, degreesOfFreedom: 4, downweightedCount: 1 },
+    },
+    {
+      title: "Gross Error Detection",
+      method: "baarda_standardized_residual",
+      keys: ["grossErrors", "method", "sigma0", "statistics", "tests", "threshold"],
+      stats: { observationCount: 3, grossErrorCount: 1, threshold: 3 },
+    },
+    {
+      title: "Condition Adjustment",
+      method: null,
+      keys: ["conditions", "observations", "statistics"],
+      stats: { observationCount: 3, conditionCount: 1, degreesOfFreedom: 1 },
+    },
+  ])
+})
+
 test("indirect adjustment solves redundant observation equations", async () => {
   const tool = await AdjustmentIndirectTool.init()
   const result = JSON.parse(

@@ -127,12 +127,19 @@ test("format converter keeps usable rows and warns on damaged real-world rows", 
 
 test("format converter sample corpus is fully ready", async () => {
   const tool = await FormatConverterTool.init()
+  const ids = FormatSamples.list.map((sample) => sample.id)
+
+  expect(ids).toEqual(["cosa-in2", "nasew-dat", "south-in", "lgo-asc", "tbc-csv", "south-damaged"])
+  expect(new Set(ids).size).toBe(FormatSamples.list.length)
+  expect(FormatSamples.list.every((sample) => sample.label.length > 0)).toBe(true)
+  expect(FormatSamples.list.every((sample) => sample.content.trim().split("\n").length >= 5)).toBe(true)
+
   const results = await Promise.all(
     FormatSamples.list.map(async (sample) => {
       const converted = JSON.parse((await tool.execute({ sourceFormat: sample.sourceFormat, content: sample.content }, ctx())).output) as {
         detectedFormat: string
         warnings: string[]
-        next?: { args: { unknowns: string[]; equations: unknown[] } }
+        next?: { tool: string; args: { unknowns: string[]; equations: unknown[] } }
       }
       return { sample, converted }
     }),
@@ -142,6 +149,11 @@ test("format converter sample corpus is fully ready", async () => {
     FormatSamples.list.map((sample) => sample.expectedFormat),
   )
   expect(results.every((item) => item.converted.next)).toBe(true)
+  expect(results.every((item) => item.converted.next?.tool === "tool_adjustment_indirect")).toBe(true)
+  expect(results.map((item) => item.converted.next?.args.unknowns)).toEqual(
+    FormatSamples.list.map((sample) => [...sample.unknowns]),
+  )
+  expect(results.every((item) => (item.converted.next?.args.equations.length ?? 0) > 0)).toBe(true)
   expect(results.map((item) => item.converted.warnings.length)).toEqual(
     FormatSamples.list.map((sample) => sample.expectedWarnings),
   )

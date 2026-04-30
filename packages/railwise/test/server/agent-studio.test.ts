@@ -346,6 +346,79 @@ describe("server.routes.agent-studio", () => {
     }
   })
 
+  test("archives accepted CPIII delivery summary", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const session = await Session.create({ title: "CPIII archive" })
+          const md = "wiki/changes/format-coverage-2026-04-30.md"
+          const json = "wiki/changes/format-coverage-2026-04-30.json"
+          const user = await writeUser(
+            session.id,
+            `工作流附件：\n- 格式兼容性质检报告 Markdown: ${md}\n- 格式兼容性质检报告 JSON: ${json}`,
+          )
+          await writeAssistant(
+            session.id,
+            user.id,
+            [
+              "# CPIII 复测预案",
+              "",
+              "## 附件引用",
+              `- 格式兼容性质检报告 Markdown: ${md}`,
+              `- 格式兼容性质检报告 JSON: ${json}`,
+              "",
+              "## 规范引用",
+              "- wiki_page_path: wiki/clauses/cpiii-precision.md",
+              "- raw_source_md: raw/tb10601.md",
+              "- norm_clause_id: TB10601-3.1",
+              "",
+              "## 工具结果摘要",
+              "- 格式样本 6/6 可用，warning 2 条。",
+              "- sigma0、残差、自由网、粗差、稳健、方差分量、条件平差均已汇总。",
+            ].join("\n"),
+          )
+
+          const accepted = await AgentStudioRoutes().request("http://railwise.test/workflow/acceptance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki", sessionId: session.id }),
+          })
+          const archived = await AgentStudioRoutes().request("http://railwise.test/workflow/delivery/archive", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki", sessionId: session.id }),
+          })
+          const result = (await archived.json()) as {
+            markdownPath: string
+            absoluteMarkdownPath: string
+          }
+          const markdown = await Bun.file(result.absoluteMarkdownPath).text()
+          const metadataResponse = await AgentStudioRoutes().request(
+            `http://railwise.test/workflow/session/${session.id}`,
+          )
+          const metadata = (await metadataResponse.json()) as {
+            delivery: { markdownPath: string }
+          }
+
+          expect(accepted.status).toBe(200)
+          expect(archived.status).toBe(200)
+          expect(result.markdownPath).toContain(".railwise/workflow-deliveries/")
+          expect(markdown).toContain("# CPIII 规范查询与复测预案 交付摘要")
+          expect(markdown).toContain(md)
+          expect(markdown).toContain(json)
+          expect(markdown).toContain("## 验收检查")
+          expect(metadata.delivery.markdownPath).toBe(result.markdownPath)
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
   test("rejects CPIII delivery missing final artifact references", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME

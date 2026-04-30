@@ -119,6 +119,17 @@ const WorkflowAcceptanceSchema = z
   })
   .meta({ ref: "WorkflowAcceptance" })
 
+const WorkflowDeliveryArchiveSchema = z
+  .object({
+    sessionId: z.string(),
+    workflowId: z.string(),
+    workflowName: z.string(),
+    generatedAt: z.string(),
+    markdownPath: z.string(),
+    absoluteMarkdownPath: z.string(),
+  })
+  .meta({ ref: "WorkflowDeliveryArchive" })
+
 const WorkflowSessionSchema = z
   .object({
     sessionId: z.string(),
@@ -128,6 +139,7 @@ const WorkflowSessionSchema = z
     updatedAt: z.string(),
     artifacts: WorkflowRunArtifactSchema.array().optional(),
     acceptance: WorkflowAcceptanceSchema.optional(),
+    delivery: WorkflowDeliveryArchiveSchema.optional(),
   })
   .meta({ ref: "WorkflowSession" })
 
@@ -226,6 +238,7 @@ type FormatCoverageReport = z.infer<typeof FormatCoverageReportSchema>
 type FormatCoverageCore = Omit<FormatCoverageReport, "artifacts">
 type WorkflowRunArtifact = z.infer<typeof WorkflowRunArtifactSchema>
 type WorkflowAcceptance = z.infer<typeof WorkflowAcceptanceSchema>
+type WorkflowDeliveryArchive = z.infer<typeof WorkflowDeliveryArchiveSchema>
 type WorkflowSession = z.infer<typeof WorkflowSessionSchema>
 type FormatConverted = {
   detectedFormat?: string
@@ -257,8 +270,20 @@ function workflowSessionDir() {
   return path.join(Instance.directory, ".railwise", "workflow-sessions")
 }
 
+function workflowDeliveryDir() {
+  return path.join(Instance.directory, ".railwise", "workflow-deliveries")
+}
+
+function safeSessionId(sessionId: string) {
+  return sessionId.replace(/[^A-Za-z0-9_.-]/g, "_")
+}
+
 function workflowSessionPath(sessionId: string) {
-  return path.join(workflowSessionDir(), `${sessionId.replace(/[^A-Za-z0-9_.-]/g, "_")}.json`)
+  return path.join(workflowSessionDir(), `${safeSessionId(sessionId)}.json`)
+}
+
+function workflowDeliveryPath(sessionId: string) {
+  return path.join(workflowDeliveryDir(), `${safeSessionId(sessionId)}.md`)
 }
 
 async function workflowSession(sessionId: string) {
@@ -274,6 +299,7 @@ async function saveWorkflowSession(input: {
   workflowName: string
   artifacts?: WorkflowRunArtifact[]
   acceptance?: WorkflowAcceptance
+  delivery?: WorkflowDeliveryArchive
 }) {
   const now = new Date().toISOString()
   const prev = await workflowSession(input.sessionId)
@@ -917,6 +943,67 @@ function includesAll(text: string, values: string[]) {
   return values.length > 0 && values.every((value) => text.includes(value))
 }
 
+function markdownCell(value: string | number | boolean) {
+  return String(value).replace(/\|/g, "\\|").replace(/\n/g, "<br>")
+}
+
+function checkStatusLabel(status: WorkflowAcceptance["checks"][number]["status"]) {
+  if (status === "ok") return "通过"
+  if (status === "warn") return "提示"
+  return "阻塞"
+}
+
+async function sessionText(sessionId: string) {
+  const messages = await Session.messages({ sessionID: sessionId })
+  return messages.map((message) => message.parts.map(partText).join("\n")).join("\n")
+}
+
+function deliveryReferences(artifacts: WorkflowRunArtifact[], text: string) {
+  if (artifacts.length)
+    return artifacts.flatMap((artifact) => [
+      { label: `${artifact.title} Markdown`, path: artifact.markdownPath },
+      { label: `${artifact.title} JSON`, path: artifact.jsonPath },
+    ])
+  const source = artifactPaths(text)
+  return [
+    ...source.markdown.map((item) => ({ label: "Markdown", path: item })),
+    ...source.json.map((item) => ({ label: "JSON", path: item })),
+  ]
+}
+
+function deliveryMarkdown(input: {
+  delivery: WorkflowDeliveryArchive
+  acceptance: WorkflowAcceptance
+  references: { label: string; path: string }[]
+}) {
+  return [
+    `# ${input.delivery.workflowName} 交付摘要`,
+    "",
+    `- 会话 ID: ${input.delivery.sessionId}`,
+    `- 工作流 ID: ${input.delivery.workflowId}`,
+    `- 导出时间: ${input.delivery.generatedAt}`,
+    "",
+    "## 验收结论",
+    "- 状态: 通过",
+    `- 验收时间: ${input.acceptance.generatedAt}`,
+    `- 会话消息数: ${input.acceptance.messageCount}`,
+    "",
+    "## 附件引用",
+    ...(input.references.length
+      ? input.references.map((item) => `- ${item.label}: ${item.path}`)
+      : ["- 暂无已登记附件。"]),
+    "",
+    "## 验收检查",
+    "| 检查项 | 状态 | 说明 |",
+    "|---|---|---|",
+    ...input.acceptance.checks.map(
+      (item) =>
+        `| ${markdownCell(item.label)} | ${markdownCell(checkStatusLabel(item.status))} | ${markdownCell(item.detail)} |`,
+    ),
+    "",
+  ].join("\n")
+}
+
 async function acceptance(input: { workflowId: string; sessionId: string }) {
   const workflow = presets.find((item) => item.id === input.workflowId)
   if (!workflow) throw new Error(`workflow "${input.workflowId}" not found`)
@@ -999,6 +1086,44 @@ async function acceptance(input: { workflowId: string; sessionId: string }) {
     acceptance: result,
   })
   return result
+}
+
+async function archiveDelivery(input: { workflowId: string; sessionId: string }) {
+  const workflow = presets.find((item) => item.id === input.workflowId)
+  if (!workflow) return { status: 400 as const, error: `workflow "${input.workflowId}" not found` }
+  const stored = await workflowSession(input.sessionId)
+  const result = stored?.acceptance?.workflowId === input.workflowId ? stored.acceptance : await acceptance(input)
+  if (!result.ok) return { status: 400 as const, error: "workflow acceptance must pass before archive" }
+
+  const current = (await workflowSession(input.sessionId)) ?? stored
+  const source = await sessionText(input.sessionId)
+  const file = workflowDeliveryPath(input.sessionId)
+  const delivery: WorkflowDeliveryArchive = {
+    sessionId: input.sessionId,
+    workflowId: workflow.id,
+    workflowName: current?.workflowName ?? workflow.name,
+    generatedAt: new Date().toISOString(),
+    markdownPath: path.relative(Instance.directory, file),
+    absoluteMarkdownPath: file,
+  }
+  await mkdir(workflowDeliveryDir(), { recursive: true })
+  await Bun.write(
+    file,
+    deliveryMarkdown({
+      delivery,
+      acceptance: result,
+      references: deliveryReferences(current?.artifacts ?? [], source),
+    }),
+  )
+  await saveWorkflowSession({
+    sessionId: input.sessionId,
+    workflowId: workflow.id,
+    workflowName: current?.workflowName ?? workflow.name,
+    artifacts: current?.artifacts,
+    acceptance: result,
+    delivery,
+  })
+  return delivery
 }
 
 export const AgentStudioRoutes = lazy(() => {
@@ -1197,6 +1322,37 @@ export const AgentStudioRoutes = lazy(() => {
         const workflow = presets.find((item) => item.id === body.workflowId)
         if (!workflow) return c.json({ error: `workflow "${body.workflowId}" not found` }, 400)
         return c.json(await acceptance(body))
+      },
+    )
+    .post(
+      "/workflow/delivery/archive",
+      describeRoute({
+        summary: "Archive accepted workflow delivery",
+        description: "Writes a local Markdown delivery summary for a workflow session that has passed acceptance.",
+        operationId: "agentStudio.workflow.delivery.archive",
+        responses: {
+          200: {
+            description: "Workflow delivery archive",
+            content: {
+              "application/json": {
+                schema: resolver(WorkflowDeliveryArchiveSchema),
+              },
+            },
+          },
+          ...errors(400),
+        },
+      }),
+      validator(
+        "json",
+        z.object({
+          workflowId: z.string(),
+          sessionId: z.string(),
+        }),
+      ),
+      async (c) => {
+        const result = await archiveDelivery(c.req.valid("json"))
+        if ("error" in result) return c.json({ error: result.error }, result.status)
+        return c.json(result)
       },
     )
     .get(

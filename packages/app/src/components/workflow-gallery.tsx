@@ -224,7 +224,12 @@ export function WorkflowGallery() {
         : `已导入预设，Session: ${result.sessionTitle ?? result.sessionId}`,
     )
     const key = `${base64Encode(result.directory)}/${result.sessionId}`
-    setSessionHandoff(key, { prompt: result.prompt })
+    setSessionHandoff(key, {
+      prompt: result.prompt,
+      workflowId: result.workflowId ?? workflow.id,
+      workflowName: workflow.name,
+      artifacts: result.artifacts,
+    })
     navigate(`/${base64Encode(result.directory)}/session/${result.sessionId}`)
   }
 

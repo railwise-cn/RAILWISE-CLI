@@ -59,6 +59,17 @@ const WorkflowSchema = z
   })
   .meta({ ref: "WorkflowPreset" })
 
+const WorkflowRunArtifactSchema = z
+  .object({
+    kind: z.literal("format-coverage"),
+    title: z.string(),
+    markdownPath: z.string(),
+    absoluteMarkdownPath: z.string(),
+    jsonPath: z.string(),
+    absoluteJsonPath: z.string(),
+  })
+  .meta({ ref: "WorkflowRunArtifact" })
+
 const WorkflowRunSchema = z
   .object({
     sessionId: z.string(),
@@ -67,6 +78,7 @@ const WorkflowRunSchema = z
     directory: z.string(),
     prompt: z.string(),
     agentNames: z.string().array(),
+    artifacts: WorkflowRunArtifactSchema.array().optional(),
   })
   .meta({ ref: "WorkflowRun" })
 
@@ -179,6 +191,7 @@ const FormatCoverageReportSchema = z
 
 type FormatCoverageReport = z.infer<typeof FormatCoverageReportSchema>
 type FormatCoverageCore = Omit<FormatCoverageReport, "artifacts">
+type WorkflowRunArtifact = z.infer<typeof WorkflowRunArtifactSchema>
 type FormatConverted = {
   detectedFormat?: string
   points?: unknown[]
@@ -365,12 +378,16 @@ async function wikiStatus() {
   }
 }
 
-function prompt(workflow: (typeof presets)[number], input?: Record<string, unknown>) {
+function prompt(
+  workflow: (typeof presets)[number],
+  input?: Record<string, unknown>,
+  artifacts: WorkflowRunArtifact[] = [],
+) {
   const nodes = workflow.nodes.map((node, index) => `${index + 1}. ${node.label} (@${node.agent})`).join("\n")
   const edges = workflow.edges.map((edge) => `${edge.from} -> ${edge.to}: ${edge.label ?? edge.kind}`).join("\n")
   const payload = input && Object.keys(input).length > 0 ? `\n\n输入参数：\n${JSON.stringify(input, null, 2)}` : ""
-  const pack = workflow.id === "cpiii-resurvey-wiki" ? `\n\n${cpiii()}` : ""
-  return (
+  const pack = workflow.id === "cpiii-resurvey-wiki" ? `\n\n${cpiii(artifacts[0])}` : ""
+  return attach(
     [
       `请按「${workflow.name}」执行工程测绘工作流。`,
       workflow.description,
@@ -378,12 +395,29 @@ function prompt(workflow: (typeof presets)[number], input?: Record<string, unkno
       `依赖关系：\n${edges}`,
       "请先输出 WBS、并行/串行关系、质量闸门和预期成果，再按节点推进。",
     ].join("\n\n") +
-    pack +
-    payload
+      pack +
+      payload,
+    artifacts,
   )
 }
 
-function cpiii() {
+function attach(text: string, artifacts: WorkflowRunArtifact[]) {
+  if (!artifacts.length) return text
+  return [
+    text,
+    "",
+    "工作流附件：",
+    ...artifacts.flatMap((item) => [
+      `- ${item.title} Markdown: ${item.markdownPath}`,
+      `- ${item.title} JSON: ${item.jsonPath}`,
+      `- 本地 Markdown: ${item.absoluteMarkdownPath}`,
+      `- 本地 JSON: ${item.absoluteJsonPath}`,
+    ]),
+    "请把上述附件路径传给 technical_writer 和 knowledge_curator，并在最终交付物中引用 Markdown 摘要与同名 JSON。",
+  ].join("\n")
+}
+
+function cpiii(artifact?: WorkflowRunArtifact) {
   const network = {
     unknowns: ["dN_CP300", "dN_CP301"],
     equations: [
@@ -410,6 +444,8 @@ function cpiii() {
       { name: "angle_b", group: "angle", coefficients: { dN_CP301: 1 }, observed: 9.5 },
     ],
   }
+  const md = artifact?.markdownPath ?? `wiki/changes/${artifactBase(new Date().toISOString())}.md`
+  const json = artifact?.jsonPath ?? md.replace(/\.md$/, ".json")
   return [
     "CPIII 工具执行包：",
     '1. norm_librarian 先调用 tool_wiki_query({"query":"CPIII 复测限差 平面 高程 控制网","scope":"CPIII","limit":5,"appendLog":true})，无命中再调用 tool_norm_search。',
@@ -425,7 +461,7 @@ function cpiii() {
     "8. adjustment_computer 对闭合差、环线或约束方程类任务调用 tool_adjustment_condition，先用下列条件方程跑通平差链路：",
     JSON.stringify(condition, null, 2),
     "9. cpiii_specialist 汇总规范意见、平差成果、自由网/粗差/稳健平差/方差分量/闭合差残差异常和复测建议，不在模型中手算控制网。",
-    `10. technical_writer 在复测预案和技术报告附件中引用格式兼容性质检报告 wiki/changes/${artifactBase(new Date().toISOString())}.md 及同名 JSON，说明支持格式覆盖、样本可用率和损坏行 warning。`,
+    `10. technical_writer 在复测预案和技术报告附件中引用格式兼容性质检报告 ${md} 及 ${json}，说明支持格式覆盖、样本可用率和损坏行 warning。`,
     "11. knowledge_curator 检查 wiki/log.md 的查询记录，并把可复用结论沉淀为 Wiki 页面或维护报告。",
   ].join("\n")
 }
@@ -587,6 +623,21 @@ async function persist(report: FormatCoverageCore) {
 async function formatReport() {
   const data = coverage(await formatCorpus())
   return { ...data, artifacts: await persist(data) }
+}
+
+async function runArtifacts(workflow: (typeof presets)[number]) {
+  if (workflow.id !== "cpiii-resurvey-wiki") return []
+  const report = await formatReport()
+  return [
+    {
+      kind: "format-coverage" as const,
+      title: "格式兼容性质检报告",
+      markdownPath: report.artifacts.markdownPath,
+      absoluteMarkdownPath: report.artifacts.absoluteMarkdownPath,
+      jsonPath: report.artifacts.jsonPath,
+      absoluteJsonPath: report.artifacts.absoluteJsonPath,
+    },
+  ]
 }
 
 async function adjustmentCheck() {
@@ -1032,7 +1083,8 @@ export const AgentStudioRoutes = lazy(() => {
         if (!workflow) return c.json({ error: `workflow "${body.workflowId}" not found` }, 400)
         const title = `工作流：${workflow.name}`
         const session = await Session.create({ title })
-        const text = prompt(workflow, body.input)
+        const artifacts = await runArtifacts(workflow)
+        const text = prompt(workflow, body.input, artifacts)
         return c.json({
           sessionId: session.id,
           sessionTitle: title,
@@ -1040,6 +1092,7 @@ export const AgentStudioRoutes = lazy(() => {
           directory: Instance.directory,
           prompt: text,
           agentNames: [...new Set(workflow.nodes.map((node) => node.agent))],
+          artifacts,
         })
       },
     )

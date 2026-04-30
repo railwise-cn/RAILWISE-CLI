@@ -110,7 +110,9 @@ describe("server.routes.agent-studio", () => {
   test("CPIII workflow run seeds an executable tool package", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME
+    const library = process.env.RAILWISE_NORM_LIBRARY
     process.env.RAILWISE_TEST_HOME = tmp.path
+    delete process.env.RAILWISE_NORM_LIBRARY
     try {
       await Instance.provide({
         directory: tmp.path,
@@ -120,12 +122,30 @@ describe("server.routes.agent-studio", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki" }),
           })
-          const result = await response.json()
+          const result = (await response.json()) as {
+            directory: string
+            agentNames: string[]
+            prompt: string
+            artifacts: {
+              kind: string
+              title: string
+              markdownPath: string
+              absoluteMarkdownPath: string
+              jsonPath: string
+              absoluteJsonPath: string
+            }[]
+          }
+          const artifact = result.artifacts[0]
 
           expect(response.status).toBe(200)
           expect(result.directory).toBe(tmp.path)
           expect(result.agentNames).toContain("adjustment_computer")
           expect(result.agentNames).toContain("railway_norm_consultant")
+          expect(artifact.kind).toBe("format-coverage")
+          expect(artifact.title).toBe("格式兼容性质检报告")
+          expect(artifact.markdownPath.startsWith("wiki/changes/format-coverage-")).toBe(true)
+          expect(artifact.markdownPath.endsWith(".md")).toBe(true)
+          expect(artifact.jsonPath).toBe(artifact.markdownPath.replace(/\.md$/, ".json"))
           expect(result.prompt).toContain("CPIII 工具执行包")
           expect(result.prompt).toContain("tool_wiki_query")
           expect(result.prompt).toContain("appendLog")
@@ -141,11 +161,30 @@ describe("server.routes.agent-studio", () => {
           expect(result.prompt).toContain("tool_adjustment_condition")
           expect(result.prompt).toContain("unknowns,dN_CP301,dE_CP301")
           expect(result.prompt).toContain('"conditions"')
+          expect(result.prompt).toContain(`格式兼容性质检报告 Markdown: ${artifact.markdownPath}`)
+          expect(result.prompt).toContain(`格式兼容性质检报告 JSON: ${artifact.jsonPath}`)
+          expect(result.prompt).toContain(`本地 Markdown: ${artifact.absoluteMarkdownPath}`)
           expect(result.prompt).toContain("wiki/log.md")
+
+          const markdown = await Bun.file(artifact.absoluteMarkdownPath).text()
+          const json = (await Bun.file(artifact.absoluteJsonPath).json()) as {
+            sampleCount: number
+            warningCount: number
+          }
+
+          expect(markdown).toContain("# RAILWISE Format Coverage Report")
+          expect(markdown).toContain("Ready count: 6")
+          expect(json.sampleCount).toBe(6)
+          expect(json.warningCount).toBe(2)
         },
       })
     } finally {
       restore(home)
+      if (library === undefined) {
+        delete process.env.RAILWISE_NORM_LIBRARY
+      } else {
+        process.env.RAILWISE_NORM_LIBRARY = library
+      }
     }
   })
 

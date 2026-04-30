@@ -1,8 +1,10 @@
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js"
 import { useParams } from "@solidjs/router"
+import { Icon } from "@railwise/ui/icon"
 import { PromptInput } from "@/components/prompt-input"
 import { TemplateDrawer, useTemplateDrawerShortcut } from "@/components/session/template-drawer"
 import { useLanguage } from "@/context/language"
+import { usePlatform } from "@/context/platform"
 import { usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
@@ -12,7 +14,7 @@ import { SessionPermissionDock } from "@/pages/session/composer/session-permissi
 import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
 import type { SessionComposerState } from "@/pages/session/composer/session-composer-state"
 import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
-import type { WorkflowAcceptance } from "@/types/agent-studio"
+import type { WorkflowAcceptance, WorkflowRunArtifact, WorkflowSession } from "@/types/agent-studio"
 
 type AcceptanceStatus = WorkflowAcceptance["checks"][number]["status"]
 
@@ -28,6 +30,18 @@ function acceptanceTone(status: AcceptanceStatus) {
   return "text-text-danger-base"
 }
 
+function fallbackCopy(text: string) {
+  const area = document.createElement("textarea")
+  area.value = text
+  area.setAttribute("readonly", "")
+  area.style.position = "fixed"
+  area.style.inset = "-9999px auto auto -9999px"
+  document.body.append(area)
+  area.select()
+  document.execCommand("copy")
+  area.remove()
+}
+
 export function SessionComposerRegion(props: {
   state: SessionComposerState
   centered: boolean
@@ -40,6 +54,7 @@ export function SessionComposerRegion(props: {
 }) {
   const params = useParams()
   const api = useAgentStudioApi()
+  const platform = usePlatform()
   const sdk = useSDK()
   const sync = useSync()
   const prompt = usePrompt()
@@ -48,7 +63,9 @@ export function SessionComposerRegion(props: {
   const [applied, setApplied] = createSignal("")
   const [acceptance, setAcceptance] = createSignal<WorkflowAcceptance>()
   const [acceptanceError, setAcceptanceError] = createSignal("")
+  const [artifactNotice, setArtifactNotice] = createSignal("")
   const [accepting, setAccepting] = createSignal(false)
+  const [stored, setStored] = createSignal<WorkflowSession>()
   let editor: HTMLDivElement | undefined
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
@@ -56,11 +73,14 @@ export function SessionComposerRegion(props: {
   const handoffPrompt = createMemo(() => handoff()?.prompt)
   const sessionTitle = createMemo(() => (params.id ? sync.session.get(params.id)?.title : undefined))
   const workflowId = createMemo(() => {
-    const id = handoff()?.workflowId
+    const id = handoff()?.workflowId ?? stored()?.workflowId
     if (id) return id
     if (sessionTitle()?.includes("CPIII 规范查询与复测预案")) return "cpiii-resurvey-wiki"
   })
-  const workflowName = createMemo(() => handoff()?.workflowName ?? sessionTitle()?.replace(/^工作流：/, ""))
+  const workflowName = createMemo(
+    () => handoff()?.workflowName ?? stored()?.workflowName ?? sessionTitle()?.replace(/^工作流：/, ""),
+  )
+  const artifacts = createMemo(() => handoff()?.artifacts ?? stored()?.artifacts ?? [])
   const canAccept = createMemo(() => Boolean(params.id && workflowId() === "cpiii-resurvey-wiki"))
 
   const previewPrompt = () =>
@@ -76,9 +96,21 @@ export function SessionComposerRegion(props: {
       .trim()
 
   createEffect(() => {
+    const id = params.id
     sessionKey()
+    setStored(undefined)
     setAcceptance(undefined)
     setAcceptanceError("")
+    setArtifactNotice("")
+    if (!id) return
+    void api
+      .workflowSession(id)
+      .then((info) => {
+        if (params.id !== id) return
+        setStored(info)
+        setAcceptance(info.acceptance)
+      })
+      .catch(() => {})
   })
 
   createEffect(() => {
@@ -125,6 +157,29 @@ export function SessionComposerRegion(props: {
       .catch((err: unknown) => setAcceptanceError(err instanceof Error ? err.message : String(err)))
       .finally(() => setAccepting(false))
   }
+
+  const copyPath = (value: string) => {
+    const write = navigator.clipboard?.writeText
+    void (write ? write.call(navigator.clipboard, value) : Promise.resolve(fallbackCopy(value)))
+      .then(() => setArtifactNotice("已复制附件路径"))
+      .catch(() => {
+        fallbackCopy(value)
+        setArtifactNotice("已复制附件路径")
+      })
+  }
+
+  const openPath = (value?: string) => {
+    if (!value || !platform.openPath) return
+    void platform
+      .openPath(value)
+      .then(() => setArtifactNotice("已打开附件文件"))
+      .catch((err: unknown) => setArtifactNotice(err instanceof Error ? err.message : String(err)))
+  }
+
+  const artifactRows = (artifact: WorkflowRunArtifact) => [
+    { label: "Markdown", path: artifact.markdownPath, absolute: artifact.absoluteMarkdownPath },
+    { label: "JSON", path: artifact.jsonPath, absolute: artifact.absoluteJsonPath },
+  ]
 
   return (
     <div
@@ -231,9 +286,60 @@ export function SessionComposerRegion(props: {
                         {accepting() ? "验收中" : "交付验收"}
                       </button>
                     </div>
+                    <Show when={artifacts().length}>
+                      <div class="mt-2 grid gap-1" data-testid="workflow-artifact-list">
+                        <For each={artifacts()}>
+                          {(artifact) => (
+                            <div class="rounded-md bg-surface-base px-2 py-1.5 text-12-regular">
+                              <div class="mb-1 flex items-center justify-between gap-2">
+                                <strong class="min-w-0 truncate text-text-strong">{artifact.title}</strong>
+                                <Show when={artifactNotice()}>
+                                  {(message) => <span class="shrink-0 text-11-regular text-text-weak">{message()}</span>}
+                                </Show>
+                              </div>
+                              <For each={artifactRows(artifact)}>
+                                {(row) => (
+                                  <div class="grid items-center gap-1 py-0.5 md:grid-cols-[72px_1fr_auto]">
+                                    <span class="text-text-weak">{row.label}</span>
+                                    <code class="min-w-0 truncate text-11-regular text-text-base" title={row.path}>
+                                      {row.path}
+                                    </code>
+                                    <div class="flex items-center gap-1">
+                                      <button
+                                        type="button"
+                                        class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                        title="复制路径"
+                                        onClick={() => copyPath(row.path)}
+                                      >
+                                        <Icon name="copy" size="small" />
+                                      </button>
+                                      <Show when={platform.openPath && row.absolute}>
+                                        <button
+                                          type="button"
+                                          class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                          title="打开文件"
+                                          onClick={() => openPath(row.absolute)}
+                                        >
+                                          <Icon name="open-file" size="small" />
+                                        </button>
+                                      </Show>
+                                    </div>
+                                  </div>
+                                )}
+                              </For>
+                            </div>
+                          )}
+                        </For>
+                      </div>
+                    </Show>
                     <Show when={acceptance()}>
                       {(result) => (
                         <div class="mt-2 grid gap-1" data-testid="workflow-acceptance-result">
+                          <Show when={!result().ok}>
+                            <div class="rounded-md bg-surface-base px-2 py-1.5 text-12-regular text-text-danger-base">
+                              完成前需补齐 {result().checks.filter((item) => item.status === "fail").length} 项阻塞项。
+                            </div>
+                          </Show>
                           <For each={result().checks}>
                             {(item) => (
                               <div class="grid gap-1 rounded-md bg-surface-base px-2 py-1.5 text-12-regular md:grid-cols-[96px_56px_1fr]">

@@ -679,7 +679,8 @@ render(() => {
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/dashboard", "/workspace", "/agents"]}
+                    standalonePaths={["/dashboard", "/workspace", "/agents", "/:dir/session"]}
+                    sessionRoutes
                     workbenchRoutes={false}
                   >
                     <Inner />

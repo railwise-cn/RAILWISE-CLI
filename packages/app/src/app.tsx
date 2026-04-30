@@ -91,10 +91,19 @@ function MarkedProviderWithNativeParser(props: ParentProps) {
   return <MarkedProvider nativeParser={platform.parseMarkdown}>{props.children}</MarkedProvider>
 }
 
+function standaloneMatch(pattern: string, pathname: string) {
+  if (!pattern.includes(":")) return pathname === pattern || pathname.startsWith(`${pattern}/`)
+
+  const parts = pattern.split("/").filter(Boolean)
+  const path = pathname.split("/").filter(Boolean)
+  if (path.length < parts.length) return false
+  return parts.every((part, index) => part.startsWith(":") || part === path[index])
+}
+
 function AppShellProviders(props: ParentProps<{ standalonePaths?: string[] }>) {
   const location = useLocation()
   const standalone = createMemo(
-    () => props.standalonePaths?.some((path) => location.pathname === path || location.pathname.startsWith(`${path}/`)) ?? false,
+    () => props.standalonePaths?.some((path) => standaloneMatch(path, location.pathname)) ?? false,
   )
 
   return (
@@ -180,6 +189,7 @@ export function AppInterface(props: {
   defaultPath?: string
   routes?: JSX.Element
   standalonePaths?: string[]
+  sessionRoutes?: boolean
   workbenchRoutes?: boolean
   servers?: Array<ServerConnection.Any>
 }) {
@@ -201,9 +211,9 @@ export function AppInterface(props: {
               <Route path="/agents" component={AgentsIndexRoute} />
               <Route path="/agents/:name" component={AgentDetailRoute} />
               {props.routes}
-              {(props.workbenchRoutes ?? true) && (
+              {(props.workbenchRoutes ?? true) && <Route path="/home" component={HomeRoute} />}
+              {((props.workbenchRoutes ?? true) || props.sessionRoutes) && (
                 <>
-                  <Route path="/home" component={HomeRoute} />
                   <Route path="/:dir" component={DirectoryLayout}>
                     <Route path="/" component={SessionIndexRoute} />
                     <Route path="/session/:id?" component={SessionRoute} />

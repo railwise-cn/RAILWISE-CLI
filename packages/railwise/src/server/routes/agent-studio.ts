@@ -128,6 +128,53 @@ const WikiReportDetailSchema = WikiReportSchema.extend({
   rawMarkdown: z.string(),
 }).meta({ ref: "WikiReportDetail" })
 
+const FormatSampleReportSchema = z
+  .object({
+    id: z.string(),
+    label: z.string(),
+    sourceFormat: z.string(),
+    expectedFormat: z.string(),
+    detectedFormat: z.string(),
+    ready: z.boolean(),
+    damaged: z.boolean().optional(),
+    warningCount: z.number().int(),
+    warningLines: z.number().int().array(),
+    warnings: z.string().array(),
+    pointCount: z.number().int(),
+    observationCount: z.number().int(),
+    equationCount: z.number().int(),
+    unknowns: z.string().array(),
+    equationNames: z.string().array(),
+    nextTool: z.string().optional(),
+  })
+  .meta({ ref: "FormatSampleReport" })
+
+const FormatCoverageReportSchema = z
+  .object({
+    generatedAt: z.string(),
+    sampleCount: z.number().int(),
+    readyCount: z.number().int(),
+    formatCount: z.number().int(),
+    coveredFormatCount: z.number().int(),
+    warningCount: z.number().int(),
+    samples: FormatSampleReportSchema.array(),
+  })
+  .meta({ ref: "FormatCoverageReport" })
+
+type FormatConverted = {
+  detectedFormat?: string
+  points?: unknown[]
+  observations?: unknown[]
+  warnings?: string[]
+  next?: {
+    tool?: string
+    args: {
+      unknowns: string[]
+      equations: { name?: string; coefficients: Record<string, number>; observed: number; weight?: number }[]
+    }
+  }
+}
+
 function file(name: string) {
   return path.join(Instance.worktree, ".railwise", "agent", `${name}.md`)
 }
@@ -346,32 +393,72 @@ function toolctx() {
   }
 }
 
-async function adjustmentCheck() {
+function warningLines(warnings: string[]) {
+  return warnings.flatMap((warning) => {
+    const line = Number(warning.match(/\bLine\s+(\d+)\b/)?.[1])
+    return Number.isFinite(line) ? [line] : []
+  })
+}
+
+async function formatCorpus() {
   const format = await FormatConverterTool.init()
+  return Promise.all(
+    FormatSamples.list.map(async (sample) => ({
+      sample,
+      converted: JSON.parse(
+        (await format.execute({ sourceFormat: sample.sourceFormat, content: sample.content }, toolctx())).output,
+      ) as FormatConverted,
+    })),
+  )
+}
+
+function coverage(corpus: Awaited<ReturnType<typeof formatCorpus>>) {
+  const samples = corpus.map((entry) => {
+    const warnings = entry.converted.warnings ?? []
+    const next = entry.converted.next
+    const equations = next?.args.equations ?? []
+    return {
+      id: entry.sample.id,
+      label: entry.sample.label,
+      sourceFormat: entry.sample.sourceFormat,
+      expectedFormat: entry.sample.expectedFormat,
+      detectedFormat: entry.converted.detectedFormat ?? "unknown",
+      ready: Boolean(next) && entry.converted.detectedFormat === entry.sample.expectedFormat,
+      damaged: "damaged" in entry.sample ? entry.sample.damaged : undefined,
+      warningCount: warnings.length,
+      warningLines: warningLines(warnings),
+      warnings,
+      pointCount: entry.converted.points?.length ?? 0,
+      observationCount: entry.converted.observations?.length ?? 0,
+      equationCount: equations.length,
+      unknowns: next?.args.unknowns ?? [],
+      equationNames: equations.flatMap((equation) => (equation.name ? [equation.name] : [])),
+      nextTool: next?.tool,
+    }
+  })
+  const formats = new Set(FormatSamples.list.map((sample) => sample.expectedFormat))
+  return {
+    generatedAt: new Date().toISOString(),
+    sampleCount: samples.length,
+    readyCount: samples.filter((sample) => sample.ready).length,
+    formatCount: formats.size,
+    coveredFormatCount: [...formats].filter((format) =>
+      samples.some((sample) => sample.ready && sample.detectedFormat === format),
+    ).length,
+    warningCount: samples.reduce((sum, sample) => sum + sample.warningCount, 0),
+    samples,
+  }
+}
+
+async function adjustmentCheck() {
   const indirect = await AdjustmentIndirectTool.init()
   const free = await AdjustmentFreeNetworkTool.init()
   const gross = await GrossErrorDetectionTool.init()
   const robust = await AdjustmentRobustTool.init()
   const variance = await VarianceComponentTool.init()
   const condition = await AdjustmentConditionTool.init()
-  type Converted = {
-    detectedFormat?: string
-    warnings?: string[]
-    next?: {
-      args: {
-        unknowns: string[]
-        equations: { name?: string; coefficients: Record<string, number>; observed: number; weight?: number }[]
-      }
-    }
-  }
-  const corpus = await Promise.all(
-    FormatSamples.list.map(async (sample) => ({
-      sample,
-      converted: JSON.parse(
-        (await format.execute({ sourceFormat: sample.sourceFormat, content: sample.content }, toolctx())).output,
-      ) as Converted,
-    })),
-  )
+  const corpus = await formatCorpus()
+  const report = coverage(corpus)
   const base = corpus.find((entry) => entry.sample.id === "cosa-in2")?.converted
   if (!base?.next) throw new Error("format converter did not produce adjustment payload")
   const indirectResult = await indirect.execute(
@@ -456,24 +543,16 @@ async function adjustmentCheck() {
   const conditionData = JSON.parse(conditionResult.output) as {
     statistics?: { observationCount?: number; conditionCount?: number; unitWeightStdDev?: number }
   }
-  const formats = new Set(FormatSamples.list.map((sample) => sample.expectedFormat))
-  const ready = new Set(
-    corpus
-      .filter((entry) => entry.converted.next && entry.converted.detectedFormat === entry.sample.expectedFormat)
-      .map((entry) => entry.converted.detectedFormat ?? "unknown"),
-  )
-  const damaged = corpus.find((entry) => "damaged" in entry.sample && entry.sample.damaged)
+  const damaged = report.samples.find((sample) => sample.damaged)
   return {
     format: {
-      supportedFormatCount: formats.size,
-      readyFormatCount: [...formats].filter((entry) => ready.has(entry)).length,
-      corpusSampleCount: corpus.length,
-      corpusReadyCount: corpus.filter(
-        (entry) => entry.converted.next && entry.converted.detectedFormat === entry.sample.expectedFormat,
-      ).length,
-      detectedFormats: corpus.map((entry) => entry.converted.detectedFormat ?? "unknown"),
-      damagedReady: Boolean(damaged?.converted.next),
-      warningCount: corpus.flatMap((entry) => entry.converted.warnings ?? []).length,
+      supportedFormatCount: report.formatCount,
+      readyFormatCount: report.coveredFormatCount,
+      corpusSampleCount: report.sampleCount,
+      corpusReadyCount: report.readyCount,
+      detectedFormats: report.samples.map((sample) => sample.detectedFormat),
+      damagedReady: Boolean(damaged?.ready),
+      warningCount: report.warningCount,
     },
     indirect: indirectData.statistics,
     gross: grossData.statistics,
@@ -648,6 +727,25 @@ export const AgentStudioRoutes = lazy(() => {
         },
       }),
       async (c) => c.json(await wikiStatus()),
+    )
+    .get(
+      "/format/report",
+      describeRoute({
+        summary: "Get format sample coverage report",
+        description: "Runs the built-in survey format sample corpus and returns parser readiness diagnostics.",
+        operationId: "agentStudio.format.report",
+        responses: {
+          200: {
+            description: "Format sample coverage report",
+            content: {
+              "application/json": {
+                schema: resolver(FormatCoverageReportSchema),
+              },
+            },
+          },
+        },
+      }),
+      async (c) => c.json(coverage(await formatCorpus())),
     )
     .get(
       "/workflow/check/:id",

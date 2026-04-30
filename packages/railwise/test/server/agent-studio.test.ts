@@ -209,6 +209,53 @@ describe("server.routes.agent-studio", () => {
     }
   })
 
+  test("reports format sample coverage diagnostics", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const response = await AgentStudioRoutes().request("http://railwise.test/format/report")
+          const result = (await response.json()) as {
+            sampleCount: number
+            readyCount: number
+            formatCount: number
+            coveredFormatCount: number
+            warningCount: number
+            samples: {
+              id: string
+              detectedFormat: string
+              ready: boolean
+              warningLines: number[]
+              nextTool?: string
+              equationCount: number
+              unknowns: string[]
+            }[]
+          }
+          const damaged = result.samples.find((sample) => sample.id === "south-damaged")
+          const cosa = result.samples.find((sample) => sample.id === "cosa-in2")
+
+          expect(response.status).toBe(200)
+          expect(result.sampleCount).toBe(6)
+          expect(result.readyCount).toBe(6)
+          expect(result.formatCount).toBe(5)
+          expect(result.coveredFormatCount).toBe(5)
+          expect(result.warningCount).toBe(2)
+          expect(cosa?.nextTool).toBe("tool_adjustment_indirect")
+          expect(cosa?.equationCount).toBe(3)
+          expect(cosa?.unknowns).toEqual(["dN_CP301", "dE_CP301"])
+          expect(damaged?.detectedFormat).toBe("south-in")
+          expect(damaged?.ready).toBe(true)
+          expect(damaged?.warningLines).toEqual([6, 7])
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
   test("reports norm wiki status and recent change reports", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME

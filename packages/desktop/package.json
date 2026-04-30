@@ -9,6 +9,7 @@
     "typecheck": "tsgo -b",
     "check:tauri": "bun ./scripts/check-tauri.ts",
     "test:tauri": "bun ./scripts/check-tauri.ts --test",
+    "smoke:tauri": "bun ./scripts/native-smoke.ts",
     "predev": "bun ./scripts/predev.ts",
     "dev": "vite",
     "build": "bun run typecheck && vite build",

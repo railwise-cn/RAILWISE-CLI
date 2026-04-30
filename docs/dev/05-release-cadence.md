@@ -78,6 +78,7 @@ cd packages/ui && bun run typecheck
 cd packages/desktop && bun run build
 cd packages/desktop && bun run check:tauri
 cd packages/desktop && bun run test:tauri
+cd packages/desktop && bun run smoke:tauri
 cd packages/desktop && bun run test:e2e
 ```
 
@@ -100,6 +101,8 @@ bun run desktop:verify:ga
 ```bash
 bun run desktop:verify:ga -- --full
 ```
+
+`--full` 会包含原生 Tauri smoke、30 分钟 SSE 长连和 Desktop E2E；本地浏览器预览不能替代这一门槛。
 
 ### Desktop 发布阻断项
 

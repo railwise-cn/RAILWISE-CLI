@@ -32,6 +32,7 @@ const value = (name: string) => {
 
 const full = has("--full")
 const live = has("--live") || full
+const native = has("--native") || full
 const e2eBase = Bun.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${Bun.env.PLAYWRIGHT_PORT ?? "5185"}`
 const chrome =
   Bun.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ??
@@ -54,6 +55,7 @@ const sseTimeout = Number(Bun.env.RAILWISE_SSE_HEARTBEAT_TIMEOUT_MS ?? "20000")
 const sseUrl = new URL("/event", Bun.env.RAILWISE_SERVER_URL ?? "http://127.0.0.1:4096")
 const hints = [
   live ? undefined : "Live checks skipped. Run `bun run desktop:verify -- --live` for SSE smoke and desktop E2E.",
+  native ? undefined : "Native shell smoke skipped. Run `bun run desktop:verify -- --native` before Desktop GA.",
   full ? undefined : "Run `bun run desktop:verify -- --full` before release for the 30-minute SSE acceptance.",
 ].filter((item): item is string => Boolean(item))
 
@@ -170,6 +172,13 @@ const steps: Step[] = [
     name: "desktop typecheck",
     cwd: path.join(root, "packages/desktop"),
     args: ["bun", "run", "typecheck"],
+  },
+  {
+    name: "native Tauri smoke",
+    cwd: path.join(root, "packages/desktop"),
+    args: ["bun", "run", "smoke:tauri"],
+    retry: 1,
+    skip: has("--skip-native") || !native,
   },
   {
     name: "railwise typecheck",

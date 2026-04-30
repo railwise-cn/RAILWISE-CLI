@@ -95,6 +95,8 @@ bun run desktop:verify:ga
 bun run desktop:verify:ga -- --full
 ```
 
+`--full` 必须在能打开原生窗口的桌面环境执行；它会拉起真实 Tauri 壳、验证本地 sidecar health，并执行 30 分钟 SSE 长连与 Desktop E2E。
+
 ## 触发发布
 
 手动触发 `Desktop Release` workflow：

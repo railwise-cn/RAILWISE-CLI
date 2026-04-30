@@ -21,6 +21,7 @@ cd packages/app && bun run typecheck
 cd packages/desktop && bun run typecheck
 cd packages/desktop && bun run check:tauri
 cd packages/desktop && bun run test:tauri
+cd packages/desktop && bun run smoke:tauri
 cd packages/desktop && bun run build
 cd packages/desktop && bun run test:e2e
 ```

@@ -30,9 +30,11 @@ To verify the native shell without building a real sidecar binary:
 ```bash
 bun run --cwd packages/desktop check:tauri
 bun run --cwd packages/desktop test:tauri
+bun run --cwd packages/desktop smoke:tauri
 ```
 
-These commands prepare a local check-only sidecar stub before running `cargo check` or `cargo test`, so native Rust validation does not require release artifacts.
+`check:tauri` and `test:tauri` prepare a local check-only sidecar stub before running `cargo check` or `cargo test`.
+`smoke:tauri` opens the real Tauri shell with a temporary local sidecar and verifies `/global/health`, so GA acceptance is not reduced to a browser preview.
 
 ## Build
 

@@ -21,6 +21,12 @@ bun run desktop:verify
 bun run desktop:verify -- --live
 ```
 
+需要确认真实 Tauri 原生壳能启动 sidecar 时运行：
+
+```bash
+bun run desktop:verify -- --native
+```
+
 发版前使用完整 30 分钟长连验收：
 
 ```bash

@@ -30,7 +30,13 @@ import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
 import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
 import { MineruParseTool } from "./mineru"
-import { AdjustmentConditionTool, AdjustmentIndirectTool, AdjustmentRobustTool, GrossErrorDetectionTool } from "./adjustment"
+import {
+  AdjustmentConditionTool,
+  AdjustmentFreeNetworkTool,
+  AdjustmentIndirectTool,
+  AdjustmentRobustTool,
+  GrossErrorDetectionTool,
+} from "./adjustment"
 import { FormatConverterTool } from "./format"
 
 export namespace ToolRegistry {
@@ -130,6 +136,7 @@ export namespace ToolRegistry {
       NormCiteTool,
       FormatConverterTool,
       AdjustmentIndirectTool,
+      AdjustmentFreeNetworkTool,
       AdjustmentRobustTool,
       AdjustmentConditionTool,
       GrossErrorDetectionTool,

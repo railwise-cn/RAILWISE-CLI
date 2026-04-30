@@ -4,14 +4,26 @@ import { client } from "./client.gen.js"
 import { buildClientParams, type Client, type Options as Options2, type TDataShape } from "./client/index.js"
 import type {
   AgentPartInput,
+  AgentStudioFormatReportResponses,
   AgentStudioGetErrors,
   AgentStudioGetResponses,
   AgentStudioListResponses,
   AgentStudioUpdateErrors,
   AgentStudioUpdateResponses,
+  AgentStudioWikiReportErrors,
+  AgentStudioWikiReportResponses,
+  AgentStudioWikiStatusResponses,
+  AgentStudioWorkflowAcceptanceErrors,
+  AgentStudioWorkflowAcceptanceResponses,
+  AgentStudioWorkflowCheckErrors,
+  AgentStudioWorkflowCheckResponses,
+  AgentStudioWorkflowDeliveryArchiveErrors,
+  AgentStudioWorkflowDeliveryArchiveResponses,
   AgentStudioWorkflowPresetsResponses,
   AgentStudioWorkflowRunErrors,
   AgentStudioWorkflowRunResponses,
+  AgentStudioWorkflowSessionErrors,
+  AgentStudioWorkflowSessionResponses,
   AppAgentsResponses,
   AppLogErrors,
   AppLogResponses,
@@ -2558,6 +2570,49 @@ export class File extends HeyApiClient {
   }
 }
 
+export class Delivery extends HeyApiClient {
+  /**
+   * Archive accepted workflow delivery
+   *
+   * Writes a local Markdown delivery summary for a workflow session that has passed acceptance.
+   */
+  public archive<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+      workflowId?: string
+      sessionId?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "body", key: "workflowId" },
+            { in: "body", key: "sessionId" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      AgentStudioWorkflowDeliveryArchiveResponses,
+      AgentStudioWorkflowDeliveryArchiveErrors,
+      ThrowOnError
+    >({
+      url: "/agent-studio/workflow/delivery/archive",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+}
+
 export class Workflow extends HeyApiClient {
   /**
    * List built-in workflow presets
@@ -2577,9 +2632,118 @@ export class Workflow extends HeyApiClient {
   }
 
   /**
+   * Check workflow readiness
+   *
+   * Runs deterministic readiness checks for the selected workflow preset.
+   */
+  public check<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      AgentStudioWorkflowCheckResponses,
+      AgentStudioWorkflowCheckErrors,
+      ThrowOnError
+    >({
+      url: "/agent-studio/workflow/check/{id}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Get workflow session metadata
+   *
+   * Returns persisted workflow artifacts and the latest delivery acceptance result for a session.
+   */
+  public session<ThrowOnError extends boolean = false>(
+    parameters: {
+      sessionId: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "sessionId" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      AgentStudioWorkflowSessionResponses,
+      AgentStudioWorkflowSessionErrors,
+      ThrowOnError
+    >({
+      url: "/agent-studio/workflow/session/{sessionId}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Check workflow delivery acceptance
+   *
+   * Validates a completed session against workflow-specific delivery requirements.
+   */
+  public acceptance<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+      workflowId?: string
+      sessionId?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "body", key: "workflowId" },
+            { in: "body", key: "sessionId" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      AgentStudioWorkflowAcceptanceResponses,
+      AgentStudioWorkflowAcceptanceErrors,
+      ThrowOnError
+    >({
+      url: "/agent-studio/workflow/acceptance",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+
+  /**
    * Trigger workflow run
    *
-   * Creates a real session seeded with the selected workflow plan for chief_manager dispatch.
+   * Creates a real session and returns the selected workflow prompt for user review.
    */
   public run<ThrowOnError extends boolean = false>(
     parameters?: {
@@ -2616,6 +2780,87 @@ export class Workflow extends HeyApiClient {
         ...options?.headers,
         ...params.headers,
       },
+    })
+  }
+
+  private _delivery?: Delivery
+  get delivery(): Delivery {
+    return (this._delivery ??= new Delivery({ client: this.client }))
+  }
+}
+
+export class Wiki extends HeyApiClient {
+  /**
+   * Get norm Wiki status
+   *
+   * Returns current norm library counts and recent change or quality reports.
+   */
+  public status<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioWikiStatusResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/wiki/status",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Get norm Wiki report detail
+   *
+   * Returns a single lint/diff report markdown file from wiki/changes.
+   */
+  public report<ThrowOnError extends boolean = false>(
+    parameters: {
+      directory?: string
+      path: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "query", key: "path" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      AgentStudioWikiReportResponses,
+      AgentStudioWikiReportErrors,
+      ThrowOnError
+    >({
+      url: "/agent-studio/wiki/report",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Format extends HeyApiClient {
+  /**
+   * Get format sample coverage report
+   *
+   * Runs the built-in survey format sample corpus, writes Markdown/JSON quality attachments, and returns parser readiness diagnostics.
+   */
+  public report<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioFormatReportResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/format/report",
+      ...options,
+      ...params,
     })
   }
 }
@@ -2708,6 +2953,16 @@ export class AgentStudio extends HeyApiClient {
   private _workflow?: Workflow
   get workflow(): Workflow {
     return (this._workflow ??= new Workflow({ client: this.client }))
+  }
+
+  private _wiki?: Wiki
+  get wiki(): Wiki {
+    return (this._wiki ??= new Wiki({ client: this.client }))
+  }
+
+  private _format?: Format
+  get format(): Format {
+    return (this._format ??= new Format({ client: this.client }))
   }
 }
 

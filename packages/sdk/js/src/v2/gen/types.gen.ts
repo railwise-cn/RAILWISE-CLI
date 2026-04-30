@@ -2311,6 +2311,157 @@ export type WorkflowPreset = {
   edges: Array<WorkflowEdge>
 }
 
+export type WikiReport = {
+  path: string
+  absolutePath: string
+  kind: "lint" | "diff" | "format" | "other"
+  title: string
+  generatedAt?: string
+  status?: string
+  problemCount?: number
+  changeCount?: number
+  sampleCount?: number
+  readyCount?: number
+  formatCount?: number
+  coveredFormatCount?: number
+  warningCount?: number
+  jsonPath?: string
+  updatedAt: string
+}
+
+export type WikiLogEntry = {
+  kind: "query" | "ingest" | "other"
+  timestamp?: string
+  title: string
+  paths: Array<string>
+  raw: string
+}
+
+export type WikiStatus = {
+  root: string
+  readonly: boolean
+  pageCount: number
+  rawCount: number
+  indexPath?: string
+  reportCount: number
+  reports: Array<WikiReport>
+  logCount: number
+  logs: Array<WikiLogEntry>
+}
+
+export type FormatSampleReport = {
+  id: string
+  label: string
+  sourceFormat: string
+  expectedFormat: string
+  detectedFormat: string
+  ready: boolean
+  damaged?: boolean
+  warningCount: number
+  warningLines: Array<number>
+  warnings: Array<string>
+  pointCount: number
+  observationCount: number
+  equationCount: number
+  unknowns: Array<string>
+  equationNames: Array<string>
+  nextTool?: string
+}
+
+export type FormatCoverageArtifacts = {
+  markdownPath: string
+  absoluteMarkdownPath: string
+  jsonPath: string
+  absoluteJsonPath: string
+}
+
+export type FormatCoverageReport = {
+  generatedAt: string
+  sampleCount: number
+  readyCount: number
+  formatCount: number
+  coveredFormatCount: number
+  warningCount: number
+  samples: Array<FormatSampleReport>
+  artifacts?: FormatCoverageArtifacts
+}
+
+export type WorkflowCheck = {
+  workflowId: string
+  ok: boolean
+  generatedAt: string
+  checks: Array<{
+    id: string
+    label: string
+    status: "ok" | "warn" | "fail"
+    detail: string
+  }>
+}
+
+export type WorkflowRunArtifact = {
+  kind: "format-coverage"
+  title: string
+  markdownPath: string
+  absoluteMarkdownPath: string
+  jsonPath: string
+  absoluteJsonPath: string
+}
+
+export type WorkflowAcceptanceCheck = {
+  id: string
+  label: string
+  status: "ok" | "warn" | "fail"
+  detail: string
+}
+
+export type WorkflowAcceptance = {
+  workflowId: string
+  sessionId: string
+  ok: boolean
+  generatedAt: string
+  messageCount: number
+  checks: Array<WorkflowAcceptanceCheck>
+}
+
+export type WorkflowDeliveryArchive = {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  generatedAt: string
+  markdownPath: string
+  absoluteMarkdownPath: string
+}
+
+export type WorkflowSession = {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  createdAt: string
+  updatedAt: string
+  artifacts?: Array<WorkflowRunArtifact>
+  acceptance?: WorkflowAcceptance
+  delivery?: WorkflowDeliveryArchive
+}
+
+export type WikiReportDetail = {
+  path: string
+  absolutePath: string
+  kind: "lint" | "diff" | "format" | "other"
+  title: string
+  generatedAt?: string
+  status?: string
+  problemCount?: number
+  changeCount?: number
+  sampleCount?: number
+  readyCount?: number
+  formatCount?: number
+  coveredFormatCount?: number
+  warningCount?: number
+  jsonPath?: string
+  updatedAt: string
+  rawMarkdown: string
+}
+
 export type AgentDetail = {
   name: string
   description?: string
@@ -2342,7 +2493,10 @@ export type WorkflowRun = {
   sessionId: string
   sessionTitle: string
   workflowId: string
+  directory: string
+  prompt: string
   agentNames: Array<string>
+  artifacts?: Array<WorkflowRunArtifact>
 }
 
 export type McpStatusConnected = {
@@ -4729,6 +4883,198 @@ export type AgentStudioWorkflowPresetsResponses = {
 
 export type AgentStudioWorkflowPresetsResponse =
   AgentStudioWorkflowPresetsResponses[keyof AgentStudioWorkflowPresetsResponses]
+
+export type AgentStudioWikiStatusData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/wiki/status"
+}
+
+export type AgentStudioWikiStatusResponses = {
+  /**
+   * Norm Wiki status
+   */
+  200: WikiStatus
+}
+
+export type AgentStudioWikiStatusResponse = AgentStudioWikiStatusResponses[keyof AgentStudioWikiStatusResponses]
+
+export type AgentStudioFormatReportData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/format/report"
+}
+
+export type AgentStudioFormatReportResponses = {
+  /**
+   * Format sample coverage report
+   */
+  200: FormatCoverageReport
+}
+
+export type AgentStudioFormatReportResponse = AgentStudioFormatReportResponses[keyof AgentStudioFormatReportResponses]
+
+export type AgentStudioWorkflowCheckData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/check/{id}"
+}
+
+export type AgentStudioWorkflowCheckErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioWorkflowCheckError = AgentStudioWorkflowCheckErrors[keyof AgentStudioWorkflowCheckErrors]
+
+export type AgentStudioWorkflowCheckResponses = {
+  /**
+   * Workflow readiness check
+   */
+  200: WorkflowCheck
+}
+
+export type AgentStudioWorkflowCheckResponse =
+  AgentStudioWorkflowCheckResponses[keyof AgentStudioWorkflowCheckResponses]
+
+export type AgentStudioWorkflowSessionData = {
+  body?: never
+  path: {
+    sessionId: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/session/{sessionId}"
+}
+
+export type AgentStudioWorkflowSessionErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioWorkflowSessionError = AgentStudioWorkflowSessionErrors[keyof AgentStudioWorkflowSessionErrors]
+
+export type AgentStudioWorkflowSessionResponses = {
+  /**
+   * Workflow session metadata
+   */
+  200: WorkflowSession
+}
+
+export type AgentStudioWorkflowSessionResponse =
+  AgentStudioWorkflowSessionResponses[keyof AgentStudioWorkflowSessionResponses]
+
+export type AgentStudioWorkflowAcceptanceData = {
+  body?: {
+    workflowId: string
+    sessionId: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/acceptance"
+}
+
+export type AgentStudioWorkflowAcceptanceErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type AgentStudioWorkflowAcceptanceError =
+  AgentStudioWorkflowAcceptanceErrors[keyof AgentStudioWorkflowAcceptanceErrors]
+
+export type AgentStudioWorkflowAcceptanceResponses = {
+  /**
+   * Workflow delivery acceptance result
+   */
+  200: WorkflowAcceptance
+}
+
+export type AgentStudioWorkflowAcceptanceResponse =
+  AgentStudioWorkflowAcceptanceResponses[keyof AgentStudioWorkflowAcceptanceResponses]
+
+export type AgentStudioWorkflowDeliveryArchiveData = {
+  body?: {
+    workflowId: string
+    sessionId: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/delivery/archive"
+}
+
+export type AgentStudioWorkflowDeliveryArchiveErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type AgentStudioWorkflowDeliveryArchiveError =
+  AgentStudioWorkflowDeliveryArchiveErrors[keyof AgentStudioWorkflowDeliveryArchiveErrors]
+
+export type AgentStudioWorkflowDeliveryArchiveResponses = {
+  /**
+   * Workflow delivery archive
+   */
+  200: WorkflowDeliveryArchive
+}
+
+export type AgentStudioWorkflowDeliveryArchiveResponse =
+  AgentStudioWorkflowDeliveryArchiveResponses[keyof AgentStudioWorkflowDeliveryArchiveResponses]
+
+export type AgentStudioWikiReportData = {
+  body?: never
+  path?: never
+  query: {
+    directory?: string
+    path: string
+  }
+  url: "/agent-studio/wiki/report"
+}
+
+export type AgentStudioWikiReportErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioWikiReportError = AgentStudioWikiReportErrors[keyof AgentStudioWikiReportErrors]
+
+export type AgentStudioWikiReportResponses = {
+  /**
+   * Norm Wiki report detail
+   */
+  200: WikiReportDetail
+}
+
+export type AgentStudioWikiReportResponse = AgentStudioWikiReportResponses[keyof AgentStudioWikiReportResponses]
 
 export type AgentStudioGetData = {
   body?: never

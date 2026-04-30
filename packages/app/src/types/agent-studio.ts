@@ -35,6 +35,14 @@ export type WorkflowRun = {
   directory: string
   prompt: string
   agentNames?: string[]
+  artifacts?: {
+    kind: "format-coverage"
+    title: string
+    markdownPath: string
+    absoluteMarkdownPath: string
+    jsonPath: string
+    absoluteJsonPath: string
+  }[]
 }
 
 export type WorkflowCheck = {

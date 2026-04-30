@@ -217,7 +217,12 @@ export function WorkflowGallery() {
     if (!workflow) return
     setBusy(true)
     const result = await api.run(workflow.id).finally(() => setBusy(false))
-    setNotice(`已导入预设，Session: ${result.sessionTitle ?? result.sessionId}`)
+    const artifact = result.artifacts?.[0]
+    setNotice(
+      artifact
+        ? `已导入预设，Session: ${result.sessionTitle ?? result.sessionId}，附件：${artifact.markdownPath}`
+        : `已导入预设，Session: ${result.sessionTitle ?? result.sessionId}`,
+    )
     const key = `${base64Encode(result.directory)}/${result.sessionId}`
     setSessionHandoff(key, { prompt: result.prompt })
     navigate(`/${base64Encode(result.directory)}/session/${result.sessionId}`)

@@ -8,6 +8,7 @@
   "scripts": {
     "typecheck": "tsgo -b",
     "check:tauri": "bun ./scripts/check-tauri.ts",
+    "test:tauri": "bun ./scripts/check-tauri.ts --test",
     "predev": "bun ./scripts/predev.ts",
     "dev": "vite",
     "build": "bun run typecheck && vite build",

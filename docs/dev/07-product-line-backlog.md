@@ -181,6 +181,7 @@ cd packages/desktop && bun run typecheck
 ```bash
 cd packages/desktop && bun run test:e2e
 cd packages/desktop && bun run check:tauri
+cd packages/desktop && bun run test:tauri
 ```
 
 ---

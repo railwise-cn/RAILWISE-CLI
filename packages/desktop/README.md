@@ -29,9 +29,10 @@ To verify the native shell without building a real sidecar binary:
 
 ```bash
 bun run --cwd packages/desktop check:tauri
+bun run --cwd packages/desktop test:tauri
 ```
 
-The command prepares a local check-only sidecar stub before running `cargo check`, so plain Rust validation does not require release artifacts.
+These commands prepare a local check-only sidecar stub before running `cargo check` or `cargo test`, so native Rust validation does not require release artifacts.
 
 ## Build
 

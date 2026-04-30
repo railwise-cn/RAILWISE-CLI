@@ -16,6 +16,7 @@ const host = () => {
 }
 
 const explicit = arg("--target") ?? Bun.env.TAURI_ENV_TARGET_TRIPLE ?? Bun.env.RUST_TARGET
+const test = Bun.argv.includes("--test")
 const target = explicit ?? host()
 if (!SIDECAR_BINARIES.some((item) => item.rustTarget === target)) {
   throw new Error(`Sidecar configuration not available for Rust target '${target}'`)
@@ -31,6 +32,12 @@ await $`mkdir -p src-tauri/sidecars`
 await Bun.write(bin, body)
 if (process.platform !== "win32") await $`chmod 755 ${bin}`
 
-console.log(`Prepared cargo check sidecar stub at ${bin}`)
+console.log(`Prepared Tauri sidecar stub at ${bin}`)
 
-await (explicit ? $`cd src-tauri && cargo check --target ${target}` : $`cd src-tauri && cargo check`)
+await (test
+  ? explicit
+    ? $`cd src-tauri && cargo test --target ${target}`
+    : $`cd src-tauri && cargo test`
+  : explicit
+    ? $`cd src-tauri && cargo check --target ${target}`
+    : $`cd src-tauri && cargo check`)

@@ -2,6 +2,7 @@ import type { Workflow } from "@/types/workflow"
 import type {
   AgentStudioDetail,
   AgentStudioItem,
+  FormatCoverageReport,
   WikiReportDetail,
   WikiStatus,
   WorkflowCheck,
@@ -44,6 +45,7 @@ export function useAgentStudioApi() {
       }),
     presets: () => request<Workflow[]>("/workflow/presets"),
     workflowCheck: (workflowId: string) => request<WorkflowCheck>(`/workflow/check/${encodeURIComponent(workflowId)}`),
+    formatReport: () => request<FormatCoverageReport>("/format/report"),
     wikiStatus: () => request<WikiStatus>("/wiki/status"),
     wikiReport: (path: string) => request<WikiReportDetail>(`/wiki/report?path=${encodeURIComponent(path)}`),
     run: (workflowId: string) =>

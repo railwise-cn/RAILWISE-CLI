@@ -49,6 +49,35 @@ export type WorkflowCheck = {
   }[]
 }
 
+export type FormatSampleReport = {
+  id: string
+  label: string
+  sourceFormat: string
+  expectedFormat: string
+  detectedFormat: string
+  ready: boolean
+  damaged?: boolean
+  warningCount: number
+  warningLines: number[]
+  warnings: string[]
+  pointCount: number
+  observationCount: number
+  equationCount: number
+  unknowns: string[]
+  equationNames: string[]
+  nextTool?: string
+}
+
+export type FormatCoverageReport = {
+  generatedAt: string
+  sampleCount: number
+  readyCount: number
+  formatCount: number
+  coveredFormatCount: number
+  warningCount: number
+  samples: FormatSampleReport[]
+}
+
 export type WikiReport = {
   path: string
   absolutePath: string

@@ -223,6 +223,7 @@ pub async fn check_health_with_retry(url: &str, password: Option<&str>, max_retr
 
 fn url_is_localhost(url: &reqwest::Url) -> bool {
     url.host_str().is_some_and(|host| {
+        let host = host.trim_start_matches('[').trim_end_matches(']');
         host.eq_ignore_ascii_case("localhost")
             || host
                 .parse::<std::net::IpAddr>()
@@ -289,4 +290,65 @@ pub async fn check_health_or_ask_retry(app: &AppHandle, url: &str) -> bool {
     }
 
     false
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::cli::{Config, ServerConfig};
+
+    #[test]
+    fn detects_loopback_health_urls() {
+        for url in [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://[::1]:3000",
+        ] {
+            let url = reqwest::Url::parse(url).expect("valid url");
+            assert!(url_is_localhost(&url));
+        }
+    }
+
+    #[test]
+    fn rejects_non_loopback_health_urls() {
+        for url in ["http://192.168.1.10:3000", "https://railwise.ai"] {
+            let url = reqwest::Url::parse(url).expect("valid url");
+            assert!(!url_is_localhost(&url));
+        }
+    }
+
+    #[test]
+    fn normalizes_bind_hosts_for_client_urls() {
+        assert_eq!(normalize_hostname_for_url("0.0.0.0"), "127.0.0.1");
+        assert_eq!(normalize_hostname_for_url("::"), "[::1]");
+        assert_eq!(normalize_hostname_for_url("::1"), "[::1]");
+        assert_eq!(normalize_hostname_for_url("127.0.0.1"), "127.0.0.1");
+    }
+
+    #[test]
+    fn builds_server_url_from_cli_config() {
+        let config = Config {
+            server: Some(ServerConfig {
+                hostname: Some("0.0.0.0".into()),
+                port: Some(4096),
+            }),
+        };
+
+        assert_eq!(
+            get_server_url_from_config(&config),
+            Some("http://127.0.0.1:4096".into())
+        );
+    }
+
+    #[test]
+    fn ignores_incomplete_cli_server_config() {
+        let config = Config {
+            server: Some(ServerConfig {
+                hostname: Some("127.0.0.1".into()),
+                port: None,
+            }),
+        };
+
+        assert_eq!(get_server_url_from_config(&config), None);
+    }
 }

@@ -136,8 +136,10 @@ jobs:
             });
 
             const linkedIssues = result.repository.pullRequest.closingIssuesReferences.totalCount;
+            const body = pr.body || '';
+            const hasBodyIssueRef = /(closes|fixes|resolves)\s+(#\d+|[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+#\d+|https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/issues\/\d+)/i.test(body);
 
-            if (linkedIssues === 0) {
+            if (linkedIssues === 0 && !hasBodyIssueRef) {
               await addLabel('needs:issue');
               await comment('issue', `Thanks for your contribution!
 

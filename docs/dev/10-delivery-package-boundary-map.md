@@ -118,7 +118,7 @@ Native Desktop GA still requires:
 
 ```bash
 cd packages/desktop && bun run test:e2e
-cd packages/desktop/src-tauri && cargo check
+cd packages/desktop && bun run check:tauri
 ```
 
 ---

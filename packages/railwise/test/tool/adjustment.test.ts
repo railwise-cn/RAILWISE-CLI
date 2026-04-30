@@ -5,6 +5,7 @@ import {
   AdjustmentIndirectTool,
   AdjustmentRobustTool,
   GrossErrorDetectionTool,
+  VarianceComponentTool,
 } from "../../src/tool/adjustment"
 
 function ctx() {
@@ -165,6 +166,48 @@ test("free network adjustment solves datum-constrained rank deficient equations"
   expect(result.statistics.datumConstraintCount).toBe(1)
   expect(result.statistics.degreesOfFreedom).toBe(1)
   expect(result.statistics.unitWeightStdDev).toBeCloseTo(Math.sqrt(0.0002), 9)
+})
+
+test("variance component estimation separates mixed observation groups", async () => {
+  const tool = await VarianceComponentTool.init()
+  const result = JSON.parse(
+    (
+      await tool.execute(
+        {
+          unknowns: ["x"],
+          referenceGroup: "distance",
+          equations: [
+            { name: "distance_a", group: "distance", coefficients: { x: 1 }, observed: 10 },
+            { name: "distance_b", group: "distance", coefficients: { x: 1 }, observed: 10.02 },
+            { name: "angle_a", group: "angle", coefficients: { x: 1 }, observed: 10.5 },
+            { name: "angle_b", group: "angle", coefficients: { x: 1 }, observed: 9.5 },
+          ],
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    components: {
+      name: string
+      redundancy: number
+      varianceFactor: number
+      relativeVarianceFactor: number
+      suggestedWeightFactor: number
+    }[]
+    statistics: { groupCount: number; degreesOfFreedom: number; referenceVarianceFactor: number }
+  }
+
+  const distance = result.components.find((item) => item.name === "distance")
+  const angle = result.components.find((item) => item.name === "angle")
+
+  expect(result.statistics.groupCount).toBe(2)
+  expect(result.statistics.degreesOfFreedom).toBe(3)
+  expect(result.statistics.referenceVarianceFactor).toBeCloseTo(0.0001666667, 9)
+  expect(distance?.redundancy).toBeCloseTo(1.5, 9)
+  expect(distance?.relativeVarianceFactor).toBeCloseTo(1, 9)
+  expect(angle?.varianceFactor).toBeCloseTo(0.3333666667, 9)
+  expect(angle?.relativeVarianceFactor).toBeGreaterThan(1000)
+  expect(angle?.suggestedWeightFactor).toBeLessThan(0.001)
 })
 
 test("robust adjustment downweights an outlying observation", async () => {

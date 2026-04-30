@@ -6,6 +6,7 @@ import FREE_NETWORK_DESCRIPTION from "./adjustment-free-network.txt"
 import GROSS_ERROR_DESCRIPTION from "./gross-error-detection.txt"
 import INDIRECT_DESCRIPTION from "./adjustment-indirect.txt"
 import ROBUST_DESCRIPTION from "./adjustment-robust.txt"
+import VARIANCE_COMPONENT_DESCRIPTION from "./adjustment-variance-component.txt"
 
 type Equation = {
   name?: string
@@ -25,6 +26,10 @@ type Constraint = {
   name?: string
   coefficients: Record<string, number>
   value?: number
+}
+
+type VarianceEquation = Equation & {
+  group?: string
 }
 
 function row(equation: Equation, unknowns: string[]) {
@@ -75,6 +80,14 @@ function solve(lhs: number[][], rhs: number[]) {
 
 function inverse(lhs: number[][]) {
   return lhs.map((_, index) => solve(lhs, lhs.map((__, j) => (j === index ? 1 : 0))))
+}
+
+function quadratic(matrix: number[][], vector: number[]) {
+  return vector.reduce(
+    (acc, value, i) =>
+      acc + value * vector.reduce((sum, item, j) => sum + item * (matrix[i]?.[j] ?? 0), 0),
+    0,
+  )
 }
 
 function indirect(input: { unknowns: string[]; equations: Equation[] }) {
@@ -161,6 +174,81 @@ function free(input: { unknowns: string[]; equations: Equation[]; constraints: C
       degreesOfFreedom,
       weightedResidualSum,
       unitWeightStdDev: sigma0,
+    },
+  }
+}
+
+function variance(input: { unknowns: string[]; equations: VarianceEquation[]; referenceGroup?: string }) {
+  if (input.equations.length <= input.unknowns.length) {
+    throw new Error("redundant observations are required for variance component estimation")
+  }
+  const groups = [...new Set(input.equations.map((equation) => equation.group ?? "default"))]
+  if (groups.length < 2) throw new Error("at least two observation groups are required")
+  const matrix = input.equations.map((equation) => row(equation, input.unknowns))
+  const observed = input.equations.map((equation) => equation.observed)
+  const weights = input.equations.map((equation) => equation.weight ?? 1)
+  const system = normal({ matrix, observed, weights })
+  const values = solve(system.lhs, system.rhs)
+  const qxx = inverse(system.lhs)
+  const residuals = matrix.map((item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index])
+  const redundancy = matrix.map((item, index) => Math.max(0, 1 - weights[index] * quadratic(qxx, item)))
+  const components = groups.map((name) => {
+    const indexes = input.equations.map((equation, index) => ((equation.group ?? "default") === name ? index : -1)).filter((index) => index >= 0)
+    const weightedResidualSum = indexes.reduce((acc, index) => acc + weights[index] * residuals[index] ** 2, 0)
+    const redundancySum = indexes.reduce((acc, index) => acc + redundancy[index], 0)
+    const varianceFactor = redundancySum > 1e-12 ? weightedResidualSum / redundancySum : undefined
+    return {
+      name,
+      observationCount: indexes.length,
+      redundancy: redundancySum,
+      weightedResidualSum,
+      varianceFactor,
+    }
+  })
+  const reference =
+    (input.referenceGroup ? components.find((component) => component.name === input.referenceGroup) : undefined) ??
+    components.find((component) => (component.varianceFactor ?? 0) > 0)
+  if (input.referenceGroup && !reference) throw new Error(`reference group not found: ${input.referenceGroup}`)
+  if (!reference?.varianceFactor || reference.varianceFactor <= 0) throw new Error("reference variance component is not estimable")
+  const referenceVariance = reference.varianceFactor
+  const weightedResidualSum = residuals.reduce((acc, residual, index) => acc + weights[index] * residual ** 2, 0)
+  const degreesOfFreedom = input.equations.length - input.unknowns.length
+  return {
+    method: "helmert_variance_component_estimation",
+    referenceGroup: reference.name,
+    unknowns: input.unknowns.map((name, index) => ({
+      name,
+      value: values[index],
+    })),
+    residuals: input.equations.map((equation, index) => ({
+      name: equation.name ?? `v${index + 1}`,
+      group: equation.group ?? "default",
+      residual: residuals[index],
+      weight: weights[index],
+      redundancy: redundancy[index],
+    })),
+    components: components.map((component) => ({
+      name: component.name,
+      observationCount: component.observationCount,
+      redundancy: component.redundancy,
+      weightedResidualSum: component.weightedResidualSum,
+      varianceFactor: component.varianceFactor ?? null,
+      standardDeviationFactor: component.varianceFactor === undefined ? null : Math.sqrt(Math.max(component.varianceFactor, 0)),
+      relativeVarianceFactor:
+        component.varianceFactor === undefined ? null : component.varianceFactor / referenceVariance,
+      suggestedWeightFactor:
+        component.varianceFactor === undefined || component.varianceFactor <= 0
+          ? null
+          : referenceVariance / component.varianceFactor,
+    })),
+    statistics: {
+      observationCount: input.equations.length,
+      unknownCount: input.unknowns.length,
+      groupCount: groups.length,
+      degreesOfFreedom,
+      weightedResidualSum,
+      unitWeightStdDev: Math.sqrt(weightedResidualSum / degreesOfFreedom),
+      referenceVarianceFactor: referenceVariance,
     },
   }
 }
@@ -359,6 +447,34 @@ export const AdjustmentFreeNetworkTool = Tool.define("tool_adjustment_free_netwo
     const result = free(params)
     return {
       title: "Free Network Adjustment",
+      output: JSON.stringify(result, null, 2),
+      metadata: result.statistics,
+    }
+  },
+})
+
+export const VarianceComponentTool = Tool.define("tool_variance_component", {
+  description: VARIANCE_COMPONENT_DESCRIPTION,
+  parameters: z.object({
+    unknowns: z.array(z.string().min(1)).min(1).max(50).describe("Unknown parameter names in solution order."),
+    equations: z
+      .array(
+        z.object({
+          name: z.string().optional(),
+          group: z.string().min(1).optional().describe("Observation type or variance group, e.g. distance, angle, gnss."),
+          coefficients: z.record(z.string(), z.number()).describe("Design row coefficients by unknown name."),
+          observed: z.number().describe("Observed value on the right-hand side of the equation."),
+          weight: z.number().positive().optional().describe("Base observation weight. Defaults to 1."),
+        }),
+      )
+      .min(2)
+      .max(1000),
+    referenceGroup: z.string().min(1).optional().describe("Optional group used as relative variance reference."),
+  }),
+  async execute(params) {
+    const result = variance(params)
+    return {
+      title: "Variance Component Estimation",
       output: JSON.stringify(result, null, 2),
       metadata: result.statistics,
     }

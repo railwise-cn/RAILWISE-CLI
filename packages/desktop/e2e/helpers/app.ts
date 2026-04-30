@@ -83,6 +83,142 @@ const workflow = {
   ],
 }
 
+const cpiii = {
+  id: "cpiii-resurvey-wiki",
+  name: "CPIII 规范查询与复测预案",
+  description: "规范查询、复测方案、格式样本覆盖与交付验收。",
+  nodes: [
+    { id: "a", agent: "chief_manager", label: "任务拆解", color: "#755620", x: 20, y: 40 },
+    { id: "b", agent: "researcher", label: "规范查询", color: "#2b6f71", x: 230, y: 112 },
+    { id: "c", agent: "qa_inspector", label: "复测校核", color: "#8a6a34", x: 456, y: 40 },
+    { id: "d", agent: "writer", label: "交付摘要", color: "#5f4618", x: 680, y: 112 },
+  ],
+  edges: [
+    { from: "a", to: "b", kind: "serial", label: "查询" },
+    { from: "b", to: "c", kind: "serial", label: "校核" },
+    { from: "c", to: "d", kind: "serial", label: "交付" },
+  ],
+}
+
+const session = {
+  id: "workflow-e2e",
+  slug: "workflow-e2e",
+  projectID: "railwise-e2e",
+  directory: "/tmp/railwise-e2e",
+  title: "工作流：CPIII 规范查询与复测预案",
+  version: "v2",
+  time: { created: 1_777_200_000_000, updated: 1_777_200_060_000 },
+}
+
+const artifact = {
+  kind: "format-coverage",
+  title: "格式样本覆盖",
+  markdownPath: ".railwise/workflows/cpiii-format-coverage.md",
+  absoluteMarkdownPath: "/tmp/railwise-e2e/.railwise/workflows/cpiii-format-coverage.md",
+  jsonPath: ".railwise/workflows/cpiii-format-coverage.json",
+  absoluteJsonPath: "/tmp/railwise-e2e/.railwise/workflows/cpiii-format-coverage.json",
+}
+
+const acceptance = {
+  workflowId: cpiii.id,
+  sessionId: session.id,
+  ok: true,
+  generatedAt: "2026-04-26T08:32:00.000Z",
+  messageCount: 2,
+  checks: [
+    { id: "message", label: "交付输出", status: "ok", detail: "已输出复测方案、规范引用与工具结果摘要。" },
+    { id: "artifact", label: "附件引用", status: "ok", detail: "已登记格式样本覆盖 Markdown 与 JSON 附件。" },
+    { id: "format", label: "格式覆盖", status: "ok", detail: "CPIII 样本格式可读并覆盖核心字段。" },
+  ],
+}
+
+const delivery = {
+  sessionId: session.id,
+  workflowId: cpiii.id,
+  workflowName: cpiii.name,
+  version: 1,
+  generatedAt: "2026-04-26T08:34:00.000Z",
+  directoryPath: ".railwise/delivery/workflow-e2e",
+  absoluteDirectoryPath: "/tmp/railwise-e2e/.railwise/delivery/workflow-e2e",
+  markdownPath: ".railwise/delivery/workflow-e2e/summary.md",
+  absoluteMarkdownPath: "/tmp/railwise-e2e/.railwise/delivery/workflow-e2e/summary.md",
+  manifestPath: ".railwise/delivery/workflow-e2e/manifest.json",
+  absoluteManifestPath: "/tmp/railwise-e2e/.railwise/delivery/workflow-e2e/manifest.json",
+  fileCount: 3,
+  files: [
+    {
+      kind: "summary",
+      label: "交付摘要 Markdown",
+      path: ".railwise/delivery/workflow-e2e/summary.md",
+      absolutePath: "/tmp/railwise-e2e/.railwise/delivery/workflow-e2e/summary.md",
+      copied: true,
+    },
+    {
+      kind: "artifact",
+      label: "格式样本覆盖",
+      path: ".railwise/delivery/workflow-e2e/artifacts/cpiii-format-coverage.md",
+      absolutePath: "/tmp/railwise-e2e/.railwise/delivery/workflow-e2e/artifacts/cpiii-format-coverage.md",
+      sourcePath: artifact.absoluteMarkdownPath,
+      copied: true,
+    },
+    {
+      kind: "manifest",
+      label: "交付清单 JSON",
+      path: ".railwise/delivery/workflow-e2e/manifest.json",
+      absolutePath: "/tmp/railwise-e2e/.railwise/delivery/workflow-e2e/manifest.json",
+      copied: true,
+    },
+  ],
+}
+
+const messages = [
+  {
+    info: {
+      id: "msg-user",
+      sessionID: session.id,
+      role: "user",
+      time: { created: 1_777_200_010_000 },
+      agent: "chief_manager",
+      model: { providerID: "railwise", modelID: "e2e" },
+    },
+    parts: [
+      {
+        id: "part-user",
+        sessionID: session.id,
+        messageID: "msg-user",
+        type: "text",
+        text: "请执行 CPIII 规范查询与复测预案工作流。",
+      },
+    ],
+  },
+  {
+    info: {
+      id: "msg-assistant",
+      sessionID: session.id,
+      role: "assistant",
+      time: { created: 1_777_200_020_000, completed: 1_777_200_040_000 },
+      parentID: "msg-user",
+      modelID: "e2e",
+      providerID: "railwise",
+      mode: "build",
+      agent: "chief_manager",
+      path: { cwd: ".", root: "." },
+      cost: 0,
+      tokens: { input: 0, output: 0, reasoning: 0, cache: { read: 0, write: 0 } },
+      finish: "end_turn",
+    },
+    parts: [
+      {
+        id: "part-assistant",
+        sessionID: session.id,
+        messageID: "msg-assistant",
+        type: "text",
+        text: "已完成 CPIII 规范引用、格式样本覆盖与复测交付摘要。",
+      },
+    ],
+  },
+]
+
 const templates = [
   {
     id: "project-ppt",
@@ -147,8 +283,106 @@ async function setup(page: Page, opts: LaunchOptions) {
       ],
     }),
   )
-  await page.route("**/agent-studio/workflow/run", (route) => json(route, { sessionId: "workflow-e2e" }))
-  await page.route("**/agent-studio/workflow/presets", (route) => json(route, [workflow]))
+  await page.route("**/agent-studio/workflow/run", (route) => {
+    const input = route.request().postDataJSON() as { workflowId?: string }
+    const item = input.workflowId === cpiii.id ? cpiii : workflow
+    return json(route, {
+      sessionId: session.id,
+      sessionTitle: `工作流：${item.name}`,
+      workflowId: item.id,
+      directory: session.directory,
+      prompt: `请执行 ${item.name} 工作流。`,
+      artifacts: item.id === cpiii.id ? [artifact] : [],
+    })
+  })
+  await page.route("**/agent-studio/workflow/presets", (route) => json(route, [workflow, cpiii]))
+  await page.route("**/agent-studio/workflow/check/*", (route) =>
+    json(route, {
+      workflowId: cpiii.id,
+      ok: true,
+      generatedAt: "2026-04-26T08:30:00.000Z",
+      checks: [
+        { id: "wiki", label: "知识库", status: "ok", detail: "CPIII 规范索引可用。" },
+        { id: "format", label: "格式样本", status: "ok", detail: "格式样本覆盖报告已生成。" },
+      ],
+    }),
+  )
+  await page.route("**/agent-studio/workflow/session/workflow-e2e", (route) =>
+    json(route, {
+      sessionId: session.id,
+      workflowId: cpiii.id,
+      workflowName: cpiii.name,
+      createdAt: "2026-04-26T08:30:00.000Z",
+      updatedAt: "2026-04-26T08:31:00.000Z",
+      artifacts: [artifact],
+    }),
+  )
+  await page.route("**/agent-studio/workflow/acceptance", (route) => json(route, acceptance))
+  await page.route("**/agent-studio/workflow/delivery/archive", (route) => json(route, delivery))
+  await page.route("**/agent-studio/format/report", (route) =>
+    json(route, {
+      generatedAt: "2026-04-26T08:29:00.000Z",
+      sampleCount: 1,
+      readyCount: 1,
+      formatCount: 1,
+      coveredFormatCount: 1,
+      warningCount: 0,
+      samples: [
+        {
+          id: "cpiii-adjustment",
+          label: "CPIII 平差样本",
+          sourceFormat: "txt",
+          expectedFormat: "cpiii-adjustment",
+          detectedFormat: "cpiii-adjustment",
+          ready: true,
+          warningCount: 0,
+          warningLines: [],
+          warnings: [],
+          pointCount: 12,
+          observationCount: 24,
+          equationCount: 8,
+          unknowns: ["X", "Y", "H"],
+          equationNames: ["distance", "level"],
+        },
+      ],
+      artifacts: {
+        markdownPath: artifact.markdownPath,
+        absoluteMarkdownPath: artifact.absoluteMarkdownPath,
+        jsonPath: artifact.jsonPath,
+        absoluteJsonPath: artifact.absoluteJsonPath,
+      },
+    }),
+  )
+  await page.route("**/agent-studio/wiki/status", (route) =>
+    json(route, {
+      pageCount: 8,
+      rawCount: 5,
+      reportCount: 1,
+      readonly: false,
+      reports: [
+        {
+          kind: "format",
+          path: artifact.markdownPath,
+          absolutePath: artifact.absoluteMarkdownPath,
+          generatedAt: "2026-04-26T08:29:00.000Z",
+          sampleCount: 1,
+          readyCount: 1,
+          warningCount: 0,
+          problemCount: 0,
+        },
+      ],
+      logs: [],
+    }),
+  )
+  await page.route("**/agent-studio/wiki/report?*", (route) =>
+    json(route, {
+      kind: "format",
+      path: artifact.markdownPath,
+      absolutePath: artifact.absoluteMarkdownPath,
+      generatedAt: "2026-04-26T08:29:00.000Z",
+      content: "# 格式样本覆盖\n\nCPIII 平差样本通过。",
+    }),
+  )
   await page.route("**/agent-studio/list", (route) => json(route, agents))
   await page.route("**/agent-studio/chief_manager", (route) => {
     if (route.request().method() === "PUT") return json(route, true)
@@ -157,6 +391,10 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route("**/mcp", (route) => json(route, mcp))
   await page.route("**/command", (route) => json(route, commands))
   await page.route("**/templates/list", (route) => json(route, templates))
+  await page.route("**/session/workflow-e2e/message*", (route) => json(route, messages))
+  await page.route("**/session/workflow-e2e/todo*", (route) => json(route, []))
+  await page.route("**/session/workflow-e2e/diff*", (route) => json(route, []))
+  await page.route("**/session/workflow-e2e*", (route) => json(route, session))
   await page.route("**/session/*/prompt_async", (route) => json(route, { ok: true }))
   await page.route("**/session", (route) => json(route, { id: "queue-e2e" }))
 

@@ -4,6 +4,7 @@ import { Tool } from "./tool"
 import CONDITION_DESCRIPTION from "./adjustment-condition.txt"
 import GROSS_ERROR_DESCRIPTION from "./gross-error-detection.txt"
 import INDIRECT_DESCRIPTION from "./adjustment-indirect.txt"
+import ROBUST_DESCRIPTION from "./adjustment-robust.txt"
 
 type Equation = {
   name?: string
@@ -138,6 +139,105 @@ function gross(input: { residuals: Residual[]; sigma0?: number; degreesOfFreedom
   }
 }
 
+function factor(input: { statistic: number; k0: number; k1: number; floor: number }) {
+  const value = Math.abs(input.statistic)
+  if (value <= input.k0) return 1
+  if (value >= input.k1) return input.floor
+  return Math.min(
+    1,
+    Math.max(input.floor, (input.k0 / value) * ((input.k1 - value) / (input.k1 - input.k0)) ** 2),
+  )
+}
+
+function weighted(input: { equations: Equation[]; weights: number[] }) {
+  return input.equations.map((equation, index) => ({
+    ...equation,
+    weight: input.weights[index],
+  }))
+}
+
+function tests(input: { residuals: { name: string; residual: number; weight: number }[]; sigma0: number; base: number[] }) {
+  return input.residuals.map((item, index) => {
+    const statistic = input.sigma0 > 0 ? Math.abs(item.residual) * Math.sqrt(item.weight) / input.sigma0 : 0
+    return {
+      name: item.name,
+      residual: item.residual,
+      baseWeight: input.base[index],
+      weight: item.weight,
+      weightFactor: item.weight / input.base[index],
+      standardizedResidual: statistic,
+    }
+  })
+}
+
+function robust(input: {
+  unknowns: string[]
+  equations: Equation[]
+  k0?: number
+  k1?: number
+  maxIterations?: number
+  tolerance?: number
+  minWeightFactor?: number
+}) {
+  const k0 = input.k0 ?? 1.5
+  const k1 = input.k1 ?? 3
+  if (k1 <= k0) throw new Error("k1 must be greater than k0")
+  const floor = input.minWeightFactor ?? 0.05
+  const maxIterations = input.maxIterations ?? 8
+  const tolerance = input.tolerance ?? 1e-4
+  const base = input.equations.map((equation) => equation.weight ?? 1)
+  let weights = base
+  let maxWeightChange = 0
+  const iterations: { iteration: number; sigma0: number; maxWeightChange: number; downweightedCount: number }[] = []
+  for (let index = 0; index < maxIterations; index++) {
+    const current = indirect({ unknowns: input.unknowns, equations: weighted({ equations: input.equations, weights }) })
+    const rows = tests({
+      residuals: current.residuals,
+      sigma0: current.statistics.unitWeightStdDev,
+      base,
+    }).map((item) => ({
+      ...item,
+      nextWeightFactor: factor({ statistic: item.standardizedResidual, k0, k1, floor }),
+    }))
+    const next = rows.map((item, i) => base[i] * item.nextWeightFactor)
+    maxWeightChange = next.reduce((acc, value, i) => Math.max(acc, Math.abs(value - weights[i])), 0)
+    weights = next
+    iterations.push({
+      iteration: index + 1,
+      sigma0: current.statistics.unitWeightStdDev,
+      maxWeightChange,
+      downweightedCount: rows.filter((item) => item.nextWeightFactor < 1).length,
+    })
+    if (maxWeightChange <= tolerance) break
+  }
+  const converged = iterations.some((item) => item.maxWeightChange <= tolerance)
+  const result = indirect({ unknowns: input.unknowns, equations: weighted({ equations: input.equations, weights }) })
+  const residuals = tests({
+    residuals: result.residuals,
+    sigma0: result.statistics.unitWeightStdDev,
+    base,
+  })
+  const downweighted = residuals.filter((item) => item.weightFactor < 1 - tolerance)
+  return {
+    method: "iggiii_robust_adjustment",
+    k0,
+    k1,
+    minWeightFactor: floor,
+    tolerance,
+    converged: Boolean(converged),
+    unknowns: result.unknowns,
+    residuals,
+    downweighted,
+    iterations,
+    statistics: {
+      ...result.statistics,
+      iterationCount: iterations.length,
+      downweightedCount: downweighted.length,
+      maxWeightChange,
+    },
+  }
+}
+
 export const AdjustmentIndirectTool = Tool.define("tool_adjustment_indirect", {
   description: INDIRECT_DESCRIPTION,
   parameters: z.object({
@@ -158,6 +258,42 @@ export const AdjustmentIndirectTool = Tool.define("tool_adjustment_indirect", {
     const result = indirect(params)
     return {
       title: "Indirect Adjustment",
+      output: JSON.stringify(result, null, 2),
+      metadata: result.statistics,
+    }
+  },
+})
+
+export const AdjustmentRobustTool = Tool.define("tool_adjustment_robust", {
+  description: ROBUST_DESCRIPTION,
+  parameters: z.object({
+    unknowns: z.array(z.string().min(1)).min(1).max(20).describe("Unknown parameter names in solution order."),
+    equations: z
+      .array(
+        z.object({
+          name: z.string().optional(),
+          coefficients: z.record(z.string(), z.number()).describe("Design row coefficients by unknown name."),
+          observed: z.number().describe("Observed value on the right-hand side of the equation."),
+          weight: z.number().positive().optional().describe("Base observation weight. Defaults to 1."),
+        }),
+      )
+      .min(1)
+      .max(500),
+    k0: z.number().positive().optional().describe("IGGIII full-weight threshold. Defaults to 1.5."),
+    k1: z.number().positive().optional().describe("IGGIII rejection threshold. Defaults to 3."),
+    maxIterations: z.number().int().positive().max(50).optional().describe("Maximum robust iterations. Defaults to 8."),
+    tolerance: z.number().positive().optional().describe("Weight convergence tolerance. Defaults to 1e-4."),
+    minWeightFactor: z
+      .number()
+      .positive()
+      .max(1)
+      .optional()
+      .describe("Minimum retained weight factor for severe outliers. Defaults to 0.05."),
+  }),
+  async execute(params) {
+    const result = robust(params)
+    return {
+      title: "Robust Adjustment",
       output: JSON.stringify(result, null, 2),
       metadata: result.statistics,
     }

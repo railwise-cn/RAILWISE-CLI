@@ -1,5 +1,10 @@
 import { expect, test } from "bun:test"
-import { AdjustmentConditionTool, AdjustmentIndirectTool, GrossErrorDetectionTool } from "../../src/tool/adjustment"
+import {
+  AdjustmentConditionTool,
+  AdjustmentIndirectTool,
+  AdjustmentRobustTool,
+  GrossErrorDetectionTool,
+} from "../../src/tool/adjustment"
 
 function ctx() {
   return {
@@ -126,4 +131,58 @@ test("gross error detection can run preliminary indirect adjustment", async () =
   expect(result.grossErrors).toEqual([])
   expect(result.preliminary.statistics.degreesOfFreedom).toBe(1)
   expect(result.preliminary.statistics.unitWeightStdDev).toBeCloseTo(0.0017320508, 9)
+})
+
+test("robust adjustment downweights an outlying observation", async () => {
+  const indirectTool = await AdjustmentIndirectTool.init()
+  const robustTool = await AdjustmentRobustTool.init()
+  const equations = [
+    { name: "clean_a", coefficients: { x: 1 }, observed: 10 },
+    { name: "clean_b", coefficients: { x: 1 }, observed: 10.01 },
+    { name: "clean_c", coefficients: { x: 1 }, observed: 9.99 },
+    { name: "clean_d", coefficients: { x: 1 }, observed: 10 },
+    { name: "outlier", coefficients: { x: 1 }, observed: 13 },
+  ]
+  const indirect = JSON.parse(
+    (
+      await indirectTool.execute(
+        {
+          unknowns: ["x"],
+          equations,
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    unknowns: { name: string; value: number }[]
+  }
+  const result = JSON.parse(
+    (
+      await robustTool.execute(
+        {
+          unknowns: ["x"],
+          equations,
+          k0: 0.8,
+          k1: 1.6,
+          minWeightFactor: 0.05,
+        },
+        ctx(),
+      )
+    ).output,
+  ) as {
+    converged: boolean
+    unknowns: { name: string; value: number }[]
+    downweighted: { name: string; weightFactor: number }[]
+    statistics: { iterationCount: number; downweightedCount: number }
+  }
+
+  const leastSquares = indirect.unknowns.find((item) => item.name === "x")?.value ?? 0
+  const robust = result.unknowns.find((item) => item.name === "x")?.value ?? 0
+
+  expect(Math.abs(robust - 10)).toBeLessThan(Math.abs(leastSquares - 10))
+  expect(result.downweighted.map((item) => item.name)).toEqual(["outlier"])
+  expect(result.downweighted[0]?.weightFactor).toBeCloseTo(0.05, 9)
+  expect(result.statistics.downweightedCount).toBe(1)
+  expect(result.statistics.iterationCount).toBeGreaterThanOrEqual(2)
+  expect(result.converged).toBe(true)
 })

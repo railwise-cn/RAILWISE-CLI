@@ -190,6 +190,7 @@ describe("server.routes.agent-studio", () => {
           expect(result.checks.find((item) => item.id === "tools")?.detail).toContain("10 个核心工具")
           expect(result.checks.find((item) => item.id === "norm")?.status).toBe("ok")
           expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("格式 5/5 种")
+          expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("样本集 6/6 可用")
           expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("容错样本 可用")
           expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("warning 2 条")
           expect(result.checks.find((item) => item.id === "adjustment")?.detail).toContain("sigma0=")

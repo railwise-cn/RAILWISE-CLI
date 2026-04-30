@@ -22,6 +22,7 @@ import {
   VarianceComponentTool,
 } from "../../tool/adjustment"
 import { FormatConverterTool } from "../../tool/format"
+import { FormatSamples } from "../../tool/format-samples"
 import { ToolRegistry } from "../../tool/registry"
 import { lazy } from "../../util/lazy"
 import { errors } from "../error"
@@ -283,21 +284,6 @@ function prompt(workflow: (typeof presets)[number], input?: Record<string, unkno
   )
 }
 
-function cpiiiCosa() {
-  return [
-    "3.5,5,5",
-    "CP300,4003.855,2903.360",
-    "CP301,4094.969,3854.515",
-    "CP300",
-    "CP301,L,0",
-    "CP301,S,339.366",
-    "unknowns,dN_CP301,dE_CP301",
-    "equation,baseline_north,dN_CP301=1,observed=0.002,weight=1",
-    "equation,baseline_east,dE_CP301=1,observed=-0.001,weight=1",
-    "equation,closure_vector,dN_CP301=1,dE_CP301=1,observed=0.0005,weight=0.8",
-  ].join("\n")
-}
-
 function cpiii() {
   const network = {
     unknowns: ["dN_CP300", "dN_CP301"],
@@ -330,7 +316,7 @@ function cpiii() {
     '1. norm_librarian 先调用 tool_wiki_query({"query":"CPIII 复测限差 平面 高程 控制网","scope":"CPIII","limit":5,"appendLog":true})，无命中再调用 tool_norm_search。',
     "2. railway_norm_consultant 用 tool_norm_cite 固化条文引用，所有限差判断必须带 wiki_page_path / raw_source_md / norm_clause_id。",
     "3. adjustment_computer 先调用 tool_format_converter 解析 COSA .in2/.in1、NASEW .dat、南方 .in、LGO ASCII、TBC CSV 或通用 CSV，使用返回的 next.args 调用 tool_adjustment_indirect：",
-    JSON.stringify({ sourceFormat: "cosa-in2", content: cpiiiCosa() }, null, 2),
+    JSON.stringify({ sourceFormat: "cosa-in2", content: FormatSamples.get("cosa-in2").content }, null, 2),
     "4. adjustment_computer 对秩亏相对网或自由网任务调用 tool_adjustment_free_network，必须显式传入基准约束：",
     JSON.stringify(network, null, 2),
     "5. adjustment_computer 将 tool_adjustment_indirect 的 residuals 和 sigma0 交给 tool_gross_error_detection，标记疑似粗差后再输出最终质量意见。",
@@ -348,6 +334,18 @@ function item(input: { id: string; label: string; status: "ok" | "warn" | "fail"
   return input
 }
 
+function toolctx() {
+  return {
+    sessionID: "workflow-check",
+    messageID: "workflow-check",
+    agent: "agent-studio",
+    abort: new AbortController().signal,
+    messages: [],
+    metadata() {},
+    async ask() {},
+  }
+}
+
 async function adjustmentCheck() {
   const format = await FormatConverterTool.init()
   const indirect = await AdjustmentIndirectTool.init()
@@ -356,109 +354,9 @@ async function adjustmentCheck() {
   const robust = await AdjustmentRobustTool.init()
   const variance = await VarianceComponentTool.init()
   const condition = await AdjustmentConditionTool.init()
-  const converted = await format.execute(
-    {
-      sourceFormat: "cosa-in2",
-      content: cpiiiCosa(),
-    },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
-  )
-  const vendorSamples = [
-    {
-      sourceFormat: "nasew-dat",
-      content: [
-        "NASEW DAT",
-        "P CP300 4003.855 2903.360",
-        "OBS CP300 CP301 DIST 339.366 1",
-        "UNK dN_CP301",
-        "EQ baseline_north dN_CP301=1 observed=0.002 weight=1",
-      ].join("\n"),
-    },
-    {
-      sourceFormat: "south-in",
-      content: [
-        "南方平差易",
-        "ZD CP300 4003.855 2903.360",
-        "GC CP300 CP301 S 339.366 1",
-        "PARAMS dN_CP301",
-        "EQU baseline_north dN_CP301=1 L=0.002 P=1",
-      ].join("\n"),
-    },
-    {
-      sourceFormat: "lgo-asc",
-      content: [
-        "LEICA LGO",
-        "POINT CP300 4003.855 2903.360",
-        "BASELINE CP300 CP301 GNSS 0.002 1",
-        "UNKNOWN dN_CP301",
-        "ADJ baseline_north dN_CP301=1 RHS=0.002 W=1",
-      ].join("\n"),
-    },
-    {
-      sourceFormat: "tbc-csv",
-      content: [
-        "Point ID,Northing,Easting",
-        "CP300,4003.855,2903.360",
-        "From Point,To Point,Type,Value,Weight",
-        "CP300,CP301,DIST,339.366,1",
-        "Name,dN_CP301,Observed,Weight",
-        "baseline_north,1,0.002,1",
-      ].join("\n"),
-    },
-  ] as const
-  const vendorResults = await Promise.all(
-    vendorSamples.map((sample) =>
-      format.execute(
-        {
-          sourceFormat: "auto",
-          content: sample.content,
-        },
-        {
-          sessionID: "workflow-check",
-          messageID: "workflow-check",
-          agent: "agent-studio",
-          abort: new AbortController().signal,
-          messages: [],
-          metadata() {},
-          async ask() {},
-        },
-      ),
-    ),
-  )
-  const damagedResult = await format.execute(
-    {
-      sourceFormat: "auto",
-      content: [
-        "南方平差易",
-        "点号,纵坐标,横坐标",
-        "CP300,4003.855,2903.360",
-        "测站,目标,类型,观测值,权",
-        "CP300,CP301,S,339.366,1",
-        "BROKEN,10,not-a-supported-row",
-        "EQU damaged observed=1",
-        "Name,dN_CP301,观测值,权",
-        "baseline_north,1,0.002,1",
-      ].join("\n"),
-    },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
-  )
-  const payload = JSON.parse(converted.output) as {
+  type Converted = {
+    detectedFormat?: string
+    warnings?: string[]
     next?: {
       args: {
         unknowns: string[]
@@ -466,18 +364,19 @@ async function adjustmentCheck() {
       }
     }
   }
-  if (!payload.next) throw new Error("format converter did not produce adjustment payload")
+  const corpus = await Promise.all(
+    FormatSamples.list.map(async (sample) => ({
+      sample,
+      converted: JSON.parse(
+        (await format.execute({ sourceFormat: sample.sourceFormat, content: sample.content }, toolctx())).output,
+      ) as Converted,
+    })),
+  )
+  const base = corpus.find((entry) => entry.sample.id === "cosa-in2")?.converted
+  if (!base?.next) throw new Error("format converter did not produce adjustment payload")
   const indirectResult = await indirect.execute(
-    payload.next.args,
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
+    base.next.args,
+    toolctx(),
   )
   const indirectData = JSON.parse(indirectResult.output) as {
     residuals: { name: string; residual: number; weight: number }[]
@@ -489,15 +388,7 @@ async function adjustmentCheck() {
       sigma0: indirectData.statistics?.unitWeightStdDev,
       threshold: 3,
     },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
+    toolctx(),
   )
   const freeResult = await free.execute(
     {
@@ -508,15 +399,7 @@ async function adjustmentCheck() {
       ],
       constraints: [{ name: "centroid", coefficients: { dN_CP300: 1, dN_CP301: 1 }, value: 0 }],
     },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
+    toolctx(),
   )
   const robustResult = await robust.execute(
     {
@@ -532,15 +415,7 @@ async function adjustmentCheck() {
       k1: 1.6,
       minWeightFactor: 0.05,
     },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
+    toolctx(),
   )
   const varianceResult = await variance.execute(
     {
@@ -553,15 +428,7 @@ async function adjustmentCheck() {
         { name: "angle_b", group: "angle", coefficients: { dN_CP301: 1 }, observed: 9.5 },
       ],
     },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
+    toolctx(),
   )
   const conditionResult = await condition.execute(
     {
@@ -572,15 +439,7 @@ async function adjustmentCheck() {
       ],
       conditions: [{ name: "loop_closure", coefficients: { dh1: 1, dh2: 1, dh3: 1 } }],
     },
-    {
-      sessionID: "workflow-check",
-      messageID: "workflow-check",
-      agent: "agent-studio",
-      abort: new AbortController().signal,
-      messages: [],
-      metadata() {},
-      async ask() {},
-    },
+    toolctx(),
   )
   const grossData = JSON.parse(grossResult.output) as {
     statistics?: { grossErrorCount?: number; maxStatistic?: number }
@@ -597,15 +456,24 @@ async function adjustmentCheck() {
   const conditionData = JSON.parse(conditionResult.output) as {
     statistics?: { observationCount?: number; conditionCount?: number; unitWeightStdDev?: number }
   }
-  const detected = vendorResults.map((result) => JSON.parse(result.output) as { detectedFormat?: string; next?: unknown })
-  const damaged = JSON.parse(damagedResult.output) as { warnings?: string[]; next?: unknown }
+  const formats = new Set(FormatSamples.list.map((sample) => sample.expectedFormat))
+  const ready = new Set(
+    corpus
+      .filter((entry) => entry.converted.next && entry.converted.detectedFormat === entry.sample.expectedFormat)
+      .map((entry) => entry.converted.detectedFormat ?? "unknown"),
+  )
+  const damaged = corpus.find((entry) => "damaged" in entry.sample && entry.sample.damaged)
   return {
     format: {
-      supportedFormatCount: 1 + detected.length,
-      readyFormatCount: 1 + detected.filter((item) => item.next).length,
-      detectedFormats: ["cosa-in2", ...detected.map((item) => item.detectedFormat ?? "unknown")],
-      damagedReady: Boolean(damaged.next),
-      warningCount: damaged.warnings?.length ?? 0,
+      supportedFormatCount: formats.size,
+      readyFormatCount: [...formats].filter((entry) => ready.has(entry)).length,
+      corpusSampleCount: corpus.length,
+      corpusReadyCount: corpus.filter(
+        (entry) => entry.converted.next && entry.converted.detectedFormat === entry.sample.expectedFormat,
+      ).length,
+      detectedFormats: corpus.map((entry) => entry.converted.detectedFormat ?? "unknown"),
+      damagedReady: Boolean(damaged?.converted.next),
+      warningCount: corpus.flatMap((entry) => entry.converted.warnings ?? []).length,
     },
     indirect: indirectData.statistics,
     gross: grossData.statistics,
@@ -672,7 +540,7 @@ async function check(workflow: (typeof presets)[number]) {
       label: "平差工具",
       status: stats ? "ok" : "fail",
       detail: stats
-        ? `格式 ${stats.format?.readyFormatCount ?? 0}/${stats.format?.supportedFormatCount ?? 0} 种可转平差，容错样本 ${stats.format?.damagedReady ? "可用" : "失败"}、warning ${stats.format?.warningCount ?? 0} 条；间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；自由网 ${stats.free?.observationCount ?? 0} 条观测、${stats.free?.datumConstraintCount ?? 0} 个基准约束，sigma0=${(stats.free?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；稳健 ${stats.robust?.iterationCount ?? 0} 次迭代、降权 ${stats.robust?.downweightedCount ?? 0} 项；方差分量 ${stats.variance?.groupCount ?? 0} 类，ref=${(stats.variance?.referenceVarianceFactor ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
+        ? `格式 ${stats.format?.readyFormatCount ?? 0}/${stats.format?.supportedFormatCount ?? 0} 种可转平差，样本集 ${stats.format?.corpusReadyCount ?? 0}/${stats.format?.corpusSampleCount ?? 0} 可用、容错样本 ${stats.format?.damagedReady ? "可用" : "失败"}、warning ${stats.format?.warningCount ?? 0} 条；间接 ${stats.indirect?.observationCount ?? 0} 条观测、${stats.indirect?.unknownCount ?? 0} 个未知数，sigma0=${(stats.indirect?.unitWeightStdDev ?? 0).toPrecision(3)}；自由网 ${stats.free?.observationCount ?? 0} 条观测、${stats.free?.datumConstraintCount ?? 0} 个基准约束，sigma0=${(stats.free?.unitWeightStdDev ?? 0).toPrecision(3)}；粗差 ${stats.gross?.grossErrorCount ?? 0} 项，max=${(stats.gross?.maxStatistic ?? 0).toPrecision(3)}；稳健 ${stats.robust?.iterationCount ?? 0} 次迭代、降权 ${stats.robust?.downweightedCount ?? 0} 项；方差分量 ${stats.variance?.groupCount ?? 0} 类，ref=${(stats.variance?.referenceVarianceFactor ?? 0).toPrecision(3)}；条件 ${stats.condition?.observationCount ?? 0} 条观测、${stats.condition?.conditionCount ?? 0} 个条件，sigma0=${(stats.condition?.unitWeightStdDev ?? 0).toPrecision(3)}`
         : "样例平差或条件平差未通过",
     }),
     item({

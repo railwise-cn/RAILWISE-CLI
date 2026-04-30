@@ -1,3 +1,14 @@
+# RAILWISE App Shell
+
+`@railwise/app` is the shared SolidJS web UI shell used by browser preview and Desktop.
+
+It is not the commercial product boundary. Product-level promises live in RAILWISE CLI and RAILWISE Desktop:
+
+- CLI owns command-line, scripting, CI, and headless workflows.
+- Desktop owns the native workstation, local file flows, Agent Studio, and delivery package UX.
+
+See [docs/dev/00-product-boundaries.md](../../docs/dev/00-product-boundaries.md).
+
 ## Usage
 
 Dependencies for these templates are managed with [pnpm](https://pnpm.io) using `pnpm up -Lri`.

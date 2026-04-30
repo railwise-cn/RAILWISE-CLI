@@ -4,17 +4,21 @@
 
 睿威智测 AI 工程测绘多智能体系统，面向工程测量、结构监测、地铁监测等测绘业务场景，提供从外业数据采集到内业报告生成的全流程 AI 辅助。
 
-包含三端：
+RAILWISE 现在按三条产品线开发和验收：
 
-- **CLI**（`packages/railwise`）— 终端命令行 / CI 脚本入口
-- **Web**（`packages/app`）— 浏览器 SPA
-- **Desktop**（`packages/desktop`）— Tauri 2 原生桌面端，支持 Windows / macOS / Linux 离线安装
+- **RAILWISE Core**（`packages/railwise` + `packages/sdk/js`）— 共享智能工程引擎，负责 Agent、工作流、规范 Wiki、测量工具、会话和交付包。
+- **RAILWISE CLI**（`packages/railwise/src/cli`）— 面向开发者、脚本、CI 和自动化的命令行产品。
+- **RAILWISE Desktop**（`packages/desktop`）— 面向工程测绘和监测业务用户的 Tauri 2 桌面工作台，支持 Windows / macOS / Linux 离线安装。
+
+详细边界见 [产品边界与开发实施文档](docs/dev/00-product-boundaries.md)。
 
 > **越用越懂你** — RAILWISE-CLI 内置[跨会话记忆系统](#跨会话记忆系统)，自动记住你的项目结构、编码习惯和工作偏好。用得越多，它就越了解你的项目，响应越精准，协作越默契——就像一个不断成长的工程搭档。
 
 ---
 
 ## 快速开始
+
+以下命令适用于 **RAILWISE CLI**。Desktop 的开发和发布入口见 [RAILWISE Desktop README](packages/desktop/README.md)。
 
 ### 安装
 
@@ -201,7 +205,15 @@ npm update -g railwise-ai
 
 ---
 
-## 系统架构
+## 产品架构
+
+RAILWISE Core 是底层发动机。CLI 和 Desktop 共享它，但面向不同用户。
+
+- CLI 负责命令行、脚本化、无头运行和 CI 场景。
+- Desktop 负责可视化工作台、文件导入预览、工作流审阅、交付包导出和安装更新。
+- `packages/app` 是共享 Web UI shell，不作为独立商业产品叙事中心。
+
+开发者应先判断改动属于 `core`、`cli`、`desktop`、`app` 还是 `docs`，再决定代码路径、测试和验收标准。
 
 ### 自定义智能体（7 个领域专家）
 

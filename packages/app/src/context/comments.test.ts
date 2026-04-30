@@ -128,7 +128,7 @@ describe("comments session indexing", () => {
     })
   })
 
-  test("setFocus and setActive updater callbacks receive current state", () => {
+  test("setFocus and setActive setter callbacks receive current state", () => {
     createRoot((dispose) => {
       const comments = createCommentSessionForTest()
 

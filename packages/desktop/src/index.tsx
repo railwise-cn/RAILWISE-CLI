@@ -170,6 +170,8 @@ const createPlatform = (): Platform => {
 
   return {
     platform: "desktop",
+    appName: "RAILWISE Desktop",
+    supportUrl: "https://railwise.ai/desktop-feedback",
     os,
     version: pkg.version,
 

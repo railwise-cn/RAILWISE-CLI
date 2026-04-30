@@ -2436,6 +2436,7 @@ export type WorkflowDeliveryArchive = {
   sessionId: string
   workflowId: string
   workflowName: string
+  version: number
   generatedAt: string
   directoryPath?: string
   absoluteDirectoryPath?: string

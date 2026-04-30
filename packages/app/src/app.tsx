@@ -183,6 +183,8 @@ export function AppInterface(props: {
   workbenchRoutes?: boolean
   servers?: Array<ServerConnection.Any>
 }) {
+  const standalone = createMemo(() => ["/agents", ...(props.standalonePaths ?? [])])
+
   return (
     <ServerProvider defaultServer={props.defaultServer} servers={props.servers}>
       <ServerKey>
@@ -190,7 +192,7 @@ export function AppInterface(props: {
           <GlobalSyncProvider>
             <Router
               root={(routerProps) => (
-                <RouterRoot appChildren={props.children} standalonePaths={props.standalonePaths}>
+                <RouterRoot appChildren={props.children} standalonePaths={standalone()}>
                   {routerProps.children}
                 </RouterRoot>
               )}

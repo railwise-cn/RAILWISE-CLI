@@ -14,16 +14,21 @@ import { SessionPermissionDock } from "@/pages/session/composer/session-permissi
 import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
 import type { SessionComposerState } from "@/pages/session/composer/session-composer-state"
 import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
+import {
+  deliveryFileCount,
+  deliveryFiles,
+  deliveryMissingCount,
+  deliveryRows,
+  deliveryStatus,
+} from "@/pages/session/composer/workflow-delivery"
 import type {
   WorkflowAcceptance,
-  WorkflowDeliveryArchive,
   WorkflowRunArtifact,
   WorkflowSession,
 } from "@/types/agent-studio"
 
 type AcceptanceStatus = WorkflowAcceptance["checks"][number]["status"]
 type WorkflowStage = "imported" | "pending" | "running" | "review" | "failed" | "passed"
-type DeliveryRow = { label: string; path: string; absolute: string | undefined; folder: boolean }
 
 const workflowSteps: { id: WorkflowStage; label: string }[] = [
   { id: "imported", label: "已导入" },
@@ -240,22 +245,6 @@ export function SessionComposerRegion(props: {
     { label: "Markdown", path: artifact.markdownPath, absolute: artifact.absoluteMarkdownPath },
     { label: "JSON", path: artifact.jsonPath, absolute: artifact.absoluteJsonPath },
   ]
-
-  const deliveryRows = (item: WorkflowDeliveryArchive) => {
-    const rows: (DeliveryRow | undefined)[] = [
-      item.directoryPath
-        ? { label: "目录", path: item.directoryPath, absolute: item.absoluteDirectoryPath, folder: true }
-        : undefined,
-      { label: "摘要", path: item.markdownPath, absolute: item.absoluteMarkdownPath, folder: false },
-      item.manifestPath
-        ? { label: "清单", path: item.manifestPath, absolute: item.absoluteManifestPath, folder: false }
-        : undefined,
-    ]
-    return rows.filter((row): row is DeliveryRow => Boolean(row?.path))
-  }
-
-  const deliveryFileCount = (item: WorkflowDeliveryArchive) =>
-    item.fileCount ?? item.files?.filter((file) => file.copied).length ?? 1
 
   const buildReworkPrompt = () => {
     const result = acceptance()
@@ -534,12 +523,23 @@ export function SessionComposerRegion(props: {
                           <div class="mb-1 flex flex-wrap items-center justify-between gap-2">
                             <div class="flex min-w-0 items-center gap-2">
                               <strong class="text-[rgb(31,118,71)]">交付包</strong>
-                              <span class="rounded-sm bg-background-base px-1.5 py-0.5 text-11-regular text-text-weak">
-                                {deliveryFileCount(item())} 个文件
+                              <span
+                                classList={{
+                                  "rounded-sm bg-background-base px-1.5 py-0.5 text-11-regular": true,
+                                  "text-text-danger-base": deliveryMissingCount(item()) > 0,
+                                  "text-text-weak": deliveryMissingCount(item()) === 0,
+                                }}
+                              >
+                                {deliveryStatus(item())}
                               </span>
                             </div>
                             <span class="shrink-0 text-11-regular text-text-weak">{item().generatedAt}</span>
                           </div>
+                          <Show when={deliveryMissingCount(item()) > 0}>
+                            <div class="mb-1.5 rounded-md bg-background-base px-2 py-1.5 text-12-regular text-text-danger-base">
+                              有文件未写入交付包。请重新导出，或检查源文件是否还在原路径且可读。
+                            </div>
+                          </Show>
                           <For each={deliveryRows(item())}>
                             {(row) => (
                               <div class="grid items-center gap-1 py-0.5 md:grid-cols-[72px_1fr_auto]">
@@ -570,6 +570,61 @@ export function SessionComposerRegion(props: {
                               </div>
                             )}
                           </For>
+                          <Show when={deliveryFiles(item()).length}>
+                            <div
+                              class="mt-1.5 grid gap-1 border-t border-[rgba(31,118,71,0.14)] pt-1.5"
+                              data-testid="workflow-delivery-file-list"
+                            >
+                              <div class="flex items-center justify-between gap-2 text-11-regular text-text-weak">
+                                <span>包内文件</span>
+                                <span>{deliveryFileCount(item())} 个已写入</span>
+                              </div>
+                              <For each={deliveryFiles(item())}>
+                                {(file) => (
+                                  <div class="grid items-center gap-1 rounded-md bg-background-base px-2 py-1.5 md:grid-cols-[76px_56px_1fr_auto]">
+                                    <strong class="min-w-0 truncate text-12-medium text-text-strong">
+                                      {file.label}
+                                    </strong>
+                                    <span
+                                      classList={{
+                                        "text-11-regular": true,
+                                        "text-[rgb(31,118,71)]": file.copied,
+                                        "text-text-danger-base": !file.copied,
+                                      }}
+                                    >
+                                      {file.status}
+                                    </span>
+                                    <code
+                                      class="min-w-0 truncate text-11-regular text-text-base"
+                                      title={file.source ? `${file.path}\n源文件：${file.source}` : file.path}
+                                    >
+                                      {file.path}
+                                    </code>
+                                    <div class="flex items-center gap-1">
+                                      <button
+                                        type="button"
+                                        class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                        title="复制路径"
+                                        onClick={() => copyPath(file.path)}
+                                      >
+                                        <Icon name="copy" size="small" />
+                                      </button>
+                                      <Show when={platform.openPath && file.absolute && file.copied}>
+                                        <button
+                                          type="button"
+                                          class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                          title="打开文件"
+                                          onClick={() => openPath(file.absolute)}
+                                        >
+                                          <Icon name="open-file" size="small" />
+                                        </button>
+                                      </Show>
+                                    </div>
+                                  </div>
+                                )}
+                              </For>
+                            </div>
+                          </Show>
                         </div>
                       )}
                     </Show>

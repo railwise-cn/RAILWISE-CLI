@@ -1,9 +1,9 @@
 # RAILWISE 产品边界与开发实施文档
 
-**文档版本**: v2.0  
-**编写日期**: 2026-04-30  
-**适用范围**: RAILWISE Core / RAILWISE CLI / RAILWISE Desktop  
-**执行仓库**: `railwise-cn/RAILWISE-CLI`  
+**文档版本**: v2.0
+**编写日期**: 2026-04-30
+**适用范围**: RAILWISE Core / RAILWISE CLI / RAILWISE Desktop
+**执行仓库**: `railwise-cn/RAILWISE-CLI`
 **当前原则**: 底层统一，产品分开
 
 ---

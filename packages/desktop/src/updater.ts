@@ -5,7 +5,7 @@ import { type as ostype } from "@tauri-apps/plugin-os"
 import { initI18n, t } from "./i18n"
 import { commands } from "./bindings"
 
-export const UPDATER_ENABLED = window.__RAILWISE__?.updaterEnabled ?? false
+export const UPDATER_ENABLED = window.__RAILWISE__?.updatesEnabled ?? false
 export const updaterCheckEvent = "railwise:update-check"
 
 export type MockUpdate = { version: string; notes: string }

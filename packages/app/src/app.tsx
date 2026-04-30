@@ -78,7 +78,7 @@ declare global {
   interface Window {
     __RAILWISE__?: {
       browserHarness?: boolean
-      updaterEnabled?: boolean
+      updatesEnabled?: boolean
       deepLinks?: string[]
       wsl?: boolean
     }

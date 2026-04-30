@@ -61,7 +61,7 @@ impl MainWindow {
         .initialization_script(format!(
             r#"
             window.__RAILWISE__ ??= {{}};
-            window.__RAILWISE__.updaterEnabled = {UPDATER_ENABLED};
+            window.__RAILWISE__.updatesEnabled = {UPDATER_ENABLED};
             window.__RAILWISE__.wsl = {wsl_enabled};
           "#
         ));

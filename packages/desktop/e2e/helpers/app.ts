@@ -164,7 +164,7 @@ async function setup(page: Page, opts: LaunchOptions) {
     (input) => {
       type HarnessWindow = Window &
         typeof globalThis & {
-          __RAILWISE__?: { browserHarness?: boolean; updaterEnabled?: boolean }
+          __RAILWISE__?: { browserHarness?: boolean; updatesEnabled?: boolean }
           __TAURI_INTERNALS__?: {
             callbacks: Map<number, (data: unknown) => unknown>
             convertFileSrc: (path: string) => string
@@ -179,7 +179,7 @@ async function setup(page: Page, opts: LaunchOptions) {
       const win = window as HarnessWindow
       const callbacks = new Map<number, (data: unknown) => unknown>()
       let next = 1
-      win.__RAILWISE__ = { ...(win.__RAILWISE__ ?? {}), browserHarness: true, updaterEnabled: true }
+      win.__RAILWISE__ = { ...(win.__RAILWISE__ ?? {}), browserHarness: true, updatesEnabled: true }
       win.__TAURI_OS_PLUGIN_INTERNALS__ = {
         arch: "x86_64",
         eol: "\n",

@@ -28,6 +28,15 @@ export type AgentStudioDetail = AgentStudioItem & {
   rawMarkdown: string
 }
 
+export type WorkflowRunArtifact = {
+  kind: "format-coverage"
+  title: string
+  markdownPath: string
+  absoluteMarkdownPath: string
+  jsonPath: string
+  absoluteJsonPath: string
+}
+
 export type WorkflowRun = {
   sessionId: string
   sessionTitle?: string
@@ -35,14 +44,7 @@ export type WorkflowRun = {
   directory: string
   prompt: string
   agentNames?: string[]
-  artifacts?: {
-    kind: "format-coverage"
-    title: string
-    markdownPath: string
-    absoluteMarkdownPath: string
-    jsonPath: string
-    absoluteJsonPath: string
-  }[]
+  artifacts?: WorkflowRunArtifact[]
 }
 
 export type WorkflowCheck = {
@@ -69,6 +71,16 @@ export type WorkflowAcceptance = {
     status: "ok" | "warn" | "fail"
     detail: string
   }[]
+}
+
+export type WorkflowSession = {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  createdAt: string
+  updatedAt: string
+  artifacts?: WorkflowRunArtifact[]
+  acceptance?: WorkflowAcceptance
 }
 
 export type FormatSampleReport = {

@@ -8,6 +8,7 @@ import type {
   WorkflowAcceptance,
   WorkflowCheck,
   WorkflowRun,
+  WorkflowSession,
 } from "@/types/agent-studio"
 import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
@@ -46,6 +47,8 @@ export function useAgentStudioApi() {
       }),
     presets: () => request<Workflow[]>("/workflow/presets"),
     workflowCheck: (workflowId: string) => request<WorkflowCheck>(`/workflow/check/${encodeURIComponent(workflowId)}`),
+    workflowSession: (sessionId: string) =>
+      request<WorkflowSession>(`/workflow/session/${encodeURIComponent(sessionId)}`),
     workflowAcceptance: (workflowId: string, sessionId: string) =>
       request<WorkflowAcceptance>("/workflow/acceptance", {
         method: "POST",

@@ -1,12 +1,12 @@
 import type { SelectedLineRange } from "@/context/file"
-import type { WorkflowRun } from "@/types/agent-studio"
+import type { WorkflowRunArtifact } from "@/types/agent-studio"
 
 export type HandoffSession = {
   prompt: string
   files: Record<string, SelectedLineRange | null>
   workflowId?: string
   workflowName?: string
-  artifacts?: WorkflowRun["artifacts"]
+  artifacts?: WorkflowRunArtifact[]
 }
 
 const MAX = 40

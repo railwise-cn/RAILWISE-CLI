@@ -408,7 +408,16 @@ describe("server.routes.agent-studio", () => {
           }
           const markdown = await Bun.file(result.absoluteMarkdownPath).text()
           const manifest = (await Bun.file(result.absoluteManifestPath).json()) as {
-            delivery: { fileCount: number }
+            kind: string
+            version: number
+            delivery: {
+              version: number
+              fileCount: number
+              markdownPath: string
+              manifestPath: string
+              files: { kind: string; path: string; copied: boolean }[]
+            }
+            acceptance: { workflowId: string; ok: boolean }
             references: { path: string }[]
           }
           const metadataResponse = await AgentStudioRoutes().request(
@@ -428,6 +437,7 @@ describe("server.routes.agent-studio", () => {
           expect(result.files.find((file) => file.sourcePath === md)?.path).toContain("artifact-01.md")
           expect(result.files.find((file) => file.sourcePath === json)?.path).toContain("artifact-02.json")
           expect(markdown).toContain("# CPIII 规范查询与复测预案 交付摘要")
+          expect(markdown).toContain("- 交付包版本: 1")
           expect(markdown).toContain("## 交付包文件")
           expect(markdown).toContain(md)
           expect(markdown).toContain(json)
@@ -438,7 +448,15 @@ describe("server.routes.agent-studio", () => {
           expect(await Bun.file(path.join(result.absoluteDirectoryPath, "artifact-02.json")).json()).toEqual({
             ready: true,
           })
+          expect(manifest.kind).toBe("railwise.workflow.delivery")
+          expect(manifest.version).toBe(1)
+          expect(manifest.delivery.version).toBe(1)
           expect(manifest.delivery.fileCount).toBe(4)
+          expect(manifest.delivery.markdownPath).toBe(result.markdownPath)
+          expect(manifest.delivery.manifestPath).toBe(result.manifestPath)
+          expect(manifest.delivery.files.map((file) => file.kind)).toEqual(["summary", "artifact", "artifact", "manifest"])
+          expect(manifest.acceptance.workflowId).toBe("cpiii-resurvey-wiki")
+          expect(manifest.acceptance.ok).toBe(true)
           expect(manifest.references.map((reference) => reference.path)).toContain(md)
           expect(metadata.delivery.markdownPath).toBe(result.markdownPath)
           expect(metadata.delivery.directoryPath).toBe(result.directoryPath)

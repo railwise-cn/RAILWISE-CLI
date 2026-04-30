@@ -119,6 +119,18 @@ const WorkflowAcceptanceSchema = z
   })
   .meta({ ref: "WorkflowAcceptance" })
 
+const WORKFLOW_DELIVERY_MANIFEST_KIND = "railwise.workflow.delivery"
+const WORKFLOW_DELIVERY_MANIFEST_VERSION = 1
+const WORKFLOW_DELIVERY_PACKAGE_VERSION = 1
+
+const WorkflowDeliveryReferenceSchema = z
+  .object({
+    label: z.string(),
+    path: z.string(),
+    absolutePath: z.string().optional(),
+  })
+  .meta({ ref: "WorkflowDeliveryReference" })
+
 const WorkflowDeliveryFileSchema = z
   .object({
     kind: z.enum(["summary", "manifest", "artifact"]),
@@ -135,6 +147,7 @@ const WorkflowDeliveryArchiveSchema = z
     sessionId: z.string(),
     workflowId: z.string(),
     workflowName: z.string(),
+    version: z.number().int(),
     generatedAt: z.string(),
     directoryPath: z.string().optional(),
     absoluteDirectoryPath: z.string().optional(),
@@ -146,6 +159,16 @@ const WorkflowDeliveryArchiveSchema = z
     files: WorkflowDeliveryFileSchema.array().optional(),
   })
   .meta({ ref: "WorkflowDeliveryArchive" })
+
+const WorkflowDeliveryManifestSchema = z
+  .object({
+    kind: z.literal(WORKFLOW_DELIVERY_MANIFEST_KIND),
+    version: z.number().int(),
+    delivery: WorkflowDeliveryArchiveSchema,
+    acceptance: WorkflowAcceptanceSchema,
+    references: WorkflowDeliveryReferenceSchema.array(),
+  })
+  .meta({ ref: "WorkflowDeliveryManifest" })
 
 const WorkflowSessionSchema = z
   .object({
@@ -258,7 +281,7 @@ type WorkflowAcceptance = z.infer<typeof WorkflowAcceptanceSchema>
 type WorkflowDeliveryFile = z.infer<typeof WorkflowDeliveryFileSchema>
 type WorkflowDeliveryArchive = z.infer<typeof WorkflowDeliveryArchiveSchema>
 type WorkflowSession = z.infer<typeof WorkflowSessionSchema>
-type DeliveryReference = { label: string; path: string; absolutePath?: string }
+type DeliveryReference = z.infer<typeof WorkflowDeliveryReferenceSchema>
 type FormatConverted = {
   detectedFormat?: string
   points?: unknown[]
@@ -1043,6 +1066,7 @@ function deliveryMarkdown(input: {
     "",
     `- 会话 ID: ${input.delivery.sessionId}`,
     `- 工作流 ID: ${input.delivery.workflowId}`,
+    `- 交付包版本: ${input.delivery.version}`,
     `- 导出时间: ${input.delivery.generatedAt}`,
     `- 交付目录: ${input.delivery.directoryPath ?? "-"}`,
     `- Manifest: ${input.delivery.manifestPath ?? "-"}`,
@@ -1195,6 +1219,7 @@ async function archiveDelivery(input: { workflowId: string; sessionId: string })
     sessionId: input.sessionId,
     workflowId: workflow.id,
     workflowName: current?.workflowName ?? workflow.name,
+    version: WORKFLOW_DELIVERY_PACKAGE_VERSION,
     generatedAt: new Date().toISOString(),
     directoryPath: path.relative(Instance.directory, dir),
     absoluteDirectoryPath: dir,
@@ -1214,7 +1239,20 @@ async function archiveDelivery(input: { workflowId: string; sessionId: string })
       files,
     }),
   )
-  await Bun.write(manifest, `${JSON.stringify({ delivery, acceptance: result, references }, null, 2)}\n`)
+  await Bun.write(
+    manifest,
+    `${JSON.stringify(
+      WorkflowDeliveryManifestSchema.parse({
+        kind: WORKFLOW_DELIVERY_MANIFEST_KIND,
+        version: WORKFLOW_DELIVERY_MANIFEST_VERSION,
+        delivery,
+        acceptance: result,
+        references,
+      }),
+      null,
+      2,
+    )}\n`,
+  )
   await saveWorkflowSession({
     sessionId: input.sessionId,
     workflowId: workflow.id,

@@ -36,6 +36,7 @@ import {
   AdjustmentIndirectTool,
   AdjustmentRobustTool,
   GrossErrorDetectionTool,
+  VarianceComponentTool,
 } from "./adjustment"
 import { FormatConverterTool } from "./format"
 
@@ -138,6 +139,7 @@ export namespace ToolRegistry {
       AdjustmentIndirectTool,
       AdjustmentFreeNetworkTool,
       AdjustmentRobustTool,
+      VarianceComponentTool,
       AdjustmentConditionTool,
       GrossErrorDetectionTool,
       ApplyPatchTool,

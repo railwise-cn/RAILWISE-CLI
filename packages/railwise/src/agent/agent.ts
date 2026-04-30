@@ -291,6 +291,7 @@ export namespace Agent {
             tool_adjustment_indirect: "allow",
             tool_adjustment_free_network: "allow",
             tool_adjustment_robust: "allow",
+            tool_variance_component: "allow",
             tool_adjustment_condition: "allow",
             tool_gross_error_detection: "allow",
             tool_wiki_query: "allow",

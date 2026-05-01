@@ -105,6 +105,16 @@ bun run desktop:verify:ga -- --full
 gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0
 ```
 
+发布流程也支持只跑单个平台，适合在某个平台签名密钥刚配置完成时做预检：
+
+```bash
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-macos-preflight -f platform=macos
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-windows-preflight -f platform=windows
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-linux-preflight -f platform=linux
+```
+
+`platform=all` 是默认值。推送 `desktop/v*` 标签时始终构建 Windows、macOS Apple Silicon、macOS Intel 和 Linux 全平台矩阵。
+
 或推送发布标签：
 
 ```bash

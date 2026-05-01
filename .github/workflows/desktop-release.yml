@@ -10,6 +10,16 @@ on:
         description: "版本号（如 1.3.0）"
         required: true
         type: string
+      platform:
+        description: "发布平台"
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - macos
+          - windows
+          - linux
 
 permissions:
   contents: write
@@ -22,25 +32,47 @@ env:
   TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
 jobs:
+  plan:
+    name: Select release targets
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      platform: ${{ steps.matrix.outputs.platform }}
+    steps:
+      - name: Build target matrix
+        id: matrix
+        shell: bash
+        env:
+          PLATFORM: ${{ github.event_name == 'workflow_dispatch' && inputs.platform || 'all' }}
+        run: |
+          case "$PLATFORM" in
+            all)
+              matrix='{"include":[{"os":"windows-2022","target":"x86_64-pc-windows-msvc","platform":"windows"},{"os":"macos-14","target":"aarch64-apple-darwin","platform":"darwin"},{"os":"macos-15-intel","target":"x86_64-apple-darwin","platform":"darwin"},{"os":"ubuntu-22.04","target":"x86_64-unknown-linux-gnu","platform":"linux"}]}'
+              ;;
+            macos)
+              matrix='{"include":[{"os":"macos-14","target":"aarch64-apple-darwin","platform":"darwin"},{"os":"macos-15-intel","target":"x86_64-apple-darwin","platform":"darwin"}]}'
+              ;;
+            windows)
+              matrix='{"include":[{"os":"windows-2022","target":"x86_64-pc-windows-msvc","platform":"windows"}]}'
+              ;;
+            linux)
+              matrix='{"include":[{"os":"ubuntu-22.04","target":"x86_64-unknown-linux-gnu","platform":"linux"}]}'
+              ;;
+            *)
+              echo "Unsupported platform: $PLATFORM" >&2
+              exit 1
+              ;;
+          esac
+          echo "platform=$PLATFORM" >> "$GITHUB_OUTPUT"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
   build:
     name: ${{ matrix.platform }} / ${{ matrix.target }}
+    needs: plan
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - os: windows-2022
-            target: x86_64-pc-windows-msvc
-            platform: windows
-          - os: macos-14
-            target: aarch64-apple-darwin
-            platform: darwin
-          - os: macos-15-intel
-            target: x86_64-apple-darwin
-            platform: darwin
-          - os: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-            platform: linux
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
 
     steps:
       - name: Checkout

@@ -86,6 +86,26 @@ Compatibility rules:
 - Increment `delivery.version` when package layout or required field semantics change.
 - Increment root `version` when manifest-level fields or compatibility rules change.
 
+### 2.2 SDK update rule
+
+Regenerate the JavaScript SDK when a delivery change touches an HTTP request or response schema:
+
+- `WorkflowDeliveryArchive`
+- `WorkflowSession`
+- `WorkflowAcceptance`
+- `/agent-studio/workflow/session/:sessionId`
+- `/agent-studio/workflow/acceptance`
+- `/agent-studio/workflow/delivery/archive`
+
+Use:
+
+```bash
+./packages/sdk/js/script/build.ts
+cd packages/sdk/js && bun run typecheck
+```
+
+Do not regenerate the SDK for a manifest-only change that is never returned through HTTP. For those changes, update the manifest fixture coverage in `packages/railwise/test/server/agent-studio.test.ts` and document the compatibility decision in this file.
+
 ---
 
 ## 3. Desktop / App UI 边界

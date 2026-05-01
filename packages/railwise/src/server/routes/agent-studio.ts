@@ -147,7 +147,7 @@ const WorkflowDeliveryArchiveSchema = z
     sessionId: z.string(),
     workflowId: z.string(),
     workflowName: z.string(),
-    version: z.number().int(),
+    version: z.literal(WORKFLOW_DELIVERY_PACKAGE_VERSION),
     generatedAt: z.string(),
     directoryPath: z.string().optional(),
     absoluteDirectoryPath: z.string().optional(),
@@ -163,7 +163,7 @@ const WorkflowDeliveryArchiveSchema = z
 const WorkflowDeliveryManifestSchema = z
   .object({
     kind: z.literal(WORKFLOW_DELIVERY_MANIFEST_KIND),
-    version: z.number().int(),
+    version: z.literal(WORKFLOW_DELIVERY_MANIFEST_VERSION),
     delivery: WorkflowDeliveryArchiveSchema,
     acceptance: WorkflowAcceptanceSchema,
     references: WorkflowDeliveryReferenceSchema.array(),

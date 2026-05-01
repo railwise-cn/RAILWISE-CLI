@@ -57,7 +57,8 @@ export const SettingsMcp: Component = () => {
     if (busy()) return
     setBusy(name)
     const current = items()[name]
-    const action = current?.status === "connected" ? sdk.client.mcp.disconnect({ name }) : sdk.client.mcp.connect({ name })
+    const action =
+      current?.status === "connected" ? sdk.client.mcp.disconnect({ name }) : sdk.client.mcp.connect({ name })
     action
       .then(() => sdk.client.mcp.status())
       .then((result) => setItems(result.data ?? {}))
@@ -119,8 +120,7 @@ export const SettingsMcp: Component = () => {
                             "bg-icon-success-base": status()?.status === "connected",
                             "bg-icon-critical-base": status()?.status === "failed",
                             "bg-icon-warning-base":
-                              status()?.status === "needs_auth" ||
-                              status()?.status === "needs_client_registration",
+                              status()?.status === "needs_auth" || status()?.status === "needs_client_registration",
                             "bg-border-weak-base": status()?.status === "disabled",
                           }}
                         />

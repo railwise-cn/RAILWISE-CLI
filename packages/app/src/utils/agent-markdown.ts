@@ -82,7 +82,9 @@ export function setScalar(raw: string, key: string, value: string) {
 export function removeScalar(raw: string, key: string) {
   const parsed = split(raw)
   return join(
-    (parsed.header ? parsed.header.split(/\r?\n/) : []).filter((line) => !line.match(new RegExp(`^${key}:\\s*`))).join("\n"),
+    (parsed.header ? parsed.header.split(/\r?\n/) : [])
+      .filter((line) => !line.match(new RegExp(`^${key}:\\s*`)))
+      .join("\n"),
     parsed.body,
   )
 }
@@ -94,9 +96,9 @@ export function setPermission(raw: string, key: string, value: PermissionAction)
   if (!block) return join([...lines, "permission:", `  ${key}: ${value}`].join("\n"), parsed.body)
 
   const index =
-    lines
-      .slice(block.start + 1, block.end)
-      .findIndex((line) => line.match(new RegExp(`^\\s+${key}:\\s*`))) + block.start + 1
+    lines.slice(block.start + 1, block.end).findIndex((line) => line.match(new RegExp(`^\\s+${key}:\\s*`))) +
+    block.start +
+    1
   if (index > block.start) lines[index] = `  ${key}: ${value}`
   else lines.splice(block.start + 1, 0, `  ${key}: ${value}`)
   return join(lines.join("\n"), parsed.body)

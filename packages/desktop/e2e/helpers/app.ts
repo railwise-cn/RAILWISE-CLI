@@ -44,9 +44,13 @@ const summary = {
       alertCount: 2,
     },
   ],
-  alerts: [{ id: "a1", projectId: "p1", level: "warn", message: "JC-002 沉降接近预警阈值", time: "2026-04-26T08:10:00.000Z" }],
+  alerts: [
+    { id: "a1", projectId: "p1", level: "warn", message: "JC-002 沉降接近预警阈值", time: "2026-04-26T08:10:00.000Z" },
+  ],
   recentSessions: [{ id: "s1", directory: "/tmp/railwise-e2e", title: "外业数据首检", time: { updated: Date.now() } }],
-  activeAgents: [{ sessionId: "s1", agentName: "qa_inspector", startedAt: "2026-04-26T08:00:00.000Z", status: "running" }],
+  activeAgents: [
+    { sessionId: "s1", agentName: "qa_inspector", startedAt: "2026-04-26T08:00:00.000Z", status: "running" },
+  ],
 }
 
 const agents = [
@@ -267,7 +271,7 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route("**/event", (route) =>
     route.fulfill({
       contentType: "text/event-stream",
-      body: "event: message\ndata: {\"type\":\"server.connected\",\"properties\":{}}\n\n",
+      body: 'event: message\ndata: {"type":"server.connected","properties":{}}\n\n',
     }),
   )
   await page.route("**/dashboard/summary", (route) => json(route, summary))

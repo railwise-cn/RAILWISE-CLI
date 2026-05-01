@@ -694,7 +694,9 @@ function artifactBase(generatedAt: string) {
 }
 
 function cell(value: string | number | boolean | undefined) {
-  return String(value ?? "-").replaceAll("|", "\\|").replaceAll("\n", "<br>")
+  return String(value ?? "-")
+    .replaceAll("|", "\\|")
+    .replaceAll("\n", "<br>")
 }
 
 function markdown(report: FormatCoverageCore, jsonPath: string) {
@@ -716,12 +718,7 @@ function markdown(report: FormatCoverageCore, jsonPath: string) {
   )
   const warnings = report.samples
     .filter((sample) => sample.warnings.length)
-    .flatMap((sample) => [
-      `### ${sample.label}`,
-      "",
-      ...sample.warnings.map((warning) => `- ${warning}`),
-      "",
-    ])
+    .flatMap((sample) => [`### ${sample.label}`, "", ...sample.warnings.map((warning) => `- ${warning}`), ""])
   return [
     "# RAILWISE Format Coverage Report",
     "",
@@ -801,10 +798,7 @@ async function adjustmentCheck() {
   const report = coverage(corpus)
   const base = corpus.find((entry) => entry.sample.id === "cosa-in2")?.converted
   if (!base?.next) throw new Error("format converter did not produce adjustment payload")
-  const indirectResult = await indirect.execute(
-    base.next.args,
-    toolctx(),
-  )
+  const indirectResult = await indirect.execute(base.next.args, toolctx())
   const indirectData = JSON.parse(indirectResult.output) as {
     residuals: { name: string; residual: number; weight: number }[]
     statistics?: { observationCount?: number; unknownCount?: number; unitWeightStdDev?: number }
@@ -1089,7 +1083,9 @@ function deliveryMarkdown(input: {
     "## 交付包文件",
     "| 文件 | 类型 | 路径 |",
     "|---|---|---|",
-    ...input.files.map((item) => `| ${markdownCell(item.label)} | ${markdownCell(item.kind)} | ${markdownCell(item.path)} |`),
+    ...input.files.map(
+      (item) => `| ${markdownCell(item.label)} | ${markdownCell(item.kind)} | ${markdownCell(item.path)} |`,
+    ),
     "",
     "## 验收检查",
     "| 检查项 | 状态 | 说明 |",
@@ -1120,18 +1116,7 @@ async function acceptance(input: { workflowId: string; sessionId: string }) {
     markdown: source.markdown,
     json: source.json,
   }
-  const toolMarkers = [
-    "sigma0",
-    "残差",
-    "warning",
-    "样本",
-    "格式",
-    "自由网",
-    "粗差",
-    "稳健",
-    "方差分量",
-    "条件",
-  ]
+  const toolMarkers = ["sigma0", "残差", "warning", "样本", "格式", "自由网", "粗差", "稳健", "方差分量", "条件"]
   const present = toolMarkers.filter((marker) => final.includes(marker))
   const citation = /wiki_page_path|raw_source_md|norm_clause_id|tool_norm_cite|TB\d{4,}/.test(final)
   const checks = [
@@ -1160,7 +1145,9 @@ async function acceptance(input: { workflowId: string; sessionId: string }) {
       id: "norm-citation",
       label: "规范引用",
       status: citation ? "ok" : "fail",
-      detail: citation ? "包含规范引用标记或 TB 标准编号" : "缺少 wiki_page_path/raw_source_md/norm_clause_id 或 TB 标准编号",
+      detail: citation
+        ? "包含规范引用标记或 TB 标准编号"
+        : "缺少 wiki_page_path/raw_source_md/norm_clause_id 或 TB 标准编号",
     }),
     item({
       id: "tool-summary",

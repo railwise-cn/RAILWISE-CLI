@@ -21,10 +21,7 @@ function actionLabel(action: PermissionAction) {
   return "拒绝"
 }
 
-export function AgentPermissionForm(props: {
-  markdown: string
-  onChange: (value: string) => void
-}) {
+export function AgentPermissionForm(props: { markdown: string; onChange: (value: string) => void }) {
   const models = useModels()
   const value = createMemo(() => readScalar(props.markdown, "model") ?? "")
   const options = createMemo(() =>

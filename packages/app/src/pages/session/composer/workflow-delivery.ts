@@ -34,15 +34,17 @@ export function deliveryRows(item: WorkflowDeliveryArchive) {
 
 export function deliveryFiles(item: WorkflowDeliveryArchive) {
   return (
-    item.files?.map((file): DeliveryFileRow => ({
-      kind: file.kind,
-      label: file.label || fileLabel(file.kind),
-      path: file.path,
-      absolute: file.absolutePath,
-      source: file.sourcePath,
-      copied: file.copied,
-      status: file.copied ? "已写入" : "未写入",
-    })) ?? []
+    item.files?.map(
+      (file): DeliveryFileRow => ({
+        kind: file.kind,
+        label: file.label || fileLabel(file.kind),
+        path: file.path,
+        absolute: file.absolutePath,
+        source: file.sourcePath,
+        copied: file.copied,
+        status: file.copied ? "已写入" : "未写入",
+      }),
+    ) ?? []
   )
 }
 

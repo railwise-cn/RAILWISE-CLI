@@ -6,8 +6,8 @@ import { tool } from "nb-railwise/tool"
 // ============================================================
 
 // Standard atmospheric conditions (IUGG)
-const STD_TEMP = 15      // °C
-const STD_PRESSURE = 1013.25  // hPa
+const STD_TEMP = 15 // °C
+const STD_PRESSURE = 1013.25 // hPa
 const STD_GROUP_REFRACTIVITY = 281.8 // N_g for typical EDM (λ ≈ 0.86μm)
 
 // ============================================================
@@ -28,12 +28,13 @@ export const atmospheric_correction = tool({
   async execute(args) {
     // Approximate water vapor pressure (Magnus formula)
     const ew = 4.6108 * Math.exp((17.27 * args.temperature) / (args.temperature + 237.3))
-    const e = ew * args.humidity / 100
+    const e = (ew * args.humidity) / 100
 
     // Group refractivity at field conditions
-    const Nfield = STD_GROUP_REFRACTIVITY * (args.pressure / args.instrumentRefPressure) *
-      (1 + args.instrumentRefTemp / 273.15) / (1 + args.temperature / 273.15) -
-      11.27 * e / (273.15 + args.temperature)
+    const Nfield =
+      (STD_GROUP_REFRACTIVITY * (args.pressure / args.instrumentRefPressure) * (1 + args.instrumentRefTemp / 273.15)) /
+        (1 + args.temperature / 273.15) -
+      (11.27 * e) / (273.15 + args.temperature)
 
     // Group refractivity at instrument standard conditions
     const Nstd = STD_GROUP_REFRACTIVITY
@@ -79,11 +80,9 @@ export const slope_to_horizontal = tool({
     if (args.zenithAngle === undefined && args.verticalAngle === undefined)
       return JSON.stringify({ error: "必须提供天顶距(zenithAngle)或竖直角(verticalAngle)之一。" })
 
-    const zenith = args.zenithAngle !== undefined
-      ? args.zenithAngle
-      : 90 - (args.verticalAngle ?? 0)
+    const zenith = args.zenithAngle !== undefined ? args.zenithAngle : 90 - (args.verticalAngle ?? 0)
 
-    const zenithRad = zenith * Math.PI / 180
+    const zenithRad = (zenith * Math.PI) / 180
     const horizDist = args.slopeDistance * Math.sin(zenithRad)
     const rawHeightDiff = args.slopeDistance * Math.cos(zenithRad)
     const heightDiff = rawHeightDiff + args.instrumentHeight - args.targetHeight
@@ -180,17 +179,18 @@ export const distance_reduction = tool({
 
     // Step 1: Atmospheric correction
     const ew = 4.6108 * Math.exp((17.27 * args.temperature) / (args.temperature + 237.3))
-    const e = ew * args.humidity / 100
-    const Nfield = STD_GROUP_REFRACTIVITY * (args.pressure / STD_PRESSURE) *
-      (1 + STD_TEMP / 273.15) / (1 + args.temperature / 273.15) -
-      11.27 * e / (273.15 + args.temperature)
+    const e = (ew * args.humidity) / 100
+    const Nfield =
+      (STD_GROUP_REFRACTIVITY * (args.pressure / STD_PRESSURE) * (1 + STD_TEMP / 273.15)) /
+        (1 + args.temperature / 273.15) -
+      (11.27 * e) / (273.15 + args.temperature)
     const ppm = STD_GROUP_REFRACTIVITY - Nfield
     const atmosCorr = args.slopeDistance * ppm * 1e-6
     const atmosDist = args.slopeDistance + atmosCorr
     steps.push(`气象改正: ${args.slopeDistance}m + ${atmosCorr.toFixed(4)}m = ${atmosDist.toFixed(4)}m`)
 
     // Step 2: Slope to horizontal
-    const zenithRad = args.zenithAngle * Math.PI / 180
+    const zenithRad = (args.zenithAngle * Math.PI) / 180
     const horizDist = atmosDist * Math.sin(zenithRad)
     const heightDiff = atmosDist * Math.cos(zenithRad) + args.instrumentHeight - args.targetHeight
     steps.push(`斜距化平: ${atmosDist.toFixed(4)}m → ${horizDist.toFixed(4)}m`)
@@ -205,7 +205,9 @@ export const distance_reduction = tool({
       const gaussFactor = 1 + (args.averageYOffset * args.averageYOffset) / (2 * R * R)
       finalDist = seaDist * gaussFactor
       const projCorr = finalDist - horizDist
-      steps.push(`投影改正: ${horizDist.toFixed(4)}m → ${finalDist.toFixed(4)}m（${projCorr >= 0 ? "+" : ""}${projCorr.toFixed(4)}m）`)
+      steps.push(
+        `投影改正: ${horizDist.toFixed(4)}m → ${finalDist.toFixed(4)}m（${projCorr >= 0 ? "+" : ""}${projCorr.toFixed(4)}m）`,
+      )
     }
 
     return JSON.stringify({

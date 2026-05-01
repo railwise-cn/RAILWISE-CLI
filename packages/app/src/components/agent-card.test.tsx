@@ -4,9 +4,9 @@ import { readPermission, readScalar, shortDescription, stripFrontmatter } from "
 
 describe("AgentCard", () => {
   test("shortens long descriptions without losing readable context", () => {
-    expect(shortDescription("Coordinates complex rail engineering workflows and delegates to specialist agents.", 36)).toBe(
-      "Coordinates complex rail engineerin…",
-    )
+    expect(
+      shortDescription("Coordinates complex rail engineering workflows and delegates to specialist agents.", 36),
+    ).toBe("Coordinates complex rail engineerin…")
   })
 
   test("keeps short descriptions unchanged", () => {
@@ -24,7 +24,7 @@ describe("AgentCard", () => {
   })
 
   test("reads scalar and permission values from frontmatter", () => {
-    const raw = "---\nname: chief\nmodel: \"gpt-5\"\npermission:\n  edit: ask\n---\n\nbody"
+    const raw = '---\nname: chief\nmodel: "gpt-5"\npermission:\n  edit: ask\n---\n\nbody'
     expect(readScalar(raw, "model")).toBe("gpt-5")
     expect(readPermission(raw, "edit")).toBe("ask")
   })

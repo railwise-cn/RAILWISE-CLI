@@ -51,10 +51,7 @@ const VERSION = await (async () => {
   return `${major}.${minor}.${patch + 1}`
 })()
 
-const team = [
-  "actions-user",
-  "railwise-cn",
-]
+const team = ["actions-user", "railwise-cn"]
 
 export const Script = {
   get channel() {

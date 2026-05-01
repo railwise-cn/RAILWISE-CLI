@@ -27,7 +27,11 @@ export const SettingsCommands: Component = () => {
       .slice()
       .sort((a, b) => (a.category ?? "").localeCompare(b.category ?? "") || a.title.localeCompare(b.title)),
   )
-  const custom = createMemo(() => items().slice().sort((a, b) => a.name.localeCompare(b.name)))
+  const custom = createMemo(() =>
+    items()
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name)),
+  )
   const slash = createMemo(() => builtin().filter((item) => item.slash).length + custom().length)
   const keybound = createMemo(() => builtin().filter((item) => command.keybind(item.id)).length)
 
@@ -60,7 +64,10 @@ export const SettingsCommands: Component = () => {
           <div class="flex flex-col gap-1 min-w-0">
             <h2 class="text-16-medium text-text-strong">{language.t("settings.commands.title")}</h2>
             <p class="text-14-regular text-text-weak">
-              {text("查看内置命令、快捷键和当前工程的 slash 命令。", "Review commands, shortcuts, and project slash commands.")}
+              {text(
+                "查看内置命令、快捷键和当前工程的 slash 命令。",
+                "Review commands, shortcuts, and project slash commands.",
+              )}
             </p>
           </div>
           <div class="flex gap-2">

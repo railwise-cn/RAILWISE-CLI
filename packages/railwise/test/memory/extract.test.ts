@@ -27,7 +27,10 @@ describe("MemoryExtract.parse", () => {
 
     const result = MemoryExtract.parse(text)
     expect(result.goal).toEqual(["Build a CLI tool", "Support multiple commands"])
-    expect(result.discoveries).toEqual(["The config lives at ~/.railwise/config.json", "Database uses SQLite via Drizzle"])
+    expect(result.discoveries).toEqual([
+      "The config lives at ~/.railwise/config.json",
+      "Database uses SQLite via Drizzle",
+    ])
     expect(result.accomplished).toEqual(["Created the schema file", "Added migration"])
     expect(result.files).toEqual(["src/config/config.ts", "src/storage/schema.ts"])
   })

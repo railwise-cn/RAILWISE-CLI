@@ -24,7 +24,17 @@ import { type as ostype } from "@tauri-apps/plugin-os"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { open as shellOpen } from "@tauri-apps/plugin-shell"
 import { Store } from "@tauri-apps/plugin-store"
-import { type Accessor, createResource, createSignal, lazy, type JSX, onCleanup, onMount, Show, Suspense } from "solid-js"
+import {
+  type Accessor,
+  createResource,
+  createSignal,
+  lazy,
+  type JSX,
+  onCleanup,
+  onMount,
+  Show,
+  Suspense,
+} from "solid-js"
 import { render } from "solid-js/web"
 import pkg from "../package.json"
 import { initI18n, t } from "./i18n"
@@ -72,38 +82,38 @@ const handleBudgetExceeded = async (phase: string, phaseData: any): Promise<bool
   console.log(`🔄 Budget exceeded for ${phase}, attempting recovery...`)
 
   switch (phase) {
-    case 'sidecar-init':
+    case "sidecar-init":
       // Kill stuck sidecar and retry with fresh port
       try {
         await commands.killSidecar()
-        console.log('🔄 Killed stuck sidecar, retrying with fresh port')
+        console.log("🔄 Killed stuck sidecar, retrying with fresh port")
         return true
       } catch (error) {
-        console.error('Failed to kill sidecar:', error)
+        console.error("Failed to kill sidecar:", error)
         return false
       }
 
-    case 'server-connect':
+    case "server-connect":
       // Retry with cached server URL if available
       try {
         const cachedUrl = await commands.getDefaultServerUrl()
         if (cachedUrl) {
-          console.log('🔄 Retrying with cached server URL:', cachedUrl)
+          console.log("🔄 Retrying with cached server URL:", cachedUrl)
           return true
         }
       } catch (error) {
-        console.error('Failed to get cached URL:', error)
+        console.error("Failed to get cached URL:", error)
       }
       return false
 
-    case 'app-init':
+    case "app-init":
       // Critical failure - restart with minimal setup
-      console.error('❌ App initialization failed, this is critical')
+      console.error("❌ App initialization failed, this is critical")
       return false
 
-    case 'ui-ready':
+    case "ui-ready":
       // Continue with degraded experience
-      console.warn('⚠️ UI ready timeout - continuing with degraded experience')
+      console.warn("⚠️ UI ready timeout - continuing with degraded experience")
       return false
 
     default:
@@ -585,9 +595,12 @@ render(() => {
               menuTrigger = (id) => cmd.trigger(id)
 
               // UI is now interactive - server connection is complete
-              performanceTimer.endPhase("server-connect").then(() => {
-                performanceTimer.startPhase("ui-ready")
-              }).catch(console.error)
+              performanceTimer
+                .endPhase("server-connect")
+                .then(() => {
+                  performanceTimer.startPhase("ui-ready")
+                })
+                .catch(console.error)
 
               onMount(() => {
                 if (import.meta.env.DEV) {
@@ -613,37 +626,54 @@ render(() => {
                 }
 
                 // UI is fully mounted and interactive
-                performanceTimer.endPhase("ui-ready").then((result) => {
-                  const report = performanceTimer.getReport()
+                performanceTimer
+                  .endPhase("ui-ready")
+                  .then((result) => {
+                    const report = performanceTimer.getReport()
 
-                  // Enhanced startup completion reporting
-                  const statusIcon = report.budgetStatus === 'ok' ? '🚀' :
-                                   report.budgetStatus === 'warning' ? '⚠️' : '🚨'
+                    // Enhanced startup completion reporting
+                    const statusIcon =
+                      report.budgetStatus === "ok" ? "🚀" : report.budgetStatus === "warning" ? "⚠️" : "🚨"
 
-                  console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <3000ms)`)
+                    console.log(
+                      `${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <3000ms)`,
+                    )
 
-                  // Log individual phase performance
-                  report.phases.forEach(phase => {
-                    if (phase.duration) {
-                      const status = phase.status === 'completed' ? '✅' :
-                                   phase.status === 'exceeded' ? '⚠️' :
-                                   phase.status === 'failed' ? '❌' : '🔄'
-                      console.log(`  ${status} ${phase.name}: ${phase.duration.toFixed(2)}ms${phase.budget ? ` (budget: ${phase.budget}ms)` : ''}`)
+                    // Log individual phase performance
+                    report.phases.forEach((phase) => {
+                      if (phase.duration) {
+                        const status =
+                          phase.status === "completed"
+                            ? "✅"
+                            : phase.status === "exceeded"
+                              ? "⚠️"
+                              : phase.status === "failed"
+                                ? "❌"
+                                : "🔄"
+                        console.log(
+                          `  ${status} ${phase.name}: ${phase.duration.toFixed(2)}ms${phase.budget ? ` (budget: ${phase.budget}ms)` : ""}`,
+                        )
+                      }
+                    })
+
+                    // Performance telemetry for analysis
+                    track("desktop_startup", {
+                      status: report.budgetStatus,
+                      total: Math.round(report.total),
+                      route: location.hash || location.pathname,
+                    })
+
+                    if (report.budgetStatus !== "ok") {
+                      const exceededPhases = report.phases.filter(
+                        (p) => p.status === "exceeded" || p.status === "failed",
+                      )
+                      console.warn(
+                        `Performance issues detected:`,
+                        exceededPhases.map((p) => `${p.name}: ${p.duration}ms`),
+                      )
                     }
                   })
-
-                  // Performance telemetry for analysis
-                  track("desktop_startup", {
-                    status: report.budgetStatus,
-                    total: Math.round(report.total),
-                    route: location.hash || location.pathname,
-                  })
-
-                  if (report.budgetStatus !== 'ok') {
-                    const exceededPhases = report.phases.filter(p => p.status === 'exceeded' || p.status === 'failed')
-                    console.warn(`Performance issues detected:`, exceededPhases.map(p => `${p.name}: ${p.duration}ms`))
-                  }
-                }).catch(console.error)
+                  .catch(console.error)
               })
 
               return (

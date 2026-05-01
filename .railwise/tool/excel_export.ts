@@ -15,7 +15,14 @@ function crc32(buf: Uint8Array) {
 }
 
 function zip(files: Array<{ name: string; data: Uint8Array }>) {
-  const entries: Array<{ name: Uint8Array; compressed: Uint8Array; crc: number; size: number; csize: number; offset: number }> = []
+  const entries: Array<{
+    name: Uint8Array
+    compressed: Uint8Array
+    crc: number
+    size: number
+    csize: number
+    offset: number
+  }> = []
   const parts: Uint8Array[] = []
   let offset = 0
 
@@ -70,7 +77,10 @@ function zip(files: Array<{ name: string; data: Uint8Array }>) {
   for (const p of parts) total += p.length
   const result = new Uint8Array(total)
   let pos = 0
-  for (const p of parts) { result.set(p, pos); pos += p.length }
+  for (const p of parts) {
+    result.set(p, pos)
+    pos += p.length
+  }
   return result
 }
 
@@ -150,24 +160,29 @@ function buildSheet(sheet: SheetData, strings: Map<string, number>): string {
   const headerRow = `<row r="1">${headerCells}</row>`
 
   // Data rows
-  const dataRows = sheet.rows.map((row, ri) => {
-    const r = ri + 2
-    const cells = row.map((cell, ci) => {
-      const ref = `${colLetter(ci)}${r}`
-      if (cell === null || cell === undefined) return `<c r="${ref}"/>`
-      if (typeof cell === "number") return `<c r="${ref}" s="2"><v>${cell}</v></c>`
-      if (typeof cell === "boolean") return `<c r="${ref}"><v>${cell ? 1 : 0}</v></c>`
-      const si = strings.get(cell) ?? 0
-      return `<c r="${ref}" t="s"><v>${si}</v></c>`
-    }).join("")
-    return `<row r="${r}">${cells}</row>`
-  }).join("\n")
+  const dataRows = sheet.rows
+    .map((row, ri) => {
+      const r = ri + 2
+      const cells = row
+        .map((cell, ci) => {
+          const ref = `${colLetter(ci)}${r}`
+          if (cell === null || cell === undefined) return `<c r="${ref}"/>`
+          if (typeof cell === "number") return `<c r="${ref}" s="2"><v>${cell}</v></c>`
+          if (typeof cell === "boolean") return `<c r="${ref}"><v>${cell ? 1 : 0}</v></c>`
+          const si = strings.get(cell) ?? 0
+          return `<c r="${ref}" t="s"><v>${si}</v></c>`
+        })
+        .join("")
+      return `<row r="${r}">${cells}</row>`
+    })
+    .join("\n")
 
   // Freeze pane (freeze header row by default)
   const freezeRow = sheet.freezeRow ?? 1
-  const pane = freezeRow > 0
-    ? `<pane ySplit="${freezeRow}" topLeftCell="A${freezeRow + 1}" activePane="bottomLeft" state="frozen"/>`
-    : ""
+  const pane =
+    freezeRow > 0
+      ? `<pane ySplit="${freezeRow}" topLeftCell="A${freezeRow + 1}" activePane="bottomLeft" state="frozen"/>`
+      : ""
 
   // AutoFilter on header row
   const autoFilter = `<autoFilter ref="A1:${lastCol}${lastRow}"/>`
@@ -226,9 +241,9 @@ function buildXlsx(sheets: SheetData[]): Uint8Array {
 
   const sheetXmls = sheets.map((s) => buildSheet(s, lookup))
 
-  const sheetRefs = sheets.map((s, i) =>
-    `<sheet name="${esc(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`,
-  ).join("")
+  const sheetRefs = sheets
+    .map((s, i) => `<sheet name="${esc(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`)
+    .join("")
 
   const workbook = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
@@ -236,9 +251,12 @@ function buildXlsx(sheets: SheetData[]): Uint8Array {
   <sheets>${sheetRefs}</sheets>
 </workbook>`
 
-  const sheetRelEntries = sheets.map((_, i) =>
-    `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`,
-  ).join("")
+  const sheetRelEntries = sheets
+    .map(
+      (_, i) =>
+        `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`,
+    )
+    .join("")
 
   const wbRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
@@ -252,9 +270,12 @@ function buildXlsx(sheets: SheetData[]): Uint8Array {
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
 </Relationships>`
 
-  const sheetOverrides = sheets.map((_, i) =>
-    `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`,
-  ).join("\n  ")
+  const sheetOverrides = sheets
+    .map(
+      (_, i) =>
+        `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`,
+    )
+    .join("\n  ")
 
   const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
@@ -294,22 +315,22 @@ export const excel_export = tool({
           name: tool.schema.string().describe("Sheet 名称，如 '沉降监测' '深层位移' '轴力统计'"),
           headers: tool.schema.array(tool.schema.string()).min(1).describe("列标题"),
           rows: tool.schema
-            .array(tool.schema.array(tool.schema.union([
-              tool.schema.string(),
-              tool.schema.number(),
-              tool.schema.boolean(),
-              tool.schema.null(),
-            ])))
+            .array(
+              tool.schema.array(
+                tool.schema.union([
+                  tool.schema.string(),
+                  tool.schema.number(),
+                  tool.schema.boolean(),
+                  tool.schema.null(),
+                ]),
+              ),
+            )
             .describe("数据行，每行元素数量与 headers 一致"),
           columnWidths: tool.schema
             .array(tool.schema.number().positive())
             .optional()
             .describe("各列宽度（字符数），不传则自动计算"),
-          freezeRow: tool.schema
-            .number()
-            .int()
-            .default(1)
-            .describe("冻结前N行，默认1（冻结表头）"),
+          freezeRow: tool.schema.number().int().default(1).describe("冻结前N行，默认1（冻结表头）"),
         }),
       )
       .min(1)
@@ -319,15 +340,17 @@ export const excel_export = tool({
   },
   async execute(args) {
     const sheetsData: SheetData[] = args.sheets.map((s) => {
-      const widths = s.columnWidths ?? s.headers.map((h, i) => {
-        const headerLen = [...h].length + 4
-        const maxDataLen = s.rows.reduce((max, row) => {
-          const cell = row[i]
-          const len = cell === null || cell === undefined ? 0 : String(cell).length
-          return Math.max(max, len)
-        }, 0)
-        return Math.min(Math.max(headerLen, maxDataLen + 2), 50)
-      })
+      const widths =
+        s.columnWidths ??
+        s.headers.map((h, i) => {
+          const headerLen = [...h].length + 4
+          const maxDataLen = s.rows.reduce((max, row) => {
+            const cell = row[i]
+            const len = cell === null || cell === undefined ? 0 : String(cell).length
+            return Math.max(max, len)
+          }, 0)
+          return Math.min(Math.max(headerLen, maxDataLen + 2), 50)
+        })
 
       return {
         name: s.name,
@@ -418,7 +441,7 @@ export const monitoring_table_export = tool({
       if (args.alertThreshold) {
         if (ratio >= 1.0) alertStatus = "超限"
         else if (ratio >= 0.85) alertStatus = "橙色预警"
-        else if (ratio >= 0.70) alertStatus = "黄色预警"
+        else if (ratio >= 0.7) alertStatus = "黄色预警"
         else alertStatus = "正常"
       }
 

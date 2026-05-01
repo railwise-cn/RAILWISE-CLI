@@ -4048,6 +4048,377 @@
         ]
       }
     },
+    "/dashboard/summary": {
+      "get": {
+        "operationId": "dashboard.summary",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "仪表板摘要",
+        "responses": {
+          "200": {
+            "description": "Dashboard summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummary"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.dashboard.summary({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/dashboard/projects": {
+      "get": {
+        "operationId": "dashboard.projects",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "项目列表（含 bbox）",
+        "responses": {
+          "200": {
+            "description": "ProjectCard[]",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DashboardProjectCard"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.dashboard.projects({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/dashboard/projects/{id}/points": {
+      "get": {
+        "operationId": "dashboard.project.points",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "监测点 GeoJSON",
+        "responses": {
+          "200": {
+            "description": "GeoJSON FeatureCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "FeatureCollection"
+                    },
+                    "features": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": ["type", "features"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.dashboard.project.points({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/dashboard/projects/{id}/timeseries": {
+      "get": {
+        "operationId": "dashboard.project.timeseries",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "metric",
+            "schema": {
+              "default": "settlement",
+              "type": "string",
+              "enum": ["settlement", "displacement"]
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "schema": {
+              "default": 30,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365
+            }
+          }
+        ],
+        "summary": "时序数据（uPlot 格式）",
+        "responses": {
+          "200": {
+            "description": "[[timestamps], [values]]",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.dashboard.project.timeseries({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/tiles/{z}/{x}/{y}": {
+      "get": {
+        "operationId": "tiles.get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "z",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 22
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "x",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "y",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "required": true
+          }
+        ],
+        "summary": "离线地图瓦片",
+        "responses": {
+          "200": {
+            "description": "MBTiles tile bytes"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.tiles.get({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/templates/list": {
+      "get": {
+        "operationId": "templates.list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "业务模板列表",
+        "description": "Reads .railwise/templates/*.json from the active project on each request.",
+        "responses": {
+          "200": {
+            "description": "Railwise business templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RailwiseTemplate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.templates.list({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/templates/{id}": {
+      "get": {
+        "operationId": "templates.get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "业务模板详情",
+        "responses": {
+          "200": {
+            "description": "Railwise business template",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RailwiseTemplate"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.templates.get({\n  ...\n})"
+          }
+        ]
+      }
+    },
     "/find": {
       "get": {
         "operationId": "find.text",
@@ -4379,6 +4750,634 @@
           {
             "lang": "js",
             "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.file.status({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/list": {
+      "get": {
+        "operationId": "agentStudio.list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "List all agents",
+        "description": "Returns visible Agent.Info entries with backing file paths and recent call counts.",
+        "responses": {
+          "200": {
+            "description": "Agent list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentListItem"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.list({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/workflow/presets": {
+      "get": {
+        "operationId": "agentStudio.workflow.presets",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "List built-in workflow presets",
+        "responses": {
+          "200": {
+            "description": "Workflow preset array",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowPreset"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.workflow.presets({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/wiki/status": {
+      "get": {
+        "operationId": "agentStudio.wiki.status",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Get norm Wiki status",
+        "description": "Returns current norm library counts and recent change or quality reports.",
+        "responses": {
+          "200": {
+            "description": "Norm Wiki status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WikiStatus"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.wiki.status({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/format/report": {
+      "get": {
+        "operationId": "agentStudio.format.report",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Get format sample coverage report",
+        "description": "Runs the built-in survey format sample corpus, writes Markdown/JSON quality attachments, and returns parser readiness diagnostics.",
+        "responses": {
+          "200": {
+            "description": "Format sample coverage report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormatCoverageReport"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.format.report({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/workflow/check/{id}": {
+      "get": {
+        "operationId": "agentStudio.workflow.check",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true
+          }
+        ],
+        "summary": "Check workflow readiness",
+        "description": "Runs deterministic readiness checks for the selected workflow preset.",
+        "responses": {
+          "200": {
+            "description": "Workflow readiness check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowCheck"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.workflow.check({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/workflow/session/{sessionId}": {
+      "get": {
+        "operationId": "agentStudio.workflow.session",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sessionId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Get workflow session metadata",
+        "description": "Returns persisted workflow artifacts and the latest delivery acceptance result for a session.",
+        "responses": {
+          "200": {
+            "description": "Workflow session metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowSession"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.workflow.session({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/workflow/acceptance": {
+      "post": {
+        "operationId": "agentStudio.workflow.acceptance",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Check workflow delivery acceptance",
+        "description": "Validates a completed session against workflow-specific delivery requirements.",
+        "responses": {
+          "200": {
+            "description": "Workflow delivery acceptance result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowAcceptance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workflowId": {
+                    "type": "string"
+                  },
+                  "sessionId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["workflowId", "sessionId"]
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.workflow.acceptance({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/workflow/delivery/archive": {
+      "post": {
+        "operationId": "agentStudio.workflow.delivery.archive",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Archive accepted workflow delivery",
+        "description": "Writes a local Markdown delivery summary for a workflow session that has passed acceptance.",
+        "responses": {
+          "200": {
+            "description": "Workflow delivery archive",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowDeliveryArchive"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workflowId": {
+                    "type": "string"
+                  },
+                  "sessionId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["workflowId", "sessionId"]
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.workflow.delivery.archive({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/wiki/report": {
+      "get": {
+        "operationId": "agentStudio.wiki.report",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true
+          }
+        ],
+        "summary": "Get norm Wiki report detail",
+        "description": "Returns a single lint/diff report markdown file from wiki/changes.",
+        "responses": {
+          "200": {
+            "description": "Norm Wiki report detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WikiReportDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.wiki.report({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/{name}": {
+      "get": {
+        "operationId": "agentStudio.get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Get agent detail",
+        "responses": {
+          "200": {
+            "description": "Agent detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.get({\n  ...\n})"
+          }
+        ]
+      },
+      "put": {
+        "operationId": "agentStudio.update",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Update agent markdown",
+        "description": "Writes .railwise/agent/:name.md and publishes agent.updated for hot refresh.",
+        "responses": {
+          "200": {
+            "description": "Write succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rawMarkdown": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["rawMarkdown"]
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.update({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/workflow/run": {
+      "post": {
+        "operationId": "agentStudio.workflow.run",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Trigger workflow run",
+        "description": "Creates a real session and returns the selected workflow prompt for user review.",
+        "responses": {
+          "200": {
+            "description": "Workflow accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowRun"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workflowId": {
+                    "type": "string"
+                  },
+                  "input": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                },
+                "required": ["workflowId"]
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.workflow.run({\n  ...\n})"
           }
         ]
       }
@@ -8379,6 +9378,50 @@
         },
         "required": ["type", "properties"]
       },
+      "Event.agent.updated": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "agent.updated"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": ["name"]
+          }
+        },
+        "required": ["type", "properties"]
+      },
+      "Event.agent.workflow.completed": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "agent.workflow.completed"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "workflowId": {
+                "type": "string"
+              },
+              "sessionId": {
+                "type": "string"
+              },
+              "durationMs": {
+                "type": "number"
+              }
+            },
+            "required": ["workflowId", "sessionId", "durationMs"]
+          }
+        },
+        "required": ["type", "properties"]
+      },
       "Event.worktree.ready": {
         "type": "object",
         "properties": {
@@ -8544,6 +9587,12 @@
           },
           {
             "$ref": "#/components/schemas/Event.pty.deleted"
+          },
+          {
+            "$ref": "#/components/schemas/Event.agent.updated"
+          },
+          {
+            "$ref": "#/components/schemas/Event.agent.workflow.completed"
           },
           {
             "$ref": "#/components/schemas/Event.worktree.ready"
@@ -10024,6 +11073,25 @@
               }
             }
           },
+          "memory": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "description": "Enable cross-session memory (default: true)",
+                "type": "boolean"
+              },
+              "autoCapture": {
+                "description": "Automatically extract memories from compaction summaries (default: true)",
+                "type": "boolean"
+              },
+              "maxMemories": {
+                "description": "Maximum memories to inject into system prompt (default: 10)",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              }
+            }
+          },
           "experimental": {
             "type": "object",
             "properties": {
@@ -10703,6 +11771,240 @@
         },
         "required": ["url", "method", "instructions"]
       },
+      "DashboardProjectCard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["metro", "excavation", "bridge", "slope", "highrise"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "completed", "paused", "error"]
+          },
+          "progress": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "lastActivity": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "activeTaskCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "description": {
+            "type": "string"
+          },
+          "pointCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "alertCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "bboxJson": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "status",
+          "progress",
+          "lastActivity",
+          "activeTaskCount",
+          "pointCount",
+          "alertCount"
+        ]
+      },
+      "DashboardAlert": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "pointId": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "enum": ["warn", "error"]
+          },
+          "message": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          }
+        },
+        "required": ["id", "projectId", "level", "message", "time"]
+      },
+      "DashboardSessionBrief": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "directory": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "time": {
+            "type": "object",
+            "properties": {
+              "updated": {
+                "type": "number"
+              }
+            },
+            "required": ["updated"]
+          }
+        },
+        "required": ["id", "directory", "title", "time"]
+      },
+      "DashboardActiveAgent": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "agentName": {
+            "type": "string"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["running", "waiting", "error"]
+          }
+        },
+        "required": ["sessionId", "agentName", "startedAt", "status"]
+      },
+      "DashboardSummary": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardProjectCard"
+            }
+          },
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardAlert"
+            }
+          },
+          "recentSessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardSessionBrief"
+            }
+          },
+          "activeAgents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardActiveAgent"
+            }
+          }
+        },
+        "required": ["projects", "alerts", "recentSessions", "activeAgents"]
+      },
+      "RailwiseTemplateVariable": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["text", "number", "date", "select", "mileage"]
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "required": {
+            "default": true,
+            "type": "boolean"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["key", "label", "type"]
+      },
+      "RailwiseTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["report", "bid", "data", "ppt"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "variables": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RailwiseTemplateVariable"
+            }
+          },
+          "version": {
+            "default": "1",
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "number"
+          }
+        },
+        "required": ["id", "name", "category", "description", "agent", "prompt"]
+      },
       "Symbol": {
         "type": "object",
         "properties": {
@@ -10842,6 +12144,848 @@
           }
         },
         "required": ["path", "added", "removed", "status"]
+      },
+      "AgentListItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["subagent", "primary", "all"]
+          },
+          "native": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "topP": {
+            "type": "number"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string"
+          },
+          "permission": {
+            "$ref": "#/components/schemas/PermissionRuleset"
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "modelID": {
+                "type": "string"
+              },
+              "providerID": {
+                "type": "string"
+              }
+            },
+            "required": ["modelID", "providerID"]
+          },
+          "variant": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "options": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "steps": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "filePath": {
+            "description": "Absolute path of the backing .md file.",
+            "type": "string"
+          },
+          "callCount7d": {
+            "description": "Message count by this agent in the last 7 days.",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["name", "mode", "permission", "options"]
+      },
+      "WorkflowNode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": ["id", "agent", "label", "color", "x", "y"]
+      },
+      "WorkflowEdge": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["serial", "parallel", "optional"]
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": ["from", "to", "kind"]
+      },
+      "WorkflowPreset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowNode"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowEdge"
+            }
+          }
+        },
+        "required": ["id", "name", "description", "nodes", "edges"]
+      },
+      "WikiReport": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "absolutePath": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["lint", "diff", "format", "other"]
+          },
+          "title": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "problemCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "changeCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "sampleCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "readyCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "formatCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "coveredFormatCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "warningCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "jsonPath": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": ["path", "absolutePath", "kind", "title", "updatedAt"]
+      },
+      "WikiLogEntry": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["query", "ingest", "other"]
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "raw": {
+            "type": "string"
+          }
+        },
+        "required": ["kind", "title", "paths", "raw"]
+      },
+      "WikiStatus": {
+        "type": "object",
+        "properties": {
+          "root": {
+            "type": "string"
+          },
+          "readonly": {
+            "type": "boolean"
+          },
+          "pageCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "rawCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "indexPath": {
+            "type": "string"
+          },
+          "reportCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "reports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WikiReport"
+            }
+          },
+          "logCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WikiLogEntry"
+            }
+          }
+        },
+        "required": ["root", "readonly", "pageCount", "rawCount", "reportCount", "reports", "logCount", "logs"]
+      },
+      "FormatSampleReport": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "sourceFormat": {
+            "type": "string"
+          },
+          "expectedFormat": {
+            "type": "string"
+          },
+          "detectedFormat": {
+            "type": "string"
+          },
+          "ready": {
+            "type": "boolean"
+          },
+          "damaged": {
+            "type": "boolean"
+          },
+          "warningCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "warningLines": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pointCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "observationCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "equationCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "unknowns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "equationNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextTool": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "sourceFormat",
+          "expectedFormat",
+          "detectedFormat",
+          "ready",
+          "warningCount",
+          "warningLines",
+          "warnings",
+          "pointCount",
+          "observationCount",
+          "equationCount",
+          "unknowns",
+          "equationNames"
+        ]
+      },
+      "FormatCoverageArtifacts": {
+        "type": "object",
+        "properties": {
+          "markdownPath": {
+            "type": "string"
+          },
+          "absoluteMarkdownPath": {
+            "type": "string"
+          },
+          "jsonPath": {
+            "type": "string"
+          },
+          "absoluteJsonPath": {
+            "type": "string"
+          }
+        },
+        "required": ["markdownPath", "absoluteMarkdownPath", "jsonPath", "absoluteJsonPath"]
+      },
+      "FormatCoverageReport": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string"
+          },
+          "sampleCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "readyCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "formatCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "coveredFormatCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "warningCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "samples": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormatSampleReport"
+            }
+          },
+          "artifacts": {
+            "$ref": "#/components/schemas/FormatCoverageArtifacts"
+          }
+        },
+        "required": [
+          "generatedAt",
+          "sampleCount",
+          "readyCount",
+          "formatCount",
+          "coveredFormatCount",
+          "warningCount",
+          "samples"
+        ]
+      },
+      "WorkflowCheck": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "generatedAt": {
+            "type": "string"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["ok", "warn", "fail"]
+                },
+                "detail": {
+                  "type": "string"
+                }
+              },
+              "required": ["id", "label", "status", "detail"]
+            }
+          }
+        },
+        "required": ["workflowId", "ok", "generatedAt", "checks"]
+      },
+      "WorkflowRunArtifact": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "format-coverage"
+          },
+          "title": {
+            "type": "string"
+          },
+          "markdownPath": {
+            "type": "string"
+          },
+          "absoluteMarkdownPath": {
+            "type": "string"
+          },
+          "jsonPath": {
+            "type": "string"
+          },
+          "absoluteJsonPath": {
+            "type": "string"
+          }
+        },
+        "required": ["kind", "title", "markdownPath", "absoluteMarkdownPath", "jsonPath", "absoluteJsonPath"]
+      },
+      "WorkflowAcceptanceCheck": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ok", "warn", "fail"]
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "label", "status", "detail"]
+      },
+      "WorkflowAcceptance": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "generatedAt": {
+            "type": "string"
+          },
+          "messageCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowAcceptanceCheck"
+            }
+          }
+        },
+        "required": ["workflowId", "sessionId", "ok", "generatedAt", "messageCount", "checks"]
+      },
+      "WorkflowDeliveryFile": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["summary", "manifest", "artifact"]
+          },
+          "label": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "absolutePath": {
+            "type": "string"
+          },
+          "sourcePath": {
+            "type": "string"
+          },
+          "copied": {
+            "type": "boolean"
+          }
+        },
+        "required": ["kind", "label", "path", "absolutePath", "copied"]
+      },
+      "WorkflowDeliveryArchive": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "workflowId": {
+            "type": "string"
+          },
+          "workflowName": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number",
+            "const": 1
+          },
+          "generatedAt": {
+            "type": "string"
+          },
+          "directoryPath": {
+            "type": "string"
+          },
+          "absoluteDirectoryPath": {
+            "type": "string"
+          },
+          "markdownPath": {
+            "type": "string"
+          },
+          "absoluteMarkdownPath": {
+            "type": "string"
+          },
+          "manifestPath": {
+            "type": "string"
+          },
+          "absoluteManifestPath": {
+            "type": "string"
+          },
+          "fileCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowDeliveryFile"
+            }
+          }
+        },
+        "required": [
+          "sessionId",
+          "workflowId",
+          "workflowName",
+          "version",
+          "generatedAt",
+          "markdownPath",
+          "absoluteMarkdownPath"
+        ]
+      },
+      "WorkflowSession": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "workflowId": {
+            "type": "string"
+          },
+          "workflowName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowRunArtifact"
+            }
+          },
+          "acceptance": {
+            "$ref": "#/components/schemas/WorkflowAcceptance"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/WorkflowDeliveryArchive"
+          }
+        },
+        "required": ["sessionId", "workflowId", "workflowName", "createdAt", "updatedAt"]
+      },
+      "WikiReportDetail": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "absolutePath": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["lint", "diff", "format", "other"]
+          },
+          "title": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "problemCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "changeCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "sampleCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "readyCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "formatCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "coveredFormatCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "warningCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "jsonPath": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "rawMarkdown": {
+            "type": "string"
+          }
+        },
+        "required": ["path", "absolutePath", "kind", "title", "updatedAt", "rawMarkdown"]
+      },
+      "AgentDetail": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["subagent", "primary", "all"]
+          },
+          "native": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "topP": {
+            "type": "number"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string"
+          },
+          "permission": {
+            "$ref": "#/components/schemas/PermissionRuleset"
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "modelID": {
+                "type": "string"
+              },
+              "providerID": {
+                "type": "string"
+              }
+            },
+            "required": ["modelID", "providerID"]
+          },
+          "variant": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "options": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "steps": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "rawMarkdown": {
+            "description": "Full markdown source including frontmatter.",
+            "type": "string"
+          }
+        },
+        "required": ["name", "mode", "permission", "options", "rawMarkdown"]
+      },
+      "WorkflowRun": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "sessionTitle": {
+            "type": "string"
+          },
+          "workflowId": {
+            "type": "string"
+          },
+          "directory": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "agentNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowRunArtifact"
+            }
+          }
+        },
+        "required": ["sessionId", "sessionTitle", "workflowId", "directory", "prompt", "agentNames"]
       },
       "MCPStatusConnected": {
         "type": "object",

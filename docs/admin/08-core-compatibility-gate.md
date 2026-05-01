@@ -44,18 +44,18 @@ cd packages/railwise && bun test --timeout 30000 test/tool/wiki.test.ts test/too
 
 ## 兼容性判断
 
-| 变更类型 | CLI | Desktop | 结论 |
-| --- | --- | --- | --- |
-| 新增可选 API 字段 | 不阻断 | 不阻断 | 记录 changelog |
-| 删除或重命名 API 字段 | 阻断 | 阻断 | 需要迁移或兼容层 |
-| SDK 类型新增导出 | 不阻断 | 不阻断 | 重新生成 SDK |
-| SDK 类型删除或改名 | 阻断 | 阻断 | 需要迁移说明 |
-| delivery manifest 新增可选字段 | 不阻断 | 不阻断 | 更新文档和 fixture |
-| delivery manifest 必填字段变化 | 阻断 | 阻断 | 需要版本字段和兼容读取 |
-| 数据库向前兼容 migration | 不阻断 | 不阻断 | 需要回滚说明 |
-| 本地文件格式不可逆变化 | 阻断 | 阻断 | 需要备份和迁移计划 |
-| CLI-only flag 或输出改动 | 可能阻断 CLI | 不阻断 | 归入 CLI release |
-| Desktop-only UI 或安装改动 | 不阻断 | 可能阻断 Desktop | 归入 Desktop release |
+| 变更类型                       | CLI          | Desktop          | 结论                   |
+| ------------------------------ | ------------ | ---------------- | ---------------------- |
+| 新增可选 API 字段              | 不阻断       | 不阻断           | 记录 changelog         |
+| 删除或重命名 API 字段          | 阻断         | 阻断             | 需要迁移或兼容层       |
+| SDK 类型新增导出               | 不阻断       | 不阻断           | 重新生成 SDK           |
+| SDK 类型删除或改名             | 阻断         | 阻断             | 需要迁移说明           |
+| delivery manifest 新增可选字段 | 不阻断       | 不阻断           | 更新文档和 fixture     |
+| delivery manifest 必填字段变化 | 阻断         | 阻断             | 需要版本字段和兼容读取 |
+| 数据库向前兼容 migration       | 不阻断       | 不阻断           | 需要回滚说明           |
+| 本地文件格式不可逆变化         | 阻断         | 阻断             | 需要备份和迁移计划     |
+| CLI-only flag 或输出改动       | 可能阻断 CLI | 不阻断           | 归入 CLI release       |
+| Desktop-only UI 或安装改动     | 不阻断       | 可能阻断 Desktop | 归入 Desktop release   |
 
 ## 记录要求
 

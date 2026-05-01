@@ -26,24 +26,24 @@
   --font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
 
   /* Additional design system tokens (using imported base tokens) */
-  --railwise-accent-primary:   var(--railwise-warm-brown); /* 主强调（暖棕） */
-  --railwise-accent-secondary: #654321;                 /* 次强调（深暖棕） */
+  --railwise-accent-primary: var(--railwise-warm-brown); /* 主强调（暖棕） */
+  --railwise-accent-secondary: #654321; /* 次强调（深暖棕） */
 
   /* ── 字体系统 ──────────────────────────── */
-  --railwise-font-family:      "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
-  --railwise-font-size-xs:     12px;
-  --railwise-font-size-sm:     14px;
-  --railwise-font-size-base:   16px;
-  --railwise-font-size-lg:     18px;
-  --railwise-font-size-xl:     20px;
-  --railwise-font-size-xxl:    24px;
+  --railwise-font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  --railwise-font-size-xs: 12px;
+  --railwise-font-size-sm: 14px;
+  --railwise-font-size-base: 16px;
+  --railwise-font-size-lg: 18px;
+  --railwise-font-size-xl: 20px;
+  --railwise-font-size-xxl: 24px;
 
   /* ── 空间系统 ──────────────────────────── */
-  --railwise-space-xs:  4px;
-  --railwise-space-sm:  8px;
-  --railwise-space-md:  16px;
-  --railwise-space-lg:  24px;
-  --railwise-space-xl:  32px;
+  --railwise-space-xs: 4px;
+  --railwise-space-sm: 8px;
+  --railwise-space-md: 16px;
+  --railwise-space-lg: 24px;
+  --railwise-space-xl: 32px;
   --railwise-space-xxl: 48px;
 
   /* ── 圆角 ──────────────────────────────── */
@@ -52,34 +52,34 @@
   --railwise-radius-lg: 12px;
 
   /* ── 阴影 ──────────────────────────────── */
-  --railwise-shadow-sm: 0 1px 2px  rgba(0, 0, 0, 0.05);
-  --railwise-shadow-md: 0 4px 6px  rgba(0, 0, 0, 0.07);
-  --railwise-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.10);
+  --railwise-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --railwise-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --railwise-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Tailwind v4 token bridge — 把 RAILWISE 设计令牌暴露成 utility class
  * 命名前缀 rw- 避免与 @railwise/ui 既有 token (background-* / text-strong 等) 冲突。
  */
 @theme {
-  --color-rw-bg-primary:       var(--railwise-cream-white);
-  --color-rw-bg-secondary:     #FFFFFF;
-  --color-rw-text-primary:     var(--railwise-warm-brown);
-  --color-rw-text-secondary:   #757575;
-  --color-rw-accent:           var(--railwise-warm-brown);
+  --color-rw-bg-primary: var(--railwise-cream-white);
+  --color-rw-bg-secondary: #ffffff;
+  --color-rw-text-primary: var(--railwise-warm-brown);
+  --color-rw-text-secondary: #757575;
+  --color-rw-accent: var(--railwise-warm-brown);
   --color-rw-accent-secondary: #654321;
 
   --color-rw-success: #52c41a;
   --color-rw-warning: #faad14;
-  --color-rw-error:   #ff4d4f;
-  --color-rw-info:    #1890ff;
+  --color-rw-error: #ff4d4f;
+  --color-rw-info: #1890ff;
 
   --radius-rw-sm: 4px;
   --radius-rw-md: 8px;
   --radius-rw-lg: 12px;
 
-  --shadow-rw-sm: 0 1px 2px  rgba(0, 0, 0, 0.05);
-  --shadow-rw-md: 0 4px 6px  rgba(0, 0, 0, 0.07);
-  --shadow-rw-lg: 0 10px 15px rgba(0, 0, 0, 0.10);
+  --shadow-rw-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-rw-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-rw-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 
   --font-rw-sans: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
 }
@@ -100,7 +100,8 @@ div[data-tauri-decorum-tb] {
   user-select: none;
 }
 
-html, body {
+html,
+body {
   overflow: hidden;
   position: fixed;
   width: 100%;
@@ -127,7 +128,10 @@ html, body {
 }
 
 /* 允许文本选择在特定元素 */
-input, textarea, [contenteditable], .selectable-text {
+input,
+textarea,
+[contenteditable],
+.selectable-text {
   -webkit-user-select: text;
   user-select: text;
 }
@@ -192,7 +196,7 @@ input, textarea, [contenteditable], .selectable-text {
 .progress-bar {
   width: 100%;
   height: 4px;
-  background: #F5F5F5;
+  background: #f5f5f5;
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -350,22 +354,22 @@ body {
 }
 
 .desktop-header {
-  background: #FAFAFA;
-  border-bottom: 1px solid #E0E0E0;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .desktop-sidebar {
-  background: #FFFFFF;
-  border-right: 1px solid #E0E0E0;
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
 }
 
 /* Interactive elements */
 button:hover {
-  background: #F5F5F5;
+  background: #f5f5f5;
 }
 
 button:active {
-  background: #EEEEEE;
+  background: #eeeeee;
 }
 
 button:focus {

@@ -106,8 +106,8 @@ RAILWISE puede desencadenarse por los siguientes eventos GitHub:
 
 | Tipo de evento                | Activado por                                  | Detalles                                                                                                                                        |
 | ----------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Comentar sobre un tema o PR                   | Mencione `/railwise` en su comentario. RAILWISE lee el contexto y puede crear ramas, abrir relaciones públicas o responder.             |
-| `pull_request_review_comment` | Comente líneas de código específicas en un PR | Mencione `/railwise` mientras revisa el código. RAILWISE recibe la ruta del archivo, los números de línea y el contexto de diferencias. |
+| `issue_comment`               | Comentar sobre un tema o PR                   | Mencione `/railwise` en su comentario. RAILWISE lee el contexto y puede crear ramas, abrir relaciones públicas o responder.                     |
+| `pull_request_review_comment` | Comente líneas de código específicas en un PR | Mencione `/railwise` mientras revisa el código. RAILWISE recibe la ruta del archivo, los números de línea y el contexto de diferencias.         |
 | `issues`                      | Número abierto o editado                      | Activa automáticamente RAILWISE cuando se crean o modifican problemas. Requiere entrada `prompt`.                                               |
 | `pull_request`                | PR abierto o actualizado                      | Activa automáticamente RAILWISE cuando los PR se abren, sincronizan o vuelven a abrir. Útil para revisiones automatizadas.                      |
 | `schedule`                    | Programación basada en cron                   | Ejecute RAILWISE según una programación. Requiere entrada `prompt`. La salida va a registros y relaciones públicas (no hay temas que comentar). |

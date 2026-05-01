@@ -17,7 +17,14 @@ function crc32(buf: Uint8Array) {
 }
 
 function zip(files: Array<{ name: string; data: Uint8Array }>) {
-  const entries: Array<{ name: Uint8Array; compressed: Uint8Array; crc: number; size: number; csize: number; offset: number }> = []
+  const entries: Array<{
+    name: Uint8Array
+    compressed: Uint8Array
+    crc: number
+    size: number
+    csize: number
+    offset: number
+  }> = []
   const parts: Uint8Array[] = []
   let offset = 0
 
@@ -72,7 +79,10 @@ function zip(files: Array<{ name: string; data: Uint8Array }>) {
   for (const p of parts) total += p.length
   const result = new Uint8Array(total)
   let pos = 0
-  for (const p of parts) { result.set(p, pos); pos += p.length }
+  for (const p of parts) {
+    result.set(p, pos)
+    pos += p.length
+  }
   return result
 }
 
@@ -94,30 +104,40 @@ function md2paragraphs(markdown: string) {
     if (/^#{1,6}\s/.test(trimmed)) {
       const level = trimmed.match(/^(#{1,6})/)?.[1]?.length ?? 1
       const text = trimmed.replace(/^#{1,6}\s+/, "")
-      paragraphs.push(`<w:p><w:pPr><w:pStyle w:val="Heading${level}"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`)
+      paragraphs.push(
+        `<w:p><w:pPr><w:pStyle w:val="Heading${level}"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`,
+      )
       continue
     }
 
     if (/^[-*]\s/.test(trimmed)) {
       const text = trimmed.replace(/^[-*]\s+/, "")
-      paragraphs.push(`<w:p><w:pPr><w:pStyle w:val="ListParagraph"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr><w:r><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`)
+      paragraphs.push(
+        `<w:p><w:pPr><w:pStyle w:val="ListParagraph"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr><w:r><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`,
+      )
       continue
     }
 
     if (/^\d+\.\s/.test(trimmed)) {
       const text = trimmed.replace(/^\d+\.\s+/, "")
-      paragraphs.push(`<w:p><w:pPr><w:pStyle w:val="ListParagraph"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="2"/></w:numPr></w:pPr><w:r><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`)
+      paragraphs.push(
+        `<w:p><w:pPr><w:pStyle w:val="ListParagraph"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="2"/></w:numPr></w:pPr><w:r><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`,
+      )
       continue
     }
 
     if (/^>\s/.test(trimmed)) {
       const text = trimmed.replace(/^>\s*/, "")
-      paragraphs.push(`<w:p><w:pPr><w:ind w:left="720"/></w:pPr><w:r><w:rPr><w:i/></w:rPr><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`)
+      paragraphs.push(
+        `<w:p><w:pPr><w:ind w:left="720"/></w:pPr><w:r><w:rPr><w:i/></w:rPr><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>`,
+      )
       continue
     }
 
     if (/^---$/.test(trimmed) || /^\*\*\*$/.test(trimmed)) {
-      paragraphs.push(`<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="auto"/></w:pBdr></w:pPr></w:p>`)
+      paragraphs.push(
+        `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="auto"/></w:pBdr></w:pPr></w:p>`,
+      )
       continue
     }
 
@@ -233,10 +253,7 @@ export default tool({
   args: {
     markdown: tool.schema.string().describe("Markdown 格式的报告正文"),
     title: tool.schema.string().default("监测报告").describe("文档标题（用于文件名）"),
-    outputPath: tool.schema
-      .string()
-      .optional()
-      .describe("输出 .docx 文件路径，默认为 ./[title].docx"),
+    outputPath: tool.schema.string().optional().describe("输出 .docx 文件路径，默认为 ./[title].docx"),
   },
   async execute(args) {
     const docxBytes = buildDocx(args.markdown, args.title)

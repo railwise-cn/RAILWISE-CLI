@@ -29,6 +29,7 @@
 已有的 AGENTS.md 机制是纯手动的，compaction 摘要仅在单会话内有效。
 
 **痛点**：
+
 - 跨会话知识丢失（昨天的监测方案设计、平差参数选择）
 - 工程测绘领域有大量 **项目特定知识**（控制点坐标系、测站配置、报警阈值）需要持久记忆
 - 团队协作时，不同成员的会话产出无法自动共享
@@ -37,15 +38,15 @@
 
 ## 2. 设计目标
 
-| 目标 | 描述 | 优先级 |
-|------|------|--------|
-| 自动化 | 无需用户手动维护，自动从会话中提取有用知识 | P0 |
-| 零配置启用 | 默认开启，无需额外配置即可工作 | P0 |
-| 隐私安全 | 所有数据本地存储，不上传到任何服务 | P0 |
-| 低噪音 | 只注入相关记忆，不浪费 context window | P0 |
-| 可控性 | 用户能查看、编辑、删除记忆 | P1 |
-| 轻量依赖 | 不引入重型外部依赖（如 hnswlib） | P1 |
-| 与现有架构兼容 | 复用 Drizzle/SQLite/Plugin 体系 | P0 |
+| 目标           | 描述                                       | 优先级 |
+| -------------- | ------------------------------------------ | ------ |
+| 自动化         | 无需用户手动维护，自动从会话中提取有用知识 | P0     |
+| 零配置启用     | 默认开启，无需额外配置即可工作             | P0     |
+| 隐私安全       | 所有数据本地存储，不上传到任何服务         | P0     |
+| 低噪音         | 只注入相关记忆，不浪费 context window      | P0     |
+| 可控性         | 用户能查看、编辑、删除记忆                 | P1     |
+| 轻量依赖       | 不引入重型外部依赖（如 hnswlib）           | P1     |
+| 与现有架构兼容 | 复用 Drizzle/SQLite/Plugin 体系            | P0     |
 
 ---
 
@@ -77,13 +78,13 @@
 
 ### 与 Claude Code 记忆模型的对比
 
-| 特性 | Claude Code | RAILWISE-CLI (本方案) |
-|------|-------------|----------------------|
-| 手动记忆 | CLAUDE.md 文件层次 | AGENTS.md (已有，保持不变) |
-| 自动记忆 | auto-memory.md (~200行) | SQLite memory 表 + FTS5 |
-| Session Memory | 后台摘要 | compaction summary 复用 |
-| 检索方式 | 全量加载前200行 | 按相关性检索 top-N |
-| 存储格式 | Markdown 文件 | 结构化 DB (支持查询/过滤/排序) |
+| 特性           | Claude Code             | RAILWISE-CLI (本方案)          |
+| -------------- | ----------------------- | ------------------------------ |
+| 手动记忆       | CLAUDE.md 文件层次      | AGENTS.md (已有，保持不变)     |
+| 自动记忆       | auto-memory.md (~200行) | SQLite memory 表 + FTS5        |
+| Session Memory | 后台摘要                | compaction summary 复用        |
+| 检索方式       | 全量加载前200行         | 按相关性检索 top-N             |
+| 存储格式       | Markdown 文件           | 结构化 DB (支持查询/过滤/排序) |
 
 **关键差异**：Claude Code 的 auto-memory 是一个 flat 文件，全量加载。我们用结构化 DB + 检索，更节省 token。
 
@@ -110,12 +111,12 @@ export const MemoryTable = sqliteTable(
     session_id: text().references(() => SessionTable.id, { onDelete: "set null" }),
     category: text().notNull(), // 'discovery' | 'decision' | 'pattern' | 'preference' | 'error' | 'fact'
     content: text().notNull(),
-    source: text(),             // 来源描述，如 "session compaction" / "user command"
+    source: text(), // 来源描述，如 "session compaction" / "user command"
     confidence: real().notNull().default(1.0),
     access_count: integer().notNull().default(0),
     ...Timestamps,
     time_accessed: integer(),
-    time_expired: integer(),    // 软过期
+    time_expired: integer(), // 软过期
   },
   (table) => [
     index("memory_project_idx").on(table.project_id),
@@ -127,14 +128,14 @@ export const MemoryTable = sqliteTable(
 
 ### 4.2 记忆分类
 
-| Category | 含义 | 示例 | 提取来源 |
-|----------|------|------|---------|
-| `discovery` | 项目/代码库发现 | "该项目使用 CGCS2000 坐标系" | compaction Discoveries |
-| `decision` | 用户/系统决策 | "选择了最小二乘法进行平差计算" | compaction Goal + Accomplished |
-| `pattern` | 代码/工作流模式 | "报告格式使用 A4 横版, 含变形曲线图" | compaction Instructions |
-| `preference` | 用户偏好 | "用户偏好使用 DeepSeek 模型" | 多次出现的行为模式 |
-| `error` | 经验教训 | "全站仪数据需要先做气象改正再归算" | 错误修复记录 |
-| `fact` | 项目事实 | "甲方要求每日上传监测日报" | 用户明确陈述 |
+| Category     | 含义            | 示例                                 | 提取来源                       |
+| ------------ | --------------- | ------------------------------------ | ------------------------------ |
+| `discovery`  | 项目/代码库发现 | "该项目使用 CGCS2000 坐标系"         | compaction Discoveries         |
+| `decision`   | 用户/系统决策   | "选择了最小二乘法进行平差计算"       | compaction Goal + Accomplished |
+| `pattern`    | 代码/工作流模式 | "报告格式使用 A4 横版, 含变形曲线图" | compaction Instructions        |
+| `preference` | 用户偏好        | "用户偏好使用 DeepSeek 模型"         | 多次出现的行为模式             |
+| `error`      | 经验教训        | "全站仪数据需要先做气象改正再归算"   | 错误修复记录                   |
+| `fact`       | 项目事实        | "甲方要求每日上传监测日报"           | 用户明确陈述                   |
 
 ### 4.3 提取流程
 
@@ -150,7 +151,7 @@ export namespace MemoryExtract {
   export async function fromCompaction(input: {
     sessionID: string
     projectID: string
-    summary: string   // compaction 生成的 markdown 摘要
+    summary: string // compaction 生成的 markdown 摘要
   }) {
     // 解析 markdown 摘要的各个 section
     const sections = parseSections(input.summary)
@@ -228,9 +229,7 @@ export async function deduplicate(projectID: string, candidates: NewMemory[]) {
 
   for (const candidate of candidates) {
     // Phase 1: 简单文本相似度（Jaccard / 编辑距离）
-    const similar = existing.find((m) =>
-      textSimilarity(m.content, candidate.content) > 0.7
-    )
+    const similar = existing.find((m) => textSimilarity(m.content, candidate.content) > 0.7)
     if (similar) {
       // 增强已有记忆的置信度
       await Memory.boost({ id: similar.id, delta: 0.1 })
@@ -251,11 +250,7 @@ export async function deduplicate(projectID: string, candidates: NewMemory[]) {
 ```typescript
 // src/memory/inject.ts
 export namespace MemoryInject {
-  export async function system(input: {
-    projectID: string
-    sessionID: string
-    limit?: number
-  }): Promise<string[]> {
+  export async function system(input: { projectID: string; sessionID: string; limit?: number }): Promise<string[]> {
     const config = await Config.get()
     if (config.memory?.enabled === false) return []
 
@@ -270,9 +265,7 @@ export namespace MemoryInject {
     // 更新 access_count
     await Memory.touch(memories.map((m) => m.id))
 
-    const formatted = memories.map((m) =>
-      `[${m.category}] ${m.content}`
-    ).join("\n")
+    const formatted = memories.map((m) => `[${m.category}] ${m.content}`).join("\n")
 
     return [
       `<project-memory>`,
@@ -306,10 +299,7 @@ const system = [
 Phase 1 使用**简单评分排序**，无需向量化：
 
 ```typescript
-export async function relevant(input: {
-  projectID: string
-  limit: number
-}) {
+export async function relevant(input: { projectID: string; limit: number }) {
   // 按 (confidence * recency_weight * frequency_weight) 排序
   // recency_weight: 越近的记忆权重越高
   // frequency_weight: 被多次访问的记忆权重越高
@@ -317,15 +307,10 @@ export async function relevant(input: {
     db
       .select()
       .from(MemoryTable)
-      .where(
-        and(
-          eq(MemoryTable.project_id, input.projectID),
-          isNull(MemoryTable.time_expired),
-        ),
-      )
+      .where(and(eq(MemoryTable.project_id, input.projectID), isNull(MemoryTable.time_expired)))
       .orderBy(desc(MemoryTable.confidence))
       .limit(input.limit)
-      .all()
+      .all(),
   )
 }
 ```
@@ -336,12 +321,12 @@ export async function relevant(input: {
 
 ### 5.1 方案选型
 
-| 方案 | 依赖 | 优点 | 缺点 |
-|------|------|------|------|
-| **SQLite FTS5** | 无（SQLite 内置） | 零依赖，全文搜索 | 无语义理解 |
-| **hnswlib-wasm** | npm包，需要 C++ 编译 | 本地向量搜索 | 编译复杂 |
-| **LLM 生成嵌入** | 调用模型 API | 语义准确 | 有成本、需网络 |
-| **本地嵌入模型** | Transformers.js / ONNX | 离线、免费 | 包体大 |
+| 方案             | 依赖                   | 优点             | 缺点           |
+| ---------------- | ---------------------- | ---------------- | -------------- |
+| **SQLite FTS5**  | 无（SQLite 内置）      | 零依赖，全文搜索 | 无语义理解     |
+| **hnswlib-wasm** | npm包，需要 C++ 编译   | 本地向量搜索     | 编译复杂       |
+| **LLM 生成嵌入** | 调用模型 API           | 语义准确         | 有成本、需网络 |
+| **本地嵌入模型** | Transformers.js / ONNX | 离线、免费       | 包体大         |
 
 **推荐**：Phase 2a 先加 SQLite FTS5（零依赖），Phase 2b 再可选引入本地嵌入。
 
@@ -367,11 +352,7 @@ END;
 
 ```typescript
 // 根据用户当前消息内容搜索相关记忆
-export async function search(input: {
-  projectID: string
-  query: string
-  limit: number
-}) {
+export async function search(input: { projectID: string; query: string; limit: number }) {
   // 使用 FTS5 的 MATCH 语法
   const results = Database.use((db) =>
     db.all(sql`
@@ -383,7 +364,7 @@ export async function search(input: {
         AND m.time_expired IS NULL
       ORDER BY rank
       LIMIT ${input.limit}
-    `)
+    `),
   )
   return results
 }
@@ -405,13 +386,8 @@ export async function decay() {
       .set({
         confidence: sql`MAX(0.1, confidence * 0.9)`,
       })
-      .where(
-        and(
-          lt(MemoryTable.time_accessed, threshold),
-          gt(MemoryTable.confidence, 0.1),
-        ),
-      )
-      .run()
+      .where(and(lt(MemoryTable.time_accessed, threshold), gt(MemoryTable.confidence, 0.1)))
+      .run(),
   )
 }
 ```
@@ -419,19 +395,20 @@ export async function decay() {
 ### 6.2 冲突合并
 
 当新记忆与旧记忆冲突时（如 "项目使用 WGS84" vs "项目使用 CGCS2000"），需要：
+
 1. 检测语义冲突
 2. 保留更新的记忆，标记旧记忆为 expired
 3. 通知用户冲突已解决
 
 ### 6.3 用户管理命令
 
-| 命令 | 功能 |
-|------|------|
-| `/memory` | 列出当前项目的所有记忆 |
-| `/memory search <query>` | 搜索记忆 |
-| `/remember <content>` | 手动添加记忆 |
-| `/forget <id>` | 删除指定记忆 |
-| `/forget --all` | 清除所有记忆 |
+| 命令                     | 功能                   |
+| ------------------------ | ---------------------- |
+| `/memory`                | 列出当前项目的所有记忆 |
+| `/memory search <query>` | 搜索记忆               |
+| `/remember <content>`    | 手动添加记忆           |
+| `/forget <id>`           | 删除指定记忆           |
+| `/forget --all`          | 清除所有记忆           |
 
 ### 6.4 Web UI（可选）
 
@@ -443,18 +420,18 @@ export async function decay() {
 
 ### 7.1 文件变更清单
 
-| 文件 | 变更类型 | 说明 |
-|------|---------|------|
-| `src/memory/memory.sql.ts` | **新增** | Drizzle schema |
-| `src/memory/memory.ts` | **新增** | 核心 CRUD + 检索 |
-| `src/memory/extract.ts` | **新增** | 记忆提取逻辑 |
-| `src/memory/inject.ts` | **新增** | system prompt 注入 |
-| `src/storage/schema.ts` | **修改** | 导出 MemoryTable |
-| `src/session/prompt.ts` ~L654 | **修改** | 注入 MemoryInject.system() |
-| `src/session/compaction.ts` | **不修改** | 通过 Bus.subscribe(Event.Compacted) 监听，无需改动 |
-| `src/memory/listener.ts` | **新增** | Bus 事件订阅，监听 compaction 完成事件 |
-| `src/config/config.ts` | **修改** | 新增 `memory` 配置段 |
-| `migration/YYYYMMDD_memory/` | **新增** | DB migration |
+| 文件                          | 变更类型   | 说明                                               |
+| ----------------------------- | ---------- | -------------------------------------------------- |
+| `src/memory/memory.sql.ts`    | **新增**   | Drizzle schema                                     |
+| `src/memory/memory.ts`        | **新增**   | 核心 CRUD + 检索                                   |
+| `src/memory/extract.ts`       | **新增**   | 记忆提取逻辑                                       |
+| `src/memory/inject.ts`        | **新增**   | system prompt 注入                                 |
+| `src/storage/schema.ts`       | **修改**   | 导出 MemoryTable                                   |
+| `src/session/prompt.ts` ~L654 | **修改**   | 注入 MemoryInject.system()                         |
+| `src/session/compaction.ts`   | **不修改** | 通过 Bus.subscribe(Event.Compacted) 监听，无需改动 |
+| `src/memory/listener.ts`      | **新增**   | Bus 事件订阅，监听 compaction 完成事件             |
+| `src/config/config.ts`        | **修改**   | 新增 `memory` 配置段                               |
+| `migration/YYYYMMDD_memory/`  | **新增**   | DB migration                                       |
 
 ### 7.2 不变更的部分
 
@@ -467,6 +444,7 @@ export async function decay() {
 ### 7.3 代码风格对齐
 
 遵守 `AGENTS.md` 的 Style Guide：
+
 - 单词变量名：`memory`, `extract`, `inject`
 - 避免 destructuring，用 dot notation
 - `const` over `let`
@@ -511,8 +489,8 @@ memory: z
     "enabled": true,
     "maxMemories": 15,
     "autoCapture": true,
-    "retention": 180  // 保留180天
-  }
+    "retention": 180, // 保留180天
+  },
 }
 ```
 
@@ -648,9 +626,9 @@ bun run dev
 
 ## 附录 B：参考项目
 
-| 项目 | 链接 | 借鉴点 |
-|------|------|--------|
-| Claude Code Memory | https://code.claude.com/docs/en/memory | 层次化记忆 + auto-memory |
-| opencode-mem | https://github.com/tickernelz/opencode-mem | opencode 插件架构，向量搜索 |
-| memory-mcp | dev.to/suede | 两层记忆架构，hook 系统利用 |
-| coding_agent_session_search | github.com/Dicklesworthstone | 会话搜索与索引 |
+| 项目                        | 链接                                       | 借鉴点                      |
+| --------------------------- | ------------------------------------------ | --------------------------- |
+| Claude Code Memory          | https://code.claude.com/docs/en/memory     | 层次化记忆 + auto-memory    |
+| opencode-mem                | https://github.com/tickernelz/opencode-mem | opencode 插件架构，向量搜索 |
+| memory-mcp                  | dev.to/suede                               | 两层记忆架构，hook 系统利用 |
+| coding_agent_session_search | github.com/Dicklesworthstone               | 会话搜索与索引              |

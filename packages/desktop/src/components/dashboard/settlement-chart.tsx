@@ -29,7 +29,9 @@ function options(width: number, metric: "settlement" | "displacement", height: n
         ticks: { stroke: colors.tick, width: 1 },
         font: "11px PingFang SC, sans-serif",
         values: (_plot, splits) =>
-          splits.map((value) => new Date(value * 1000).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" })),
+          splits.map((value) =>
+            new Date(value * 1000).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" }),
+          ),
         space: 48,
       },
       {
@@ -87,7 +89,11 @@ export function SettlementChart(props: {
   onMount(() => {
     if (!root) return
     const height = props.height ?? 180
-    plot = new uPlot(options(root.offsetWidth || 260, props.metric ?? "settlement", height), [[], []] as AlignedData, root)
+    plot = new uPlot(
+      options(root.offsetWidth || 260, props.metric ?? "settlement", height),
+      [[], []] as AlignedData,
+      root,
+    )
     observer = new ResizeObserver(([entry]) => {
       const width = Math.floor(entry.contentRect.width)
       if (width > 0) plot?.setSize({ width, height })

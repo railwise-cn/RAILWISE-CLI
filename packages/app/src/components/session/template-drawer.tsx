@@ -222,9 +222,7 @@ export function TemplateDrawer(props: {
                           onChange={(event) => setValues(item.key, event.currentTarget.value)}
                         >
                           <option value="">请选择...</option>
-                          <For each={item.options ?? []}>
-                            {(option) => <option value={option}>{option}</option>}
-                          </For>
+                          <For each={item.options ?? []}>{(option) => <option value={option}>{option}</option>}</For>
                         </select>
                       </Show>
                     </label>

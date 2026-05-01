@@ -28,7 +28,15 @@ import { Truncate } from "./truncation"
 import { PlanExitTool, PlanEnterTool } from "./plan"
 import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
-import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
+import {
+  NormCiteTool,
+  NormDiffTool,
+  NormSearchTool,
+  WikiIndexTool,
+  WikiIngestTool,
+  WikiLintTool,
+  WikiQueryTool,
+} from "./wiki"
 import { MineruParseTool } from "./mineru"
 import {
   AdjustmentConditionTool,
@@ -49,7 +57,8 @@ export namespace ToolRegistry {
     const matches = await Config.directories().then((dirs) =>
       dirs.flatMap((dir) =>
         Glob.scanSync("{tool,tools}/*.{js,ts}", { cwd: dir, absolute: true, dot: true, symlink: true }).filter(
-          (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.js") && !f.endsWith(".spec.ts") && !f.endsWith(".spec.js"),
+          (f) =>
+            !f.endsWith(".test.ts") && !f.endsWith(".test.js") && !f.endsWith(".spec.ts") && !f.endsWith(".spec.js"),
         ),
       ),
     )

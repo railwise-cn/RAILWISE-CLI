@@ -311,7 +311,10 @@ export function WorkflowGallery() {
               <Show when={format()?.samples.length} fallback={<small>等待样本报告</small>}>
                 <For each={format()?.samples ?? []}>
                   {(sample) => (
-                    <div class={`workflow-format__sample ${sample.ready ? "ok" : "fail"}`} title={sample.warnings.join("\n")}>
+                    <div
+                      class={`workflow-format__sample ${sample.ready ? "ok" : "fail"}`}
+                      title={sample.warnings.join("\n")}
+                    >
                       <strong>{sample.label}</strong>
                       <span>{sample.detectedFormat}</span>
                       <small>

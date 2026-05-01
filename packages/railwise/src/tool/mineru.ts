@@ -7,7 +7,10 @@ import DESCRIPTION from "./mineru-parse.txt"
 export const MineruParseTool = Tool.define("tool_mineru_parse", {
   description: DESCRIPTION,
   parameters: z.object({
-    inputPath: z.string().min(1).describe("Source document path. Markdown/text files are copied into the Raw layer fallback."),
+    inputPath: z
+      .string()
+      .min(1)
+      .describe("Source document path. Markdown/text files are copied into the Raw layer fallback."),
     outputDir: z
       .string()
       .optional()

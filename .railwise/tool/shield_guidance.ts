@@ -10,23 +10,29 @@ export const shield_position = tool({
   args: {
     ringNumber: tool.schema.number().int().positive().describe("当前环号"),
     chainage: tool.schema.string().optional().describe("当前里程，如 K5+123.456"),
-    headPosition: tool.schema.object({
-      x: tool.schema.number().describe("盾头中心X坐标(m)"),
-      y: tool.schema.number().describe("盾头中心Y坐标(m)"),
-      z: tool.schema.number().describe("盾头中心高程(m)"),
-    }).describe("盾构机头部测量坐标"),
-    tailPosition: tool.schema.object({
-      x: tool.schema.number().describe("盾尾中心X坐标(m)"),
-      y: tool.schema.number().describe("盾尾中心Y坐标(m)"),
-      z: tool.schema.number().describe("盾尾中心高程(m)"),
-    }).describe("盾构机尾部测量坐标"),
-    designAxis: tool.schema.object({
-      x: tool.schema.number().describe("设计轴线该里程处X坐标(m)"),
-      y: tool.schema.number().describe("设计轴线该里程处Y坐标(m)"),
-      z: tool.schema.number().describe("设计轴线该里程处高程(m)"),
-      azimuth: tool.schema.number().describe("设计方位角(度)"),
-      grade: tool.schema.number().describe("设计纵坡(‰)"),
-    }).describe("设计轴线参数"),
+    headPosition: tool.schema
+      .object({
+        x: tool.schema.number().describe("盾头中心X坐标(m)"),
+        y: tool.schema.number().describe("盾头中心Y坐标(m)"),
+        z: tool.schema.number().describe("盾头中心高程(m)"),
+      })
+      .describe("盾构机头部测量坐标"),
+    tailPosition: tool.schema
+      .object({
+        x: tool.schema.number().describe("盾尾中心X坐标(m)"),
+        y: tool.schema.number().describe("盾尾中心Y坐标(m)"),
+        z: tool.schema.number().describe("盾尾中心高程(m)"),
+      })
+      .describe("盾构机尾部测量坐标"),
+    designAxis: tool.schema
+      .object({
+        x: tool.schema.number().describe("设计轴线该里程处X坐标(m)"),
+        y: tool.schema.number().describe("设计轴线该里程处Y坐标(m)"),
+        z: tool.schema.number().describe("设计轴线该里程处高程(m)"),
+        azimuth: tool.schema.number().describe("设计方位角(度)"),
+        grade: tool.schema.number().describe("设计纵坡(‰)"),
+      })
+      .describe("设计轴线参数"),
     shieldLength: tool.schema.number().positive().default(8.7).describe("盾构机总长(m)，默认8.7m"),
     horizontalLimit: tool.schema.number().positive().default(50).describe("水平偏差报警值(mm)"),
     verticalLimit: tool.schema.number().positive().default(50).describe("垂直偏差报警值(mm)"),
@@ -50,7 +56,7 @@ export const shield_position = tool({
     const shieldAzimuth = ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360
 
     // Pitch angle (vertical plane, positive = upward)
-    const pitchAngle = Math.atan2(dz, horizontalDist) * 180 / Math.PI
+    const pitchAngle = (Math.atan2(dz, horizontalDist) * 180) / Math.PI
 
     // Shield grade in ‰
     const shieldGrade = horizontalDist > 0 ? (dz / horizontalDist) * 1000 : 0
@@ -143,8 +149,7 @@ export const shield_position = tool({
 })
 
 export const shield_trend = tool({
-  description:
-    "盾构掘进偏差趋势分析。输入多环的偏差数据，分析偏差发展趋势，预测未来偏差，为纠偏决策提供依据。",
+  description: "盾构掘进偏差趋势分析。输入多环的偏差数据，分析偏差发展趋势，预测未来偏差，为纠偏决策提供依据。",
   args: {
     records: tool.schema
       .array(
@@ -190,12 +195,10 @@ export const shield_trend = tool({
     })
 
     // Rings until exceeding limit
-    const hRingsToLimit = hReg.b !== 0
-      ? Math.ceil((args.horizontalLimit * Math.sign(hReg.b) - hReg.a) / hReg.b) - lastRing
-      : Infinity
-    const vRingsToLimit = vReg.b !== 0
-      ? Math.ceil((args.verticalLimit * Math.sign(vReg.b) - vReg.a) / vReg.b) - lastRing
-      : Infinity
+    const hRingsToLimit =
+      hReg.b !== 0 ? Math.ceil((args.horizontalLimit * Math.sign(hReg.b) - hReg.a) / hReg.b) - lastRing : Infinity
+    const vRingsToLimit =
+      vReg.b !== 0 ? Math.ceil((args.verticalLimit * Math.sign(vReg.b) - vReg.a) / vReg.b) - lastRing : Infinity
 
     const latestH = hDevs[n - 1]!
     const latestV = vDevs[n - 1]!
@@ -249,15 +252,9 @@ export const shield_ring_build = tool({
     horizontalRate: tool.schema.number().describe("水平偏差速率(mm/环)"),
     verticalRate: tool.schema.number().describe("垂直偏差速率(mm/环)"),
     designCurveRadius: tool.schema.number().optional().describe("设计曲线半径(m)，直线段不传"),
-    curveDirection: tool.schema
-      .enum(["left", "right"])
-      .optional()
-      .describe("曲线方向：left=左转, right=右转"),
+    curveDirection: tool.schema.enum(["left", "right"]).optional().describe("曲线方向：left=左转, right=右转"),
     wedgeAmount: tool.schema.number().positive().default(38).describe("楔形管片最大楔形量(mm)，默认38mm"),
-    segmentTypes: tool.schema
-      .array(tool.schema.string())
-      .default(["A", "B", "C"])
-      .describe("可选管片类型"),
+    segmentTypes: tool.schema.array(tool.schema.string()).default(["A", "B", "C"]).describe("可选管片类型"),
   },
   async execute(args) {
     // Target correction direction
@@ -266,7 +263,7 @@ export const shield_ring_build = tool({
 
     // Rotation angle of wedge ring (0°=top, clockwise)
     // Map (targetH, targetV) to angle: right correction = 90°, down = 180°, left = 270°, up = 0°
-    let rotationAngle = Math.atan2(targetH, -targetV) * 180 / Math.PI
+    let rotationAngle = (Math.atan2(targetH, -targetV) * 180) / Math.PI
     rotationAngle = ((rotationAngle % 360) + 360) % 360
 
     // Curve compensation

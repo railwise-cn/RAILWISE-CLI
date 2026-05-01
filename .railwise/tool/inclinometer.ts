@@ -76,7 +76,12 @@ export const inclinometer_profile = tool({
       const deltaA = ((currCombA - initCombA) / K) * L * 1000 // mm
 
       let deltaB: number | null = null
-      if (init.bPlus !== undefined && init.bMinus !== undefined && curr.bPlus !== undefined && curr.bMinus !== undefined) {
+      if (
+        init.bPlus !== undefined &&
+        init.bMinus !== undefined &&
+        curr.bPlus !== undefined &&
+        curr.bMinus !== undefined
+      ) {
         const initCombB = init.bPlus - init.bMinus
         const currCombB = curr.bPlus - curr.bMinus
         deltaB = ((currCombB - initCombB) / K) * L * 1000 // mm
@@ -111,7 +116,7 @@ export const inclinometer_profile = tool({
         const ratio = checkVal / args.alertThreshold
         if (ratio >= 1.0) status = "🔴 超限"
         else if (ratio >= 0.85) status = "🟠 接近阈值"
-        else if (ratio >= 0.70) status = "🟡 关注"
+        else if (ratio >= 0.7) status = "🟡 关注"
       }
 
       profile.push({

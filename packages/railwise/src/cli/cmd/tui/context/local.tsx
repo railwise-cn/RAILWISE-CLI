@@ -152,7 +152,10 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           queueMicrotask(() => {
             const validRecent = modelStore.recent.filter((item) => isModelValid(item))
             const validFavorite = modelStore.favorite.filter((item) => isModelValid(item))
-            if (validRecent.length !== modelStore.recent.length || validFavorite.length !== modelStore.favorite.length) {
+            if (
+              validRecent.length !== modelStore.recent.length ||
+              validFavorite.length !== modelStore.favorite.length
+            ) {
               setModelStore("recent", validRecent)
               setModelStore("favorite", validFavorite)
               save()

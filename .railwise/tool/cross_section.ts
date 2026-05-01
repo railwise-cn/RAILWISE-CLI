@@ -47,14 +47,20 @@ export const convergence_calc = tool({
       )
       .min(1)
       .describe("本期观测的测点对坐标"),
-    crownInitial: tool.schema.object({
-      x: tool.schema.number().describe("拱顶X坐标(m)"),
-      y: tool.schema.number().describe("拱顶Y坐标(m)"),
-    }).optional().describe("拱顶初始坐标（若提供则计算拱顶沉降）"),
-    crownCurrent: tool.schema.object({
-      x: tool.schema.number().describe("拱顶X坐标(m)"),
-      y: tool.schema.number().describe("拱顶Y坐标(m)"),
-    }).optional().describe("拱顶本期坐标"),
+    crownInitial: tool.schema
+      .object({
+        x: tool.schema.number().describe("拱顶X坐标(m)"),
+        y: tool.schema.number().describe("拱顶Y坐标(m)"),
+      })
+      .optional()
+      .describe("拱顶初始坐标（若提供则计算拱顶沉降）"),
+    crownCurrent: tool.schema
+      .object({
+        x: tool.schema.number().describe("拱顶X坐标(m)"),
+        y: tool.schema.number().describe("拱顶Y坐标(m)"),
+      })
+      .optional()
+      .describe("拱顶本期坐标"),
     alertThreshold: tool.schema.number().positive().optional().describe("收敛报警值(mm)"),
   },
   async execute(args) {
@@ -69,12 +75,8 @@ export const convergence_calc = tool({
           error: `未找到对应的初始观测数据`,
         }
 
-      const initDist = Math.sqrt(
-        (init.pointB.x - init.pointA.x) ** 2 + (init.pointB.y - init.pointA.y) ** 2
-      )
-      const currDist = Math.sqrt(
-        (curr.pointB.x - curr.pointA.x) ** 2 + (curr.pointB.y - curr.pointA.y) ** 2
-      )
+      const initDist = Math.sqrt((init.pointB.x - init.pointA.x) ** 2 + (init.pointB.y - init.pointA.y) ** 2)
+      const currDist = Math.sqrt((curr.pointB.x - curr.pointA.x) ** 2 + (curr.pointB.y - curr.pointA.y) ** 2)
       const convergence = (initDist - currDist) * 1000 // mm, positive = converging
       const rate = initDist > 0 ? (convergence / (initDist * 1000)) * 100 : 0
 
@@ -83,7 +85,7 @@ export const convergence_calc = tool({
         const ratio = Math.abs(convergence) / args.alertThreshold
         if (ratio >= 1.0) status = "🔴 超限"
         else if (ratio >= 0.85) status = "🟠 接近阈值"
-        else if (ratio >= 0.70) status = "🟡 关注"
+        else if (ratio >= 0.7) status = "🟡 关注"
       }
 
       return {
@@ -108,7 +110,7 @@ export const convergence_calc = tool({
         const ratio = Math.abs(dy) / args.alertThreshold
         if (ratio >= 1.0) status = "🔴 超限"
         else if (ratio >= 0.85) status = "🟠 接近阈值"
-        else if (ratio >= 0.70) status = "🟡 关注"
+        else if (ratio >= 0.7) status = "🟡 关注"
       }
 
       crownSettlement = {
@@ -218,12 +220,17 @@ export const profile_comparison = tool({
 
     const overbreakPoints = comparisons.filter((c) => c.type === "超挖")
     const underbreakPoints = comparisons.filter((c) => c.type === "欠挖")
-    const maxOverbreak = overbreakPoints.length > 0
-      ? overbreakPoints.reduce((max, c) => c.deviation_mm > max.deviation_mm ? c : max, overbreakPoints[0]!)
-      : null
-    const maxUnderbreak = underbreakPoints.length > 0
-      ? underbreakPoints.reduce((max, c) => Math.abs(c.deviation_mm) > Math.abs(max.deviation_mm) ? c : max, underbreakPoints[0]!)
-      : null
+    const maxOverbreak =
+      overbreakPoints.length > 0
+        ? overbreakPoints.reduce((max, c) => (c.deviation_mm > max.deviation_mm ? c : max), overbreakPoints[0]!)
+        : null
+    const maxUnderbreak =
+      underbreakPoints.length > 0
+        ? underbreakPoints.reduce(
+            (max, c) => (Math.abs(c.deviation_mm) > Math.abs(max.deviation_mm) ? c : max),
+            underbreakPoints[0]!,
+          )
+        : null
 
     const avgDeviation = comparisons.reduce((s, c) => s + c.deviation_mm, 0) / comparisons.length
     const failCount = comparisons.filter((c) => c.status.includes("超限") || c.status.includes("欠挖")).length
@@ -235,18 +242,23 @@ export const profile_comparison = tool({
       underbreak_count: underbreakPoints.length,
       fail_count: failCount,
       average_deviation_mm: Number(avgDeviation.toFixed(1)),
-      max_overbreak: maxOverbreak ? {
-        angle_deg: maxOverbreak.angle_deg,
-        deviation_mm: maxOverbreak.deviation_mm,
-      } : null,
-      max_underbreak: maxUnderbreak ? {
-        angle_deg: maxUnderbreak.angle_deg,
-        deviation_mm: maxUnderbreak.deviation_mm,
-      } : null,
+      max_overbreak: maxOverbreak
+        ? {
+            angle_deg: maxOverbreak.angle_deg,
+            deviation_mm: maxOverbreak.deviation_mm,
+          }
+        : null,
+      max_underbreak: maxUnderbreak
+        ? {
+            angle_deg: maxUnderbreak.angle_deg,
+            deviation_mm: maxUnderbreak.deviation_mm,
+          }
+        : null,
       details: comparisons,
-      assessment: failCount === 0
-        ? `✅ 断面 ${args.sectionId} 开挖轮廓合格：${overbreakPoints.length}处超挖均在限值内，无欠挖`
-        : `❌ 断面 ${args.sectionId} 有 ${failCount} 处不合格（超挖超限或欠挖），需处理`,
+      assessment:
+        failCount === 0
+          ? `✅ 断面 ${args.sectionId} 开挖轮廓合格：${overbreakPoints.length}处超挖均在限值内，无欠挖`
+          : `❌ 断面 ${args.sectionId} 有 ${failCount} 处不合格（超挖超限或欠挖），需处理`,
       message: `断面 ${args.sectionId}：${comparisons.length}个测点，超挖 ${overbreakPoints.length}处，欠挖 ${underbreakPoints.length}处，${failCount === 0 ? "全部合格" : `${failCount}处不合格`}`,
     })
   },
@@ -319,7 +331,7 @@ export const clearance_check = tool({
 
     const violations = checks.filter((c) => c.margin_mm < 0)
     const warnings = checks.filter((c) => c.margin_mm >= 0 && c.margin_mm < args.safetyMargin)
-    const minMargin = checks.reduce((min, c) => c.margin_mm < min.margin_mm ? c : min, checks[0]!)
+    const minMargin = checks.reduce((min, c) => (c.margin_mm < min.margin_mm ? c : min), checks[0]!)
 
     return JSON.stringify({
       section_id: args.sectionId,
@@ -332,11 +344,12 @@ export const clearance_check = tool({
         status: minMargin.status,
       },
       details: checks,
-      assessment: violations.length > 0
-        ? `🔴 断面 ${args.sectionId} 有 ${violations.length} 处侵入建筑限界！最小余量 ${minMargin.margin_mm.toFixed(1)}mm（${minMargin.angle_deg}°方向），必须立即处理！`
-        : warnings.length > 0
-        ? `🟠 断面 ${args.sectionId} 有 ${warnings.length} 处净空余量不足 ${args.safetyMargin}mm，需密切关注`
-        : `✅ 断面 ${args.sectionId} 建筑限界检查通过，最小余量 ${minMargin.margin_mm.toFixed(1)}mm`,
+      assessment:
+        violations.length > 0
+          ? `🔴 断面 ${args.sectionId} 有 ${violations.length} 处侵入建筑限界！最小余量 ${minMargin.margin_mm.toFixed(1)}mm（${minMargin.angle_deg}°方向），必须立即处理！`
+          : warnings.length > 0
+            ? `🟠 断面 ${args.sectionId} 有 ${warnings.length} 处净空余量不足 ${args.safetyMargin}mm，需密切关注`
+            : `✅ 断面 ${args.sectionId} 建筑限界检查通过，最小余量 ${minMargin.margin_mm.toFixed(1)}mm`,
       message: `限界检查 ${args.sectionId}：${violations.length > 0 ? `🔴 ${violations.length}处侵限` : warnings.length > 0 ? `🟠 ${warnings.length}处余量不足` : "✅ 全部通过"}，最小余量 ${minMargin.margin_mm.toFixed(1)}mm`,
     })
   },

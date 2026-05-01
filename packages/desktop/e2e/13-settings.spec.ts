@@ -5,7 +5,10 @@ test("设置中心：MCP、智能体、命令页展示真实数据", async ({ la
   const { page } = await launchApp("/agents")
 
   await visible(page.locator("[data-testid=agents-page]"))
-  await page.getByLabel(/设置|Settings/).first().click()
+  await page
+    .getByLabel(/设置|Settings/)
+    .first()
+    .click()
 
   await page.getByRole("tab", { name: /MCP/ }).click()
   const mcp = page.getByRole("tabpanel", { name: /MCP/ })

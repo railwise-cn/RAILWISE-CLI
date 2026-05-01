@@ -19,10 +19,12 @@ describe("WorkflowCanvas", () => {
   })
 
   test("keeps a minimum bezier control distance for nearby nodes", () => {
-    expect(edgePath(
-      { ...workflow, nodes: [{ ...workflow.nodes[0] }, { ...workflow.nodes[1], x: 180, y: 0 }] },
-      workflow.edges[0],
-    )).toBe("M 150 35 C 220 35, 110 35, 180 35")
+    expect(
+      edgePath(
+        { ...workflow, nodes: [{ ...workflow.nodes[0] }, { ...workflow.nodes[1], x: 180, y: 0 }] },
+        workflow.edges[0],
+      ),
+    ).toBe("M 150 35 C 220 35, 110 35, 180 35")
   })
 
   test("returns an empty path when a workflow edge references a missing node", () => {

@@ -103,7 +103,9 @@ test("wiki maintenance tools ingest, index, and lint project wiki", async () => 
     directory: tmp.path,
     fn: async () => {
       const ingest = await WikiIngestTool.init()
-      const result = JSON.parse((await ingest.execute({ rawPath: "raw/TB10101-2018/tb10101-extra.md" }, ctx())).output) as {
+      const result = JSON.parse(
+        (await ingest.execute({ rawPath: "raw/TB10101-2018/tb10101-extra.md" }, ctx())).output,
+      ) as {
         pages: string[]
       }
       expect(result.pages).toEqual(["wiki/clauses/tb10101-2018-6-2-1.md"])

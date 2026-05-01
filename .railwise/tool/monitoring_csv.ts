@@ -6,31 +6,24 @@ export default tool({
   description:
     "处理自动化监测仪器（静力水准、全站仪机器人、测斜仪）的海量CSV/TXT数据文件。输入文件路径，返回清洗后的核心数据指标（本期变化量、累计变化量、速率、超限测点列表）。data_analyst 必须调用此工具，绝不直接读取原始文件。",
   args: {
-    filePath: tool.schema
-      .string()
-      .describe("用户上传的 CSV、TXT 或 Excel 文件的绝对路径"),
+    filePath: tool.schema.string().describe("用户上传的 CSV、TXT 或 Excel 文件的绝对路径"),
     sensorType: tool.schema
       .enum(["settlement", "inclinometer", "strain_gauge", "convergence", "gnss"])
       .describe(
-        "传感器类型：settlement=沉降/静力水准, inclinometer=测斜仪, strain_gauge=应变计, convergence=收敛计, gnss=GNSS"
+        "传感器类型：settlement=沉降/静力水准, inclinometer=测斜仪, strain_gauge=应变计, convergence=收敛计, gnss=GNSS",
       ),
     alertThreshold: tool.schema
       .number()
       .positive()
       .optional()
       .describe("报警控制值（mm），用于自动标记超限测点，不传则不做超限判断"),
-    periodDays: tool.schema
-      .int()
-      .positive()
-      .default(7)
-      .describe("统计周期天数，默认7天（本期=最近N天）"),
+    periodDays: tool.schema.int().positive().default(7).describe("统计周期天数，默认7天（本期=最近N天）"),
   },
   async execute(args) {
     const file = Bun.file(args.filePath)
     const exists = await file.exists()
 
-    if (!exists)
-      return JSON.stringify({ error: `文件不存在：${args.filePath}，请检查路径是否正确。` })
+    if (!exists) return JSON.stringify({ error: `文件不存在：${args.filePath}，请检查路径是否正确。` })
 
     const ext = path.extname(args.filePath).toLowerCase()
     if (![".csv", ".txt", ".dat"].includes(ext))
@@ -44,8 +37,7 @@ export default tool({
       .map((l) => l.trim())
       .filter((l) => l.length > 0 && !l.startsWith("#"))
 
-    if (lines.length < 2)
-      return JSON.stringify({ error: "文件内容为空或仅有标题行，无有效数据。" })
+    if (lines.length < 2) return JSON.stringify({ error: "文件内容为空或仅有标题行，无有效数据。" })
 
     const header = lines[0]!.split(/[,\t;]/)
     const rows = lines.slice(1).map((l) => l.split(/[,\t;]/))
@@ -69,8 +61,7 @@ export default tool({
     }
 
     const totalPoints = Object.keys(pointGroups).length
-    if (totalPoints === 0)
-      return JSON.stringify({ error: "未能从文件中解析到有效的数值数据，请检查文件格式。" })
+    if (totalPoints === 0) return JSON.stringify({ error: "未能从文件中解析到有效的数值数据，请检查文件格式。" })
 
     const cutoff = args.periodDays
     const results = Object.entries(pointGroups).map(([id, vals]) => {
@@ -108,9 +99,7 @@ export default tool({
     })
 
     const exceeded = results.filter((r) => r.exceeded_threshold)
-    const maxCumulative = results.reduce((a, b) =>
-      Math.abs(a.cumulative_mm) > Math.abs(b.cumulative_mm) ? a : b
-    )
+    const maxCumulative = results.reduce((a, b) => (Math.abs(a.cumulative_mm) > Math.abs(b.cumulative_mm) ? a : b))
 
     return JSON.stringify({
       file: path.basename(args.filePath),
@@ -123,10 +112,9 @@ export default tool({
       max_cumulative_mm: maxCumulative.cumulative_mm,
       exceeded_points: exceeded.map((r) => r.point_id),
       summary: results,
-      data_quality_note:
-        results.some((r) => r.removed_outliers > 0)
-          ? `共剔除 ${results.reduce((s, r) => s + r.removed_outliers, 0)} 个异常跳变点（采用 MAD 3σ 方法）`
-          : "原始数据质量良好，无异常值剔除",
+      data_quality_note: results.some((r) => r.removed_outliers > 0)
+        ? `共剔除 ${results.reduce((s, r) => s + r.removed_outliers, 0)} 个异常跳变点（采用 MAD 3σ 方法）`
+        : "原始数据质量良好，无异常值剔除",
     })
   },
 })

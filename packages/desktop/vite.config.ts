@@ -24,12 +24,12 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Split vendor chunks for better caching
-          'solid': ['solid-js'],
-          'tauri': ['@tauri-apps/api'],
-          'railwise-app': ['@railwise/app'],
-          'railwise-ui': ['@railwise/ui']
-        }
-      }
+          solid: ["solid-js"],
+          tauri: ["@tauri-apps/api"],
+          "railwise-app": ["@railwise/app"],
+          "railwise-ui": ["@railwise/ui"],
+        },
+      },
     },
     // Desktop bundles ship Monaco workers and local-first UI assets; keep this
     // threshold aligned with the largest intentional worker chunk.
@@ -38,10 +38,10 @@ export default defineConfig({
     ...(process.env.ANALYZE && {
       rollupOptions: {
         output: {
-          manualChunks: undefined // Let rollup-plugin-visualizer handle this
-        }
-      }
-    })
+          manualChunks: undefined, // Let rollup-plugin-visualizer handle this
+        },
+      },
+    }),
   },
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {

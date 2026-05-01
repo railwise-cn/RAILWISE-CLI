@@ -21,11 +21,7 @@ export const ProviderCommand = cmd({
   command: "provider",
   describe: "manage AI providers",
   builder: (yargs) =>
-    yargs
-      .command(ProviderAddCommand)
-      .command(ProviderListCommand)
-      .command(ProviderRemoveCommand)
-      .demandCommand(),
+    yargs.command(ProviderAddCommand).command(ProviderListCommand).command(ProviderRemoveCommand).demandCommand(),
   async handler() {},
 })
 

@@ -2,7 +2,8 @@ type Json = null | boolean | number | string | Json[] | { [key: string]: Json }
 
 const sensitive = /(?:prompt|content|message|text|raw|input|output|file|filename|path|project|token|secret|key)/i
 const allowed = /^(agent|event|kind|phase|route|source|status|template|type|version)$/
-const pathLike = /(?:[A-Za-z]:\\|\/Users\/|\/home\/|\/var\/|\/tmp\/|\\\\|[\w.-]+\.(?:csv|xlsx|dxf|dwg|pptx|docx|pdf|md|json|ts|tsx|rs))/g
+const pathLike =
+  /(?:[A-Za-z]:\\|\/Users\/|\/home\/|\/var\/|\/tmp\/|\\\\|[\w.-]+\.(?:csv|xlsx|dxf|dwg|pptx|docx|pdf|md|json|ts|tsx|rs))/g
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)

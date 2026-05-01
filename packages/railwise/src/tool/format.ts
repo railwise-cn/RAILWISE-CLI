@@ -36,30 +36,30 @@ type Header = {
 }
 
 const aliases: Record<string, string> = {
-  "点名": "name",
-  "点号": "pointid",
-  "点id": "pointid",
-  "点": "point",
-  "北坐标": "northing",
-  "纵坐标": "northing",
-  "北": "northing",
-  "东坐标": "easting",
-  "横坐标": "easting",
-  "东": "easting",
-  "测站": "station",
-  "起点": "frompoint",
-  "源点": "frompoint",
-  "目标": "target",
-  "照准点": "target",
-  "终点": "topoint",
-  "观测类型": "type",
-  "类型": "type",
-  "观测值": "value",
-  "观测": "observed",
-  "值": "value",
-  "右端": "rhs",
-  "权": "weight",
-  "权重": "weight",
+  点名: "name",
+  点号: "pointid",
+  点id: "pointid",
+  点: "point",
+  北坐标: "northing",
+  纵坐标: "northing",
+  北: "northing",
+  东坐标: "easting",
+  横坐标: "easting",
+  东: "easting",
+  测站: "station",
+  起点: "frompoint",
+  源点: "frompoint",
+  目标: "target",
+  照准点: "target",
+  终点: "topoint",
+  观测类型: "type",
+  类型: "type",
+  观测值: "value",
+  观测: "observed",
+  值: "value",
+  右端: "rhs",
+  权: "weight",
+  权重: "weight",
 }
 
 function num(value: string | undefined) {
@@ -85,7 +85,11 @@ function tokens(line: string) {
 }
 
 function tag(value: string | undefined) {
-  return value?.replace(/^@/, "").replace(/^["']|["']$/g, "").replace(/[:：]$/, "").toLowerCase()
+  return value
+    ?.replace(/^@/, "")
+    .replace(/^["']|["']$/g, "")
+    .replace(/[:：]$/, "")
+    .toLowerCase()
 }
 
 function key(value: string | undefined) {
@@ -104,13 +108,22 @@ function detect(lines: string[], sourceFormat?: SourceFormat) {
   if (has(text, ["nasew", "nasew.dat"]) || lines.some((line) => ["nasew", "na"].includes(key(tokens(line)[0]) ?? ""))) {
     return "nasew-dat"
   }
-  if (has(text, ["南方", "south"]) || lines.some((line) => ["zd", "gc", "南方平差易"].includes(key(tokens(line)[0]) ?? ""))) {
+  if (
+    has(text, ["南方", "south"]) ||
+    lines.some((line) => ["zd", "gc", "南方平差易"].includes(key(tokens(line)[0]) ?? ""))
+  ) {
     return "south-in"
   }
-  if (has(text, ["leica", "lgo"]) || lines.some((line) => ["lgo", "leica", "baseline"].includes(key(tokens(line)[0]) ?? ""))) {
+  if (
+    has(text, ["leica", "lgo"]) ||
+    lines.some((line) => ["lgo", "leica", "baseline"].includes(key(tokens(line)[0]) ?? ""))
+  ) {
     return "lgo-asc"
   }
-  if (has(text, ["trimble", " tbc", "point id"]) || lines.some((line) => ["pointid", "frompoint"].includes(key(tokens(line)[0]) ?? ""))) {
+  if (
+    has(text, ["trimble", " tbc", "point id"]) ||
+    lines.some((line) => ["pointid", "frompoint"].includes(key(tokens(line)[0]) ?? ""))
+  ) {
     return "tbc-csv"
   }
   if (lines.some((line) => ["unknowns", "equation", "eq"].includes(key(tokens(line)[0]) ?? ""))) return "csv"
@@ -193,7 +206,11 @@ function observation(parts: string[], station: string | undefined, table?: Heade
       } satisfies Observation
     }
   }
-  if (station && parts.length >= 3 && ["l", "s", "direction", "distance", "angle", "azimuth"].includes(key(parts[1]) ?? "")) {
+  if (
+    station &&
+    parts.length >= 3 &&
+    ["l", "s", "direction", "distance", "angle", "azimuth"].includes(key(parts[1]) ?? "")
+  ) {
     return {
       station,
       target: parts[0],
@@ -323,7 +340,10 @@ function parse(lines: string[]) {
         observations.push(measured)
         return acc
       }
-      if (useful(parts)) warnings.push(`Line ${index + 1} was skipped because it did not match a supported point, observation, or equation row.`)
+      if (useful(parts))
+        warnings.push(
+          `Line ${index + 1} was skipped because it did not match a supported point, observation, or equation row.`,
+        )
       return acc
     },
     { station: undefined as string | undefined, table: undefined as Header | undefined },
@@ -362,7 +382,10 @@ export const FormatConverterTool = Tool.define("tool_format_converter", {
   description: DESCRIPTION,
   parameters: z.object({
     inputPath: z.string().optional().describe("Source survey file path, relative to the worktree or absolute."),
-    content: z.string().optional().describe("Inline survey file content. Use this for small pasted .in2/.csv snippets."),
+    content: z
+      .string()
+      .optional()
+      .describe("Inline survey file content. Use this for small pasted .in2/.csv snippets."),
     sourceFormat: SourceFormatSchema.optional().describe("Source format. Defaults to auto."),
     targetFormat: z
       .enum(["adjustment-indirect"])

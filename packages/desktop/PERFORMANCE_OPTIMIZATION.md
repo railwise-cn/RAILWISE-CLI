@@ -21,27 +21,27 @@ This document describes the implementation of Task 6: Startup Pipeline Optimizat
 
 ```typescript
 export const DEFAULT_BUDGETS: StartupBudgets = {
-  'app-init': {
-    budget: 500,         // Fast fail for critical setup
+  "app-init": {
+    budget: 500, // Fast fail for critical setup
     maxRetries: 1,
-    retryStrategy: 'restart'
+    retryStrategy: "restart",
   },
-  'sidecar-init': {
-    budget: 2000,        // Kill stuck processes, retry with fresh port
+  "sidecar-init": {
+    budget: 2000, // Kill stuck processes, retry with fresh port
     maxRetries: 2,
-    retryStrategy: 'fallback'
+    retryStrategy: "fallback",
   },
-  'server-connect': {
-    budget: 1000,        // Retry with cached URL, different ports
+  "server-connect": {
+    budget: 1000, // Retry with cached URL, different ports
     maxRetries: 2,
-    retryStrategy: 'fallback'
+    retryStrategy: "fallback",
   },
-  'ui-ready': {
-    budget: 500,         // Degrade gracefully but continue
+  "ui-ready": {
+    budget: 500, // Degrade gracefully but continue
     maxRetries: 1,
-    retryStrategy: 'continue'
+    retryStrategy: "continue",
   },
-  total: { budget: 3000 } // Overall M1 requirement
+  total: { budget: 3000 }, // Overall M1 requirement
 }
 ```
 
@@ -60,21 +60,25 @@ export const DEFAULT_BUDGETS: StartupBudgets = {
 ### 3. Recovery Strategies
 
 #### Sidecar Initialization (`sidecar-init`)
+
 - **Timeout**: Kill stuck processes and retry with fresh port
 - **Max Retries**: 2 attempts
 - **Fallback**: Try alternative ports (3000, 3001, 3002, etc.)
 
 #### Server Connection (`server-connect`)
+
 - **Timeout**: Retry with cached server URL
 - **Max Retries**: 2 attempts with exponential backoff
 - **Fallback**: Use different ports, system-allocated if needed
 
 #### App Initialization (`app-init`)
+
 - **Critical Phase**: Fast fail (500ms budget)
 - **Strategy**: Restart minimal setup only
 - **No Degradation**: Must succeed for app to function
 
 #### UI Ready (`ui-ready`)
+
 - **Strategy**: Continue with degraded experience
 - **Warning**: Log performance issues but don't block
 - **Telemetry**: Collect data for analysis
@@ -82,21 +86,30 @@ export const DEFAULT_BUDGETS: StartupBudgets = {
 ### 4. Enhanced Progress Indication
 
 #### Real-time Progress Mapping
+
 ```typescript
 const calculatePhaseProgress = (phase?: InitPhase): number => {
   switch (phase) {
-    case "app-init": return 15      // Fast initialization
-    case "sidecar-init": return 40  // Major work happening
-    case "server-connect": return 65 // Server connection
-    case "sqlite_waiting": return 80 // Database migration
-    case "ui-ready": return 95       // Almost ready
-    case "done": return 100
-    default: return 5               // Initial state
+    case "app-init":
+      return 15 // Fast initialization
+    case "sidecar-init":
+      return 40 // Major work happening
+    case "server-connect":
+      return 65 // Server connection
+    case "sqlite_waiting":
+      return 80 // Database migration
+    case "ui-ready":
+      return 95 // Almost ready
+    case "done":
+      return 100
+    default:
+      return 5 // Initial state
   }
 }
 ```
 
 #### Chinese User Messages
+
 - 初始化应用程序... (Initializing application...)
 - 启动本地服务器... (Starting local server...)
 - 连接到服务器... (Connecting to server...)
@@ -106,12 +119,14 @@ const calculatePhaseProgress = (phase?: InitPhase): number => {
 ### 5. Bundle Size Optimization
 
 #### Vite Configuration
+
 - Manual chunk splitting for better caching
 - Vendor chunks for solid-js, tauri, railwise components
 - Bundle size warnings for chunks > 1MB
 - Performance analysis script
 
 #### Analysis Tools
+
 - `bun run analyze` - Performance and bundle analysis
 - `bun run build:analyze` - Build and analyze in one command
 - Automatic recommendations for optimization
@@ -119,15 +134,16 @@ const calculatePhaseProgress = (phase?: InitPhase): number => {
 ### 6. Monitoring and Telemetry
 
 #### Startup Metrics
+
 ```typescript
 // Enhanced startup completion reporting
-const statusIcon = report.budgetStatus === 'ok' ? '🚀' :
-                  report.budgetStatus === 'warning' ? '⚠️' : '🚨'
+const statusIcon = report.budgetStatus === "ok" ? "🚀" : report.budgetStatus === "warning" ? "⚠️" : "🚨"
 
 console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <3000ms)`)
 ```
 
 #### Phase Tracking
+
 - Individual phase performance logging
 - Budget compliance tracking
 - Retry attempt monitoring
@@ -135,29 +151,32 @@ console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}m
 
 ## Performance Targets
 
-| Phase | Budget | Strategy | Purpose |
-|-------|--------|----------|---------|
-| app-init | 500ms | restart | Critical setup only |
-| sidecar-init | 2000ms | fallback | Kill stuck, retry fresh port |
-| server-connect | 1000ms | fallback | Cached URL, retry ports |
-| ui-ready | 500ms | continue | Degrade gracefully |
-| **Total** | **3000ms** | **hybrid** | **M1 Foundation requirement** |
+| Phase          | Budget     | Strategy   | Purpose                       |
+| -------------- | ---------- | ---------- | ----------------------------- |
+| app-init       | 500ms      | restart    | Critical setup only           |
+| sidecar-init   | 2000ms     | fallback   | Kill stuck, retry fresh port  |
+| server-connect | 1000ms     | fallback   | Cached URL, retry ports       |
+| ui-ready       | 500ms      | continue   | Degrade gracefully            |
+| **Total**      | **3000ms** | **hybrid** | **M1 Foundation requirement** |
 
 ## User Experience Impact
 
 ### Normal Operation (< 3s)
+
 - Smooth progress indication
 - Real-time phase updates
 - Clear Chinese messaging
 - Successful startup notification
 
 ### Performance Issues (> 3s)
+
 - Continue operation with warnings
 - Show helpful recovery messages
 - Log telemetry for analysis
 - Graceful degradation
 
 ### Failure Recovery
+
 - Automatic retry attempts
 - Fallback port allocation
 - Server URL caching
@@ -166,6 +185,7 @@ console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}m
 ## Testing and Validation
 
 ### Performance Analysis
+
 ```bash
 # Build and analyze bundle sizes
 bun run build:analyze
@@ -178,6 +198,7 @@ bun run dev
 ```
 
 ### Expected Output
+
 ```
 🚀 RAILWISE Desktop ready in 2847ms (target: <3000ms)
   ✅ app-init: 123ms (budget: 500ms)

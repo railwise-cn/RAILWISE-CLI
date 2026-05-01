@@ -5,36 +5,25 @@ import { tool } from "nb-railwise/tool"
 type Matrix = number[][]
 
 const mat = {
-  zeros: (r: number, c: number): Matrix =>
-    Array.from({ length: r }, () => Array(c).fill(0) as number[]),
+  zeros: (r: number, c: number): Matrix => Array.from({ length: r }, () => Array(c).fill(0) as number[]),
 
   identity: (n: number): Matrix =>
     Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))),
 
-  transpose: (a: Matrix): Matrix =>
-    a[0]!.map((_, j) => a.map((row) => row[j]!)),
+  transpose: (a: Matrix): Matrix => a[0]!.map((_, j) => a.map((row) => row[j]!)),
 
   mul: (a: Matrix, b: Matrix): Matrix =>
-    a.map((row) =>
-      b[0]!.map((_, j) =>
-        row.reduce((sum, val, k) => sum + val * b[k]![j]!, 0),
-      ),
-    ),
+    a.map((row) => b[0]!.map((_, j) => row.reduce((sum, val, k) => sum + val * b[k]![j]!, 0))),
 
-  mulVec: (a: Matrix, v: number[]): number[] =>
-    a.map((row) => row.reduce((sum, val, k) => sum + val * v[k]!, 0)),
+  mulVec: (a: Matrix, v: number[]): number[] => a.map((row) => row.reduce((sum, val, k) => sum + val * v[k]!, 0)),
 
   invert: (src: Matrix): Matrix | null => {
     const n = src.length
-    const aug = src.map((row, i) => [
-      ...row,
-      ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)),
-    ])
+    const aug = src.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))])
     for (let col = 0; col < n; col++) {
       let pivotRow = col
       for (let row = col + 1; row < n; row++) {
-        if (Math.abs(aug[row]![col]!) > Math.abs(aug[pivotRow]![col]!))
-          pivotRow = row
+        if (Math.abs(aug[row]![col]!) > Math.abs(aug[pivotRow]![col]!)) pivotRow = row
       }
       if (Math.abs(aug[pivotRow]![col]!) < 1e-15) return null
       ;[aug[col], aug[pivotRow]] = [aug[pivotRow]!, aug[col]!]
@@ -43,8 +32,7 @@ const mat = {
       for (let row = 0; row < n; row++) {
         if (row === col) continue
         const factor = aug[row]![col]!
-        for (let j = col; j < 2 * n; j++)
-          aug[row]![j]! -= factor * aug[col]![j]!
+        for (let j = col; j < 2 * n; j++) aug[row]![j]! -= factor * aug[col]![j]!
       }
     }
     return aug.map((row) => row.slice(n))
@@ -185,8 +173,8 @@ export const plane_network_adjustment = tool({
 
           const azL = azimuth(pS.x, pS.y, pL.x, pL.y)
           const azR = azimuth(pS.x, pS.y, pR.x, pR.y)
-          const computed = ((azR - azL + 360) % 360)
-          const l = (obs.angle - computed) * Math.PI / 180
+          const computed = (azR - azL + 360) % 360
+          const l = ((obs.angle - computed) * Math.PI) / 180
 
           const Arow = new Array(u).fill(0)
           const rho = 206264.806
@@ -217,7 +205,7 @@ export const plane_network_adjustment = tool({
             Arow[sIdx * 2 + 1] = dAzR_dy - dAzL_dy
           }
 
-          const sigmaRad = (obs.sigma / rho)
+          const sigmaRad = obs.sigma / rho
           obsRows.push({
             Arow,
             l,
@@ -235,7 +223,9 @@ export const plane_network_adjustment = tool({
 
       const A = obsRows.map((r) => r.Arow)
       const P = mat.zeros(n, n)
-      obsRows.forEach((r, i) => { P[i]![i] = r.weight })
+      obsRows.forEach((r, i) => {
+        P[i]![i] = r.weight
+      })
       const L = obsRows.map((r) => r.l)
 
       const AT = mat.transpose(A)
@@ -269,9 +259,10 @@ export const plane_network_adjustment = tool({
           residualsList.push({
             type: obsRows[i]!.type,
             obs: obsRows[i]!.label,
-            residual: obsRows[i]!.type === "distance"
-              ? Number((V[i]! * 1000).toFixed(3))
-              : Number((V[i]! * 206264.806).toFixed(2)),
+            residual:
+              obsRows[i]!.type === "distance"
+                ? Number((V[i]! * 1000).toFixed(3))
+                : Number((V[i]! * 206264.806).toFixed(2)),
           })
         }
         break
@@ -400,10 +391,8 @@ export const network_design = tool({
     if (redundancy < 1) assessment.push("❌ 多余观测不足，无法进行平差检核")
     if (weakPoints.length > 0)
       assessment.push(`⚠️ ${weakPoints.map((w) => w.id).join(",")} 连接数不足2条，建议增加观测`)
-    if (knownPoints.length < 2)
-      assessment.push("⚠️ 已知点不足2个，网形可能不稳定")
-    if (assessment.length === 0)
-      assessment.push("✅ 网形设计基本合理")
+    if (knownPoints.length < 2) assessment.push("⚠️ 已知点不足2个，网形可能不稳定")
+    if (assessment.length === 0) assessment.push("✅ 网形设计基本合理")
 
     return JSON.stringify({
       total_points: args.points.length,

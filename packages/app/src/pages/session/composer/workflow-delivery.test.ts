@@ -74,9 +74,7 @@ describe("workflow delivery helpers", () => {
     const broken: WorkflowDeliveryArchive = {
       ...archive,
       fileCount: undefined,
-      files: archive.files?.map((file) =>
-        file.kind === "artifact" ? { ...file, copied: false } : file,
-      ),
+      files: archive.files?.map((file) => (file.kind === "artifact" ? { ...file, copied: false } : file)),
     }
 
     expect(deliveryFileCount(broken)).toBe(2)

@@ -79,13 +79,17 @@ function solve(lhs: number[][], rhs: number[]) {
 }
 
 function inverse(lhs: number[][]) {
-  return lhs.map((_, index) => solve(lhs, lhs.map((__, j) => (j === index ? 1 : 0))))
+  return lhs.map((_, index) =>
+    solve(
+      lhs,
+      lhs.map((__, j) => (j === index ? 1 : 0)),
+    ),
+  )
 }
 
 function quadratic(matrix: number[][], vector: number[]) {
   return vector.reduce(
-    (acc, value, i) =>
-      acc + value * vector.reduce((sum, item, j) => sum + item * (matrix[i]?.[j] ?? 0), 0),
+    (acc, value, i) => acc + value * vector.reduce((sum, item, j) => sum + item * (matrix[i]?.[j] ?? 0), 0),
     0,
   )
 }
@@ -99,7 +103,9 @@ function indirect(input: { unknowns: string[]; equations: Equation[] }) {
   const weights = input.equations.map((equation) => equation.weight ?? 1)
   const system = normal({ matrix, observed, weights })
   const values = solve(system.lhs, system.rhs)
-  const residuals = matrix.map((item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index])
+  const residuals = matrix.map(
+    (item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index],
+  )
   const weightedResidualSum = residuals.reduce((acc, residual, index) => acc + weights[index] * residual ** 2, 0)
   const degreesOfFreedom = input.equations.length - input.unknowns.length
   const sigma0 = degreesOfFreedom > 0 ? Math.sqrt(weightedResidualSum / degreesOfFreedom) : 0
@@ -132,7 +138,8 @@ function free(input: { unknowns: string[]; equations: Equation[]; constraints: C
   }
   const known = new Set(input.unknowns)
   const missing = input.constraints.flatMap((item) => Object.keys(item.coefficients)).filter((name) => !known.has(name))
-  if (missing.length) throw new Error(`datum constraints reference unknown parameters: ${[...new Set(missing)].join(", ")}`)
+  if (missing.length)
+    throw new Error(`datum constraints reference unknown parameters: ${[...new Set(missing)].join(", ")}`)
 
   const matrix = input.equations.map((equation) => row(equation, input.unknowns))
   const observed = input.equations.map((equation) => equation.observed)
@@ -145,11 +152,15 @@ function free(input: { unknowns: string[]; equations: Equation[]; constraints: C
   ]
   const solution = solve(lhs, [...system.rhs, ...input.constraints.map((item) => item.value ?? 0)])
   const values = solution.slice(0, input.unknowns.length)
-  const residuals = matrix.map((item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index])
+  const residuals = matrix.map(
+    (item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index],
+  )
   const weightedResidualSum = residuals.reduce((acc, residual, index) => acc + weights[index] * residual ** 2, 0)
   const degreesOfFreedom = input.equations.length - input.unknowns.length + input.constraints.length
   const sigma0 = degreesOfFreedom > 0 ? Math.sqrt(weightedResidualSum / degreesOfFreedom) : 0
-  const qxx = inverse(lhs).slice(0, input.unknowns.length).map((item) => item.slice(0, input.unknowns.length))
+  const qxx = inverse(lhs)
+    .slice(0, input.unknowns.length)
+    .map((item) => item.slice(0, input.unknowns.length))
   return {
     method: "constrained_free_network_adjustment",
     unknowns: input.unknowns.map((name, index) => ({
@@ -190,10 +201,14 @@ function variance(input: { unknowns: string[]; equations: VarianceEquation[]; re
   const system = normal({ matrix, observed, weights })
   const values = solve(system.lhs, system.rhs)
   const qxx = inverse(system.lhs)
-  const residuals = matrix.map((item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index])
+  const residuals = matrix.map(
+    (item, index) => item.reduce((acc, value, j) => acc + value * values[j], 0) - observed[index],
+  )
   const redundancy = matrix.map((item, index) => Math.max(0, 1 - weights[index] * quadratic(qxx, item)))
   const components = groups.map((name) => {
-    const indexes = input.equations.map((equation, index) => ((equation.group ?? "default") === name ? index : -1)).filter((index) => index >= 0)
+    const indexes = input.equations
+      .map((equation, index) => ((equation.group ?? "default") === name ? index : -1))
+      .filter((index) => index >= 0)
     const weightedResidualSum = indexes.reduce((acc, index) => acc + weights[index] * residuals[index] ** 2, 0)
     const redundancySum = indexes.reduce((acc, index) => acc + redundancy[index], 0)
     const varianceFactor = redundancySum > 1e-12 ? weightedResidualSum / redundancySum : undefined
@@ -209,7 +224,8 @@ function variance(input: { unknowns: string[]; equations: VarianceEquation[]; re
     (input.referenceGroup ? components.find((component) => component.name === input.referenceGroup) : undefined) ??
     components.find((component) => (component.varianceFactor ?? 0) > 0)
   if (input.referenceGroup && !reference) throw new Error(`reference group not found: ${input.referenceGroup}`)
-  if (!reference?.varianceFactor || reference.varianceFactor <= 0) throw new Error("reference variance component is not estimable")
+  if (!reference?.varianceFactor || reference.varianceFactor <= 0)
+    throw new Error("reference variance component is not estimable")
   const referenceVariance = reference.varianceFactor
   const weightedResidualSum = residuals.reduce((acc, residual, index) => acc + weights[index] * residual ** 2, 0)
   const degreesOfFreedom = input.equations.length - input.unknowns.length
@@ -233,7 +249,8 @@ function variance(input: { unknowns: string[]; equations: VarianceEquation[]; re
       redundancy: component.redundancy,
       weightedResidualSum: component.weightedResidualSum,
       varianceFactor: component.varianceFactor ?? null,
-      standardDeviationFactor: component.varianceFactor === undefined ? null : Math.sqrt(Math.max(component.varianceFactor, 0)),
+      standardDeviationFactor:
+        component.varianceFactor === undefined ? null : Math.sqrt(Math.max(component.varianceFactor, 0)),
       relativeVarianceFactor:
         component.varianceFactor === undefined ? null : component.varianceFactor / referenceVariance,
       suggestedWeightFactor:
@@ -295,10 +312,7 @@ function factor(input: { statistic: number; k0: number; k1: number; floor: numbe
   const value = Math.abs(input.statistic)
   if (value <= input.k0) return 1
   if (value >= input.k1) return input.floor
-  return Math.min(
-    1,
-    Math.max(input.floor, (input.k0 / value) * ((input.k1 - value) / (input.k1 - input.k0)) ** 2),
-  )
+  return Math.min(1, Math.max(input.floor, (input.k0 / value) * ((input.k1 - value) / (input.k1 - input.k0)) ** 2))
 }
 
 function weighted(input: { equations: Equation[]; weights: number[] }) {
@@ -308,9 +322,13 @@ function weighted(input: { equations: Equation[]; weights: number[] }) {
   }))
 }
 
-function tests(input: { residuals: { name: string; residual: number; weight: number }[]; sigma0: number; base: number[] }) {
+function tests(input: {
+  residuals: { name: string; residual: number; weight: number }[]
+  sigma0: number
+  base: number[]
+}) {
   return input.residuals.map((item, index) => {
-    const statistic = input.sigma0 > 0 ? Math.abs(item.residual) * Math.sqrt(item.weight) / input.sigma0 : 0
+    const statistic = input.sigma0 > 0 ? (Math.abs(item.residual) * Math.sqrt(item.weight)) / input.sigma0 : 0
     return {
       name: item.name,
       residual: item.residual,
@@ -461,7 +479,11 @@ export const VarianceComponentTool = Tool.define("tool_variance_component", {
       .array(
         z.object({
           name: z.string().optional(),
-          group: z.string().min(1).optional().describe("Observation type or variance group, e.g. distance, angle, gnss."),
+          group: z
+            .string()
+            .min(1)
+            .optional()
+            .describe("Observation type or variance group, e.g. distance, angle, gnss."),
           coefficients: z.record(z.string(), z.number()).describe("Design row coefficients by unknown name."),
           observed: z.number().describe("Observed value on the right-hand side of the equation."),
           weight: z.number().positive().optional().describe("Base observation weight. Defaults to 1."),
@@ -601,7 +623,9 @@ export const AdjustmentConditionTool = Tool.define("tool_adjustment_condition", 
           name: z.string().optional(),
           coefficients: z
             .record(z.string(), z.number())
-            .describe("Condition coefficients by observation name. The adjusted observations must satisfy sum(a_i * L_i) + constant = 0."),
+            .describe(
+              "Condition coefficients by observation name. The adjusted observations must satisfy sum(a_i * L_i) + constant = 0.",
+            ),
           constant: z.number().optional().describe("Constant term in the condition equation. Defaults to 0."),
         }),
       )
@@ -617,7 +641,8 @@ export const AdjustmentConditionTool = Tool.define("tool_adjustment_condition", 
     const missing = params.conditions
       .flatMap((condition) => Object.keys(condition.coefficients))
       .filter((name) => !names.has(name))
-    if (missing.length) throw new Error(`condition references unknown observations: ${[...new Set(missing)].join(", ")}`)
+    if (missing.length)
+      throw new Error(`condition references unknown observations: ${[...new Set(missing)].join(", ")}`)
 
     const matrix = params.conditions.map((condition) =>
       params.observations.map((observation) => condition.coefficients[observation.name] ?? 0),
@@ -640,7 +665,10 @@ export const AdjustmentConditionTool = Tool.define("tool_adjustment_condition", 
       (item, index) =>
         item.reduce((acc, value, j) => acc + value * adjusted[j], 0) + (params.conditions[index]?.constant ?? 0),
     )
-    const weightedCorrectionSum = corrections.reduce((acc, correction, index) => acc + weights[index] * correction ** 2, 0)
+    const weightedCorrectionSum = corrections.reduce(
+      (acc, correction, index) => acc + weights[index] * correction ** 2,
+      0,
+    )
     const sigma0 = Math.sqrt(weightedCorrectionSum / params.conditions.length)
     const result = {
       observations: params.observations.map((observation, index) => ({

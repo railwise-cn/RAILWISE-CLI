@@ -22,8 +22,22 @@
     "name": "投标方案流水线",
     "description": "方案架构与商务报价并行编制，汇聚到技术写作后进入质量复核。",
     "nodes": [
-      { "id": "n1", "agent": "solution_architect", "label": "方案架构师", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 100 },
-      { "id": "n2", "agent": "commercial_specialist", "label": "商务专员", "color": "rgb(95,70,24)", "x": 60, "y": 260 },
+      {
+        "id": "n1",
+        "agent": "solution_architect",
+        "label": "方案架构师",
+        "color": "rgba(117,86,32,0.9)",
+        "x": 60,
+        "y": 100
+      },
+      {
+        "id": "n2",
+        "agent": "commercial_specialist",
+        "label": "商务专员",
+        "color": "rgb(95,70,24)",
+        "x": 60,
+        "y": 260
+      },
       { "id": "n3", "agent": "technical_writer", "label": "技术写作", "color": "rgb(47,38,24)", "x": 280, "y": 180 },
       { "id": "n4", "agent": "qa_reviewer", "label": "QA 复核", "color": "rgba(117,86,32,0.9)", "x": 480, "y": 180 }
     ],
@@ -38,7 +52,14 @@
     "name": "项目汇报 PPT 流水线",
     "description": "方案架构师提炼结构，PPT 大师制作幻灯片，QA 复核把关。",
     "nodes": [
-      { "id": "n1", "agent": "solution_architect", "label": "方案架构师", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
+      {
+        "id": "n1",
+        "agent": "solution_architect",
+        "label": "方案架构师",
+        "color": "rgba(117,86,32,0.9)",
+        "x": 60,
+        "y": 180
+      },
       { "id": "n2", "agent": "ppt_master", "label": "PPT 大师", "color": "rgb(95,70,24)", "x": 260, "y": 180 },
       { "id": "n3", "agent": "qa_reviewer", "label": "QA 复核", "color": "rgba(117,86,32,0.9)", "x": 460, "y": 180 }
     ],

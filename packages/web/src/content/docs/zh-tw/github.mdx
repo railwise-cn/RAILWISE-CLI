@@ -106,8 +106,8 @@ Railwise 可以由以下 GitHub 事件觸發：
 
 | 事件類型                      | 觸發方式                       | 詳情                                                                                      |
 | ----------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------- |
-| `issue_comment`               | 在 Issue 或 PR 上發表評論      | 在評論中提及 `/railwise`。Railwise 會讀取上下文，並可建立分支、提交 PR 或回覆。  |
-| `pull_request_review_comment` | 在 PR 中對特定程式碼行發表評論 | 在程式碼審查時提及 `/railwise`。Railwise 會接收檔案路徑、行號和 diff 上下文。    |
+| `issue_comment`               | 在 Issue 或 PR 上發表評論      | 在評論中提及 `/railwise`。Railwise 會讀取上下文，並可建立分支、提交 PR 或回覆。           |
+| `pull_request_review_comment` | 在 PR 中對特定程式碼行發表評論 | 在程式碼審查時提及 `/railwise`。Railwise 會接收檔案路徑、行號和 diff 上下文。             |
 | `issues`                      | Issue 被建立或編輯             | 在 Issue 建立或修改時自動觸發 Railwise。需要提供 `prompt` 輸入。                          |
 | `pull_request`                | PR 被建立或更新                | 在 PR 被開啟、同步或重新開啟時自動觸發 Railwise。適用於自動化審查情境。                   |
 | `schedule`                    | 基於 Cron 的定時任務           | 按排程執行 Railwise。需要提供 `prompt` 輸入。輸出會寫入日誌和 PR（沒有 Issue 可供評論）。 |

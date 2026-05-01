@@ -6,9 +6,24 @@ import { ModelsDev } from "../../provider/models"
 import { Config } from "../../config/config"
 
 const PROVIDERS: { id: string; hint: string; register?: string; note?: string }[] = [
-  { id: "zhipuai", hint: "智谱 GLM — 永久免费", register: "https://open.bigmodel.cn", note: "glm-4-flash / glm-z1-flash 永久免费，零成本起步首选" },
-  { id: "deepseek", hint: "DeepSeek — 注册送 500 万 tokens", register: "https://platform.deepseek.com", note: "数学推理最强的国产模型" },
-  { id: "kimi", hint: "Kimi — 注册送免费额度", register: "https://platform.moonshot.cn", note: "131K 长上下文，中文能力优秀" },
+  {
+    id: "zhipuai",
+    hint: "智谱 GLM — 永久免费",
+    register: "https://open.bigmodel.cn",
+    note: "glm-4-flash / glm-z1-flash 永久免费，零成本起步首选",
+  },
+  {
+    id: "deepseek",
+    hint: "DeepSeek — 注册送 500 万 tokens",
+    register: "https://platform.deepseek.com",
+    note: "数学推理最强的国产模型",
+  },
+  {
+    id: "kimi",
+    hint: "Kimi — 注册送免费额度",
+    register: "https://platform.moonshot.cn",
+    note: "131K 长上下文，中文能力优秀",
+  },
   { id: "minimax", hint: "MiniMax — 注册送免费额度", register: "https://platform.minimaxi.com", note: "百万上下文" },
   { id: "anthropic", hint: "Anthropic Claude — 付费", register: "https://console.anthropic.com" },
   { id: "openai", hint: "OpenAI GPT — 付费", register: "https://platform.openai.com" },

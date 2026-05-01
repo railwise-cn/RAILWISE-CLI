@@ -16,7 +16,9 @@ export function ActiveAgents(props: { agents: ActiveAgent[] }) {
                 <span />
                 <div>
                   <strong>{agent.agentName}</strong>
-                  <small>{agent.status === "waiting" ? "等待重试" : agent.status === "error" ? "异常" : "运行中"}</small>
+                  <small>
+                    {agent.status === "waiting" ? "等待重试" : agent.status === "error" ? "异常" : "运行中"}
+                  </small>
                 </div>
               </li>
             )}

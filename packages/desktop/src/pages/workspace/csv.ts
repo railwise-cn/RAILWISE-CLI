@@ -4,8 +4,8 @@ export function parseCsv(input: string): TableData {
   const parsed = rows(input)
   const [head, ...body] = parsed.filter((row) => row.some((cell) => cell.trim().length > 0))
   const width = Math.max(...parsed.map((row) => row.length), 1)
-  const columns = (head?.length ? head : Array.from({ length: width }, (_, index) => `列 ${index + 1}`)).map((cell, index) =>
-    cell.trim() || `列 ${index + 1}`,
+  const columns = (head?.length ? head : Array.from({ length: width }, (_, index) => `列 ${index + 1}`)).map(
+    (cell, index) => cell.trim() || `列 ${index + 1}`,
   )
 
   return {

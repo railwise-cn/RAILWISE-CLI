@@ -403,8 +403,7 @@
   min-height: 0;
   background:
     linear-gradient(90deg, rgba(21, 23, 17, 0.05) 1px, transparent 1px),
-    linear-gradient(rgba(21, 23, 17, 0.05) 1px, transparent 1px),
-    #fbfbf8;
+    linear-gradient(rgba(21, 23, 17, 0.05) 1px, transparent 1px), #fbfbf8;
   background-size: 28px 28px;
 }
 

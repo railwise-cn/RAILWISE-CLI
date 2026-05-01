@@ -161,7 +161,13 @@ describe("server.routes.agent-studio", () => {
           expect(result.prompt).toContain("n3 -> n4: 技术报告初稿")
           expect(result.prompt).toContain("n4 -> n5: 审核意见与终稿")
           expect(result.prompt).toContain("请先输出 WBS、并行/串行关系、质量闸门和预期成果")
-          expect(result.agentNames).toEqual(["qa_inspector", "data_analyst", "technical_writer", "qa_reviewer", "chief_manager"])
+          expect(result.agentNames).toEqual([
+            "qa_inspector",
+            "data_analyst",
+            "technical_writer",
+            "qa_reviewer",
+            "chief_manager",
+          ])
           expect(result.agentNames).toContain("chief_manager")
 
           const session = await Session.get(result.sessionId)
@@ -591,9 +597,7 @@ describe("server.routes.agent-studio", () => {
       await Instance.provide({
         directory: tmp.path,
         fn: async () => {
-          const response = await AgentStudioRoutes().request(
-            "http://railwise.test/workflow/check/cpiii-resurvey-wiki",
-          )
+          const response = await AgentStudioRoutes().request("http://railwise.test/workflow/check/cpiii-resurvey-wiki")
           const result = (await response.json()) as {
             ok: boolean
             checks: { id: string; status: string; detail: string }[]

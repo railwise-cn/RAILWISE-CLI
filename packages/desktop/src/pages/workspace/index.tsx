@@ -193,7 +193,14 @@ export default function WorkspacePage() {
           />
         </div>
         <div class="workspace-files" data-testid="workspace-file-list">
-          <Show when={groups().length > 0} fallback={<p class="workspace-muted">暂无最近文件。点击“打开文件”导入 CSV、XLSX、DXF、DWG、PPTX、DOCX、PDF 或 Markdown。</p>}>
+          <Show
+            when={groups().length > 0}
+            fallback={
+              <p class="workspace-muted">
+                暂无最近文件。点击“打开文件”导入 CSV、XLSX、DXF、DWG、PPTX、DOCX、PDF 或 Markdown。
+              </p>
+            }
+          >
             <For each={groups()}>
               {(group) => (
                 <section class="workspace-file-group">
@@ -241,7 +248,12 @@ export default function WorkspacePage() {
             <button type="button" data-testid="open-native-btn" onClick={() => openNative()} disabled={!selected()}>
               系统打开
             </button>
-            <button type="button" data-testid="send-to-agent-btn" onClick={() => sendToAgent()} disabled={!selected() || state.sending}>
+            <button
+              type="button"
+              data-testid="send-to-agent-btn"
+              onClick={() => sendToAgent()}
+              disabled={!selected() || state.sending}
+            >
               {state.sending ? "发送中" : "发送到 Agent"}
             </button>
           </div>
@@ -367,7 +379,11 @@ function ContextMenu(props: {
   return (
     <Show when={props.file && props.x !== undefined && props.y !== undefined ? props.file : undefined}>
       {(file) => (
-        <div class="workspace-context" style={{ left: `${props.x}px`, top: `${props.y}px` }} onClick={(event) => event.stopPropagation()}>
+        <div
+          class="workspace-context"
+          style={{ left: `${props.x}px`, top: `${props.y}px` }}
+          onClick={(event) => event.stopPropagation()}
+        >
           <button type="button" onClick={() => props.onOpen(file())}>
             系统打开
           </button>
@@ -396,9 +412,7 @@ function PreviewPane(props: { file?: WorkspaceFile; preview: Preview }) {
             <Match when={props.preview.loading}>
               <div class="workspace-preview__loading">正在解析 {file().name}</div>
             </Match>
-            <Match when={props.preview.error}>
-              {(error) => <div class="workspace-preview__error">{error()}</div>}
-            </Match>
+            <Match when={props.preview.error}>{(error) => <div class="workspace-preview__error">{error()}</div>}</Match>
             <Match when={props.preview.table}>
               {(table) => (
                 <div class="workspace-preview__body">
@@ -586,7 +600,12 @@ function DxfPreview(props: { doc: DxfDocument }) {
           {(layer) => (
             <label class="workspace-layer" data-testid="layer-item" data-visible={visible(layer.name)}>
               <span>{layer.name}</span>
-              <input data-testid="layer-toggle" type="checkbox" checked={visible(layer.name)} onChange={() => toggle(layer.name)} />
+              <input
+                data-testid="layer-toggle"
+                type="checkbox"
+                checked={visible(layer.name)}
+                onChange={() => toggle(layer.name)}
+              />
             </label>
           )}
         </For>
@@ -615,11 +634,29 @@ function renderDxf(entity: DxfEntity, visible: (layer: string) => boolean) {
   const stroke = aci(entity.color)
 
   if (entity.kind === "line") {
-    return <line x1={entity.start.x} y1={entity.start.y} x2={entity.end.x} y2={entity.end.y} stroke={stroke} stroke-width="0.8" />
+    return (
+      <line
+        x1={entity.start.x}
+        y1={entity.start.y}
+        x2={entity.end.x}
+        y2={entity.end.y}
+        stroke={stroke}
+        stroke-width="0.8"
+      />
+    )
   }
 
   if (entity.kind === "circle") {
-    return <circle cx={entity.center.x} cy={entity.center.y} r={entity.radius} fill="none" stroke={stroke} stroke-width="0.8" />
+    return (
+      <circle
+        cx={entity.center.x}
+        cy={entity.center.y}
+        r={entity.radius}
+        fill="none"
+        stroke={stroke}
+        stroke-width="0.8"
+      />
+    )
   }
 
   if (entity.kind === "arc") {
@@ -724,7 +761,12 @@ function PptxPreview(props: { images: OfficeImage[] }) {
       <div class="workspace-slides">
         <For each={props.images}>
           {(image) => (
-            <button type="button" class="workspace-slide" data-active={image.path === state.selected} onClick={() => setState("selected", image.path)}>
+            <button
+              type="button"
+              class="workspace-slide"
+              data-active={image.path === state.selected}
+              onClick={() => setState("selected", image.path)}
+            >
               <img src={convertFileSrc(image.path)} alt={image.name} />
               <span>{image.name}</span>
             </button>

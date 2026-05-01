@@ -57,7 +57,12 @@ function handle(frame: string) {
   const event = payload(text)
   if (!event) return
 
-  const type = typeof event.payload?.type === "string" ? event.payload.type : typeof event.type === "string" ? event.type : "unknown"
+  const type =
+    typeof event.payload?.type === "string"
+      ? event.payload.type
+      : typeof event.type === "string"
+        ? event.type
+        : "unknown"
   last = Date.now()
   count += 1
   connected ||= type === "server.connected"
@@ -80,12 +85,15 @@ const finish = setTimeout(() => {
   abort.abort()
 }, duration)
 
-const monitor = setInterval(() => {
-  const elapsed = Date.now() - last
-  if (elapsed <= timeout) return
-  failed = `no SSE event received for ${elapsed}ms`
-  abort.abort()
-}, Math.min(1_000, timeout))
+const monitor = setInterval(
+  () => {
+    const elapsed = Date.now() - last
+    if (elapsed <= timeout) return
+    failed = `no SSE event received for ${elapsed}ms`
+    abort.abort()
+  },
+  Math.min(1_000, timeout),
+)
 
 async function main() {
   console.log(`SSE soak: ${url.toString()} for ${Math.round(duration / 1_000)}s`)

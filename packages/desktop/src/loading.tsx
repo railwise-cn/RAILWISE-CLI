@@ -34,11 +34,11 @@ const MIGRATION_DELAYS = [3000, 9000]
 type InitPhase =
   | "server_waiting" // From bindings.ts InitStep
   | "sqlite_waiting" // From bindings.ts InitStep
-  | "done"           // From bindings.ts InitStep
-  | "app-init"       // Enhanced phase for M1 Foundation
-  | "sidecar-init"   // Extended phase for UI consistency
+  | "done" // From bindings.ts InitStep
+  | "app-init" // Enhanced phase for M1 Foundation
+  | "sidecar-init" // Extended phase for UI consistency
   | "server-connect" // Extended phase
-  | "ui-ready"       // Extended phase
+  | "ui-ready" // Extended phase
 
 // Enhanced Loading Component with phase-based messaging for M1 Foundation
 interface LoadingProps {
@@ -119,7 +119,7 @@ const Loading = (props: LoadingProps) => {
 
         // Ease-out animation
         const easedRatio = 1 - Math.pow(1 - progressRatio, 3)
-        const newProgress = startProgress + (progressDiff * easedRatio)
+        const newProgress = startProgress + progressDiff * easedRatio
 
         setProgress(Math.min(newProgress, PROGRESS_CAP_PERCENT))
 
@@ -156,10 +156,7 @@ const Loading = (props: LoadingProps) => {
 
         <div class="loading-progress">
           <div class="progress-bar">
-            <div
-              class="progress-fill"
-              style={`width: ${progress()}%`}
-            />
+            <div class="progress-fill" style={`width: ${progress()}%`} />
           </div>
           <p class="loading-message">{getPhaseMessage(props.phase)}</p>
         </div>
@@ -219,7 +216,7 @@ render(() => {
       }
       // Map phases to M1 Foundation specifications (standardized phase names)
       switch (phase()) {
-        case "sidecar-init":  // Standardized to match UI naming convention
+        case "sidecar-init": // Standardized to match UI naming convention
           return t("desktop.loading.starting")
         case "server-connect":
           return t("desktop.loading.connecting")

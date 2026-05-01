@@ -161,9 +161,7 @@ export default function WorkspaceDiffPage() {
           </Show>
         </section>
 
-        <Show when={state.sendStatus}>
-          {(status) => <div class="workspace-diff-status">{status()}</div>}
-        </Show>
+        <Show when={state.sendStatus}>{(status) => <div class="workspace-diff-status">{status()}</div>}</Show>
       </section>
     </main>
   )
@@ -209,7 +207,11 @@ function tableText(input: string) {
 }
 
 function strip(input: string) {
-  return input.replace(/<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
+  return input
+    .replace(/<style[\s\S]*?<\/style>/g, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
 }
 
 function mode(left: string, right: string): Mode {

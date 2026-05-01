@@ -73,9 +73,7 @@ export default function AgentsPage() {
       </Show>
 
       <section class="agent-grid" aria-busy={loading()}>
-        <For each={filtered()}>
-          {(agent) => <AgentCard agent={agent} />}
-        </For>
+        <For each={filtered()}>{(agent) => <AgentCard agent={agent} />}</For>
       </section>
 
       <Show when={!loading() && filtered().length === 0}>

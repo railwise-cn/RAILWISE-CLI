@@ -13,21 +13,25 @@
 ## File Structure Overview
 
 **Brand & Configuration:**
+
 - Modify: `packages/desktop/src-tauri/tauri.conf.json` - App metadata and bundle config
 - Modify: `packages/desktop/src/menu.ts` - Menu branding consistency
 - Audit: `packages/desktop/src-tauri/icons/railwise/` - Visual assets verification
 
 **Internationalization:**
+
 - Modify: `packages/desktop/src/i18n/zh.ts` - Complete Chinese translations
 - Modify: `packages/desktop/src/index.tsx` - Error message localization
 - Modify: `packages/desktop/src/loading.tsx` - Loading state Chinese text
 
 **Performance Optimization:**
+
 - Modify: `packages/desktop/src/index.tsx` - Startup timing and optimization
 - Create: `packages/desktop/src/performance.ts` - Startup performance monitoring
 - Modify: `packages/desktop/src/loading.tsx` - Enhanced splash with progress
 
 **Visual Token Compliance:**
+
 - Modify: `packages/desktop/src/styles.css` - Design token system and color audit
 - Create: `packages/desktop/src/tokens.css` - Centralized design token definitions
 
@@ -36,6 +40,7 @@
 ### Task 1: App Brand Configuration
 
 **Files:**
+
 - Modify: `packages/desktop/src-tauri/tauri.conf.json`
 - Verify: `packages/desktop/src-tauri/icons/railwise/`
 
@@ -96,6 +101,7 @@ git commit -m "feat(desktop): update app branding to RAILWISE 智测工作台 fo
 ### Task 2: Complete Chinese Menu Localization
 
 **Files:**
+
 - Modify: `packages/desktop/src/i18n/zh.ts`
 - Modify: `packages/desktop/src/menu.ts`
 
@@ -143,7 +149,7 @@ export const dict = {
   "desktop.loading.starting": "正在启动 RAILWISE 核心服务...",
   "desktop.loading.connecting": "正在连接服务器...",
   "desktop.loading.initializing": "正在初始化界面...",
-  "desktop.loading.ready": "准备就绪"
+  "desktop.loading.ready": "准备就绪",
 }
 ```
 
@@ -175,6 +181,7 @@ git commit -m "feat(desktop): complete Chinese menu localization for M1"
 ### Task 3: Startup Performance Monitoring
 
 **Files:**
+
 - Create: `packages/desktop/src/performance.ts`
 - Modify: `packages/desktop/src/index.tsx`
 
@@ -197,7 +204,7 @@ export class StartupTimer {
   startPhase(name: string): void {
     this.phases.set(name, {
       name,
-      startTime: performance.now()
+      startTime: performance.now(),
     })
   }
 
@@ -214,7 +221,7 @@ export class StartupTimer {
     this.phases.set(name, {
       ...phase,
       endTime,
-      duration
+      duration,
     })
 
     console.log(`📊 ${name}: ${duration.toFixed(2)}ms`)
@@ -225,10 +232,10 @@ export class StartupTimer {
     return performance.now() - this.startTime
   }
 
-  getReport(): { phases: StartupPhase[], total: number } {
+  getReport(): { phases: StartupPhase[]; total: number } {
     return {
       phases: Array.from(this.phases.values()),
-      total: this.getTotalTime()
+      total: this.getTotalTime(),
     }
   }
 }
@@ -295,6 +302,7 @@ git commit -m "feat(desktop): add startup performance monitoring for M1 < 3s req
 ### Task 4: Enhanced Splash Screen with Chinese Text
 
 **Files:**
+
 - Modify: `packages/desktop/src/loading.tsx`
 - Modify: `packages/desktop/src/i18n/zh.ts` (if needed)
 
@@ -378,7 +386,7 @@ Edit `packages/desktop/src/styles.css` to add loading styles:
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--railwise-bg-primary, #FEFEFE);
+  background: var(--railwise-bg-primary, #fefefe);
   z-index: 9999;
 }
 
@@ -397,7 +405,7 @@ Edit `packages/desktop/src/styles.css` to add loading styles:
 .loading-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--railwise-text-primary, #8B4513);
+  color: var(--railwise-text-primary, #8b4513);
   margin-bottom: 2rem;
 }
 
@@ -441,6 +449,7 @@ git commit -m "feat(desktop): enhance splash screen with Chinese text and progre
 ### Task 5: Visual Token System and Color Compliance
 
 **Files:**
+
 - Create: `packages/desktop/src/tokens.css`
 - Modify: `packages/desktop/src/styles.css`
 
@@ -466,18 +475,18 @@ Create `packages/desktop/src/tokens.css`:
 
 :root {
   /* Base Palette - 奶白+暖棕 */
-  --railwise-cream-white: #FEFEFE;
-  --railwise-warm-brown: #8B4513;
-  --railwise-warm-brown-light: #A0522D;
+  --railwise-cream-white: #fefefe;
+  --railwise-warm-brown: #8b4513;
+  --railwise-warm-brown-light: #a0522d;
   --railwise-warm-brown-dark: #654321;
 
   /* Neutral Scale */
-  --railwise-gray-50: #FAFAFA;
-  --railwise-gray-100: #F5F5F5;
-  --railwise-gray-200: #EEEEEE;
-  --railwise-gray-300: #E0E0E0;
-  --railwise-gray-400: #BDBDBD;
-  --railwise-gray-500: #9E9E9E;
+  --railwise-gray-50: #fafafa;
+  --railwise-gray-100: #f5f5f5;
+  --railwise-gray-200: #eeeeee;
+  --railwise-gray-300: #e0e0e0;
+  --railwise-gray-400: #bdbdbd;
+  --railwise-gray-500: #9e9e9e;
   --railwise-gray-600: #757575;
   --railwise-gray-700: #616161;
   --railwise-gray-800: #424242;
@@ -599,6 +608,7 @@ git commit -m "feat(desktop): implement design token system with 2.0 奶白+暖�
 ### Task 6: Startup Pipeline Optimization
 
 **Files:**
+
 - Modify: `packages/desktop/src/index.tsx`
 
 - [ ] **Step 1: Analyze current sidecar initialization flow**
@@ -623,7 +633,7 @@ const optimizedStartup = async () => {
     // Quick cleanup - don't wait too long
     await Promise.race([
       commands.killSidecar(),
-      new Promise(resolve => setTimeout(resolve, 500)) // 500ms timeout
+      new Promise((resolve) => setTimeout(resolve, 500)), // 500ms timeout
     ])
   } catch (e) {
     console.log("Sidecar cleanup skipped (not running)")
@@ -635,9 +645,7 @@ const optimizedStartup = async () => {
   // Start sidecar with timeout
   const initialization = await Promise.race([
     commands.awaitInitialization(),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Initialization timeout")), 2000)
-    )
+    new Promise((_, reject) => setTimeout(() => reject(new Error("Initialization timeout")), 2000)),
   ])
 
   startupTimer.endPhase("sidecar-start")
@@ -705,6 +713,7 @@ git commit -m "perf(desktop): optimize sidecar startup pipeline for M1 < 3s requ
 ### Task 7: Final M1 Verification and Testing
 
 **Files:**
+
 - Create: `packages/desktop/test-m1.sh`
 
 - [ ] **Step 1: Create M1 verification script**
@@ -797,6 +806,7 @@ Expected: Consistent startup < 3s across multiple runs
 - [ ] **Step 4: Verify M1 completion checklist**
 
 Manual verification:
+
 - [ ] App shows "RAILWISE 智测工作台" in title and about
 - [ ] All menus display in Chinese
 - [ ] Startup completes in < 3s consistently
@@ -829,6 +839,7 @@ Ready for M2 Agent Studio development phase."
 ## Success Criteria Checklist
 
 **M1 Requirements (per spec document):**
+
 - [ ] ✅ Brand replacement complete - "RAILWISE 智测工作台" throughout app
 - [ ] ✅ All menus in Chinese - 菜单全中文 requirement met
 - [ ] ✅ Startup < 3s interactive - Performance budget enforced
@@ -837,6 +848,7 @@ Ready for M2 Agent Studio development phase."
 - [ ] ✅ Build succeeds - Desktop package builds without errors
 
 **Quality Gates:**
+
 - [ ] Performance monitoring active with phase-by-phase timing
 - [ ] Chinese localization complete for all desktop UI elements
 - [ ] Design token system implemented with proper cascade

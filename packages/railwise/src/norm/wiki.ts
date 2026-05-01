@@ -160,12 +160,12 @@ export namespace NormWiki {
       norm: match[1],
       clause: match[2].trim(),
     }))
-    const english = Array.from(text.matchAll(/Reference:\s*([A-Z]+[A-Z0-9/-]*)\s*,\s*clause\s*([0-9A-Za-z. -]+)/gi)).map(
-      (match) => ({
-        norm: match[1],
-        clause: match[2].trim(),
-      }),
-    )
+    const english = Array.from(
+      text.matchAll(/Reference:\s*([A-Z]+[A-Z0-9/-]*)\s*,\s*clause\s*([0-9A-Za-z. -]+)/gi),
+    ).map((match) => ({
+      norm: match[1],
+      clause: match[2].trim(),
+    }))
     return [...new Map([...chinese, ...english].map((item) => [`${item.norm}:${item.clause}`, item])).values()]
   }
 
@@ -312,7 +312,9 @@ export namespace NormWiki {
 
   function scoped(page: Page, scope: string) {
     const key = normkey(scope)
-    return normkey(`${page.path} ${page.title} ${page.sourceRaw ?? ""} ${page.normClauseId ?? ""} ${page.text}`).includes(key)
+    return normkey(
+      `${page.path} ${page.title} ${page.sourceRaw ?? ""} ${page.normClauseId ?? ""} ${page.text}`,
+    ).includes(key)
   }
 
   function values(text: string) {
@@ -481,7 +483,10 @@ export namespace NormWiki {
         kind: "query",
         timestamp: query[1],
         title: query[2].replace(/\\"/g, '"'),
-        paths: query[3].split(",").map((item) => item.trim()).filter(Boolean),
+        paths: query[3]
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
         raw: line,
       }
     }
@@ -491,7 +496,10 @@ export namespace NormWiki {
         kind: "ingest",
         timestamp: ingest[1],
         title: ingest[2].trim(),
-        paths: ingest[3].split(",").map((item) => item.trim()).filter(Boolean),
+        paths: ingest[3]
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
         raw: line,
       }
     }
@@ -573,7 +581,8 @@ export namespace NormWiki {
     const rel = path.relative(source, file)
     if (rel.startsWith("..") || path.isAbsolute(rel)) throw new Error("rawPath must stay inside the norm library")
     if (!rel.startsWith("raw/")) throw new Error("rawPath must point to a Raw layer markdown file")
-    if (source === bundled) throw new Error("Wiki ingest requires a project norm library; bundled demo data is read-only")
+    if (source === bundled)
+      throw new Error("Wiki ingest requires a project norm library; bundled demo data is read-only")
     const text = await Bun.file(file).text()
     const fm = frontmatter(text)
     const refs = citations(text)
@@ -601,7 +610,9 @@ export namespace NormWiki {
             "",
             "This page was generated from the Raw layer markdown fallback. Review against the authorized source before signed deliverables.",
             "",
-            ...refs.map((item) => cite({ norm: item.norm, clause: item.clause, text: "本页内容来自 Raw 层结构化源文件。" })),
+            ...refs.map((item) =>
+              cite({ norm: item.norm, clause: item.clause, text: "本页内容来自 Raw 层结构化源文件。" }),
+            ),
             "",
             "## Raw Excerpt",
             "",
@@ -643,51 +654,51 @@ export namespace NormWiki {
     const target = new Map(to.map((page) => [clausekey(page), page]))
     const keys = [...new Set([...base.keys(), ...target.keys()])].sort((a, b) => a.localeCompare(b))
     const changes = keys.flatMap((key): DiffChange[] => {
-        const before = base.get(key)
-        const after = target.get(key)
-        if (!before && after) {
-          return [
-            {
-              type: "added",
-              key,
-              title: after.title,
-              toPath: after.path,
-              toHash: after.sourceHash ?? hash(after.text),
-              summary: `Added in ${input.toScope}: ${after.path}`,
-            },
-          ]
-        }
-        if (before && !after) {
-          return [
-            {
-              type: "removed",
-              key,
-              title: before.title,
-              fromPath: before.path,
-              fromHash: before.sourceHash ?? hash(before.text),
-              summary: `Removed from ${input.toScope}: ${before.path}`,
-            },
-          ]
-        }
-        if (!before || !after) return []
-        const old = before.sourceHash ?? hash(before.text)
-        const next = after.sourceHash ?? hash(after.text)
-        if (old === next && !before.supersededBy) return []
+      const before = base.get(key)
+      const after = target.get(key)
+      if (!before && after) {
         return [
           {
-            type: before.supersededBy ? "superseded" : "modified",
+            type: "added",
             key,
             title: after.title,
-            fromPath: before.path,
             toPath: after.path,
-            fromHash: old,
-            toHash: next,
-            summary: before.supersededBy
-              ? `${before.path} is superseded by ${before.supersededBy}.`
-              : `Content changed between ${before.path} and ${after.path}.`,
+            toHash: after.sourceHash ?? hash(after.text),
+            summary: `Added in ${input.toScope}: ${after.path}`,
           },
         ]
-      })
+      }
+      if (before && !after) {
+        return [
+          {
+            type: "removed",
+            key,
+            title: before.title,
+            fromPath: before.path,
+            fromHash: before.sourceHash ?? hash(before.text),
+            summary: `Removed from ${input.toScope}: ${before.path}`,
+          },
+        ]
+      }
+      if (!before || !after) return []
+      const old = before.sourceHash ?? hash(before.text)
+      const next = after.sourceHash ?? hash(after.text)
+      if (old === next && !before.supersededBy) return []
+      return [
+        {
+          type: before.supersededBy ? "superseded" : "modified",
+          key,
+          title: after.title,
+          fromPath: before.path,
+          toPath: after.path,
+          fromHash: old,
+          toHash: next,
+          summary: before.supersededBy
+            ? `${before.path} is superseded by ${before.supersededBy}.`
+            : `Content changed between ${before.path} and ${after.path}.`,
+        },
+      ]
+    })
     const reportPath = input.writeReport ? await writeDiffReport(source, { ...input, changes }) : undefined
     return {
       fromScope: input.fromScope,
@@ -701,7 +712,9 @@ export namespace NormWiki {
   export async function lint(input: { source?: string; writeReport?: boolean } = {}): Promise<LintResult> {
     const source = input.source ?? (await root())
     const items = await pages(source)
-    const index = await Bun.file(path.join(source, "wiki", "index.md")).text().catch(() => "")
+    const index = await Bun.file(path.join(source, "wiki", "index.md"))
+      .text()
+      .catch(() => "")
     const paths = new Set(items.map((page) => page.path))
     const aliases = new Map(
       items.flatMap((page) => [
@@ -749,7 +762,9 @@ export namespace NormWiki {
             !page.sourceRaw && page.path.includes("/clauses/")
               ? { type: "missing_raw", path: page.path, message: "Clause page has no source_raw frontmatter." }
               : undefined,
-            missingRaw ? { type: "missing_raw", path: page.path, message: `source_raw does not exist: ${page.sourceRaw}` } : undefined,
+            missingRaw
+              ? { type: "missing_raw", path: page.path, message: `source_raw does not exist: ${page.sourceRaw}` }
+              : undefined,
             page.path.includes("/clauses/") && page.citations.length === 0
               ? { type: "missing_citation", path: page.path, message: "Clause page has no norm citation." }
               : undefined,
@@ -786,13 +801,16 @@ export namespace NormWiki {
         claims: group.flatMap((page) => values(page.text).map((value) => ({ page, value }))),
       }))
       .filter((group) => new Set(group.claims.map((claim) => claim.value)).size > 1)
-      .map((group) => ({
-        type: "conflict",
-        path: group.pages[0].path,
-        message: `Conflicting numeric claims for ${clauseid(group.pages[0])}: ${group.claims
-          .map((claim) => `${claim.value} in ${claim.page.path}`)
-          .join("; ")}`,
-      }) satisfies LintProblem)
+      .map(
+        (group) =>
+          ({
+            type: "conflict",
+            path: group.pages[0].path,
+            message: `Conflicting numeric claims for ${clauseid(group.pages[0])}: ${group.claims
+              .map((claim) => `${claim.value} in ${claim.page.path}`)
+              .join("; ")}`,
+          }) satisfies LintProblem,
+      )
     const orphans =
       items.length < 2
         ? []

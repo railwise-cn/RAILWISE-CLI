@@ -104,14 +104,14 @@ Eller du kan sette den opp manuelt.
 
 RAILWISE kan utløses av følgende GitHub-hendelser:
 
-| Hendelsestype                 | Utløst av                               | Detaljer                                                                                                                |
-| ----------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Kommentar på sak eller PR               | Nevn `/railwise` i kommentaren din. RAILWISE leser kontekst og kan opprette grener, åpne PR-er eller svare. |
-| `pull_request_review_comment` | Kommenter spesifikke kodelinjer i en PR | Nevn `/railwise` mens du ser gjennom koden. RAILWISE mottar filbane, linjenummer og diff-kontekst.          |
-| `issues`                      | Sak åpnet eller redigert                | Utløs RAILWISE automatisk når saker opprettes eller endres. Krever `prompt` inngang.                                    |
-| `pull_request`                | PR åpnet eller oppdatert                | Utløs RAILWISE automatisk når PR-er åpnes, synkroniseres eller gjenåpnes. Nyttig for automatiserte anmeldelser.         |
-| `schedule`                    | Cron-basert tidsplan                    | Kjør RAILWISE etter en tidsplan. Krever `prompt` inngang. Utdata går til logger og PR (ingen sak å kommentere).         |
-| `workflow_dispatch`           | Manuell utløser fra GitHub UI           | Utløs RAILWISE på forespørsel via fanen Handlinger. Krever `prompt` inngang. Utdata går til logger og PR-er.            |
+| Hendelsestype                 | Utløst av                               | Detaljer                                                                                                        |
+| ----------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `issue_comment`               | Kommentar på sak eller PR               | Nevn `/railwise` i kommentaren din. RAILWISE leser kontekst og kan opprette grener, åpne PR-er eller svare.     |
+| `pull_request_review_comment` | Kommenter spesifikke kodelinjer i en PR | Nevn `/railwise` mens du ser gjennom koden. RAILWISE mottar filbane, linjenummer og diff-kontekst.              |
+| `issues`                      | Sak åpnet eller redigert                | Utløs RAILWISE automatisk når saker opprettes eller endres. Krever `prompt` inngang.                            |
+| `pull_request`                | PR åpnet eller oppdatert                | Utløs RAILWISE automatisk når PR-er åpnes, synkroniseres eller gjenåpnes. Nyttig for automatiserte anmeldelser. |
+| `schedule`                    | Cron-basert tidsplan                    | Kjør RAILWISE etter en tidsplan. Krever `prompt` inngang. Utdata går til logger og PR (ingen sak å kommentere). |
+| `workflow_dispatch`           | Manuell utløser fra GitHub UI           | Utløs RAILWISE på forespørsel via fanen Handlinger. Krever `prompt` inngang. Utdata går til logger og PR-er.    |
 
 ### Eksempel på tidsplan
 

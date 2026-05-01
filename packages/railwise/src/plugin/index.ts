@@ -15,10 +15,7 @@ import { CopilotAuthPlugin } from "./copilot"
 export namespace Plugin {
   const log = Log.create({ service: "plugin" })
 
-  const INTERNAL_PLUGINS: PluginInstance[] = [
-    CodexAuthPlugin,
-    CopilotAuthPlugin,
-  ]
+  const INTERNAL_PLUGINS: PluginInstance[] = [CodexAuthPlugin, CopilotAuthPlugin]
 
   const state = Instance.state(async () => {
     const client = createRailwiseClient({

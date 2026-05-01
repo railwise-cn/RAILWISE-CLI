@@ -6,9 +6,7 @@ export const axial_force_calc = tool({
     "基坑支撑轴力计算与分析。根据轴力计/应变计频率或应力值，计算钢支撑或混凝土支撑的实际轴力，对比设计值和报警值进行预警分级。基坑自动化监测中轴力分析的核心工具。data_analyst 处理轴力监测数据时必须调用此工具。",
   args: {
     pointId: tool.schema.string().describe("测点编号，如 ZL-01"),
-    strutType: tool.schema
-      .enum(["steel", "concrete"])
-      .describe("支撑类型：steel=钢支撑, concrete=混凝土支撑"),
+    strutType: tool.schema.enum(["steel", "concrete"]).describe("支撑类型：steel=钢支撑, concrete=混凝土支撑"),
     crossSectionArea: tool.schema.number().positive().describe("支撑截面积(m²)，钢支撑查型钢表，混凝土支撑=宽×高"),
     elasticModulus: tool.schema
       .number()
@@ -62,8 +60,7 @@ export const axial_force_calc = tool({
       } else if (r.valueType === "stress") {
         force = r.value * A * 1000
       } else {
-        if (!args.frequencyCalibration)
-          return { date: r.date, error: "频率型需提供标定参数" }
+        if (!args.frequencyCalibration) return { date: r.date, error: "频率型需提供标定参数" }
         const cal = args.frequencyCalibration
         force = cal.k * (r.value * r.value - cal.f0 * cal.f0)
       }
@@ -94,15 +91,11 @@ export const axial_force_calc = tool({
       status: string
     }>
 
-    const maxEntry = validEntries.reduce(
-      (max, e) => (e.force_kN > max.force_kN ? e : max),
-      validEntries[0]!,
-    )
+    const maxEntry = validEntries.reduce((max, e) => (e.force_kN > max.force_kN ? e : max), validEntries[0]!)
 
     const rates: Array<{ period: string; rate_kN_per_day: number }> = []
     for (let i = 1; i < validEntries.length; i++) {
-      const dt =
-        (new Date(validEntries[i]!.date).getTime() - new Date(validEntries[i - 1]!.date).getTime()) / 86400000
+      const dt = (new Date(validEntries[i]!.date).getTime() - new Date(validEntries[i - 1]!.date).getTime()) / 86400000
       if (dt > 0) {
         rates.push({
           period: `${validEntries[i - 1]!.date} → ${validEntries[i]!.date}`,

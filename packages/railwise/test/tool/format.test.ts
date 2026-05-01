@@ -21,10 +21,7 @@ function ctx() {
 test("format converter turns COSA in2 sample into indirect adjustment payload", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
-        path.join(dir, "cpiii.in2"),
-        FormatSamples.get("cosa-in2").content,
-      )
+      await Bun.write(path.join(dir, "cpiii.in2"), FormatSamples.get("cosa-in2").content)
     },
   })
   await Instance.provide({
@@ -68,7 +65,9 @@ test("format converter recognizes M9 vendor format variants", async () => {
 
   await Promise.all(
     cases.map(async (item) => {
-      const converted = JSON.parse((await tool.execute({ content: item.content, sourceFormat: "auto" }, ctx())).output) as {
+      const converted = JSON.parse(
+        (await tool.execute({ content: item.content, sourceFormat: "auto" }, ctx())).output,
+      ) as {
         detectedFormat: string
         points: { name: string }[]
         observations: { station: string; target: string; type: string; value: number }[]
@@ -113,7 +112,13 @@ test("format converter keeps usable rows and warns on damaged real-world rows", 
 
   expect(converted.detectedFormat).toBe("south-in")
   expect(converted.points).toContainEqual({ name: "CP300", x: 4003.855, y: 2903.36 })
-  expect(converted.observations).toContainEqual({ station: "CP300", target: "CP301", type: "S", value: 339.366, weight: 1 })
+  expect(converted.observations).toContainEqual({
+    station: "CP300",
+    target: "CP301",
+    type: "S",
+    value: 339.366,
+    weight: 1,
+  })
   expect(converted.next.args.unknowns).toEqual(["dN_CP301"])
   expect(converted.next.args.equations[0]).toEqual({
     name: "baseline_north",
@@ -136,7 +141,9 @@ test("format converter sample corpus is fully ready", async () => {
 
   const results = await Promise.all(
     FormatSamples.list.map(async (sample) => {
-      const converted = JSON.parse((await tool.execute({ sourceFormat: sample.sourceFormat, content: sample.content }, ctx())).output) as {
+      const converted = JSON.parse(
+        (await tool.execute({ sourceFormat: sample.sourceFormat, content: sample.content }, ctx())).output,
+      ) as {
         detectedFormat: string
         warnings: string[]
         next?: { tool: string; args: { unknowns: string[]; equations: unknown[] } }

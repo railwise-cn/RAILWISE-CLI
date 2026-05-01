@@ -166,13 +166,7 @@ export namespace Memory {
   )
 
   export const expire = fn(z.string(), async (id) => {
-    Database.use((db) =>
-      db
-        .update(MemoryTable)
-        .set({ time_expired: Date.now() })
-        .where(eq(MemoryTable.id, id))
-        .run(),
-    )
+    Database.use((db) => db.update(MemoryTable).set({ time_expired: Date.now() }).where(eq(MemoryTable.id, id)).run())
     log.info("expired", { id })
   })
 

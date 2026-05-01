@@ -4,10 +4,7 @@ import type { editor } from "monaco-editor"
 import "monaco-editor/min/vs/editor/editor.main.css"
 import { createEffect, createSignal, onCleanup, onMount } from "solid-js"
 
-export function AgentEditor(props: {
-  value: string
-  onChange: (value: string) => void
-}) {
+export function AgentEditor(props: { value: string; onChange: (value: string) => void }) {
   let root: HTMLDivElement | undefined
   let instance: editor.IStandaloneCodeEditor | undefined
   const [ready, setReady] = createSignal(false)

@@ -104,14 +104,14 @@ Vous pouvez également utiliser un [jeton d'accès personnel](https://docs.githu
 
 RAILWISE peut être déclenché par les événements GitHub suivants :
 
-| Type d'événement              | Déclenché par                                              | Détails                                                                                                                                                |
-| ----------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Type d'événement              | Déclenché par                                              | Détails                                                                                                                                       |
+| ----------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `issue_comment`               | Commentaire sur une issue ou une PR                        | Mentionnez `/railwise` dans votre commentaire. RAILWISE lit le contexte et peut créer des branches, ouvrir des PR ou répondre.                |
 | `pull_request_review_comment` | Commentaire sur des lignes de code spécifiques dans une PR | Mentionnez `/railwise` lors de la révision du code. RAILWISE reçoit le chemin du fichier, les numéros de ligne et le contexte de comparaison. |
-| `issues`                      | Issue ouverte ou modifiée                                  | Déclenchez automatiquement RAILWISE lorsque des issues sont créées ou modifiées. Nécessite une entrée `prompt`.                                        |
-| `pull_request`                | PR ouverte ou mise à jour                                  | Déclenchez automatiquement RAILWISE lorsque les PR sont ouvertes, synchronisées ou rouvertes. Utile pour les revues automatisées.                      |
-| `schedule`                    | Planification basée sur Cron                               | Exécutez RAILWISE selon un planning. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR (pas de commentaire sur les issues).           |
-| `workflow_dispatch`           | Déclenchement manuel depuis l'interface utilisateur GitHub | Déclenchez RAILWISE à la demande via l'onglet Actions. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR.                             |
+| `issues`                      | Issue ouverte ou modifiée                                  | Déclenchez automatiquement RAILWISE lorsque des issues sont créées ou modifiées. Nécessite une entrée `prompt`.                               |
+| `pull_request`                | PR ouverte ou mise à jour                                  | Déclenchez automatiquement RAILWISE lorsque les PR sont ouvertes, synchronisées ou rouvertes. Utile pour les revues automatisées.             |
+| `schedule`                    | Planification basée sur Cron                               | Exécutez RAILWISE selon un planning. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR (pas de commentaire sur les issues).  |
+| `workflow_dispatch`           | Déclenchement manuel depuis l'interface utilisateur GitHub | Déclenchez RAILWISE à la demande via l'onglet Actions. Nécessite une entrée `prompt`. La sortie va aux journaux et aux PR.                    |
 
 ### Exemple de planification
 

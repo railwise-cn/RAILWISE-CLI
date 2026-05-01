@@ -21,11 +21,7 @@ import {
   deliveryRows,
   deliveryStatus,
 } from "@/pages/session/composer/workflow-delivery"
-import type {
-  WorkflowAcceptance,
-  WorkflowRunArtifact,
-  WorkflowSession,
-} from "@/types/agent-studio"
+import type { WorkflowAcceptance, WorkflowRunArtifact, WorkflowSession } from "@/types/agent-studio"
 
 type AcceptanceStatus = WorkflowAcceptance["checks"][number]["status"]
 type WorkflowStage = "imported" | "pending" | "running" | "review" | "failed" | "passed"
@@ -449,8 +445,7 @@ export function SessionComposerRegion(props: {
                                   danger(),
                                 "border-[rgba(117,86,32,0.18)] bg-[rgba(117,86,32,0.05)] text-[rgb(95,70,24)]":
                                   active() && !danger() && !success(),
-                                "border-border-weak-base bg-background-base text-text-weak":
-                                  !active() && !done(),
+                                "border-border-weak-base bg-background-base text-text-weak": !active() && !done(),
                               }}
                             >
                               <span
@@ -476,7 +471,9 @@ export function SessionComposerRegion(props: {
                               <div class="mb-1 flex items-center justify-between gap-2">
                                 <strong class="min-w-0 truncate text-text-strong">{artifact.title}</strong>
                                 <Show when={artifactNotice()}>
-                                  {(message) => <span class="shrink-0 text-11-regular text-text-weak">{message()}</span>}
+                                  {(message) => (
+                                    <span class="shrink-0 text-11-regular text-text-weak">{message()}</span>
+                                  )}
                                 </Show>
                               </div>
                               <For each={artifactRows(artifact)}>

@@ -4,8 +4,7 @@ import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js"
 import { usePlatform, useServer } from "@railwise/app"
 import type { ProjectCard } from "./types"
 
-const TileUrl =
-  "https://wprd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
+const TileUrl = "https://wprd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
 
 const statusColor: maplibregl.ExpressionSpecification = [
   "match",

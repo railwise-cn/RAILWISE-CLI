@@ -3,7 +3,16 @@ import { describe, expect, test, afterAll } from "bun:test"
 import { unlink } from "node:fs/promises"
 import report_export from "./report_export"
 
-const ctx: any = { sessionID: "", messageID: "", agent: "", directory: "", worktree: "", abort: new AbortController().signal, metadata() {}, ask: async () => {} }
+const ctx: any = {
+  sessionID: "",
+  messageID: "",
+  agent: "",
+  directory: "",
+  worktree: "",
+  abort: new AbortController().signal,
+  metadata() {},
+  ask: async () => {},
+}
 
 function parse(json: string) {
   return JSON.parse(json)
@@ -70,7 +79,7 @@ describe("report_export", () => {
   test("handles special XML characters in content", async () => {
     const dest = `${TMP_DIR}/special_chars.docx`
     cleanup.push(dest)
-    const md = "# 数据 <报告> & \"分析\"\n\n值 > 30mm 且 < 50mm\n"
+    const md = '# 数据 <报告> & "分析"\n\n值 > 30mm 且 < 50mm\n'
     const r = parse(await report_export.execute({ markdown: md, title: "特殊字符", outputPath: dest }, ctx))
     expect(r.file_size_kb).toBeGreaterThan(0)
     expect(await Bun.file(dest).exists()).toBe(true)
@@ -79,8 +88,10 @@ describe("report_export", () => {
   test("large report with multiple heading levels", async () => {
     const dest = `${TMP_DIR}/large_report.docx`
     cleanup.push(dest)
-    const sections = Array.from({ length: 5 }, (_, i) =>
-      `## ${i + 1}. 监测项目${i + 1}\n\n### ${i + 1}.1 数据分析\n\n本期变化量为 ${(i * 0.3).toFixed(1)}mm。\n`
+    const sections = Array.from(
+      { length: 5 },
+      (_, i) =>
+        `## ${i + 1}. 监测项目${i + 1}\n\n### ${i + 1}.1 数据分析\n\n本期变化量为 ${(i * 0.3).toFixed(1)}mm。\n`,
     ).join("\n")
     const md = `# 某地铁保护区监测月报\n\n${sections}`
     const r = parse(await report_export.execute({ markdown: md, title: "大型报告", outputPath: dest }, ctx))

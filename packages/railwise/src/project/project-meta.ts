@@ -107,13 +107,17 @@ function points(project: ProjectCard) {
     const seed = hash(`${project.id}:${index}`)
     const x = box[0] + ((seed % 10_000) / 10_000) * (box[2] - box[0])
     const y = box[1] + (((seed / 97) % 10_000) / 10_000) * (box[3] - box[1])
-    const latestValue = Number((((seed % 330) / 10) - 6).toFixed(1))
+    const latestValue = Number(((seed % 330) / 10 - 6).toFixed(1))
     return {
       type: "Feature",
       properties: {
         pointId: `${project.id}-${index + 1}`,
         name: `JC-${String(index + 1).padStart(3, "0")}`,
-        status: calcPointStatus(Math.abs(latestValue), { warning: 20, alert: 30 }, Date.now() - (seed % 36) * 3_600_000),
+        status: calcPointStatus(
+          Math.abs(latestValue),
+          { warning: 20, alert: 30 },
+          Date.now() - (seed % 36) * 3_600_000,
+        ),
         latestValue,
         unit: "mm",
         owner: project.name,
@@ -138,14 +142,17 @@ export namespace ProjectMeta {
     return cards
       .filter((project) => project.alertCount > 0)
       .flatMap((project) =>
-        Array.from({ length: Math.min(project.alertCount, 3) }, (_, index): Alert => ({
-          id: `${project.id}-alert-${index + 1}`,
-          projectId: project.id,
-          pointId: `${project.id}-${index + 1}`,
-          level: index === 0 && project.status === "error" ? "error" : "warn",
-          message: `${project.name} ${index === 0 && project.status === "error" ? "累计沉降接近控制值" : "监测点趋势需复核"}`,
-          time: new Date(Date.now() - (index + 1) * 1_800_000).toISOString(),
-        })),
+        Array.from(
+          { length: Math.min(project.alertCount, 3) },
+          (_, index): Alert => ({
+            id: `${project.id}-alert-${index + 1}`,
+            projectId: project.id,
+            pointId: `${project.id}-${index + 1}`,
+            level: index === 0 && project.status === "error" ? "error" : "warn",
+            message: `${project.name} ${index === 0 && project.status === "error" ? "累计沉降接近控制值" : "监测点趋势需复核"}`,
+            time: new Date(Date.now() - (index + 1) * 1_800_000).toISOString(),
+          }),
+        ),
       )
   }
 

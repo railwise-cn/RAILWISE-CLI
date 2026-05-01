@@ -29,8 +29,7 @@ export const water_level_analysis = tool({
     excavationBottom: tool.schema.number().optional().describe("基坑底标高(m)，用于计算水头差"),
   },
   async execute(args) {
-    const toElevation = (v: number) =>
-      args.levelType === "elevation" ? v : args.groundElevation - v
+    const toElevation = (v: number) => (args.levelType === "elevation" ? v : args.groundElevation - v)
 
     const initElev = toElevation(args.initialLevel)
 
@@ -61,14 +60,11 @@ export const water_level_analysis = tool({
 
     const rates: Array<{ period: string; rate_m_per_day: number }> = []
     for (let i = 1; i < analyzed.length; i++) {
-      const dt =
-        (new Date(args.records[i]!.date).getTime() - new Date(args.records[i - 1]!.date).getTime()) / 86400000
+      const dt = (new Date(args.records[i]!.date).getTime() - new Date(args.records[i - 1]!.date).getTime()) / 86400000
       if (dt > 0) {
         rates.push({
           period: `${args.records[i - 1]!.date} → ${args.records[i]!.date}`,
-          rate_m_per_day: Number(
-            ((analyzed[i]!.elevation_m - analyzed[i - 1]!.elevation_m) / dt).toFixed(4),
-          ),
+          rate_m_per_day: Number(((analyzed[i]!.elevation_m - analyzed[i - 1]!.elevation_m) / dt).toFixed(4)),
         })
       }
     }
@@ -178,9 +174,7 @@ export const water_level_contour = tool({
       }
     }
 
-    const avgGradient = gradients.length > 0
-      ? gradients.reduce((s, g) => s + g.gradient, 0) / gradients.length
-      : 0
+    const avgGradient = gradients.length > 0 ? gradients.reduce((s, g) => s + g.gradient, 0) / gradients.length : 0
 
     let funnelAssessment = ""
     if (args.excavationCenter) {

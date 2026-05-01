@@ -114,7 +114,9 @@ await Instance.provide({ directory: project, fn: async () => {
 test("workflow cli run and export emit machine-readable contracts", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Promise.all(["project", "home", "share", "cache", "config", "state"].map((item) => mkdir(path.join(dir, item))))
+      await Promise.all(
+        ["project", "home", "share", "cache", "config", "state"].map((item) => mkdir(path.join(dir, item))),
+      )
     },
   })
   const vars = env(tmp.path)

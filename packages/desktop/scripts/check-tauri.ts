@@ -10,7 +10,8 @@ const arg = (name: string) => {
 
 const host = () => {
   if (process.platform === "darwin") return process.arch === "arm64" ? "aarch64-apple-darwin" : "x86_64-apple-darwin"
-  if (process.platform === "linux") return process.arch === "arm64" ? "aarch64-unknown-linux-gnu" : "x86_64-unknown-linux-gnu"
+  if (process.platform === "linux")
+    return process.arch === "arm64" ? "aarch64-unknown-linux-gnu" : "x86_64-unknown-linux-gnu"
   if (process.platform === "win32") return "x86_64-pc-windows-msvc"
   throw new Error(`Unsupported cargo check platform '${process.platform}'`)
 }

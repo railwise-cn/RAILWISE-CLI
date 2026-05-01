@@ -13,7 +13,11 @@ export function ProjectCard(props: { card: Card }) {
   const state = () => status[card().status]
 
   return (
-    <A href={`/dashboard?project=${encodeURIComponent(card().id)}`} class="dashboard-project-card" data-status={card().status}>
+    <A
+      href={`/dashboard?project=${encodeURIComponent(card().id)}`}
+      class="dashboard-project-card"
+      data-status={card().status}
+    >
       <div class="dashboard-project-card__top">
         <span class="dashboard-type-chip">{PROJECT_TYPE_LABEL[card().type]}</span>
         <span class="dashboard-project-card__state" style={{ color: state()[1] }}>

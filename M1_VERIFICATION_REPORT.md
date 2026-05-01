@@ -20,6 +20,7 @@
 ### ✅ PASSING Requirements (4/7)
 
 #### 1. Brand Configuration ✅
+
 - **Status**: PASSED
 - **Evidence**:
   - `productName`: "RAILWISE 智测工作台"
@@ -28,6 +29,7 @@
 - **File**: `/packages/desktop/src-tauri/tauri.conf.json`
 
 #### 2. Chinese Localization ✅
+
 - **Status**: PASSED
 - **Evidence**: All 22 menu keys have Chinese translations
 - **Coverage**: 100% (22/22 keys translated)
@@ -36,6 +38,7 @@
   - `/packages/desktop/src/menu.ts`
 
 #### 3. Visual Color Compliance ✅
+
 - **Status**: PASSED
 - **Evidence**:
   - No rust red (#C0392B) colors found in source
@@ -46,6 +49,7 @@
   - `/packages/desktop/src/styles.css`
 
 #### 4. Performance Infrastructure ✅
+
 - **Status**: PASSED
 - **Evidence**:
   - Performance monitoring file exists (`src/performance.ts`)
@@ -59,6 +63,7 @@
 ### ❌ FAILING Requirements (3/7)
 
 #### 1. TypeScript Type Check ❌
+
 - **Status**: FAILED
 - **Exit Code**: 2
 - **Command**: `bun turbo typecheck`
@@ -70,6 +75,7 @@
   - Missing audio file declarations in app package
 
 #### 2. Desktop Build Success ❌
+
 - **Status**: FAILED
 - **Exit Code**: 1
 - **Command**: `bun run build` (desktop package)
@@ -81,6 +87,7 @@
   - Type system integrity compromised
 
 #### 3. Overall System Integrity ❌
+
 - **Status**: FAILED
 - **Evidence**: Fundamental codebase issues prevent verification
 - **Impact**: Cannot proceed to M2 development phase
@@ -100,12 +107,14 @@ The verification reveals that while M1-specific desktop features have been imple
 ### Missing Infrastructure
 
 **Asset Type Declarations Needed:**
+
 - Font files: `.woff2` declarations
 - Audio files: `.aac` declarations
 - SVG files: Icon and sprite declarations
 - SolidJS directives: `use:sortable` typing
 
 **Build System Fixes Required:**
+
 - Vite asset handling configuration
 - TypeScript module resolution
 - Asset bundling for production builds
@@ -114,15 +123,15 @@ The verification reveals that while M1-specific desktop features have been imple
 
 ## M1 Success Criteria Assessment
 
-| Requirement | Status | Evidence |
-|-------------|---------|----------|
-| Brand replacement complete | ✅ PASS | "RAILWISE 智测工作台" configured |
-| All menus in Chinese | ✅ PASS | 22/22 keys translated |
-| Startup < 3s interactive | ⚠️  INFRASTRUCTURE ONLY | Performance monitoring ready |
-| Visual compliance (no rust red) | ✅ PASS | No #C0392B found |
-| 2.0 cream + warm brown theme | ✅ PASS | Design tokens implemented |
-| TypeScript builds pass | ❌ FAIL | 100+ compilation errors |
-| Production build succeeds | ❌ FAIL | Cannot build due to type errors |
+| Requirement                     | Status                 | Evidence                         |
+| ------------------------------- | ---------------------- | -------------------------------- |
+| Brand replacement complete      | ✅ PASS                | "RAILWISE 智测工作台" configured |
+| All menus in Chinese            | ✅ PASS                | 22/22 keys translated            |
+| Startup < 3s interactive        | ⚠️ INFRASTRUCTURE ONLY | Performance monitoring ready     |
+| Visual compliance (no rust red) | ✅ PASS                | No #C0392B found                 |
+| 2.0 cream + warm brown theme    | ✅ PASS                | Design tokens implemented        |
+| TypeScript builds pass          | ❌ FAIL                | 100+ compilation errors          |
+| Production build succeeds       | ❌ FAIL                | Cannot build due to type errors  |
 
 **Overall M1 Status: ❌ FAILED (4/7 core requirements met)**
 
@@ -150,6 +159,7 @@ The verification reveals that while M1-specific desktop features have been imple
 ### Before M2 Development
 
 **M1 Foundation must be completed first:**
+
 - ✅ All 7 verification requirements pass
 - ✅ Clean `bun turbo typecheck` (exit code 0)
 - ✅ Successful `bun run build:desktop`
@@ -160,6 +170,7 @@ The verification reveals that while M1-specific desktop features have been imple
 ## Verification Script
 
 A comprehensive verification script has been created at:
+
 - **Location**: `/scripts/verify-m1-foundation.ts`
 - **Usage**: `bun scripts/verify-m1-foundation.ts`
 - **Purpose**: Automated verification of all M1 requirements
@@ -178,4 +189,4 @@ The codebase requires substantial fixes to asset handling and TypeScript configu
 
 ---
 
-*This report is based on fresh verification evidence collected on April 22, 2026. All commands were executed and output analyzed for accurate status reporting.*
+_This report is based on fresh verification evidence collected on April 22, 2026. All commands were executed and output analyzed for accurate status reporting._

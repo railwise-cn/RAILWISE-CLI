@@ -5,8 +5,8 @@ import { tool } from "nb-railwise/tool"
 // Stakeout / layout calculation tools
 // ============================================================
 
-const deg2rad = (d: number) => d * Math.PI / 180
-const rad2deg = (r: number) => r * 180 / Math.PI
+const deg2rad = (d: number) => (d * Math.PI) / 180
+const rad2deg = (r: number) => (r * 180) / Math.PI
 
 function normalizeAz(az: number): number {
   return ((az % 360) + 360) % 360
@@ -20,16 +20,20 @@ export const polar_stakeout = tool({
   description:
     "极坐标放样计算：根据设站点坐标、后视方向和待放样点坐标，计算放样所需的水平角（转角）和水平距离。这是全站仪放样作业的核心计算，data_analyst 在准备放样数据时必须调用此工具。",
   args: {
-    station: tool.schema.object({
-      id: tool.schema.string().describe("设站点编号"),
-      x: tool.schema.number().describe("设站点X坐标（东方向/m）"),
-      y: tool.schema.number().describe("设站点Y坐标（北方向/m）"),
-    }).describe("全站仪架设点"),
-    backsight: tool.schema.object({
-      id: tool.schema.string().describe("后视点编号"),
-      x: tool.schema.number().describe("后视点X坐标"),
-      y: tool.schema.number().describe("后视点Y坐标"),
-    }).describe("后视方向已知点"),
+    station: tool.schema
+      .object({
+        id: tool.schema.string().describe("设站点编号"),
+        x: tool.schema.number().describe("设站点X坐标（东方向/m）"),
+        y: tool.schema.number().describe("设站点Y坐标（北方向/m）"),
+      })
+      .describe("全站仪架设点"),
+    backsight: tool.schema
+      .object({
+        id: tool.schema.string().describe("后视点编号"),
+        x: tool.schema.number().describe("后视点X坐标"),
+        y: tool.schema.number().describe("后视点Y坐标"),
+      })
+      .describe("后视方向已知点"),
     targets: tool.schema
       .array(
         tool.schema.object({

@@ -152,8 +152,7 @@
   border-radius: var(--radius-md, 8px);
   background:
     linear-gradient(90deg, rgba(47, 38, 24, 0.05) 1px, transparent 1px),
-    linear-gradient(rgba(47, 38, 24, 0.05) 1px, transparent 1px),
-    #e7ece7;
+    linear-gradient(rgba(47, 38, 24, 0.05) 1px, transparent 1px), #e7ece7;
   background-size: 32px 32px;
 }
 

@@ -16,125 +16,103 @@ const TRAVERSE_ANGULAR_LIMITS: Record<string, { k: number; desc: string }> = {
 }
 
 export const leveling_closure = tool({
-    description:
-      "计算水准测量的高程闭合差是否在规范限差内。当需要判断外业水准数据是否合格时，必须调用此工具，绝不能自己口算或估算。",
-    args: {
-      measuredError: tool.schema
-        .number()
-        .describe("现场实际测算出的高程闭合差，单位为毫米(mm)，允许负值"),
-      routeLengthKm: tool.schema
-        .number()
-        .positive()
-        .describe("水准路线的总长度，单位为公里(km)"),
-      order: tool.schema
-        .enum(["1st", "2nd", "3rd", "4th", "city-2nd"])
-        .default("4th")
-        .describe(
-          "测量等级：1st=一等, 2nd=二等, 3rd=三等, 4th=四等, city-2nd=城市二等"
-        ),
-    },
-    async execute(args) {
-      const spec = LEVELING_LIMITS[args.order]!
-      const limit = spec.k * Math.sqrt(args.routeLengthKm)
-      const pass = Math.abs(args.measuredError) <= limit
+  description:
+    "计算水准测量的高程闭合差是否在规范限差内。当需要判断外业水准数据是否合格时，必须调用此工具，绝不能自己口算或估算。",
+  args: {
+    measuredError: tool.schema.number().describe("现场实际测算出的高程闭合差，单位为毫米(mm)，允许负值"),
+    routeLengthKm: tool.schema.number().positive().describe("水准路线的总长度，单位为公里(km)"),
+    order: tool.schema
+      .enum(["1st", "2nd", "3rd", "4th", "city-2nd"])
+      .default("4th")
+      .describe("测量等级：1st=一等, 2nd=二等, 3rd=三等, 4th=四等, city-2nd=城市二等"),
+  },
+  async execute(args) {
+    const spec = LEVELING_LIMITS[args.order]!
+    const limit = spec.k * Math.sqrt(args.routeLengthKm)
+    const pass = Math.abs(args.measuredError) <= limit
 
-      return JSON.stringify({
-        measured_error_mm: args.measuredError,
-        allowed_limit_mm: Number(limit.toFixed(3)),
-        order_desc: spec.desc,
-        formula: `±${spec.k}√L = ±${spec.k}×√${args.routeLengthKm} = ±${limit.toFixed(3)} mm`,
-        is_passed: pass,
-        ratio_pct: Number(((Math.abs(args.measuredError) / limit) * 100).toFixed(1)),
-        message: pass
-          ? `✅ 合格：实测闭合差 ${args.measuredError}mm，限差 ±${limit.toFixed(3)}mm，占限差比例 ${((Math.abs(args.measuredError) / limit) * 100).toFixed(1)}%`
-          : `❌ 超限：实测闭合差 ${args.measuredError}mm，限差 ±${limit.toFixed(3)}mm，超出限差 ${(Math.abs(args.measuredError) - limit).toFixed(3)}mm，必须返工重测！`,
-      })
-    },
-  })
+    return JSON.stringify({
+      measured_error_mm: args.measuredError,
+      allowed_limit_mm: Number(limit.toFixed(3)),
+      order_desc: spec.desc,
+      formula: `±${spec.k}√L = ±${spec.k}×√${args.routeLengthKm} = ±${limit.toFixed(3)} mm`,
+      is_passed: pass,
+      ratio_pct: Number(((Math.abs(args.measuredError) / limit) * 100).toFixed(1)),
+      message: pass
+        ? `✅ 合格：实测闭合差 ${args.measuredError}mm，限差 ±${limit.toFixed(3)}mm，占限差比例 ${((Math.abs(args.measuredError) / limit) * 100).toFixed(1)}%`
+        : `❌ 超限：实测闭合差 ${args.measuredError}mm，限差 ±${limit.toFixed(3)}mm，超出限差 ${(Math.abs(args.measuredError) - limit).toFixed(3)}mm，必须返工重测！`,
+    })
+  },
+})
 
 export const traverse_closure = tool({
-    description:
-      "计算附合导线或闭合导线的角度闭合差是否满足规范限差。调用前请确认仪器等级和测站数量。",
-    args: {
-      measuredAngularError: tool.schema
-        .number()
-        .describe("实测角度闭合差，单位为角秒(″)，允许负值"),
-      stationCount: tool.schema
-        .int()
-        .positive()
-        .describe("导线测站总数（转折点数量，不含起始点）"),
-      instrument: tool.schema
-        .enum(["DJ1", "DJ2", "DJ6"])
-        .default("DJ2")
-        .describe("使用的经纬仪等级：DJ1/DJ2/DJ6"),
-    },
-    async execute(args) {
-      const spec = TRAVERSE_ANGULAR_LIMITS[args.instrument]!
-      const limit = spec.k * Math.sqrt(args.stationCount)
-      const pass = Math.abs(args.measuredAngularError) <= limit
+  description: "计算附合导线或闭合导线的角度闭合差是否满足规范限差。调用前请确认仪器等级和测站数量。",
+  args: {
+    measuredAngularError: tool.schema.number().describe("实测角度闭合差，单位为角秒(″)，允许负值"),
+    stationCount: tool.schema.int().positive().describe("导线测站总数（转折点数量，不含起始点）"),
+    instrument: tool.schema.enum(["DJ1", "DJ2", "DJ6"]).default("DJ2").describe("使用的经纬仪等级：DJ1/DJ2/DJ6"),
+  },
+  async execute(args) {
+    const spec = TRAVERSE_ANGULAR_LIMITS[args.instrument]!
+    const limit = spec.k * Math.sqrt(args.stationCount)
+    const pass = Math.abs(args.measuredAngularError) <= limit
 
-      return JSON.stringify({
-        measured_error_arcsec: args.measuredAngularError,
-        allowed_limit_arcsec: Number(limit.toFixed(1)),
-        instrument_desc: spec.desc,
-        formula: `±${spec.k}″√n = ±${spec.k}×√${args.stationCount} = ±${limit.toFixed(1)}″`,
-        is_passed: pass,
-        message: pass
-          ? `✅ 合格：角度闭合差 ${args.measuredAngularError}″，限差 ±${limit.toFixed(1)}″`
-          : `❌ 超限：角度闭合差 ${args.measuredAngularError}″，限差 ±${limit.toFixed(1)}″，超出 ${(Math.abs(args.measuredAngularError) - limit).toFixed(1)}″，必须返工重测！`,
-      })
-    },
-  })
+    return JSON.stringify({
+      measured_error_arcsec: args.measuredAngularError,
+      allowed_limit_arcsec: Number(limit.toFixed(1)),
+      instrument_desc: spec.desc,
+      formula: `±${spec.k}″√n = ±${spec.k}×√${args.stationCount} = ±${limit.toFixed(1)}″`,
+      is_passed: pass,
+      message: pass
+        ? `✅ 合格：角度闭合差 ${args.measuredAngularError}″，限差 ±${limit.toFixed(1)}″`
+        : `❌ 超限：角度闭合差 ${args.measuredAngularError}″，限差 ±${limit.toFixed(1)}″，超出 ${(Math.abs(args.measuredAngularError) - limit).toFixed(1)}″，必须返工重测！`,
+    })
+  },
+})
 
 export const alert_level = tool({
-    description:
-      "根据监测点当前累计变化量和控制指标，计算预警等级。自动判断属于蓝色提示/黄色预警/红色报警/正常。",
-    args: {
-      cumulativeValue: tool.schema
-        .number()
-        .describe("当前累计变化量绝对值，单位 mm（取绝对值传入）"),
-      alertThreshold: tool.schema
-        .number()
-        .positive()
-        .describe("规范规定的报警控制值（红线），单位 mm"),
-      pointId: tool.schema.string().describe("测点编号，如 JC-01"),
-    },
-    async execute(args) {
-      const ratio = args.cumulativeValue / args.alertThreshold
-      let level: string
-      let color: string
-      let action: string
+  description: "根据监测点当前累计变化量和控制指标，计算预警等级。自动判断属于蓝色提示/黄色预警/红色报警/正常。",
+  args: {
+    cumulativeValue: tool.schema.number().describe("当前累计变化量绝对值，单位 mm（取绝对值传入）"),
+    alertThreshold: tool.schema.number().positive().describe("规范规定的报警控制值（红线），单位 mm"),
+    pointId: tool.schema.string().describe("测点编号，如 JC-01"),
+  },
+  async execute(args) {
+    const ratio = args.cumulativeValue / args.alertThreshold
+    let level: string
+    let color: string
+    let action: string
 
-      if (ratio >= 1.0) {
-        level = "红色报警"
-        color = "🔴"
-        action = "立即启动应急预案，暂停施工，通知各方负责人到场处置"
-      } else if (ratio >= 0.85) {
-        level = "橙色预警"
-        color = "🟠"
-        action = "通知项目负责人和监理，加密监测频率至每日2次，加强人工巡视"
-      } else if (ratio >= 0.70) {
-        level = "黄色预警"
-        color = "🟡"
-        action = "加密监测频率，关注发展趋势，准备上报项目部"
-      } else {
-        level = "正常"
-        color = "🟢"
-        action = "按正常频率继续监测"
-      }
+    if (ratio >= 1.0) {
+      level = "红色报警"
+      color = "🔴"
+      action = "立即启动应急预案，暂停施工，通知各方负责人到场处置"
+    } else if (ratio >= 0.85) {
+      level = "橙色预警"
+      color = "🟠"
+      action = "通知项目负责人和监理，加密监测频率至每日2次，加强人工巡视"
+    } else if (ratio >= 0.7) {
+      level = "黄色预警"
+      color = "🟡"
+      action = "加密监测频率，关注发展趋势，准备上报项目部"
+    } else {
+      level = "正常"
+      color = "🟢"
+      action = "按正常频率继续监测"
+    }
 
-      return JSON.stringify({
-        point_id: args.pointId,
-        cumulative_value_mm: args.cumulativeValue,
-        alert_threshold_mm: args.alertThreshold,
-        ratio_pct: Number((ratio * 100).toFixed(1)),
-        level,
-        color,
-        action,
-        message: `${color} ${args.pointId}：累计变化量 ${args.cumulativeValue}mm，占控制值比例 ${(ratio * 100).toFixed(1)}%，${level}。建议措施：${action}`,
-      })
-    },
-  })
+    return JSON.stringify({
+      point_id: args.pointId,
+      cumulative_value_mm: args.cumulativeValue,
+      alert_threshold_mm: args.alertThreshold,
+      ratio_pct: Number((ratio * 100).toFixed(1)),
+      level,
+      color,
+      action,
+      message: `${color} ${args.pointId}：累计变化量 ${args.cumulativeValue}mm，占控制值比例 ${(ratio * 100).toFixed(1)}%，${level}。建议措施：${action}`,
+    })
+  },
+})
 
 // ============================================================
 // Matrix utilities for least squares adjustment
@@ -143,33 +121,22 @@ export const alert_level = tool({
 type Matrix = number[][]
 
 const mat = {
-  zeros: (r: number, c: number): Matrix =>
-    Array.from({ length: r }, () => Array(c).fill(0) as number[]),
+  zeros: (r: number, c: number): Matrix => Array.from({ length: r }, () => Array(c).fill(0) as number[]),
 
-  transpose: (a: Matrix): Matrix =>
-    a[0]!.map((_, j) => a.map((row) => row[j]!)),
+  transpose: (a: Matrix): Matrix => a[0]!.map((_, j) => a.map((row) => row[j]!)),
 
   mul: (a: Matrix, b: Matrix): Matrix =>
-    a.map((row) =>
-      b[0]!.map((_, j) =>
-        row.reduce((sum, val, k) => sum + val * b[k]![j]!, 0),
-      ),
-    ),
+    a.map((row) => b[0]!.map((_, j) => row.reduce((sum, val, k) => sum + val * b[k]![j]!, 0))),
 
-  mulVec: (a: Matrix, v: number[]): number[] =>
-    a.map((row) => row.reduce((sum, val, k) => sum + val * v[k]!, 0)),
+  mulVec: (a: Matrix, v: number[]): number[] => a.map((row) => row.reduce((sum, val, k) => sum + val * v[k]!, 0)),
 
   invert: (src: Matrix): Matrix | null => {
     const n = src.length
-    const aug = src.map((row, i) => [
-      ...row,
-      ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)),
-    ])
+    const aug = src.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))])
     for (let col = 0; col < n; col++) {
       let pivotRow = col
       for (let row = col + 1; row < n; row++) {
-        if (Math.abs(aug[row]![col]!) > Math.abs(aug[pivotRow]![col]!))
-          pivotRow = row
+        if (Math.abs(aug[row]![col]!) > Math.abs(aug[pivotRow]![col]!)) pivotRow = row
       }
       if (Math.abs(aug[pivotRow]![col]!) < 1e-15) return null
       ;[aug[col], aug[pivotRow]] = [aug[pivotRow]!, aug[col]!]
@@ -178,8 +145,7 @@ const mat = {
       for (let row = 0; row < n; row++) {
         if (row === col) continue
         const factor = aug[row]![col]!
-        for (let j = col; j < 2 * n; j++)
-          aug[row]![j]! -= factor * aug[col]![j]!
+        for (let j = col; j < 2 * n; j++) aug[row]![j]! -= factor * aug[col]![j]!
       }
     }
     return aug.map((row) => row.slice(n))
@@ -221,18 +187,11 @@ export const leveling_adjustment = tool({
   },
   async execute(args) {
     const knownMap = new Map(args.benchmarks.map((b) => [b.id, b.height]))
-    const unknownIds = [
-      ...new Set(
-        args.observations
-          .flatMap((o) => [o.from, o.to])
-          .filter((id) => !knownMap.has(id)),
-      ),
-    ]
+    const unknownIds = [...new Set(args.observations.flatMap((o) => [o.from, o.to]).filter((id) => !knownMap.has(id)))]
     const u = unknownIds.length
     const n = args.observations.length
 
-    if (u === 0)
-      return JSON.stringify({ error: "所有点均为已知点，无需平差。" })
+    if (u === 0) return JSON.stringify({ error: "所有点均为已知点，无需平差。" })
     if (n < u)
       return JSON.stringify({
         error: `观测数 ${n} 少于未知数 ${u}，无法进行平差。需要至少 ${u} 个观测值。`,
@@ -270,8 +229,7 @@ export const leveling_adjustment = tool({
     const b = mat.mulVec(ATP, L)
 
     const Qxx = mat.invert(N)
-    if (!Qxx)
-      return JSON.stringify({ error: "法方程系数矩阵奇异，无法求解。请检查网形是否连通。" })
+    if (!Qxx) return JSON.stringify({ error: "法方程系数矩阵奇异，无法求解。请检查网形是否连通。" })
 
     // Solve: X = Qxx * b
     const X = mat.mulVec(Qxx, b)
@@ -338,16 +296,20 @@ export const traverse_adjustment = tool({
   description:
     "附合导线/闭合导线坐标平差计算。输入起始点坐标、起始方位角、各站观测角和边长，返回平差后坐标、闭合差分析及各点精度。data_analyst 在处理导线测量数据时必须调用此工具。",
   args: {
-    startPoint: tool.schema.object({
-      id: tool.schema.string().describe("起始点编号"),
-      x: tool.schema.number().describe("起始点X坐标（东方向/m）"),
-      y: tool.schema.number().describe("起始点Y坐标（北方向/m）"),
-    }).describe("起始已知点"),
-    endPoint: tool.schema.object({
-      id: tool.schema.string().describe("终止点编号"),
-      x: tool.schema.number().describe("终止点X坐标（东方向/m）"),
-      y: tool.schema.number().describe("终止点Y坐标（北方向/m）"),
-    }).describe("终止已知点（附合导线需要；闭合导线与起始点相同）"),
+    startPoint: tool.schema
+      .object({
+        id: tool.schema.string().describe("起始点编号"),
+        x: tool.schema.number().describe("起始点X坐标（东方向/m）"),
+        y: tool.schema.number().describe("起始点Y坐标（北方向/m）"),
+      })
+      .describe("起始已知点"),
+    endPoint: tool.schema
+      .object({
+        id: tool.schema.string().describe("终止点编号"),
+        x: tool.schema.number().describe("终止点X坐标（东方向/m）"),
+        y: tool.schema.number().describe("终止点Y坐标（北方向/m）"),
+      })
+      .describe("终止已知点（附合导线需要；闭合导线与起始点相同）"),
     startAzimuth: tool.schema.number().describe("起始边方位角（度，十进制）"),
     endAzimuth: tool.schema.number().describe("终止边方位角（度，十进制）；闭合导线传起始方位角"),
     stations: tool.schema
@@ -360,10 +322,7 @@ export const traverse_adjustment = tool({
       )
       .min(1)
       .describe("各导线测站观测数据（按测量顺序排列）"),
-    instrument: tool.schema
-      .enum(["DJ1", "DJ2", "DJ6"])
-      .default("DJ2")
-      .describe("经纬仪等级"),
+    instrument: tool.schema.enum(["DJ1", "DJ2", "DJ6"]).default("DJ2").describe("经纬仪等级"),
   },
   async execute(args) {
     const n = args.stations.length
@@ -371,12 +330,10 @@ export const traverse_adjustment = tool({
 
     // Step 1: Angular closure
     const sumAngles = args.stations.reduce((s, st) => s + st.angle, 0)
-    const theoreticalSum = ((args.endAzimuth - args.startAzimuth + 180 * n) % 360 + 360) % 360
+    const theoreticalSum = (((args.endAzimuth - args.startAzimuth + 180 * n) % 360) + 360) % 360
     const angularClosure = sumAngles - theoreticalSum
     const normalized =
-      angularClosure > 180 ? angularClosure - 360
-      : angularClosure < -180 ? angularClosure + 360
-      : angularClosure
+      angularClosure > 180 ? angularClosure - 360 : angularClosure < -180 ? angularClosure + 360 : angularClosure
     const closureSec = normalized * 3600
     const angLimit = angSpec.k * Math.sqrt(n)
 
@@ -392,7 +349,7 @@ export const traverse_adjustment = tool({
     const azimuths: number[] = []
     let az = args.startAzimuth
     for (const st of args.stations) {
-      az = ((az + st.angle + corr + 180) % 360 + 360) % 360
+      az = (((az + st.angle + corr + 180) % 360) + 360) % 360
       azimuths.push(az)
     }
 
@@ -438,10 +395,13 @@ export const traverse_adjustment = tool({
         closure_distance_m: Number(closureDist.toFixed(4)),
         relative_closure: `1/${Math.round(relClosure)}`,
         assessment:
-          relClosure >= 10000 ? "✅ 优秀（全长相对闭合差 < 1/10000）"
-          : relClosure >= 4000 ? "✅ 良好（全长相对闭合差 < 1/4000）"
-          : relClosure >= 2000 ? "⚠️ 一般（全长相对闭合差 < 1/2000），建议复查"
-          : "❌ 不合格，需返工重测",
+          relClosure >= 10000
+            ? "✅ 优秀（全长相对闭合差 < 1/10000）"
+            : relClosure >= 4000
+              ? "✅ 良好（全长相对闭合差 < 1/4000）"
+              : relClosure >= 2000
+                ? "⚠️ 一般（全长相对闭合差 < 1/2000），建议复查"
+                : "❌ 不合格，需返工重测",
       },
       adjusted_coordinates: coords,
       azimuths_deg: azimuths.map((a, i) => ({

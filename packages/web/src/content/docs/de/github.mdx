@@ -106,8 +106,8 @@ RAILWISE kann durch die folgenden GitHub-Events ausgelöst werden:
 
 | Ereignistyp                   | Ausgelöst durch                                   | Einzelheiten                                                                                                                                        |
 | ----------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | Kommentieren Sie ein Problem oder PR              | Erwähnen Sie `/railwise` in Ihrem Kommentar. RAILWISE liest den Kontext und kann Branches erstellen, PRs öffnen oder antworten.          |
-| `pull_request_review_comment` | Kommentieren Sie bestimmte Codezeilen in einem PR | Erwähnen Sie `/railwise` beim Überprüfen des Codes. RAILWISE empfängt Dateipfad, Zeilennummern und Diff Context.                         |
+| `issue_comment`               | Kommentieren Sie ein Problem oder PR              | Erwähnen Sie `/railwise` in Ihrem Kommentar. RAILWISE liest den Kontext und kann Branches erstellen, PRs öffnen oder antworten.                     |
+| `pull_request_review_comment` | Kommentieren Sie bestimmte Codezeilen in einem PR | Erwähnen Sie `/railwise` beim Überprüfen des Codes. RAILWISE empfängt Dateipfad, Zeilennummern und Diff Context.                                    |
 | `issues`                      | Problem geöffnet oder bearbeitet                  | Lösen Sie RAILWISE automatisch aus, wenn Probleme erstellt oder geändert werden. Erfordert `prompt`-Eingabe.                                        |
 | `pull_request`                | PR geöffnet oder aktualisiert                     | Lösen Sie RAILWISE automatisch aus, wenn PRs geöffnet, synchronisiert oder erneut geöffnet werden. Nützlich für automatisierte Bewertungen.         |
 | `schedule`                    | Cron-basierter Zeitplan                           | Führen Sie RAILWISE nach einem Zeitplan aus. Erfordert `prompt`-Eingabe. Die Ausgabe geht an Protokolle und PRs (kein Kommentar zu diesem Problem). |

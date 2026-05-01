@@ -8,7 +8,9 @@ export function ProjectList(props: { projects: ProjectCard[]; loading: boolean }
   const filtered = createMemo(() => {
     const value = query().trim().toLowerCase()
     if (!value) return props.projects
-    return props.projects.filter((project) => `${project.name} ${project.description ?? ""}`.toLowerCase().includes(value))
+    return props.projects.filter((project) =>
+      `${project.name} ${project.description ?? ""}`.toLowerCase().includes(value),
+    )
   })
 
   return (

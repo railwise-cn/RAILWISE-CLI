@@ -4,39 +4,26 @@ import { tool } from "nb-railwise/tool"
 type Matrix = number[][]
 
 const mat = {
-  zeros: (r: number, c: number): Matrix =>
-    Array.from({ length: r }, () => Array(c).fill(0) as number[]),
+  zeros: (r: number, c: number): Matrix => Array.from({ length: r }, () => Array(c).fill(0) as number[]),
 
-  transpose: (a: Matrix): Matrix =>
-    a[0]!.map((_, j) => a.map((row) => row[j]!)),
+  transpose: (a: Matrix): Matrix => a[0]!.map((_, j) => a.map((row) => row[j]!)),
 
   mul: (a: Matrix, b: Matrix): Matrix =>
-    a.map((row) =>
-      b[0]!.map((_, j) =>
-        row.reduce((sum, val, k) => sum + val * b[k]![j]!, 0),
-      ),
-    ),
+    a.map((row) => b[0]!.map((_, j) => row.reduce((sum, val, k) => sum + val * b[k]![j]!, 0))),
 
-  mulVec: (a: Matrix, v: number[]): number[] =>
-    a.map((row) => row.reduce((sum, val, k) => sum + val * v[k]!, 0)),
+  mulVec: (a: Matrix, v: number[]): number[] => a.map((row) => row.reduce((sum, val, k) => sum + val * v[k]!, 0)),
 
-  add: (a: Matrix, b: Matrix): Matrix =>
-    a.map((row, i) => row.map((v, j) => v + b[i]![j]!)),
+  add: (a: Matrix, b: Matrix): Matrix => a.map((row, i) => row.map((v, j) => v + b[i]![j]!)),
 
-  scale: (a: Matrix, s: number): Matrix =>
-    a.map((row) => row.map((v) => v * s)),
+  scale: (a: Matrix, s: number): Matrix => a.map((row) => row.map((v) => v * s)),
 
   invert: (src: Matrix): Matrix | null => {
     const n = src.length
-    const aug = src.map((row, i) => [
-      ...row,
-      ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)),
-    ])
+    const aug = src.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))])
     for (let col = 0; col < n; col++) {
       let pivotRow = col
       for (let row = col + 1; row < n; row++) {
-        if (Math.abs(aug[row]![col]!) > Math.abs(aug[pivotRow]![col]!))
-          pivotRow = row
+        if (Math.abs(aug[row]![col]!) > Math.abs(aug[pivotRow]![col]!)) pivotRow = row
       }
       if (Math.abs(aug[pivotRow]![col]!) < 1e-15) return null
       ;[aug[col], aug[pivotRow]] = [aug[pivotRow]!, aug[col]!]
@@ -45,8 +32,7 @@ const mat = {
       for (let row = 0; row < n; row++) {
         if (row === col) continue
         const factor = aug[row]![col]!
-        for (let j = col; j < 2 * n; j++)
-          aug[row]![j]! -= factor * aug[col]![j]!
+        for (let j = col; j < 2 * n; j++) aug[row]![j]! -= factor * aug[col]![j]!
       }
     }
     return aug.map((row) => row.slice(n))
@@ -131,38 +117,28 @@ export const free_station_resection = tool({
         const dx = t.x - sx
         const dy = t.y - sy
         const dist0 = Math.sqrt(dx * dx + dy * dy)
-        const az0 = ((Math.atan2(dx, dy) * 180 / Math.PI) + 360) % 360
+        const az0 = ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360
 
         // Direction observation equation
-        let dirDiff = (t.horizDirection + orientation) - az0
+        let dirDiff = t.horizDirection + orientation - az0
         if (dirDiff > 180) dirDiff -= 360
         if (dirDiff < -180) dirDiff += 360
-        const dirDiffRad = dirDiff * Math.PI / 180
+        const dirDiffRad = (dirDiff * Math.PI) / 180
 
         // A matrix row for direction: partial derivatives w.r.t. [sx, sy, sz, orientation]
         // dAz/dsx = dy / (dist^2), dAz/dsy = -dx / (dist^2), dAz/dsz = 0, dAz/dOri = 1
-        const dirRow = [
-          dy / (dist0 * dist0),
-          -dx / (dist0 * dist0),
-          0,
-          1,
-        ]
+        const dirRow = [dy / (dist0 * dist0), -dx / (dist0 * dist0), 0, 1]
         A.push(dirRow)
         L.push(dirDiffRad)
-        P[i * 2]![i * 2] = 1 / ((args.directionSigma / rho) ** 2)
+        P[i * 2]![i * 2] = 1 / (args.directionSigma / rho) ** 2
 
         // Distance observation equation
         const distDiff = t.hDist - dist0
         // dDist/dsx = -dx/dist, dDist/dsy = -dy/dist, dDist/dsz = 0, dDist/dOri = 0
-        const distRow = [
-          -dx / dist0,
-          -dy / dist0,
-          0,
-          0,
-        ]
+        const distRow = [-dx / dist0, -dy / dist0, 0, 0]
         A.push(distRow)
         L.push(distDiff)
-        P[i * 2 + 1]![i * 2 + 1] = 1 / (args.distanceSigma ** 2)
+        P[i * 2 + 1]![i * 2 + 1] = 1 / args.distanceSigma ** 2
       }
 
       const AT = mat.transpose(A)
@@ -178,7 +154,7 @@ export const free_station_resection = tool({
       sx += X[0]!
       sy += X[1]!
       sz += X[2]!
-      orientation += X[3]! * 180 / Math.PI
+      orientation += (X[3]! * 180) / Math.PI
 
       const V = mat.mulVec(A, X).map((v, i) => v - L[i]!)
       const VTPV = V.reduce((sum, v, i) => sum + v * P[i]![i]! * v, 0)
@@ -208,8 +184,8 @@ export const free_station_resection = tool({
       const dx = t.x - sx
       const dy = t.y - sy
       const dist0 = Math.sqrt(dx * dx + dy * dy)
-      const az0 = ((Math.atan2(dx, dy) * 180 / Math.PI) + 360) % 360
-      let dirRes = (t.horizDirection + orientation) - az0
+      const az0 = ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360
+      let dirRes = t.horizDirection + orientation - az0
       if (dirRes > 180) dirRes -= 360
       if (dirRes < -180) dirRes += 360
       return {
@@ -342,10 +318,16 @@ export const cpiii_network_adjustment = tool({
         const fIdx = unknownIds.indexOf(obs.from)
         const tIdx = unknownIds.indexOf(obs.to)
 
-        if (fIdx >= 0) { Arow[fIdx * 2] = -dx / s0; Arow[fIdx * 2 + 1] = -dy / s0 }
-        if (tIdx >= 0) { Arow[tIdx * 2] = dx / s0; Arow[tIdx * 2 + 1] = dy / s0 }
+        if (fIdx >= 0) {
+          Arow[fIdx * 2] = -dx / s0
+          Arow[fIdx * 2 + 1] = -dy / s0
+        }
+        if (tIdx >= 0) {
+          Arow[tIdx * 2] = dx / s0
+          Arow[tIdx * 2 + 1] = dy / s0
+        }
 
-        rows.push({ Arow, l: obs.distance - s0, weight: 1 / (obs.sigma ** 2) })
+        rows.push({ Arow, l: obs.distance - s0, weight: 1 / obs.sigma ** 2 })
       }
 
       const n = rows.length
@@ -353,7 +335,9 @@ export const cpiii_network_adjustment = tool({
 
       const A = rows.map((r) => r.Arow)
       const P = mat.zeros(n, n)
-      rows.forEach((r, i) => { P[i]![i] = r.weight })
+      rows.forEach((r, i) => {
+        P[i]![i] = r.weight
+      })
       const L = rows.map((r) => r.l)
 
       const AT = mat.transpose(A)
@@ -375,7 +359,7 @@ export const cpiii_network_adjustment = tool({
 
       const V = mat.mulVec(A, X).map((v, i) => v - L[i]!)
       const VTPV = V.reduce((sum, v, i) => sum + v * P[i]![i]! * v, 0)
-      sigma0 = (n - u / 2) > 0 ? Math.sqrt(VTPV / (n - u / 2)) : 0
+      sigma0 = n - u / 2 > 0 ? Math.sqrt(VTPV / (n - u / 2)) : 0
 
       if (maxCorr < 0.00001) break
     }
@@ -396,7 +380,7 @@ export const cpiii_network_adjustment = tool({
           const tIdx = hUnknown.indexOf(obs.to)
           if (fIdx >= 0) A[i]![fIdx] = -1
           if (tIdx >= 0) A[i]![tIdx] = 1
-          P[i]![i] = 1 / (obs.sigma ** 2)
+          P[i]![i] = 1 / obs.sigma ** 2
 
           const fH = hKnown.get(obs.from) ?? coordMap.get(obs.from)?.z ?? 0
           const tH = hKnown.get(obs.to) ?? coordMap.get(obs.to)?.z ?? 0
@@ -452,9 +436,10 @@ export const cpiii_network_adjustment = tool({
       pass_rate: `${passCount}/${results.length}`,
       all_pass: passCount === results.length,
       adjusted_points: results,
-      assessment: passCount === results.length
-        ? `✅ CPIII网平差合格：所有点位中误差 ≤ ${accuracy.plane_mm}mm，最大 ${maxSigma.toFixed(3)}mm`
-        : `⚠️ ${results.length - passCount}个CPIII点精度不满足 ${accuracy.plane_mm}mm 要求，最大 ${maxSigma.toFixed(3)}mm，建议补测`,
+      assessment:
+        passCount === results.length
+          ? `✅ CPIII网平差合格：所有点位中误差 ≤ ${accuracy.plane_mm}mm，最大 ${maxSigma.toFixed(3)}mm`
+          : `⚠️ ${results.length - passCount}个CPIII点精度不满足 ${accuracy.plane_mm}mm 要求，最大 ${maxSigma.toFixed(3)}mm，建议补测`,
       message: `✅ CPIII平差完成：${unknownIds.length}点，σ₀=${sigma0.toFixed(4)}，最大点位σ=${maxSigma.toFixed(3)}mm，合格率 ${passCount}/${results.length}`,
     })
   },

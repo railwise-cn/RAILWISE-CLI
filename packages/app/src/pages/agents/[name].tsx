@@ -85,17 +85,12 @@ export default function AgentDetailPage() {
         <p class="agent-error">{error()}</p>
       </Show>
 
-      <Show
-        when={!loading() && agent()}
-        fallback={<div class="agent-empty">正在读取智能体配置。</div>}
-      >
+      <Show when={!loading() && agent()} fallback={<div class="agent-empty">正在读取智能体配置。</div>}>
         <section class="agent-detail__grid">
           <div class="agent-panel agent-panel--editor">
             <div class="agent-panel__header">
               <h2>Markdown 配置</h2>
-              <span class="agent-panel__link">
-                {agent()?.filePath ?? ".railwise/agent"}
-              </span>
+              <span class="agent-panel__link">{agent()?.filePath ?? ".railwise/agent"}</span>
             </div>
             <AgentEditor value={raw()} onChange={setRaw} />
           </div>

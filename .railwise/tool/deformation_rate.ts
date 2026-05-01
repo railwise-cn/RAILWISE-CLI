@@ -87,9 +87,7 @@ export const deformation_rate = tool({
 
     // Stability assessment
     const last3Rates = rates.slice(-3).map((r) => Math.abs(r.rate_mm_per_day))
-    const avgLast3Rate = last3Rates.length > 0
-      ? last3Rates.reduce((s, v) => s + v, 0) / last3Rates.length
-      : 0
+    const avgLast3Rate = last3Rates.length > 0 ? last3Rates.reduce((s, v) => s + v, 0) / last3Rates.length : 0
 
     let stability: string
     if (avgLast3Rate < 0.01) {
@@ -110,30 +108,27 @@ export const deformation_rate = tool({
       const ratio = Math.abs(latestValue) / args.alertThreshold
       const predMax = Math.max(...predictions.map((p) => Math.abs(p.predicted_mm)))
       const predRatio = predMax / args.alertThreshold
-      const daysToThreshold = b !== 0
-        ? (args.alertThreshold * Math.sign(b) - a) / b - lastDay
-        : Infinity
+      const daysToThreshold = b !== 0 ? (args.alertThreshold * Math.sign(b) - a) / b - lastDay : Infinity
 
       alertAnalysis = {
         current_ratio_pct: Number((ratio * 100).toFixed(1)),
         predicted_max_ratio_pct: Number((predRatio * 100).toFixed(1)),
-        estimated_days_to_threshold: daysToThreshold > 0 && isFinite(daysToThreshold)
-          ? Number(daysToThreshold.toFixed(1))
-          : "不会达到（趋势方向相反或速率为零）",
+        estimated_days_to_threshold:
+          daysToThreshold > 0 && isFinite(daysToThreshold)
+            ? Number(daysToThreshold.toFixed(1))
+            : "不会达到（趋势方向相反或速率为零）",
         alert_level:
-          ratio >= 1.0 ? "🔴 已超阈值"
-          : ratio >= 0.85 ? "🟠 接近阈值"
-          : ratio >= 0.70 ? "🟡 需关注"
-          : "🟢 正常",
+          ratio >= 1.0 ? "🔴 已超阈值" : ratio >= 0.85 ? "🟠 接近阈值" : ratio >= 0.7 ? "🟡 需关注" : "🟢 正常",
       }
     }
 
     // Rate threshold check
     let rateAlert: string | undefined
     if (args.rateThreshold) {
-      rateAlert = Math.abs(latestRate) > args.rateThreshold
-        ? `🔴 最新速率 ${Math.abs(latestRate).toFixed(4)} mm/d 超过限值 ${args.rateThreshold} mm/d`
-        : `🟢 最新速率 ${Math.abs(latestRate).toFixed(4)} mm/d 在限值 ${args.rateThreshold} mm/d 内`
+      rateAlert =
+        Math.abs(latestRate) > args.rateThreshold
+          ? `🔴 最新速率 ${Math.abs(latestRate).toFixed(4)} mm/d 超过限值 ${args.rateThreshold} mm/d`
+          : `🟢 最新速率 ${Math.abs(latestRate).toFixed(4)} mm/d 在限值 ${args.rateThreshold} mm/d 内`
     }
 
     return JSON.stringify({
@@ -194,7 +189,7 @@ export const deformation_comparison = tool({
         const ratio = absVal / args.alertThreshold
         if (ratio >= 1.0) status = "🔴 超限"
         else if (ratio >= 0.85) status = "🟠 接近阈值"
-        else if (ratio >= 0.70) status = "🟡 关注"
+        else if (ratio >= 0.7) status = "🟡 关注"
       }
       if (args.rateThreshold && Math.abs(rate) > args.rateThreshold) {
         status = "🔴 速率超限"
@@ -215,7 +210,10 @@ export const deformation_comparison = tool({
     const alertCount = analyzed.filter((a) => a.status.includes("超限") || a.status.includes("接近")).length
 
     const avgDeformation = analyzed.reduce((s, a) => s + Math.abs(a.latest_mm), 0) / analyzed.length
-    const maxRate = analyzed.reduce((max, a) => Math.abs(a.rate_mm_per_day) > Math.abs(max.rate_mm_per_day) ? a : max, analyzed[0]!)
+    const maxRate = analyzed.reduce(
+      (max, a) => (Math.abs(a.rate_mm_per_day) > Math.abs(max.rate_mm_per_day) ? a : max),
+      analyzed[0]!,
+    )
 
     return JSON.stringify({
       total_points: analyzed.length,

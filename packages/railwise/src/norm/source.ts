@@ -100,10 +100,17 @@ export namespace NormSource {
     return path.relative(source, file)
   }
 
-  export async function parse(input: { inputPath: string; outputDir?: string; title?: string; mode?: Mode }): Promise<Result> {
+  export async function parse(input: {
+    inputPath: string
+    outputDir?: string
+    title?: string
+    mode?: Mode
+  }): Promise<Result> {
     const mode = input.mode ?? "auto"
     const source = root()
-    const filepath = path.isAbsolute(input.inputPath) ? input.inputPath : path.resolve(Instance.directory, input.inputPath)
+    const filepath = path.isAbsolute(input.inputPath)
+      ? input.inputPath
+      : path.resolve(Instance.directory, input.inputPath)
     if (!(await exists(filepath))) throw new Error(`inputPath does not exist: ${input.inputPath}`)
 
     const bin = await mineru()
@@ -149,7 +156,8 @@ export namespace NormSource {
         parser: "markdown_fallback",
         inputPath: filepath,
         mineru: bin,
-        message: "Markdown fallback only accepts .md, .markdown, or .txt files. Convert this source to reviewed markdown first.",
+        message:
+          "Markdown fallback only accepts .md, .markdown, or .txt files. Convert this source to reviewed markdown first.",
       }
     }
 

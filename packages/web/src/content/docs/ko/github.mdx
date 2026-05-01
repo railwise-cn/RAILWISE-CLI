@@ -104,14 +104,14 @@ railwise github install
 
 Railwise는 아래 GitHub event로 트리거할 수 있습니다.
 
-| Event Type                    | Triggered By            | Details                                                                                                                |
-| ----------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `issue_comment`               | issue 또는 PR 댓글      | 댓글에 `/railwise`를 mention하세요. Railwise가 맥락을 읽고 branch 생성, PR 생성, 답변을 수행할 수 있습니다. |
-| `pull_request_review_comment` | PR의 특정 코드 줄 댓글  | 코드 리뷰 중 `/railwise`를 mention하세요. Railwise가 파일 경로, 라인 번호, diff 맥락을 받습니다.            |
-| `issues`                      | issue 생성 또는 수정    | issue가 생성/수정될 때 Railwise를 자동 트리거합니다. `prompt` 입력이 필요합니다.                                       |
-| `pull_request`                | PR 생성 또는 업데이트   | PR open/synchronize/reopen 시 Railwise를 자동 트리거합니다. 자동 리뷰에 유용합니다.                                    |
-| `schedule`                    | cron 기반 스케줄        | 스케줄에 따라 Railwise를 실행합니다. `prompt` 입력이 필요합니다. 출력은 로그와 PR로 남습니다(issue 댓글 대상 없음).    |
-| `workflow_dispatch`           | GitHub UI에서 수동 실행 | Actions 탭에서 필요 시 Railwise를 실행합니다. `prompt` 입력이 필요하며 출력은 로그와 PR로 남습니다.                    |
+| Event Type                    | Triggered By            | Details                                                                                                             |
+| ----------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `issue_comment`               | issue 또는 PR 댓글      | 댓글에 `/railwise`를 mention하세요. Railwise가 맥락을 읽고 branch 생성, PR 생성, 답변을 수행할 수 있습니다.         |
+| `pull_request_review_comment` | PR의 특정 코드 줄 댓글  | 코드 리뷰 중 `/railwise`를 mention하세요. Railwise가 파일 경로, 라인 번호, diff 맥락을 받습니다.                    |
+| `issues`                      | issue 생성 또는 수정    | issue가 생성/수정될 때 Railwise를 자동 트리거합니다. `prompt` 입력이 필요합니다.                                    |
+| `pull_request`                | PR 생성 또는 업데이트   | PR open/synchronize/reopen 시 Railwise를 자동 트리거합니다. 자동 리뷰에 유용합니다.                                 |
+| `schedule`                    | cron 기반 스케줄        | 스케줄에 따라 Railwise를 실행합니다. `prompt` 입력이 필요합니다. 출력은 로그와 PR로 남습니다(issue 댓글 대상 없음). |
+| `workflow_dispatch`           | GitHub UI에서 수동 실행 | Actions 탭에서 필요 시 Railwise를 실행합니다. `prompt` 입력이 필요하며 출력은 로그와 PR로 남습니다.                 |
 
 ### Schedule Example
 

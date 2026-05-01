@@ -622,7 +622,8 @@ export const dict = {
   "settings.privacy.telemetry.title": "使用统计",
   "settings.privacy.telemetry.description": "共享匿名 UI 计数与崩溃报告，不保存 Prompt、项目名或文件路径。",
   "telemetry.consent.title": "帮助改进 RAILWISE",
-  "telemetry.consent.description": "共享匿名 UI 计数与崩溃报告。Prompt、项目名、文件名和文件路径不会进入埋点，之后也可在设置中修改。",
+  "telemetry.consent.description":
+    "共享匿名 UI 计数与崩溃报告。Prompt、项目名、文件名和文件路径不会进入埋点，之后也可在设置中修改。",
   "telemetry.consent.accept": "共享使用统计",
   "telemetry.consent.decline": "暂不启用",
 

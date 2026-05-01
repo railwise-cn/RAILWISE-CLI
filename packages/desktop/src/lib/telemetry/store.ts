@@ -61,9 +61,11 @@ function event(row: Row): StoredTelemetryEvent {
 async function read() {
   const sql = await db()
   if (!sql) return memory.events
-  return (await sql.select<Row[]>("SELECT id, event, properties, ts FROM telemetry_events ORDER BY ts ASC LIMIT ?", [
-    MAX_EVENTS,
-  ])).map(event)
+  return (
+    await sql.select<Row[]>("SELECT id, event, properties, ts FROM telemetry_events ORDER BY ts ASC LIMIT ?", [
+      MAX_EVENTS,
+    ])
+  ).map(event)
 }
 
 export async function isEnabled() {

@@ -21,28 +21,28 @@ function dec2dms(decimal: number): { degrees: number; minutes: number; seconds: 
 }
 
 function dec2rad(decimal: number): number {
-  return decimal * Math.PI / 180
+  return (decimal * Math.PI) / 180
 }
 
 function rad2dec(radians: number): number {
-  return radians * 180 / Math.PI
+  return (radians * 180) / Math.PI
 }
 
 function dec2mil(decimal: number): number {
   // NATO mil: 6400 mils = 360°
-  return decimal * 6400 / 360
+  return (decimal * 6400) / 360
 }
 
 function mil2dec(mils: number): number {
-  return mils * 360 / 6400
+  return (mils * 360) / 6400
 }
 
 function dec2gon(decimal: number): number {
-  return decimal * 400 / 360
+  return (decimal * 400) / 360
 }
 
 function gon2dec(gon: number): number {
-  return gon * 360 / 400
+  return (gon * 360) / 400
 }
 
 // ============================================================
@@ -74,8 +74,7 @@ export const dms_to_decimal = tool({
 // ============================================================
 
 export const decimal_to_dms = tool({
-  description:
-    "十进制度转度分秒(DMS)。将计算结果转换回DMS格式用于报告撰写、仪器设站或放样数据准备。",
+  description: "十进制度转度分秒(DMS)。将计算结果转换回DMS格式用于报告撰写、仪器设站或放样数据准备。",
   args: {
     decimal: tool.schema.number().describe("十进制角度值（度）"),
   },
@@ -104,7 +103,7 @@ export const angle_convert = tool({
     from: tool.schema
       .enum(["DEG", "DMS_packed", "RAD", "MIL", "GON"])
       .describe(
-        "输入格式：DEG=十进制度, DMS_packed=紧凑DMS格式(如 123.4530 表示123°45′30″), RAD=弧度, MIL=密位(NATO 6400), GON=百分度/梯度"
+        "输入格式：DEG=十进制度, DMS_packed=紧凑DMS格式(如 123.4530 表示123°45′30″), RAD=弧度, MIL=密位(NATO 6400), GON=百分度/梯度",
       ),
   },
   async execute(args) {
@@ -132,9 +131,8 @@ export const angle_convert = tool({
     const dms = dec2dms(decimal)
 
     // Packed DMS reconstruction
-    const packedDms = Number(
-      (Math.abs(dms.degrees) + dms.minutes / 100 + dms.seconds / 10000).toFixed(4)
-    ) * (decimal < 0 ? -1 : 1)
+    const packedDms =
+      Number((Math.abs(dms.degrees) + dms.minutes / 100 + dms.seconds / 10000).toFixed(4)) * (decimal < 0 ? -1 : 1)
 
     return JSON.stringify({
       input: { value: args.value, format: args.from },

@@ -16,9 +16,7 @@ export namespace MemoryInject {
     await Memory.touch(memories.map((m) => m.id))
     log.info("injecting", { count: memories.length })
 
-    const formatted = memories
-      .map((m) => `- [${m.category}] ${m.content}`)
-      .join("\n")
+    const formatted = memories.map((m) => `- [${m.category}] ${m.content}`).join("\n")
 
     return [
       [

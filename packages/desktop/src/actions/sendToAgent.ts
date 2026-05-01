@@ -8,19 +8,17 @@ type Server = {
   }
 }
 
-export async function sendToAgent(input: {
-  platform: Platform
-  server?: Server
-  title: string
-  prompt: string
-}) {
+export async function sendToAgent(input: { platform: Platform; server?: Server; title: string; prompt: string }) {
   if (!input.server) {
     return "sidecar 未就绪，稍后再试。"
   }
 
   const headers = new Headers({ "Content-Type": "application/json" })
   if (input.server.http.password) {
-    headers.set("Authorization", `Basic ${btoa(`${input.server.http.username ?? "railwise"}:${input.server.http.password}`)}`)
+    headers.set(
+      "Authorization",
+      `Basic ${btoa(`${input.server.http.username ?? "railwise"}:${input.server.http.password}`)}`,
+    )
   }
 
   const create = await (input.platform.fetch ?? globalThis.fetch)(`${input.server.http.url}/session`, {

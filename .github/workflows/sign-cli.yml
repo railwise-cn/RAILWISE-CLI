@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'railwise-cn/RAILWISE-CLI'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-tags: true
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Upload unsigned Windows CLI
         id: upload_unsigned_windows_cli
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unsigned-railwise-windows-cli
           path: packages/railwise/dist/railwise-windows-x64/bin/railwise.exe
@@ -47,7 +47,7 @@ jobs:
           output-artifact-directory: signed-railwise-cli
 
       - name: Upload signed Windows CLI
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: signed-railwise-windows-cli
           path: signed-railwise-cli/*.exe

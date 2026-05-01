@@ -14,6 +14,7 @@
     "script/rebrand-audit.ts": "bun ./scripts/rebrand-audit.ts",
     "script/verify-desktop-release.ts": "bun ./scripts/verify-desktop-release.ts",
     "script/verify-desktop-m7.ts": "bun ./scripts/verify-desktop-m7.ts",
+    "script/verify-desktop-native-surfaces.ts": "bun ./scripts/verify-desktop-native-surfaces.ts",
     "script/verify-update-server": "bun --cwd workers/update-server ./verify.ts",
     "desktop:release-secrets": "bun ./scripts/check-desktop-release-secrets.ts",
     "desktop:verify": "bun ./scripts/verify-desktop-acceptance.ts",

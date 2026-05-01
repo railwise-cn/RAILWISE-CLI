@@ -27,6 +27,12 @@ bun run desktop:verify -- --live
 bun run desktop:verify -- --native
 ```
 
+需要确认本地文件、updater、窗口、菜单仍在 Desktop/Tauri 原生边界内时运行：
+
+```bash
+bun run script/verify-desktop-native-surfaces.ts
+```
+
 发版前使用完整 30 分钟长连验收：
 
 ```bash

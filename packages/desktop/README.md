@@ -30,10 +30,12 @@ To verify the native shell without building a real sidecar binary:
 ```bash
 bun run --cwd packages/desktop check:tauri
 bun run --cwd packages/desktop test:tauri
+bun run script/verify-desktop-native-surfaces.ts
 bun run --cwd packages/desktop smoke:tauri
 ```
 
 `check:tauri` and `test:tauri` prepare a local check-only sidecar stub before running `cargo check` or `cargo test`.
+`script/verify-desktop-native-surfaces.ts` verifies that file, updater, window, and menu capabilities remain owned by the Desktop/Tauri boundary.
 `smoke:tauri` opens the real Tauri shell with a temporary local sidecar and verifies `/global/health`, so GA acceptance is not reduced to a browser preview.
 
 ## Build

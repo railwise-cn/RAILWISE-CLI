@@ -175,6 +175,7 @@ cd packages/desktop && bun run typecheck
 - Desktop 壳已启用 standalone session route，工作流预设可从 Agent Studio 进入 Session 交付页，不回落到 Dashboard。
 - Desktop E2E harness 已覆盖 CPIII 预设导入、交付验收和 delivery package 导出清单展示。
 - Native Tauri smoke gate 已固化为 `smoke:tauri`：使用临时 sidecar 拉起真实 Tauri 原生壳，并确认本地 sidecar health 可用。
+- Native surface gate 已固化为 `script/verify-desktop-native-surfaces.ts`：检查本地文件、updater、窗口、菜单都接在 Desktop/Tauri 层。
 - 签名、公证和正式安装包验收仍受 Apple/Windows secrets 配置阻塞，不能用浏览器 harness 代替 GA 验收。
 
 验收：
@@ -184,6 +185,7 @@ cd packages/desktop && bun run test:e2e
 cd packages/desktop && bun run check:tauri
 cd packages/desktop && bun run test:tauri
 cd packages/desktop && bun run smoke:tauri
+bun run script/verify-desktop-native-surfaces.ts
 bun run desktop:verify -- --native
 ```
 

@@ -79,6 +79,7 @@ cd packages/desktop && bun run build
 cd packages/desktop && bun run check:tauri
 cd packages/desktop && bun run test:tauri
 cd packages/desktop && bun run smoke:tauri
+bun run script/verify-desktop-native-surfaces.ts
 cd packages/desktop && bun run test:e2e
 ```
 

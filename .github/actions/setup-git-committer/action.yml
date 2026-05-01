@@ -20,7 +20,7 @@ runs:
     - name: Create app token
       id: apptoken
       if: ${{ inputs.railwise-app-id != '' && inputs.railwise-app-secret != '' }}
-      uses: actions/create-github-app-token@v2
+      uses: actions/create-github-app-token@v3
       with:
         app-id: ${{ inputs.railwise-app-id }}
         private-key: ${{ inputs.railwise-app-secret }}

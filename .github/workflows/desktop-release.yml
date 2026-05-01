@@ -35,7 +35,7 @@ jobs:
           - os: macos-14
             target: aarch64-apple-darwin
             platform: darwin
-          - os: macos-13
+          - os: macos-15-intel
             target: x86_64-apple-darwin
             platform: darwin
           - os: ubuntu-22.04
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -136,7 +136,7 @@ jobs:
       - name: Upload unsigned Windows installer
         if: matrix.platform == 'windows'
         id: upload_unsigned_windows
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unsigned-railwise-desktop-windows
           path: |
@@ -158,14 +158,14 @@ jobs:
 
       - name: Upload signed Windows installer
         if: matrix.platform == 'windows'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: railwise-desktop-${{ matrix.target }}-signed
           path: dist/signed/*.exe
           if-no-files-found: error
 
       - name: Upload bundle artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: railwise-desktop-${{ matrix.target }}
           path: |
@@ -180,7 +180,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: dist/desktop
           merge-multiple: true

@@ -13,11 +13,33 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Check deploy secrets
+        id: secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PLANETSCALE_SERVICE_TOKEN_NAME: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_NAME }}
+          PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
+          STRIPE_SECRET_KEY_DEV: ${{ secrets.STRIPE_SECRET_KEY_DEV }}
+          STRIPE_SECRET_KEY_PROD: ${{ secrets.STRIPE_SECRET_KEY_PROD }}
+        run: |
+          stripe_key="$STRIPE_SECRET_KEY_DEV"
+          if [ "${{ github.ref_name }}" = "production" ]; then
+            stripe_key="$STRIPE_SECRET_KEY_PROD"
+          fi
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$PLANETSCALE_SERVICE_TOKEN_NAME" ] || [ -z "$PLANETSCALE_SERVICE_TOKEN" ] || [ -z "$stripe_key" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Deploy secrets are not fully configured for ${{ github.ref_name }}; skipping deploy."
+            exit 0
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
 
       - uses: ./.github/actions/setup-bun
+        if: steps.secrets.outputs.ready == 'true'
 
       - uses: actions/setup-node@v4
+        if: steps.secrets.outputs.ready == 'true'
         with:
           node-version: "24"
 
@@ -28,11 +50,21 @@ jobs:
       # Removing the system language plugin forces SST to use its bundled compatible version.
       # TODO: Remove when sst supports Pulumi >3.210.0
       - name: Fix Pulumi version conflict
+        if: steps.secrets.outputs.ready == 'true'
         run: sudo rm -f /usr/local/bin/pulumi-language-nodejs
 
-      - run: bun sst deploy --stage=${{ github.ref_name }}
+      - name: Deploy
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          if [ "${{ github.ref_name }}" = "production" ]; then
+            export STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY_PROD"
+          else
+            export STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY_DEV"
+          fi
+          bun sst deploy --stage=${{ github.ref_name }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PLANETSCALE_SERVICE_TOKEN_NAME: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_NAME }}
           PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
-          STRIPE_SECRET_KEY: ${{ github.ref_name == 'production' && secrets.STRIPE_SECRET_KEY_PROD || secrets.STRIPE_SECRET_KEY_DEV }}
+          STRIPE_SECRET_KEY_DEV: ${{ secrets.STRIPE_SECRET_KEY_DEV }}
+          STRIPE_SECRET_KEY_PROD: ${{ secrets.STRIPE_SECRET_KEY_PROD }}

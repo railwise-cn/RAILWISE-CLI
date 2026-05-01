@@ -3,31 +3,37 @@ description: "Create app token and configure git user"
 inputs:
   railwise-app-id:
     description: "RAILWISE GitHub App ID"
-    required: true
+    required: false
   railwise-app-secret:
     description: "RAILWISE GitHub App private key"
-    required: true
+    required: false
 outputs:
   token:
     description: "GitHub App token"
-    value: ${{ steps.apptoken.outputs.token }}
+    value: ${{ steps.apptoken.outputs.token || github.token }}
   app-slug:
     description: "GitHub App slug"
-    value: ${{ steps.apptoken.outputs.app-slug }}
+    value: ${{ steps.apptoken.outputs.app-slug || 'github-actions' }}
 runs:
   using: "composite"
   steps:
     - name: Create app token
       id: apptoken
+      if: ${{ inputs.railwise-app-id != '' && inputs.railwise-app-secret != '' }}
       uses: actions/create-github-app-token@v2
       with:
         app-id: ${{ inputs.railwise-app-id }}
         private-key: ${{ inputs.railwise-app-secret }}
         owner: ${{ github.repository_owner }}
 
+    - name: Use GitHub token fallback
+      if: ${{ inputs.railwise-app-id == '' || inputs.railwise-app-secret == '' }}
+      run: echo "RAILWISE GitHub App credentials are not configured; using GITHUB_TOKEN."
+      shell: bash
+
     - name: Configure git user
       run: |
-        slug="${{ steps.apptoken.outputs.app-slug }}"
+        slug="${{ steps.apptoken.outputs.app-slug || 'github-actions' }}"
         git config --global user.name "${slug}[bot]"
         git config --global user.email "${slug}[bot]@users.noreply.github.com"
       shell: bash
@@ -39,5 +45,5 @@ runs:
 
     - name: Configure git remote
       run: |
-        git remote set-url origin https://x-access-token:${{ steps.apptoken.outputs.token }}@github.com/${{ github.repository }}
+        git remote set-url origin https://x-access-token:${{ steps.apptoken.outputs.token || github.token }}@github.com/${{ github.repository }}
       shell: bash

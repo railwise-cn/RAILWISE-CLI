@@ -48,7 +48,7 @@ jobs:
             target: windows-x64
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -61,7 +61,7 @@ jobs:
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: railwise-${{ matrix.target }}
           path: packages/railwise/dist
@@ -71,16 +71,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'railwise-cn/RAILWISE-CLI'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: ./.github/actions/setup-bun
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: packages/railwise/dist
           merge-multiple: true

@@ -20,7 +20,7 @@ Delivery package 必须被拆成三条责任线，而不是被写成一个跨产
 - SDK 已生成对应 `agentStudio.workflow.delivery.archive`、`workflow.session`、`workflow.acceptance` 客户端。
 - App shell 已有 session composer 内的验收/导出/交付文件展示 UI。
 - Desktop 复用 App shell UI，并负责本地文件打开、原生壳验收和 GA 体验。
-- CLI 目前只有通用 session JSON export；workflow delivery export 仍是单独 backlog，不能被 Desktop UI 阻塞，也不能依赖 Desktop 路径。
+- CLI 已有独立 `railwise workflow run/export` 路径，负责无头启动工作流、验收 delivery package，并按 session id 输出机器可读 JSON。
 
 ---
 
@@ -146,22 +146,24 @@ cd packages/desktop && bun run test:tauri
 
 ## 4. CLI Export 边界
 
-CLI export is not done just because Desktop/App can display delivery packages.
+CLI export is a separate product path from Desktop/App delivery review.
 
 Current CLI state:
 
 - `packages/railwise/src/cli/cmd/export.ts` exports generic session JSON.
-- There is no dedicated workflow delivery export command yet.
+- `packages/railwise/src/cli/cmd/workflow.ts` owns workflow-specific headless automation.
+- `railwise workflow run <workflowID>` starts a workflow preset and emits JSON for scripts and CI.
+- `railwise workflow run --wait` checks delivery acceptance and returns a non-zero exit code when acceptance fails.
+- `railwise workflow run --archive` archives a delivery package after acceptance passes.
+- `railwise workflow export <sessionID>` exports an accepted workflow delivery package by session id.
 - No CLI command depends on `packages/desktop` or Desktop configuration.
 
-CLI backlog remains:
+CLI must keep:
 
-- Design `railwise workflow export` or equivalent.
-- Support export by session id.
-- Output machine-readable JSON.
-- Return non-zero exit codes for missing session, failed acceptance or missing archive.
-- Use Core API / Core filesystem contract only.
-- Add tests under `packages/railwise/test/cli`.
+- Machine-readable JSON output.
+- Non-zero exit codes for failed acceptance or invalid workflow/session input.
+- Core API / Core filesystem contracts as the only workflow delivery dependency.
+- Tests under `packages/railwise/test/cli`.
 
 CLI acceptance:
 

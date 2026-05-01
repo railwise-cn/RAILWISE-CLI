@@ -136,7 +136,7 @@ check(
   contains(workflow, [
     "bun run --cwd packages/desktop predev -- --target",
     "bun run --cwd packages/desktop tauri -- build",
-    "--config tauri.prod.conf.json",
+    "--config src-tauri/tauri.prod.conf.json",
   ]),
   "production Tauri config is used and CLI args are passed through Bun",
 )

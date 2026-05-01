@@ -426,10 +426,10 @@ describe("server.routes.agent-studio", () => {
               fileCount: number
               markdownPath: string
               manifestPath: string
-              files: { kind: string; path: string; copied: boolean }[]
+              files: { kind: string; label: string; path: string; copied: boolean; sourcePath?: string }[]
             }
             acceptance: { workflowId: string; ok: boolean }
-            references: { path: string }[]
+            references: { label: string; path: string }[]
           }
           const metadataResponse = await AgentStudioRoutes().request(
             `http://railwise.test/workflow/session/${session.id}`,
@@ -445,11 +445,21 @@ describe("server.routes.agent-studio", () => {
           expect(result.manifestPath).toContain("/manifest.json")
           expect(result.fileCount).toBe(4)
           expect(result.files.filter((file) => file.copied)).toHaveLength(4)
+          expect(result.files.map((file) => path.basename(file.path))).toEqual([
+            "summary.md",
+            "artifact-01.md",
+            "artifact-02.json",
+            "manifest.json",
+          ])
+          expect(result.files.map((file) => file.kind)).toEqual(["summary", "artifact", "artifact", "manifest"])
           expect(result.files.find((file) => file.sourcePath === md)?.path).toContain("artifact-01.md")
           expect(result.files.find((file) => file.sourcePath === json)?.path).toContain("artifact-02.json")
           expect(markdown).toContain("# CPIII 规范查询与复测预案 交付摘要")
           expect(markdown).toContain("- 交付包版本: 1")
+          expect(markdown).toContain("- Manifest: ")
           expect(markdown).toContain("## 交付包文件")
+          expect(markdown).toContain("| 交付摘要 Markdown | summary |")
+          expect(markdown).toContain("| 交付清单 JSON | manifest |")
           expect(markdown).toContain(md)
           expect(markdown).toContain(json)
           expect(markdown).toContain("## 验收检查")
@@ -461,13 +471,46 @@ describe("server.routes.agent-studio", () => {
           })
           expect(manifest.kind).toBe("railwise.workflow.delivery")
           expect(manifest.version).toBe(1)
+          expect(["kind", "version", "delivery", "acceptance", "references"].every((key) => key in manifest)).toBe(true)
+          expect(
+            [
+              "sessionId",
+              "workflowId",
+              "workflowName",
+              "version",
+              "generatedAt",
+              "directoryPath",
+              "markdownPath",
+              "manifestPath",
+              "fileCount",
+              "files",
+            ].every((key) => key in manifest.delivery),
+          ).toBe(true)
           expect(manifest.delivery.version).toBe(1)
           expect(manifest.delivery.fileCount).toBe(4)
           expect(manifest.delivery.markdownPath).toBe(result.markdownPath)
           expect(manifest.delivery.manifestPath).toBe(result.manifestPath)
-          expect(manifest.delivery.files.map((file) => file.kind)).toEqual(["summary", "artifact", "artifact", "manifest"])
+          expect(manifest.delivery.files.map((file) => file.kind)).toEqual([
+            "summary",
+            "artifact",
+            "artifact",
+            "manifest",
+          ])
+          expect(manifest.delivery.files.map((file) => path.basename(file.path))).toEqual([
+            "summary.md",
+            "artifact-01.md",
+            "artifact-02.json",
+            "manifest.json",
+          ])
+          expect(manifest.delivery.files.map((file) => file.sourcePath).filter(Boolean)).toEqual([md, json])
           expect(manifest.acceptance.workflowId).toBe("cpiii-resurvey-wiki")
           expect(manifest.acceptance.ok).toBe(true)
+          expect(
+            ["workflowId", "sessionId", "ok", "generatedAt", "messageCount", "checks"].every(
+              (key) => key in manifest.acceptance,
+            ),
+          ).toBe(true)
+          expect(manifest.references.map((reference) => reference.label)).toEqual(["Markdown", "JSON"])
           expect(manifest.references.map((reference) => reference.path)).toContain(md)
           expect(metadata.delivery.markdownPath).toBe(result.markdownPath)
           expect(metadata.delivery.directoryPath).toBe(result.directoryPath)

@@ -36,7 +36,7 @@ bun run --cwd packages/desktop smoke:tauri
 
 `check:tauri` and `test:tauri` prepare a local check-only sidecar stub before running `cargo check` or `cargo test`.
 `script/verify-desktop-native-surfaces.ts` verifies that file, updater, window, and menu capabilities remain owned by the Desktop/Tauri boundary.
-`smoke:tauri` opens the real Tauri shell with a temporary local sidecar and verifies `/global/health`, so GA acceptance is not reduced to a browser preview.
+`smoke:tauri` opens the real Tauri shell with a temporary local sidecar and verifies `/global/health` plus native lifecycle logs, so GA acceptance is not reduced to a browser preview.
 
 ## Build
 

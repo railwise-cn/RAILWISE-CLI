@@ -163,7 +163,7 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-        run: bun run --cwd packages/desktop tauri -- build --target ${{ matrix.target }} --config tauri.prod.conf.json
+        run: bun run --cwd packages/desktop tauri -- build --target ${{ matrix.target }} --config src-tauri/tauri.prod.conf.json
 
       - name: Upload unsigned Windows installer
         if: matrix.platform == 'windows'

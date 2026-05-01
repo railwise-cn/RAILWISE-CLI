@@ -91,6 +91,24 @@ const wait = async (port: number, done: Promise<number>, timeout: number) => {
 
   throw new Error(`Timed out waiting for native sidecar health on port ${port}`)
 }
+const waitForOutput = async (read: () => string, values: string[], done: Promise<number>, timeout: number) => {
+  const deadline = Date.now() + timeout
+  while (Date.now() < deadline) {
+    const missing = values.filter((value) => !read().includes(value))
+    if (missing.length === 0) return
+
+    const exited = await Promise.race([done.then((code) => ({ code })), sleep(0).then(() => undefined)])
+    if (exited) {
+      throw new Error(`Native shell exited before lifecycle evidence was complete: ${missing.join(", ")}`)
+    }
+
+    await sleep(250)
+  }
+
+  throw new Error(
+    `Timed out waiting for native lifecycle evidence: ${values.filter((value) => !read().includes(value)).join(", ")}`,
+  )
+}
 
 const target = arg("--target") ?? Bun.env.TAURI_ENV_TARGET_TRIPLE ?? Bun.env.RUST_TARGET ?? host()
 if (target !== host()) throw new Error(`Native smoke can only run for the host target (${host()}), got '${target}'`)
@@ -198,7 +216,7 @@ const child = Bun.spawn([app], {
     NO_COLOR: "1",
     RAILWISE_NATIVE_SMOKE: "1",
     RAILWISE_PORT: String(port),
-    RUST_LOG: Bun.env.RUST_LOG ?? "info",
+    RUST_LOG: Bun.env.RUST_LOG ?? "railwise_lib=debug,railwise_desktop=debug,sidecar=debug",
     XDG_DATA_HOME: data,
   },
   stdout: "pipe",
@@ -214,11 +232,21 @@ const collect = async (stream: ReadableStream<Uint8Array> | null) => {
   for await (const chunk of stream) output += new TextDecoder().decode(chunk)
 }
 const readers = [collect(child.stdout), collect(child.stderr)]
+const evidence = [
+  "railwise-native-smoke:app.initializing",
+  "railwise-native-smoke:windows.bootstrap.ready",
+  "railwise-native-smoke:sidecar.spawn_requested",
+  "railwise-native-smoke:sidecar.health_ok",
+  "railwise-native-smoke:main_window.visible",
+  "railwise-native-smoke:app.initialized",
+]
 
 try {
   await wait(port, done, timeout)
-  await sleep(750)
-  console.log(`Native Tauri smoke passed: shell launched and sidecar health responded on ${port}.`)
+  await waitForOutput(() => output, evidence, done, timeout)
+  console.log(
+    `Native Tauri smoke passed: shell launched, sidecar health responded on ${port}, and lifecycle logs were observed.`,
+  )
 } catch (error) {
   console.error(output.trim())
   console.error(error instanceof Error ? error.message : error)

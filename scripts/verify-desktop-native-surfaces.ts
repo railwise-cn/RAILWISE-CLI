@@ -10,6 +10,7 @@ const has = (text: string, values: string[]) => values.every((value) => text.inc
 const check = (name: string, passed: boolean, detail: string) => checks.push({ name, passed, detail })
 
 const win = await read("packages/desktop/src-tauri/src/windows.rs")
+const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const menu = await read("packages/desktop/src/menu.ts")
 const index = await read("packages/desktop/src/index.tsx")
 const updater = await read("packages/desktop/src/updater.ts")
@@ -97,9 +98,25 @@ check(
     "src-tauri/sidecars/railwise-cli",
     "/global/health",
     "RAILWISE_NATIVE_SMOKE",
+    "waitForOutput",
+    "railwise-native-smoke:app.initializing",
+    "railwise-native-smoke:windows.bootstrap.ready",
+    "railwise-native-smoke:sidecar.spawn_requested",
+    "railwise-native-smoke:sidecar.health_ok",
+    "railwise-native-smoke:main_window.visible",
+    "railwise-native-smoke:app.initialized",
     "Native Tauri smoke passed",
-  ]),
-  "native smoke builds and launches the debug app with a temporary sidecar health endpoint",
+  ]) &&
+    has(lib, [
+      "fn native_smoke_marker",
+      'native_smoke_marker("app.initializing")',
+      'native_smoke_marker("windows.bootstrap.ready")',
+      'native_smoke_marker("sidecar.spawn_requested")',
+      'native_smoke_marker("sidecar.health_ok")',
+      'native_smoke_marker("main_window.visible")',
+      'native_smoke_marker("app.initialized")',
+    ]),
+  "native smoke builds and launches the debug app with temporary sidecar health and lifecycle evidence",
 )
 
 for (const item of checks) console.log(`${item.passed ? "[ok]" : "[fail]"} ${item.name}: ${item.detail}`)

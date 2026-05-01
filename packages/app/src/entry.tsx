@@ -100,6 +100,8 @@ if (!(root instanceof HTMLElement) && import.meta.env.DEV) {
 
 const platform: Platform = {
   platform: "web",
+  appName: "RAILWISE App Shell",
+  supportUrl: "https://railwise.ai/docs",
   version: pkg.version,
   openLink,
   back,

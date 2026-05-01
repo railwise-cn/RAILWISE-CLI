@@ -7,7 +7,11 @@ use process_wrap::tokio::{CommandWrapper, JobObject, KillOnDrop};
 #[cfg(unix)]
 use std::os::unix::process::ExitStatusExt;
 use std::sync::Arc;
-use std::{process::Stdio, time::Duration};
+use std::{
+    path::{Path, PathBuf},
+    process::Stdio,
+    time::Duration,
+};
 use tauri::{AppHandle, Manager, path::BaseDirectory};
 use tauri_specta::Event;
 use tokio::{
@@ -38,7 +42,10 @@ impl CommandWrapper for WinCreationFlags {
 }
 
 const CLI_INSTALL_DIR: &str = ".railwise/bin";
+#[cfg(not(windows))]
 const CLI_BINARY_NAME: &str = "railwise";
+#[cfg(windows)]
+const CLI_BINARY_NAME: &str = "railwise.exe";
 
 #[derive(serde::Deserialize, Debug)]
 pub struct ServerConfig {
@@ -97,12 +104,22 @@ pub async fn get_config(app: &AppHandle) -> Option<Config> {
         .ok()
 }
 
-fn get_cli_install_path() -> Option<std::path::PathBuf> {
-    std::env::var("HOME").ok().map(|home| {
-        std::path::PathBuf::from(home)
-            .join(CLI_INSTALL_DIR)
-            .join(CLI_BINARY_NAME)
-    })
+fn get_cli_install_dir() -> Option<PathBuf> {
+    #[cfg(windows)]
+    {
+        return std::env::var("LOCALAPPDATA")
+            .ok()
+            .map(|home| PathBuf::from(home).join("RAILWISE").join("bin"));
+    }
+
+    #[cfg(not(windows))]
+    std::env::var("HOME")
+        .ok()
+        .map(|home| PathBuf::from(home).join(CLI_INSTALL_DIR))
+}
+
+fn get_cli_install_path() -> Option<PathBuf> {
+    get_cli_install_dir().map(|dir| dir.join(CLI_BINARY_NAME))
 }
 
 pub fn get_sidecar_path(app: &tauri::AppHandle) -> std::path::PathBuf {
@@ -125,15 +142,22 @@ const INSTALL_SCRIPT: &str = include_str!("../../../../install");
 #[tauri::command]
 #[specta::specta]
 pub fn install_cli(app: tauri::AppHandle) -> Result<String, String> {
-    if cfg!(not(unix)) {
-        return Err("CLI installation is only supported on macOS & Linux".to_string());
-    }
-
-    let sidecar = get_sidecar_path(&app);
+    let sidecar = resolve_sidecar_path(&app);
     if !sidecar.exists() {
         return Err("Sidecar binary not found".to_string());
     }
 
+    #[cfg(windows)]
+    {
+        return install_cli_windows(&sidecar);
+    }
+
+    #[cfg(not(windows))]
+    install_cli_unix(&sidecar)
+}
+
+#[cfg(not(windows))]
+fn install_cli_unix(sidecar: &Path) -> Result<String, String> {
     let temp_script = std::env::temp_dir().join("railwise-install.sh");
     std::fs::write(&temp_script, INSTALL_SCRIPT)
         .map_err(|e| format!("Failed to write install script: {}", e))?;
@@ -162,6 +186,66 @@ pub fn install_cli(app: tauri::AppHandle) -> Result<String, String> {
         get_cli_install_path().ok_or_else(|| "Could not determine install path".to_string())?;
 
     Ok(install_path.to_string_lossy().to_string())
+}
+
+#[cfg(windows)]
+fn install_cli_windows(sidecar: &Path) -> Result<String, String> {
+    let dir = get_cli_install_dir().ok_or_else(|| "Could not determine install path".to_string())?;
+    std::fs::create_dir_all(&dir).map_err(|e| format!("Failed to create install dir: {e}"))?;
+
+    let install_path =
+        get_cli_install_path().ok_or_else(|| "Could not determine install path".to_string())?;
+    std::fs::copy(sidecar, &install_path).map_err(|e| format!("Failed to copy CLI binary: {e}"))?;
+
+    let script = r#"
+$dir = $env:RAILWISE_BIN_DIR
+$user = [Environment]::GetEnvironmentVariable('Path', 'User')
+if ([string]::IsNullOrWhiteSpace($user)) { $user = '' }
+$parts = $user.Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
+$exists = $parts | Where-Object { $_.TrimEnd('\') -ieq $dir.TrimEnd('\') }
+if (-not $exists) {
+  $next = if ($user.Length -eq 0) { $dir } else { "$dir;$user" }
+  [Environment]::SetEnvironmentVariable('Path', $next, 'User')
+}
+"#;
+
+    let powershell = std::process::Command::new("powershell.exe")
+        .args(["-NoProfile", "-NonInteractive", "-Command", script])
+        .env("RAILWISE_BIN_DIR", &dir)
+        .output()
+        .or_else(|_| {
+            std::process::Command::new("pwsh")
+                .args(["-NoProfile", "-NonInteractive", "-Command", script])
+                .env("RAILWISE_BIN_DIR", &dir)
+                .output()
+        })
+        .map_err(|e| format!("Failed to update PATH: {e}"))?;
+
+    if !powershell.status.success() {
+        return Err(format!(
+            "Failed to update PATH: {}",
+            String::from_utf8_lossy(&powershell.stderr)
+        ));
+    }
+
+    Ok(install_path.to_string_lossy().to_string())
+}
+
+fn resolve_sidecar_path(app: &tauri::AppHandle) -> PathBuf {
+    let sidecar = get_sidecar_path(app);
+    if sidecar.exists() {
+        return sidecar;
+    }
+
+    #[cfg(windows)]
+    {
+        let exe = sidecar.with_extension("exe");
+        if exe.exists() {
+            return exe;
+        }
+    }
+
+    sidecar
 }
 
 pub fn sync_cli(app: tauri::AppHandle) -> Result<(), String> {

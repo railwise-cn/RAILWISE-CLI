@@ -32,3 +32,4 @@ railwise-dev
 logs/
 *.bun-build
 output/
+.gstack/

@@ -27,7 +27,7 @@ inputs:
     default: "false"
 
   mentions:
-    description: "Comma-separated list of trigger phrases (case-insensitive). Defaults to '/railwise,/oc'"
+    description: "Comma-separated list of trigger phrases (case-insensitive). Defaults to '/railwise'"
     required: false
 
   oidc_base_url:
@@ -41,7 +41,7 @@ runs:
       id: version
       shell: bash
       run: |
-        VERSION=$(curl -sf https://api.github.com/repos/anomalyco/railwise/releases/latest | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
+        VERSION=$(curl -sf https://api.github.com/repos/railwise-cn/RAILWISE-CLI/releases/latest | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
         echo "version=${VERSION:-latest}" >> $GITHUB_OUTPUT
 
     - name: Cache railwise

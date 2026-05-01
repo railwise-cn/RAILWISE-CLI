@@ -1,8 +1,8 @@
 [package]
-name = "railwise-desktop"
-version = "0.0.0"
-description = "The open source AI coding agent"
-authors = ["Anomaly Innovations"]
+name = "railwise"
+version = "1.3.0"
+description = "睿威智测 Railwise AI 工程测绘多智能体系统"
+authors = ["Railwise AI Team <dev@railwiseai.com>"]
 edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -18,13 +18,14 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2.9.5", features = ["macos-private-api"] }
+tauri = { version = "2.9.5", features = [] }
 tauri-plugin-opener = "2"
 tauri-plugin-deep-link = "2.4.6"
 tauri-plugin-shell = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
+tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 tauri-plugin-store = "2"
 tauri-plugin-window-state = "2"
 tauri-plugin-clipboard-manager = "2"
@@ -53,6 +54,8 @@ tracing-appender = "0.2"
 chrono = "0.4"
 tokio-stream = { version = "0.1.18", features = ["sync"] }
 process-wrap = { version = "9.0.3", features = ["tokio1"] }
+sentry = { version = "0.42", default-features = false, features = ["backtrace", "contexts", "panic"] }
+tauri-plugin-sentry = "0.5"
 
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.62", features = ["Win32_System_Threading"] }

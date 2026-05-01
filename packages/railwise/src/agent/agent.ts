@@ -13,6 +13,13 @@ import PROMPT_COMPACTION from "./prompt/compaction.txt"
 import PROMPT_EXPLORE from "./prompt/explore.txt"
 import PROMPT_SUMMARY from "./prompt/summary.txt"
 import PROMPT_TITLE from "./prompt/title.txt"
+import PROMPT_NORM_LIBRARIAN from "./prompt/norm-librarian.txt"
+import PROMPT_SOURCE_INGESTOR from "./prompt/source-ingestor.txt"
+import PROMPT_KNOWLEDGE_CURATOR from "./prompt/knowledge-curator.txt"
+import PROMPT_CPIII_SPECIALIST from "./prompt/cpiii-specialist.txt"
+import PROMPT_ADJUSTMENT_COMPUTER from "./prompt/adjustment-computer.txt"
+import PROMPT_RAILWAY_NORM_CONSULTANT from "./prompt/railway-norm-consultant.txt"
+import PROMPT_CHIEF_MANAGER from "./prompt/chief-manager.txt"
 import { PermissionNext } from "@/permission/next"
 import { mergeDeep, pipe, sortBy, values } from "remeda"
 import { Global } from "@/global"
@@ -89,6 +96,30 @@ export namespace Agent {
         mode: "primary",
         native: true,
       },
+      chief_manager: {
+        name: "chief_manager",
+        description:
+          "Coordinates engineering workflow execution, delegates to specialist agents, and manages delivery quality gates.",
+        color: "rgb(10,10,9)",
+        prompt: PROMPT_CHIEF_MANAGER,
+        steps: 32,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            question: "allow",
+            task: "allow",
+            todowrite: "allow",
+            todoread: "allow",
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "primary",
+        native: true,
+      },
       plan: {
         name: "plan",
         description: "Plan mode. Disallows all edit tools.",
@@ -150,6 +181,146 @@ export namespace Agent {
         ),
         description: `Fast agent specialized for exploring codebases. Use this when you need to quickly find files by patterns (eg. "src/components/**/*.tsx"), search code for keywords (eg. "API endpoints"), or answer questions about the codebase (eg. "how do API endpoints work?"). When calling this agent, specify the desired thoroughness level: "quick" for basic searches, "medium" for moderate exploration, or "very thorough" for comprehensive analysis across multiple locations and naming conventions.`,
         prompt: PROMPT_EXPLORE,
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      norm_librarian: {
+        name: "norm_librarian",
+        description:
+          "Maintains and queries the engineering-survey norm Wiki, returning auditable clause citations for reports and reviews.",
+        color: "#2563EB",
+        prompt: PROMPT_NORM_LIBRARIAN,
+        steps: 24,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_mineru_parse: "allow",
+            tool_wiki_ingest: "allow",
+            tool_wiki_query: "allow",
+            tool_wiki_lint: "allow",
+            tool_wiki_index: "allow",
+            tool_norm_search: "allow",
+            tool_norm_diff: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      source_ingestor: {
+        name: "source_ingestor",
+        description:
+          "Prepares external standards and project documents for the Raw layer before Wiki curation and query.",
+        color: "#0891B2",
+        prompt: PROMPT_SOURCE_INGESTOR,
+        steps: 18,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_mineru_parse: "allow",
+            tool_wiki_ingest: "allow",
+            tool_wiki_index: "allow",
+            tool_wiki_lint: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      knowledge_curator: {
+        name: "knowledge_curator",
+        description:
+          "Turns Raw standards, project cases, and review findings into durable Wiki pages with index and lint discipline.",
+        color: "#16A34A",
+        prompt: PROMPT_KNOWLEDGE_CURATOR,
+        steps: 22,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_mineru_parse: "allow",
+            tool_wiki_ingest: "allow",
+            tool_wiki_query: "allow",
+            tool_wiki_lint: "allow",
+            tool_wiki_index: "allow",
+            tool_norm_search: "allow",
+            tool_norm_diff: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      cpiii_specialist: {
+        name: "cpiii_specialist",
+        description:
+          "Handles high-speed railway CPIII survey questions, precision-limit checks, and resurvey report planning.",
+        color: "#7C3AED",
+        prompt: PROMPT_CPIII_SPECIALIST,
+        steps: 28,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_diff: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      adjustment_computer: {
+        name: "adjustment_computer",
+        description:
+          "Runs deterministic indirect least-squares adjustment and reports residuals, precision statistics, and quality flags.",
+        color: "#DC2626",
+        prompt: PROMPT_ADJUSTMENT_COMPUTER,
+        steps: 24,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_format_converter: "allow",
+            tool_adjustment_indirect: "allow",
+            tool_adjustment_free_network: "allow",
+            tool_adjustment_robust: "allow",
+            tool_variance_component: "allow",
+            tool_adjustment_condition: "allow",
+            tool_gross_error_detection: "allow",
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
+        options: {},
+        mode: "subagent",
+        native: true,
+      },
+      railway_norm_consultant: {
+        name: "railway_norm_consultant",
+        description:
+          "Consults railway surveying standards, compares norm versions, and produces citation-ready compliance language.",
+        color: "#EA580C",
+        prompt: PROMPT_RAILWAY_NORM_CONSULTANT,
+        steps: 22,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            tool_wiki_query: "allow",
+            tool_norm_search: "allow",
+            tool_norm_diff: "allow",
+            tool_norm_cite: "allow",
+          }),
+          user,
+        ),
         options: {},
         mode: "subagent",
         native: true,
@@ -275,7 +446,12 @@ export namespace Agent {
       return agent.name
     }
 
-    const primaryVisible = Object.values(agents).find((a) => a.mode !== "subagent" && a.hidden !== true)
+    const primaryVisible = Object.values(agents).find(
+      (a) =>
+        a.mode !== "subagent" &&
+        a.hidden !== true &&
+        ((a.native === true && (a.name === "build" || a.name === "plan")) || a.native !== true),
+    )
     if (!primaryVisible) throw new Error("no primary visible agent found")
     return primaryVisible.name
   }

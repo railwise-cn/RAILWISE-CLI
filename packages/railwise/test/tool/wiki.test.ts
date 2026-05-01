@@ -1,0 +1,189 @@
+import { expect, test } from "bun:test"
+import fs from "fs/promises"
+import path from "path"
+import { Instance } from "../../src/project/instance"
+import {
+  NormCiteTool,
+  NormDiffTool,
+  NormSearchTool,
+  WikiIndexTool,
+  WikiIngestTool,
+  WikiLintTool,
+  WikiQueryTool,
+} from "../../src/tool/wiki"
+import { tmpdir } from "../fixture/fixture"
+
+function ctx() {
+  return {
+    sessionID: "session",
+    messageID: "message",
+    agent: "test",
+    abort: new AbortController().signal,
+    messages: [],
+    metadata() {},
+    ask: async () => {},
+  }
+}
+
+test("wiki tools query pages and format citations", async () => {
+  await using tmp = await tmpdir()
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const query = await WikiQueryTool.init()
+      const result = await query.execute({ query: "CPIII 相邻点相对点位中误差" }, ctx())
+      const data = JSON.parse(result.output) as {
+        hits: {
+          citations: { norm: string; clause: string }[]
+          citationTriples: { wiki_page_path: string; raw_source_md?: string; norm_clause_id: string }[]
+        }[]
+      }
+
+      expect(data.hits[0]?.citations[0]).toEqual({ norm: "TB10101-2018", clause: "5.4.3" })
+      expect(data.hits[0]?.citationTriples[0]?.raw_source_md).toBe("raw/TB10101-2018/tb10101-demo.md")
+
+      const cite = await NormCiteTool.init()
+      expect(
+        (
+          await cite.execute(
+            {
+              norm: "TB10101-2018",
+              clause: "5.4.3",
+              text: "CPIII 相邻点相对点位中误差不得超过 1 mm。",
+            },
+            ctx(),
+          )
+        ).output,
+      ).toBe("参照 TB10101-2018 第 5.4.3 条，CPIII 相邻点相对点位中误差不得超过 1 mm。")
+
+      const search = await NormSearchTool.init()
+      const found = JSON.parse(
+        (
+          await search.execute(
+            {
+              query: "相邻点相对点位中误差 1 mm",
+              normFilter: ["TB10101-2018"],
+            },
+            ctx(),
+          )
+        ).output,
+      ) as {
+        results: { normId: string; chapter: string; path: string; sourceRaw?: string; normClauseId?: string }[]
+      }
+      expect(found.results[0]).toMatchObject({
+        normId: "TB10101-2018",
+        chapter: "5.4.3",
+        path: "wiki/clauses/cpiii-precision.md",
+        sourceRaw: "raw/TB10101-2018/tb10101-demo.md",
+        normClauseId: "TB10101-2018 5.4.3",
+      })
+    },
+  })
+})
+
+test("wiki maintenance tools ingest, index, and lint project wiki", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      const raw = path.join(dir, ".railwise", "norm-library", "raw", "TB10101-2018")
+      await fs.mkdir(raw, { recursive: true })
+      await Bun.write(
+        path.join(raw, "tb10101-extra.md"),
+        [
+          "# CPIII 复测坐标较差",
+          "",
+          "CPIII 复测坐标较差应在项目技术要求中复核。",
+          "",
+          "Reference: TB10101-2018, clause 6.2.1",
+          "",
+        ].join("\n"),
+      )
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const ingest = await WikiIngestTool.init()
+      const result = JSON.parse((await ingest.execute({ rawPath: "raw/TB10101-2018/tb10101-extra.md" }, ctx())).output) as {
+        pages: string[]
+      }
+      expect(result.pages).toEqual(["wiki/clauses/tb10101-2018-6-2-1.md"])
+
+      const index = await WikiIndexTool.init()
+      const indexed = JSON.parse((await index.execute({}, ctx())).output) as { pageCount: number; rawCount: number }
+      expect(indexed.pageCount).toBe(1)
+      expect(indexed.rawCount).toBe(1)
+
+      const lint = await WikiLintTool.init()
+      const report = JSON.parse((await lint.execute({}, ctx())).output) as {
+        ok: boolean
+        problemCount: number
+        problems: unknown[]
+        reportPath: string
+      }
+      expect(report).toMatchObject({
+        ok: true,
+        problemCount: 0,
+        problems: [],
+        reportPath: `wiki/changes/lint-${new Date().toISOString().slice(0, 10)}.md`,
+      })
+      expect(await Bun.file(path.join(tmp.path, ".railwise", "norm-library", report.reportPath)).text()).toContain(
+        "no problems found",
+      )
+    },
+  })
+})
+
+test("norm diff tool writes change reports", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      const wiki = path.join(dir, ".railwise", "norm-library", "wiki", "clauses")
+      await fs.mkdir(wiki, { recursive: true })
+      await Bun.write(
+        path.join(wiki, "old.md"),
+        [
+          "---",
+          "norm_clause_id: TB10101-2018 5.4.3",
+          "source_hash: old",
+          "---",
+          "",
+          "# Old CPIII",
+          "",
+          "Reference: TB10101-2018, clause 5.4.3",
+          "",
+        ].join("\n"),
+      )
+      await Bun.write(
+        path.join(wiki, "new.md"),
+        [
+          "---",
+          "norm_clause_id: TB10101-2024 5.4.3",
+          "source_hash: new",
+          "---",
+          "",
+          "# New CPIII",
+          "",
+          "Reference: TB10101-2024, clause 5.4.3",
+          "",
+        ].join("\n"),
+      )
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const tool = await NormDiffTool.init()
+      const result = JSON.parse(
+        (await tool.execute({ fromScope: "TB10101-2018", toScope: "TB10101-2024" }, ctx())).output,
+      ) as { changeCount: number; reportPath: string; changes: { type: string }[] }
+
+      expect(result.changeCount).toBe(1)
+      expect(result.changes[0]?.type).toBe("modified")
+      expect(result.reportPath).toBe(
+        `wiki/changes/diff-tb10101-2018-to-tb10101-2024-${new Date().toISOString().slice(0, 10)}.md`,
+      )
+      expect(await Bun.file(path.join(tmp.path, ".railwise", "norm-library", result.reportPath)).text()).toContain(
+        "Change count: 1",
+      )
+    },
+  })
+})

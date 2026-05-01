@@ -7,7 +7,7 @@ on:
 jobs:
   check-duplicates:
     if: github.event.action == 'opened'
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       issues: write
@@ -97,7 +97,7 @@ jobs:
 
           [If not compliant:]
           <!-- issue-compliance -->
-          This issue doesn't fully meet our [contributing guidelines](../blob/dev/CONTRIBUTING.md).
+          This issue doesn't fully meet our [contributing guidelines](../blob/${{ github.event.repository.default_branch }}/CONTRIBUTING.md).
 
           **What needs to be fixed:**
           - [specific reasons]
@@ -119,7 +119,7 @@ jobs:
 
   recheck-compliance:
     if: github.event.action == 'edited' && contains(github.event.issue.labels.*.name, 'needs:compliance')
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       issues: write

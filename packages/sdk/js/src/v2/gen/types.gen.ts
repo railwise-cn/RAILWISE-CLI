@@ -926,6 +926,22 @@ export type EventPtyDeleted = {
   }
 }
 
+export type EventAgentUpdated = {
+  type: "agent.updated"
+  properties: {
+    name: string
+  }
+}
+
+export type EventAgentWorkflowCompleted = {
+  type: "agent.workflow.completed"
+  properties: {
+    workflowId: string
+    sessionId: string
+    durationMs: number
+  }
+}
+
 export type EventWorktreeReady = {
   type: "worktree.ready"
   properties: {
@@ -983,6 +999,8 @@ export type Event =
   | EventPtyUpdated
   | EventPtyExited
   | EventPtyDeleted
+  | EventAgentUpdated
+  | EventAgentWorkflowCompleted
   | EventWorktreeReady
   | EventWorktreeFailed
 
@@ -1865,6 +1883,20 @@ export type Config = {
      */
     reserved?: number
   }
+  memory?: {
+    /**
+     * Enable cross-session memory (default: true)
+     */
+    enabled?: boolean
+    /**
+     * Automatically extract memories from compaction summaries (default: true)
+     */
+    autoCapture?: boolean
+    /**
+     * Maximum memories to inject into system prompt (default: 10)
+     */
+    maxMemories?: number
+  }
   experimental?: {
     disable_paste_summary?: boolean
     /**
@@ -2111,6 +2143,74 @@ export type ProviderAuthAuthorization = {
   instructions: string
 }
 
+export type DashboardProjectCard = {
+  id: string
+  name: string
+  type: "metro" | "excavation" | "bridge" | "slope" | "highrise"
+  status: "active" | "completed" | "paused" | "error"
+  progress: number
+  lastActivity: string
+  activeTaskCount: number
+  description?: string
+  pointCount: number
+  alertCount: number
+  bboxJson?: string
+}
+
+export type DashboardAlert = {
+  id: string
+  projectId: string
+  pointId?: string
+  level: "warn" | "error"
+  message: string
+  time: string
+}
+
+export type DashboardSessionBrief = {
+  id: string
+  directory: string
+  title: string
+  time: {
+    updated: number
+  }
+}
+
+export type DashboardActiveAgent = {
+  sessionId: string
+  agentName: string
+  startedAt: string
+  status: "running" | "waiting" | "error"
+}
+
+export type DashboardSummary = {
+  projects: Array<DashboardProjectCard>
+  alerts: Array<DashboardAlert>
+  recentSessions: Array<DashboardSessionBrief>
+  activeAgents: Array<DashboardActiveAgent>
+}
+
+export type RailwiseTemplateVariable = {
+  key: string
+  label: string
+  type: "text" | "number" | "date" | "select" | "mileage"
+  placeholder?: string
+  required?: boolean
+  options?: Array<string>
+}
+
+export type RailwiseTemplate = {
+  id: string
+  name: string
+  category: "report" | "bid" | "data" | "ppt"
+  description: string
+  agent: string
+  prompt: string
+  variables?: Array<RailwiseTemplateVariable>
+  version?: string
+  filePath?: string
+  updatedAt?: number
+}
+
 export type Symbol = {
   name: string
   kind: number
@@ -2155,6 +2255,264 @@ export type File = {
   added: number
   removed: number
   status: "added" | "deleted" | "modified"
+}
+
+export type AgentListItem = {
+  name: string
+  description?: string
+  mode: "subagent" | "primary" | "all"
+  native?: boolean
+  hidden?: boolean
+  topP?: number
+  temperature?: number
+  color?: string
+  permission: PermissionRuleset
+  model?: {
+    modelID: string
+    providerID: string
+  }
+  variant?: string
+  prompt?: string
+  options: {
+    [key: string]: unknown
+  }
+  steps?: number
+  /**
+   * Absolute path of the backing .md file.
+   */
+  filePath?: string
+  /**
+   * Message count by this agent in the last 7 days.
+   */
+  callCount7d?: number
+}
+
+export type WorkflowNode = {
+  id: string
+  agent: string
+  label: string
+  color: string
+  x: number
+  y: number
+}
+
+export type WorkflowEdge = {
+  from: string
+  to: string
+  kind: "serial" | "parallel" | "optional"
+  label?: string
+}
+
+export type WorkflowPreset = {
+  id: string
+  name: string
+  description: string
+  nodes: Array<WorkflowNode>
+  edges: Array<WorkflowEdge>
+}
+
+export type WikiReport = {
+  path: string
+  absolutePath: string
+  kind: "lint" | "diff" | "format" | "other"
+  title: string
+  generatedAt?: string
+  status?: string
+  problemCount?: number
+  changeCount?: number
+  sampleCount?: number
+  readyCount?: number
+  formatCount?: number
+  coveredFormatCount?: number
+  warningCount?: number
+  jsonPath?: string
+  updatedAt: string
+}
+
+export type WikiLogEntry = {
+  kind: "query" | "ingest" | "other"
+  timestamp?: string
+  title: string
+  paths: Array<string>
+  raw: string
+}
+
+export type WikiStatus = {
+  root: string
+  readonly: boolean
+  pageCount: number
+  rawCount: number
+  indexPath?: string
+  reportCount: number
+  reports: Array<WikiReport>
+  logCount: number
+  logs: Array<WikiLogEntry>
+}
+
+export type FormatSampleReport = {
+  id: string
+  label: string
+  sourceFormat: string
+  expectedFormat: string
+  detectedFormat: string
+  ready: boolean
+  damaged?: boolean
+  warningCount: number
+  warningLines: Array<number>
+  warnings: Array<string>
+  pointCount: number
+  observationCount: number
+  equationCount: number
+  unknowns: Array<string>
+  equationNames: Array<string>
+  nextTool?: string
+}
+
+export type FormatCoverageArtifacts = {
+  markdownPath: string
+  absoluteMarkdownPath: string
+  jsonPath: string
+  absoluteJsonPath: string
+}
+
+export type FormatCoverageReport = {
+  generatedAt: string
+  sampleCount: number
+  readyCount: number
+  formatCount: number
+  coveredFormatCount: number
+  warningCount: number
+  samples: Array<FormatSampleReport>
+  artifacts?: FormatCoverageArtifacts
+}
+
+export type WorkflowCheck = {
+  workflowId: string
+  ok: boolean
+  generatedAt: string
+  checks: Array<{
+    id: string
+    label: string
+    status: "ok" | "warn" | "fail"
+    detail: string
+  }>
+}
+
+export type WorkflowRunArtifact = {
+  kind: "format-coverage"
+  title: string
+  markdownPath: string
+  absoluteMarkdownPath: string
+  jsonPath: string
+  absoluteJsonPath: string
+}
+
+export type WorkflowAcceptanceCheck = {
+  id: string
+  label: string
+  status: "ok" | "warn" | "fail"
+  detail: string
+}
+
+export type WorkflowAcceptance = {
+  workflowId: string
+  sessionId: string
+  ok: boolean
+  generatedAt: string
+  messageCount: number
+  checks: Array<WorkflowAcceptanceCheck>
+}
+
+export type WorkflowDeliveryFile = {
+  kind: "summary" | "manifest" | "artifact"
+  label: string
+  path: string
+  absolutePath: string
+  sourcePath?: string
+  copied: boolean
+}
+
+export type WorkflowDeliveryArchive = {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  version: number
+  generatedAt: string
+  directoryPath?: string
+  absoluteDirectoryPath?: string
+  markdownPath: string
+  absoluteMarkdownPath: string
+  manifestPath?: string
+  absoluteManifestPath?: string
+  fileCount?: number
+  files?: Array<WorkflowDeliveryFile>
+}
+
+export type WorkflowSession = {
+  sessionId: string
+  workflowId: string
+  workflowName: string
+  createdAt: string
+  updatedAt: string
+  artifacts?: Array<WorkflowRunArtifact>
+  acceptance?: WorkflowAcceptance
+  delivery?: WorkflowDeliveryArchive
+}
+
+export type WikiReportDetail = {
+  path: string
+  absolutePath: string
+  kind: "lint" | "diff" | "format" | "other"
+  title: string
+  generatedAt?: string
+  status?: string
+  problemCount?: number
+  changeCount?: number
+  sampleCount?: number
+  readyCount?: number
+  formatCount?: number
+  coveredFormatCount?: number
+  warningCount?: number
+  jsonPath?: string
+  updatedAt: string
+  rawMarkdown: string
+}
+
+export type AgentDetail = {
+  name: string
+  description?: string
+  mode: "subagent" | "primary" | "all"
+  native?: boolean
+  hidden?: boolean
+  topP?: number
+  temperature?: number
+  color?: string
+  permission: PermissionRuleset
+  model?: {
+    modelID: string
+    providerID: string
+  }
+  variant?: string
+  prompt?: string
+  options: {
+    [key: string]: unknown
+  }
+  steps?: number
+  filePath?: string
+  /**
+   * Full markdown source including frontmatter.
+   */
+  rawMarkdown: string
+}
+
+export type WorkflowRun = {
+  sessionId: string
+  sessionTitle: string
+  workflowId: string
+  directory: string
+  prompt: string
+  agentNames: Array<string>
+  artifacts?: Array<WorkflowRunArtifact>
 }
 
 export type McpStatusConnected = {
@@ -4193,6 +4551,186 @@ export type ProviderOauthCallbackResponses = {
 
 export type ProviderOauthCallbackResponse = ProviderOauthCallbackResponses[keyof ProviderOauthCallbackResponses]
 
+export type DashboardSummaryData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/dashboard/summary"
+}
+
+export type DashboardSummaryResponses = {
+  /**
+   * Dashboard summary
+   */
+  200: DashboardSummary
+}
+
+export type DashboardSummaryResponse = DashboardSummaryResponses[keyof DashboardSummaryResponses]
+
+export type DashboardProjectsData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/dashboard/projects"
+}
+
+export type DashboardProjectsResponses = {
+  /**
+   * ProjectCard[]
+   */
+  200: Array<DashboardProjectCard>
+}
+
+export type DashboardProjectsResponse = DashboardProjectsResponses[keyof DashboardProjectsResponses]
+
+export type DashboardProjectPointsData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/dashboard/projects/{id}/points"
+}
+
+export type DashboardProjectPointsErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type DashboardProjectPointsError = DashboardProjectPointsErrors[keyof DashboardProjectPointsErrors]
+
+export type DashboardProjectPointsResponses = {
+  /**
+   * GeoJSON FeatureCollection
+   */
+  200: {
+    type: "FeatureCollection"
+    features: Array<unknown>
+  }
+}
+
+export type DashboardProjectPointsResponse = DashboardProjectPointsResponses[keyof DashboardProjectPointsResponses]
+
+export type DashboardProjectTimeseriesData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+    metric?: "settlement" | "displacement"
+    days?: number
+  }
+  url: "/dashboard/projects/{id}/timeseries"
+}
+
+export type DashboardProjectTimeseriesErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type DashboardProjectTimeseriesError = DashboardProjectTimeseriesErrors[keyof DashboardProjectTimeseriesErrors]
+
+export type DashboardProjectTimeseriesResponses = {
+  /**
+   * [[timestamps], [values]]
+   */
+  200: Array<Array<number>>
+}
+
+export type DashboardProjectTimeseriesResponse =
+  DashboardProjectTimeseriesResponses[keyof DashboardProjectTimeseriesResponses]
+
+export type TilesGetData = {
+  body?: never
+  path: {
+    z: number
+    x: number
+    y: number
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/tiles/{z}/{x}/{y}"
+}
+
+export type TilesGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type TilesGetError = TilesGetErrors[keyof TilesGetErrors]
+
+export type TilesGetResponses = {
+  /**
+   * MBTiles tile bytes
+   */
+  200: unknown
+}
+
+export type TemplatesListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/templates/list"
+}
+
+export type TemplatesListResponses = {
+  /**
+   * Railwise business templates
+   */
+  200: Array<RailwiseTemplate>
+}
+
+export type TemplatesListResponse = TemplatesListResponses[keyof TemplatesListResponses]
+
+export type TemplatesGetData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/templates/{id}"
+}
+
+export type TemplatesGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type TemplatesGetError = TemplatesGetErrors[keyof TemplatesGetErrors]
+
+export type TemplatesGetResponses = {
+  /**
+   * Railwise business template
+   */
+  200: RailwiseTemplate
+}
+
+export type TemplatesGetResponse = TemplatesGetResponses[keyof TemplatesGetResponses]
+
 export type FindTextData = {
   body?: never
   path?: never
@@ -4324,6 +4862,331 @@ export type FileStatusResponses = {
 }
 
 export type FileStatusResponse = FileStatusResponses[keyof FileStatusResponses]
+
+export type AgentStudioListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/list"
+}
+
+export type AgentStudioListResponses = {
+  /**
+   * Agent list
+   */
+  200: Array<AgentListItem>
+}
+
+export type AgentStudioListResponse = AgentStudioListResponses[keyof AgentStudioListResponses]
+
+export type AgentStudioWorkflowPresetsData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/presets"
+}
+
+export type AgentStudioWorkflowPresetsResponses = {
+  /**
+   * Workflow preset array
+   */
+  200: Array<WorkflowPreset>
+}
+
+export type AgentStudioWorkflowPresetsResponse =
+  AgentStudioWorkflowPresetsResponses[keyof AgentStudioWorkflowPresetsResponses]
+
+export type AgentStudioWikiStatusData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/wiki/status"
+}
+
+export type AgentStudioWikiStatusResponses = {
+  /**
+   * Norm Wiki status
+   */
+  200: WikiStatus
+}
+
+export type AgentStudioWikiStatusResponse = AgentStudioWikiStatusResponses[keyof AgentStudioWikiStatusResponses]
+
+export type AgentStudioFormatReportData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/format/report"
+}
+
+export type AgentStudioFormatReportResponses = {
+  /**
+   * Format sample coverage report
+   */
+  200: FormatCoverageReport
+}
+
+export type AgentStudioFormatReportResponse = AgentStudioFormatReportResponses[keyof AgentStudioFormatReportResponses]
+
+export type AgentStudioWorkflowCheckData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/check/{id}"
+}
+
+export type AgentStudioWorkflowCheckErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioWorkflowCheckError = AgentStudioWorkflowCheckErrors[keyof AgentStudioWorkflowCheckErrors]
+
+export type AgentStudioWorkflowCheckResponses = {
+  /**
+   * Workflow readiness check
+   */
+  200: WorkflowCheck
+}
+
+export type AgentStudioWorkflowCheckResponse =
+  AgentStudioWorkflowCheckResponses[keyof AgentStudioWorkflowCheckResponses]
+
+export type AgentStudioWorkflowSessionData = {
+  body?: never
+  path: {
+    sessionId: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/session/{sessionId}"
+}
+
+export type AgentStudioWorkflowSessionErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioWorkflowSessionError = AgentStudioWorkflowSessionErrors[keyof AgentStudioWorkflowSessionErrors]
+
+export type AgentStudioWorkflowSessionResponses = {
+  /**
+   * Workflow session metadata
+   */
+  200: WorkflowSession
+}
+
+export type AgentStudioWorkflowSessionResponse =
+  AgentStudioWorkflowSessionResponses[keyof AgentStudioWorkflowSessionResponses]
+
+export type AgentStudioWorkflowAcceptanceData = {
+  body?: {
+    workflowId: string
+    sessionId: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/acceptance"
+}
+
+export type AgentStudioWorkflowAcceptanceErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type AgentStudioWorkflowAcceptanceError =
+  AgentStudioWorkflowAcceptanceErrors[keyof AgentStudioWorkflowAcceptanceErrors]
+
+export type AgentStudioWorkflowAcceptanceResponses = {
+  /**
+   * Workflow delivery acceptance result
+   */
+  200: WorkflowAcceptance
+}
+
+export type AgentStudioWorkflowAcceptanceResponse =
+  AgentStudioWorkflowAcceptanceResponses[keyof AgentStudioWorkflowAcceptanceResponses]
+
+export type AgentStudioWorkflowDeliveryArchiveData = {
+  body?: {
+    workflowId: string
+    sessionId: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/delivery/archive"
+}
+
+export type AgentStudioWorkflowDeliveryArchiveErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type AgentStudioWorkflowDeliveryArchiveError =
+  AgentStudioWorkflowDeliveryArchiveErrors[keyof AgentStudioWorkflowDeliveryArchiveErrors]
+
+export type AgentStudioWorkflowDeliveryArchiveResponses = {
+  /**
+   * Workflow delivery archive
+   */
+  200: WorkflowDeliveryArchive
+}
+
+export type AgentStudioWorkflowDeliveryArchiveResponse =
+  AgentStudioWorkflowDeliveryArchiveResponses[keyof AgentStudioWorkflowDeliveryArchiveResponses]
+
+export type AgentStudioWikiReportData = {
+  body?: never
+  path?: never
+  query: {
+    directory?: string
+    path: string
+  }
+  url: "/agent-studio/wiki/report"
+}
+
+export type AgentStudioWikiReportErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioWikiReportError = AgentStudioWikiReportErrors[keyof AgentStudioWikiReportErrors]
+
+export type AgentStudioWikiReportResponses = {
+  /**
+   * Norm Wiki report detail
+   */
+  200: WikiReportDetail
+}
+
+export type AgentStudioWikiReportResponse = AgentStudioWikiReportResponses[keyof AgentStudioWikiReportResponses]
+
+export type AgentStudioGetData = {
+  body?: never
+  path: {
+    name: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/{name}"
+}
+
+export type AgentStudioGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioGetError = AgentStudioGetErrors[keyof AgentStudioGetErrors]
+
+export type AgentStudioGetResponses = {
+  /**
+   * Agent detail
+   */
+  200: AgentDetail
+}
+
+export type AgentStudioGetResponse = AgentStudioGetResponses[keyof AgentStudioGetResponses]
+
+export type AgentStudioUpdateData = {
+  body?: {
+    rawMarkdown: string
+  }
+  path: {
+    name: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/{name}"
+}
+
+export type AgentStudioUpdateErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type AgentStudioUpdateError = AgentStudioUpdateErrors[keyof AgentStudioUpdateErrors]
+
+export type AgentStudioUpdateResponses = {
+  /**
+   * Write succeeded
+   */
+  200: boolean
+}
+
+export type AgentStudioUpdateResponse = AgentStudioUpdateResponses[keyof AgentStudioUpdateResponses]
+
+export type AgentStudioWorkflowRunData = {
+  body?: {
+    workflowId: string
+    input?: {
+      [key: string]: unknown
+    }
+  }
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/workflow/run"
+}
+
+export type AgentStudioWorkflowRunErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type AgentStudioWorkflowRunError = AgentStudioWorkflowRunErrors[keyof AgentStudioWorkflowRunErrors]
+
+export type AgentStudioWorkflowRunResponses = {
+  /**
+   * Workflow accepted
+   */
+  200: WorkflowRun
+}
+
+export type AgentStudioWorkflowRunResponse = AgentStudioWorkflowRunResponses[keyof AgentStudioWorkflowRunResponses]
 
 export type McpStatusData = {
   body?: never

@@ -446,7 +446,7 @@ export const dict = {
   "error.page.action.checkUpdates": "检查更新",
   "error.page.action.updateTo": "更新到 {{version}}",
   "error.page.report.prefix": "请将此错误报告给 RAILWISE 团队",
-  "error.page.report.discord": "在 Discord 上",
+  "error.page.report.link": "支持渠道",
   "error.page.version": "版本：{{version}}",
   "error.dev.rootNotFound": "未找到根元素。你是不是忘了把它添加到 index.html？或者 id 属性拼写错了？",
   "error.globalSync.connectFailed": "无法连接到服务器。是否有服务器正在 `{{url}}` 运行？",
@@ -579,23 +579,24 @@ export const dict = {
   "sidebar.project.viewAllSessions": "查看全部会话",
   "sidebar.project.clearNotifications": "清除通知",
 
-  "app.name.desktop": "RAILWISE Desktop",
+  "app.name": "RAILWISE",
 
-  "settings.section.desktop": "桌面",
+  "settings.section.application": "应用",
   "settings.section.server": "服务器",
 
   "settings.tab.general": "通用",
   "settings.tab.shortcuts": "快捷键",
 
-  "settings.desktop.section.wsl": "WSL",
-  "settings.desktop.wsl.title": "WSL 集成",
-  "settings.desktop.wsl.description": "在 Windows 的 WSL 环境中运行 RAILWISE 服务器。",
+  "settings.platform.section.wsl": "WSL",
+  "settings.platform.wsl.title": "WSL 集成",
+  "settings.platform.wsl.description": "在 Windows 的 WSL 环境中运行 RAILWISE 服务器。",
 
   "settings.general.section.appearance": "外观",
   "settings.general.section.notifications": "系统通知",
   "settings.general.section.updates": "更新",
   "settings.general.section.sounds": "音效",
   "settings.general.section.display": "显示",
+  "settings.general.section.privacy": "隐私",
   "settings.general.row.language.title": "语言",
   "settings.general.row.language.description": "更改 RAILWISE 的显示语言",
   "settings.general.row.appearance.title": "外观",
@@ -618,6 +619,12 @@ export const dict = {
   "settings.updates.action.checking": "正在检查...",
   "settings.updates.toast.latest.title": "已是最新版本",
   "settings.updates.toast.latest.description": "你正在使用最新版本的 RAILWISE。",
+  "settings.privacy.telemetry.title": "使用统计",
+  "settings.privacy.telemetry.description": "共享匿名 UI 计数与崩溃报告，不保存 Prompt、项目名或文件路径。",
+  "telemetry.consent.title": "帮助改进 RAILWISE",
+  "telemetry.consent.description": "共享匿名 UI 计数与崩溃报告。Prompt、项目名、文件名和文件路径不会进入埋点，之后也可在设置中修改。",
+  "telemetry.consent.accept": "共享使用统计",
+  "telemetry.consent.decline": "暂不启用",
 
   "font.option.ibmPlexMono": "IBM Plex Mono",
   "font.option.cascadiaCode": "Cascadia Code",
@@ -710,7 +717,7 @@ export const dict = {
   "settings.shortcuts.group.prompt": "提示",
 
   "settings.providers.title": "提供商",
-  "settings.providers.description": "提供商设置将在此处可配置。",
+  "settings.providers.description": "连接、断开并查看模型提供商。",
   "settings.providers.section.connected": "已连接的提供商",
   "settings.providers.connected.empty": "没有已连接的提供商",
   "settings.providers.section.popular": "热门提供商",
@@ -720,16 +727,16 @@ export const dict = {
   "settings.providers.tag.other": "其他",
 
   "settings.models.title": "模型",
-  "settings.models.description": "模型设置将在此处可配置。",
+  "settings.models.description": "查看可用模型和当前默认模型。",
 
   "settings.agents.title": "智能体",
-  "settings.agents.description": "智能体设置将在此处可配置。",
+  "settings.agents.description": "查看智能体、热更新来源和最近调用量。",
 
   "settings.commands.title": "命令",
-  "settings.commands.description": "命令设置将在此处可配置。",
+  "settings.commands.description": "查看命令、快捷键和工程 slash 命令。",
 
   "settings.mcp.title": "MCP",
-  "settings.mcp.description": "MCP 设置将在此处可配置。",
+  "settings.mcp.description": "查看并切换 MCP 服务连接。",
 
   "settings.permissions.title": "权限",
   "settings.permissions.description": "控制服务器默认可以使用哪些工具。",

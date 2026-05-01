@@ -49,7 +49,7 @@ impl MainWindow {
             .unwrap_or(false);
         let decorations = use_decorations();
         let window_builder = base_window_config(
-            WebviewWindowBuilder::new(app, Self::LABEL, WebviewUrl::App("/".into())),
+            WebviewWindowBuilder::new(app, Self::LABEL, WebviewUrl::App("/#/dashboard".into())),
             app,
             decorations,
         )
@@ -61,7 +61,7 @@ impl MainWindow {
         .initialization_script(format!(
             r#"
             window.__RAILWISE__ ??= {{}};
-            window.__RAILWISE__.updaterEnabled = {UPDATER_ENABLED};
+            window.__RAILWISE__.updatesEnabled = {UPDATER_ENABLED};
             window.__RAILWISE__.wsl = {wsl_enabled};
           "#
         ));

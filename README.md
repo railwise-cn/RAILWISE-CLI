@@ -1,14 +1,24 @@
-# RAILWISE-CLI
+# 睿威智测 RAILWISE
 
-睿威智测 AI 工程测绘多智能体 CLI 系统。
+> Railwise AI 工程测绘多智能体系统
 
-基于 [opencode](https://github.com/sst/opencode) 深度定制，面向工程测量、结构监测、地铁监测等测绘业务场景，提供从外业数据采集到内业报告生成的全流程 AI 辅助。
+睿威智测 AI 工程测绘多智能体系统，面向工程测量、结构监测、地铁监测等测绘业务场景，提供从外业数据采集到内业报告生成的全流程 AI 辅助。
+
+RAILWISE 现在按三条产品线开发和验收：
+
+- **RAILWISE Core**（`packages/railwise` + `packages/sdk/js`）— 共享智能工程引擎，负责 Agent、工作流、规范 Wiki、测量工具、会话和交付包。
+- **RAILWISE CLI**（`packages/railwise/src/cli`）— 面向开发者、脚本、CI 和自动化的命令行产品。
+- **RAILWISE Desktop**（`packages/desktop`）— 面向工程测绘和监测业务用户的 Tauri 2 桌面工作台，支持 Windows / macOS / Linux 离线安装。
+
+详细边界见 [产品边界与开发实施文档](docs/dev/00-product-boundaries.md)。
 
 > **越用越懂你** — RAILWISE-CLI 内置[跨会话记忆系统](#跨会话记忆系统)，自动记住你的项目结构、编码习惯和工作偏好。用得越多，它就越了解你的项目，响应越精准，协作越默契——就像一个不断成长的工程搭档。
 
 ---
 
 ## 快速开始
+
+以下命令适用于 **RAILWISE CLI**。Desktop 的开发和发布入口见 [RAILWISE Desktop README](packages/desktop/README.md)。
 
 ### 安装
 
@@ -60,6 +70,17 @@ railwise
 ```bash
 bun run dev
 ```
+
+### 无头工作流
+
+CLI 工作流命令面向脚本和 CI，输出始终是 JSON，不依赖 Desktop 工作台：
+
+```bash
+railwise workflow run cpiii-resurvey-wiki --input-json '{"project":"沪杭高铁 CPIII 复测"}' --wait
+railwise workflow export <session-id> --workflow cpiii-resurvey-wiki
+```
+
+`--wait` 会执行交付验收检查；验收失败时 `ok=false` 且命令以非零退出码结束。`--archive` 可在验收通过后直接写出 delivery package，并在 JSON 中返回 `summary.md`、`manifest.json` 和附件路径。
 
 ---
 
@@ -195,28 +216,17 @@ npm update -g railwise-ai
 
 ---
 
-## 系统架构
+## 产品架构
 
-### 并行调度系统
+RAILWISE Core 是底层发动机。CLI 和 Desktop 共享它，但面向不同用户。
 
-RAILWISE-CLI 支持多 Agent **真正并行执行**：
+- CLI 负责命令行、脚本化、无头运行和 CI 场景。
+- Desktop 负责可视化工作台、文件导入预览、工作流审阅、交付包导出和安装更新。
+- `packages/app` 是共享 Web UI shell，不作为独立商业产品叙事中心。
 
-```typescript
-parallel_agent({
-  tasks: [
-    { id: "tech", description: "技术方案", prompt: "...", subagent_type: "solution_architect" },
-    { id: "biz", description: "商务报价", prompt: "...", subagent_type: "commercial_specialist" },
-    { id: "data", description: "数据分析", prompt: "...", subagent_type: "data_analyst" },
-  ],
-  maxConcurrency: 3
-})
-```
+开发者应先判断改动属于 `core`、`cli`、`desktop`、`app` 还是 `docs`，再决定代码路径、测试和验收标准。
 
-- 每个 subtask 独立 Session + 权限隔离
-- 失败隔离（单个失败不影响其他任务）
-- 错误聚合 + Markdown 格式输出
-
-### 自定义智能体（8 个领域专家）
+### 自定义智能体（7 个领域专家）
 
 每个智能体拥有独立的默认模型配置，零配置即可获得最优模型分配：
 
@@ -229,9 +239,6 @@ parallel_agent({
 | `qa_reviewer` | 内业审核员 | Kimi K2.5 | 报告质量终审（最高否决权） |
 | `technical_writer` | 技术文档员 | Kimi K2.5 | 监测日报/周报/月报撰写 |
 | `commercial_specialist` | 商务专员 | Kimi K2.5 | 投标文件、计量支付 |
-| `ppt_master` | PPT 设计师 | Gemini 2.5 | AI 演示文稿生成（SVG→PPTX） |
-
-> **快速创建领域专家**：`rw agent create --template settlement` 可生成沉降监测专家（另有 shield/excavation/tunnel/control 模板）
 
 > 模型选择逻辑：需要精确计算的智能体使用 DeepSeek V3（数学推理最强），需要长上下文和中文写作的使用 Kimi K2.5（131K 上下文）。可在 `.railwise/agent/*.md` 的 frontmatter 中自定义覆盖。
 
@@ -285,7 +292,7 @@ parallel_agent({
 | `report_export` | Markdown 转 DOCX 报告导出 |
 | `standard_query` | 工程规范/标准条文智能查询 |
 
-### 领域技能包（12 个）
+### 领域技能包（11 个）
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
@@ -302,7 +309,6 @@ parallel_agent({
 | `humanizer` | 报告润色：消除 AI 痕迹、注入工程判断、句式变化 |
 | `frontend-design` | 前端 UI：监测平台界面规范、预警四色体系、看板布局 |
 | `canvas-design` | 图表设计：趋势图配色、坐标轴规范、剖面图构造 |
-| `ppt-master` | PPT 生成：SVG 页面设计、PPTX 导出、多格式支持（16:9/4:3/小红书/朋友圈） |
 
 ### 业务命令（SOP 工作流）
 
@@ -313,32 +319,6 @@ parallel_agent({
 | `/bid-prepare` | 投标文件编制 |
 | `/safety-check` | 安全巡检记录 |
 | `/payment-reminder` | 计量支付催款 |
-
-### PPT Master（演示文稿生成）
-
-RAILWISE-CLI 内置 AI 演示文稿生成系统，支持 SVG 页面设计 + 多格式导出：
-
-**支持格式**：
-
-| 格式 | 用途 |
-|------|------|
-| PPT 16:9 | 商务演示（1280×720） |
-| PPT 4:3 | 传统屏幕（1024×768） |
-| 小红书 | 社交媒体（1242×1660） |
-| 朋友圈 | 社交媒体（1080×1080） |
-| Story | 短视频平台（1080×1920） |
-| 公众号头图 | 公众号素材（900×383） |
-
-**执行纪律**：
-1. 串行执行（相邻非阻塞步骤可连续执行）
-2. 逐页生成（禁止批量生成）
-3. 每页独立写入（前端可实时预览）
-
-**快速开始**：
-
-```
-你是一名 PPT Master 用户，帮我制作《XXX》的演示文稿
-```
 
 ---
 

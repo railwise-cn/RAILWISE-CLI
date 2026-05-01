@@ -114,13 +114,20 @@ pub fn spawn_local_server(
         let timestamp = Instant::now();
 
         let ready = async {
-            loop {
-                tokio::time::sleep(Duration::from_millis(100)).await;
+            // Optimized health check with exponential backoff
+            let mut interval = Duration::from_millis(50); // Start faster
+            let max_interval = Duration::from_millis(500);
 
+            loop {
                 if check_health(&url, Some(&password)).await {
                     tracing::info!(elapsed = ?timestamp.elapsed(), "Server ready");
                     return Ok(());
                 }
+
+                tokio::time::sleep(interval).await;
+
+                // Exponential backoff for less aggressive polling
+                interval = std::cmp::min(interval * 2, max_interval);
             }
         };
 
@@ -150,7 +157,8 @@ pub async fn check_health(url: &str, password: Option<&str>) -> bool {
         return false;
     };
 
-    let mut builder = reqwest::Client::builder().timeout(Duration::from_secs(3));
+    // Reduced timeout from 3s to 1s for faster failure detection
+    let mut builder = reqwest::Client::builder().timeout(Duration::from_secs(1));
 
     if url_is_localhost(&url) {
         // Some environments set proxy variables (HTTP_PROXY/HTTPS_PROXY/ALL_PROXY) without
@@ -178,8 +186,44 @@ pub async fn check_health(url: &str, password: Option<&str>) -> bool {
         .unwrap_or(false)
 }
 
+pub async fn check_health_with_retry(url: &str, password: Option<&str>, max_retries: u32) -> bool {
+    for attempt in 1..=max_retries {
+        tracing::debug!(
+            "Health check attempt {}/{} for {}",
+            attempt,
+            max_retries,
+            url
+        );
+
+        if check_health(url, password).await {
+            if attempt > 1 {
+                tracing::info!(
+                    "Health check succeeded on attempt {}/{}",
+                    attempt,
+                    max_retries
+                );
+            }
+            return true;
+        }
+
+        if attempt < max_retries {
+            // Exponential backoff: 100ms, 200ms, 400ms
+            let delay = Duration::from_millis(100 * (2_u64.pow(attempt - 1)));
+            tokio::time::sleep(delay).await;
+        }
+    }
+
+    tracing::warn!(
+        "Health check failed after {} attempts for {}",
+        max_retries,
+        url
+    );
+    false
+}
+
 fn url_is_localhost(url: &reqwest::Url) -> bool {
     url.host_str().is_some_and(|host| {
+        let host = host.trim_start_matches('[').trim_end_matches(']');
         host.eq_ignore_ascii_case("localhost")
             || host
                 .parse::<std::net::IpAddr>()
@@ -246,4 +290,65 @@ pub async fn check_health_or_ask_retry(app: &AppHandle, url: &str) -> bool {
     }
 
     false
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::cli::{Config, ServerConfig};
+
+    #[test]
+    fn detects_loopback_health_urls() {
+        for url in [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://[::1]:3000",
+        ] {
+            let url = reqwest::Url::parse(url).expect("valid url");
+            assert!(url_is_localhost(&url));
+        }
+    }
+
+    #[test]
+    fn rejects_non_loopback_health_urls() {
+        for url in ["http://192.168.1.10:3000", "https://railwise.ai"] {
+            let url = reqwest::Url::parse(url).expect("valid url");
+            assert!(!url_is_localhost(&url));
+        }
+    }
+
+    #[test]
+    fn normalizes_bind_hosts_for_client_urls() {
+        assert_eq!(normalize_hostname_for_url("0.0.0.0"), "127.0.0.1");
+        assert_eq!(normalize_hostname_for_url("::"), "[::1]");
+        assert_eq!(normalize_hostname_for_url("::1"), "[::1]");
+        assert_eq!(normalize_hostname_for_url("127.0.0.1"), "127.0.0.1");
+    }
+
+    #[test]
+    fn builds_server_url_from_cli_config() {
+        let config = Config {
+            server: Some(ServerConfig {
+                hostname: Some("0.0.0.0".into()),
+                port: Some(4096),
+            }),
+        };
+
+        assert_eq!(
+            get_server_url_from_config(&config),
+            Some("http://127.0.0.1:4096".into())
+        );
+    }
+
+    #[test]
+    fn ignores_incomplete_cli_server_config() {
+        let config = Config {
+            server: Some(ServerConfig {
+                hostname: Some("127.0.0.1".into()),
+                port: None,
+            }),
+        };
+
+        assert_eq!(get_server_url_from_config(&config), None);
+    }
 }

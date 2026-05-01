@@ -441,7 +441,7 @@ export const dict = {
   "error.page.action.checkUpdates": "ตรวจสอบการอัปเดต",
   "error.page.action.updateTo": "อัปเดตเป็น {{version}}",
   "error.page.report.prefix": "โปรดรายงานข้อผิดพลาดนี้ให้ทีม RAILWISE",
-  "error.page.report.discord": "บน Discord",
+  "error.page.report.link": "ช่องทางสนับสนุน",
   "error.page.version": "เวอร์ชัน: {{version}}",
 
   "error.dev.rootNotFound": "ไม่พบองค์ประกอบรูท คุณลืมเพิ่มใน index.html หรือบางทีแอตทริบิวต์ id อาจสะกดผิด?",
@@ -580,15 +580,15 @@ export const dict = {
   "sidebar.project.viewAllSessions": "ดูเซสชันทั้งหมด",
   "sidebar.project.clearNotifications": "ล้างการแจ้งเตือน",
 
-  "app.name.desktop": "RAILWISE Desktop",
+  "app.name": "RAILWISE",
 
-  "settings.section.desktop": "เดสก์ท็อป",
+  "settings.section.application": "แอป",
   "settings.section.server": "เซิร์ฟเวอร์",
   "settings.tab.general": "ทั่วไป",
   "settings.tab.shortcuts": "ทางลัด",
-  "settings.desktop.section.wsl": "WSL",
-  "settings.desktop.wsl.title": "การรวม WSL",
-  "settings.desktop.wsl.description": "เรียกใช้เซิร์ฟเวอร์ RAILWISE ภายใน WSL บน Windows",
+  "settings.platform.section.wsl": "WSL",
+  "settings.platform.wsl.title": "การรวม WSL",
+  "settings.platform.wsl.description": "เรียกใช้เซิร์ฟเวอร์ RAILWISE ภายใน WSL บน Windows",
 
   "settings.general.section.appearance": "รูปลักษณ์",
   "settings.general.section.notifications": "การแจ้งเตือนระบบ",

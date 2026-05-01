@@ -6,7 +6,7 @@ on:
 
 jobs:
   check-duplicates:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
@@ -20,27 +20,47 @@ jobs:
         id: team-check
         run: |
           LOGIN="${{ github.event.pull_request.user.login }}"
-          if [ "$LOGIN" = "railwise-agent[bot]" ] || grep -qxF "$LOGIN" .github/TEAM_MEMBERS; then
+          ASSOCIATION="${{ github.event.pull_request.author_association }}"
+          if [ "$LOGIN" = "railwise-agent[bot]" ] || [ "$ASSOCIATION" = "OWNER" ] || [ "$ASSOCIATION" = "MEMBER" ] || [ "$ASSOCIATION" = "COLLABORATOR" ] || grep -qxF "$LOGIN" .github/TEAM_MEMBERS; then
             echo "is_team=true" >> "$GITHUB_OUTPUT"
-            echo "Skipping: $LOGIN is a team member or bot"
+            echo "Skipping: $LOGIN is a team member, collaborator, owner, or bot"
           else
             echo "is_team=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Setup Bun
+      - name: Check duplicate prerequisites
+        id: duplicate-prerequisites
         if: steps.team-check.outputs.is_team != 'true'
+        env:
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
+        run: |
+          if [ -z "$RAILWISE_API_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping duplicate PR check because RAILWISE_API_KEY is not configured"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Bun
+        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
         uses: ./.github/actions/setup-bun
 
       - name: Install dependencies
-        if: steps.team-check.outputs.is_team != 'true'
+        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
         run: bun install
 
       - name: Install railwise
-        if: steps.team-check.outputs.is_team != 'true'
-        run: curl -fsSL https://railwise.ai/install | bash
+        id: install-railwise
+        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          curl -fsSL https://railwise.ai/install | bash
+          echo "$HOME/.railwise/bin" >> "$GITHUB_PATH"
+          command -v railwise
 
       - name: Build prompt
-        if: steps.team-check.outputs.is_team != 'true'
+        if: steps.team-check.outputs.is_team != 'true' && steps.install-railwise.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -57,7 +77,7 @@ jobs:
           } > pr_info.txt
 
       - name: Check for duplicate PRs
-        if: steps.team-check.outputs.is_team != 'true'
+        if: steps.team-check.outputs.is_team != 'true' && steps.install-railwise.outcome == 'success'
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,6 +90,10 @@ jobs:
 
           $COMMENT"
           fi
+
+      - name: Report duplicate check skip
+        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true' && steps.install-railwise.outcome != 'success'
+        run: echo "::notice::Skipping duplicate PR check because railwise failed to install"
 
   add-contributor-label:
     runs-on: ubuntu-latest

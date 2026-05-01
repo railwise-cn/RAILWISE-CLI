@@ -1,0 +1,17 @@
+Run deterministic IGGIII-style robust least-squares adjustment.
+
+Use this after preliminary adjustment and gross-error screening when residuals indicate suspected outliers but the workflow needs a stable solution without deleting observations blindly.
+
+Inputs:
+- unknowns: ordered unknown parameter names.
+- equations: indirect-adjustment equations with coefficients, observed value, and optional base weight.
+- k0/k1: IGGIII standardized-residual thresholds. Observations below k0 keep full weight; observations above k1 retain only minWeightFactor.
+- maxIterations/tolerance: convergence controls.
+
+Output:
+- final unknown values and precision statistics.
+- residuals with base weight, final weight, weight factor, and standardized residual.
+- downweighted observations.
+- iteration history, convergence flag, and sigma0 statistics.
+
+Do not invent observations or weights. If the source is COSA .in2, CSV, NASEW, or loose rows, call tool_format_converter first and pass its next.args here.

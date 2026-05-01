@@ -1,0 +1,11 @@
+Search the local RAILWISE norm library as an exact fallback layer.
+
+Use this when tool_wiki_query returns too few results or when an agent needs to search Raw markdown directly. The tool scans local wiki/ and raw/ markdown, ranks matches, and returns auditable fields:
+- normId
+- chapter
+- path
+- sourceRaw
+- normClauseId
+- content excerpt
+
+This is the lightweight M8 fallback. It does not require qmd, pgvector, or network access.

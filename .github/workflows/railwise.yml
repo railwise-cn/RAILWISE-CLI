@@ -9,11 +9,9 @@ on:
 jobs:
   railwise:
     if: |
-      contains(github.event.comment.body, ' /oc') ||
-      startsWith(github.event.comment.body, '/oc') ||
       contains(github.event.comment.body, ' /railwise') ||
       startsWith(github.event.comment.body, '/railwise')
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
@@ -26,7 +24,7 @@ jobs:
       - uses: ./.github/actions/setup-bun
 
       - name: Run railwise
-        uses: anomalyco/railwise/github@latest
+        uses: ./github
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           RAILWISE_PERMISSION: '{"bash": "deny"}'

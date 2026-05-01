@@ -1,0 +1,9 @@
+Compare two local norm Wiki scopes and produce a change impact report.
+
+Use this when a norm has a new version or a page is marked superseded. The tool aligns pages by clause id where possible and reports:
+- added clauses
+- removed clauses
+- modified clauses
+- superseded pages
+
+By default it writes a markdown report to wiki/changes/diff-<from>-to-<to>-YYYY-MM-DD.md for review. This is the lightweight M8 implementation and does not require network access or vector infrastructure.

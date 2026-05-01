@@ -239,7 +239,7 @@ export const GithubInstallCommand = cmd({
                 `    1. Commit the \`${WORKFLOW_FILE}\` file and push`,
                 step2,
                 "",
-                "    3. Go to a GitHub issue and comment `/oc summarize` to see the agent in action",
+                "    3. Go to a GitHub issue and comment `/railwise summarize` to see the agent in action",
                 "",
                 "   Learn more about the GitHub agent - https://railwise.ai/docs/github/#usage-examples",
               ].join("\n"),
@@ -386,8 +386,6 @@ on:
 jobs:
   railwise:
     if: |
-      contains(github.event.comment.body, ' /oc') ||
-      startsWith(github.event.comment.body, '/oc') ||
       contains(github.event.comment.body, ' /railwise') ||
       startsWith(github.event.comment.body, '/railwise')
     runs-on: ubuntu-latest
@@ -403,7 +401,7 @@ jobs:
           persist-credentials: false
 
       - name: Run railwise
-        uses: railwise/railwise/github@latest${envStr}
+        uses: railwise-cn/RAILWISE-CLI/github@latest${envStr}
         with:
           model: ${provider}/${model}`,
             )
@@ -760,7 +758,7 @@ export const GithubRunCommand = cmd({
         }
 
         const reviewContext = getReviewCommentContext()
-        const mentions = (process.env["MENTIONS"] || "/railwise,/oc")
+        const mentions = (process.env["MENTIONS"] || "/railwise")
           .split(",")
           .map((m) => m.trim().toLowerCase())
           .filter(Boolean)

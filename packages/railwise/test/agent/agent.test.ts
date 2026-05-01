@@ -670,7 +670,7 @@ test("defaultAgent returns plan when build is disabled and default_agent not set
   })
 })
 
-test("defaultAgent throws when all primary agents are disabled", async () => {
+test("defaultAgent skips workflow managers when primary fallbacks are disabled", async () => {
   await using tmp = await tmpdir({
     config: {
       agent: {
@@ -682,7 +682,10 @@ test("defaultAgent throws when all primary agents are disabled", async () => {
   await Instance.provide({
     directory: tmp.path,
     fn: async () => {
-      // build and plan are disabled, no primary-capable agents remain
+      const chief = await Agent.get("chief_manager")
+      expect(chief?.mode).toBe("primary")
+      expect(chief?.native).toBe(true)
+      // chief_manager stays explicitly available for workflow runs but is not a default fallback.
       await expect(Agent.defaultAgent()).rejects.toThrow("no primary visible agent found")
     },
   })

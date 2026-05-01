@@ -1,4 +1,5 @@
 import { base64Decode } from "@railwise/util/encode"
+import type { Page } from "@playwright/test"
 import { test, expect } from "../fixtures"
 import {
   defocus,
@@ -8,11 +9,35 @@ import {
   setWorkspacesEnabled,
   sessionIDFromUrl,
 } from "../actions"
-import { projectSwitchSelector, promptSelector, workspaceItemSelector, workspaceNewSessionSelector } from "../selectors"
+import {
+  projectSwitchSelector,
+  promptSelector,
+  sessionItemSelector,
+  workspaceItemSelector,
+  workspaceNewSessionSelector,
+} from "../selectors"
 import { createSdk, dirSlug } from "../utils"
 
 function slugFromUrl(url: string) {
   return /\/([^/]+)\/session(?:\/|$)/.exec(url)?.[1] ?? ""
+}
+
+async function waitWorkspaceReady(page: Page, slug: string) {
+  await openSidebar(page)
+  await expect
+    .poll(
+      async () => {
+        const item = page.locator(workspaceItemSelector(slug)).first()
+        try {
+          await item.hover({ timeout: 500 })
+          return true
+        } catch {
+          return false
+        }
+      },
+      { timeout: 60_000 },
+    )
+    .toBe(true)
 }
 
 test("can switch between projects from sidebar", async ({ page, withProject }) => {
@@ -80,10 +105,9 @@ test("switching back to a project opens the latest workspace session", async ({ 
 
         const workspaceSlug = slugFromUrl(page.url())
         workspaceDir = base64Decode(workspaceSlug)
-        await openSidebar(page)
+        await waitWorkspaceReady(page, workspaceSlug)
 
         const workspace = page.locator(workspaceItemSelector(workspaceSlug)).first()
-        await expect(workspace).toBeVisible()
         await workspace.hover()
 
         const newSession = page.locator(workspaceNewSessionSelector(workspaceSlug)).first()
@@ -102,6 +126,7 @@ test("switching back to a project opens the latest workspace session", async ({ 
         if (!created) throw new Error(`Failed to parse session id from URL: ${page.url()}`)
         sessionID = created
         await expect(page).toHaveURL(new RegExp(`/${workspaceSlug}/session/${created}(?:[/?#]|$)`))
+        await expect(page.locator(sessionItemSelector(created)).first()).toBeVisible()
 
         await openSidebar(page)
 

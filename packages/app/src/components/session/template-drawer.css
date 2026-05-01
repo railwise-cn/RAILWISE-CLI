@@ -1,0 +1,211 @@
+.template-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(10, 10, 9, 0.18);
+}
+
+.template-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  width: min(420px, 100vw);
+  flex-direction: column;
+  background: var(--rw-bg-card);
+  box-shadow: var(--rw-shadow-lg);
+  color: var(--rw-text-primary);
+  font-family: var(--rw-font-sans);
+}
+
+.template-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rw-accent-border);
+  padding: 16px 20px;
+}
+
+.template-drawer-header strong {
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.template-drawer-header button,
+.template-back {
+  border: 0;
+  background: transparent;
+  color: rgba(47, 38, 24, 0.56);
+  cursor: pointer;
+}
+
+.template-drawer-header button {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.template-drawer-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--rw-accent-border);
+}
+
+.template-drawer-tabs button {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: rgba(47, 38, 24, 0.6);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 0;
+}
+
+.template-drawer-tabs button[data-active="true"] {
+  color: var(--rw-accent-solid);
+}
+
+.template-drawer-tabs button[data-active="true"]::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--rw-accent-solid);
+  content: "";
+}
+
+.template-drawer-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.template-list,
+.template-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.template-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border: 1px solid rgba(117, 86, 32, 0.12);
+  border-radius: var(--rw-radius-md);
+  background: var(--rw-bg-card);
+  color: var(--rw-text-primary);
+  cursor: pointer;
+  padding: 14px;
+  text-align: left;
+}
+
+.template-card:hover {
+  border-color: rgba(117, 86, 32, 0.35);
+  background: rgba(117, 86, 32, 0.03);
+}
+
+.template-card strong,
+.template-detail-title strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.template-card span,
+.template-detail-title span {
+  color: rgba(47, 38, 24, 0.68);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.template-card em,
+.template-detail-title em {
+  width: fit-content;
+  border-radius: 4px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  padding: 3px 8px;
+}
+
+.template-empty {
+  color: rgba(47, 38, 24, 0.5);
+  font-size: 13px;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.template-back {
+  width: fit-content;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.template-detail-title {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0 8px;
+}
+
+.template-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.template-field span {
+  color: var(--rw-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.template-field b {
+  color: var(--rw-error);
+  margin-left: 3px;
+}
+
+.template-field input,
+.template-field select {
+  border: 1px solid rgba(117, 86, 32, 0.18);
+  border-radius: 6px;
+  background: var(--rw-bg-card);
+  color: var(--rw-text-primary);
+  font-family: var(--rw-font-sans);
+  font-size: 13px;
+  outline: none;
+  padding: 9px 10px;
+}
+
+.template-field input:focus,
+.template-field select:focus {
+  border-color: var(--rw-accent-solid);
+  box-shadow: 0 0 0 2px rgba(117, 86, 32, 0.12);
+}
+
+.template-drawer-footer {
+  border-top: 1px solid var(--rw-accent-border);
+  padding: 14px;
+}
+
+.template-drawer-footer button {
+  width: 100%;
+  border: 0;
+  border-radius: var(--rw-radius-md);
+  background: var(--rw-accent-solid);
+  color: var(--rw-bg-card);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+  padding: 11px;
+}
+
+.template-drawer-footer button:disabled {
+  background: rgba(117, 86, 32, 0.08);
+  color: rgba(47, 38, 24, 0.35);
+  cursor: not-allowed;
+}

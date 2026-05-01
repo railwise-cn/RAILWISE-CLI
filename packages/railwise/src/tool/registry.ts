@@ -4,7 +4,6 @@ import { EditTool } from "./edit"
 import { GlobTool } from "./glob"
 import { GrepTool } from "./grep"
 import { BatchTool } from "./batch"
-import { ParallelAgentTool } from "./parallel_agent"
 import { ReadTool } from "./read"
 import { TaskTool } from "./task"
 import { TodoWriteTool, TodoReadTool } from "./todo"
@@ -29,6 +28,17 @@ import { Truncate } from "./truncation"
 import { PlanExitTool, PlanEnterTool } from "./plan"
 import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
+import { NormCiteTool, NormDiffTool, NormSearchTool, WikiIndexTool, WikiIngestTool, WikiLintTool, WikiQueryTool } from "./wiki"
+import { MineruParseTool } from "./mineru"
+import {
+  AdjustmentConditionTool,
+  AdjustmentFreeNetworkTool,
+  AdjustmentIndirectTool,
+  AdjustmentRobustTool,
+  GrossErrorDetectionTool,
+  VarianceComponentTool,
+} from "./adjustment"
+import { FormatConverterTool } from "./format"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -117,10 +127,24 @@ export namespace ToolRegistry {
       WebSearchTool,
       CodeSearchTool,
       SkillTool,
+      MineruParseTool,
+      WikiQueryTool,
+      WikiIngestTool,
+      WikiIndexTool,
+      WikiLintTool,
+      NormSearchTool,
+      NormDiffTool,
+      NormCiteTool,
+      FormatConverterTool,
+      AdjustmentIndirectTool,
+      AdjustmentFreeNetworkTool,
+      AdjustmentRobustTool,
+      VarianceComponentTool,
+      AdjustmentConditionTool,
+      GrossErrorDetectionTool,
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),
-      ParallelAgentTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_PLAN_MODE && Flag.RAILWISE_CLIENT === "cli" ? [PlanExitTool, PlanEnterTool] : []),
       ...custom,
     ]

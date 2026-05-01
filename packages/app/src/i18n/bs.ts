@@ -443,7 +443,7 @@ export const dict = {
   "error.page.action.checkUpdates": "Provjeri ažuriranja",
   "error.page.action.updateTo": "Ažuriraj na {{version}}",
   "error.page.report.prefix": "Molimo prijavi ovu grešku RAILWISE timu",
-  "error.page.report.discord": "na Discordu",
+  "error.page.report.link": "kanal podrške",
   "error.page.version": "Verzija: {{version}}",
 
   "error.dev.rootNotFound":
@@ -585,15 +585,15 @@ export const dict = {
   "sidebar.project.viewAllSessions": "Prikaži sve sesije",
   "sidebar.project.clearNotifications": "Očisti obavijesti",
 
-  "app.name.desktop": "RAILWISE Desktop",
+  "app.name": "RAILWISE",
 
-  "settings.section.desktop": "Desktop",
+  "settings.section.application": "Aplikacija",
   "settings.section.server": "Server",
   "settings.tab.general": "Opšte",
   "settings.tab.shortcuts": "Prečice",
-  "settings.desktop.section.wsl": "WSL",
-  "settings.desktop.wsl.title": "WSL integracija",
-  "settings.desktop.wsl.description": "Pokreni RAILWISE server unutar WSL-a na Windowsu.",
+  "settings.platform.section.wsl": "WSL",
+  "settings.platform.wsl.title": "WSL integracija",
+  "settings.platform.wsl.description": "Pokreni RAILWISE server unutar WSL-a na Windowsu.",
 
   "settings.general.section.appearance": "Izgled",
   "settings.general.section.notifications": "Sistemske obavijesti",

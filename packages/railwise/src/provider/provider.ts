@@ -768,18 +768,13 @@ export namespace Provider {
     const disabled = new Set(config.disabled_providers ?? [])
     const enabled = config.enabled_providers ? new Set(config.enabled_providers) : null
 
-    // Built-in + free-model providers bypass enabled_providers filtering
-    const builtin = new Set([
-      "github-copilot",
-      "github-copilot-enterprise",
-      "railwise",
-      ...Object.keys(FREE_MODELS),
-    ])
+    // Built-in + free-model providers autoload unless an explicit provider allowlist exists.
+    const builtin = new Set(["github-copilot", "github-copilot-enterprise", "railwise", ...Object.keys(FREE_MODELS)])
 
     function isProviderAllowed(providerID: string): boolean {
       if (disabled.has(providerID)) return false
-      if (builtin.has(providerID)) return true
       if (enabled && !enabled.has(providerID)) return false
+      if (builtin.has(providerID)) return true
       return true
     }
 
@@ -824,19 +819,17 @@ export namespace Provider {
     // extend database from config
     for (const [providerID, provider] of configProviders) {
       const existing = database[providerID]
-      // When config explicitly defines models, use only those (don't inherit snapshot models)
-      const hasConfigModels = provider.models && Object.keys(provider.models).length > 0
       const parsed: Info = {
         id: providerID,
         name: provider.name ?? existing?.name ?? providerID,
         env: provider.env ?? existing?.env ?? [],
         options: mergeDeep(existing?.options ?? {}, provider.options ?? {}),
         source: "config",
-        models: hasConfigModels ? {} : (existing?.models ?? {}),
+        models: existing?.models ?? {},
       }
 
       for (const [modelID, model] of Object.entries(provider.models ?? {})) {
-        const existingModel = (existing?.models ?? {})[model.id ?? modelID] ?? parsed.models[model.id ?? modelID]
+        const existingModel = parsed.models[model.id ?? modelID]
         const name = iife(() => {
           if (model.name) return model.name
           if (model.id && model.id !== modelID) return modelID
@@ -979,10 +972,7 @@ export namespace Provider {
     for (const [providerID, fn] of Object.entries(CUSTOM_LOADERS)) {
       if (disabled.has(providerID)) continue
       const data = database[providerID]
-      if (!data) {
-        log.error("Provider does not exist in model list " + providerID)
-        continue
-      }
+      if (!data) continue
       const result = await fn(data)
       if (result && (result.autoload || providers[providerID])) {
         if (result.getModel) modelLoaders[providerID] = result.getModel
@@ -1079,11 +1069,11 @@ export namespace Provider {
       const baseURL = loadBaseURL(model, options)
       if (baseURL !== undefined) options["baseURL"] = baseURL
       if (!options["apiKey"] && provider.key) options["apiKey"] = provider.key
-      if (model.headers)
-        options["headers"] = {
-          ...options["headers"],
-          ...model.headers,
-        }
+      options["headers"] = {
+        "user-agent": Installation.USER_AGENT,
+        ...options["headers"],
+        ...model.headers,
+      }
 
       const key = Bun.hash.xxHash32(JSON.stringify({ providerID: model.providerID, npm: model.api.npm, options }))
       const existing = s.sdk.get(key)
@@ -1132,8 +1122,9 @@ export namespace Provider {
         }
         log.info("fetch called", { url: String(input).slice(0, 80), hasTls: true })
         const result = fetchFn(input, finalOpts)
-        result.then((r: any) => log.info("fetch responded", { status: r.status, url: String(input).slice(0, 60) }))
-             .catch((e: any) => log.error("fetch failed", { error: String(e), url: String(input).slice(0, 60) }))
+        result
+          .then((r: any) => log.info("fetch responded", { status: r.status, url: String(input).slice(0, 60) }))
+          .catch((e: any) => log.error("fetch failed", { error: String(e), url: String(input).slice(0, 60) }))
         return result
       }
 

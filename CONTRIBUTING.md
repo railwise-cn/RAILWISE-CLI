@@ -201,6 +201,20 @@ With that said, you may want to try these methods, as they might work for you.
 - Keep pull requests small and focused
 - Explain the issue and why your change fixes it
 - Before adding new functionality, ensure it doesn't already exist elsewhere in the codebase
+- Identify the affected product line in the PR template: Core, CLI, Desktop, App shell, Docs, or CI/release infrastructure
+
+### Product Line Scope
+
+Railwise uses one repository but ships multiple product lines. Pick the scope before writing code:
+
+- **Core**: shared engine, server/API, SDK contracts, agents, workflows, norm wiki, tools, sessions, and delivery package contracts.
+- **CLI**: command-line UX, scripting, CI/headless usage, debug commands, setup, provider, and automation flows.
+- **Desktop**: Tauri shell, local file flows, dashboard, workspace, Agent Studio, installer, signing, notarization, updater, and desktop UX.
+- **App shell**: shared SolidJS UI used by browser preview and Desktop. Do not put Desktop-only product promises here.
+- **Docs**: product boundary, user, developer, admin, and release documentation.
+- **CI / release infrastructure**: GitHub Actions, release workflows, signing checks, and deployment automation.
+
+Mixed PRs are allowed only when the pieces must ship together, for example Core API + SDK type regeneration + the UI consuming the new contract. If a CLI change and a Desktop release blocker do not depend on each other, split them.
 
 ### UI Changes
 
@@ -237,6 +251,9 @@ You can optionally include a scope to indicate which package is affected:
 - `feat(app):` feature in the app package
 - `fix(desktop):` bug fix in the desktop package
 - `chore(railwise):` maintenance in the railwise package
+- `feat(core):` shared engine or API change
+- `feat(cli):` command-line product change
+- `docs(product):` product boundary or positioning change
 
 Examples:
 

@@ -8,6 +8,10 @@ import { SettingsGeneral } from "./settings-general"
 import { SettingsKeybinds } from "./settings-keybinds"
 import { SettingsProviders } from "./settings-providers"
 import { SettingsModels } from "./settings-models"
+import { SettingsPermissions } from "./settings-permissions"
+import { SettingsMcp } from "./settings-mcp"
+import { SettingsAgents } from "./settings-agents"
+import { SettingsCommands } from "./settings-commands"
 
 export const DialogSettings: Component = () => {
   const language = useLanguage()
@@ -21,7 +25,7 @@ export const DialogSettings: Component = () => {
             <div class="flex flex-col gap-3 w-full pt-3">
               <div class="flex flex-col gap-3">
                 <div class="flex flex-col gap-1.5">
-                  <Tabs.SectionTitle>{language.t("settings.section.desktop")}</Tabs.SectionTitle>
+                  <Tabs.SectionTitle>{language.t("settings.section.application")}</Tabs.SectionTitle>
                   <div class="flex flex-col gap-1.5 w-full">
                     <Tabs.Trigger value="general">
                       <Icon name="sliders" />
@@ -45,12 +49,28 @@ export const DialogSettings: Component = () => {
                       <Icon name="models" />
                       {language.t("settings.models.title")}
                     </Tabs.Trigger>
+                    <Tabs.Trigger value="permissions">
+                      <Icon name="checklist" />
+                      {language.t("settings.permissions.title")}
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="mcp">
+                      <Icon name="mcp" />
+                      {language.t("settings.mcp.title")}
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="agents">
+                      <Icon name="brain" />
+                      {language.t("settings.agents.title")}
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="commands">
+                      <Icon name="console" />
+                      {language.t("settings.commands.title")}
+                    </Tabs.Trigger>
                   </div>
                 </div>
               </div>
             </div>
             <div class="flex flex-col gap-1 pl-1 py-1 text-12-medium text-text-weak">
-              <span>{language.t("app.name.desktop")}</span>
+              <span>{platform.appName ?? language.t("app.name")}</span>
               <span class="text-11-regular">v{platform.version}</span>
             </div>
           </div>
@@ -66,6 +86,18 @@ export const DialogSettings: Component = () => {
         </Tabs.Content>
         <Tabs.Content value="models" class="no-scrollbar">
           <SettingsModels />
+        </Tabs.Content>
+        <Tabs.Content value="permissions" class="no-scrollbar">
+          <SettingsPermissions />
+        </Tabs.Content>
+        <Tabs.Content value="mcp" class="no-scrollbar">
+          <SettingsMcp />
+        </Tabs.Content>
+        <Tabs.Content value="agents" class="no-scrollbar">
+          <SettingsAgents />
+        </Tabs.Content>
+        <Tabs.Content value="commands" class="no-scrollbar">
+          <SettingsCommands />
         </Tabs.Content>
       </Tabs>
     </Dialog>

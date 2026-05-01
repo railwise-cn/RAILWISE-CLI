@@ -2,4 +2,5 @@ research
 dist
 gen
 app.log
+.railwise/
 src/provider/models-snapshot.ts

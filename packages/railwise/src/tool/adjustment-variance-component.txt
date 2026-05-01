@@ -1,0 +1,15 @@
+Estimate observation-group variance components after a deterministic least-squares adjustment.
+
+Use this for mixed observation sets such as distance + angle, GNSS baseline + total-station, or leveling + geometric constraint observations when the workflow needs evidence-based relative weights.
+
+Inputs:
+- unknowns: ordered parameter names.
+- equations: indirect-adjustment equations with coefficients, observed value, optional base weight, and a group name.
+- referenceGroup: optional group used as the relative variance baseline.
+
+Output:
+- adjusted unknown values from the base weighted least-squares solution.
+- residuals with observation group, weight, and redundancy number.
+- Helmert-style group components: weighted residual sum, redundancy, variance factor, standard deviation factor, relative variance factor, and suggested weight factor.
+
+Do not use this as a norm limit checker. Run tool_gross_error_detection or tool_adjustment_robust first when a single gross observation dominates a group.

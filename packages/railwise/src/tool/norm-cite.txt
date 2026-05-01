@@ -1,0 +1,3 @@
+Format a mandatory engineering-standard citation.
+
+Use this after locating a norm clause. The output must follow the RAILWISE citation format: "参照 [规范编号] 第 [章节号] 条，..." so generated reports remain auditable.

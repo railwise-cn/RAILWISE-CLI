@@ -74,6 +74,7 @@ check(
     "100%",
     "bun run desktop:verify",
     "bun run smoke:tauri",
+    "bun run script/verify-desktop-native-surfaces.ts",
     "cd workers/update-server && bun ./verify.ts",
   ]),
   `${tag} rollout and preflight commands`,

@@ -154,6 +154,11 @@ const steps: Step[] = [
     args: ["bun", "run", "script/verify-desktop-m7.ts"],
   },
   {
+    name: "D3 原生能力面验收",
+    cwd: root,
+    args: ["bun", "run", "script/verify-desktop-native-surfaces.ts"],
+  },
+  {
     name: "更新分发服务验收",
     cwd: root,
     args: ["bun", "run", "script/verify-update-server"],

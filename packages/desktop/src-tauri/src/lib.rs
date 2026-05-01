@@ -114,6 +114,12 @@ fn get_logs() -> String {
     logging::tail()
 }
 
+fn native_smoke_marker(marker: &str) {
+    if env::var_os("RAILWISE_NATIVE_SMOKE").is_some() {
+        eprintln!("railwise-native-smoke:{marker}");
+    }
+}
+
 #[tauri::command]
 #[specta::specta]
 async fn await_initialization(
@@ -589,6 +595,7 @@ struct LoadingWindowComplete;
 
 async fn initialize(app: AppHandle) {
     tracing::info!("Initializing app");
+    native_smoke_marker("app.initializing");
 
     let (init_tx, init_rx) = watch::channel(InitStep::ServerWaiting);
 
@@ -602,6 +609,7 @@ async fn initialize(app: AppHandle) {
     let loading_window_complete = event_once_fut::<LoadingWindowComplete>(&app);
 
     tracing::info!("Main and loading windows created");
+    native_smoke_marker("windows.bootstrap.ready");
 
     // SQLite migration handling:
     // We only do this if the sqlite db doesn't exist, and we're expecting the sidecar to create it
@@ -674,6 +682,7 @@ async fn initialize(app: AppHandle) {
                             }
 
                             tracing::info!("CLI health check OK");
+                            native_smoke_marker("sidecar.health_ok");
 
                             app.state::<ServerState>().set_child(Some(child));
 
@@ -722,6 +731,7 @@ async fn initialize(app: AppHandle) {
     } else {
         tracing::debug!("Showing main window without loading window");
         MainWindow::create(&app).expect("Failed to create main window");
+        native_smoke_marker("main_window.visible");
 
         None
     };
@@ -729,6 +739,7 @@ async fn initialize(app: AppHandle) {
     let _ = loading_task.await;
 
     tracing::info!("Loading done, completing initialisation");
+    native_smoke_marker("app.initialized");
     let _ = init_tx.send(InitStep::Done);
 
     if loading_window.is_some() {
@@ -738,6 +749,7 @@ async fn initialize(app: AppHandle) {
     }
 
     MainWindow::create(&app).expect("Failed to create main window");
+    native_smoke_marker("main_window.visible");
 
     if let Some(loading_window) = loading_window {
         let _ = loading_window.close();
@@ -801,6 +813,7 @@ async fn setup_server_connection(app: AppHandle) -> ServerConnection {
     let password = uuid::Uuid::new_v4().to_string();
 
     tracing::info!(port = local_port, "Spawning new local server");
+    native_smoke_marker("sidecar.spawn_requested");
     let (child, health_check) =
         server::spawn_local_server(app, hostname.to_string(), local_port, password.clone());
 

@@ -13,7 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Check deploy secrets
         id: secrets
@@ -38,7 +38,7 @@ jobs:
       - uses: ./.github/actions/setup-bun
         if: steps.secrets.outputs.ready == 'true'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         if: steps.secrets.outputs.ready == 'true'
         with:
           node-version: "24"

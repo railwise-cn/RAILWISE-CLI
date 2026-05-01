@@ -115,6 +115,14 @@ gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f v
 
 `platform=all` 是默认值。推送 `desktop/v*` 标签时始终构建 Windows、macOS Apple Silicon、macOS Intel 和 Linux 全平台矩阵。
 
+首次 macOS notarization 可能需要数小时。只做 macOS 签名链路预检时，可以显式跳过等待 stapling：
+
+```bash
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-macos-preflight -f platform=macos -f macos_skip_stapling=true
+```
+
+`macos_skip_stapling=true` 只用于手动预检。GA 候选和正式发布必须保持默认 `false`，确保 `.app` 和 `.dmg` 等待 notarization 并完成 stapling。
+
 或推送发布标签：
 
 ```bash

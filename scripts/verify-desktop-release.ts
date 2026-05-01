@@ -135,10 +135,16 @@ check(
   "release build command",
   contains(workflow, [
     "bun run --cwd packages/desktop predev -- --target",
-    "bun run --cwd packages/desktop tauri -- build",
+    "bun run --cwd packages/desktop tauri --",
+    "args=(build --ci -vv --target",
     "--config src-tauri/tauri.prod.conf.json",
   ]),
   "production Tauri config is used and CLI args are passed through Bun",
+)
+check(
+  "macOS preflight controls",
+  contains(workflow, ["macos_skip_stapling", "--skip-stapling", "apple-tool:,apple:,codesign:", "security find-identity"]),
+  "manual macOS preflight can skip stapling and validates codesigning identity",
 )
 check(
   "release secret preflight",

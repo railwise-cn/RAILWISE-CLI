@@ -20,6 +20,11 @@ on:
           - macos
           - windows
           - linux
+      macos_skip_stapling:
+        description: "macOS 预检时跳过等待 notarization stapling，正式 GA 保持 false"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -151,19 +156,30 @@ jobs:
         run: |
           echo "$APPLE_CERTIFICATE" | base64 --decode > cert.p12
           security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
           security default-keychain -s build.keychain
+          security list-keychains -d user -s build.keychain
           security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
           security import cert.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security find-identity -v -p codesigning build.keychain
+          rm -f cert.p12
 
       - name: Build Tauri App
+        shell: bash
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-        run: bun run --cwd packages/desktop tauri -- build --target ${{ matrix.target }} --config src-tauri/tauri.prod.conf.json
+          MACOS_SKIP_STAPLING: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_stapling || false }}
+        run: |
+          args=(build --ci -vv --target "${{ matrix.target }}" --config src-tauri/tauri.prod.conf.json)
+          if [ "${{ matrix.platform }}" = "darwin" ] && [ "$MACOS_SKIP_STAPLING" = "true" ]; then
+            args+=(--skip-stapling)
+          fi
+          bun run --cwd packages/desktop tauri -- "${args[@]}"
 
       - name: Upload unsigned Windows installer
         if: matrix.platform == 'windows'

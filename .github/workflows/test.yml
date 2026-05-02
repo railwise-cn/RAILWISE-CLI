@@ -39,10 +39,10 @@ jobs:
         settings:
           - name: linux
             host: ubuntu-latest
-            playwright: bunx playwright install --with-deps
+            playwright: bunx playwright install --with-deps chromium
           - name: windows
             host: windows-latest
-            playwright: bunx playwright install
+            playwright: bunx playwright install chromium
     runs-on: ${{ matrix.settings.host }}
     env:
       PLAYWRIGHT_BROWSERS_PATH: 0
@@ -61,6 +61,7 @@ jobs:
       - name: Install Playwright browsers
         working-directory: packages/app
         run: ${{ matrix.settings.playwright }}
+        timeout-minutes: 15
 
       - name: Run app e2e tests
         run: bun --cwd packages/app test:e2e:local

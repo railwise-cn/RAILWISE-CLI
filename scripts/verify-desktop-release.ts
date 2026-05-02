@@ -143,7 +143,12 @@ check(
 )
 check(
   "macOS preflight controls",
-  contains(workflow, ["macos_skip_stapling", "--skip-stapling", "apple-tool:,apple:,codesign:", "security find-identity"]),
+  contains(workflow, [
+    "macos_skip_stapling",
+    "--skip-stapling",
+    "apple-tool:,apple:,codesign:",
+    "security find-identity",
+  ]),
   "manual macOS preflight can skip stapling and validates codesigning identity",
 )
 check(

@@ -53,6 +53,7 @@ import { PromptDragOverlay } from "./prompt-input/drag-overlay"
 import { promptPlaceholder } from "./prompt-input/placeholder"
 import { ImagePreview } from "@railwise/ui/image-preview"
 import { agentColor } from "@/utils/agent"
+import "./prompt-input.css"
 
 interface PromptInputProps {
   class?: string
@@ -1157,7 +1158,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
   const variants = createMemo(() => ["default", ...local.model.variant.list()])
 
   return (
-    <div class="relative size-full _max-h-[320px] flex flex-col gap-0">
+    <div data-component="prompt-input-region">
       <PromptPopover
         popover={store.popover}
         setSlashPopoverRef={(el) => (slashPopoverRef = el)}
@@ -1174,10 +1175,10 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         t={(key) => language.t(key as Parameters<typeof language.t>[0])}
       />
       <DockShellForm
+        data-component="prompt-input-shell"
         onSubmit={handleSubmit}
         classList={{
           "group/prompt-input": true,
-          "focus-within:shadow-xs-border": true,
           "border-icon-info-active border-dashed": store.draggingType !== null,
           [props.class ?? ""]: !!props.class,
         }}
@@ -1420,13 +1421,13 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         </div>
       </DockShellForm>
       <Show when={store.mode === "normal" || store.mode === "shell"}>
-        <DockTray attach="top">
-          <div class="px-1.75 pt-5.5 pb-2 flex items-center gap-2 min-w-0">
-            <div class="flex items-center gap-1.5 min-w-0 flex-1">
+        <DockTray attach="top" data-component="prompt-input-tray">
+          <div data-slot="prompt-input-tray-inner">
+            <div data-slot="prompt-input-tray-primary">
               <Show when={store.mode === "shell"}>
-                <div class="h-7 flex items-center gap-1.5 max-w-[160px] min-w-0" style={{ padding: "0 4px 0 8px" }}>
-                  <span class="truncate text-13-medium text-text-strong">{language.t("prompt.mode.shell")}</span>
-                  <div class="size-4 shrink-0" />
+                <div data-slot="prompt-input-shell-mode">
+                  <span data-slot="prompt-input-shell-mode-label">{language.t("prompt.mode.shell")}</span>
+                  <div data-slot="prompt-input-shell-mode-spacer" />
                 </div>
               </Show>
               <Show when={store.mode === "normal"}>
@@ -1528,7 +1529,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                 </TooltipKeybind>
               </Show>
             </div>
-            <div class="shrink-0">
+            <div data-slot="prompt-input-mode-switch">
               <RadioGroup
                 options={["shell", "normal"] as const}
                 current={store.mode}

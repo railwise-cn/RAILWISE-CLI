@@ -4,6 +4,7 @@ import { DockTray } from "@railwise/ui/dock-surface"
 import { IconButton } from "@railwise/ui/icon-button"
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
+import "./session-todo-dock.css"
 
 function dot(status: Todo["status"]) {
   if (status !== "in_progress") return undefined
@@ -55,15 +56,9 @@ export function SessionTodoDock(props: { todos: Todo[]; title: string; collapseL
   const preview = createMemo(() => active()?.content ?? "")
 
   return (
-    <DockTray
-      data-component="session-todo-dock"
-      classList={{
-        "h-[78px]": store.collapsed,
-      }}
-    >
+    <DockTray data-component="session-todo-dock" data-collapsed={store.collapsed}>
       <div
         data-action="session-todo-toggle"
-        class="pl-3 pr-2 py-2 flex items-center gap-2"
         role="button"
         tabIndex={0}
         onClick={toggle}
@@ -73,15 +68,15 @@ export function SessionTodoDock(props: { todos: Todo[]; title: string; collapseL
           toggle()
         }}
       >
-        <span class="text-14-regular text-text-strong cursor-default">{summary()}</span>
+        <span data-slot="session-todo-summary">{summary()}</span>
         <Show when={store.collapsed}>
-          <div class="ml-1 flex-1 min-w-0">
+          <div data-slot="session-todo-preview-wrap">
             <Show when={preview()}>
-              <div class="text-14-regular text-text-base truncate cursor-default">{preview()}</div>
+              <div data-slot="session-todo-preview">{preview()}</div>
             </Show>
           </div>
         </Show>
-        <div classList={{ "ml-auto": !store.collapsed, "ml-1": store.collapsed }}>
+        <div data-slot="session-todo-toggle-control" data-collapsed={store.collapsed}>
           <IconButton
             data-action="session-todo-toggle-button"
             icon="chevron-down"
@@ -155,11 +150,10 @@ function TodoList(props: { todos: Todo[]; open: boolean }) {
   })
 
   return (
-    <div class="relative">
+    <div data-slot="session-todo-list-frame">
       <div
-        class="px-3 pb-11 flex flex-col gap-1.5 max-h-42 overflow-y-auto no-scrollbar"
+        data-slot="session-todo-scroll"
         ref={scrollRef}
-        style={{ "overflow-anchor": "none" }}
         onScroll={(e) => {
           setStuck(e.currentTarget.scrollTop > 0)
           setScrolling(true)
@@ -179,19 +173,10 @@ function TodoList(props: { todos: Todo[]; open: boolean }) {
               indeterminate={todo.status === "in_progress"}
               data-in-progress={todo.status === "in_progress" ? "" : undefined}
               icon={dot(todo.status)}
-              style={{ "--checkbox-align": "flex-start", "--checkbox-offset": "1px" }}
             >
               <span
-                class="text-14-regular min-w-0 break-words"
-                classList={{
-                  "text-text-weak": todo.status === "completed" || todo.status === "cancelled",
-                  "text-text-strong": todo.status !== "completed" && todo.status !== "cancelled",
-                }}
-                style={{
-                  "line-height": "var(--line-height-normal)",
-                  "text-decoration":
-                    todo.status === "completed" || todo.status === "cancelled" ? "line-through" : undefined,
-                }}
+                data-slot="session-todo-content"
+                data-state={todo.status === "completed" || todo.status === "cancelled" ? "muted" : "active"}
               >
                 {todo.content}
               </span>
@@ -199,13 +184,7 @@ function TodoList(props: { todos: Todo[]; open: boolean }) {
           )}
         </For>
       </div>
-      <div
-        class="pointer-events-none absolute top-0 left-0 right-0 h-4 transition-opacity duration-150"
-        style={{
-          background: "linear-gradient(to bottom, var(--background-base), transparent)",
-          opacity: stuck() ? 1 : 0,
-        }}
-      />
+      <div data-slot="session-todo-scroll-fade" data-stuck={stuck()} />
     </div>
   )
 }

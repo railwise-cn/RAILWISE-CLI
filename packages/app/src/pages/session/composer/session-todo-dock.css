@@ -1,0 +1,107 @@
+[data-component="session-todo-dock"][data-collapsed="true"] {
+  height: 78px;
+}
+
+[data-component="session-todo-dock"] {
+  [data-action="session-todo-toggle"] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 12px;
+  }
+
+  [data-slot="session-todo-summary"] {
+    color: var(--text-strong);
+    cursor: default;
+    font-family: var(--font-family-sans);
+    font-size: 14px;
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-large);
+  }
+
+  [data-slot="session-todo-preview-wrap"] {
+    flex: 1;
+    min-width: 0;
+    margin-left: 4px;
+  }
+
+  [data-slot="session-todo-preview"] {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-base);
+    cursor: default;
+    font-family: var(--font-family-sans);
+    font-size: 14px;
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-large);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  [data-slot="session-todo-toggle-control"] {
+    margin-left: auto;
+  }
+
+  [data-slot="session-todo-toggle-control"][data-collapsed="true"] {
+    margin-left: 4px;
+  }
+
+  [data-slot="session-todo-list-frame"] {
+    position: relative;
+  }
+
+  [data-slot="session-todo-scroll"] {
+    display: flex;
+    max-height: 168px;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    overflow-anchor: none;
+    padding: 0 12px 44px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  [data-slot="session-todo-scroll"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  [data-component="checkbox"] {
+    --checkbox-align: flex-start;
+    --checkbox-offset: 1px;
+  }
+
+  [data-slot="session-todo-content"] {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-family: var(--font-family-sans);
+    font-size: 14px;
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+  }
+
+  [data-slot="session-todo-content"][data-state="active"] {
+    color: var(--text-strong);
+  }
+
+  [data-slot="session-todo-content"][data-state="muted"] {
+    color: var(--text-weak);
+    text-decoration: line-through;
+  }
+
+  [data-slot="session-todo-scroll-fade"] {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 16px;
+    background: linear-gradient(to bottom, var(--background-base), transparent);
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  [data-slot="session-todo-scroll-fade"][data-stuck="true"] {
+    opacity: 1;
+  }
+}

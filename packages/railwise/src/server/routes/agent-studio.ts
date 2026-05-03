@@ -5,7 +5,7 @@ import path from "path"
 import { mkdir, readdir, stat } from "fs/promises"
 import z from "zod"
 import { Agent } from "../../agent/agent"
-import { AgentUpdated } from "../../agent/agent-events"
+import { AgentUpdated, WorkflowCompleted } from "../../agent/agent-events"
 import presets from "../../agent/workflow-presets.json" with { type: "json" }
 import { Bus } from "../../bus"
 import { NormWiki } from "../../norm/wiki"
@@ -1101,6 +1101,7 @@ function deliveryMarkdown(input: {
 async function acceptance(input: { workflowId: string; sessionId: string }) {
   const workflow = presets.find((item) => item.id === input.workflowId)
   if (!workflow) throw new Error(`workflow "${input.workflowId}" not found`)
+  const stored = await workflowSession(input.sessionId)
   const messages = await Session.messages({ sessionID: input.sessionId })
   const user = messages
     .filter((message) => message.info.role === "user")
@@ -1170,6 +1171,13 @@ async function acceptance(input: { workflowId: string; sessionId: string }) {
     workflowName: workflow.name,
     acceptance: result,
   })
+  const durationMs = stored ? Math.max(0, Date.parse(result.generatedAt) - Date.parse(stored.createdAt)) : 0
+  if (result.ok)
+    await Bus.publish(WorkflowCompleted, {
+      workflowId: workflow.id,
+      sessionId: input.sessionId,
+      durationMs,
+    })
   return result
 }
 

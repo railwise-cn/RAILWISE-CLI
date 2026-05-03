@@ -94,8 +94,7 @@
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
-    padding: 32px 8px 8px;
-    margin-top: -24px;
+    padding: 22px 8px 8px;
   }
 
   [data-slot="permission-footer-actions"] {

@@ -16,7 +16,9 @@ export function DockPrompt(props: {
         <div data-slot={slot("header")}>{props.header}</div>
         <div data-slot={slot("content")}>{props.children}</div>
       </DockShell>
-      <DockTray data-slot={slot("footer")}>{props.footer}</DockTray>
+      <DockTray attach="top" data-slot={slot("footer")}>
+        {props.footer}
+      </DockTray>
     </div>
   )
 }

@@ -169,7 +169,7 @@ check(
 check(
   "macOS notarization secret gate",
   contains(workflow, [
-    'MACOS_SKIP_NOTARIZATION: ${{ github.event_name == \'workflow_dispatch\' && inputs.macos_skip_notarization || false }}',
+    "MACOS_SKIP_NOTARIZATION: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_notarization || false }}",
     'if [ "$MACOS_SKIP_NOTARIZATION" != "true" ]; then',
     "APPLE_ID APPLE_ID_PASSWORD APPLE_TEAM_ID",
   ]),

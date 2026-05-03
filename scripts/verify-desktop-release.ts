@@ -199,7 +199,7 @@ check(
 )
 check(
   "release repo context",
-  contains(workflow, ['GH_REPO: ${{ github.repository }}', "--repo \"$GH_REPO\""]),
+  contains(workflow, ["GH_REPO: ${{ github.repository }}", '--repo "$GH_REPO"']),
   "draft release creation does not depend on a checked-out .git directory",
 )
 check("production config exists", configExists, configPath)

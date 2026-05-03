@@ -23,16 +23,21 @@ TAURI_SIGNING_PRIVATE_KEY
 TAURI_SIGNING_PRIVATE_KEY_PASSWORD
 ```
 
-macOS 必需：
+macOS 代码签名必需：
 
 ```text
 APPLE_CERTIFICATE
 APPLE_CERTIFICATE_PASSWORD
 APPLE_KEYCHAIN_PASSWORD
+APPLE_SIGNING_IDENTITY
+```
+
+macOS notarization 必需：
+
+```text
 APPLE_ID
 APPLE_ID_PASSWORD
 APPLE_TEAM_ID
-APPLE_SIGNING_IDENTITY
 ```
 
 Windows 必需：
@@ -43,6 +48,8 @@ SIGNPATH_ORG_ID
 ```
 
 当前 workflow 会在构建前执行 secret preflight。缺失任意必需项时，job 会在 `Validate release secrets` 步骤失败，并列出缺失名称。
+
+手动 macOS build-only 预检可以设置 `macos_skip_notarization=true`，此时 workflow 仍会要求 Developer ID 代码签名证书，但不会要求 `APPLE_ID`、`APPLE_ID_PASSWORD`、`APPLE_TEAM_ID`，也不会向 Apple 提交 notarization。GA 候选和正式发布必须保持默认 `false`。
 
 ## 配置方式
 
@@ -121,7 +128,15 @@ gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f v
 gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-macos-preflight -f platform=macos -f macos_skip_stapling=true
 ```
 
-`macos_skip_stapling=true` 只用于手动预检。GA 候选和正式发布必须保持默认 `false`，确保 `.app` 和 `.dmg` 等待 notarization 并完成 stapling。
+`macos_skip_stapling=true` 只跳过等待和 stapling，不跳过 Apple notarization 提交；因此它仍然需要有效的 `APPLE_ID_PASSWORD` app-specific password。
+
+如果 Apple notarization 凭据还未准备好，但需要先验证 macOS 构建与 Developer ID codesign，可以运行 build-only 预检：
+
+```bash
+gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-macos-build-preflight -f platform=macos -f macos_skip_notarization=true -f macos_skip_stapling=true
+```
+
+`macos_skip_notarization=true` 只适合阻塞排查和签名链路预检。它生成的是 signed but not notarized 的 macOS 产物，不能作为 GA 分发包。GA 候选和正式发布必须保持 `macos_skip_notarization=false` 且 `macos_skip_stapling=false`，确保 `.app` 和 `.dmg` 完成 notarization 与 stapling。
 
 或推送发布标签：
 

@@ -66,6 +66,7 @@ const configPath = "packages/desktop/src-tauri/tauri.prod.conf.json"
 const workflowExists = await exists(workflowPath)
 const configExists = await exists(configPath)
 const workflow = workflowExists ? await read(workflowPath) : ""
+const runbook = await read("docs/admin/06-desktop-release-runbook.md")
 const config = configExists ? ((await Bun.file(file(configPath)).json()) as Config) : {}
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
@@ -150,6 +151,34 @@ check(
     "security find-identity",
   ]),
   "manual macOS preflight can skip stapling and validates codesigning identity",
+)
+check(
+  "macOS notarization-free preflight",
+  contains(workflow, [
+    "macos_skip_notarization",
+    "MACOS_SKIP_NOTARIZATION",
+    "APPLE_ID_SECRET",
+    "APPLE_PASSWORD_SECRET",
+    "APPLE_TEAM_ID_SECRET",
+    "export APPLE_ID",
+    "export APPLE_PASSWORD",
+    "export APPLE_TEAM_ID",
+  ]),
+  "manual macOS build preflight can keep codesigning enabled while withholding notarization credentials",
+)
+check(
+  "macOS notarization secret gate",
+  contains(workflow, [
+    'MACOS_SKIP_NOTARIZATION: ${{ github.event_name == \'workflow_dispatch\' && inputs.macos_skip_notarization || false }}',
+    'if [ "$MACOS_SKIP_NOTARIZATION" != "true" ]; then',
+    "APPLE_ID APPLE_ID_PASSWORD APPLE_TEAM_ID",
+  ]),
+  "Apple ID notarization secrets are required only when notarization is enabled",
+)
+check(
+  "macOS preflight docs",
+  contains(runbook, ["macos_skip_notarization=true", "macos_skip_stapling=true", "notarization", "GA"]),
+  "runbook documents signed build-only preflight versus GA notarization",
 )
 check(
   "release secret preflight",

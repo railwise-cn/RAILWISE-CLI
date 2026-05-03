@@ -78,6 +78,7 @@ const baseState = (input: Partial<State> = {}) =>
     mcp: {},
     lsp: [],
     vcs: undefined,
+    workflow_completion: {},
     limit: 10,
     message: {},
     part: {},
@@ -457,6 +458,36 @@ describe("applyDirectoryEvent", () => {
 
     expect(store.vcs).toEqual({ branch: "feature/test" })
     expect(cacheStore.value).toEqual({ branch: "feature/test" })
+  })
+
+  test("records completed workflow events and refreshes the directory", () => {
+    const [store, setStore] = createStore(baseState())
+    const pushes: string[] = []
+
+    applyDirectoryEvent({
+      event: {
+        type: "agent.workflow.completed",
+        properties: {
+          workflowId: "cpiii-resurvey-wiki",
+          sessionId: "ses_1",
+          durationMs: 2400,
+        },
+      },
+      store,
+      setStore,
+      push(directory) {
+        pushes.push(directory)
+      },
+      directory: "/tmp/project",
+      loadLsp() {},
+    })
+
+    expect(store.workflow_completion.ses_1).toEqual({
+      workflowId: "cpiii-resurvey-wiki",
+      sessionId: "ses_1",
+      durationMs: 2400,
+    })
+    expect(pushes).toEqual(["/tmp/project"])
   })
 
   test("routes disposal and lsp events to side-effect handlers", () => {

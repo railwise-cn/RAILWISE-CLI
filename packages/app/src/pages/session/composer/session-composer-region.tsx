@@ -131,6 +131,16 @@ export function SessionComposerRegion(props: {
   const workflowStepIndex = createMemo(() => workflowSteps.findIndex((step) => step.id === workflowStage()))
   const failedChecks = createMemo(() => acceptance()?.checks.filter((item) => item.status === "fail") ?? [])
 
+  const loadWorkflowSession = (id: string) =>
+    api
+      .workflowSession(id)
+      .then((info) => {
+        if (params.id !== id) return
+        setStored(info)
+        setAcceptance(info.acceptance)
+      })
+      .catch(() => {})
+
   createEffect(() => {
     const id = params.id
     sessionKey()
@@ -139,14 +149,14 @@ export function SessionComposerRegion(props: {
     setAcceptanceError("")
     setArtifactNotice("")
     if (!id) return
-    void api
-      .workflowSession(id)
-      .then((info) => {
-        if (params.id !== id) return
-        setStored(info)
-        setAcceptance(info.acceptance)
-      })
-      .catch(() => {})
+    void loadWorkflowSession(id)
+  })
+
+  createEffect(() => {
+    const id = params.id
+    const completed = id ? sync.data.workflow_completion[id] : undefined
+    if (!id || !completed) return
+    void loadWorkflowSession(id)
   })
 
   createEffect(() => {

@@ -250,7 +250,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: dist/desktop
-          merge-multiple: true
+          merge-multiple: false
 
       - name: Create draft GitHub release
         env:
@@ -262,14 +262,51 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="desktop/v${VERSION}"
           fi
-          mapfile -t files < <(find dist/desktop -type f \( \
+          rm -rf dist/release-assets
+          mkdir -p dist/release-assets
+          stage() {
+            cp "$1" "dist/release-assets/$2"
+          }
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              */unsigned-railwise-desktop-windows/*)
+                continue
+                ;;
+              *aarch64-apple-darwin*/macos/*.app.tar.gz.sig)
+                stage "$file" "RAILWISE_${VERSION}_aarch64.app.tar.gz.sig"
+                ;;
+              *aarch64-apple-darwin*/macos/*.app.tar.gz)
+                stage "$file" "RAILWISE_${VERSION}_aarch64.app.tar.gz"
+                ;;
+              *x86_64-apple-darwin*/macos/*.app.tar.gz.sig)
+                stage "$file" "RAILWISE_${VERSION}_x64.app.tar.gz.sig"
+                ;;
+              *x86_64-apple-darwin*/macos/*.app.tar.gz)
+                stage "$file" "RAILWISE_${VERSION}_x64.app.tar.gz"
+                ;;
+              *)
+                name="$(basename "$file")"
+                name="${name//睿威智测 RAILWISE/RAILWISE}"
+                name="${name// /_}"
+                stage "$file" "$name"
+                ;;
+            esac
+          done < <(find dist/desktop -type f \( \
             -name "*.dmg" -o \
             -name "*.AppImage" -o \
             -name "*.deb" -o \
             -name "*.rpm" -o \
             -name "*.exe" -o \
             -name "*.tar.gz" -o \
-            -name "*.zip" \))
+            -name "*.zip" -o \
+            -name "*.sig" \) -print0)
+          mapfile -t files < <(find dist/release-assets -type f | sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No release assets found" >&2
+            exit 1
+          fi
+          printf 'Release assets:\n'
+          printf ' - %s\n' "${files[@]}"
           gh release create "$TAG" \
             --repo "$GH_REPO" \
             --title "RAILWISE Desktop ${TAG#desktop/}" \

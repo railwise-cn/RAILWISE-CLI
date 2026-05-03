@@ -202,6 +202,17 @@ check(
   contains(workflow, ["GH_REPO: ${{ github.repository }}", '--repo "$GH_REPO"']),
   "draft release creation does not depend on a checked-out .git directory",
 )
+check(
+  "release asset staging",
+  contains(workflow, [
+    "dist/release-assets",
+    '-name "*.sig"',
+    "RAILWISE_${VERSION}_aarch64.app.tar.gz",
+    "RAILWISE_${VERSION}_x64.app.tar.gz",
+    "mapfile -t files < <(find dist/release-assets -type f | sort)",
+  ]),
+  "release assets are staged with stable ASCII names before upload",
+)
 check("production config exists", configExists, configPath)
 check(
   "production identity",

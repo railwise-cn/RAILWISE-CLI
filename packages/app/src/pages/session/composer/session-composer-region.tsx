@@ -20,6 +20,7 @@ import {
   deliveryMissingCount,
   deliveryRows,
   deliveryStatus,
+  workflowCompletionSummary,
 } from "@/pages/session/composer/workflow-delivery"
 import type { WorkflowAcceptance, WorkflowRunArtifact, WorkflowSession } from "@/types/agent-studio"
 
@@ -101,6 +102,7 @@ export function SessionComposerRegion(props: {
   )
   const artifacts = createMemo(() => handoff()?.artifacts ?? stored()?.artifacts ?? [])
   const delivery = createMemo(() => stored()?.delivery)
+  const completion = createMemo(() => (params.id ? sync.data.workflow_completion[params.id] : undefined))
   const canAccept = createMemo(() => Boolean(params.id && workflowId() === "cpiii-resurvey-wiki"))
 
   const previewPrompt = () =>
@@ -130,6 +132,18 @@ export function SessionComposerRegion(props: {
   })
   const workflowStepIndex = createMemo(() => workflowSteps.findIndex((step) => step.id === workflowStage()))
   const failedChecks = createMemo(() => acceptance()?.checks.filter((item) => item.status === "fail") ?? [])
+  const deliveryMissing = createMemo(() => {
+    const item = delivery()
+    if (!item) return undefined
+    return deliveryMissingCount(item)
+  })
+  const completionSummary = createMemo(() =>
+    workflowCompletionSummary({
+      completion: completion(),
+      delivery: delivery(),
+      acceptanceOk: acceptance()?.ok,
+    }),
+  )
 
   const loadWorkflowSession = (id: string) =>
     api
@@ -154,7 +168,7 @@ export function SessionComposerRegion(props: {
 
   createEffect(() => {
     const id = params.id
-    const completed = id ? sync.data.workflow_completion[id] : undefined
+    const completed = completion()
     if (!id || !completed) return
     void loadWorkflowSession(id)
   })
@@ -415,6 +429,23 @@ export function SessionComposerRegion(props: {
                         </Show>
                         <Show when={acceptanceError()}>
                           {(message) => <span class="text-text-danger-base truncate">{message()}</span>}
+                        </Show>
+                        <Show when={completionSummary()}>
+                          {(message) => (
+                            <span
+                              classList={{
+                                "max-w-full truncate rounded-sm px-1.5 py-0.5 text-11-regular": true,
+                                "bg-[rgba(31,118,71,0.08)] text-[rgb(31,118,71)]":
+                                  acceptance()?.ok && deliveryMissing() === 0,
+                                "bg-[rgba(160,42,42,0.06)] text-text-danger-base":
+                                  (deliveryMissing() ?? 0) > 0,
+                                "bg-surface-base text-text-weak": deliveryMissing() === undefined,
+                              }}
+                              title={message()}
+                            >
+                              {message()}
+                            </span>
+                          )}
                         </Show>
                       </div>
                       <button

@@ -437,8 +437,7 @@ export function SessionComposerRegion(props: {
                                 "max-w-full truncate rounded-sm px-1.5 py-0.5 text-11-regular": true,
                                 "bg-[rgba(31,118,71,0.08)] text-[rgb(31,118,71)]":
                                   acceptance()?.ok && deliveryMissing() === 0,
-                                "bg-[rgba(160,42,42,0.06)] text-text-danger-base":
-                                  (deliveryMissing() ?? 0) > 0,
+                                "bg-[rgba(160,42,42,0.06)] text-text-danger-base": (deliveryMissing() ?? 0) > 0,
                                 "bg-surface-base text-text-weak": deliveryMissing() === undefined,
                               }}
                               title={message()}

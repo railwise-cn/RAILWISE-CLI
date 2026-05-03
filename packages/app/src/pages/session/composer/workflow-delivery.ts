@@ -86,7 +86,9 @@ export function workflowCompletionSummary(input: {
   acceptanceOk?: boolean
 }) {
   if (!input.completion && !input.acceptanceOk) return undefined
-  const base = input.completion ? ["已完成", completionDuration(input.completion)].filter(Boolean).join(" · ") : "已通过"
+  const base = input.completion
+    ? ["已完成", completionDuration(input.completion)].filter(Boolean).join(" · ")
+    : "已通过"
   if (!input.delivery) return `${base} · 待导出交付包`
   const missing = deliveryMissingCount(input.delivery)
   if (missing) return `${base} · 交付包缺失 ${missing} 个文件`

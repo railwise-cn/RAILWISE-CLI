@@ -31,6 +31,12 @@ export type ProjectMeta = {
   }
 }
 
+export type WorkflowCompletion = {
+  workflowId: string
+  sessionId: string
+  durationMs: number
+}
+
 export type State = {
   status: "loading" | "partial" | "complete"
   agent: Agent[]
@@ -63,6 +69,9 @@ export type State = {
   }
   lsp: LspStatus[]
   vcs: VcsInfo | undefined
+  workflow_completion: {
+    [sessionID: string]: WorkflowCompletion
+  }
   limit: number
   message: {
     [sessionID: string]: Message[]

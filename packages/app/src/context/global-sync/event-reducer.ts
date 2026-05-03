@@ -52,7 +52,8 @@ function cleanupSessionCaches(
     store.todo[sessionID] !== undefined ||
     store.permission[sessionID] !== undefined ||
     store.question[sessionID] !== undefined ||
-    store.session_status[sessionID] !== undefined
+    store.session_status[sessionID] !== undefined ||
+    store.workflow_completion[sessionID] !== undefined
   setSessionTodo?.(sessionID, undefined)
   if (!hasAny) return
   setStore(
@@ -71,6 +72,7 @@ function cleanupSessionCaches(
       delete draft.permission[sessionID]
       delete draft.question[sessionID]
       delete draft.session_status[sessionID]
+      delete draft.workflow_completion[sessionID]
     }),
   )
 }
@@ -263,6 +265,17 @@ export function applyDirectoryEvent(input: {
       const next = { branch: props.branch }
       input.setStore("vcs", next)
       if (input.vcsCache) input.vcsCache.setStore("value", next)
+      break
+    }
+    case "agent.workflow.completed": {
+      const props = event.properties as { workflowId: string; sessionId: string; durationMs: number }
+      if (!props.sessionId) break
+      input.setStore("workflow_completion", props.sessionId, {
+        workflowId: props.workflowId,
+        sessionId: props.sessionId,
+        durationMs: props.durationMs,
+      })
+      input.push(input.directory)
       break
     }
     case "permission.asked": {

@@ -2,6 +2,12 @@ import type { WorkflowDeliveryArchive } from "@/types/agent-studio"
 
 type DeliveryFile = NonNullable<WorkflowDeliveryArchive["files"]>[number]
 
+export type WorkflowCompletionStatus = {
+  workflowId: string
+  sessionId: string
+  durationMs: number
+}
+
 export type DeliveryPathRow = {
   label: string
   path: string
@@ -60,6 +66,31 @@ export function deliveryStatus(item: WorkflowDeliveryArchive) {
   const missing = deliveryMissingCount(item)
   if (missing) return `缺失 ${missing} 个文件`
   return `完整 · ${deliveryFileCount(item)} 个文件`
+}
+
+export function completionDuration(item: WorkflowCompletionStatus | undefined) {
+  if (!item) return undefined
+  const seconds = Math.max(0, item.durationMs) / 1000
+  if (seconds < 60) {
+    const rounded = Math.round(seconds * 10) / 10
+    return `${Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(1)} 秒`
+  }
+  const minutes = Math.floor(seconds / 60)
+  const rest = Math.floor(seconds % 60)
+  return `${minutes} 分 ${rest.toString().padStart(2, "0")} 秒`
+}
+
+export function workflowCompletionSummary(input: {
+  completion?: WorkflowCompletionStatus
+  delivery?: WorkflowDeliveryArchive
+  acceptanceOk?: boolean
+}) {
+  if (!input.completion && !input.acceptanceOk) return undefined
+  const base = input.completion ? ["已完成", completionDuration(input.completion)].filter(Boolean).join(" · ") : "已通过"
+  if (!input.delivery) return `${base} · 待导出交付包`
+  const missing = deliveryMissingCount(input.delivery)
+  if (missing) return `${base} · 交付包缺失 ${missing} 个文件`
+  return `${base} · 交付包完整 ${deliveryFileCount(input.delivery)} 个文件`
 }
 
 function fileLabel(kind: DeliveryFile["kind"]) {

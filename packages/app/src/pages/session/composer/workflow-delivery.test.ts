@@ -1,11 +1,13 @@
 import { describe, expect, test } from "bun:test"
 import type { WorkflowDeliveryArchive } from "@/types/agent-studio"
 import {
+  completionDuration,
   deliveryFileCount,
   deliveryFiles,
   deliveryMissingCount,
   deliveryRows,
   deliveryStatus,
+  workflowCompletionSummary,
 } from "./workflow-delivery"
 
 const archive: WorkflowDeliveryArchive = {
@@ -80,5 +82,32 @@ describe("workflow delivery helpers", () => {
     expect(deliveryFileCount(broken)).toBe(2)
     expect(deliveryMissingCount(broken)).toBe(1)
     expect(deliveryStatus(broken)).toBe("缺失 1 个文件")
+  })
+
+  test("formats workflow completion duration for status chips", () => {
+    expect(completionDuration({ workflowId: "cpiii-resurvey-wiki", sessionId: "ses_demo", durationMs: 2400 })).toBe(
+      "2.4 秒",
+    )
+    expect(completionDuration({ workflowId: "cpiii-resurvey-wiki", sessionId: "ses_demo", durationMs: 121000 })).toBe(
+      "2 分 01 秒",
+    )
+  })
+
+  test("builds completion summaries with delivery state", () => {
+    const completion = { workflowId: "cpiii-resurvey-wiki", sessionId: "ses_demo", durationMs: 2400 }
+
+    expect(workflowCompletionSummary({ completion, acceptanceOk: true })).toBe("已完成 · 2.4 秒 · 待导出交付包")
+    expect(workflowCompletionSummary({ completion, delivery: archive, acceptanceOk: true })).toBe(
+      "已完成 · 2.4 秒 · 交付包完整 4 个文件",
+    )
+
+    const broken: WorkflowDeliveryArchive = {
+      ...archive,
+      files: archive.files?.map((file) => (file.kind === "artifact" ? { ...file, copied: false } : file)),
+    }
+
+    expect(workflowCompletionSummary({ completion, delivery: broken, acceptanceOk: true })).toBe(
+      "已完成 · 2.4 秒 · 交付包缺失 1 个文件",
+    )
   })
 })

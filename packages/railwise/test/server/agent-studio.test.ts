@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test"
 import { mkdir } from "fs/promises"
 import path from "path"
+import { WorkflowCompleted } from "../../src/agent/agent-events"
+import { Bus } from "../../src/bus"
 import { AgentStudioRoutes } from "../../src/server/routes/agent-studio"
 import { Instance } from "../../src/project/instance"
 import { Session } from "../../src/session"
@@ -356,6 +358,72 @@ describe("server.routes.agent-studio", () => {
           expect(metadataResponse.status).toBe(200)
           expect(metadata.acceptance.ok).toBe(true)
           expect(metadata.acceptance.messageCount).toBe(2)
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
+  test("publishes workflow completed event after CPIII acceptance passes", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const session = await Session.create({ title: "CPIII completion event" })
+          const md = "wiki/changes/format-coverage-2026-04-30.md"
+          const json = "wiki/changes/format-coverage-2026-04-30.json"
+          const events: { workflowId: string; sessionId: string; durationMs: number }[] = []
+          const unsub = Bus.subscribe(WorkflowCompleted, (event) => events.push(event.properties))
+
+          try {
+            const user = await writeUser(
+              session.id,
+              `工作流附件：\n- 格式兼容性质检报告 Markdown: ${md}\n- 格式兼容性质检报告 JSON: ${json}`,
+            )
+            await writeAssistant(
+              session.id,
+              user.id,
+              [
+                "# CPIII 复测预案",
+                "",
+                "## 附件引用",
+                `- 格式兼容性质检报告 Markdown: ${md}`,
+                `- 格式兼容性质检报告 JSON: ${json}`,
+                "",
+                "## 规范引用",
+                "- wiki_page_path: wiki/clauses/cpiii-precision.md",
+                "- raw_source_md: raw/tb10601.md",
+                "- norm_clause_id: TB10601-3.1",
+                "",
+                "## 工具结果摘要",
+                "- 格式样本 6/6 可用，warning 2 条。",
+                "- sigma0、残差、自由网、粗差、稳健、方差分量、条件平差均已汇总。",
+              ].join("\n"),
+            )
+
+            const response = await AgentStudioRoutes().request("http://railwise.test/workflow/acceptance", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ workflowId: "cpiii-resurvey-wiki", sessionId: session.id }),
+            })
+            const result = (await response.json()) as { ok: boolean }
+
+            expect(response.status).toBe(200)
+            expect(result.ok).toBe(true)
+            expect(events).toHaveLength(1)
+            expect(events[0]).toEqual({
+              workflowId: "cpiii-resurvey-wiki",
+              sessionId: session.id,
+              durationMs: expect.any(Number),
+            })
+            expect(events[0]?.durationMs).toBeGreaterThanOrEqual(0)
+          } finally {
+            unsub()
+          }
         },
       })
     } finally {

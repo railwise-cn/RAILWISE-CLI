@@ -197,6 +197,11 @@ check(
   ]),
   "draft release uploads Windows, macOS, and Linux installers",
 )
+check(
+  "release repo context",
+  contains(workflow, ['GH_REPO: ${{ github.repository }}', "--repo \"$GH_REPO\""]),
+  "draft release creation does not depend on a checked-out .git directory",
+)
 check("production config exists", configExists, configPath)
 check(
   "production identity",

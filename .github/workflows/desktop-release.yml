@@ -255,6 +255,7 @@ jobs:
       - name: Create draft GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           VERSION: ${{ inputs.version }}
         run: |
           TAG="${GITHUB_REF_NAME}"
@@ -270,6 +271,7 @@ jobs:
             -name "*.tar.gz" -o \
             -name "*.zip" \))
           gh release create "$TAG" \
+            --repo "$GH_REPO" \
             --title "RAILWISE Desktop ${TAG#desktop/}" \
             --notes "查看 CHANGELOG.md 了解更新内容" \
             --draft \

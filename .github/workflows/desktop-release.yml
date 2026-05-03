@@ -25,6 +25,11 @@ on:
         required: true
         default: false
         type: boolean
+      macos_skip_notarization:
+        description: "macOS 预检时跳过 Apple notarization 提交，正式 GA 保持 false"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -112,15 +117,21 @@ jobs:
           SIGNPATH_ORG_ID: ${{ secrets.SIGNPATH_ORG_ID }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          MACOS_SKIP_NOTARIZATION: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_notarization || false }}
         run: |
           missing=()
           for secret in TAURI_SIGNING_PRIVATE_KEY TAURI_SIGNING_PRIVATE_KEY_PASSWORD; do
             if [ -z "${!secret}" ]; then missing+=("$secret"); fi
           done
           if [ "${{ matrix.platform }}" = "darwin" ]; then
-            for secret in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_KEYCHAIN_PASSWORD APPLE_ID APPLE_ID_PASSWORD APPLE_TEAM_ID APPLE_SIGNING_IDENTITY; do
+            for secret in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_KEYCHAIN_PASSWORD APPLE_SIGNING_IDENTITY; do
               if [ -z "${!secret}" ]; then missing+=("$secret"); fi
             done
+            if [ "$MACOS_SKIP_NOTARIZATION" != "true" ]; then
+              for secret in APPLE_ID APPLE_ID_PASSWORD APPLE_TEAM_ID; do
+                if [ -z "${!secret}" ]; then missing+=("$secret"); fi
+              done
+            fi
           fi
           if [ "${{ matrix.platform }}" = "windows" ]; then
             for secret in SIGNPATH_API_TOKEN SIGNPATH_ORG_ID; do
@@ -168,16 +179,24 @@ jobs:
       - name: Build Tauri App
         shell: bash
         env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID_SECRET: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD_SECRET: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID_SECRET: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           MACOS_SKIP_STAPLING: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_stapling || false }}
+          MACOS_SKIP_NOTARIZATION: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_notarization || false }}
         run: |
           args=(build --ci -vv --target "${{ matrix.target }}" --config src-tauri/tauri.prod.conf.json)
-          if [ "${{ matrix.platform }}" = "darwin" ] && [ "$MACOS_SKIP_STAPLING" = "true" ]; then
-            args+=(--skip-stapling)
+          if [ "${{ matrix.platform }}" = "darwin" ]; then
+            if [ "$MACOS_SKIP_NOTARIZATION" != "true" ]; then
+              export APPLE_ID="$APPLE_ID_SECRET"
+              export APPLE_PASSWORD="$APPLE_PASSWORD_SECRET"
+              export APPLE_ID_PASSWORD="$APPLE_PASSWORD_SECRET"
+              export APPLE_TEAM_ID="$APPLE_TEAM_ID_SECRET"
+            fi
+            if [ "$MACOS_SKIP_STAPLING" = "true" ]; then
+              args+=(--skip-stapling)
+            fi
           fi
           bun run --cwd packages/desktop tauri -- "${args[@]}"
 

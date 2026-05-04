@@ -58,6 +58,15 @@
     flex-shrink: 0;
   }
 
+  [data-slot="prompt-input-model-trigger"] {
+    height: 28px;
+  }
+
+  [data-slot="prompt-input-provider-icon"] {
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+
   [data-slot="prompt-input-mode-switch"] {
     flex-shrink: 0;
   }

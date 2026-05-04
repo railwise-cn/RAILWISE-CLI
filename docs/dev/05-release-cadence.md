@@ -112,7 +112,7 @@ bun run desktop:verify:ga -- --full
 - `Desktop Release` workflow 在 `Validate release secrets` 步骤提示缺少 secret。
 - macOS codesign 或 notarization 失败。
 - Windows SignPath 签名失败。
-- draft Release 缺少 Windows、macOS 或 Linux 任一平台产物。
+- draft Release 缺少 Windows 或 macOS 任一平台产物。
 - 更新服务器 manifest 未包含新版本签名和下载地址。
 
 ## 发布纪律

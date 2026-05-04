@@ -124,7 +124,7 @@ Desktop 只处理可视化工作台、原生壳和安装更新。Desktop 用户�
 - macOS notarization 配置完成。
 - Windows 签名配置完成。
 - 更新服务器 manifest 校验通过。
-- Windows/macOS/Linux release artifacts 齐全。
+- Windows/macOS release artifacts 齐全。
 - Desktop E2E 通过。
 - crash recovery、auto update、TTFUI、visual regression 通过。
 

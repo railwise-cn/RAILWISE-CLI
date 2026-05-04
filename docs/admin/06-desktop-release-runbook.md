@@ -1,6 +1,6 @@
 # Desktop Release Runbook
 
-本文档用于管理员配置并执行 RAILWISE Desktop 的 GitHub Actions 发布流程。发布流程会构建 Windows、macOS Apple Silicon、macOS Intel 和 Linux 安装包，并创建 draft GitHub Release。
+本文档用于管理员配置并执行 RAILWISE Desktop 的 GitHub Actions 发布流程。发布流程会构建 Windows、macOS Apple Silicon 和 macOS Intel 安装包，并创建 draft GitHub Release。
 
 本文档只覆盖 Desktop 安装器、签名、公证、更新服务器和 GA gates。CLI npm/binary 发布不走本 runbook，见 [07-cli-release-runbook.md](./07-cli-release-runbook.md)。
 
@@ -117,10 +117,9 @@ gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f v
 ```bash
 gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-macos-preflight -f platform=macos
 gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-windows-preflight -f platform=windows
-gh workflow run "Desktop Release" --repo railwise-cn/RAILWISE-CLI --ref dev -f version=1.3.0-linux-preflight -f platform=linux
 ```
 
-`platform=all` 是默认值。推送 `desktop/v*` 标签时始终构建 Windows、macOS Apple Silicon、macOS Intel 和 Linux 全平台矩阵。
+`platform=all` 是默认值。推送 `desktop/v*` 标签时始终构建 Windows、macOS Apple Silicon 和 macOS Intel 发布矩阵。
 
 首次 macOS notarization 可能需要数小时。只做 macOS 签名链路预检时，可以显式跳过等待 stapling：
 
@@ -159,7 +158,6 @@ gh release view desktop/v1.3.0 --repo railwise-cn/RAILWISE-CLI --json isDraft,as
 
 - Windows signed installer: `.exe`
 - macOS installer: `.dmg`
-- Linux packages: `.AppImage`, `.deb`, `.rpm`
 
 ## 更新服务器
 

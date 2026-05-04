@@ -5,9 +5,6 @@ const assetNames: Record<string, string> = {
   "darwin-aarch64-dmg": "railwise-desktop-darwin-aarch64.dmg",
   "darwin-x64-dmg": "railwise-desktop-darwin-x64.dmg",
   "windows-x64-nsis": "railwise-desktop-windows-x64.exe",
-  "linux-x64-deb": "railwise-desktop-linux-amd64.deb",
-  "linux-x64-appimage": "railwise-desktop-linux-amd64.AppImage",
-  "linux-x64-rpm": "railwise-desktop-linux-x86_64.rpm",
 } satisfies Record<DownloadPlatform, string>
 
 // Doing this on the server lets us preserve the original name for platforms we don't care to rename for

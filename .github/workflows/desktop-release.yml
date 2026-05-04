@@ -19,7 +19,6 @@ on:
           - all
           - macos
           - windows
-          - linux
       macos_skip_stapling:
         description: "macOS 预检时跳过等待 notarization stapling，正式 GA 保持 false"
         required: true
@@ -57,16 +56,13 @@ jobs:
         run: |
           case "$PLATFORM" in
             all)
-              matrix='{"include":[{"os":"windows-2022","target":"x86_64-pc-windows-msvc","platform":"windows"},{"os":"macos-14","target":"aarch64-apple-darwin","platform":"darwin"},{"os":"macos-15-intel","target":"x86_64-apple-darwin","platform":"darwin"},{"os":"ubuntu-22.04","target":"x86_64-unknown-linux-gnu","platform":"linux"}]}'
+              matrix='{"include":[{"os":"windows-2022","target":"x86_64-pc-windows-msvc","platform":"windows"},{"os":"macos-14","target":"aarch64-apple-darwin","platform":"darwin"},{"os":"macos-15-intel","target":"x86_64-apple-darwin","platform":"darwin"}]}'
               ;;
             macos)
               matrix='{"include":[{"os":"macos-14","target":"aarch64-apple-darwin","platform":"darwin"},{"os":"macos-15-intel","target":"x86_64-apple-darwin","platform":"darwin"}]}'
               ;;
             windows)
               matrix='{"include":[{"os":"windows-2022","target":"x86_64-pc-windows-msvc","platform":"windows"}]}'
-              ;;
-            linux)
-              matrix='{"include":[{"os":"ubuntu-22.04","target":"x86_64-unknown-linux-gnu","platform":"linux"}]}'
               ;;
             *)
               echo "Unsupported platform: $PLATFORM" >&2
@@ -143,14 +139,6 @@ jobs:
             printf ' - %s\n' "${missing[@]}"
             exit 1
           fi
-
-      - name: Install Linux deps
-        if: matrix.platform == 'linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
-            librsvg2-dev patchelf
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -293,9 +281,6 @@ jobs:
             esac
           done < <(find dist/desktop -type f \( \
             -name "*.dmg" -o \
-            -name "*.AppImage" -o \
-            -name "*.deb" -o \
-            -name "*.rpm" -o \
             -name "*.exe" -o \
             -name "*.tar.gz" -o \
             -name "*.zip" -o \

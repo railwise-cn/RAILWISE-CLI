@@ -1442,9 +1442,8 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     options={agentNames()}
                     current={local.agent.current()?.name ?? ""}
                     onSelect={local.agent.set}
-                    class="capitalize max-w-[160px]"
+                    class="prompt-input-tray-select capitalize max-w-[160px]"
                     valueClass="truncate text-13-regular"
-                    triggerStyle={{ height: "28px" }}
                     variant="ghost"
                   />
                 </TooltipKeybind>
@@ -1521,9 +1520,8 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     current={local.model.variant.current() ?? "default"}
                     label={(x) => (x === "default" ? language.t("common.default") : x)}
                     onSelect={(x) => local.model.variant.set(x === "default" ? undefined : x)}
-                    class="capitalize max-w-[160px]"
+                    class="prompt-input-tray-select capitalize max-w-[160px]"
                     valueClass="truncate text-13-regular"
-                    triggerStyle={{ height: "28px" }}
                     variant="ghost"
                   />
                 </TooltipKeybind>

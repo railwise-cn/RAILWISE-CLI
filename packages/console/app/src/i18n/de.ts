@@ -94,7 +94,7 @@ export const dict = {
 
   "home.banner.badge": "Neu",
   "home.banner.text": "Desktop-App in der Beta verfügbar",
-  "home.banner.platforms": "auf macOS, Windows und Linux",
+  "home.banner.platforms": "auf macOS und Windows",
   "home.banner.downloadNow": "Jetzt herunterladen",
   "home.banner.downloadBetaNow": "Desktop-Beta jetzt herunterladen",
 
@@ -485,9 +485,9 @@ export const dict = {
     "Wenn du auf Einschreiben klickst, startet dein Abo sofort und deine Karte wird belastet.",
 
   "download.title": "RAILWISE | Download",
-  "download.meta.description": "Lade RAILWISE für macOS, Windows und Linux herunter",
+  "download.meta.description": "Lade RAILWISE für macOS und Windows herunter",
   "download.hero.title": "RAILWISE herunterladen",
-  "download.hero.subtitle": "In Beta verfügbar für macOS, Windows und Linux",
+  "download.hero.subtitle": "In Beta verfügbar für macOS und Windows",
   "download.hero.button": "Download für {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -499,8 +499,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "Nicht unbedingt, aber wahrscheinlich. Du brauchst ein AI-Abo, wenn du RAILWISE mit einem bezahlten Anbieter verbinden willst, obwohl du mit",

@@ -94,7 +94,7 @@ export const dict = {
 
   "home.banner.badge": "Ny",
   "home.banner.text": "Desktop-app tilgjengelig i beta",
-  "home.banner.platforms": "på macOS, Windows og Linux",
+  "home.banner.platforms": "på macOS og Windows",
   "home.banner.downloadNow": "Last ned nå",
   "home.banner.downloadBetaNow": "Last ned desktop-betaen nå",
 
@@ -483,9 +483,9 @@ export const dict = {
     "Når du klikker på Meld på, starter abonnementet umiddelbart og kortet ditt belastes.",
 
   "download.title": "RAILWISE | Last ned",
-  "download.meta.description": "Last ned RAILWISE for macOS, Windows og Linux",
+  "download.meta.description": "Last ned RAILWISE for macOS og Windows",
   "download.hero.title": "Last ned RAILWISE",
-  "download.hero.subtitle": "Tilgjengelig i beta for macOS, Windows og Linux",
+  "download.hero.subtitle": "Tilgjengelig i beta for macOS og Windows",
   "download.hero.button": "Last ned for {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -497,9 +497,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
-
   "download.faq.a3.beforeLocal":
     "Ikke nødvendigvis, men sannsynligvis. Du trenger et AI-abonnement hvis du vil koble RAILWISE til en betalt leverandør, selv om du kan jobbe med",
   "download.faq.a3.localLink": "lokale modeller",

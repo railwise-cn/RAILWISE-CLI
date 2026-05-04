@@ -94,7 +94,7 @@ export const dict = {
 
   "home.banner.badge": "ใหม่",
   "home.banner.text": "แอปเดสก์ท็อปพร้อมใช้งานในเวอร์ชันเบต้า",
-  "home.banner.platforms": "บน macOS, Windows และ Linux",
+  "home.banner.platforms": "บน macOS และ Windows",
   "home.banner.downloadNow": "ดาวน์โหลดตอนนี้",
   "home.banner.downloadBetaNow": "ดาวน์โหลดเบต้าเดสก์ท็อปตอนนี้",
 
@@ -482,9 +482,9 @@ export const dict = {
     "เมื่อคุณคลิกลงทะเบียน การสมัครสมาชิกของคุณจะเริ่มต้นทันทีและบัตรของคุณจะถูกเรียกเก็บเงิน",
 
   "download.title": "RAILWISE | ดาวน์โหลด",
-  "download.meta.description": "ดาวน์โหลด RAILWISE สำหรับ macOS, Windows และ Linux",
+  "download.meta.description": "ดาวน์โหลด RAILWISE สำหรับ macOS และ Windows",
   "download.hero.title": "ดาวน์โหลด RAILWISE",
-  "download.hero.subtitle": "พร้อมใช้งานในเวอร์ชันเบต้าสำหรับ macOS, Windows และ Linux",
+  "download.hero.subtitle": "พร้อมใช้งานในเวอร์ชันเบต้าสำหรับ macOS และ Windows",
   "download.hero.button": "ดาวน์โหลดสำหรับ {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -496,9 +496,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
-
   "download.faq.a3.beforeLocal":
     "ไม่จำเป็นเสมอไป แต่อาจจะต้องมี คุณจะต้องมีการสมัครสมาชิก AI หากต้องการเชื่อมต่อ RAILWISE กับผู้ให้บริการที่มีค่าใช้จ่าย แม้ว่าคุณจะสามารถทำงานกับ",
   "download.faq.a3.localLink": "โมเดล Local",

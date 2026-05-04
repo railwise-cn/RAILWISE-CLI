@@ -94,7 +94,7 @@ export const dict = {
 
   "home.banner.badge": "新",
   "home.banner.text": "桌面應用已推出 Beta",
-  "home.banner.platforms": "支援 macOS、Windows 與 Linux",
+  "home.banner.platforms": "支援 macOS 與 Windows",
   "home.banner.downloadNow": "立即下載",
   "home.banner.downloadBetaNow": "立即下載桌面 Beta 版",
 
@@ -469,9 +469,9 @@ export const dict = {
   "workspace.black.waitlist.enrollNote": "當你點選「加入」後，你的訂閱將立即開始，並且將從你的卡片中扣款。",
 
   "download.title": "RAILWISE | 下載",
-  "download.meta.description": "下載適用於 macOS、Windows 與 Linux 的 RAILWISE",
+  "download.meta.description": "下載適用於 macOS 與 Windows 的 RAILWISE",
   "download.hero.title": "下載 RAILWISE",
-  "download.hero.subtitle": "適用於 macOS、Windows 與 Linux 的 Beta 版現已提供",
+  "download.hero.subtitle": "適用於 macOS 與 Windows 的 Beta 版現已提供",
   "download.hero.button": "下載 {{os}} 版",
   "download.section.terminal": "RAILWISE 終端",
   "download.section.desktop": "RAILWISE 桌面版（Beta）",
@@ -483,9 +483,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
-
   "download.faq.a3.beforeLocal":
     "不一定，但很可能需要。如果你想將 RAILWISE 連接到付費供應商，你需要 AI 訂閱，不過你也可以使用",
   "download.faq.a3.localLink": "本地模型",

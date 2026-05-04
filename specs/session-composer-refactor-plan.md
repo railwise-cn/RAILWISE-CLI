@@ -23,11 +23,11 @@ Status as of 2026-05-04:
 - `DockPrompt`, `PromptInput`, and `SessionTodoDock` now use the shared shell/tray primitives where appropriate.
 - The old global `packages/app/src/components/session-todo-dock.tsx` implementation has been deleted.
 - Targeted typecheck and composer/prompt e2e suites were kept green across the incremental PRs. A full local `bun test:e2e:local` remains a release gate, not a per-slice requirement.
+- The old-named `session-prompt-dock.test.ts` helper test has been renamed to `session-prompt-helpers.test.ts`.
 
 Remaining follow-ups:
 
 - Decide whether the two remaining inline `Select triggerStyle={{ height: "28px" }}` usages in `PromptInput` justify a shared Select sizing API.
-- Rename or retire the old-named `packages/app/src/pages/session/session-prompt-dock.test.ts` if the remaining tests no longer need the historical filename.
 - Consider the optional shared question/permission presentational extraction only if it stays small and remains covered by the composer dock e2e suite.
 
 ## Decisions Up Front
@@ -270,8 +270,7 @@ Deferred:
 Open micro-slices:
 
 1. Decide whether Select needs a size/class API for prompt model triggers.
-2. Rename or remove stale `session-prompt-dock.test.ts` naming if that can be done without broad test churn.
-3. Run the full local e2e suite before GA/release candidate packaging.
+2. Run the full local e2e suite before GA/release candidate packaging.
 
 ---
 

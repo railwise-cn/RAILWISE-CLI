@@ -7,10 +7,28 @@ Improve structure, ownership, and reuse for the bottom-of-session composer area 
 Scope:
 
 - `packages/ui/src/components/dock-prompt.tsx`
-- `packages/app/src/components/session-todo-dock.tsx`
-- `packages/app/src/components/question-dock.tsx`
-- `packages/app/src/pages/session/session-prompt-dock.tsx`
+- `packages/app/src/pages/session/composer/session-todo-dock.tsx`
+- `packages/app/src/pages/session/composer/session-question-dock.tsx`
+- `packages/app/src/pages/session/composer/session-composer-region.tsx`
 - related shared UI in `packages/app/src/components/prompt-input.tsx`
+
+## Progress Snapshot
+
+Status as of 2026-05-04:
+
+- Phase 0 baseline coverage is in place via `packages/app/e2e/session/session-composer-dock.spec.ts`.
+- Phase 1 composer colocation is complete under `packages/app/src/pages/session/composer/`.
+- Phase 1 blocked state ownership is centralized through `createSessionComposerBlocked()` / `createSessionComposerState()`.
+- Phase 2 shared dock surface primitives exist in `packages/ui/src/components/dock-surface.tsx` and `dock-surface.css`.
+- `DockPrompt`, `PromptInput`, and `SessionTodoDock` now use the shared shell/tray primitives where appropriate.
+- The old global `packages/app/src/components/session-todo-dock.tsx` implementation has been deleted.
+- Targeted typecheck and composer/prompt e2e suites were kept green across the incremental PRs. A full local `bun test:e2e:local` remains a release gate, not a per-slice requirement.
+
+Remaining follow-ups:
+
+- Decide whether the two remaining inline `Select triggerStyle={{ height: "28px" }}` usages in `PromptInput` justify a shared Select sizing API.
+- Rename or retire the old-named `packages/app/src/pages/session/session-prompt-dock.test.ts` if the remaining tests no longer need the historical filename.
+- Consider the optional shared question/permission presentational extraction only if it stays small and remains covered by the composer dock e2e suite.
 
 ## Decisions Up Front
 
@@ -30,30 +48,27 @@ Scope:
 
 ## Phase 0 (Mandatory Gate): Baseline E2E Coverage
 
-No refactor work starts until this phase is complete and green locally.
+Status: complete for the merged targeted refactor work. Full local e2e remains a release gate.
+
+The original plan proposed a dedicated guarded backend e2e route. The merged implementation instead uses app e2e helpers that seed dock states through the SDK and poll the real app state. That kept the test surface closer to production behavior while avoiding a test-only backend route.
 
 ### 0.1 Deterministic test harness
 
 Add a test-only way to put a session into exact dock states, so tests do not rely on model/tool nondeterminism.
 
-Proposed implementation:
+Implemented:
 
-- Add a guarded e2e route in backend (enabled only when a dedicated env flag is set by e2e-local runner).
-  - New route file: `packages/railwise/src/server/routes/e2e.ts`
-  - Mount from: `packages/railwise/src/server/server.ts`
-  - Gate behind env flag (for example `RAILWISE_E2E=1`) so this route is never exposed in normal runs.
-- Add seed helpers in app e2e layer:
-  - `packages/app/e2e/actions.ts` (or `fixtures.ts`) helpers to:
-    - seed question request for a session
-    - seed permission request for a session
-    - seed/update todos for a session
-    - clear seeded blockers/todos
-- Update e2e-local runner to set the flag:
-  - `packages/app/script/e2e-local.ts`
+- Seed helpers live in `packages/app/e2e/actions.ts`:
+  - `seedSessionQuestion`
+  - `seedSessionPermission`
+  - `seedSessionTodos`
+  - `clearSessionDockSeed`
+- The helpers drive the actual SDK/session flows and use polling to wait for seeded dock state.
+- `packages/app/script/e2e-local.ts` already provides the e2e runtime environment used by these specs.
 
 ### 0.2 New e2e spec
 
-Create a focused spec:
+Focused spec:
 
 - `packages/app/e2e/session/session-composer-dock.spec.ts`
 
@@ -110,9 +125,11 @@ If any fail, stop and fix before refactor.
 
 ## Phase 1: Structural Refactor (No Intended Behavior Changes)
 
+Status: complete.
+
 ### 1.1 Colocate session-composer files
 
-Create a route-local composer folder:
+Created a route-local composer folder:
 
 ```txt
 packages/app/src/pages/session/composer/
@@ -130,18 +147,18 @@ Import updates:
 
 ### 1.2 Split responsibilities
 
-- Keep `session-composer-region.tsx` focused on rendering orchestration:
+- `session-composer-region.tsx` is focused on rendering orchestration:
   - blocker mode vs normal mode
   - relative stacking (todo above prompt)
   - handoff fallback rendering
-- Move side-effect/business pieces into `session-composer-state.ts`:
+- Side-effect/business pieces live in `session-composer-state.ts`:
   - derive `questionRequest`, `permissionRequest`, `blocked`, todo visibility state
   - permission response action + in-flight state
   - todo close/open animation state
 
 ### 1.3 Remove duplicate blocked logic in `session.tsx`
 
-Current `session.tsx` computes `blocked` independently. Make the composer state the single source for blocker status consumed by both:
+`session.tsx` now uses the composer state as the single source for blocker status consumed by both:
 
 - page-level keydown autofocus guard
 - composer rendering guard
@@ -157,18 +174,20 @@ Rationale:
 
 ### 1.5 Phase 1 acceptance criteria
 
-- No intentional behavior deltas.
-- Phase 0 suite remains green.
-- `session-prompt-dock` no longer exists as a large mixed-responsibility component.
+- No intentional behavior deltas were introduced by the structural split.
+- The targeted Phase 0 suite remained green through the relevant PRs.
+- `session-prompt-dock.tsx` no longer exists as a large mixed-responsibility component.
 - Session composer files are colocated under `pages/session/composer`.
 
 ---
 
 ## Phase 2: Reuse + Styling Maintainability
 
+Status: mostly complete. Keep remaining work small and evidence-driven.
+
 ### 2.1 Extract shared dock surface primitives
 
-Create reusable shell/tray wrappers to remove repeated visual scaffolding:
+Created reusable shell/tray wrappers to remove repeated visual scaffolding:
 
 - primary elevated surface (prompt top shell / dock body)
 - secondary tray surface (prompt bottom bar / dock footer / todo shell)
@@ -177,6 +196,11 @@ Proposed targets:
 
 - `packages/ui/src/components` for shared primitives if reused by both app and ui components
 - or `packages/app/src/pages/session/composer` first, then promote to ui after proving reuse
+
+Implemented targets:
+
+- `packages/ui/src/components/dock-surface.tsx`
+- `packages/ui/src/components/dock-surface.css`
 
 ### 2.2 Apply primitives to current components
 
@@ -192,9 +216,16 @@ Focus on deduping patterns seen in:
 - prompt lower tray (`prompt-input.tsx` bottom panel)
 - dock prompt footer/body and todo dock container
 
+Implemented:
+
+- `DockPrompt` wraps body/footer with `DockShell` / `DockTray`.
+- `PromptInput` wraps the top form and bottom bar with `DockShellForm` / `DockTray`.
+- `SessionTodoDock` uses `DockTray` and keeps todo-specific rules in `session-todo-dock.css`.
+- Prompt model trigger and provider-icon animation hints were moved into `prompt-input.css`; two small Select height overrides remain inline pending a specific Select API decision.
+
 ### 2.3 De-risk style ownership
 
-- Move dock-specific styling out of overly broad files (for example, avoid keeping new dock-specific rules buried in unrelated message-part styling files).
+- Dock-specific styling was moved out of broad files where practical.
 - Keep slot names stable unless tests are updated in the same PR.
 
 ### 2.4 Optional follow-up (if low risk)
@@ -208,17 +239,20 @@ Only do this if behavior parity is protected by tests and the change is still re
 
 ### 2.5 Phase 2 acceptance criteria
 
-- Reduced duplicated shell/tray styling code.
-- No regressions in blocker/todo/prompt transitions.
-- Phase 0 suite remains green.
+- Duplicated shell/tray styling code has been reduced.
+- No regressions were found in the targeted blocker/todo/prompt transition suites run during the incremental PRs.
+- Full local e2e remains a release gate.
 
 ---
 
-## Implementation Sequence (single branch)
+## Implementation Sequence
+
+The original plan assumed a single branch. Execution moved to small PRs to keep review and rollback easier.
+
+Completed:
 
 1. **Step A - Baseline safety net**
    - Add e2e harness + new session composer dock spec + selector/helpers.
-   - Must pass locally before any refactor work proceeds.
 
 2. **Step B - Phase 1 colocation/splitting**
    - Move/rename files, extract state and permission component, keep behavior.
@@ -229,7 +263,15 @@ Only do this if behavior parity is protected by tests and the change is still re
 4. **Step D - Phase 2 style primitives**
    - Introduce shared surface primitives and migrate prompt/todo/dock usage.
 
+Deferred:
+
 5. **Step E (optional) - shared question/permission presentational extraction**
+
+Open micro-slices:
+
+1. Decide whether Select needs a size/class API for prompt model triggers.
+2. Rename or remove stale `session-prompt-dock.test.ts` naming if that can be done without broad test churn.
+3. Run the full local e2e suite before GA/release candidate packaging.
 
 ---
 

@@ -62,6 +62,10 @@
     height: 28px;
   }
 
+  .prompt-input-tray-select[data-slot="select-select-trigger"] {
+    height: 28px;
+  }
+
   [data-slot="prompt-input-provider-icon"] {
     transform: translateZ(0);
     will-change: opacity;

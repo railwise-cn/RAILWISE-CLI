@@ -24,10 +24,10 @@ Status as of 2026-05-04:
 - The old global `packages/app/src/components/session-todo-dock.tsx` implementation has been deleted.
 - Targeted typecheck and composer/prompt e2e suites were kept green across the incremental PRs. A full local `bun test:e2e:local` remains a release gate, not a per-slice requirement.
 - The old-named `session-prompt-dock.test.ts` helper test has been renamed to `session-prompt-helpers.test.ts`.
+- PromptInput Select trigger height was kept local to `prompt-input.css`; no shared Select sizing API was introduced because the remaining 28px rule is prompt-tray specific.
 
 Remaining follow-ups:
 
-- Decide whether the two remaining inline `Select triggerStyle={{ height: "28px" }}` usages in `PromptInput` justify a shared Select sizing API.
 - Consider the optional shared question/permission presentational extraction only if it stays small and remains covered by the composer dock e2e suite.
 
 ## Decisions Up Front
@@ -221,7 +221,7 @@ Implemented:
 - `DockPrompt` wraps body/footer with `DockShell` / `DockTray`.
 - `PromptInput` wraps the top form and bottom bar with `DockShellForm` / `DockTray`.
 - `SessionTodoDock` uses `DockTray` and keeps todo-specific rules in `session-todo-dock.css`.
-- Prompt model trigger and provider-icon animation hints were moved into `prompt-input.css`; two small Select height overrides remain inline pending a specific Select API decision.
+- Prompt model trigger, prompt Select trigger height, and provider-icon animation hints were moved into `prompt-input.css`.
 
 ### 2.3 De-risk style ownership
 
@@ -269,8 +269,7 @@ Deferred:
 
 Open micro-slices:
 
-1. Decide whether Select needs a size/class API for prompt model triggers.
-2. Run the full local e2e suite before GA/release candidate packaging.
+1. Run the full local e2e suite before GA/release candidate packaging.
 
 ---
 

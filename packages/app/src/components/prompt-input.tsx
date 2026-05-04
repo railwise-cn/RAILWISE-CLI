@@ -1459,17 +1459,17 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     >
                       <Button
                         as="div"
+                        data-slot="prompt-input-model-trigger"
                         variant="ghost"
                         size="normal"
                         class="min-w-0 max-w-[320px] text-13-regular group"
-                        style={{ height: "28px" }}
                         onClick={() => dialog.show(() => <DialogSelectModelUnpaid />)}
                       >
                         <Show when={local.model.current()?.provider?.id}>
                           <ProviderIcon
+                            data-slot="prompt-input-provider-icon"
                             id={local.model.current()!.provider.id as IconName}
                             class="size-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150"
-                            style={{ "will-change": "opacity", transform: "translateZ(0)" }}
                           />
                         </Show>
                         <span class="truncate">
@@ -1491,15 +1491,15 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                       triggerProps={{
                         variant: "ghost",
                         size: "normal",
-                        style: { height: "28px" },
+                        "data-slot": "prompt-input-model-trigger",
                         class: "min-w-0 max-w-[320px] text-13-regular group",
                       }}
                     >
                       <Show when={local.model.current()?.provider?.id}>
                         <ProviderIcon
+                          data-slot="prompt-input-provider-icon"
                           id={local.model.current()!.provider.id as IconName}
                           class="size-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150"
-                          style={{ "will-change": "opacity", transform: "translateZ(0)" }}
                         />
                       </Show>
                       <span class="truncate">

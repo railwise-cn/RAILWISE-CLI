@@ -167,11 +167,7 @@ check(
 )
 check(
   "release artifact coverage",
-  contains(workflow, [
-    '-name "*.dmg"',
-    '-name "*.exe"',
-    "--draft",
-  ]),
+  contains(workflow, ['-name "*.dmg"', '-name "*.exe"', "--draft"]),
   "draft release uploads Windows and macOS installers",
 )
 check(

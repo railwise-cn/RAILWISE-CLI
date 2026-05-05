@@ -66,6 +66,7 @@ const configPath = "packages/desktop/src-tauri/tauri.prod.conf.json"
 const workflowExists = await exists(workflowPath)
 const configExists = await exists(configPath)
 const workflow = workflowExists ? await read(workflowPath) : ""
+const sidecar = await read("packages/desktop/scripts/utils.ts")
 const config = configExists ? ((await Bun.file(file(configPath)).json()) as Config) : {}
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
@@ -120,8 +121,15 @@ check(
 )
 check(
   "release omits Linux target",
-  linux.every((item) => !workflow.includes(item)),
+  linux.every((item) => !workflow.includes(item)) && !sidecar.includes("linux-"),
   "Beta release builds Windows x64, macOS Apple Silicon, and macOS Intel only",
+)
+check(
+  "Windows sidecar uses standard x64",
+  sidecar.includes('rustTarget: "x86_64-pc-windows-msvc"') &&
+    sidecar.includes('ocBinary: "railwise-windows-x64"') &&
+    !sidecar.includes("railwise-windows-x64-baseline"),
+  "Windows Beta publishes one standard 64-bit installer without Bun baseline dependency",
 )
 check(
   "release signing env",

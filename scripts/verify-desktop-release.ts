@@ -132,8 +132,13 @@ check(
 )
 check(
   "release build command",
-  contains(workflow, ["bun --cwd packages/desktop run tauri build", "--config tauri.prod.conf.json"]),
-  "production Tauri config is used",
+  contains(workflow, [
+    "working-directory: packages/desktop",
+    "bun run predev -- --target",
+    "bun run tauri -- build",
+    "--config tauri.prod.conf.json",
+  ]),
+  "production Tauri config is used and Bun forwards release arguments",
 )
 check(
   "release artifact coverage",

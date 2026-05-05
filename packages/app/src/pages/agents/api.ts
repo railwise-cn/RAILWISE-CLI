@@ -1,5 +1,5 @@
 import type { Workflow } from "@/types/workflow"
-import type { AgentStudioDetail, AgentStudioItem, WorkflowRun } from "@/types/agent-studio"
+import type { AgentStudioDetail, AgentStudioItem, SkillInventoryItem, ToolInventoryItem, WorkflowRun } from "@/types/agent-studio"
 import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 
@@ -28,6 +28,8 @@ export function useAgentStudioApi() {
 
   return {
     list: () => request<AgentStudioItem[]>("/list"),
+    tools: () => request<ToolInventoryItem[]>("/tool/list"),
+    skills: () => request<SkillInventoryItem[]>("/skill/list"),
     detail: (name: string) => request<AgentStudioDetail>(`/${encodeURIComponent(name)}`),
     update: (name: string, rawMarkdown: string) =>
       request<boolean>(`/${encodeURIComponent(name)}`, {

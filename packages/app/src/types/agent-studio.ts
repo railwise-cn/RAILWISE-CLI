@@ -7,6 +7,7 @@ export type AgentModel = {
 
 export type AgentStudioItem = {
   name: string
+  displayName?: string
   description?: string
   mode: AgentMode
   native?: boolean
@@ -26,6 +27,18 @@ export type AgentStudioItem = {
 
 export type AgentStudioDetail = AgentStudioItem & {
   rawMarkdown: string
+}
+
+export type ToolInventoryItem = {
+  id: string
+  label: string
+  group: "agent" | "knowledge" | "survey" | "core" | "extension"
+}
+
+export type SkillInventoryItem = {
+  name: string
+  description: string
+  location: string
 }
 
 export type WorkflowRun = {

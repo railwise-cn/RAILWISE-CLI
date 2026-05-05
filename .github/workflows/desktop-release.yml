@@ -260,17 +260,11 @@ jobs:
               */unsigned-railwise-desktop-windows/*)
                 continue
                 ;;
-              *aarch64-apple-darwin*/macos/*.app.tar.gz.sig)
-                stage "$file" "RAILWISE_${VERSION}_aarch64.app.tar.gz.sig"
+              *aarch64-apple-darwin*/macos/*.dmg)
+                stage "$file" "RAILWISE_${VERSION}_macos_apple_silicon.dmg"
                 ;;
-              *aarch64-apple-darwin*/macos/*.app.tar.gz)
-                stage "$file" "RAILWISE_${VERSION}_aarch64.app.tar.gz"
-                ;;
-              *x86_64-apple-darwin*/macos/*.app.tar.gz.sig)
-                stage "$file" "RAILWISE_${VERSION}_x64.app.tar.gz.sig"
-                ;;
-              *x86_64-apple-darwin*/macos/*.app.tar.gz)
-                stage "$file" "RAILWISE_${VERSION}_x64.app.tar.gz"
+              *x86_64-apple-darwin*/macos/*.dmg)
+                stage "$file" "RAILWISE_${VERSION}_macos_intel.dmg"
                 ;;
               *)
                 name="$(basename "$file")"
@@ -281,10 +275,7 @@ jobs:
             esac
           done < <(find dist/desktop -type f \( \
             -name "*.dmg" -o \
-            -name "*.exe" -o \
-            -name "*.tar.gz" -o \
-            -name "*.zip" -o \
-            -name "*.sig" \) -print0)
+            -name "*.exe" \) -print0)
           mapfile -t files < <(find dist/release-assets -type f | sort)
           if [ "${#files[@]}" -eq 0 ]; then
             echo "No release assets found" >&2

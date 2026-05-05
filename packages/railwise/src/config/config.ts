@@ -769,6 +769,8 @@ export namespace Config {
     })
   export type Agent = z.infer<typeof Agent>
 
+  const LegacyTool = z.union([z.boolean(), z.array(z.string())])
+
   export const Keybinds = z
     .object({
       leader: z.string().optional().default("ctrl+x").describe("Leader key for keybind combinations"),
@@ -1015,6 +1017,8 @@ export namespace Config {
   export const Info = z
     .object({
       $schema: z.string().optional().describe("JSON schema reference for configuration validation"),
+      version: z.string().optional().describe("RAILWISE configuration profile version"),
+      system: z.record(z.string(), z.unknown()).optional().describe("RAILWISE product profile metadata"),
       theme: z.string().optional().describe("Theme name to use for the interface"),
       keybinds: Keybinds.optional().describe("Custom keybind configurations"),
       logLevel: Log.Level.optional().describe("Log level"),
@@ -1162,7 +1166,7 @@ export namespace Config {
       instructions: z.array(z.string()).optional().describe("Additional instruction files or patterns to include"),
       layout: Layout.optional().describe("@deprecated Always uses stretch layout."),
       permission: Permission.optional(),
-      tools: z.record(z.string(), z.boolean()).optional(),
+      tools: z.record(z.string(), LegacyTool).optional(),
       enterprise: z
         .object({
           url: z.string().optional().describe("Enterprise URL"),

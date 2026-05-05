@@ -120,6 +120,12 @@ check(
   missingTargets.length === 0 ? targets.join(", ") : `missing: ${missingTargets.join(", ")}`,
 )
 check(
+  "release bundle matrix",
+  contains(workflow, ["bundles: nsis", "bundles: dmg", "--bundles ${{ matrix.bundles }}"]) &&
+    !workflow.includes("-name \"*.msi\""),
+  "Windows builds only NSIS; macOS builds only DMG",
+)
+check(
   "release omits Linux target",
   linux.every((item) => !workflow.includes(item)) && !sidecar.includes("linux-"),
   "Beta release builds Windows x64, macOS Apple Silicon, and macOS Intel only",
@@ -144,19 +150,24 @@ check(
     "working-directory: packages/desktop",
     "bun run predev -- --target",
     "bun run tauri -- build",
+    "--bundles ${{ matrix.bundles }}",
     "--config src-tauri/tauri.prod.conf.json",
   ]),
-  "production Tauri config is used and Bun forwards release arguments",
+  "production Tauri config is used and Bun forwards target/bundle release arguments",
 )
 check(
-  "release artifact coverage",
+  "release public installer coverage",
   contains(workflow, [
+    "merge-multiple: false",
+    'railwise-desktop-*-signed/*.exe',
     '-name "*.dmg"',
-    '-name "*.exe"',
+    "Expected exactly 3 public installers",
     "--draft",
     '--target "$GITHUB_SHA"',
-  ]),
-  "draft release uploads Windows and macOS installers from the workflow commit",
+  ]) &&
+    !workflow.includes('-name "*.tar.gz"') &&
+    !workflow.includes('-name "*.zip"'),
+  "draft release uploads the signed Windows x64 installer and two macOS DMGs only",
 )
 check("production config exists", configExists, configPath)
 check(

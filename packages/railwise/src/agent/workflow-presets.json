@@ -2,49 +2,107 @@
   {
     "id": "metro-monitoring-report",
     "name": "地铁月度监测报告流水线",
-    "description": "外业数据到 QA 质检、数据分析、技术报告、QA 复核，最后由总指挥汇总交付。",
+    "description": "外业数据首检、监测数据分析、工程报告编制、总工复核，最后由项目总控汇总交付。",
     "nodes": [
-      { "id": "n1", "agent": "qa_inspector", "label": "QA 质检员", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
-      { "id": "n2", "agent": "data_analyst", "label": "数据分析师", "color": "rgb(95,70,24)", "x": 240, "y": 180 },
-      { "id": "n3", "agent": "technical_writer", "label": "技术写作", "color": "rgb(47,38,24)", "x": 420, "y": 180 },
-      { "id": "n4", "agent": "qa_reviewer", "label": "QA 复核", "color": "rgba(117,86,32,0.9)", "x": 600, "y": 180 },
-      { "id": "n5", "agent": "chief_manager", "label": "总指挥", "color": "rgb(10,10,9)", "x": 780, "y": 180 }
+      { "id": "n1", "agent": "qa_inspector", "label": "外业数据首检", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
+      { "id": "n2", "agent": "data_analyst", "label": "监测数据分析", "color": "rgb(95,70,24)", "x": 240, "y": 180 },
+      { "id": "n3", "agent": "technical_writer", "label": "工程报告编制", "color": "rgb(47,38,24)", "x": 420, "y": 180 },
+      { "id": "n4", "agent": "qa_reviewer", "label": "总工办复核", "color": "rgba(117,86,32,0.9)", "x": 600, "y": 180 },
+      { "id": "n5", "agent": "chief_manager", "label": "项目总控", "color": "rgb(10,10,9)", "x": 780, "y": 180 }
     ],
     "edges": [
-      { "from": "n1", "to": "n2", "kind": "serial", "label": "平差后观测数据" },
-      { "from": "n2", "to": "n3", "kind": "serial", "label": "统计分析结果" },
-      { "from": "n3", "to": "n4", "kind": "serial", "label": "技术报告初稿" },
-      { "from": "n4", "to": "n5", "kind": "serial", "label": "审核意见与终稿" }
+      { "from": "n1", "to": "n2", "kind": "serial", "label": "放行后的原始观测数据" },
+      { "from": "n2", "to": "n3", "kind": "serial", "label": "统计分析与预警结论" },
+      { "from": "n3", "to": "n4", "kind": "serial", "label": "月报初稿" },
+      { "from": "n4", "to": "n5", "kind": "serial", "label": "审核意见与可交付终稿" }
+    ]
+  },
+  {
+    "id": "cpiii-control-network-report",
+    "name": "CPIII 复测成果包流水线",
+    "description": "资料入库、CPIII 外业方案、严密平差、规范条文核查、成果报告和总工复核形成闭环。",
+    "nodes": [
+      { "id": "n1", "agent": "source_ingestor", "label": "资料入库", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
+      { "id": "n2", "agent": "cpiii_specialist", "label": "CPIII 复测设计", "color": "rgb(95,70,24)", "x": 230, "y": 100 },
+      { "id": "n3", "agent": "adjustment_computer", "label": "严密平差计算", "color": "rgb(95,70,24)", "x": 230, "y": 260 },
+      { "id": "n4", "agent": "norm_librarian", "label": "规范条文核查", "color": "rgb(47,38,24)", "x": 430, "y": 180 },
+      { "id": "n5", "agent": "technical_writer", "label": "成果报告编制", "color": "rgba(117,86,32,0.9)", "x": 610, "y": 180 },
+      { "id": "n6", "agent": "qa_reviewer", "label": "总工办复核", "color": "rgb(10,10,9)", "x": 790, "y": 180 }
+    ],
+    "edges": [
+      { "from": "n1", "to": "n2", "kind": "parallel", "label": "线路资料与既有控制点" },
+      { "from": "n1", "to": "n3", "kind": "parallel", "label": "观测文件与基准数据" },
+      { "from": "n2", "to": "n4", "kind": "serial", "label": "复测方案与限差要求" },
+      { "from": "n3", "to": "n4", "kind": "serial", "label": "平差结果与精度指标" },
+      { "from": "n4", "to": "n5", "kind": "serial", "label": "带条文依据的合规结论" },
+      { "from": "n5", "to": "n6", "kind": "serial", "label": "CPIII 成果报告初稿" }
+    ]
+  },
+  {
+    "id": "deep-foundation-pit-monitoring",
+    "name": "深基坑监测预警流水线",
+    "description": "方案设计、外业首检、自动化监测数据分析、日报或周报编制、总工复核，适合基坑和地铁保护区。",
+    "nodes": [
+      { "id": "n1", "agent": "solution_architect", "label": "监测方案设计", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 120 },
+      { "id": "n2", "agent": "qa_inspector", "label": "外业数据首检", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 260 },
+      { "id": "n3", "agent": "data_analyst", "label": "预警趋势分析", "color": "rgb(95,70,24)", "x": 260, "y": 190 },
+      { "id": "n4", "agent": "technical_writer", "label": "监测报告编制", "color": "rgb(47,38,24)", "x": 460, "y": 190 },
+      { "id": "n5", "agent": "qa_reviewer", "label": "总工办复核", "color": "rgb(10,10,9)", "x": 660, "y": 190 }
+    ],
+    "edges": [
+      { "from": "n1", "to": "n3", "kind": "parallel", "label": "控制值与监测频率" },
+      { "from": "n2", "to": "n3", "kind": "serial", "label": "有效观测数据" },
+      { "from": "n3", "to": "n4", "kind": "serial", "label": "预警等级与趋势研判" },
+      { "from": "n4", "to": "n5", "kind": "serial", "label": "日报或周报初稿" }
+    ]
+  },
+  {
+    "id": "standards-wiki-ingest",
+    "name": "规范资料入库流水线",
+    "description": "将规范、甲方要求和历史成果解析入库，形成可检索、可引用、可复核的企业知识资产。",
+    "nodes": [
+      { "id": "n1", "agent": "source_ingestor", "label": "原始资料解析", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
+      { "id": "n2", "agent": "norm_librarian", "label": "规范 Wiki 入库", "color": "rgb(95,70,24)", "x": 260, "y": 100 },
+      { "id": "n3", "agent": "knowledge_curator", "label": "项目知识沉淀", "color": "rgb(95,70,24)", "x": 260, "y": 260 },
+      { "id": "n4", "agent": "qa_reviewer", "label": "总工办复核", "color": "rgb(47,38,24)", "x": 470, "y": 180 },
+      { "id": "n5", "agent": "chief_manager", "label": "项目总控", "color": "rgb(10,10,9)", "x": 650, "y": 180 }
+    ],
+    "edges": [
+      { "from": "n1", "to": "n2", "kind": "parallel", "label": "规范 PDF 与条文结构" },
+      { "from": "n1", "to": "n3", "kind": "parallel", "label": "项目资料与经验片段" },
+      { "from": "n2", "to": "n4", "kind": "serial", "label": "规范索引与引用格式" },
+      { "from": "n3", "to": "n4", "kind": "serial", "label": "案例页与 FAQ" },
+      { "from": "n4", "to": "n5", "kind": "serial", "label": "知识库健康报告" }
     ]
   },
   {
     "id": "bid-proposal",
     "name": "投标方案流水线",
-    "description": "方案架构与商务报价并行编制，汇聚到技术写作后进入质量复核。",
+    "description": "技术方案与商务报价并行编制，汇聚到标书成稿后进入总工办质量复核。",
     "nodes": [
-      { "id": "n1", "agent": "solution_architect", "label": "方案架构师", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 100 },
-      { "id": "n2", "agent": "commercial_specialist", "label": "商务专员", "color": "rgb(95,70,24)", "x": 60, "y": 260 },
-      { "id": "n3", "agent": "technical_writer", "label": "技术写作", "color": "rgb(47,38,24)", "x": 280, "y": 180 },
-      { "id": "n4", "agent": "qa_reviewer", "label": "QA 复核", "color": "rgba(117,86,32,0.9)", "x": 480, "y": 180 }
+      { "id": "n1", "agent": "solution_architect", "label": "技术方案架构", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 100 },
+      { "id": "n2", "agent": "commercial_specialist", "label": "商务报价测算", "color": "rgb(95,70,24)", "x": 60, "y": 260 },
+      { "id": "n3", "agent": "technical_writer", "label": "投标文件编制", "color": "rgb(47,38,24)", "x": 280, "y": 180 },
+      { "id": "n4", "agent": "qa_reviewer", "label": "总工办复核", "color": "rgba(117,86,32,0.9)", "x": 480, "y": 180 }
     ],
     "edges": [
-      { "from": "n1", "to": "n3", "kind": "parallel", "label": "技术方案草稿" },
-      { "from": "n2", "to": "n3", "kind": "parallel", "label": "报价清单" },
+      { "from": "n1", "to": "n3", "kind": "parallel", "label": "技术方案草案" },
+      { "from": "n2", "to": "n3", "kind": "parallel", "label": "报价清单与商务响应" },
       { "from": "n3", "to": "n4", "kind": "serial", "label": "投标文件初稿" }
     ]
   },
   {
     "id": "project-report-ppt",
-    "name": "项目汇报 PPT 流水线",
-    "description": "方案架构师提炼结构，PPT 大师制作幻灯片，QA 复核把关。",
+    "name": "项目汇报材料流水线",
+    "description": "方案架构师提炼项目逻辑，汇报材料设计智能体制作演示稿，总工办复核把关。",
     "nodes": [
-      { "id": "n1", "agent": "solution_architect", "label": "方案架构师", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
-      { "id": "n2", "agent": "ppt_master", "label": "PPT 大师", "color": "rgb(95,70,24)", "x": 260, "y": 180 },
-      { "id": "n3", "agent": "qa_reviewer", "label": "QA 复核", "color": "rgba(117,86,32,0.9)", "x": 460, "y": 180 }
+      { "id": "n1", "agent": "solution_architect", "label": "项目逻辑提炼", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
+      { "id": "n2", "agent": "ppt_master", "label": "汇报材料设计", "color": "rgb(95,70,24)", "x": 260, "y": 180 },
+      { "id": "n3", "agent": "qa_reviewer", "label": "总工办复核", "color": "rgba(117,86,32,0.9)", "x": 460, "y": 180 }
     ],
     "edges": [
       { "from": "n1", "to": "n2", "kind": "serial", "label": "项目结构与重点内容" },
-      { "from": "n2", "to": "n3", "kind": "serial", "label": "PPT 初稿" }
+      { "from": "n2", "to": "n3", "kind": "serial", "label": "汇报材料初稿" }
     ]
   }
 ]

@@ -136,7 +136,7 @@ check(
     "working-directory: packages/desktop",
     "bun run predev -- --target",
     "bun run tauri -- build",
-    "--config tauri.prod.conf.json",
+    "--config src-tauri/tauri.prod.conf.json",
   ]),
   "production Tauri config is used and Bun forwards release arguments",
 )

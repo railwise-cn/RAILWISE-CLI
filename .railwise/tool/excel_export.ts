@@ -373,8 +373,10 @@ export const monitoring_table_export = tool({
     points: tool.schema
       .array(
         tool.schema.object({
-          id: tool.schema.string().describe("测点编号"),
+          id: tool.schema.string().optional().describe("测点编号"),
+          pointId: tool.schema.string().optional().describe("测点编号（兼容 Excel Skill 文档字段）"),
           section: tool.schema.string().optional().describe("所属断面"),
+          location: tool.schema.string().optional().describe("测点位置（兼容 Excel Skill 文档字段）"),
           initialValue: tool.schema.number().optional().describe("初始值"),
           previousValue: tool.schema.number().optional().describe("上期值"),
           currentValue: tool.schema.number().describe("本期值"),
@@ -386,6 +388,8 @@ export const monitoring_table_export = tool({
       .min(1)
       .describe("各测点数据"),
     alertThreshold: tool.schema.number().positive().optional().describe("报警控制值"),
+    warningValue: tool.schema.number().positive().optional().describe("预警值（兼容 Excel Skill 文档字段）"),
+    alarmValue: tool.schema.number().positive().optional().describe("报警值（兼容 Excel Skill 文档字段）"),
     unit: tool.schema.string().default("mm").describe("单位"),
     outputPath: tool.schema.string().optional().describe("输出路径"),
   },
@@ -399,48 +403,67 @@ export const monitoring_table_export = tool({
       convergence: "收敛监测",
     }
     const typeLabel = typeLabels[args.monitoringType] ?? args.monitoringType
+    const unit = args.unit ?? "mm"
+    const alarm = args.alarmValue ?? args.alertThreshold
+    const warning = args.warningValue ?? (alarm ? alarm * 0.7 : undefined)
+    const points = args.points.map((p) => ({
+      ...p,
+      id: p.id ?? p.pointId ?? "",
+      section: p.section ?? p.location,
+    }))
+
+    const missing = points.find((p) => !p.id)
+    if (missing) {
+      return JSON.stringify({
+        error: "监测数据缺少测点编号，请在 points 中提供 id 或 pointId 字段。",
+      })
+    }
 
     const headers = [
       "测点编号",
-      ...(args.points.some((p) => p.section) ? ["所属断面"] : []),
-      ...(args.points.some((p) => p.initialValue !== undefined) ? [`初始值(${args.unit})`] : []),
-      ...(args.points.some((p) => p.previousValue !== undefined) ? [`上期值(${args.unit})`] : []),
-      `本期值(${args.unit})`,
-      `累计变化量(${args.unit})`,
-      ...(args.points.some((p) => p.periodChange !== undefined) ? [`本期变化量(${args.unit})`] : []),
-      ...(args.points.some((p) => p.rate !== undefined) ? [`变化速率(${args.unit}/d)`] : []),
-      ...(args.alertThreshold ? [`控制值(${args.unit})`, "占控制值(%)", "预警状态"] : []),
+      ...(points.some((p) => p.section) ? ["所属断面"] : []),
+      ...(points.some((p) => p.initialValue !== undefined) ? [`初始值(${unit})`] : []),
+      ...(points.some((p) => p.previousValue !== undefined) ? [`上期值(${unit})`] : []),
+      `本期值(${unit})`,
+      `累计变化量(${unit})`,
+      ...(points.some((p) => p.periodChange !== undefined) ? [`本期变化量(${unit})`] : []),
+      ...(points.some((p) => p.rate !== undefined) ? [`变化速率(${unit}/d)`] : []),
+      ...(warning ? [`预警值(${unit})`] : []),
+      ...(alarm ? [`报警值(${unit})`, "占报警值(%)", "预警状态"] : []),
     ]
 
-    const rows: CellValue[][] = args.points.map((p) => {
-      const ratio = args.alertThreshold ? Math.abs(p.cumulativeChange) / args.alertThreshold : 0
+    const rows: CellValue[][] = points.map((p) => {
+      const ratio = alarm ? Math.abs(p.cumulativeChange) / alarm : 0
       let alertStatus = ""
-      if (args.alertThreshold) {
+      if (alarm) {
         if (ratio >= 1.0) alertStatus = "超限"
         else if (ratio >= 0.85) alertStatus = "橙色预警"
         else if (ratio >= 0.70) alertStatus = "黄色预警"
         else alertStatus = "正常"
+      } else if (warning) {
+        alertStatus = Math.abs(p.cumulativeChange) >= warning ? "预警" : "正常"
       }
 
       return [
         p.id,
-        ...(args.points.some((pt) => pt.section) ? [p.section ?? ""] : []),
-        ...(args.points.some((pt) => pt.initialValue !== undefined) ? [p.initialValue ?? null] : []),
-        ...(args.points.some((pt) => pt.previousValue !== undefined) ? [p.previousValue ?? null] : []),
+        ...(points.some((pt) => pt.section) ? [p.section ?? ""] : []),
+        ...(points.some((pt) => pt.initialValue !== undefined) ? [p.initialValue ?? null] : []),
+        ...(points.some((pt) => pt.previousValue !== undefined) ? [p.previousValue ?? null] : []),
         p.currentValue,
         p.cumulativeChange,
-        ...(args.points.some((pt) => pt.periodChange !== undefined) ? [p.periodChange ?? null] : []),
-        ...(args.points.some((pt) => pt.rate !== undefined) ? [p.rate ?? null] : []),
-        ...(args.alertThreshold ? [args.alertThreshold, Number((ratio * 100).toFixed(1)), alertStatus] : []),
+        ...(points.some((pt) => pt.periodChange !== undefined) ? [p.periodChange ?? null] : []),
+        ...(points.some((pt) => pt.rate !== undefined) ? [p.rate ?? null] : []),
+        ...(warning ? [warning] : []),
+        ...(alarm ? [alarm, Number((ratio * 100).toFixed(1)), alertStatus] : []),
       ]
     })
 
     // Summary row
-    const cumulativeValues = args.points.map((p) => Math.abs(p.cumulativeChange))
+    const cumulativeValues = points.map((p) => Math.abs(p.cumulativeChange))
     const maxIdx = cumulativeValues.indexOf(Math.max(...cumulativeValues))
     const avgCumulative = cumulativeValues.reduce((s, v) => s + v, 0) / cumulativeValues.length
-    const alertCount = args.alertThreshold
-      ? args.points.filter((p) => Math.abs(p.cumulativeChange) >= args.alertThreshold! * 0.7).length
+    const alertCount = warning
+      ? points.filter((p) => Math.abs(p.cumulativeChange) >= warning).length
       : 0
 
     const sheetData: SheetData = {
@@ -461,11 +484,11 @@ export const monitoring_table_export = tool({
       project: args.projectName,
       type: typeLabel,
       date: args.date,
-      point_count: args.points.length,
-      max_point: { id: args.points[maxIdx]!.id, value: args.points[maxIdx]!.cumulativeChange },
+      point_count: points.length,
+      max_point: { id: points[maxIdx]!.id, value: points[maxIdx]!.cumulativeChange },
       avg_cumulative: Number(avgCumulative.toFixed(3)),
       alert_count: alertCount,
-      message: `✅ ${typeLabel}报表已导出：${dest}，${args.points.length}个测点，最大变化 ${args.points[maxIdx]!.id}(${args.points[maxIdx]!.cumulativeChange}${args.unit})${alertCount > 0 ? `，${alertCount}个测点预警` : ""}`,
+      message: `✅ ${typeLabel}报表已导出：${dest}，${points.length}个测点，最大变化 ${points[maxIdx]!.id}(${points[maxIdx]!.cumulativeChange}${unit})${alertCount > 0 ? `，${alertCount}个测点预警` : ""}`,
     })
   },
 })

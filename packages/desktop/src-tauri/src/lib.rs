@@ -21,7 +21,6 @@ use futures::{
 use std::{
     env,
     net::TcpListener,
-    path::PathBuf,
     process::Command,
     sync::{Arc, Mutex},
     time::Duration,
@@ -35,7 +34,7 @@ use tokio::{
     time::{sleep, timeout},
 };
 
-use crate::cli::{sqlite_migration::SqliteMigrationProgress, sync_cli};
+use crate::cli::{railwise_db_path, sqlite_migration::SqliteMigrationProgress, sync_cli};
 use crate::constants::*;
 use crate::server::get_saved_server_url;
 use crate::windows::{LoadingWindow, MainWindow};
@@ -617,10 +616,10 @@ async fn initialize(app: AppHandle) {
     // come from any invocation of the sidecar CLI. The progress is captured by a stdout stream interceptor.
     // Then in the loading task, we wait for sqlite migration to complete before
     // starting our health check against the server, otherwise long migrations could result in a timeout.
-    let needs_sqlite_migration = !sqlite_file_exists();
+    let needs_sqlite_migration = !sqlite_file_exists(&app);
     let sqlite_done = needs_sqlite_migration.then(|| {
         tracing::info!(
-            path = %railwise_db_path().expect("failed to get db path").display(),
+            path = %railwise_db_path(&app).display(),
             "Sqlite file not found, waiting for it to be generated"
         );
 
@@ -859,26 +858,8 @@ fn port_is_available(port: u32) -> bool {
     TcpListener::bind(format!("127.0.0.1:{}", port)).is_ok()
 }
 
-fn sqlite_file_exists() -> bool {
-    let Ok(path) = railwise_db_path() else {
-        return true;
-    };
-
-    path.exists()
-}
-
-fn railwise_db_path() -> Result<PathBuf, &'static str> {
-    let xdg_data_home = env::var_os("XDG_DATA_HOME").filter(|v| !v.is_empty());
-
-    let data_home = match xdg_data_home {
-        Some(v) => PathBuf::from(v),
-        None => {
-            let home = dirs::home_dir().ok_or("cannot determine home directory")?;
-            home.join(".local").join("share")
-        }
-    };
-
-    Ok(data_home.join("railwise").join("railwise.db"))
+fn sqlite_file_exists(app: &AppHandle) -> bool {
+    railwise_db_path(app).exists()
 }
 
 // Creates a `once` listener for the specified event and returns a future that resolves

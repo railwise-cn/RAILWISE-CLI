@@ -53,7 +53,7 @@ export default function AgentDetailPage() {
     if (name === params.name) load()
   })
 
-  const title = createMemo(() => agent()?.name ?? params.name)
+  const title = createMemo(() => agent()?.displayName ?? agent()?.name ?? params.name)
   const summary = createMemo(() => shortDescription(agent()?.description ?? agent()?.prompt ?? "", 120))
 
   return (

@@ -11,13 +11,15 @@ export function AgentCard(props: { agent: AgentStudioItem }) {
       href={`/agents/${props.agent.name}`}
       class="agent-card"
       data-testid={`agent-card-${props.agent.name}`}
-      aria-label={`打开 ${props.agent.name}`}
+      aria-label={`打开 ${props.agent.displayName ?? props.agent.name}`}
     >
       <div class="agent-card__top">
         <div class="agent-card__mark" style={{ "background-color": agentColor(props.agent.name, props.agent.color) }} />
         <div class="agent-card__title">
-          <h2>{props.agent.name}</h2>
-          <span>{modeLabel(props.agent.mode)}</span>
+          <h2>{props.agent.displayName ?? props.agent.name}</h2>
+          <span>
+            {modeLabel(props.agent.mode)} · @{props.agent.name}
+          </span>
         </div>
       </div>
       <p>{shortDescription(props.agent.description ?? props.agent.prompt ?? "暂无描述")}</p>

@@ -70,7 +70,7 @@ const config = configExists ? ((await Bun.file(file(configPath)).json()) as Conf
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
-const targets = ["x86_64-pc-windows-msvc", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu"]
+const targets = ["x86_64-pc-windows-msvc", "aarch64-apple-darwin", "x86_64-apple-darwin"]
 const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY",
   "TAURI_SIGNING_PRIVATE_KEY_PASSWORD",
@@ -84,7 +84,7 @@ const secrets = [
   "SIGNPATH_API_TOKEN",
   "SIGNPATH_ORG_ID",
 ]
-const linux = ["libwebkit2gtk-4.1-dev", "libgtk-3-dev", "libayatana-appindicator3-dev", "librsvg2-dev", "patchelf"]
+const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
 const assets = [
   ...(config.bundle?.icon ?? []),
   config.bundle?.windows?.nsis?.installerIcon,
@@ -96,7 +96,6 @@ const assets = [
 ].filter((item): item is string => Boolean(item))
 const missingTargets = targets.filter((target) => !workflow.includes(target))
 const missingSecrets = secrets.filter((secret) => !workflow.includes(secret))
-const missingLinux = linux.filter((pkg) => !workflow.includes(pkg))
 const missingAssets = (
   await Promise.all(
     assets.map(async (asset) => {
@@ -120,16 +119,16 @@ check(
   missingTargets.length === 0 ? targets.join(", ") : `missing: ${missingTargets.join(", ")}`,
 )
 check(
+  "release omits Linux target",
+  linux.every((item) => !workflow.includes(item)),
+  "Beta release builds Windows x64, macOS Apple Silicon, and macOS Intel only",
+)
+check(
   "release signing env",
   missingSecrets.length === 0,
   missingSecrets.length === 0
     ? "Tauri, macOS, and SignPath secrets are referenced"
     : `missing: ${missingSecrets.join(", ")}`,
-)
-check(
-  "release Linux deps",
-  missingLinux.length === 0,
-  missingLinux.length === 0 ? linux.join(", ") : `missing: ${missingLinux.join(", ")}`,
 )
 check(
   "release build command",
@@ -140,13 +139,11 @@ check(
   "release artifact coverage",
   contains(workflow, [
     '-name "*.dmg"',
-    '-name "*.AppImage"',
-    '-name "*.deb"',
-    '-name "*.rpm"',
     '-name "*.exe"',
     "--draft",
+    '--target "$GITHUB_SHA"',
   ]),
-  "draft release uploads Windows, macOS, and Linux installers",
+  "draft release uploads Windows and macOS installers from the workflow commit",
 )
 check("production config exists", configExists, configPath)
 check(
@@ -179,13 +176,6 @@ check(
     Boolean(config.bundle?.macOS?.dmg?.appPosition) &&
     Boolean(config.bundle?.macOS?.dmg?.applicationFolderPosition),
   "DMG artwork, entitlements, and icon positions are configured",
-)
-check(
-  "Linux package config",
-  config.bundle?.linux?.deb?.depends?.includes("libwebkit2gtk-4.1-0") === true &&
-    Boolean(config.bundle?.linux?.deb?.files?.["/usr/share/metainfo/com.railwiseai.desktop.metainfo.xml"]) &&
-    config.bundle?.linux?.rpm?.compression?.type === "none",
-  "deb, rpm, and AppImage release coverage are configured",
 )
 check(
   "release assets",

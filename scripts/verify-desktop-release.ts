@@ -145,6 +145,11 @@ check(
     : `missing: ${missingSecrets.join(", ")}`,
 )
 check(
+  "SignPath GitHub action",
+  workflow.includes("signpath/github-action-submit-signing-request@v2"),
+  "release workflow uses the current SignPath trusted build integration",
+)
+check(
   "release build command",
   contains(workflow, [
     "working-directory: packages/desktop",

@@ -82,8 +82,8 @@ const secrets = [
   "APPLE_ID_PASSWORD",
   "APPLE_TEAM_ID",
   "APPLE_SIGNING_IDENTITY",
-  "SIGNPATH_API_TOKEN",
-  "SIGNPATH_ORG_ID",
+  "WINDOWS_CERTIFICATE",
+  "WINDOWS_CERTIFICATE_PASSWORD",
 ]
 const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
 const assets = [
@@ -141,13 +141,23 @@ check(
   "release signing env",
   missingSecrets.length === 0,
   missingSecrets.length === 0
-    ? "Tauri, macOS, and SignPath secrets are referenced"
+    ? "Tauri, macOS, and Windows signing secrets are referenced"
     : `missing: ${missingSecrets.join(", ")}`,
 )
 check(
-  "SignPath GitHub action",
-  workflow.includes("signpath/github-action-submit-signing-request@v2"),
-  "release workflow uses the current SignPath trusted build integration",
+  "Windows direct signing",
+  contains(workflow, [
+    "Sign Windows Installer (signtool)",
+    "WINDOWS_CERTIFICATE",
+    "WINDOWS_CERTIFICATE_PASSWORD",
+    "signtool.exe",
+    "sign /f",
+    "verify /pa /v",
+    "http://timestamp.digicert.com",
+  ]) &&
+    !workflow.includes("signpath/github-action-submit-signing-request") &&
+    !workflow.includes("SIGNPATH_"),
+  "Windows NSIS installer is signed directly with signtool and a GitHub Actions certificate secret",
 )
 check(
   "release build command",

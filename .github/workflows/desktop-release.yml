@@ -92,33 +92,51 @@ jobs:
         working-directory: packages/desktop
         run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.prod.conf.json
 
-      - name: Upload unsigned Windows installer
+      - name: Sign Windows Installer (signtool)
         if: matrix.platform == 'windows'
-        id: upload_unsigned_windows
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned-railwise-desktop-windows
-          path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
-          if-no-files-found: error
-
-      - name: Sign Windows Installer (SignPath)
-        if: matrix.platform == 'windows'
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ secrets.SIGNPATH_ORG_ID }}
-          project-slug: railwise-desktop
-          signing-policy-slug: release-signing
-          github-artifact-id: ${{ steps.upload_unsigned_windows.outputs.artifact-id }}
-          wait-for-completion: true
-          output-artifact-directory: dist/signed
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (-not $env:WINDOWS_CERTIFICATE) {
+            throw "Missing WINDOWS_CERTIFICATE secret"
+          }
+          if (-not $env:WINDOWS_CERTIFICATE_PASSWORD) {
+            throw "Missing WINDOWS_CERTIFICATE_PASSWORD secret"
+          }
+          $cert = Join-Path $env:RUNNER_TEMP "railwise-windows-signing.pfx"
+          [IO.File]::WriteAllBytes($cert, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          $tool = Get-ChildItem -Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+          if (-not $tool) {
+            throw "signtool.exe was not found in the Windows SDK"
+          }
+          $dir = "packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis"
+          $files = @(Get-ChildItem -Path $dir -Filter "*.exe" -File)
+          if ($files.Count -ne 1) {
+            throw "Expected exactly one NSIS installer in $dir, found $($files.Count)"
+          }
+          foreach ($file in $files) {
+            & $tool.FullName sign /f $cert /p $env:WINDOWS_CERTIFICATE_PASSWORD /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /v $file.FullName
+            if ($LASTEXITCODE -ne 0) {
+              throw "signtool sign failed for $($file.Name)"
+            }
+            & $tool.FullName verify /pa /v $file.FullName
+            if ($LASTEXITCODE -ne 0) {
+              throw "signtool verify failed for $($file.Name)"
+            }
+          }
+          Remove-Item $cert -Force
 
       - name: Upload signed Windows installer
         if: matrix.platform == 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: railwise-desktop-${{ matrix.target }}-signed
-          path: dist/signed/*.exe
+          path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
           if-no-files-found: error
 
       - name: Upload bundle artifacts

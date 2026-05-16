@@ -155,6 +155,16 @@ check(
   "Beta release avoids Apple notarization waits and bounds macOS build time",
 )
 check(
+  "release keychain grants codesign",
+  contains(workflow, [
+    "security set-keychain-settings -lut 21600 build.keychain",
+    "-T /usr/bin/codesign -T /usr/bin/pkgbuild -T /usr/bin/productbuild",
+    "security set-key-partition-list -S apple-tool:,apple:,codesign:",
+    "security find-identity -v -p codesigning build.keychain",
+  ]),
+  "macOS CI keychain grants non-interactive codesign access",
+)
+check(
   "release build command",
   contains(workflow, [
     "working-directory: packages/desktop",

@@ -150,7 +150,18 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build sidecar
+        if: matrix.platform != 'windows' || github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true
         run: bun run --cwd packages/desktop predev -- --target ${{ matrix.target }}
+
+      - name: Build internal Windows sidecar
+        if: matrix.platform == 'windows' && github.event_name == 'workflow_dispatch' && inputs.windows_unsigned_internal == true
+        shell: bash
+        run: |
+          cd packages/railwise
+          bun run build --single
+          cd ../desktop
+          mkdir -p src-tauri/sidecars
+          cp ../railwise/dist/railwise-windows-x64/bin/railwise.exe src-tauri/sidecars/railwise-cli-${{ matrix.target }}.exe
 
       - name: macOS Import Certificate
         if: matrix.platform == 'darwin'

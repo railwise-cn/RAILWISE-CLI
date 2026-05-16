@@ -46,6 +46,16 @@ check(
   "internal build uploads a short-lived NSIS installer artifact",
 )
 check(
+  "internal sidecar",
+  has(workflow, [
+    "Build internal Windows sidecar",
+    "bun run build --single",
+    "railwise-windows-x64/bin/railwise.exe",
+    "railwise-cli-${{ matrix.target }}.exe",
+  ]),
+  "internal Windows builds use the standard x64 sidecar and avoid the baseline Bun download",
+)
+check(
   "release skipped for internal",
   has(workflow, [
     "Create draft release",

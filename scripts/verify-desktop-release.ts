@@ -126,6 +126,11 @@ check(
   missingTargets.length === 0 ? targets.join(", ") : `missing: ${missingTargets.join(", ")}`,
 )
 check(
+  "release macOS runners",
+  workflow.includes("os: macos-14") && workflow.includes("os: macos-15-intel") && !workflow.includes("os: macos-13"),
+  "Apple Silicon uses macos-14 and Intel uses the current macos-15-intel runner",
+)
+check(
   "release bundle matrix",
   contains(workflow, ["bundles: dmg", "--bundles ${{ matrix.bundles }}"]) &&
     !workflow.includes("bundles: nsis") &&

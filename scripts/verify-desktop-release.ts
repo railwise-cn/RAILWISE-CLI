@@ -156,8 +156,8 @@ check(
 )
 check(
   "release skips macOS notarization",
-  notarization.every((item) => !workflow.includes(item)) && workflow.includes("timeout-minutes: 20"),
-  "Beta release avoids Apple notarization waits and bounds macOS build time",
+  notarization.every((item) => !workflow.includes(item)) && workflow.includes("timeout-minutes: 45"),
+  "Beta release avoids Apple notarization waits while allowing Intel release compilation",
 )
 check(
   "release keychain grants codesign",

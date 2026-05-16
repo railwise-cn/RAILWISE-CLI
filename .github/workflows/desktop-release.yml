@@ -81,7 +81,7 @@ jobs:
           security find-identity -v -p codesigning build.keychain
 
       - name: Build Tauri App
-        timeout-minutes: 20
+        timeout-minutes: 45
         env:
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
         working-directory: packages/desktop

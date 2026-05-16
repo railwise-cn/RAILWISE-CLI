@@ -56,6 +56,11 @@ check(
   "internal Windows builds use the standard x64 sidecar and avoid the baseline Bun download",
 )
 check(
+  "internal bundle scope",
+  has(workflow, ["WINDOWS_UNSIGNED_INTERNAL", "args+=(--bundles nsis)"]),
+  "internal Windows builds only the NSIS installer needed for testing",
+)
+check(
   "release skipped for internal",
   has(workflow, [
     "Create draft release",

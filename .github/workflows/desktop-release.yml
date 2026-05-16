@@ -190,6 +190,7 @@ jobs:
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           MACOS_SKIP_STAPLING: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_stapling || false }}
           MACOS_SKIP_NOTARIZATION: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_notarization || false }}
+          WINDOWS_UNSIGNED_INTERNAL: ${{ github.event_name == 'workflow_dispatch' && inputs.windows_unsigned_internal || false }}
         run: |
           args=(build --ci -vv --target "${{ matrix.target }}" --config src-tauri/tauri.prod.conf.json)
           if [ "${{ matrix.platform }}" = "darwin" ]; then
@@ -202,6 +203,9 @@ jobs:
             if [ "$MACOS_SKIP_STAPLING" = "true" ]; then
               args+=(--skip-stapling)
             fi
+          fi
+          if [ "${{ matrix.platform }}" = "windows" ] && [ "$WINDOWS_UNSIGNED_INTERNAL" = "true" ]; then
+            args+=(--bundles nsis)
           fi
           bun run --cwd packages/desktop tauri -- "${args[@]}"
 

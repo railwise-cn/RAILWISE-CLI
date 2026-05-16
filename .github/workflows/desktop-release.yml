@@ -29,6 +29,11 @@ on:
         required: true
         default: false
         type: boolean
+      windows_unsigned_internal:
+        description: "仅 Windows 内测：跳过 SignPath 签名，只上传未签名安装包 artifact"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -114,6 +119,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           MACOS_SKIP_NOTARIZATION: ${{ github.event_name == 'workflow_dispatch' && inputs.macos_skip_notarization || false }}
+          WINDOWS_UNSIGNED_INTERNAL: ${{ github.event_name == 'workflow_dispatch' && inputs.windows_unsigned_internal || false }}
         run: |
           missing=()
           for secret in TAURI_SIGNING_PRIVATE_KEY TAURI_SIGNING_PRIVATE_KEY_PASSWORD; do
@@ -129,7 +135,7 @@ jobs:
               done
             fi
           fi
-          if [ "${{ matrix.platform }}" = "windows" ]; then
+          if [ "${{ matrix.platform }}" = "windows" ] && [ "$WINDOWS_UNSIGNED_INTERNAL" != "true" ]; then
             for secret in SIGNPATH_API_TOKEN SIGNPATH_ORG_ID; do
               if [ -z "${!secret}" ]; then missing+=("$secret"); fi
             done
@@ -188,8 +194,8 @@ jobs:
           fi
           bun run --cwd packages/desktop tauri -- "${args[@]}"
 
-      - name: Upload unsigned Windows installer
-        if: matrix.platform == 'windows'
+      - name: Upload unsigned Windows installer for signing
+        if: matrix.platform == 'windows' && (github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true)
         id: upload_unsigned_windows
         uses: actions/upload-artifact@v7
         with:
@@ -199,8 +205,19 @@ jobs:
             packages/desktop/src-tauri/target/release/bundle/nsis/*.exe
           if-no-files-found: error
 
+      - name: Upload internal unsigned Windows installer
+        if: matrix.platform == 'windows' && github.event_name == 'workflow_dispatch' && inputs.windows_unsigned_internal == true
+        uses: actions/upload-artifact@v7
+        with:
+          name: railwise-desktop-windows-x64-internal-${{ inputs.version }}
+          path: |
+            packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
+            packages/desktop/src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Sign Windows Installer (SignPath)
-        if: matrix.platform == 'windows'
+        if: matrix.platform == 'windows' && (github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true)
         uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
@@ -212,7 +229,7 @@ jobs:
           output-artifact-directory: dist/signed
 
       - name: Upload signed Windows installer
-        if: matrix.platform == 'windows'
+        if: matrix.platform == 'windows' && (github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true)
         uses: actions/upload-artifact@v7
         with:
           name: railwise-desktop-${{ matrix.target }}-signed
@@ -220,6 +237,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload bundle artifacts
+        if: matrix.platform != 'windows' || github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true
         uses: actions/upload-artifact@v7
         with:
           name: railwise-desktop-${{ matrix.target }}
@@ -233,6 +251,7 @@ jobs:
     name: Create draft release
     runs-on: ubuntu-22.04
     needs: build
+    if: github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8

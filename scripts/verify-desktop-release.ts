@@ -79,8 +79,15 @@ const secrets = [
   "APPLE_CERTIFICATE_PASSWORD",
   "APPLE_KEYCHAIN_PASSWORD",
   "APPLE_SIGNING_IDENTITY",
+  "APPLE_ID",
+  "APPLE_ID_PASSWORD",
+  "APPLE_TEAM_ID",
 ]
-const notarization = ["APPLE_ID", "APPLE_PASSWORD", "APPLE_ID_PASSWORD", "APPLE_TEAM_ID"]
+const notarization = [
+  "APPLE_ID: ${{ secrets.APPLE_ID }}",
+  "APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}",
+  "APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}",
+]
 const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
 const windows = [
   "windows-2022",
@@ -151,13 +158,13 @@ check(
   "release signing env",
   missingSecrets.length === 0,
   missingSecrets.length === 0
-    ? "Tauri and macOS signing secrets are referenced without notarization credentials"
+    ? "Tauri, macOS signing, and notarization secrets are referenced"
     : `missing: ${missingSecrets.join(", ")}`,
 )
 check(
-  "release skips macOS notarization",
-  notarization.every((item) => !workflow.includes(item)) && workflow.includes("timeout-minutes: 45"),
-  "Beta release avoids Apple notarization waits while allowing Intel release compilation",
+  "release enables macOS notarization",
+  notarization.every((item) => workflow.includes(item)) && workflow.includes("timeout-minutes: 45"),
+  "Beta release keeps public macOS DMGs notarized while allowing Intel release compilation",
 )
 check(
   "release keychain grants codesign",
@@ -188,6 +195,7 @@ check(
     "Expected exactly 2 public macOS installers",
     '--repo "$GITHUB_REPOSITORY"',
     "--draft",
+    'gh release delete "$TAG"',
     '--target "$GITHUB_SHA"',
   ]) &&
     !workflow.includes('-name "*.exe"') &&

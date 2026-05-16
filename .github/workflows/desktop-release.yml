@@ -84,6 +84,9 @@ jobs:
         timeout-minutes: 45
         env:
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         working-directory: packages/desktop
         run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.prod.conf.json
 
@@ -120,6 +123,14 @@ jobs:
             printf "Expected exactly 2 public macOS installers, found %s:\n" "${#files[@]}"
             printf "%s\n" "${files[@]}"
             exit 1
+          fi
+          if draft=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq ".isDraft" 2>/dev/null); then
+            if [ "$draft" = "true" ]; then
+              gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" -y
+            else
+              echo "Release $TAG already exists and is not a draft."
+              exit 1
+            fi
           fi
           gh release create "$TAG" \
             --repo "$GITHUB_REPOSITORY" \

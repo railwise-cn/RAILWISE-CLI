@@ -71,7 +71,7 @@ const config = configExists ? ((await Bun.file(file(configPath)).json()) as Conf
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
-const targets = ["x86_64-pc-windows-msvc", "aarch64-apple-darwin", "x86_64-apple-darwin"]
+const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
 const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY",
   "TAURI_SIGNING_PRIVATE_KEY_PASSWORD",
@@ -82,10 +82,18 @@ const secrets = [
   "APPLE_ID_PASSWORD",
   "APPLE_TEAM_ID",
   "APPLE_SIGNING_IDENTITY",
-  "WINDOWS_CERTIFICATE",
-  "WINDOWS_CERTIFICATE_PASSWORD",
 ]
 const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
+const windows = [
+  "windows-2022",
+  "x86_64-pc-windows-msvc",
+  "bundles: nsis",
+  "Sign Windows Installer",
+  "WINDOWS_CERTIFICATE",
+  "WINDOWS_CERTIFICATE_PASSWORD",
+  "signtool.exe",
+  "railwise-desktop-*-signed",
+]
 const assets = [
   ...(config.bundle?.icon ?? []),
   config.bundle?.windows?.nsis?.installerIcon,
@@ -121,43 +129,27 @@ check(
 )
 check(
   "release bundle matrix",
-  contains(workflow, ["bundles: nsis", "bundles: dmg", "--bundles ${{ matrix.bundles }}"]) &&
+  contains(workflow, ["bundles: dmg", "--bundles ${{ matrix.bundles }}"]) &&
+    !workflow.includes("bundles: nsis") &&
     !workflow.includes("-name \"*.msi\""),
-  "Windows builds only NSIS; macOS builds only DMG",
+  "Beta release builds macOS DMG bundles only",
 )
 check(
   "release omits Linux target",
   linux.every((item) => !workflow.includes(item)) && !sidecar.includes("linux-"),
-  "Beta release builds Windows x64, macOS Apple Silicon, and macOS Intel only",
+  "Beta release omits Linux installers",
 )
 check(
-  "Windows sidecar uses standard x64",
-  sidecar.includes('rustTarget: "x86_64-pc-windows-msvc"') &&
-    sidecar.includes('ocBinary: "railwise-windows-x64"') &&
-    !sidecar.includes("railwise-windows-x64-baseline"),
-  "Windows Beta publishes one standard 64-bit installer without Bun baseline dependency",
+  "release omits Windows target",
+  windows.every((item) => !workflow.includes(item)),
+  "Windows publishing is paused until a Windows code-signing certificate is purchased",
 )
 check(
   "release signing env",
   missingSecrets.length === 0,
   missingSecrets.length === 0
-    ? "Tauri, macOS, and Windows signing secrets are referenced"
+    ? "Tauri and macOS signing secrets are referenced"
     : `missing: ${missingSecrets.join(", ")}`,
-)
-check(
-  "Windows direct signing",
-  contains(workflow, [
-    "Sign Windows Installer (signtool)",
-    "WINDOWS_CERTIFICATE",
-    "WINDOWS_CERTIFICATE_PASSWORD",
-    "signtool.exe",
-    "sign /f",
-    "verify /pa /v",
-    "http://timestamp.digicert.com",
-  ]) &&
-    !workflow.includes("signpath/github-action-submit-signing-request") &&
-    !workflow.includes("SIGNPATH_"),
-  "Windows NSIS installer is signed directly with signtool and a GitHub Actions certificate secret",
 )
 check(
   "release build command",
@@ -174,15 +166,15 @@ check(
   "release public installer coverage",
   contains(workflow, [
     "merge-multiple: false",
-    'railwise-desktop-*-signed/*.exe',
     '-name "*.dmg"',
-    "Expected exactly 3 public installers",
+    "Expected exactly 2 public macOS installers",
     "--draft",
     '--target "$GITHUB_SHA"',
   ]) &&
+    !workflow.includes('-name "*.exe"') &&
     !workflow.includes('-name "*.tar.gz"') &&
     !workflow.includes('-name "*.zip"'),
-  "draft release uploads the signed Windows x64 installer and two macOS DMGs only",
+  "draft release uploads macOS Apple Silicon and Intel DMGs only",
 )
 check("production config exists", configExists, configPath)
 check(

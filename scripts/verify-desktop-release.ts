@@ -186,6 +186,7 @@ check(
     "merge-multiple: false",
     '-name "*.dmg"',
     "Expected exactly 2 public macOS installers",
+    '--repo "$GITHUB_REPOSITORY"',
     "--draft",
     '--target "$GITHUB_SHA"',
   ]) &&

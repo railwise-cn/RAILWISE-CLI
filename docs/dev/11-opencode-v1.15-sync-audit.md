@@ -139,3 +139,15 @@ Generated from v1.4.5..v1.15.3.
 5. App shell: migrate prompt input, terminal websocket, global sync, and settings fixes while preserving Railwise agent studio.
 6. Validation: run package typecheck, focused tests, desktop build, and installer smoke checks.
 
+## Task 3 Config/Schema Decision
+
+Upstream v1.15.3 moved much of config and permission parsing into new `@opencode-ai/core` and Effect-based modules. Railwise does not currently have that package split, so a wholesale port would be a high-risk architecture migration rather than a safe compatibility patch.
+
+For this sync batch, Railwise ports the immediately actionable compatibility layer only:
+
+- Preserve strict validation for unknown user config fields.
+- Ignore Railwise Desktop metadata fields `version` and `system` during config validation.
+- Accept deprecated grouped `tools` config values like `{ "surveying": ["rw_chainage_convert"] }`.
+- Normalize grouped tools into boolean tool toggles so existing legacy `tools` to `permission` migration still applies.
+
+The full Effect/core config split remains a separate migration batch.

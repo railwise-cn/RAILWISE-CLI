@@ -6,7 +6,9 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { UnauthorizedError } from "@modelcontextprotocol/sdk/client/auth.js"
 import {
   CallToolResultSchema,
+  ListToolsResultSchema,
   type Tool as MCPToolDef,
+  ToolSchema,
   ToolListChangedNotificationSchema,
 } from "@modelcontextprotocol/sdk/types.js"
 import { Config } from "../config/config"
@@ -27,6 +29,9 @@ import open from "open"
 export namespace MCP {
   const log = Log.create({ service: "mcp" })
   const DEFAULT_TIMEOUT = 30_000
+  const TolerantListToolsResultSchema = ListToolsResultSchema.extend({
+    tools: ToolSchema.omit({ outputSchema: true }).array(),
+  })
 
   export const Resource = z
     .object({
@@ -114,6 +119,46 @@ export namespace MCP {
       log.info("tools list changed notification received", { server: serverName })
       Bus.publish(ToolsChanged, { server: serverName })
     })
+  }
+
+  function isOutputSchemaValidationError(error: Error) {
+    return /can't resolve reference|resolves to more than one schema|outputSchema|schema.*reference|reference.*schema/i.test(
+      error.message,
+    )
+  }
+
+  async function listTools(key: string, client: MCPClient, timeout: number) {
+    const result = await withTimeout(client.listTools(), timeout).catch(async (err) => {
+      const error = err instanceof Error ? err : new Error(String(err))
+      if (!isOutputSchemaValidationError(error)) throw error
+
+      log.warn("failed to validate MCP tool output schemas, retrying without output schema validation", {
+        key,
+        error,
+      })
+
+      const result = await withTimeout(
+        client.request(
+          { method: "tools/list" },
+          TolerantListToolsResultSchema,
+          {
+            timeout,
+          },
+        ),
+        timeout,
+      )
+
+      return {
+        ...result,
+        tools: result.tools.map((tool) => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: tool.inputSchema,
+        })) as MCPToolDef[],
+      }
+    })
+
+    return result.tools
   }
 
   // Convert MCP tool definition to AI SDK Tool type
@@ -463,7 +508,7 @@ export namespace MCP {
       }
     }
 
-    const result = await withTimeout(mcpClient.listTools(), mcp.timeout ?? DEFAULT_TIMEOUT).catch((err) => {
+    const result = await listTools(key, mcpClient, mcp.timeout ?? DEFAULT_TIMEOUT).catch((err) => {
       log.error("failed to get tools from client", { key, error: err })
       return undefined
     })
@@ -486,7 +531,7 @@ export namespace MCP {
       }
     }
 
-    log.info("create() successfully created client", { key, toolCount: result.tools.length })
+    log.info("create() successfully created client", { key, toolCount: result.length })
     return {
       mcpClient,
       status,
@@ -577,7 +622,10 @@ export namespace MCP {
 
     const toolsResults = await Promise.all(
       connectedClients.map(async ([clientName, client]) => {
-        const toolsResult = await client.listTools().catch((e) => {
+        const mcpConfig = config[clientName]
+        const entry = isMcpConfigured(mcpConfig) ? mcpConfig : undefined
+        const timeout = entry?.timeout ?? defaultTimeout ?? DEFAULT_TIMEOUT
+        const toolsResult = await listTools(clientName, client, timeout).catch((e) => {
           log.error("failed to get tools", { clientName, error: e.message })
           const failedStatus = {
             status: "failed" as const,
@@ -587,16 +635,13 @@ export namespace MCP {
           delete s.clients[clientName]
           return undefined
         })
-        return { clientName, client, toolsResult }
+        return { clientName, client, toolsResult, timeout }
       }),
     )
 
-    for (const { clientName, client, toolsResult } of toolsResults) {
+    for (const { clientName, client, toolsResult, timeout } of toolsResults) {
       if (!toolsResult) continue
-      const mcpConfig = config[clientName]
-      const entry = isMcpConfigured(mcpConfig) ? mcpConfig : undefined
-      const timeout = entry?.timeout ?? defaultTimeout
-      for (const mcpTool of toolsResult.tools) {
+      for (const mcpTool of toolsResult) {
         const sanitizedClientName = clientName.replace(/[^a-zA-Z0-9_-]/g, "_")
         const sanitizedToolName = mcpTool.name.replace(/[^a-zA-Z0-9_-]/g, "_")
         result[sanitizedClientName + "_" + sanitizedToolName] = await convertMcpTool(mcpTool, client, timeout)

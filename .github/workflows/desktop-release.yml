@@ -205,7 +205,7 @@ jobs:
               args+=(--skip-stapling)
             fi
           fi
-          if [ "${{ matrix.platform }}" = "windows" ] && [ "$WINDOWS_UNSIGNED_INTERNAL" = "true" ]; then
+          if [ "${{ matrix.platform }}" = "windows" ]; then
             args+=(--bundles nsis)
           fi
           bun run --cwd packages/desktop tauri -- "${args[@]}"
@@ -267,7 +267,6 @@ jobs:
     name: Create draft release
     runs-on: ubuntu-22.04
     needs: build
-    if: github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8
@@ -294,6 +293,9 @@ jobs:
             case "$file" in
               */unsigned-railwise-desktop-windows/*)
                 continue
+                ;;
+              */railwise-desktop-windows-x64-internal-*/*.exe)
+                stage "$file" "RAILWISE_${VERSION}_windows_x64_internal_unsigned.exe"
                 ;;
               *aarch64-apple-darwin*/macos/*.dmg)
                 stage "$file" "RAILWISE_${VERSION}_macos_apple_silicon.dmg"

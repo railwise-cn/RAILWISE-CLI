@@ -2,7 +2,7 @@ import type { Message } from "@railwise/sdk/v2/client"
 import { showToast } from "@railwise/ui/toast"
 import { base64Encode } from "@railwise/util/encode"
 import { useNavigate, useParams } from "@solidjs/router"
-import type { Accessor } from "solid-js"
+import { batch, type Accessor } from "solid-js"
 import type { FileSelection } from "@/context/file"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"
@@ -121,7 +121,7 @@ export function createPromptSubmit(input: PromptSubmitInput) {
     const mode = input.mode()
 
     if (text.trim().length === 0 && images.length === 0 && input.commentCount() === 0) {
-      if (input.working()) abort()
+      if (input.working()) void abort()
       return
     }
 
@@ -327,9 +327,11 @@ export function createPromptSubmit(input: PromptSubmitInput) {
         messageID,
       })
 
-    removeCommentItems(commentItems)
-    clearInput()
-    addOptimisticMessage()
+    batch(() => {
+      removeCommentItems(commentItems)
+      clearInput()
+      addOptimisticMessage()
+    })
 
     const waitForWorktree = async () => {
       const worktree = WorktreeState.get(sessionDirectory)
@@ -341,12 +343,14 @@ export function createPromptSubmit(input: PromptSubmitInput) {
 
       const controller = new AbortController()
       const cleanup = () => {
-        if (sessionDirectory === projectDirectory) {
-          sync.set("session_status", session.id, { type: "idle" })
-        }
-        removeOptimisticMessage()
-        restoreCommentItems(commentItems)
-        restoreInput()
+        batch(() => {
+          if (sessionDirectory === projectDirectory) {
+            sync.set("session_status", session.id, { type: "idle" })
+          }
+          removeOptimisticMessage()
+          restoreCommentItems(commentItems)
+          restoreInput()
+        })
       }
 
       pending.set(session.id, { abort: controller, cleanup })
@@ -401,16 +405,18 @@ export function createPromptSubmit(input: PromptSubmitInput) {
 
     void send().catch((err) => {
       pending.delete(session.id)
-      if (sessionDirectory === projectDirectory) {
-        sync.set("session_status", session.id, { type: "idle" })
-      }
       showToast({
         title: language.t("prompt.toast.promptSendFailed.title"),
         description: errorMessage(err),
       })
-      removeOptimisticMessage()
-      restoreCommentItems(commentItems)
-      restoreInput()
+      batch(() => {
+        if (sessionDirectory === projectDirectory) {
+          sync.set("session_status", session.id, { type: "idle" })
+        }
+        removeOptimisticMessage()
+        restoreCommentItems(commentItems)
+        restoreInput()
+      })
     })
   }
 

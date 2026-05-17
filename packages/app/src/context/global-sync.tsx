@@ -34,7 +34,7 @@ import { estimateRootSessionTotal, loadRootSessionsWithFallback } from "./global
 import { trimSessions } from "./global-sync/session-trim"
 import type { ProjectMeta } from "./global-sync/types"
 import { SESSION_RECENT_LIMIT } from "./global-sync/types"
-import { sanitizeProject } from "./global-sync/utils"
+import { directoryKey, sanitizeProject } from "./global-sync/utils"
 import { usePlatform } from "./platform"
 
 type GlobalStore = {
@@ -103,6 +103,7 @@ function createGlobalSync() {
 
   const queue = createRefreshQueue({
     paused,
+    key: directoryKey,
     bootstrap,
     bootstrapInstance,
   })

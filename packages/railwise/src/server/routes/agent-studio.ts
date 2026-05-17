@@ -72,26 +72,6 @@ const WorkflowRunArtifactSchema = z
   })
   .meta({ ref: "WorkflowRunArtifact" })
 
-const AgentListItemSchema = Agent.Info.extend({
-  displayName: z.string().optional().meta({
-    description: "Localized product-facing name for Agent Studio.",
-  }),
-  filePath: z.string().optional().meta({
-    description: "Absolute path of the backing .md file.",
-  }),
-  callCount7d: z.number().int().optional().meta({
-    description: "Message count by this agent in the last 7 days.",
-  }),
-}).meta({ ref: "AgentListItem" })
-
-const AgentDetailSchema = Agent.Info.extend({
-  displayName: z.string().optional(),
-  filePath: z.string().optional(),
-  rawMarkdown: z.string().meta({
-    description: "Full markdown source including frontmatter.",
-  }),
-}).meta({ ref: "AgentDetail" })
-
 const ToolInventorySchema = z
   .object({
     id: z.string(),
@@ -1471,8 +1451,24 @@ async function archiveDelivery(input: { workflowId: string; sessionId: string })
 
 export const AgentStudioRoutes = lazy(() => {
   const schema = {
-    list: AgentListItemSchema,
-    detail: AgentDetailSchema,
+    list: Agent.Info.extend({
+      displayName: z.string().optional().meta({
+        description: "Localized product-facing name for Agent Studio.",
+      }),
+      filePath: z.string().optional().meta({
+        description: "Absolute path of the backing .md file.",
+      }),
+      callCount7d: z.number().int().optional().meta({
+        description: "Message count by this agent in the last 7 days.",
+      }),
+    }).meta({ ref: "AgentListItem" }),
+    detail: Agent.Info.extend({
+      displayName: z.string().optional(),
+      filePath: z.string().optional(),
+      rawMarkdown: z.string().meta({
+        description: "Full markdown source including frontmatter.",
+      }),
+    }).meta({ ref: "AgentDetail" }),
   }
 
   return new Hono()

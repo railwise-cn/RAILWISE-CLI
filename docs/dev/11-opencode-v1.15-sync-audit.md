@@ -151,3 +151,13 @@ For this sync batch, Railwise ports the immediately actionable compatibility lay
 - Normalize grouped tools into boolean tool toggles so existing legacy `tools` to `permission` migration still applies.
 
 The full Effect/core config split remains a separate migration batch.
+
+## Task 4 Runtime Decision
+
+Upstream v1.15.3 replaces the old instance server layout with a new route-group HTTP API and Effect-backed session services. Railwise still has desktop-specific routes, agent studio endpoints, and sidecar assumptions on the current server structure, so a wholesale route/session port is deferred.
+
+For this sync batch, Railwise ports isolated runtime fixes that fit the current architecture:
+
+- Cap retry delays from `retry-after` and `retry-after-ms` headers at the runtime timer limit.
+- Retry provider API errors with 5xx status codes even when provider SDK metadata does not mark the error retryable.
+- Prefer `RAILWISE_TEST_HOME` over `RAILWISE_HOME` so server tests remain isolated when a developer shell has a real Railwise home configured.

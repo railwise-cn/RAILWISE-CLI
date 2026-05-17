@@ -70,11 +70,13 @@ const WorkspaceDiffRoute = () => (
   </Suspense>
 )
 const DashboardRedirect = () => <Navigate href="/dashboard" />
+const AgentStudioRedirect = () => <Navigate href="/agents" />
 
 function ensureStandaloneLanding() {
-  if (location.hash === "#/dashboard") return
+  if (location.hash.startsWith("#/agents")) return
   if (location.hash.startsWith("#/workspace")) return
-  history.replaceState(null, "", `${location.pathname}${location.search}#/dashboard`)
+  if (/^#\/[^/]+\/session/.test(location.hash)) return
+  history.replaceState(null, "", `${location.pathname}${location.search}#/agents`)
 }
 
 // Create startup timer with performance budget and retry callback
@@ -696,7 +698,7 @@ render(() => {
               <Show when={!defaultServer.loading}>
                 <div class="railwise-app-shell" data-testid="app-shell">
                   <AppInterface
-                    defaultPath="/dashboard"
+                    defaultPath="/agents"
                     defaultServer={defaultServer.latest ?? ServerConnection.key(server)}
                     routes={
                       <>
@@ -705,7 +707,7 @@ render(() => {
                         <Route path="/workspace" component={WorkspaceRoute} />
                         <Route path="/workspace/diff" component={WorkspaceDiffRoute} />
                         <Route path="/workspace/*rest" component={WorkspaceRoute} />
-                        <Route path="*rest" component={DashboardRedirect} />
+                        <Route path="*rest" component={AgentStudioRedirect} />
                       </>
                     }
                     servers={[server]}

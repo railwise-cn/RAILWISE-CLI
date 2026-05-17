@@ -226,7 +226,10 @@ describe("server.routes.agent-studio", () => {
       process.env.RAILWISE_TEST_HOME = tmp.path
       try {
         await mkdir(path.join(tmp.path, ".railwise", "tools"), { recursive: true })
-        await Bun.write(path.join(tmp.path, ".railwise", "tools", "broken.ts"), 'throw new Error("broken custom tool")\n')
+        await Bun.write(
+          path.join(tmp.path, ".railwise", "tools", "broken.ts"),
+          'throw new Error("broken custom tool")\n',
+        )
 
         await Instance.provide({
           directory: tmp.path,

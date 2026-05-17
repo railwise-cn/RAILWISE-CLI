@@ -4791,6 +4791,80 @@
         ]
       }
     },
+    "/agent-studio/tool/list": {
+      "get": {
+        "operationId": "agentStudio.tool.list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "List agent collaboration tools",
+        "description": "Returns tools grouped for the Agent Studio capability inventory.",
+        "responses": {
+          "200": {
+            "description": "Tool inventory",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ToolInventoryItem"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.tool.list({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/agent-studio/skill/list": {
+      "get": {
+        "operationId": "agentStudio.skill.list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "List available skills",
+        "description": "Returns skills discovered from workspace and global skill directories.",
+        "responses": {
+          "200": {
+            "description": "Skill inventory",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SkillInventoryItem"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.agentStudio.skill.list({\n  ...\n})"
+          }
+        ]
+      }
+    },
     "/agent-studio/workflow/presets": {
       "get": {
         "operationId": "agentStudio.workflow.presets",
@@ -12206,6 +12280,10 @@
             "exclusiveMinimum": 0,
             "maximum": 9007199254740991
           },
+          "displayName": {
+            "description": "Localized product-facing name for Agent Studio.",
+            "type": "string"
+          },
           "filePath": {
             "description": "Absolute path of the backing .md file.",
             "type": "string"
@@ -12218,6 +12296,37 @@
           }
         },
         "required": ["name", "mode", "permission", "options"]
+      },
+      "ToolInventoryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string",
+            "enum": ["agent", "knowledge", "survey", "core", "extension"]
+          }
+        },
+        "required": ["id", "label", "group"]
+      },
+      "SkillInventoryItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "description", "location"]
       },
       "WorkflowNode": {
         "type": "object",
@@ -12943,6 +13052,9 @@
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 9007199254740991
+          },
+          "displayName": {
+            "type": "string"
           },
           "filePath": {
             "type": "string"

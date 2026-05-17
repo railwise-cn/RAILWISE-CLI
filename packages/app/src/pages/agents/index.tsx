@@ -103,17 +103,14 @@ export default function AgentsPage() {
   onMount(load)
   useAgentUpdates(load)
 
-  const recent = createMemo(() =>
-    recentWorkspaces(sync.data.project, 4),
-  )
+  const recent = createMemo(() => recentWorkspaces(sync.data.project, 4))
   const summary = createMemo(() => agentStudioSummary(items()))
   const collaborators = createMemo(() =>
     items()
       .slice()
       .sort(
         (a, b) =>
-          Number(a.mode !== "primary") - Number(b.mode !== "primary") ||
-          a.name.localeCompare(b.name, "zh-Hans-CN"),
+          Number(a.mode !== "primary") - Number(b.mode !== "primary") || a.name.localeCompare(b.name, "zh-Hans-CN"),
       ),
   )
   const featured = createMemo(() =>
@@ -305,7 +302,9 @@ export default function AgentsPage() {
           <div class="agent-stat">
             <span>智能体</span>
             <strong>{summary().total}</strong>
-            <small>{summary().primary} 主控 / {summary().collaborators} 专业智能体</small>
+            <small>
+              {summary().primary} 主控 / {summary().collaborators} 专业智能体
+            </small>
           </div>
           <div class="agent-stat">
             <span>工具</span>
@@ -420,7 +419,9 @@ export default function AgentsPage() {
           <div>
             <span>可见模型</span>
             <strong>{visibleModels().length}</strong>
-            <small>{setupState() === "models-hidden" ? "Provider 已接入，需启用模型" : `默认建议 ${recommendedModel}`}</small>
+            <small>
+              {setupState() === "models-hidden" ? "Provider 已接入，需启用模型" : `默认建议 ${recommendedModel}`}
+            </small>
           </div>
           <div>
             <span>专属绑定</span>

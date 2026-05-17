@@ -80,9 +80,9 @@ describe("model routing helpers", () => {
   })
 
   test("labels bound models and default fallback", () => {
-    expect(modelRouteLabel({ name: "chief_manager", mode: "primary", model: { providerID: "deepseek", modelID: "v4" } })).toBe(
-      "deepseek/v4",
-    )
+    expect(
+      modelRouteLabel({ name: "chief_manager", mode: "primary", model: { providerID: "deepseek", modelID: "v4" } }),
+    ).toBe("deepseek/v4")
     expect(modelRouteLabel({ name: "writer", mode: "subagent" })).toBe("默认 DeepSeek V4")
   })
 

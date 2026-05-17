@@ -8,6 +8,8 @@ import type {
   AgentStudioGetErrors,
   AgentStudioGetResponses,
   AgentStudioListResponses,
+  AgentStudioSkillListResponses,
+  AgentStudioToolListResponses,
   AgentStudioUpdateErrors,
   AgentStudioUpdateResponses,
   AgentStudioWikiReportErrors,
@@ -2570,6 +2572,48 @@ export class File extends HeyApiClient {
   }
 }
 
+export class Tool2 extends HeyApiClient {
+  /**
+   * List agent collaboration tools
+   *
+   * Returns tools grouped for the Agent Studio capability inventory.
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioToolListResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/tool/list",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Skill extends HeyApiClient {
+  /**
+   * List available skills
+   *
+   * Returns skills discovered from workspace and global skill directories.
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioSkillListResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/skill/list",
+      ...options,
+      ...params,
+    })
+  }
+}
+
 export class Delivery extends HeyApiClient {
   /**
    * Archive accepted workflow delivery
@@ -2948,6 +2992,16 @@ export class AgentStudio extends HeyApiClient {
         ...params.headers,
       },
     })
+  }
+
+  private _tool?: Tool2
+  get tool(): Tool2 {
+    return (this._tool ??= new Tool2({ client: this.client }))
+  }
+
+  private _skill?: Skill
+  get skill(): Skill {
+    return (this._skill ??= new Skill({ client: this.client }))
   }
 
   private _workflow?: Workflow

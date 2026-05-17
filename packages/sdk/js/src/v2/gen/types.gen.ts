@@ -2278,6 +2278,10 @@ export type AgentListItem = {
   }
   steps?: number
   /**
+   * Localized product-facing name for Agent Studio.
+   */
+  displayName?: string
+  /**
    * Absolute path of the backing .md file.
    */
   filePath?: string
@@ -2285,6 +2289,18 @@ export type AgentListItem = {
    * Message count by this agent in the last 7 days.
    */
   callCount7d?: number
+}
+
+export type ToolInventoryItem = {
+  id: string
+  label: string
+  group: "agent" | "knowledge" | "survey" | "core" | "extension"
+}
+
+export type SkillInventoryItem = {
+  name: string
+  description: string
+  location: string
 }
 
 export type WorkflowNode = {
@@ -2498,6 +2514,7 @@ export type AgentDetail = {
     [key: string]: unknown
   }
   steps?: number
+  displayName?: string
   filePath?: string
   /**
    * Full markdown source including frontmatter.
@@ -4880,6 +4897,42 @@ export type AgentStudioListResponses = {
 }
 
 export type AgentStudioListResponse = AgentStudioListResponses[keyof AgentStudioListResponses]
+
+export type AgentStudioToolListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/tool/list"
+}
+
+export type AgentStudioToolListResponses = {
+  /**
+   * Tool inventory
+   */
+  200: Array<ToolInventoryItem>
+}
+
+export type AgentStudioToolListResponse = AgentStudioToolListResponses[keyof AgentStudioToolListResponses]
+
+export type AgentStudioSkillListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/skill/list"
+}
+
+export type AgentStudioSkillListResponses = {
+  /**
+   * Skill inventory
+   */
+  200: Array<SkillInventoryItem>
+}
+
+export type AgentStudioSkillListResponse = AgentStudioSkillListResponses[keyof AgentStudioSkillListResponses]
 
 export type AgentStudioWorkflowPresetsData = {
   body?: never

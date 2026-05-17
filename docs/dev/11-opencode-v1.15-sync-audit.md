@@ -173,8 +173,9 @@ For this sync batch, Railwise ports the highest-signal MCP compatibility fix fir
 - Non-schema MCP failures still mark the server failed, preserving existing error behavior.
 - Plugin SDK clients now reuse the same Basic Auth header as local server clients when `RAILWISE_SERVER_PASSWORD` is configured, preventing plugin-to-server SDK calls from failing against an authenticated local server.
 - Provider message transforms now replace lone UTF-16 surrogate code units with `U+FFFD` before request payloads are sent, matching the upstream safety fix for malformed text.
+- Tool execution now passes Zod-parsed parameters to tool handlers, so schema coercions and transforms apply before a tool runs.
 
-Remaining Task 5 work: provider request compatibility, plugin validation drift, and tool argument validation.
+Remaining Task 5 work: broader provider request compatibility and plugin validation drift.
 
 Verification for this MCP slice:
 
@@ -190,5 +191,12 @@ Verification for this plugin auth slice:
 Verification for this provider surrogate slice:
 
 - `bun test test/provider/transform.test.ts --timeout 30000`
+- `bun test test/tool test/provider test/plugin test/mcp test/server/auth.test.ts --timeout 30000`
+- `bun run typecheck`
+
+Verification for this tool validation slice:
+
+- `bun test test/tool/tool.test.ts --timeout 30000`
+- `bun test test/tool --timeout 30000`
 - `bun test test/tool test/provider test/plugin test/mcp test/server/auth.test.ts --timeout 30000`
 - `bun run typecheck`

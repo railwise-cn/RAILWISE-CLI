@@ -16,7 +16,8 @@ const table = (map: Record<string, number>) =>
     .map(([key, count]) => `| ${key} | ${count} |`)
     .join("\n")
 
-const diff = await $`git diff --name-status ${base}..${target} -- package.json bun.lock packages/opencode packages/app packages/ui packages/sdk/js`.text()
+const diff =
+  await $`git diff --name-status ${base}..${target} -- package.json bun.lock packages/opencode packages/app packages/ui packages/sdk/js`.text()
 const rows = diff
   .trim()
   .split("\n")
@@ -55,12 +56,7 @@ const mapped = await Promise.all(
 )
 
 const upstream = new Set(
-  (
-    await $`git ls-tree -d --name-only ${`${target}:packages/opencode/src`}`.text()
-  )
-    .trim()
-    .split("\n")
-    .filter(Boolean),
+  (await $`git ls-tree -d --name-only ${`${target}:packages/opencode/src`}`.text()).trim().split("\n").filter(Boolean),
 )
 const current = new Set(
   (await readdir("packages/railwise/src", { withFileTypes: true }))

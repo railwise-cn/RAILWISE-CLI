@@ -138,13 +138,9 @@ export namespace MCP {
       })
 
       const result = await withTimeout(
-        client.request(
-          { method: "tools/list" },
-          TolerantListToolsResultSchema,
-          {
-            timeout,
-          },
-        ),
+        client.request({ method: "tools/list" }, TolerantListToolsResultSchema, {
+          timeout,
+        }),
         timeout,
       )
 

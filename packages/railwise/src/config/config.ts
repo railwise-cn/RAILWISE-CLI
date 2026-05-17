@@ -627,21 +627,24 @@ export namespace Config {
     return result
   }
 
-  const legacyTools = z.preprocess((val) => {
-    if (!isRecord(val)) return val
-    const result: Record<string, boolean> = {}
-    for (const [tool, enabled] of Object.entries(val)) {
-      if (typeof enabled === "boolean") {
-        result[tool] = enabled
-        continue
+  const legacyTools = z.preprocess(
+    (val) => {
+      if (!isRecord(val)) return val
+      const result: Record<string, boolean> = {}
+      for (const [tool, enabled] of Object.entries(val)) {
+        if (typeof enabled === "boolean") {
+          result[tool] = enabled
+          continue
+        }
+        if (!Array.isArray(enabled)) continue
+        for (const item of enabled) {
+          if (typeof item === "string") result[item] = true
+        }
       }
-      if (!Array.isArray(enabled)) continue
-      for (const item of enabled) {
-        if (typeof item === "string") result[item] = true
-      }
-    }
-    return result
-  }, z.record(z.string(), z.boolean()))
+      return result
+    },
+    z.record(z.string(), z.boolean()),
+  )
 
   function normalizeLoadedConfig(data: unknown) {
     if (!isRecord(data)) return data

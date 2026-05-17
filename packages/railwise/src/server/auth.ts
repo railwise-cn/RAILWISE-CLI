@@ -1,7 +1,10 @@
 import { Flag } from "@/flag/flag"
 
 export namespace ServerAuth {
-  export function token(password = Flag.RAILWISE_SERVER_PASSWORD, username = Flag.RAILWISE_SERVER_USERNAME ?? "railwise") {
+  export function token(
+    password = Flag.RAILWISE_SERVER_PASSWORD,
+    username = Flag.RAILWISE_SERVER_USERNAME ?? "railwise",
+  ) {
     if (!password) return undefined
     return Buffer.from(`${username}:${password}`).toString("base64")
   }
@@ -30,7 +33,10 @@ export namespace ServerAuth {
     return decoded.username === input.username && decoded.password === input.password
   }
 
-  export function headers(password = Flag.RAILWISE_SERVER_PASSWORD, username = Flag.RAILWISE_SERVER_USERNAME ?? "railwise") {
+  export function headers(
+    password = Flag.RAILWISE_SERVER_PASSWORD,
+    username = Flag.RAILWISE_SERVER_USERNAME ?? "railwise",
+  ) {
     const value = token(password, username)
     if (!value) return undefined
     return {

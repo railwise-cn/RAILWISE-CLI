@@ -20,6 +20,10 @@ function mimeToModality(mime: string): Modality | undefined {
 export namespace ProviderTransform {
   export const OUTPUT_TOKEN_MAX = Flag.RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX || 32_000
 
+  export function sanitizeSurrogates(content: string) {
+    return content.replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "\uFFFD")
+  }
+
   // Maps npm package to the key the AI SDK expects for providerOptions
   function sdkKey(npm: string): string | undefined {
     switch (npm) {
@@ -49,6 +53,44 @@ export namespace ProviderTransform {
     model: Provider.Model,
     options: Record<string, unknown>,
   ): ModelMessage[] {
+    msgs = msgs.map((msg) => {
+      if (msg.role === "system") {
+        const content = msg.content as unknown
+        if (typeof content === "string") return { ...msg, content: sanitizeSurrogates(content) }
+        if (Array.isArray(content))
+          return {
+            ...msg,
+            content: content.map((part: any) => {
+              if (part.type === "text") return { ...part, text: sanitizeSurrogates(part.text) }
+              return part
+            }),
+          } as unknown as typeof msg
+        return msg
+      }
+      if (msg.role === "user") {
+        if (typeof msg.content === "string") return { ...msg, content: sanitizeSurrogates(msg.content) }
+        return {
+          ...msg,
+          content: msg.content.map((part) => {
+            if (part.type === "text") return { ...part, text: sanitizeSurrogates(part.text) }
+            return part
+          }),
+        }
+      }
+      if (msg.role === "assistant") {
+        if (typeof msg.content === "string") return { ...msg, content: sanitizeSurrogates(msg.content) }
+        return {
+          ...msg,
+          content: msg.content.map((part) => {
+            if (part.type === "text" || part.type === "reasoning")
+              return { ...part, text: sanitizeSurrogates(part.text) }
+            return part
+          }),
+        }
+      }
+      return msg
+    })
+
     // Anthropic rejects messages with empty content - filter out empty string messages
     // and remove empty text/reasoning parts from array content
     if (model.api.npm === "@ai-sdk/anthropic") {

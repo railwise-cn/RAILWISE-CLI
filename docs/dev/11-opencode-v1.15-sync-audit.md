@@ -161,3 +161,21 @@ For this sync batch, Railwise ports isolated runtime fixes that fit the current 
 - Cap retry delays from `retry-after` and `retry-after-ms` headers at the runtime timer limit.
 - Retry provider API errors with 5xx status codes even when provider SDK metadata does not mark the error retryable.
 - Prefer `RAILWISE_TEST_HOME` over `RAILWISE_HOME` so server tests remain isolated when a developer shell has a real Railwise home configured.
+
+## Task 5 MCP/Tooling Decision
+
+Upstream v1.15.3 includes a broad MCP, tool, plugin, and provider rewrite that also depends on new Effect services and `@opencode-ai/core` modules. Railwise should not wholesale port that layer until the core package split is planned.
+
+For this sync batch, Railwise ports the highest-signal MCP compatibility fix first:
+
+- If `client.listTools()` fails because an external MCP server returns an invalid or unresolvable `outputSchema`, Railwise retries `tools/list` with a tolerant schema.
+- The fallback drops only the invalid output schema metadata and preserves the tool name, description, and input schema.
+- Non-schema MCP failures still mark the server failed, preserving existing error behavior.
+
+Remaining Task 5 work: provider request compatibility, plugin validation drift, and tool argument validation.
+
+Verification for this MCP slice:
+
+- `bun test test/mcp --timeout 30000`
+- `bun test test/tool test/provider test/plugin test/mcp --timeout 30000`
+- `bun run typecheck`

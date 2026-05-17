@@ -43,6 +43,7 @@ import { HTTPException } from "hono/http-exception"
 import { errors } from "./error"
 import { QuestionRoutes } from "./routes/question"
 import { PermissionRoutes } from "./routes/permission"
+import { ServerAuth } from "./auth"
 import { GlobalRoutes } from "./routes/global"
 import { MDNS } from "./mdns"
 
@@ -82,13 +83,23 @@ export namespace Server {
             status: 500,
           })
         })
-        .use((c, next) => {
+        .use(async (c, next) => {
           // Allow CORS preflight requests to succeed without auth.
           // Browser clients sending Authorization headers will preflight with OPTIONS.
           if (c.req.method === "OPTIONS") return next()
           const password = Flag.RAILWISE_SERVER_PASSWORD
           if (!password) return next()
           const username = Flag.RAILWISE_SERVER_USERNAME ?? "railwise"
+          const token = c.req.query("auth_token")
+          if (token) {
+            if (ServerAuth.authorized({ token, username, password })) return next()
+            return new Response("Unauthorized", {
+              status: 401,
+              headers: {
+                "WWW-Authenticate": 'Basic realm="Secure Area"',
+              },
+            })
+          }
           return basicAuth({ username, password })(c, next)
         })
         .use(async (c, next) => {

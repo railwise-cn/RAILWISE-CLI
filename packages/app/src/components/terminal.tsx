@@ -12,6 +12,7 @@ import { monoFontFamily, useSettings } from "@/context/settings"
 import type { LocalPTY } from "@/context/terminal"
 import { disposeIfDisposable, getHoveredLinkText, setOptionIfSupported } from "@/utils/runtime-adapters"
 import { terminalWriter } from "@/utils/terminal-writer"
+import { terminalWebSocketURL } from "@/utils/terminal-websocket-url"
 
 const TOGGLE_TERMINAL_ID = "terminal.toggle"
 const DEFAULT_TOGGLE_TERMINAL_KEYBIND = "ctrl+`"
@@ -156,6 +157,10 @@ export const Terminal = (props: TerminalProps) => {
   const theme = useTheme()
   const language = useLanguage()
   const server = useServer()
+  const directory = sdk.directory
+  const url = sdk.url
+  const auth = server.current?.http
+  const sameOrigin = new URL(url, location.href).origin === location.origin
   let container!: HTMLDivElement
   const [local, others] = splitProps(props, ["pty", "class", "classList", "onConnect", "onConnectError"])
   let ws: WebSocket | undefined
@@ -447,14 +452,18 @@ export const Terminal = (props: TerminalProps) => {
       const once = { value: false }
       let closing = false
 
-      const url = new URL(sdk.url + `/pty/${local.pty.id}/connect`)
-      url.searchParams.set("directory", sdk.directory)
-      url.searchParams.set("cursor", String(start !== undefined ? start : local.pty.buffer ? -1 : 0))
-      url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
-      url.username = server.current?.http.username ?? ""
-      url.password = server.current?.http.password ?? ""
+      const socketUrl = terminalWebSocketURL({
+        url,
+        id: local.pty.id,
+        directory,
+        cursor: start !== undefined ? start : local.pty.buffer ? -1 : 0,
+        sameOrigin,
+        username: auth?.username,
+        password: auth?.password,
+        authToken: !!auth?.password,
+      })
 
-      const socket = new WebSocket(url)
+      const socket = new WebSocket(socketUrl)
       socket.binaryType = "arraybuffer"
       ws = socket
 

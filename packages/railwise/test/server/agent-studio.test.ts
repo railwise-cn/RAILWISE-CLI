@@ -128,6 +128,41 @@ describe("server.routes.agent-studio", () => {
     }
   })
 
+  test("agent call counts stay scoped to the current workspace", async () => {
+    await using tmp = await tmpdir()
+    const home = process.env.RAILWISE_TEST_HOME
+    process.env.RAILWISE_TEST_HOME = tmp.path
+    try {
+      const other = path.join(tmp.path, "other")
+      const current = path.join(tmp.path, "current")
+      await mkdir(other, { recursive: true })
+      await mkdir(current, { recursive: true })
+
+      await Instance.provide({
+        directory: other,
+        fn: async () => {
+          const session = await Session.create({ title: "Other project" })
+          const user = await writeUser(session.id, "Other project request")
+          await writeAssistant(session.id, user.id, "Other project response")
+        },
+      })
+
+      await Instance.provide({
+        directory: current,
+        fn: async () => {
+          const response = await AgentStudioRoutes().request("http://railwise.test/list")
+          const list = (await response.json()) as { name: string; callCount7d?: number }[]
+          const chief = list.find((agent: { name: string }) => agent.name === "chief_manager")
+
+          expect(response.status).toBe(200)
+          expect(chief?.callCount7d).toBe(0)
+        },
+      })
+    } finally {
+      restore(home)
+    }
+  })
+
   test("workflow run creates a session and returns a reusable prompt", async () => {
     await using tmp = await tmpdir()
     const home = process.env.RAILWISE_TEST_HOME

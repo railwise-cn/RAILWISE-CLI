@@ -4,11 +4,12 @@ import { APICallError } from "ai"
 import { SessionRetry } from "../../src/session/retry"
 import { MessageV2 } from "../../src/session/message-v2"
 
-function apiError(headers?: Record<string, string>): MessageV2.APIError {
+function apiError(headers?: Record<string, string>, data?: Partial<MessageV2.APIError["data"]>): MessageV2.APIError {
   return new MessageV2.APIError({
     message: "boom",
     isRetryable: true,
     responseHeaders: headers,
+    ...data,
   }).toObject() as MessageV2.APIError
 }
 
@@ -63,6 +64,11 @@ describe("session.retry.delay", () => {
 
     const longError = apiError({ "retry-after-ms": "700000" })
     expect(SessionRetry.delay(1, longError)).toBe(700000)
+  })
+
+  test("caps retry-after hints at the runtime timer limit", () => {
+    const error = apiError({ "retry-after-ms": "3000000000" })
+    expect(SessionRetry.delay(1, error)).toBe(SessionRetry.RETRY_MAX_DELAY)
   })
 
   test("sleep caps delay to max 32-bit signed integer to avoid TimeoutOverflowWarning", async () => {
@@ -120,6 +126,16 @@ describe("session.retry.retryable", () => {
     }).toObject() as ReturnType<NamedError["toObject"]>
 
     expect(SessionRetry.retryable(error)).toBeUndefined()
+  })
+
+  test("retries server errors even when provider did not mark them retryable", () => {
+    const error = apiError(undefined, {
+      message: "upstream failed",
+      statusCode: 503,
+      isRetryable: false,
+    })
+
+    expect(SessionRetry.retryable(error)).toBe("upstream failed")
   })
 })
 

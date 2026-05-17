@@ -15,7 +15,7 @@ export namespace Global {
   export const Path = {
     // Allow override via RAILWISE_HOME for embedded clients and RAILWISE_TEST_HOME for tests.
     get home() {
-      return process.env.RAILWISE_HOME || process.env.RAILWISE_TEST_HOME || os.homedir()
+      return process.env.RAILWISE_TEST_HOME || process.env.RAILWISE_HOME || os.homedir()
     },
     data,
     bin: path.join(data, "bin"),

@@ -231,6 +231,33 @@ test("validates config schema and throws on invalid fields", async () => {
   })
 })
 
+test("loads desktop metadata and grouped legacy tools", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await writeConfig(dir, {
+        $schema: "https://railwise.ai/config.json",
+        version: 1,
+        system: "desktop",
+        tools: {
+          bash: false,
+          surveying: ["rw_chainage_convert", "rw_coordinate_transform"],
+          monitoring: ["rw_trend_analysis"],
+        },
+      })
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const config = await Config.get()
+      expect(config.permission?.bash).toBe("deny")
+      expect(config.permission?.rw_chainage_convert).toBe("allow")
+      expect(config.permission?.rw_coordinate_transform).toBe("allow")
+      expect(config.permission?.rw_trend_analysis).toBe("allow")
+    },
+  })
+})
+
 test("throws error for invalid JSON", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {

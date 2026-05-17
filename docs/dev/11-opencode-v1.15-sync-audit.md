@@ -171,6 +171,7 @@ For this sync batch, Railwise ports the highest-signal MCP compatibility fix fir
 - If `client.listTools()` fails because an external MCP server returns an invalid or unresolvable `outputSchema`, Railwise retries `tools/list` with a tolerant schema.
 - The fallback drops only the invalid output schema metadata and preserves the tool name, description, and input schema.
 - Non-schema MCP failures still mark the server failed, preserving existing error behavior.
+- Plugin SDK clients now reuse the same Basic Auth header as local server clients when `RAILWISE_SERVER_PASSWORD` is configured, preventing plugin-to-server SDK calls from failing against an authenticated local server.
 
 Remaining Task 5 work: provider request compatibility, plugin validation drift, and tool argument validation.
 
@@ -178,4 +179,9 @@ Verification for this MCP slice:
 
 - `bun test test/mcp --timeout 30000`
 - `bun test test/tool test/provider test/plugin test/mcp --timeout 30000`
+- `bun run typecheck`
+
+Verification for this plugin auth slice:
+
+- `bun test test/plugin test/server/auth.test.ts --timeout 30000`
 - `bun run typecheck`

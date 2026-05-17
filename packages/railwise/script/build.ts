@@ -54,6 +54,7 @@ console.log(`Loaded ${migrations.length} migrations`)
 const singleFlag = process.argv.includes("--single")
 const baselineFlag = process.argv.includes("--baseline")
 const skipInstall = process.argv.includes("--skip-install")
+const sourcemapsFlag = process.argv.includes("--sourcemaps")
 
 const allTargets: {
   os: string
@@ -156,22 +157,27 @@ for (const item of targets) {
   console.log(`building ${name}`)
   await $`mkdir -p dist/${name}/bin`
 
-  const parserWorker = fs.realpathSync(path.resolve(dir, "./node_modules/@opentui/core/parser.worker.js"))
+  const localPath = path.resolve(dir, "node_modules/@opentui/core/parser.worker.js")
+  const rootPath = path.resolve(dir, "../../node_modules/@opentui/core/parser.worker.js")
+  const parserWorker = fs.realpathSync(fs.existsSync(localPath) ? localPath : rootPath)
   const workerPath = "./src/cli/cmd/tui/worker.ts"
 
   // Use platform-specific bunfs root path based on target OS
   const bunfsRoot = item.os === "win32" ? "B:/~BUN/root/" : "/$bunfs/root/"
   const workerRelativePath = path.relative(dir, parserWorker).replaceAll("\\", "/")
 
-  await Bun.build({
+  const config = {
     conditions: ["browser"],
     tsconfig: "./tsconfig.json",
     plugins: [solidPlugin],
-    sourcemap: "external",
+    external: ["node-gyp"],
+    format: "esm" as const,
+    minify: true,
+    sourcemap: sourcemapsFlag ? ("linked" as const) : ("none" as const),
+    splitting: true,
     compile: {
       autoloadBunfig: false,
       autoloadDotenv: false,
-      //@ts-ignore (bun types aren't up to date)
       autoloadTsconfig: true,
       autoloadPackageJson: true,
       target: name.replace(pkg.name, "bun") as any,
@@ -188,7 +194,17 @@ for (const item of targets) {
       RAILWISE_CHANNEL: `'${Script.channel}'`,
       RAILWISE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "",
     },
-  })
+  }
+  await Bun.build(config)
+
+  if (item.os === process.platform && item.arch === process.arch && !item.abi) {
+    const result = await $`dist/${name}/bin/railwise --version`.quiet().throws(false)
+    if (result.exitCode !== 0) {
+      console.error(`Smoke test failed for ${name}: ${result.stderr.toString("utf8")}`)
+      process.exit(1)
+    }
+    console.log(`Smoke test passed: ${result.stdout.toString("utf8").trim()}`)
+  }
 
   await $`rm -rf ./dist/${name}/bin/tui`
   await Bun.file(`dist/${name}/package.json`).write(
@@ -196,6 +212,7 @@ for (const item of targets) {
       {
         name,
         version: Script.version,
+        preferUnplugged: true,
         os: [item.os],
         cpu: [item.arch],
       },

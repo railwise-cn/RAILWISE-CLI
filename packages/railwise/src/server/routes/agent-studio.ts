@@ -12,8 +12,8 @@ import { NormWiki } from "../../norm/wiki"
 import { Instance } from "../../project/instance"
 import { Session } from "../../session"
 import type { MessageV2 } from "../../session/message-v2"
-import { MessageTable } from "../../session/session.sql"
-import { Database, gte } from "../../storage/db"
+import { MessageTable, SessionTable } from "../../session/session.sql"
+import { and, Database, eq, gte } from "../../storage/db"
 import {
   AdjustmentConditionTool,
   AdjustmentFreeNetworkTool,
@@ -417,7 +417,14 @@ function calls() {
     db
       .select({ data: MessageTable.data })
       .from(MessageTable)
-      .where(gte(MessageTable.time_created, Date.now() - 7 * 24 * 60 * 60 * 1000))
+      .innerJoin(SessionTable, eq(MessageTable.session_id, SessionTable.id))
+      .where(
+        and(
+          eq(SessionTable.project_id, Instance.project.id),
+          eq(SessionTable.directory, Instance.directory),
+          gte(MessageTable.time_created, Date.now() - 7 * 24 * 60 * 60 * 1000),
+        ),
+      )
       .all(),
   )
   return rows.reduce(

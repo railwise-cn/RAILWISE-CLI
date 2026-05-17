@@ -65,6 +65,47 @@ describe("buildRequestParts", () => {
     expect(synthetic).toHaveLength(1)
   })
 
+  test("adds metadata and mentioned files for commented context", () => {
+    const result = buildRequestParts({
+      prompt: [],
+      context: [
+        {
+          key: "ctx:comment",
+          type: "file",
+          path: "src/foo.ts",
+          selection: { startLine: 7, startChar: 0, endLine: 9, endChar: 5 },
+          comment: "compare this with @src/bar.ts.",
+          commentOrigin: "review",
+          preview: "const value = 1",
+        },
+      ],
+      images: [],
+      text: "please review",
+      messageID: "msg_comment",
+      sessionID: "ses_comment",
+      sessionDirectory: "/repo",
+    })
+
+    const note = result.requestParts.find((part) => part.type === "text" && part.synthetic)
+    const files = result.requestParts.filter((part) => part.type === "file")
+
+    expect(note?.type).toBe("text")
+    if (!note || note.type !== "text") throw new Error("missing comment note")
+    expect(note?.text).toContain("# src/foo.ts")
+    expect(note?.metadata).toEqual({
+      type: "comment",
+      path: "src/foo.ts",
+      selection: { startLine: 7, startChar: 0, endLine: 9, endChar: 5 },
+      comment: "compare this with @src/bar.ts.",
+      preview: "const value = 1",
+      origin: "review",
+    })
+    expect(files.some((part) => part.type === "file" && part.url === "file:///repo/src/foo.ts?start=7&end=9")).toBe(
+      true,
+    )
+    expect(files.some((part) => part.type === "file" && part.url === "file:///repo/src/bar.ts")).toBe(true)
+  })
+
   test("handles Windows paths correctly (simulated on macOS)", () => {
     const prompt: Prompt = [{ type: "file", path: "src\\foo.ts", content: "@src\\foo.ts", start: 0, end: 11 }]
 

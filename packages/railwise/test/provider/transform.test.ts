@@ -847,6 +847,65 @@ describe("ProviderTransform.message - empty image handling", () => {
   })
 })
 
+describe("ProviderTransform.message - surrogate sanitization", () => {
+  const openaiModel = {
+    id: "openai/gpt-4",
+    providerID: "openai",
+    api: {
+      id: "gpt-4",
+      url: "https://api.openai.com",
+      npm: "@ai-sdk/openai",
+    },
+    name: "GPT-4",
+    capabilities: {
+      temperature: true,
+      reasoning: false,
+      attachment: true,
+      toolcall: true,
+      input: { text: true, audio: false, image: true, video: false, pdf: false },
+      output: { text: true, audio: false, image: false, video: false, pdf: false },
+      interleaved: false,
+    },
+    cost: {
+      input: 0.03,
+      output: 0.06,
+      cache: { read: 0.001, write: 0.002 },
+    },
+    limit: {
+      context: 128000,
+      output: 4096,
+    },
+    status: "active",
+    options: {},
+    headers: {},
+    release_date: "2023-04-01",
+  } as any
+
+  test("replaces lone surrogates in text message parts", () => {
+    const msgs = [
+      { role: "system", content: "system\uD800" },
+      {
+        role: "user",
+        content: [{ type: "text", text: "user\uDFFF" }],
+      },
+      {
+        role: "assistant",
+        content: [
+          { type: "reasoning", text: "thinking\uD800" },
+          { type: "text", text: "answer\uDFFF" },
+        ],
+      },
+    ] as any[]
+
+    const result = ProviderTransform.message(msgs, openaiModel, {}) as any[]
+
+    expect(result[0].content).toBe("system\uFFFD")
+    expect(result[1].content[0].text).toBe("user\uFFFD")
+    expect(result[2].content[0].text).toBe("thinking\uFFFD")
+    expect(result[2].content[1].text).toBe("answer\uFFFD")
+  })
+})
+
 describe("ProviderTransform.message - anthropic empty content filtering", () => {
   const anthropicModel = {
     id: "anthropic/claude-3-5-sonnet",

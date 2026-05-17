@@ -11,6 +11,7 @@ import { CodexAuthPlugin } from "./codex"
 import { Session } from "../session"
 import { NamedError } from "@railwise/util/error"
 import { CopilotAuthPlugin } from "./copilot"
+import { ServerAuth } from "@/server/auth"
 
 export namespace Plugin {
   const log = Log.create({ service: "plugin" })
@@ -21,6 +22,7 @@ export namespace Plugin {
     const client = createRailwiseClient({
       baseUrl: "http://localhost:4096",
       directory: Instance.directory,
+      headers: ServerAuth.headers(),
       // @ts-ignore - fetch type incompatibility
       fetch: async (...args) => Server.App().fetch(...args),
     })

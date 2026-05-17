@@ -627,6 +627,28 @@ export namespace Config {
     return result
   }
 
+  const legacyTools = z.preprocess((val) => {
+    if (!isRecord(val)) return val
+    const result: Record<string, boolean> = {}
+    for (const [tool, enabled] of Object.entries(val)) {
+      if (typeof enabled === "boolean") {
+        result[tool] = enabled
+        continue
+      }
+      if (!Array.isArray(enabled)) continue
+      for (const item of enabled) {
+        if (typeof item === "string") result[item] = true
+      }
+    }
+    return result
+  }, z.record(z.string(), z.boolean()))
+
+  function normalizeLoadedConfig(data: unknown) {
+    if (!isRecord(data)) return data
+    const { version, system, ...rest } = data
+    return rest
+  }
+
   export const Permission = z
     .preprocess(
       permissionPreprocess,
@@ -688,7 +710,7 @@ export namespace Config {
       temperature: z.number().optional(),
       top_p: z.number().optional(),
       prompt: z.string().optional(),
-      tools: z.record(z.string(), z.boolean()).optional().describe("@deprecated Use 'permission' field instead"),
+      tools: legacyTools.optional().describe("@deprecated Use 'permission' field instead"),
       disable: z.boolean().optional(),
       description: z.string().optional().describe("Description of when to use the agent"),
       mode: z.enum(["subagent", "primary", "all"]).optional(),
@@ -1160,7 +1182,7 @@ export namespace Config {
       instructions: z.array(z.string()).optional().describe("Additional instruction files or patterns to include"),
       layout: Layout.optional().describe("@deprecated Always uses stretch layout."),
       permission: Permission.optional(),
-      tools: z.record(z.string(), z.boolean()).optional(),
+      tools: legacyTools.optional(),
       enterprise: z
         .object({
           url: z.string().optional().describe("Enterprise URL"),
@@ -1331,7 +1353,7 @@ export namespace Config {
       })
     }
 
-    const parsed = Info.safeParse(data)
+    const parsed = Info.safeParse(normalizeLoadedConfig(data))
     if (parsed.success) {
       if (!parsed.data.$schema && isFile) {
         parsed.data.$schema = "https://railwise.ai/config.json"

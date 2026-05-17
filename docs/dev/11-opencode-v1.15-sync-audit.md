@@ -224,3 +224,14 @@ Verification for this app shell slice:
 - `bun test test/server/auth.test.ts --timeout 30000`
 - `cd packages/app && bun run typecheck`
 - `cd packages/railwise && bun run typecheck`
+
+## Task 7 SDK Regeneration Decision
+
+The JavaScript SDK was regenerated with `./packages/sdk/js/script/build.ts`. The generator completed successfully and reported no changes for the stable generated SDK files; the v2 generated files were rewritten without producing a working-tree diff.
+
+Verification for this SDK slice:
+
+- `./packages/sdk/js/script/build.ts`
+- `cd packages/railwise && bun run typecheck`
+- `cd packages/desktop && bun run typecheck`
+- `cd packages/app && bun run typecheck`

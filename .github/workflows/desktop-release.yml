@@ -205,7 +205,7 @@ jobs:
               args+=(--skip-stapling)
             fi
           fi
-          if [ "${{ matrix.platform }}" = "windows" ] && [ "$WINDOWS_UNSIGNED_INTERNAL" = "true" ]; then
+          if [ "${{ matrix.platform }}" = "windows" ]; then
             args+=(--bundles nsis)
           fi
           bun run --cwd packages/desktop tauri -- "${args[@]}"

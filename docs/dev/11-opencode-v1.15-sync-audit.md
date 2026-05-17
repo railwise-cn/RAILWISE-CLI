@@ -235,3 +235,34 @@ Verification for this SDK slice:
 - `cd packages/railwise && bun run typecheck`
 - `cd packages/desktop && bun run typecheck`
 - `cd packages/app && bun run typecheck`
+
+## Task 8 Windows Internal Installer Check
+
+The unsigned Windows internal installer path was verified through GitHub Actions after the opencode v1.15 sync slice. This confirms the beta packaging route can produce a normal Windows installer without requiring a paid Windows code-signing certificate.
+
+Workflow run:
+
+- Run: `25984425985`
+- Branch: `codex/opencode-v1.15-sync`
+- URL: `https://github.com/railwise-cn/RAILWISE-CLI/actions/runs/25984425985`
+- Version input: `1.3.0-internal.opencode-sync`
+- Platform input: `windows`
+- Internal unsigned input: `windows_unsigned_internal=true`
+
+Artifact verification:
+
+- Artifact: `railwise-desktop-windows-x64-internal-1.3.0-internal.opencode-sync`
+- Artifact id: `7040467611`
+- Downloaded zip: `/tmp/railwise-windows-internal-25984425985/artifact.zip`
+- Zip SHA256: `7f4b91754834eada7e9e1ae255614e73f06b08b45154474ab7a06d5dca1f6635`
+- Installer SHA256: `6b07c264c15d0acfce91da2c408abf70715d31c49fd46a974e25db6f4f421e18`
+- `file` output: `PE32 executable (GUI) Intel 80386, for MS Windows, Nullsoft Installer self-extracting archive`
+
+The artifact contains exactly one NSIS installer under the `x86_64-pc-windows-msvc` target path. The PE32 report is the NSIS bootstrap executable format; the artifact target and installer name are x64.
+
+Verification for this release-candidate packaging slice:
+
+- `bun ./scripts/verify-desktop-windows-internal.ts`
+- `gh workflow run desktop-release.yml --repo railwise-cn/RAILWISE-CLI --ref codex/opencode-v1.15-sync -f version=1.3.0-internal.opencode-sync -f platform=windows -f windows_unsigned_internal=true -f macos_skip_stapling=false -f macos_skip_notarization=false`
+- `gh run watch 25984425985 --repo railwise-cn/RAILWISE-CLI --exit-status`
+- `curl -L --fail --show-error --progress-bar -H "Authorization: Bearer $(gh auth token)" -H "Accept: application/vnd.github+json" https://api.github.com/repos/railwise-cn/RAILWISE-CLI/actions/artifacts/7040467611/zip -o /tmp/railwise-windows-internal-25984425985/artifact.zip`

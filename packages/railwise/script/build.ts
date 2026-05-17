@@ -53,7 +53,9 @@ console.log(`Loaded ${migrations.length} migrations`)
 
 const singleFlag = process.argv.includes("--single")
 const baselineFlag = process.argv.includes("--baseline")
-const skipInstall = process.argv.includes("--skip-install")
+// Single-target desktop sidecar builds already run after a frozen workspace install.
+// Reinstalling all OS/CPU native packages can hang CI on hosted Intel macOS runners.
+const skipInstall = process.argv.includes("--skip-install") || singleFlag
 const sourcemapsFlag = process.argv.includes("--sourcemaps")
 
 const allTargets: {

@@ -151,6 +151,7 @@ jobs:
 
       - name: Build sidecar
         if: matrix.platform != 'windows' || github.event_name != 'workflow_dispatch' || inputs.windows_unsigned_internal != true
+        timeout-minutes: 15
         run: bun run --cwd packages/desktop predev -- --target ${{ matrix.target }}
 
       - name: Build internal Windows sidecar

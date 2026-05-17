@@ -14,9 +14,9 @@ describe("AgentCard", () => {
   })
 
   test("maps known modes to Chinese labels", () => {
-    expect(modeLabel("primary")).toBe("主智能体")
-    expect(modeLabel("subagent")).toBe("子智能体")
-    expect(modeLabel("all")).toBe("通用")
+    expect(modeLabel("primary")).toBe("主控")
+    expect(modeLabel("subagent")).toBe("专业智能体")
+    expect(modeLabel("all")).toBe("专业智能体")
   })
 
   test("strips yaml frontmatter before markdown preview", () => {

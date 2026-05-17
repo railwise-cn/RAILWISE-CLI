@@ -37,7 +37,7 @@ export function AgentPermissionForm(props: { markdown: string; onChange: (value:
   return (
     <div class="agent-form" data-testid="agent-permission-form">
       <label class="agent-form__field">
-        <span>默认模型</span>
+        <span>智能体模型</span>
         <select
           value={value()}
           onInput={(event) =>
@@ -48,9 +48,10 @@ export function AgentPermissionForm(props: { markdown: string; onChange: (value:
             )
           }
         >
-          <option value="">继承系统默认</option>
+          <option value="">继承系统默认（建议 DeepSeek V4）</option>
           <For each={options()}>{(model) => <option value={model.value}>{model.label}</option>}</For>
         </select>
+        <small>未绑定时使用当前会话模型；绑定后这个智能体会优先使用所选模型。</small>
       </label>
 
       <For each={items}>

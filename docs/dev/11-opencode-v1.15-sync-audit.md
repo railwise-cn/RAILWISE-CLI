@@ -200,3 +200,27 @@ Verification for this tool validation slice:
 - `bun test test/tool --timeout 30000`
 - `bun test test/tool test/provider test/plugin test/mcp test/server/auth.test.ts --timeout 30000`
 - `bun run typecheck`
+
+## Task 6 App Shell Decision
+
+Upstream v1.15.3 changes the app shell heavily, including query-backed global sync, settings layout, terminal connection handling, and prompt input behavior. Railwise's app already diverges for the Chinese desktop shell, multi-agent hub, project/workspace flow, and desktop sidecar behavior, so this batch avoids wholesale UI replacement.
+
+For this sync batch, Railwise ports targeted app-shell stability fixes:
+
+- Workspace refresh queues now accept a normalized path key, preventing Windows slash variants such as `C:\repo` and `C:/repo` from being treated as separate queued workspaces.
+- Agent list responses are normalized defensively so array, single-object, or keyed-object payloads do not break the app shell.
+- Terminal WebSocket URLs now use `auth_token` query credentials instead of embedding username/password in the URL credential fields; the Railwise server accepts the same query token for authenticated local WebSocket requests.
+- Prompt input now preserves structured comment metadata, includes files mentioned inside comments, batches optimistic prompt state updates, and passes shell placeholder examples through the translation path.
+
+Deferred Task 6 areas:
+
+- Upstream session-cache cleanup depends on modules that Railwise does not currently carry.
+- Upstream settings-page changes are intertwined with a broader settings redesign and are deferred to avoid disrupting Railwise's current Chinese desktop settings experience.
+
+Verification for this app shell slice:
+
+- `bun test --preload ./happydom.ts ./src/context/global-sync/queue.test.ts ./src/context/global-sync/utils.test.ts ./src/utils/server.test.ts ./src/utils/terminal-websocket-url.test.ts --timeout 30000`
+- `bun test --preload ./happydom.ts ./src/components/prompt-input/build-request-parts.test.ts ./src/components/prompt-input/placeholder.test.ts ./src/components/prompt-input/submit.test.ts --timeout 30000`
+- `bun test test/server/auth.test.ts --timeout 30000`
+- `cd packages/app && bun run typecheck`
+- `cd packages/railwise && bun run typecheck`

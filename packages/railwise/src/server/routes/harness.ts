@@ -36,7 +36,7 @@ export const HarnessRoutes = lazy(() =>
           },
         },
       }),
-      (c) => c.json(Harness.status()),
+      async (c) => c.json(await Harness.status()),
     )
     .get(
       "/session/:sessionID/timeline",

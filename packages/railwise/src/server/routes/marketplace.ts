@@ -34,7 +34,7 @@ export const MarketplaceRoutes = lazy(() =>
           },
         },
       }),
-      (c) => c.json({ data: Marketplace.list() }),
+      async (c) => c.json({ data: await Marketplace.list() }),
     )
     .get(
       "/capabilities/:id",
@@ -55,8 +55,8 @@ export const MarketplaceRoutes = lazy(() =>
         },
       }),
       validator("param", CapabilityParam),
-      (c) => {
-        const item = Marketplace.get(c.req.valid("param").id)
+      async (c) => {
+        const item = await Marketplace.get(c.req.valid("param").id)
         if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
         return c.json(item)
       },
@@ -80,8 +80,8 @@ export const MarketplaceRoutes = lazy(() =>
         },
       }),
       validator("param", CapabilityParam),
-      (c) => {
-        const item = Marketplace.set(c.req.valid("param").id, true)
+      async (c) => {
+        const item = await Marketplace.set(c.req.valid("param").id, true)
         if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
         return c.json(item)
       },
@@ -105,8 +105,8 @@ export const MarketplaceRoutes = lazy(() =>
         },
       }),
       validator("param", CapabilityParam),
-      (c) => {
-        const item = Marketplace.set(c.req.valid("param").id, false)
+      async (c) => {
+        const item = await Marketplace.set(c.req.valid("param").id, false)
         if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
         return c.json(item)
       },

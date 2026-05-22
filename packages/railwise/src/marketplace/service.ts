@@ -1,18 +1,50 @@
 import { builtins } from "./builtin"
 import type { CapabilityKind, CapabilityManifest } from "./schema"
+import path from "path"
+import z from "zod"
+import { Filesystem } from "../util/filesystem"
+import { Global } from "../global"
 
 export namespace Marketplace {
-  const states = new Map<string, boolean>()
+  const State = z.object({
+    enabled: z.record(z.string(), z.boolean()).default({}),
+  })
+  type State = z.infer<typeof State>
+  let file: string | undefined
+  let state: State | undefined
 
-  export function list() {
+  function target() {
+    return file ?? process.env.RAILWISE_MARKETPLACE_STATE ?? path.join(Global.Path.config, "marketplace.json")
+  }
+
+  async function load() {
+    if (state) return state
+    const data = await Filesystem.readJson(target()).catch(() => ({}))
+    const parsed = State.safeParse(data)
+    state = parsed.success ? parsed.data : { enabled: {} }
+    return state
+  }
+
+  async function save(next: State) {
+    state = next
+    await Filesystem.writeJson(target(), next)
+  }
+
+  export function configure(path?: string) {
+    file = path
+    state = undefined
+  }
+
+  export async function list() {
+    const data = await load()
     return builtins.map((item) => ({
       ...item,
-      enabled: states.get(item.id) ?? item.enabled,
+      enabled: data.enabled[item.id] ?? item.enabled,
     }))
   }
 
-  export function get(id: string) {
-    return list().find((item) => item.id === id)
+  export async function get(id: string) {
+    return (await list()).find((item) => item.id === id)
   }
 
   export function groups(list: CapabilityManifest[]) {
@@ -22,10 +54,16 @@ export namespace Marketplace {
     }))
   }
 
-  export function set(id: string, enabled: boolean) {
-    const item = get(id)
+  export async function set(id: string, enabled: boolean) {
+    const item = await get(id)
     if (!item) return
-    states.set(id, enabled)
+    const data = await load()
+    await save({
+      enabled: {
+        ...data.enabled,
+        [id]: enabled,
+      },
+    })
     return {
       ...item,
       enabled,

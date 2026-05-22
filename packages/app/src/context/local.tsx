@@ -10,6 +10,8 @@ import { cycleModelVariant, getConfiguredAgentVariant, resolveModelVariant } fro
 
 export type ModelKey = { providerID: string; modelID: string }
 
+const systemAgents = new Set(["build", "plan", "general", "explore", "compaction"])
+
 export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
   name: "Local",
   init: () => {
@@ -34,7 +36,9 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
     let setModel: (model: ModelKey | undefined, options?: { recent?: boolean }) => void = () => undefined
 
     const agent = (() => {
-      const list = createMemo(() => sync.data.agent.filter((x) => x.mode !== "subagent" && !x.hidden))
+      const list = createMemo(() =>
+        sync.data.agent.filter((x) => x.mode !== "subagent" && !x.hidden && !systemAgents.has(x.name)),
+      )
       const [store, setStore] = createStore<{
         current?: string
       }>({

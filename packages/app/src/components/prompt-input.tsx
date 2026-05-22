@@ -100,6 +100,27 @@ const EXAMPLES = [
   "prompt.example.25",
 ] as const
 
+const agentLabels: Record<string, string> = {
+  chief_manager: "项目总控",
+  solution_architect: "技术方案架构师",
+  qa_inspector: "外业数据首检",
+  data_analyst: "测绘数据分析",
+  qa_reviewer: "总工办质检",
+  technical_writer: "工程报告编制",
+  commercial_specialist: "商务招投标",
+  ppt_master: "汇报材料设计",
+  cpiii_specialist: "CPIII 测量专家",
+  adjustment_computer: "严密平差计算",
+  railway_norm_consultant: "铁路规范顾问",
+  norm_librarian: "规范资料管理员",
+  knowledge_curator: "知识库整理员",
+  source_ingestor: "资料入库专员",
+}
+
+function agentLabel(agent: { name: string; displayName?: string }) {
+  return agent.displayName ?? agentLabels[agent.name] ?? agent.name
+}
+
 export const PromptInput: Component<PromptInputProps> = (props) => {
   const sdk = useSDK()
   const sync = useSync()
@@ -497,12 +518,22 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         (agent): AtOption => ({
           type: "agent",
           name: agent.name,
-          display: agent.name,
+          display: agentLabel(agent),
           color: agentColor(agent.name, agent.color),
         }),
       ),
   )
-  const agentNames = createMemo(() => local.agent.list().map((agent) => agent.name))
+  const agentOptions = createMemo(() =>
+    local.agent.list().map((agent) => ({
+      name: agent.name,
+      label: agentLabel(agent),
+    })),
+  )
+  const currentAgent = createMemo(() => {
+    const current = local.agent.current()
+    if (!current) return
+    return agentOptions().find((agent) => agent.name === current.name)
+  })
 
   const handleAtSelect = (option: AtOption | undefined) => {
     if (!option) return
@@ -1439,10 +1470,12 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                 >
                   <Select
                     size="normal"
-                    options={agentNames()}
-                    current={local.agent.current()?.name ?? ""}
-                    onSelect={local.agent.set}
-                    class="prompt-input-tray-select capitalize max-w-[160px]"
+                    options={agentOptions()}
+                    current={currentAgent()}
+                    value={(agent) => agent.name}
+                    label={(agent) => agent.label}
+                    onSelect={(agent) => local.agent.set(agent?.name)}
+                    class="prompt-input-tray-select max-w-[160px]"
                     valueClass="truncate text-13-regular"
                     variant="ghost"
                   />

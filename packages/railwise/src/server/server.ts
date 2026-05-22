@@ -30,6 +30,8 @@ import { DashboardRoutes } from "./routes/dashboard"
 import { TilesRoutes } from "./routes/tiles"
 import { TemplateRoutes } from "./routes/templates"
 import { FileRoutes } from "./routes/file"
+import { HarnessRoutes } from "./routes/harness"
+import { MarketplaceRoutes } from "./routes/marketplace"
 import { Config } from "../config/config"
 import { ConfigRoutes } from "./routes/config"
 import { ExperimentalRoutes } from "./routes/experimental"
@@ -252,6 +254,8 @@ export namespace Server {
         .route("/question", QuestionRoutes())
         .route("/provider", ProviderRoutes())
         .route("/dashboard", DashboardRoutes())
+        .route("/harness", HarnessRoutes())
+        .route("/marketplace", MarketplaceRoutes())
         .route("/tiles", TilesRoutes())
         .route("/templates", TemplateRoutes())
         .route("/", FileRoutes())

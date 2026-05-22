@@ -47,6 +47,7 @@ import { LLM } from "./llm"
 import { iife } from "@/util/iife"
 import { Shell } from "@/shell/shell"
 import { Truncate } from "@/tool/truncation"
+import { Harness } from "@/harness"
 
 // @ts-ignore
 globalThis.AI_SDK_LOG_WARNINGS = false
@@ -162,6 +163,36 @@ export namespace SessionPrompt {
     await SessionRevert.cleanup(session)
 
     const message = await createUserMessage(input)
+    const createdAt = Date.now()
+    if (Harness.timeline(input.sessionID).length === 0) {
+      Harness.record({
+        id: `${message.info.id}:harness:start`,
+        sessionID: input.sessionID,
+        type: "session.started",
+        title: "会话已进入 Harness",
+        detail: Instance.directory,
+        createdAt,
+        risk: "low",
+      })
+    }
+    Harness.record({
+      id: `${message.info.id}:harness:agent`,
+      sessionID: input.sessionID,
+      type: "agent.selected",
+      title: "已选择协作智能体",
+      detail: message.info.agent,
+      createdAt,
+      risk: "low",
+    })
+    Harness.record({
+      id: `${message.info.id}:harness:model`,
+      sessionID: input.sessionID,
+      type: "model.selected",
+      title: "已选择模型路由",
+      detail: `${message.info.model.providerID}/${message.info.model.modelID}`,
+      createdAt,
+      risk: "low",
+    })
     await Session.touch(input.sessionID)
 
     // this is backwards compatibility for allowing `tools` to be specified when

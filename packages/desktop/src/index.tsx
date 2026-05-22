@@ -28,12 +28,10 @@ import {
   type Accessor,
   createResource,
   createSignal,
-  lazy,
   type JSX,
   onCleanup,
   onMount,
   Show,
-  Suspense,
 } from "solid-js"
 import { render } from "solid-js/web"
 import pkg from "../package.json"
@@ -50,31 +48,10 @@ import { createMenu } from "./menu"
 import { StartupTimer, DEFAULT_BUDGETS } from "./performance"
 import { installTelemetry, track } from "./lib/telemetry"
 
-const Dashboard = lazy(() => import("./pages/dashboard"))
-const Workspace = lazy(() => import("./pages/workspace"))
-const WorkspaceDiff = lazy(() => import("./pages/workspace/diff"))
-const Loading = () => <div class="size-full" />
-const DashboardRoute = () => (
-  <Suspense fallback={<Loading />}>
-    <Dashboard />
-  </Suspense>
-)
-const WorkspaceRoute = () => (
-  <Suspense fallback={<Loading />}>
-    <Workspace />
-  </Suspense>
-)
-const WorkspaceDiffRoute = () => (
-  <Suspense fallback={<Loading />}>
-    <WorkspaceDiff />
-  </Suspense>
-)
-const DashboardRedirect = () => <Navigate href="/dashboard" />
 const AgentStudioRedirect = () => <Navigate href="/agents" />
 
 function ensureStandaloneLanding() {
   if (location.hash.startsWith("#/agents")) return
-  if (location.hash.startsWith("#/workspace")) return
   if (/^#\/[^/]+\/session/.test(location.hash)) return
   history.replaceState(null, "", `${location.pathname}${location.search}#/agents`)
 }
@@ -702,16 +679,15 @@ render(() => {
                     defaultServer={defaultServer.latest ?? ServerConnection.key(server)}
                     routes={
                       <>
-                        <Route path="/dashboard" component={DashboardRoute} />
-                        <Route path="/dashboard/*rest" component={DashboardRedirect} />
-                        <Route path="/workspace" component={WorkspaceRoute} />
-                        <Route path="/workspace/diff" component={WorkspaceDiffRoute} />
-                        <Route path="/workspace/*rest" component={WorkspaceRoute} />
+                        <Route path="/dashboard" component={AgentStudioRedirect} />
+                        <Route path="/dashboard/*rest" component={AgentStudioRedirect} />
+                        <Route path="/workspace" component={AgentStudioRedirect} />
+                        <Route path="/workspace/*rest" component={AgentStudioRedirect} />
                         <Route path="*rest" component={AgentStudioRedirect} />
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/dashboard", "/workspace", "/agents", "/:dir/session"]}
+                    standalonePaths={["/agents", "/:dir/session"]}
                     sessionRoutes
                     workbenchRoutes={false}
                   >

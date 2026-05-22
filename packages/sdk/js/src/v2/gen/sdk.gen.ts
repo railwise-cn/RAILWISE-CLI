@@ -68,8 +68,20 @@ import type {
   GlobalDisposeResponses,
   GlobalEventResponses,
   GlobalHealthResponses,
+  HarnessPermissionResolveErrors,
+  HarnessPermissionResolveResponses,
+  HarnessStatusResponses,
+  HarnessTimelineErrors,
+  HarnessTimelineResponses,
   InstanceDisposeResponses,
   LspStatusResponses,
+  MarketplaceCapabilitiesResponses,
+  MarketplaceCapabilityDisableErrors,
+  MarketplaceCapabilityDisableResponses,
+  MarketplaceCapabilityEnableErrors,
+  MarketplaceCapabilityEnableResponses,
+  MarketplaceCapabilityGetErrors,
+  MarketplaceCapabilityGetResponses,
   McpAddErrors,
   McpAddResponses,
   McpAuthAuthenticateErrors,
@@ -2310,6 +2322,237 @@ export class Dashboard extends HeyApiClient {
   }
 }
 
+export class Permission2 extends HeyApiClient {
+  /**
+   * Resolve Harness permission
+   *
+   * Record a user decision for a Harness permission request.
+   */
+  public resolve<ThrowOnError extends boolean = false>(
+    parameters: {
+      sessionID: string
+      permissionID: string
+      directory?: string
+      action?: "allow" | "deny"
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "sessionID" },
+            { in: "path", key: "permissionID" },
+            { in: "query", key: "directory" },
+            { in: "body", key: "action" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      HarnessPermissionResolveResponses,
+      HarnessPermissionResolveErrors,
+      ThrowOnError
+    >({
+      url: "/harness/session/{sessionID}/permission/{permissionID}",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+}
+
+export class Harness extends HeyApiClient {
+  /**
+   * Get Harness status
+   *
+   * Return the current RAILWISE Harness runtime status for the active workspace.
+   */
+  public status<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<HarnessStatusResponses, unknown, ThrowOnError>({
+      url: "/harness/status",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Get Harness session timeline
+   *
+   * Return Harness planning, permission, tool, and artifact events for a session.
+   */
+  public timeline<ThrowOnError extends boolean = false>(
+    parameters: {
+      sessionID: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "sessionID" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<HarnessTimelineResponses, HarnessTimelineErrors, ThrowOnError>({
+      url: "/harness/session/{sessionID}/timeline",
+      ...options,
+      ...params,
+    })
+  }
+
+  private _permission?: Permission2
+  get permission(): Permission2 {
+    return (this._permission ??= new Permission2({ client: this.client }))
+  }
+}
+
+export class Capability extends HeyApiClient {
+  /**
+   * Get marketplace capability
+   *
+   * Get a single RAILWISE capability manifest.
+   */
+  public get<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      MarketplaceCapabilityGetResponses,
+      MarketplaceCapabilityGetErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Enable marketplace capability
+   *
+   * Enable an installed RAILWISE capability for the active Harness.
+   */
+  public enable<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      MarketplaceCapabilityEnableResponses,
+      MarketplaceCapabilityEnableErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}/enable",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Disable marketplace capability
+   *
+   * Disable an installed RAILWISE capability for the active Harness.
+   */
+  public disable<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      MarketplaceCapabilityDisableResponses,
+      MarketplaceCapabilityDisableErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}/disable",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Marketplace extends HeyApiClient {
+  /**
+   * List marketplace capabilities
+   *
+   * List built-in, local, and remote RAILWISE capabilities available to the Harness.
+   */
+  public capabilities<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<MarketplaceCapabilitiesResponses, unknown, ThrowOnError>({
+      url: "/marketplace/capabilities",
+      ...options,
+      ...params,
+    })
+  }
+
+  private _capability?: Capability
+  get capability(): Capability {
+    return (this._capability ??= new Capability({ client: this.client }))
+  }
+}
+
 export class Tiles extends HeyApiClient {
   /**
    * 离线地图瓦片
@@ -3934,6 +4177,16 @@ export class RailwiseClient extends HeyApiClient {
   private _dashboard?: Dashboard
   get dashboard(): Dashboard {
     return (this._dashboard ??= new Dashboard({ client: this.client }))
+  }
+
+  private _harness?: Harness
+  get harness(): Harness {
+    return (this._harness ??= new Harness({ client: this.client }))
+  }
+
+  private _marketplace?: Marketplace
+  get marketplace(): Marketplace {
+    return (this._marketplace ??= new Marketplace({ client: this.client }))
   }
 
   private _tiles?: Tiles

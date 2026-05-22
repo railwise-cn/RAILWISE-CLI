@@ -2189,6 +2189,76 @@ export type DashboardSummary = {
   activeAgents: Array<DashboardActiveAgent>
 }
 
+export type HarnessMode = "safe" | "ask" | "auto"
+
+export type HarnessStatus = {
+  mode: HarnessMode
+  workspace?: string
+  model?: string
+  activeAgent?: string
+  capabilityCount: number
+  pendingPermissionCount: number
+  runningToolCount: number
+}
+
+export type HarnessEventType =
+  | "session.started"
+  | "plan.created"
+  | "agent.selected"
+  | "model.selected"
+  | "skill.loaded"
+  | "tool.requested"
+  | "permission.requested"
+  | "permission.resolved"
+  | "tool.started"
+  | "tool.completed"
+  | "tool.failed"
+  | "artifact.created"
+  | "session.completed"
+
+export type HarnessRisk = "low" | "medium" | "high"
+
+export type HarnessEvent = {
+  id: string
+  sessionID: string
+  type: HarnessEventType
+  title: string
+  detail?: string
+  createdAt: number
+  duration?: number
+  risk?: HarnessRisk
+  capabilityID?: string
+  artifactPath?: string
+  error?: string
+}
+
+export type CapabilityKind = "agent" | "tool" | "skill" | "workflow" | "mcp" | "provider" | "harness_profile"
+
+export type CapabilityPermission = {
+  filesystem?: "none" | "read" | "write"
+  network?: boolean
+  shell?: boolean
+  external_directory?: boolean
+  secrets?: boolean
+}
+
+export type CapabilityManifest = {
+  id: string
+  kind: CapabilityKind
+  name: string
+  description: string
+  version: string
+  source: "builtin" | "local" | "remote"
+  enabled: boolean
+  installed: boolean
+  permissions: CapabilityPermission
+  tags?: Array<string>
+}
+
+export type CapabilityList = {
+  data: Array<CapabilityManifest>
+}
+
 export type RailwiseTemplateVariable = {
   key: string
   label: string
@@ -4671,6 +4741,196 @@ export type DashboardProjectTimeseriesResponses = {
 
 export type DashboardProjectTimeseriesResponse =
   DashboardProjectTimeseriesResponses[keyof DashboardProjectTimeseriesResponses]
+
+export type HarnessStatusData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/harness/status"
+}
+
+export type HarnessStatusResponses = {
+  /**
+   * Harness status
+   */
+  200: HarnessStatus
+}
+
+export type HarnessStatusResponse = HarnessStatusResponses[keyof HarnessStatusResponses]
+
+export type HarnessTimelineData = {
+  body?: never
+  path: {
+    sessionID: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/harness/session/{sessionID}/timeline"
+}
+
+export type HarnessTimelineErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type HarnessTimelineError = HarnessTimelineErrors[keyof HarnessTimelineErrors]
+
+export type HarnessTimelineResponses = {
+  /**
+   * Harness timeline
+   */
+  200: Array<HarnessEvent>
+}
+
+export type HarnessTimelineResponse = HarnessTimelineResponses[keyof HarnessTimelineResponses]
+
+export type HarnessPermissionResolveData = {
+  body?: {
+    action: "allow" | "deny"
+  }
+  path: {
+    sessionID: string
+    permissionID: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/harness/session/{sessionID}/permission/{permissionID}"
+}
+
+export type HarnessPermissionResolveErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type HarnessPermissionResolveError = HarnessPermissionResolveErrors[keyof HarnessPermissionResolveErrors]
+
+export type HarnessPermissionResolveResponses = {
+  /**
+   * Permission decision event
+   */
+  200: HarnessEvent
+}
+
+export type HarnessPermissionResolveResponse =
+  HarnessPermissionResolveResponses[keyof HarnessPermissionResolveResponses]
+
+export type MarketplaceCapabilitiesData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities"
+}
+
+export type MarketplaceCapabilitiesResponses = {
+  /**
+   * Capability list
+   */
+  200: CapabilityList
+}
+
+export type MarketplaceCapabilitiesResponse = MarketplaceCapabilitiesResponses[keyof MarketplaceCapabilitiesResponses]
+
+export type MarketplaceCapabilityGetData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}"
+}
+
+export type MarketplaceCapabilityGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilityGetError = MarketplaceCapabilityGetErrors[keyof MarketplaceCapabilityGetErrors]
+
+export type MarketplaceCapabilityGetResponses = {
+  /**
+   * Capability manifest
+   */
+  200: CapabilityManifest
+}
+
+export type MarketplaceCapabilityGetResponse =
+  MarketplaceCapabilityGetResponses[keyof MarketplaceCapabilityGetResponses]
+
+export type MarketplaceCapabilityEnableData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/enable"
+}
+
+export type MarketplaceCapabilityEnableErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilityEnableError =
+  MarketplaceCapabilityEnableErrors[keyof MarketplaceCapabilityEnableErrors]
+
+export type MarketplaceCapabilityEnableResponses = {
+  /**
+   * Enabled capability manifest
+   */
+  200: CapabilityManifest
+}
+
+export type MarketplaceCapabilityEnableResponse =
+  MarketplaceCapabilityEnableResponses[keyof MarketplaceCapabilityEnableResponses]
+
+export type MarketplaceCapabilityDisableData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/disable"
+}
+
+export type MarketplaceCapabilityDisableErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilityDisableError =
+  MarketplaceCapabilityDisableErrors[keyof MarketplaceCapabilityDisableErrors]
+
+export type MarketplaceCapabilityDisableResponses = {
+  /**
+   * Disabled capability manifest
+   */
+  200: CapabilityManifest
+}
+
+export type MarketplaceCapabilityDisableResponse =
+  MarketplaceCapabilityDisableResponses[keyof MarketplaceCapabilityDisableResponses]
 
 export type TilesGetData = {
   body?: never

@@ -31,6 +31,7 @@ import { SessionComposerRegion, createSessionComposerState } from "@/pages/sessi
 import { SessionMobileTabs } from "@/pages/session/session-mobile-tabs"
 import { SessionSidePanel } from "@/pages/session/session-side-panel"
 import { useSessionHashScroll } from "@/pages/session/use-session-hash-scroll"
+import { SessionHarnessPanel } from "@/pages/session/session-harness-panel"
 
 export default function Page() {
   const layout = useLayout()
@@ -1012,6 +1013,7 @@ export default function Page() {
             width: sessionPanelWidth(),
           }}
         >
+          <SessionHarnessPanel sessionID={params.id} agent={lastUserMessage()?.agent ?? local.agent.current()?.name} />
           <div class="flex-1 min-h-0 overflow-hidden">
             <Switch>
               <Match when={params.id}>

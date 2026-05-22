@@ -1,12 +1,13 @@
 import "./agent-studio.css"
 import { A, useNavigate } from "@solidjs/router"
+import type { CapabilityKind, CapabilityManifest, HarnessStatus } from "@railwise/sdk/v2"
+import { Icon } from "@railwise/ui/icon"
 import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
-import { AgentCard } from "@/components/agent-card"
 import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
-import { WorkflowGallery } from "@/components/workflow-gallery"
+import { useGlobalSDK } from "@/context/global-sdk"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLayout } from "@/context/layout"
 import { useModels } from "@/context/models"
@@ -19,11 +20,8 @@ import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/t
 import { useAgentStudioApi } from "./api"
 import {
   agentRoleLabel,
-  agentStudioSummary,
   collaborationTarget,
   modelRouteLabel,
-  modelRoutingSummary,
-  modelSetupState,
   parseModelRoute,
   professionalSkills,
   recentWorkspaces,
@@ -32,41 +30,122 @@ import {
   updateAgentModelRoute,
 } from "./collaboration"
 
-const modes = [
-  { value: "all", label: "全部" },
-  { value: "primary", label: "主控智能体" },
-  { value: "collaborator", label: "专业智能体" },
-] as const
-type ModeFilter = (typeof modes)[number]["value"]
+type MarketFilter = CapabilityKind | "all"
 
-const groups: Record<ToolInventoryItem["group"], string> = {
-  agent: "智能体协作",
-  knowledge: "规范知识",
-  survey: "测绘生产",
-  core: "基础执行",
-  extension: "扩展能力",
-}
-
-const focus = [
+const systemAgents = new Set(["build", "plan", "general", "explore", "compaction"])
+const order = [
   "chief_manager",
-  "cpiii_specialist",
-  "adjustment_computer",
+  "source_ingestor",
   "norm_librarian",
   "knowledge_curator",
-  "source_ingestor",
+  "cpiii_specialist",
+  "adjustment_computer",
+  "railway_norm_consultant",
+  "technical_writer",
+  "qa_reviewer",
+  "data_analyst",
 ]
+
+const marketFilters: { value: MarketFilter; label: string }[] = [
+  { value: "all", label: "全部" },
+  { value: "agent", label: "智能体" },
+  { value: "tool", label: "工具" },
+  { value: "skill", label: "Skills" },
+  { value: "workflow", label: "工作流" },
+  { value: "provider", label: "模型" },
+  { value: "mcp", label: "MCP" },
+]
+
+const prompts = [
+  "检查当前线路复测资料，列出缺失文件、风险点和下一步执行计划。",
+  "导入 CPIII 复测成果，核对规范限差，并生成质量审查摘要。",
+  "把本周监测数据整理成报告草稿，突出超限点、趋势和处理建议。",
+]
+
+const descriptions: Record<string, string> = {
+  chief_manager: "拆解工程任务、调度专业智能体、控制质量闸门，并汇总最终交付。",
+  source_ingestor: "整理外部规范、项目资料和原始文件，准备可入库的资料上下文。",
+  norm_librarian: "查询工程测量规范，返回可追溯条文、版本差异和报告引用依据。",
+  knowledge_curator: "把规范、项目案例和审查记录沉淀为可检索的工程知识库。",
+  cpiii_specialist: "处理 CPIII 控制网、轨道精调、限差核对和复测成果审查。",
+  adjustment_computer: "调用确定性平差工具，输出残差、精度统计、粗差探测和质量标记。",
+  railway_norm_consultant: "围绕铁路测量规范生成合规说明、条文对照和审查意见。",
+  technical_writer: "把计算结果、规范引用和审查意见整理为中文技术报告。",
+  qa_reviewer: "检查成果完整性、风险项、术语一致性和交付前质量问题。",
+  data_analyst: "整理监测与测量数据，识别趋势、异常和统计摘要。",
+}
 
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
   return fallback
 }
 
+function rank(agent: AgentStudioItem) {
+  const index = order.indexOf(agent.name)
+  if (index >= 0) return index
+  return order.length + agent.name.localeCompare("zzzz")
+}
+
+function compactHome(value: string, home: string) {
+  if (home && value === home) return "~"
+  if (home && value.startsWith(home + "/")) return "~" + value.slice(home.length)
+  return value
+}
+
+function kindLabel(kind: CapabilityKind) {
+  if (kind === "agent") return "智能体"
+  if (kind === "tool") return "工具"
+  if (kind === "skill") return "Skill"
+  if (kind === "workflow") return "工作流"
+  if (kind === "provider") return "模型"
+  if (kind === "mcp") return "MCP"
+  return "Harness"
+}
+
+function modeLabel(mode: HarnessStatus["mode"]) {
+  if (mode === "auto") return "自动执行"
+  if (mode === "ask") return "询问确认"
+  return "安全确认"
+}
+
+function permissionLabel(capability: CapabilityManifest) {
+  const access = capability.permissions.filesystem === "read" ? "只读" : "读写"
+  const items = [
+    capability.permissions.filesystem !== "none" ? `文件${access}` : "",
+    capability.permissions.network ? "网络" : "",
+    capability.permissions.shell ? "命令" : "",
+    capability.permissions.external_directory ? "外部目录" : "",
+    capability.permissions.secrets ? "密钥" : "",
+  ].filter(Boolean)
+  if (!items.length) return "无敏感权限"
+  return items.join(" / ")
+}
+
+function capabilityAgent(capability: CapabilityManifest): AgentStudioItem {
+  const name = capability.id.replace("railwise.agent.", "")
+  return {
+    name,
+    displayName: capability.name,
+    description: descriptions[name] ?? capability.description,
+    mode: name === "chief_manager" ? "primary" : "subagent",
+    native: true,
+    permission: {},
+    options: {},
+  }
+}
+
+function agentDescription(agent: AgentStudioItem | undefined) {
+  if (!agent) return "接收任务并调度专业能力。"
+  return descriptions[agent.name] ?? agent.description ?? "参与工程任务协作。"
+}
+
 export default function AgentsPage() {
   const api = useAgentStudioApi()
   const dialog = useDialog()
+  const global = useGlobalSDK()
   const layout = useLayout()
-  const navigate = useNavigate()
   const models = useModels()
+  const navigate = useNavigate()
   const platform = usePlatform()
   const providers = useProviders()
   const server = useServer()
@@ -74,17 +153,22 @@ export default function AgentsPage() {
   const [items, setItems] = createSignal<AgentStudioItem[]>([])
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
+  const [harness, setHarness] = createSignal<HarnessStatus>()
+  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
   const [directory, setDirectory] = createSignal("")
   const [manualDirectory, setManualDirectory] = createSignal(false)
   const [selectedAgent, setSelectedAgent] = createSignal("chief_manager")
   const [draft, setDraft] = createSignal("")
   const [query, setQuery] = createSignal("")
-  const [mode, setMode] = createSignal<ModeFilter>("all")
+  const [filter, setFilter] = createSignal<MarketFilter>("all")
   const [loading, setLoading] = createSignal(true)
+  const [marketLoading, setMarketLoading] = createSignal(true)
   const [error, setError] = createSignal("")
+  const [marketError, setMarketError] = createSignal("")
+  const [busy, setBusy] = createSignal("")
   const [routeSaving, setRouteSaving] = createSignal<Record<string, boolean>>({})
 
-  function load() {
+  function loadStudio() {
     setLoading(true)
     void Promise.allSettled([api.list(), api.tools(), api.skills()])
       .then(([agents, toolset, skillset]) => {
@@ -100,84 +184,89 @@ export default function AgentsPage() {
       .finally(() => setLoading(false))
   }
 
-  onMount(load)
-  useAgentUpdates(load)
+  async function loadHarness() {
+    setMarketLoading(true)
+    const [status, market] = await Promise.allSettled([
+      global.client.harness.status(),
+      global.client.marketplace.capabilities(),
+    ])
+    if (status.status === "fulfilled" && status.value.data) setHarness(status.value.data)
+    if (market.status === "fulfilled" && market.value.data) {
+      setCapabilities(market.value.data.data)
+      setMarketError("")
+    } else if (market.status === "rejected") {
+      setMarketError(market.reason instanceof Error ? market.reason.message : String(market.reason))
+    }
+    setMarketLoading(false)
+  }
 
-  const recent = createMemo(() => recentWorkspaces(sync.data.project, 4))
-  const summary = createMemo(() => agentStudioSummary(items()))
-  const collaborators = createMemo(() =>
+  onMount(() => {
+    loadStudio()
+    void loadHarness()
+  })
+  useAgentUpdates(loadStudio)
+
+  const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
+  const productAgents = createMemo(() =>
     items()
-      .slice()
-      .sort(
-        (a, b) =>
-          Number(a.mode !== "primary") - Number(b.mode !== "primary") || a.name.localeCompare(b.name, "zh-Hans-CN"),
-      ),
+      .filter((agent) => !agent.hidden && !systemAgents.has(agent.name))
+      .sort((a, b) => rank(a) - rank(b)),
   )
-  const featured = createMemo(() =>
-    focus
-      .map((name) => items().find((agent) => agent.name === name))
-      .filter((agent): agent is AgentStudioItem => Boolean(agent))
-      .slice(0, 6),
+  const fallbackAgents = createMemo(() => capabilities().filter((item) => item.kind === "agent").map(capabilityAgent))
+  const agents = createMemo(() => (productAgents().length ? productAgents() : fallbackAgents()))
+  const selected = createMemo(() => agents().find((agent) => agent.name === selectedAgent()) ?? agents()[0])
+  const professionalTools = createMemo(() =>
+    tools().length
+      ? tools().map((tool) => ({ id: tool.id, label: tool.label, detail: tool.group }))
+      : capabilities()
+          .filter((item) => item.kind === "tool" && item.enabled)
+          .map((item) => ({ id: item.id, label: item.name, detail: permissionLabel(item) })),
   )
-  const grouped = createMemo(() =>
-    (Object.keys(groups) as ToolInventoryItem["group"][])
-      .map((group) => ({
-        group,
-        label: groups[group],
-        items: tools().filter((tool) => tool.group === group),
-      }))
-      .filter((group) => group.items.length > 0),
+  const professionalSkillList = createMemo(() =>
+    professionalSkills(skills(), 8).map((skill) => ({
+      id: skill.location,
+      label: skill.name,
+      detail: skill.description,
+    })),
   )
-  const visibleSkills = createMemo(() => professionalSkills(skills(), 12))
-  const visibleModels = createMemo(() =>
-    models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })),
-  )
-  const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
-  const routeSummary = createMemo(() => modelRoutingSummary(items()))
-  const setupState = createMemo(() =>
-    modelSetupState({ connectedProviders: connectedProviders().length, visibleModels: visibleModels().length }),
-  )
-  const routedAgents = createMemo(() => collaborators().slice(0, 8))
-  const visibleModelPreview = createMemo(() =>
-    visibleModels()
-      .slice()
-      .sort((a, b) => a.provider.name.localeCompare(b.provider.name) || a.name.localeCompare(b.name))
-      .slice(0, 6),
-  )
-  const modelOptions = createMemo(() =>
-    visibleModels()
-      .slice()
-      .sort((a, b) => a.provider.name.localeCompare(b.provider.name) || a.name.localeCompare(b.name))
-      .map((model) => ({
-        value: `${model.provider.id}/${model.id}`,
-        label: `${model.provider.name} / ${model.name}`,
-      })),
-  )
-  const canStart = createMemo(
-    () => directory().trim().length > 0 && selectedAgent().trim().length > 0 && draft().trim().length > 0,
-  )
-
-  const filtered = createMemo(() => {
+  const marketList = createMemo(() => {
     const needle = query().trim().toLowerCase()
-    return items().filter((agent) => {
-      const visible =
-        mode() === "all" ||
-        (mode() === "primary" && agent.mode === "primary") ||
-        (mode() === "collaborator" && agent.mode !== "primary")
+    return capabilities().filter((item) => {
+      const kind = filter() === "all" || item.kind === filter()
       const found =
         !needle ||
-        agent.name.toLowerCase().includes(needle) ||
-        (agent.displayName ?? "").toLowerCase().includes(needle) ||
-        (agent.description ?? agent.prompt ?? "").toLowerCase().includes(needle)
-      return visible && found
+        item.name.toLowerCase().includes(needle) ||
+        item.description.toLowerCase().includes(needle) ||
+        (item.tags ?? []).some((tag) => tag.toLowerCase().includes(needle))
+      return kind && found
     })
   })
+  const enabledCount = createMemo(() => capabilities().filter((item) => item.enabled).length)
+  const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
+  const visibleModels = createMemo(() =>
+    models
+      .list()
+      .filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id }))
+      .sort((a, b) => a.provider.name.localeCompare(b.provider.name) || a.name.localeCompare(b.name)),
+  )
+  const modelOptions = createMemo(() =>
+    visibleModels().map((model) => ({
+      value: `${model.provider.id}/${model.id}`,
+      label: `${model.provider.name} / ${model.name}`,
+    })),
+  )
+  const routeAgent = createMemo(() => selected() ?? agents()[0])
+  const canStart = createMemo(() => directory().trim().length > 0 && draft().trim().length > 0 && !!selectedAgent())
 
-  const compactPath = (value: string) => {
-    const home = sync.data.path.home
-    if (home && value === home) return "~"
-    if (home && value.startsWith(home + "/")) return "~" + value.slice(home.length)
-    return value
+  const routeValue = (agent: AgentStudioItem) => {
+    if (!agent.model) return ""
+    return `${agent.model.providerID}/${agent.model.modelID}`
+  }
+
+  const routeOptions = (agent: AgentStudioItem) => {
+    const current = routeValue(agent)
+    if (!current || modelOptions().some((model) => model.value === current)) return modelOptions()
+    return [{ value: current, label: `当前绑定 ${current}` }, ...modelOptions()]
   }
 
   const updateDirectory = (value: string) => {
@@ -194,14 +283,14 @@ export default function AgentsPage() {
     if (platform.openDirectoryPickerDialog && server.isLocal()) {
       resolve(
         await platform.openDirectoryPickerDialog({
-          title: "选择工作区文件夹",
+          title: "选择项目文件夹",
           multiple: false,
         }),
       )
       return
     }
     dialog.show(
-      () => <DialogSelectDirectory title="选择工作区文件夹" onSelect={resolve} />,
+      () => <DialogSelectDirectory title="选择项目文件夹" onSelect={resolve} />,
       () => resolve(null),
     )
   }
@@ -216,17 +305,6 @@ export default function AgentsPage() {
       return
     }
     dialog.show(() => <DialogConnectProvider provider={id} />)
-  }
-
-  const routeValue = (agent: AgentStudioItem) => {
-    if (!agent.model) return ""
-    return `${agent.model.providerID}/${agent.model.modelID}`
-  }
-
-  const routeOptions = (agent: AgentStudioItem) => {
-    const current = routeValue(agent)
-    if (!current || modelOptions().some((model) => model.value === current)) return modelOptions()
-    return [{ value: current, label: `当前绑定 ${current}` }, ...modelOptions()]
   }
 
   const updateRouteSaving = (name: string, saving: boolean) => {
@@ -245,21 +323,29 @@ export default function AgentsPage() {
     try {
       const detail = await api.detail(agent.name)
       await api.update(agent.name, updateAgentModelRoute(detail.rawMarkdown, value))
-      setItems((current) =>
-        current.map((item) =>
-          item.name === agent.name
-            ? {
-                ...item,
-                model: route,
-              }
-            : item,
-        ),
-      )
+      setItems((current) => current.map((item) => (item.name === agent.name ? { ...item, model: route } : item)))
       setError("")
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     } finally {
       updateRouteSaving(agent.name, false)
+    }
+  }
+
+  const toggleCapability = async (capability: CapabilityManifest, enabled: boolean) => {
+    setBusy(capability.id)
+    try {
+      const result = enabled
+        ? await global.client.marketplace.capability.enable({ id: capability.id })
+        : await global.client.marketplace.capability.disable({ id: capability.id })
+      if (result.data) {
+        setCapabilities((current) => current.map((item) => (item.id === capability.id ? result.data! : item)))
+      }
+      setMarketError("")
+    } catch (err) {
+      setMarketError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setBusy("")
     }
   }
 
@@ -283,324 +369,316 @@ export default function AgentsPage() {
   })
 
   createEffect(() => {
-    const current = selectedAgent()
-    if (items().some((agent) => agent.name === current)) return
-    const chief = items().find((agent) => agent.name === "chief_manager")
-    const first = chief ?? items()[0]
+    if (agents().some((agent) => agent.name === selectedAgent())) return
+    const chief = agents().find((agent) => agent.name === "chief_manager")
+    const first = chief ?? agents()[0]
     if (first) setSelectedAgent(first.name)
   })
 
   return (
-    <main class="agent-studio" data-testid="agents-page">
-      <section class="agent-hero">
-        <div class="agent-hero__copy">
-          <span class="agent-kicker">RAILWISE Agent Studio</span>
-          <h1>多智能体协作中枢</h1>
-          <p>围绕工程测绘任务组织专业智能体、生产工具、Skills 与工作流，让一次会话直接进入执行。</p>
+    <main class="agent-studio railwise-codex" data-testid="agents-page">
+      <aside class="rw-sidebar">
+        <div class="rw-brand">
+          <span>RAILWISE</span>
+          <strong>工程智能体</strong>
         </div>
-        <div class="agent-hero__stats" aria-busy={loading()}>
-          <div class="agent-stat">
-            <span>智能体</span>
-            <strong>{summary().total}</strong>
-            <small>
-              {summary().primary} 主控 / {summary().collaborators} 专业智能体
-            </small>
-          </div>
-          <div class="agent-stat">
-            <span>工具</span>
-            <strong>{tools().length}</strong>
-            <small>调度、规范、平差、文件执行</small>
-          </div>
-          <div class="agent-stat">
-            <span>Skills</span>
-            <strong>{skills().length}</strong>
-            <small>可按任务加载的专业流程</small>
-          </div>
-        </div>
-      </section>
 
-      <section class="agent-launch" data-testid="agent-collaboration-start">
-        <div class="agent-launch__project">
-          <div class="agent-section__header">
-            <div>
-              <h2>项目工作区</h2>
-              <p>以本地文件夹作为上下文，智能体直接在这个目录里工作。</p>
-            </div>
+        <section class="rw-panel rw-workspace">
+          <div class="rw-panel__bar">
+            <span>项目文件夹</span>
+            <button type="button" class="rw-icon-button" onClick={chooseDirectory} aria-label="选择项目文件夹">
+              <Icon name="folder" size="small" />
+            </button>
           </div>
-          <label class="agent-form__field">
-            <span>工作区文件夹</span>
-            <div class="agent-launch__path">
-              <input
-                data-testid="agent-project-directory"
-                value={directory()}
-                onInput={(event) => updateDirectory(event.currentTarget.value)}
-                placeholder="/Users/name/CODE/project"
-              />
-              <button type="button" class="agent-button agent-button--ghost" onClick={chooseDirectory}>
-                选择文件夹
-              </button>
-            </div>
-          </label>
+          <input
+            data-testid="agent-project-directory"
+            value={directory()}
+            onInput={(event) => updateDirectory(event.currentTarget.value)}
+            placeholder="/Users/name/CODE/project"
+          />
           <Show when={recent().length}>
-            <div class="agent-launch__recent" aria-label="最近工作区">
+            <div class="rw-recent">
               <For each={recent()}>
                 {(project) => (
                   <button type="button" title={project.worktree} onClick={() => updateDirectory(project.worktree)}>
-                    {compactPath(project.worktree)}
+                    {compactHome(project.worktree, sync.data.path.home)}
                   </button>
                 )}
               </For>
             </div>
           </Show>
-        </div>
+        </section>
 
-        <form
-          class="agent-launch__chat"
-          onSubmit={(event) => {
-            event.preventDefault()
-            startCollaboration()
-          }}
-        >
-          <div class="agent-launch__chat-head">
-            <label class="agent-form__field">
-              <span>协作智能体</span>
-              <select
-                data-testid="agent-collaboration-agent"
-                value={selectedAgent()}
-                onInput={(event) => setSelectedAgent(event.currentTarget.value)}
-              >
-                <Show
-                  when={collaborators().length}
-                  fallback={<option value={selectedAgent()}>{selectedAgent()}</option>}
-                >
-                  <For each={collaborators()}>
-                    {(agent) => (
-                      <option value={agent.name}>
-                        {agent.displayName ?? agent.name} · {agentRoleLabel(agent)} · @{agent.name}
-                      </option>
-                    )}
-                  </For>
-                </Show>
-              </select>
-            </label>
-            <button type="submit" class="agent-button" data-testid="agent-start-session" disabled={!canStart()}>
-              开始协作
-            </button>
+        <section class="rw-panel">
+          <div class="rw-panel__bar">
+            <span>Harness</span>
+            <strong>{harness() ? modeLabel(harness()!.mode) : marketLoading() ? "加载中" : "待连接"}</strong>
           </div>
-          <label class="agent-form__field">
-            <span>任务输入</span>
-            <textarea
-              data-testid="agent-collaboration-prompt"
-              value={draft()}
-              onInput={(event) => setDraft(event.currentTarget.value)}
-              placeholder="告诉智能体要完成的任务，例如：检查当前线路复测资料，列出缺失文件并给出下一步执行计划。"
-            />
-          </label>
-        </form>
-      </section>
+          <div class="rw-harness-grid">
+            <div>
+              <span>能力</span>
+              <strong>{marketLoading() ? "加载中" : capabilities().length ? `${enabledCount()} 已启用` : "待加载"}</strong>
+            </div>
+            <div>
+              <span>权限</span>
+              <strong>{harness()?.pendingPermissionCount ? `${harness()!.pendingPermissionCount} 待确认` : "无待处理"}</strong>
+            </div>
+            <div>
+              <span>执行</span>
+              <strong>{harness()?.runningToolCount ? `${harness()!.runningToolCount} 运行中` : "空闲"}</strong>
+            </div>
+          </div>
+        </section>
 
-      <section class="agent-model-routing" data-testid="agent-model-routing">
-        <div class="agent-section__header">
+        <section class="rw-panel">
+          <div class="rw-panel__bar">
+            <span>能力市场</span>
+            <strong>{marketLoading() ? "同步中" : capabilities().length ? `${capabilities().length} 项` : "待连接"}</strong>
+          </div>
+          <nav class="rw-market-nav" aria-label="能力市场分类">
+            <For each={marketFilters}>
+              {(item) => (
+                <button
+                  type="button"
+                  classList={{ active: filter() === item.value }}
+                  onClick={() => setFilter(item.value)}
+                >
+                  {item.label}
+                </button>
+              )}
+            </For>
+          </nav>
+        </section>
+      </aside>
+
+      <section class="rw-main">
+        <header class="rw-header">
           <div>
-            <h2>模型接入与智能体路由</h2>
-            <p>默认建议 {recommendedModel}；主控、审校、平差等智能体可以分别绑定不同模型。</p>
+            <span>RAILWISE 智能体 Harness</span>
+            <h1>把工程任务交给一组专业智能体</h1>
           </div>
           <button type="button" class="agent-button" onClick={connectProvider}>
+            <Icon name="plus-small" size="small" />
             接入模型
           </button>
-        </div>
+        </header>
 
-        <div class="agent-model-routing__stats">
-          <div>
-            <span>已接入 Provider</span>
-            <strong>{connectedProviders().length}</strong>
-            <small>{setupState() === "needs-provider" ? "建议先接入 DeepSeek 或 OpenRouter" : "可用于模型路由"}</small>
-          </div>
-          <div>
-            <span>可见模型</span>
-            <strong>{visibleModels().length}</strong>
-            <small>
-              {setupState() === "models-hidden" ? "Provider 已接入，需启用模型" : `默认建议 ${recommendedModel}`}
-            </small>
-          </div>
-          <div>
-            <span>专属绑定</span>
-            <strong>{routeSummary().bound}</strong>
-            <small>{routeSummary().defaulted} 个智能体继承默认模型</small>
-          </div>
-        </div>
-
-        <div class="agent-model-routing__body">
-          <div class="agent-model-routing__panel">
-            <div class="agent-model-routing__bar">
-              <span>模型接入</span>
-              <small>{setupState() === "ready" ? "已可用" : "待配置"}</small>
+        <section class="rw-composer" data-testid="agent-collaboration-start">
+          <div class="rw-thread">
+            <div class="rw-message rw-message--assistant">
+              <strong>项目总控</strong>
+              <p>
+                {selected()?.displayName ?? "项目总控"} 将作为入口接收任务，Harness 会按权限策略调度文件、工具、Skills 和专业智能体。
+              </p>
             </div>
-            <Show
-              when={visibleModelPreview().length}
-              fallback={
-                <div class="agent-model-routing__empty">
-                  <strong>还没有可用模型</strong>
-                  <small>点击“接入模型”，添加 DeepSeek、OpenRouter 或 OpenAI 兼容模型后即可分配给智能体。</small>
-                  <div class="agent-provider-actions">
-                    <For each={recommendedProviders}>
-                      {(provider) => (
-                        <button type="button" onClick={() => connectPreferred(provider.id)}>
-                          接入 {provider.label}
-                        </button>
+            <form
+              class="rw-prompt"
+              onSubmit={(event) => {
+                event.preventDefault()
+                startCollaboration()
+              }}
+            >
+              <div class="rw-prompt__bar">
+                <label>
+                  <span>协作智能体</span>
+                  <select
+                    data-testid="agent-collaboration-agent"
+                    value={selectedAgent()}
+                    onInput={(event) => setSelectedAgent(event.currentTarget.value)}
+                  >
+                    <For each={agents()}>
+                      {(agent) => (
+                        <option value={agent.name}>
+                          {agent.displayName ?? agent.name} · {agentRoleLabel(agent)}
+                        </option>
                       )}
                     </For>
+                  </select>
+                </label>
+                <button type="submit" class="agent-button" data-testid="agent-start-session" disabled={!canStart()}>
+                  <Icon name="check-small" size="small" />
+                  开始
+                </button>
+              </div>
+              <textarea
+                data-testid="agent-collaboration-prompt"
+                value={draft()}
+                onInput={(event) => setDraft(event.currentTarget.value)}
+                placeholder="输入工程任务，例如：检查当前线路复测资料，列出缺失文件并生成下一步执行计划。"
+              />
+            </form>
+          </div>
+          <div class="rw-prompt-bank">
+            <For each={prompts}>
+              {(prompt) => (
+                <button type="button" onClick={() => setDraft(prompt)}>
+                  {prompt}
+                </button>
+              )}
+            </For>
+          </div>
+        </section>
+
+        <section class="rw-agent-list" aria-busy={loading()}>
+          <div class="rw-section-title">
+            <span>专业智能体</span>
+            <strong>{loading() ? "加载中" : agents().length ? `${agents().length} 个可用` : "待加载"}</strong>
+          </div>
+          <div class="rw-agent-row">
+            <For each={agents()}>
+              {(agent) => (
+                <button
+                  type="button"
+                  classList={{ active: selectedAgent() === agent.name }}
+                  onClick={() => setSelectedAgent(agent.name)}
+                >
+                  <span>{agentRoleLabel(agent)}</span>
+                  <strong>{agent.displayName ?? agent.name}</strong>
+                  <small>{agentDescription(agent)}</small>
+                </button>
+              )}
+            </For>
+          </div>
+        </section>
+
+        <section class="rw-market">
+          <div class="rw-section-title">
+            <span>能力市场</span>
+            <label>
+              <Icon name="magnifying-glass" size="small" />
+              <input value={query()} onInput={(event) => setQuery(event.currentTarget.value)} placeholder="搜索能力" />
+            </label>
+          </div>
+          <Show when={marketError()}>
+            <p class="agent-error">{marketError()}</p>
+          </Show>
+          <div class="rw-market-grid" aria-busy={marketLoading()}>
+            <For each={marketList()}>
+              {(capability) => (
+                <article class="rw-capability" classList={{ disabled: !capability.enabled }}>
+                  <div class="rw-capability__top">
+                    <span>{kindLabel(capability.kind)}</span>
+                    <strong>{capability.enabled ? "已启用" : "可启用"}</strong>
                   </div>
+                  <h2>{capability.name}</h2>
+                  <p>{capability.description}</p>
+                  <small>{permissionLabel(capability)}</small>
+                  <div class="rw-tags">
+                    <For each={capability.tags ?? []}>{(tag) => <span>{tag}</span>}</For>
+                  </div>
+                  <button
+                    type="button"
+                    class="agent-button agent-button--ghost"
+                    disabled={busy() === capability.id}
+                    onClick={() => void toggleCapability(capability, !capability.enabled)}
+                  >
+                    {busy() === capability.id ? "处理中" : capability.enabled ? "停用" : "启用"}
+                  </button>
+                </article>
+              )}
+            </For>
+          </div>
+          <Show when={!marketLoading() && marketList().length === 0}>
+            <div class="agent-empty">没有匹配的能力。</div>
+          </Show>
+        </section>
+      </section>
+
+      <aside class="rw-inspector">
+        <section class="rw-panel rw-agent-profile">
+          <div class="rw-panel__bar">
+            <span>当前智能体</span>
+            <A href={`/agents/${selectedAgent()}`}>配置</A>
+          </div>
+          <h2>{selected()?.displayName ?? selected()?.name ?? "项目总控"}</h2>
+          <p>{agentDescription(selected())}</p>
+          <small>@{selectedAgent()}</small>
+        </section>
+
+        <section class="rw-panel">
+          <div class="rw-panel__bar">
+            <span>模型路由</span>
+            <strong>{connectedProviders().length ? `${connectedProviders().length} 个模型源` : "未接入"}</strong>
+          </div>
+          <Show
+            when={visibleModels().length > 0 ? routeAgent() : undefined}
+            fallback={
+              <div class="rw-model-empty">
+                <strong>默认建议 {recommendedModel}</strong>
+                <div class="agent-provider-actions">
+                  <For each={recommendedProviders}>
+                    {(provider) => (
+                      <button type="button" onClick={() => connectPreferred(provider.id)}>
+                        接入 {provider.label}
+                      </button>
+                    )}
+                  </For>
                 </div>
-              }
-            >
-              <div class="agent-model-list">
-                <For each={visibleModelPreview()}>
-                  {(model) => (
-                    <div class="agent-model-item">
-                      <strong>{model.provider.name}</strong>
-                      <span>{model.name}</span>
-                    </div>
-                  )}
-                </For>
+              </div>
+            }
+          >
+            {(agent) => (
+              <label class="rw-route">
+                <span>{modelRouteLabel(agent())}</span>
+                <select
+                  value={routeValue(agent())}
+                  disabled={routeSaving()[agent().name] || (!modelOptions().length && !routeValue(agent()))}
+                  onInput={(event) => void saveRoute(agent(), event.currentTarget.value)}
+                >
+                  <option value="">默认 {recommendedModel}</option>
+                  <For each={routeOptions(agent())}>
+                    {(model) => <option value={model.value}>{model.label}</option>}
+                  </For>
+                </select>
+              </label>
+            )}
+          </Show>
+        </section>
+
+        <section class="rw-panel">
+          <div class="rw-panel__bar">
+            <span>工具</span>
+            <strong>{professionalTools().length ? `${professionalTools().length} 项` : "待加载"}</strong>
+          </div>
+          <div class="rw-mini-list">
+            <For each={professionalTools().slice(0, 7)}>
+              {(tool) => (
+                <div>
+                  <strong>{tool.label}</strong>
+                  <small>{tool.detail}</small>
+                </div>
+              )}
+            </For>
+          </div>
+        </section>
+
+        <section class="rw-panel">
+          <div class="rw-panel__bar">
+            <span>Skills</span>
+            <strong>{professionalSkillList().length ? `${professionalSkillList().length} 项` : "市场同步"}</strong>
+          </div>
+          <div class="rw-mini-list">
+            <For each={professionalSkillList().slice(0, 6)}>
+              {(skill) => (
+                <div>
+                  <strong>{skill.label}</strong>
+                  <small>{skill.detail}</small>
+                </div>
+              )}
+            </For>
+            <Show when={!professionalSkillList().length}>
+              <div>
+                <strong>从能力市场启用 Skill</strong>
+                <small>复测检查、平差分析、规范速查、报告交付</small>
               </div>
             </Show>
           </div>
-
-          <div class="agent-model-routing__panel">
-            <div class="agent-model-routing__bar">
-              <span>智能体模型矩阵</span>
-              <small>{routeSummary().total} 个可见智能体</small>
-            </div>
-            <div class="agent-route-list">
-              <For each={routedAgents()}>
-                {(agent) => (
-                  <div class="agent-route-row">
-                    <div>
-                      <strong>{agent.displayName ?? agent.name}</strong>
-                      <small>{agentRoleLabel(agent)}</small>
-                    </div>
-                    <div class="agent-route-row__controls">
-                      <select
-                        aria-label={`设置 ${agent.name} 模型`}
-                        value={routeValue(agent)}
-                        disabled={routeSaving()[agent.name] || (!modelOptions().length && !routeValue(agent))}
-                        onInput={(event) => void saveRoute(agent, event.currentTarget.value)}
-                      >
-                        <option value="">默认 {recommendedModel}</option>
-                        <For each={routeOptions(agent)}>
-                          {(model) => <option value={model.value}>{model.label}</option>}
-                        </For>
-                      </select>
-                      <span>{routeSaving()[agent.name] ? "保存中" : modelRouteLabel(agent)}</span>
-                      <A href={`/agents/${agent.name}`}>高级</A>
-                    </div>
-                  </div>
-                )}
-              </For>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Show when={featured().length}>
-        <section class="agent-rail" aria-label="核心协作链路">
-          <For each={featured()}>
-            {(agent) => (
-              <A href={`/agents/${agent.name}`} class="agent-rail__item">
-                <span>{agent.mode === "primary" ? "主控" : "协作"}</span>
-                <strong>{agent.displayName ?? agent.name}</strong>
-                <small>{agent.description ?? "参与多智能体生产链路"}</small>
-              </A>
-            )}
-          </For>
         </section>
-      </Show>
 
-      <section class="agent-toolbar">
-        <div>
-          <h2>智能体矩阵</h2>
-          <p>选择专业智能体进入配置，也可以从工作流直接生成协作会话。</p>
-        </div>
-        <div class="agent-toolbar__controls">
-          <input
-            value={query()}
-            onInput={(event) => setQuery(event.currentTarget.value)}
-            placeholder="搜索智能体"
-            aria-label="搜索智能体"
-          />
-          <select value={mode()} onInput={(event) => setMode(event.currentTarget.value as ModeFilter)}>
-            <For each={modes}>{(item) => <option value={item.value}>{item.label}</option>}</For>
-          </select>
-        </div>
-      </section>
-
-      <Show when={error()}>
-        <p class="agent-error">{error()}</p>
-      </Show>
-
-      <section class="agent-grid" aria-busy={loading()}>
-        <For each={filtered()}>{(agent) => <AgentCard agent={agent} />}</For>
-      </section>
-
-      <Show when={!loading() && filtered().length === 0}>
-        <div class="agent-empty">未找到匹配的智能体。</div>
-      </Show>
-
-      <section class="agent-inventory">
-        <div class="agent-inventory__column">
-          <div class="agent-section__header">
-            <div>
-              <h2>工具链</h2>
-              <p>这些工具会在智能体执行任务时被调度，不再藏在命令行里。</p>
-            </div>
-          </div>
-          <div class="agent-tool-groups">
-            <For each={grouped()}>
-              {(group) => (
-                <div class="agent-tool-group">
-                  <div class="agent-tool-group__bar">
-                    <span>{group.label}</span>
-                    <small>{group.items.length}</small>
-                  </div>
-                  <div class="agent-tool-list">
-                    <For each={group.items}>
-                      {(tool) => (
-                        <span class="agent-chip" title={tool.id}>
-                          {tool.label}
-                        </span>
-                      )}
-                    </For>
-                  </div>
-                </div>
-              )}
-            </For>
-          </div>
-        </div>
-        <div class="agent-inventory__column">
-          <div class="agent-section__header">
-            <div>
-              <h2>Skills</h2>
-              <p>按任务加载的专业流程、审核方法和工具使用规范。</p>
-            </div>
-          </div>
-          <div class="agent-skill-list">
-            <For each={visibleSkills()}>
-              {(skill) => (
-                <div class="agent-skill" title={skill.location}>
-                  <strong>{skill.name}</strong>
-                  <small>{skill.description}</small>
-                </div>
-              )}
-            </For>
-            <Show when={!skills().length && !loading()}>
-              <div class="agent-empty">当前未发现 Skills。</div>
-            </Show>
-          </div>
-        </div>
-      </section>
-
-      <WorkflowGallery />
+        <Show when={error()}>
+          <p class="agent-error">{error()}</p>
+        </Show>
+      </aside>
     </main>
   )
 }

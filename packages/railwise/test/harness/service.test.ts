@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test"
 import { Harness } from "../../src/harness"
 
 describe("Harness service", () => {
-  test("returns enabled built-in capabilities in safe mode", () => {
-    const status = Harness.status({ workspace: "/tmp/railwise" })
+  test("returns enabled built-in capabilities in safe mode", async () => {
+    const status = await Harness.status({ workspace: "/tmp/railwise" })
 
     expect(status.mode).toBe("safe")
     expect(status.workspace).toBe("/tmp/railwise")

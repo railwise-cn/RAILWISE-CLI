@@ -82,6 +82,10 @@ import type {
   MarketplaceCapabilityEnableResponses,
   MarketplaceCapabilityGetErrors,
   MarketplaceCapabilityGetResponses,
+  MarketplaceCapabilityInstallErrors,
+  MarketplaceCapabilityInstallResponses,
+  MarketplaceCapabilityUninstallErrors,
+  MarketplaceCapabilityUninstallResponses,
   McpAddErrors,
   McpAddResponses,
   McpAuthAuthenticateErrors,
@@ -2521,6 +2525,74 @@ export class Capability extends HeyApiClient {
       ThrowOnError
     >({
       url: "/marketplace/capabilities/{id}/disable",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Install marketplace capability
+   *
+   * Install a RAILWISE capability so it can be enabled in the active Harness.
+   */
+  public install<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      MarketplaceCapabilityInstallResponses,
+      MarketplaceCapabilityInstallErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}/install",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Uninstall marketplace capability
+   *
+   * Uninstall a RAILWISE capability and remove it from the active Harness.
+   */
+  public uninstall<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      MarketplaceCapabilityUninstallResponses,
+      MarketplaceCapabilityUninstallErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}/uninstall",
       ...options,
       ...params,
     })

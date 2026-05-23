@@ -4932,6 +4932,68 @@ export type MarketplaceCapabilityDisableResponses = {
 export type MarketplaceCapabilityDisableResponse =
   MarketplaceCapabilityDisableResponses[keyof MarketplaceCapabilityDisableResponses]
 
+export type MarketplaceCapabilityInstallData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/install"
+}
+
+export type MarketplaceCapabilityInstallErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilityInstallError =
+  MarketplaceCapabilityInstallErrors[keyof MarketplaceCapabilityInstallErrors]
+
+export type MarketplaceCapabilityInstallResponses = {
+  /**
+   * Installed capability manifest
+   */
+  200: CapabilityManifest
+}
+
+export type MarketplaceCapabilityInstallResponse =
+  MarketplaceCapabilityInstallResponses[keyof MarketplaceCapabilityInstallResponses]
+
+export type MarketplaceCapabilityUninstallData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/uninstall"
+}
+
+export type MarketplaceCapabilityUninstallErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilityUninstallError =
+  MarketplaceCapabilityUninstallErrors[keyof MarketplaceCapabilityUninstallErrors]
+
+export type MarketplaceCapabilityUninstallResponses = {
+  /**
+   * Uninstalled capability manifest
+   */
+  200: CapabilityManifest
+}
+
+export type MarketplaceCapabilityUninstallResponse =
+  MarketplaceCapabilityUninstallResponses[keyof MarketplaceCapabilityUninstallResponses]
+
 export type TilesGetData = {
   body?: never
   path: {

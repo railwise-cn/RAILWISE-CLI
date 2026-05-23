@@ -59,6 +59,11 @@ export function artifactPath(event: HarnessEvent) {
   return event.artifactPath
 }
 
+export function isPendingPermissionEvent(event: HarnessEvent, events: HarnessEvent[]) {
+  if (event.type !== "permission.requested") return false
+  return !events.some((item) => item.type === "permission.resolved" && item.detail === event.id)
+}
+
 export function eventDetail(event: HarnessEvent) {
   if (event.error) return event.error
   if (event.duration !== undefined) return `${event.detail ?? event.capabilityID ?? ""} ${event.duration}ms`.trim()
@@ -92,6 +97,7 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
   const [events, setEvents] = createSignal<HarnessEvent[]>([])
   const [error, setError] = createSignal("")
   const [notice, setNotice] = createSignal("")
+  const [resolvingPermission, setResolvingPermission] = createSignal("")
 
   const recent = createMemo(() => visibleEvents(events()))
   const agent = createMemo(() => (props.agent ? (agents[props.agent] ?? props.agent) : undefined))
@@ -154,6 +160,39 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
       .catch((err: unknown) => setNotice(err instanceof Error ? err.message : String(err)))
   }
 
+  const resolvePermission = (event: HarnessEvent, reply: "once" | "reject") => {
+    if (event.type !== "permission.requested") return
+    if (resolvingPermission() === event.id) return
+    setResolvingPermission(event.id)
+    void sdk.client.permission
+      .reply({ requestID: event.id, reply, directory: sdk.directory })
+      .then(() => {
+        const resolved: HarnessEvent = {
+          id: `${event.id}:local:${Date.now()}`,
+          sessionID: event.sessionID,
+          type: "permission.resolved",
+          title: reply === "reject" ? "已拒绝权限请求" : "已允许权限请求",
+          detail: event.id,
+          createdAt: Date.now(),
+          risk: reply === "reject" ? "low" : "medium",
+          capabilityID: event.capabilityID,
+        }
+        setEvents((current) =>
+          current.some((item) => item.type === "permission.resolved" && item.detail === event.id)
+            ? current
+            : [...current, resolved],
+        )
+        setStatus((current) =>
+          current
+            ? { ...current, pendingPermissionCount: Math.max(0, current.pendingPermissionCount - 1) }
+            : current,
+        )
+        setNotice(reply === "reject" ? "已拒绝权限请求" : "已允许一次权限请求")
+      })
+      .catch((err: unknown) => setNotice(err instanceof Error ? err.message : String(err)))
+      .finally(() => setResolvingPermission((id) => (id === event.id ? "" : id)))
+  }
+
   return (
     <section data-testid="session-harness-panel" class="shrink-0 border-b border-border-weak-base bg-surface-base">
       <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-2">
@@ -206,29 +245,53 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
                       {(value) => <div class="truncate text-11-regular text-text-weak">{value()}</div>}
                     </Show>
                   </div>
-                  <Show when={artifactPath(event)}>
-                    {(path) => (
-                      <div class="flex items-center gap-1">
+                  <Show when={artifactPath(event) || isPendingPermissionEvent(event, events())}>
+                    <div class="flex items-center gap-1">
+                      <Show when={artifactPath(event)}>
+                        {(path) => (
+                          <>
+                            <button
+                              type="button"
+                              class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                              title="复制产物路径"
+                              onClick={() => copyPath(path())}
+                            >
+                              <Icon name="copy" size="small" />
+                            </button>
+                            <Show when={platform.openPath}>
+                              <button
+                                type="button"
+                                class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                                title="打开产物"
+                                onClick={() => openPath(path())}
+                              >
+                                <Icon name="open-file" size="small" />
+                              </button>
+                            </Show>
+                          </>
+                        )}
+                      </Show>
+                      <Show when={isPendingPermissionEvent(event, events())}>
                         <button
                           type="button"
-                          class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
-                          title="复制产物路径"
-                          onClick={() => copyPath(path())}
+                          class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-danger-base disabled:opacity-50"
+                          title="拒绝权限"
+                          disabled={resolvingPermission() === event.id}
+                          onClick={() => resolvePermission(event, "reject")}
                         >
-                          <Icon name="copy" size="small" />
+                          <Icon name="circle-ban-sign" size="small" />
                         </button>
-                        <Show when={platform.openPath}>
-                          <button
-                            type="button"
-                            class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
-                            title="打开产物"
-                            onClick={() => openPath(path())}
-                          >
-                            <Icon name="open-file" size="small" />
-                          </button>
-                        </Show>
-                      </div>
-                    )}
+                        <button
+                          type="button"
+                          class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong disabled:opacity-50"
+                          title="允许一次"
+                          disabled={resolvingPermission() === event.id}
+                          onClick={() => resolvePermission(event, "once")}
+                        >
+                          <Icon name="check" size="small" />
+                        </button>
+                      </Show>
+                    </div>
                   </Show>
                   <div class="text-right text-11-regular text-text-muted">
                     <div>{clock(event.createdAt)}</div>

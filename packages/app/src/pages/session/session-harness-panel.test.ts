@@ -1,6 +1,13 @@
 import { describe, expect, test } from "bun:test"
 import type { HarnessEvent } from "@railwise/sdk/v2"
-import { artifactPath, eventDetail, eventKind, eventStatus, visibleEvents } from "./session-harness-panel"
+import {
+  artifactPath,
+  eventDetail,
+  eventKind,
+  eventStatus,
+  isPendingPermissionEvent,
+  visibleEvents,
+} from "./session-harness-panel"
 
 function event(input: Partial<HarnessEvent> & Pick<HarnessEvent, "type">): HarnessEvent {
   return {
@@ -62,5 +69,26 @@ describe("SessionHarnessPanel helpers", () => {
     expect(eventDetail(item)).toBe("CPIII 复测报告 Markdown")
     expect(artifactPath(item)).toBe("/Users/test/project/reports/cpiii.md")
     expect(artifactPath(event({ type: "tool.completed", detail: "规范检索完成" }))).toBeUndefined()
+  })
+
+  test("only unresolved permission requests are actionable", () => {
+    const requested = event({
+      id: "permission_1",
+      type: "permission.requested",
+      detail: "/tmp/project",
+    })
+
+    expect(isPendingPermissionEvent(requested, [requested])).toBe(true)
+    expect(
+      isPendingPermissionEvent(requested, [
+        requested,
+        event({
+          id: "permission_1:resolved",
+          type: "permission.resolved",
+          detail: "permission_1",
+        }),
+      ]),
+    ).toBe(false)
+    expect(isPendingPermissionEvent(event({ type: "tool.started" }), [requested])).toBe(false)
   })
 })

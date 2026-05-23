@@ -465,24 +465,30 @@ async fn git_diff_agent(name: String, directory: String) -> Result<String, Strin
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let crash = crash::init();
-    let builder = make_specta_builder();
+    let specta = make_specta_builder();
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
-    export_types(&builder);
+    export_types(&specta);
 
     #[cfg(all(target_os = "macos", not(debug_assertions)))]
     let _ = std::process::Command::new("killall")
         .arg("railwise-cli")
         .output();
 
-    let mut builder = tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+    let builder = tauri::Builder::default();
+
+    #[cfg(not(target_os = "macos"))]
+    let builder = {
+        builder.plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             // Focus existing window when another instance is launched
             if let Some(window) = app.get_webview_window(MainWindow::LABEL) {
                 let _ = window.set_focus();
                 let _ = window.unminimize();
             }
         }))
+    };
+
+    let mut builder = builder
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_os::init())
         .plugin(
@@ -502,7 +508,7 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         .plugin(crate::window_customizer::PinchZoomDisablePlugin)
         .plugin(tauri_plugin_decorum::init())
-        .invoke_handler(builder.invoke_handler())
+        .invoke_handler(specta.invoke_handler())
         .setup(move |app| {
             let handle = app.handle().clone();
 
@@ -514,7 +520,7 @@ pub fn run() {
             // ensuring all buffered logs are flushed on shutdown.
             handle.manage(logging::init(&log_dir));
 
-            builder.mount_events(&handle);
+            specta.mount_events(&handle);
             tauri::async_runtime::spawn(initialize(handle));
 
             Ok(())

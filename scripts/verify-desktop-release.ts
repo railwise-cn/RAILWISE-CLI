@@ -199,8 +199,8 @@ check(
 check("production config exists", configExists, configPath)
 check(
   "production identity",
-  config.productName === "睿威智测 RAILWISE" &&
-    config.identifier === "com.railwiseai.desktop" &&
+  config.productName === "RAILWISE 智测工作台" &&
+    config.identifier === "ai.railwise.desktop.dev" &&
     config.mainBinaryName === "railwise",
   `${config.productName ?? "missing"} / ${config.identifier ?? "missing"} / ${config.mainBinaryName ?? "missing"}`,
 )

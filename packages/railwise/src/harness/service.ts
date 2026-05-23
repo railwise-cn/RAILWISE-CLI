@@ -61,6 +61,7 @@ export namespace Harness {
       tool: string
       title: string
       completedTitle?: (result: T) => string
+      artifacts?: (result: T) => Array<{ title: string; path?: string; detail?: string }>
       capabilityID?: string
       risk?: HarnessEvent["risk"]
     },
@@ -92,6 +93,19 @@ export namespace Harness {
           risk: input.risk ?? "low",
           capabilityID: input.capabilityID ?? input.tool,
         })
+        input.artifacts?.(result).forEach((artifact, index) =>
+          record({
+            id: `${id}:tool:${input.tool}:artifact:${index}`,
+            sessionID: input.sessionID,
+            type: "artifact.created",
+            title: artifact.title,
+            detail: artifact.detail,
+            createdAt: end + index,
+            risk: "low",
+            capabilityID: input.capabilityID ?? input.tool,
+            artifactPath: artifact.path,
+          }),
+        )
         return result
       })
       .catch((error) => {

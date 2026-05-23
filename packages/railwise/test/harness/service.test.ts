@@ -119,4 +119,33 @@ describe("Harness service", () => {
     expect((await Harness.status({ workspace: "/tmp/railwise-status" })).runningToolCount).toBe(0)
     Harness.clear("ses_track_tool")
   })
+
+  test("records artifacts produced by tracked tools", async () => {
+    Harness.clear("ses_track_artifact")
+    await Harness.trackTool(
+      {
+        sessionID: "ses_track_artifact",
+        callID: "call_report",
+        tool: "tool_report_writer",
+        title: "生成交付报告",
+        artifacts: (result) => [
+          {
+            title: result.name,
+            path: result.path,
+            detail: "复测成果报告",
+          },
+        ],
+      },
+      async () => ({
+        name: "复测成果报告.docx",
+        path: "/tmp/railwise/report.docx",
+      }),
+    )
+
+    const timeline = Harness.timeline("ses_track_artifact")
+    expect(timeline.map((event) => event.type)).toEqual(["tool.started", "tool.completed", "artifact.created"])
+    expect(timeline[2]?.title).toBe("复测成果报告.docx")
+    expect(timeline[2]?.artifactPath).toBe("/tmp/railwise/report.docx")
+    Harness.clear("ses_track_artifact")
+  })
 })

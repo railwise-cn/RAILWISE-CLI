@@ -83,3 +83,39 @@ test("tool execution records Harness failure events", async () => {
   expect((await Harness.status({ workspace: "/tmp/railwise" })).runningToolCount).toBe(0)
   Harness.clear("ses_tool_failure")
 })
+
+test("tool execution records generated artifacts", async () => {
+  Harness.clear("ses_tool_artifact")
+  const info = Tool.define("deliver", {
+    description: "test tool",
+    parameters: z.object({}),
+    async execute() {
+      return {
+        title: "生成报告",
+        output: "done",
+        metadata: {
+          truncated: true,
+          outputPath: "/tmp/railwise/report.md",
+        },
+        attachments: [
+          {
+            type: "file",
+            url: "file:///tmp/railwise/checklist.xlsx",
+            filename: "checklist.xlsx",
+            mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          },
+        ],
+      }
+    },
+  })
+
+  const tool = await info.init()
+  await tool.execute({}, { ...ctx, sessionID: "ses_tool_artifact", callID: "call_deliver" })
+
+  const artifacts = Harness.timeline("ses_tool_artifact").filter((event) => event.type === "artifact.created")
+  expect(artifacts.map((event) => event.artifactPath)).toEqual([
+    "/tmp/railwise/report.md",
+    "file:///tmp/railwise/checklist.xlsx",
+  ])
+  Harness.clear("ses_tool_artifact")
+})

@@ -882,6 +882,22 @@ export namespace SessionPrompt {
             tool: key,
             title: `执行 MCP 工具 ${key}`,
             completedTitle: () => `MCP 工具完成 ${key}`,
+            artifacts: (result) => [
+              ...(typeof result.metadata.outputPath === "string"
+                ? [
+                    {
+                      title: `MCP 输出 ${key}`,
+                      path: result.metadata.outputPath,
+                      detail: key,
+                    },
+                  ]
+                : []),
+              ...(result.attachments?.map((attachment) => ({
+                title: attachment.filename ?? `MCP 附件 ${key}`,
+                path: attachment.url,
+                detail: key,
+              })) ?? []),
+            ],
           },
           async () => {
             await Plugin.trigger(

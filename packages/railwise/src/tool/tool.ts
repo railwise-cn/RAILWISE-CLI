@@ -64,6 +64,22 @@ export namespace Tool {
               tool: id,
               title: `执行工具 ${id}`,
               completedTitle: (result) => result.title,
+              artifacts: (result) => [
+                ...(typeof result.metadata.outputPath === "string"
+                  ? [
+                      {
+                        title: `${result.title} 输出`,
+                        path: result.metadata.outputPath,
+                        detail: id,
+                      },
+                    ]
+                  : []),
+                ...(result.attachments?.map((attachment) => ({
+                  title: attachment.filename ?? `${result.title} 附件`,
+                  path: attachment.url,
+                  detail: id,
+                })) ?? []),
+              ],
             },
             async () => {
               const params = (() => {

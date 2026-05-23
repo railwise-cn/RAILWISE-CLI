@@ -21,12 +21,12 @@
 
 ## M7 交付
 
-- Playwright E2E 覆盖启动、CSV 导入、首检报告、Agent Studio、工作流流水线、DXF、PPT、离线模式、更新流程、崩溃恢复、视觉回归、TTFUI 和设置入口。
-- Agent Studio 工作流预设导入会创建真实会话，并写入 chief_manager 调度消息；卡片上的 7 天调用次数来自本地消息表。
+- Playwright E2E 覆盖启动、项目文件夹会话、能力市场启用、智能体配置、工具/Skills、模型接入引导、离线模式、更新流程、崩溃恢复、视觉回归、TTFUI 和设置入口。
+- Harness 工作台默认进入 `/agents`；旧 `/dashboard` 和 `/workspace` 仅保留重定向，不再保留旧页面源码。
 - 埋点默认关闭，首次启动弹窗请求授权；关闭时清空本地事件队列。
 - 埋点本地队列落在 `sqlite:railwise.telemetry.db`，通过 Tauri SQL plugin 写入 `telemetry_events` 和 `telemetry_state`。
 - 崩溃上报通过 `RAILWISE_SENTRY_DSN` / Glitchtip DSN 启用；默认空值不上报。
-- 桌面端不再暴露旧工作台路由，默认进入 `/dashboard`。
+- 桌面端不再暴露旧工作台页面，默认进入 `/agents`。
 - `packages/desktop/scripts/sse-soak.ts` 将 `/event` 长连验收固化为命令，默认 30 分钟，支持 `--seconds`、`--minutes`、`--url` 和 `--heartbeat-timeout-ms`。
 - `scripts/verify-desktop-m7.ts` 将 M7 静态验收固化为命令，覆盖 E2E 清单、视觉基准、TTFUI、遥测隐私和文档交付。
 - `scripts/verify-desktop-acceptance.ts` 提供一条命令的 M7 回归验收，默认快检，`--full` 执行 30 分钟 SSE 长连。

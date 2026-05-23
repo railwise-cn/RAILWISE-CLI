@@ -11,7 +11,7 @@
 PR #12 是一次混合交付包，保持 draft。它包含：
 
 - Core: Agent v2、workflow delivery、norm wiki、survey tools、SDK contracts。
-- Desktop: Dashboard、Workspace、Agent Studio、delivery package UI、release readiness。
+- Desktop: Harness 工作台、能力市场、项目文件夹会话、delivery package UI、release readiness。
 - App shell: 共享页面和客户端契约。
 - CI/release: Desktop release gates、secret checks、PR product-line checks。
 - Docs: 产品边界和发版节奏。
@@ -99,7 +99,7 @@ cd packages/railwise && bun test --timeout 30000 test/cli test/server
 ### CL3 CLI Documentation
 
 - [x] README CLI quickstart 只讲安装、模型、配置、命令和 CI。
-- [x] 不混入 Desktop dashboard、Workspace、installer、updater 承诺。
+- [x] 不混入 Desktop Harness 工作台、installer、updater 承诺。
 - [x] CLI 命令边界审查记录见 [09-cli-boundary-audit.md](./09-cli-boundary-audit.md)。
 
 验收：
@@ -172,8 +172,8 @@ cd packages/desktop && bun run typecheck
 
 当前状态：
 
-- Desktop 壳已启用 standalone session route，工作流预设可从 Agent Studio 进入 Session 交付页，不回落到 Dashboard。
-- Desktop E2E harness 已覆盖 CPIII 预设导入、交付验收和 delivery package 导出清单展示。
+- Desktop 壳已启用 standalone `/agents` 和 session route，旧 Dashboard/Workspace 地址只做重定向。
+- Desktop E2E harness 已覆盖 Harness 工作台、能力市场、项目文件夹会话、模型接入引导、工具/Skills、设置和交付会话入口。
 - Native Tauri smoke gate 已固化为 `smoke:tauri`：使用临时 sidecar 拉起真实 Tauri 原生壳，并确认本地 sidecar health、窗口初始化和 loading 生命周期日志可用。
 - Native surface gate 已固化为 `script/verify-desktop-native-surfaces.ts`：检查本地文件、updater、窗口、菜单都接在 Desktop/Tauri 层。
 - 签名、公证和正式安装包验收仍受 Apple/Windows secrets 配置阻塞，不能用浏览器 harness 代替 GA 验收。

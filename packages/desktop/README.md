@@ -1,6 +1,6 @@
 # RAILWISE Desktop
 
-RAILWISE Desktop is the native engineering survey workstation for project dashboards, file review, visual Agent Studio workflows, and delivery package export.
+RAILWISE Desktop is the native engineering survey workstation for Codex-style Harness collaboration, installable professional capabilities, project-folder sessions, and delivery package export.
 
 It reuses RAILWISE Core through a local sidecar, but it is not positioned as a CLI wrapper. Desktop users should be able to complete the main workflow without knowing command-line commands.
 
@@ -50,9 +50,10 @@ bun run --cwd packages/desktop tauri build
 
 Desktop owns:
 
-- `/dashboard` project cockpit
-- `/workspace` file import, preview, diff, and send-to-agent flows
-- `/agents` visual workflow orchestration
+- `/agents` as the default Harness workbench
+- project-folder selection and chat-first intelligent collaboration
+- installable Agents, Tools, Skills, Workflows, MCP connectors, model providers, and Harness profiles
+- visible Harness runtime state, session timeline, permission decisions, and artifacts
 - delivery package review and export
 - native install, signing, notarization, crash recovery, and update UX
 

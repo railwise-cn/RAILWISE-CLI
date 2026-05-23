@@ -1,5 +1,7 @@
 import type { HarnessEvent, HarnessStatus } from "@railwise/sdk/v2"
 import { createEffect, createMemo, createSignal, For, onCleanup, Show } from "solid-js"
+import { Icon } from "@railwise/ui/icon"
+import { usePlatform } from "@/context/platform"
 import { useSDK } from "@/context/sdk"
 
 const agents: Record<string, string> = {
@@ -53,11 +55,26 @@ export function visibleEvents(events: HarnessEvent[]) {
     .slice(0, 8)
 }
 
-function detail(event: HarnessEvent) {
+export function artifactPath(event: HarnessEvent) {
+  return event.artifactPath
+}
+
+export function eventDetail(event: HarnessEvent) {
   if (event.error) return event.error
-  if (event.artifactPath) return event.artifactPath
   if (event.duration !== undefined) return `${event.detail ?? event.capabilityID ?? ""} ${event.duration}ms`.trim()
   return event.detail ?? event.capabilityID
+}
+
+function fallbackCopy(text: string) {
+  const area = document.createElement("textarea")
+  area.value = text
+  area.setAttribute("readonly", "")
+  area.style.position = "fixed"
+  area.style.inset = "-9999px auto auto -9999px"
+  document.body.append(area)
+  area.select()
+  document.execCommand("copy")
+  area.remove()
 }
 
 function clock(value: number) {
@@ -70,9 +87,11 @@ function clock(value: number) {
 
 export function SessionHarnessPanel(props: { sessionID?: string; agent?: string }) {
   const sdk = useSDK()
+  const platform = usePlatform()
   const [status, setStatus] = createSignal<HarnessStatus>()
   const [events, setEvents] = createSignal<HarnessEvent[]>([])
   const [error, setError] = createSignal("")
+  const [notice, setNotice] = createSignal("")
 
   const recent = createMemo(() => visibleEvents(events()))
   const agent = createMemo(() => (props.agent ? (agents[props.agent] ?? props.agent) : undefined))
@@ -117,6 +136,24 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
     })
   })
 
+  const copyPath = (value: string) => {
+    const write = typeof navigator === "undefined" ? undefined : navigator.clipboard?.writeText
+    void (write ? write.call(navigator.clipboard, value) : Promise.resolve(fallbackCopy(value)))
+      .then(() => setNotice("已复制产物路径"))
+      .catch(() => {
+        fallbackCopy(value)
+        setNotice("已复制产物路径")
+      })
+  }
+
+  const openPath = (value: string) => {
+    if (!platform.openPath) return
+    void platform
+      .openPath(value)
+      .then(() => setNotice("已打开产物"))
+      .catch((err: unknown) => setNotice(err instanceof Error ? err.message : String(err)))
+  }
+
   return (
     <section data-testid="session-harness-panel" class="shrink-0 border-b border-border-weak-base bg-surface-base">
       <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-2">
@@ -151,7 +188,7 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
           <ol class="grid gap-1.5">
             <For each={recent()}>
               {(event) => (
-                <li class="grid min-w-0 grid-cols-[auto_auto_1fr_auto] items-center gap-2 rounded-md border border-border-weak-base px-2 py-1.5 text-12-regular">
+                <li class="grid min-w-0 grid-cols-[auto_auto_1fr_auto_auto] items-center gap-2 rounded-md border border-border-weak-base px-2 py-1.5 text-12-regular">
                   <span class="rounded bg-surface-panel px-1.5 py-0.5 text-11-medium text-text-muted">
                     {eventKind(event)}
                   </span>
@@ -165,10 +202,34 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
                   </span>
                   <div class="min-w-0">
                     <div class="truncate text-12-medium text-text-strong">{event.title}</div>
-                    <Show when={detail(event)}>
+                    <Show when={eventDetail(event)}>
                       {(value) => <div class="truncate text-11-regular text-text-weak">{value()}</div>}
                     </Show>
                   </div>
+                  <Show when={artifactPath(event)}>
+                    {(path) => (
+                      <div class="flex items-center gap-1">
+                        <button
+                          type="button"
+                          class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                          title="复制产物路径"
+                          onClick={() => copyPath(path())}
+                        >
+                          <Icon name="copy" size="small" />
+                        </button>
+                        <Show when={platform.openPath}>
+                          <button
+                            type="button"
+                            class="size-6 rounded-md border border-border-weak-base bg-background-base text-text-weak transition-colors hover:text-text-strong"
+                            title="打开产物"
+                            onClick={() => openPath(path())}
+                          >
+                            <Icon name="open-file" size="small" />
+                          </button>
+                        </Show>
+                      </div>
+                    )}
+                  </Show>
                   <div class="text-right text-11-regular text-text-muted">
                     <div>{clock(event.createdAt)}</div>
                     <div>{risk(event)}</div>
@@ -181,6 +242,9 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
 
         <Show when={error()}>
           <div class="text-12-regular text-text-danger-base">{error()}</div>
+        </Show>
+        <Show when={notice()}>
+          <div class="text-12-regular text-text-muted">{notice()}</div>
         </Show>
       </div>
     </section>

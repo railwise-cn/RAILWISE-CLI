@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import type { HarnessEvent } from "@railwise/sdk/v2"
-import { eventKind, eventStatus, visibleEvents } from "./session-harness-panel"
+import { artifactPath, eventDetail, eventKind, eventStatus, visibleEvents } from "./session-harness-panel"
 
 function event(input: Partial<HarnessEvent> & Pick<HarnessEvent, "type">): HarnessEvent {
   return {
@@ -49,5 +49,18 @@ describe("SessionHarnessPanel helpers", () => {
       "事件 3",
       "事件 2",
     ])
+  })
+
+  test("keeps artifact paths as explicit timeline actions", () => {
+    const item = event({
+      type: "artifact.created",
+      title: "已生成交付报告",
+      detail: "CPIII 复测报告 Markdown",
+      artifactPath: "/Users/test/project/reports/cpiii.md",
+    })
+
+    expect(eventDetail(item)).toBe("CPIII 复测报告 Markdown")
+    expect(artifactPath(item)).toBe("/Users/test/project/reports/cpiii.md")
+    expect(artifactPath(event({ type: "tool.completed", detail: "规范检索完成" }))).toBeUndefined()
   })
 })

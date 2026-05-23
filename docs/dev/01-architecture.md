@@ -57,7 +57,7 @@ Railwise Core sidecar
 - 启动：Tauri 启动 sidecar，前端等待初始化完成后进入 `/agents`。
 - 项目上下文：用户选择或输入项目文件夹，Harness 把该目录作为会话工作上下文。
 - 智能体任务：前端把任务交给项目总控或专业智能体，sidecar 通过 SSE 推送状态和消息。
-- 能力市场：Marketplace API 管理 Agents、Tools、Skills、Workflows、MCP、Providers 和 Harness Profiles 的启用状态。
+- 能力市场：Marketplace API 管理 Agents、Tools、Skills、Workflows、MCP、Providers 和 Harness Profiles 的安装状态与启用状态，安装进入本机工作台，启用进入当前 Harness 调度。
 - 本地预置能力：App shell 内置一份 Desktop starter capabilities，确保 sidecar 或 Marketplace API 尚未连接时，`/agents` 仍显示可用智能体、工具、Skills、模型 Provider 和 Harness Profiles；API 恢复后以服务端状态为准。
 - Harness：会话页展示运行时状态、模型路由、权限决策、工具事件和交付产物时间线。
 - 更新：Tauri updater 查询 `updates.railwise.cn` 或私有更新源，前端显示自定义更新弹窗。

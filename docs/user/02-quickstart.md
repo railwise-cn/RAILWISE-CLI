@@ -14,7 +14,7 @@
 
 ## 使用能力市场
 
-能力市场提供可启用的 Agents、Tools、Skills、Workflows、MCP Connectors、Model Providers 和 Harness Profiles。启用能力后，工作台和会话会按当前能力状态调度。
+能力市场提供可安装、可启用的 Agents、Tools、Skills、Workflows、MCP Connectors、Model Providers 和 Harness Profiles。安装表示能力进入本机工作台，启用表示 Harness 可以在当前协作中调度它。
 
 如果首次启动时模型服务或本地 sidecar 还在连接，工作台会先显示本地预置能力，包括项目总控、专业智能体、工程工具、Skills、工作流、模型 Provider 和 Harness Profile。连接恢复后，Marketplace 会自动同步真实启用状态。
 

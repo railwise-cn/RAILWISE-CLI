@@ -2,6 +2,7 @@ import { Hono } from "hono"
 import { describeRoute, resolver, validator } from "hono-openapi"
 import z from "zod"
 import { Harness, HarnessEvent, HarnessStatus } from "../../harness"
+import { PermissionNext } from "../../permission/next"
 import { lazy } from "../../util/lazy"
 import { errors } from "../error"
 
@@ -79,18 +80,26 @@ export const HarnessRoutes = lazy(() =>
       }),
       validator("param", PermissionParam),
       validator("json", PermissionBody),
-      (c) => {
+      async (c) => {
         const param = c.req.valid("param")
         const body = c.req.valid("json")
-        const event = Harness.record({
-          id: `${param.permissionID}:${Date.now()}`,
-          sessionID: param.sessionID,
-          type: "permission.resolved",
-          title: body.action === "allow" ? "已允许权限请求" : "已拒绝权限请求",
-          detail: param.permissionID,
-          createdAt: Date.now(),
-          risk: body.action === "allow" ? "medium" : "low",
-        })
+        await PermissionNext.reply({
+          requestID: param.permissionID,
+          reply: body.action === "allow" ? "once" : "reject",
+        }).catch(() => undefined)
+        const event =
+          Harness.timeline(param.sessionID).findLast(
+            (item) => item.type === "permission.resolved" && item.detail === param.permissionID,
+          ) ??
+          Harness.record({
+            id: `${param.permissionID}:${Date.now()}`,
+            sessionID: param.sessionID,
+            type: "permission.resolved",
+            title: body.action === "allow" ? "已允许权限请求" : "已拒绝权限请求",
+            detail: param.permissionID,
+            createdAt: Date.now(),
+            risk: body.action === "allow" ? "medium" : "low",
+          })
         return c.json(event)
       },
     ),

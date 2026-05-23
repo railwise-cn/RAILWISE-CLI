@@ -71,7 +71,7 @@ rg -n "RAILWISE_CLIENT|RAILWISE_DESKTOP|TAURI|DESKTOP|desktop" packages/railwise
 - `packages/desktop` 代码路径。
 - `packages/desktop/src-tauri` 配置。
 - Tauri updater、签名、公证、安装包流程。
-- Desktop dashboard / workspace / Agent Studio 的产品承诺。
+- Desktop Harness 工作台、能力市场、安装器和更新体验的产品承诺。
 - 只能在 Desktop 原生壳中成立的本地文件、窗口、菜单或更新体验。
 
 ---

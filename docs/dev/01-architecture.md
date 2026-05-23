@@ -22,9 +22,9 @@ RAILWISE CLI
 
 RAILWISE Desktop
   ├─ Tauri native shell
-  ├─ project dashboard
-  ├─ workspace file preview
-  ├─ Agent Studio visual orchestration
+  ├─ Codex-style Harness workbench
+  ├─ capability marketplace
+  ├─ project-folder chat sessions
   ├─ delivery package review/export
   └─ signing / notarization / updater
 ```
@@ -40,24 +40,25 @@ Tauri 桌面壳
   └─ 本地日志、配置和 crash guard
 
 SolidJS 前端
-  ├─ /dashboard 项目驾驶舱
-  ├─ /workspace 数据与成果工作台
-  ├─ /agents 智能体编排台
-  └─ 会话、模板、Prompt 队列、设置
+  ├─ /agents Harness 工作台
+  ├─ 能力市场：Agents / Tools / Skills / Workflows / MCP / Providers
+  ├─ 项目文件夹会话入口
+  └─ 会话、权限、工具时间线、设置
 
 Railwise Core sidecar
   ├─ HTTP API
   ├─ SSE 事件流
-  ├─ Agent Studio 文件热更新
-  └─ 多智能体会话与工具调用
+  ├─ Harness / Marketplace API
+  └─ 多智能体会话、权限和工具调用
 ```
 
 ## 关键路径
 
-- 启动：Tauri 启动 sidecar，前端等待初始化完成后进入 `/dashboard`。
-- 数据预览：桌面端命令解析本地文件，前端渲染表格、图层或文档预览。
-- 智能体任务：前端把上下文发送到 sidecar，sidecar 通过 SSE 推送状态和消息。
-- Agent Studio：工作流预设通过 `/agent-studio/workflow/run` 创建真实会话，并写入首条 chief_manager 调度消息；智能体 7 天调用统计来自本地 message 表。
+- 启动：Tauri 启动 sidecar，前端等待初始化完成后进入 `/agents`。
+- 项目上下文：用户选择或输入项目文件夹，Harness 把该目录作为会话工作上下文。
+- 智能体任务：前端把任务交给项目总控或专业智能体，sidecar 通过 SSE 推送状态和消息。
+- 能力市场：Marketplace API 管理 Agents、Tools、Skills、Workflows、MCP、Providers 和 Harness Profiles 的启用状态。
+- Harness：会话页展示运行时状态、模型路由、权限决策、工具事件和交付产物时间线。
 - 更新：Tauri updater 查询 `updates.railwise.cn` 或私有更新源，前端显示自定义更新弹窗。
 - 埋点：默认关闭；开启后先写入本地队列，批量上报前执行脱敏。
 

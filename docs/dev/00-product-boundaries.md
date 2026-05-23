@@ -121,10 +121,10 @@ Desktop 用户关心：
 
 **核心场景**:
 
-- 项目驾驶舱
-- Agent Studio 可视化编排
-- 数据工作台
-- 文件导入、预览、对比和发送到智能体
+- 多智能体 Harness 工作台
+- 项目文件夹会话入口
+- 能力市场：Agents、Tools、Skills、Workflows、MCP、Providers、Harness Profiles
+- 模型接入与智能体模型路由
 - 工作流执行、验收和交付包导出
 - 本地安装、离线使用、自动更新
 
@@ -198,8 +198,8 @@ RAILWISE monorepo
 验收：
 
 - 默认落地页是 Desktop 工作台，不是 Web 调试页。
-- Agent Studio、Dashboard、Workspace、Session 形成完整闭环。
-- 用户能从文件导入到智能体分析，再到交付包导出。
+- Harness 工作台、能力市场、项目文件夹 Session 形成完整闭环。
+- 用户能从任务输入到智能体协作，再到交付包导出。
 - 安装包、签名、公证、自动更新和崩溃恢复通过 GA 门禁。
 - Desktop 文案不要求用户理解 CLI。
 

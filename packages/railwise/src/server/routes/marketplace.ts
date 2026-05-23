@@ -81,6 +81,10 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", CapabilityParam),
       async (c) => {
+        const current = await Marketplace.get(c.req.valid("param").id)
+        if (!current) return c.json({ message: "Capability not found" }, { status: 404 })
+        if (!current.installed) return c.json({ message: "Capability is not installed" }, { status: 409 })
+
         const item = await Marketplace.set(c.req.valid("param").id, true)
         if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
         return c.json(item)
@@ -106,7 +110,61 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", CapabilityParam),
       async (c) => {
+        const current = await Marketplace.get(c.req.valid("param").id)
+        if (!current) return c.json({ message: "Capability not found" }, { status: 404 })
+        if (!current.installed) return c.json({ message: "Capability is not installed" }, { status: 409 })
+
         const item = await Marketplace.set(c.req.valid("param").id, false)
+        if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
+        return c.json(item)
+      },
+    )
+    .post(
+      "/capabilities/:id/install",
+      describeRoute({
+        summary: "Install marketplace capability",
+        description: "Install a RAILWISE capability so it can be enabled in the active Harness.",
+        operationId: "marketplace.capability.install",
+        responses: {
+          200: {
+            description: "Installed capability manifest",
+            content: {
+              "application/json": {
+                schema: resolver(CapabilityManifest),
+              },
+            },
+          },
+          ...errors(404),
+        },
+      }),
+      validator("param", CapabilityParam),
+      async (c) => {
+        const item = await Marketplace.install(c.req.valid("param").id)
+        if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
+        return c.json(item)
+      },
+    )
+    .post(
+      "/capabilities/:id/uninstall",
+      describeRoute({
+        summary: "Uninstall marketplace capability",
+        description: "Uninstall a RAILWISE capability and remove it from the active Harness.",
+        operationId: "marketplace.capability.uninstall",
+        responses: {
+          200: {
+            description: "Uninstalled capability manifest",
+            content: {
+              "application/json": {
+                schema: resolver(CapabilityManifest),
+              },
+            },
+          },
+          ...errors(404),
+        },
+      }),
+      validator("param", CapabilityParam),
+      async (c) => {
+        const item = await Marketplace.uninstall(c.req.valid("param").id)
         if (!item) return c.json({ message: "Capability not found" }, { status: 404 })
         return c.json(item)
       },

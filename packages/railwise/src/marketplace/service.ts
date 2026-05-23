@@ -8,6 +8,7 @@ import { Global } from "../global"
 export namespace Marketplace {
   const State = z.object({
     enabled: z.record(z.string(), z.boolean()).default({}),
+    installed: z.record(z.string(), z.boolean()).default({}),
   })
   type State = z.infer<typeof State>
   let file: string | undefined
@@ -17,11 +18,11 @@ export namespace Marketplace {
     return file ?? process.env.RAILWISE_MARKETPLACE_STATE ?? path.join(Global.Path.config, "marketplace.json")
   }
 
-  async function load() {
+  async function load(): Promise<State> {
     if (state) return state
     const data = await Filesystem.readJson(target()).catch(() => ({}))
     const parsed = State.safeParse(data)
-    state = parsed.success ? parsed.data : { enabled: {} }
+    state = parsed.success ? parsed.data : { enabled: {}, installed: {} }
     return state
   }
 
@@ -37,10 +38,14 @@ export namespace Marketplace {
 
   export async function list() {
     const data = await load()
-    return builtins.map((item) => ({
-      ...item,
-      enabled: data.enabled[item.id] ?? item.enabled,
-    }))
+    return builtins.map((item) => {
+      const installed = data.installed[item.id] ?? item.installed
+      return {
+        ...item,
+        installed,
+        enabled: installed ? (data.enabled[item.id] ?? item.enabled) : false,
+      }
+    })
   }
 
   export async function get(id: string) {
@@ -56,9 +61,10 @@ export namespace Marketplace {
 
   export async function set(id: string, enabled: boolean) {
     const item = await get(id)
-    if (!item) return
+    if (!item || !item.installed) return
     const data = await load()
     await save({
+      ...data,
       enabled: {
         ...data.enabled,
         [id]: enabled,
@@ -67,6 +73,45 @@ export namespace Marketplace {
     return {
       ...item,
       enabled,
+    }
+  }
+
+  export async function install(id: string) {
+    const item = await get(id)
+    if (!item) return
+    const data = await load()
+    await save({
+      ...data,
+      installed: {
+        ...data.installed,
+        [id]: true,
+      },
+    })
+    return {
+      ...item,
+      installed: true,
+      enabled: data.enabled[id] ?? false,
+    }
+  }
+
+  export async function uninstall(id: string) {
+    const item = await get(id)
+    if (!item) return
+    const data = await load()
+    await save({
+      enabled: {
+        ...data.enabled,
+        [id]: false,
+      },
+      installed: {
+        ...data.installed,
+        [id]: false,
+      },
+    })
+    return {
+      ...item,
+      installed: false,
+      enabled: false,
     }
   }
 }

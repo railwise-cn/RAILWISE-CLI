@@ -36,6 +36,20 @@ describe("Marketplace service", () => {
     expect((await Marketplace.set("railwise.provider.deepseek", false))?.enabled).toBe(false)
   })
 
+  test("can install and uninstall capabilities independently from enablement", async () => {
+    await using _ = await isolate()
+
+    expect((await Marketplace.uninstall("railwise.provider.openrouter"))?.installed).toBe(false)
+    expect(await Marketplace.set("railwise.provider.openrouter", true)).toBeUndefined()
+    expect((await Marketplace.get("railwise.provider.openrouter"))?.enabled).toBe(false)
+
+    const installed = await Marketplace.install("railwise.provider.openrouter")
+
+    expect(installed?.installed).toBe(true)
+    expect(installed?.enabled).toBe(false)
+    expect((await Marketplace.set("railwise.provider.openrouter", true))?.enabled).toBe(true)
+  })
+
   test("persists enabled choices across service reloads", async () => {
     await using tmp = await isolate()
     const file = path.join(tmp.path, "marketplace.json")

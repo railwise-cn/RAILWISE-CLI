@@ -123,6 +123,8 @@ const sidecar = path.join(root, windowsify(`src-tauri/sidecars/railwise-cli-${ta
 const port = await free()
 const entry = path.join(tmp, process.platform === "win32" ? "sidecar.ts" : "sidecar.js")
 const data = path.join(tmp, "data")
+const home = path.join(tmp, "home")
+const local = path.join(tmp, "local")
 const debug = path.join(root, "src-tauri", "target", "debug", "railwise-cli")
 const debugPaths = [...new Set([debug, windowsify(debug)])]
 const app = path.join(root, windowsify(path.join("src-tauri", "target", "debug", "railwise")))
@@ -187,8 +189,16 @@ await new Promise(() => {})
 await $`bun build --compile --outfile ${sidecar} ${entry}`.quiet()
 if (process.platform !== "win32") await fs.chmod(sidecar, 0o755)
 
-await fs.mkdir(path.join(data, "railwise"), { recursive: true })
-await Bun.write(path.join(data, "railwise", "railwise.db"), "")
+const dbs = [
+  path.join(data, "railwise"),
+  path.join(data, "ai.railwise.desktop.dev", "sidecar", "data", "railwise"),
+  path.join(home, "Library", "Application Support", "ai.railwise.desktop.dev", "sidecar", "data", "railwise"),
+  path.join(local, "ai.railwise.desktop.dev", "sidecar", "data", "railwise"),
+]
+for (const dir of dbs) {
+  await fs.mkdir(dir, { recursive: true })
+  await Bun.write(path.join(dir, "railwise.db"), "")
+}
 const frontend = await fetch("http://localhost:1420", { signal: AbortSignal.timeout(300) })
   .then((res) => res.ok)
   .catch(() => false)
@@ -217,6 +227,9 @@ const child = Bun.spawn([app], {
     RAILWISE_NATIVE_SMOKE: "1",
     RAILWISE_PORT: String(port),
     RUST_LOG: Bun.env.RUST_LOG ?? "railwise_lib=debug,railwise_desktop=debug,sidecar=debug",
+    HOME: home,
+    LOCALAPPDATA: local,
+    APPDATA: path.join(tmp, "roaming"),
     XDG_DATA_HOME: data,
   },
   stdout: "pipe",

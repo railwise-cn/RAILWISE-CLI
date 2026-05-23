@@ -1,21 +1,18 @@
 # 内置智能体
 
-RAILWISE Desktop 内置 13 个工程测绘子智能体，统一由 Agent Studio 管理。进入“智能体编排台”后可以查看、编辑、保存提示词，保存后会热更新到后续会话。
+RAILWISE Desktop 以“项目总控 + 专业智能体”的方式组织工程协作。智能体通过 Harness 工作台和能力市场管理；进入智能体配置页后可以查看、编辑、保存提示词和模型路由，保存后会热更新到后续会话。
 
-| 智能体              | 用途                                 |
-| ------------------- | ------------------------------------ |
-| chief_manager       | 总协调，拆分工程任务并分配给子智能体 |
-| qa_inspector        | 外业数据首检、异常值和缺测检查       |
-| survey_analyst      | 测量数据趋势分析、沉降和位移判断     |
-| cad_drafter         | CAD/DXF 图层理解和图纸说明生成       |
-| ppt_master          | 项目汇报 PPT 结构与内容生成          |
-| report_writer       | 周报、月报、验收报告草拟             |
-| compliance_reviewer | 合规条款、成果完整性和格式审查       |
-| data_cleaner        | CSV/XLSX 清洗、字段规范化            |
-| risk_monitor        | 项目风险、阈值和告警解释             |
-| workflow_planner    | 多智能体工作流编排                   |
-| field_assistant     | 外业记录整理和补录建议               |
-| archive_keeper      | 成果归档、命名和目录建议             |
-| client_briefing     | 面向业主的简明汇报口径               |
+| 智能体                    | 用途                                           |
+| ------------------------- | ---------------------------------------------- |
+| chief_manager             | 项目总控，拆解工程任务并调度专业智能体         |
+| source_ingestor           | 资料入库，整理规范、项目资料和原始文件         |
+| norm_librarian            | 规范资料管理，返回可追溯条文和引用依据         |
+| knowledge_curator         | 知识库维护，把案例、规范和审查记录沉淀为 Wiki  |
+| cpiii_specialist          | CPIII 控制网、轨道精调和测量成果复核           |
+| adjustment_computer       | 平差计算，输出残差、精度统计和质量标记         |
+| railway_norm_consultant   | 铁路规范顾问，生成合规说明和条文对照           |
+| technical_writer          | 技术报告编写，整理计算结果、规范引用和审查意见 |
+| qa_reviewer               | 质量审查，检查成果完整性、风险项和交付质量闸门 |
+| data_analyst              | 测绘数据分析，识别趋势、异常和统计摘要         |
 
 编辑智能体时，只修改职责、输入输出和工具边界。不要把 API Key、客户敏感信息或私有路径写进提示词。

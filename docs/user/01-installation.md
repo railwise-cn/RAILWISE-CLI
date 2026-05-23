@@ -1,6 +1,6 @@
 # RAILWISE Desktop 安装
 
-RAILWISE Desktop 面向工程测绘现场交付，应用启动后默认进入项目驾驶舱。安装前请确认企业内网允许访问模型服务、更新服务，或已配置本地模型与私有更新源。
+RAILWISE Desktop 面向工程测绘现场交付，应用启动后默认进入多智能体 Harness 工作台。安装前请确认企业内网允许访问模型服务、更新服务，或已配置本地模型与私有更新源。
 
 ## Windows
 
@@ -13,17 +13,14 @@ RAILWISE Desktop 面向工程测绘现场交付，应用启动后默认进入项
 
 ## macOS
 
-1. 下载 `RAILWISE_1.3.0_aarch64.dmg`。
+1. Apple 芯片 Mac 下载 `RAILWISE_1.3.0_aarch64.dmg`；Intel Mac 下载 `RAILWISE_1.3.0_x64.dmg`。
 2. 打开 DMG，将 RAILWISE 拖入 Applications。
 3. 首次启动如被 Gatekeeper 阻止，进入“系统设置 → 隐私与安全性”允许打开。
-4. 启动后确认首页显示项目驾驶舱。
+4. 启动后确认首页显示多智能体 Harness 工作台。
 
 ## Linux
 
-1. Ubuntu 22.04 LTS 推荐使用 `.deb` 包。
-2. 执行 `sudo apt install ./railwise_1.3.0_amd64.deb`。
-3. 从应用菜单启动 RAILWISE Desktop。
-4. Wayland 多屏场景如出现窗口异常，可在设置中切换显示后端并重启。
+Desktop 暂不面向 Linux 用户发布安装包。工程自动化和 CI 场景继续使用 RAILWISE CLI。
 
 ## 更新
 

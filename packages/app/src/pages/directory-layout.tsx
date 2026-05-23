@@ -10,6 +10,7 @@ import type { QuestionAnswer } from "@railwise/sdk/v2"
 import { decode64 } from "@/utils/base64"
 import { showToast } from "@railwise/ui/toast"
 import { useLanguage } from "@/context/language"
+import { permissionReplyInput } from "@/utils/permission-reply"
 
 function DirectoryDataProvider(props: ParentProps<{ directory: string }>) {
   const params = useParams()
@@ -25,7 +26,16 @@ function DirectoryDataProvider(props: ParentProps<{ directory: string }>) {
         sessionID: string
         permissionID: string
         response: "once" | "always" | "reject"
-      }) => sdk.client.permission.respond(input)}
+      }) =>
+        sdk.client.permission.reply(
+          permissionReplyInput({
+            sessionID: input.sessionID,
+            permissionID: input.permissionID,
+            response: input.response,
+            directory: props.directory,
+          }),
+        )
+      }
       onQuestionReply={(input: { requestID: string; answers: QuestionAnswer[] }) => sdk.client.question.reply(input)}
       onQuestionReject={(input: { requestID: string }) => sdk.client.question.reject(input)}
       onNavigateToSession={(sessionID: string) => navigate(`/${params.dir}/session/${sessionID}`)}

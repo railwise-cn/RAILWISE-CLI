@@ -167,8 +167,8 @@ check(
 )
 check(
   "release artifact coverage",
-  contains(workflow, ['-name "*.dmg"', '-name "*.exe"', "--draft"]),
-  "draft release uploads Windows and macOS installers",
+  contains(workflow, ['-name "*.dmg"', '-name "*.exe"', '-name "*.app.tar.gz"', '-name "*.app.tar.gz.sig"', "--draft"]),
+  "draft release uploads Windows, macOS installers, and macOS updater artifacts",
 )
 check(
   "release repo context",
@@ -179,9 +179,9 @@ check(
   "release asset staging",
   contains(workflow, [
     "dist/release-assets",
-    '-name "*.sig"',
-    "RAILWISE_${VERSION}_aarch64.app.tar.gz",
-    "RAILWISE_${VERSION}_x64.app.tar.gz",
+    '-name "*.app.tar.gz.sig"',
+    "RAILWISE_${VERSION}_macos_apple_silicon.app.tar.gz",
+    "RAILWISE_${VERSION}_macos_intel.app.tar.gz",
     "mapfile -t files < <(find dist/release-assets -type f | sort)",
   ]),
   "release assets are staged with stable ASCII names before upload",

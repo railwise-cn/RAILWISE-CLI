@@ -298,8 +298,20 @@ jobs:
               *aarch64-apple-darwin*/macos/*.dmg)
                 stage "$file" "RAILWISE_${VERSION}_macos_apple_silicon.dmg"
                 ;;
+              *aarch64-apple-darwin*/macos/*.app.tar.gz.sig)
+                stage "$file" "RAILWISE_${VERSION}_macos_apple_silicon.app.tar.gz.sig"
+                ;;
+              *aarch64-apple-darwin*/macos/*.app.tar.gz)
+                stage "$file" "RAILWISE_${VERSION}_macos_apple_silicon.app.tar.gz"
+                ;;
               *x86_64-apple-darwin*/macos/*.dmg)
                 stage "$file" "RAILWISE_${VERSION}_macos_intel.dmg"
+                ;;
+              *x86_64-apple-darwin*/macos/*.app.tar.gz.sig)
+                stage "$file" "RAILWISE_${VERSION}_macos_intel.app.tar.gz.sig"
+                ;;
+              *x86_64-apple-darwin*/macos/*.app.tar.gz)
+                stage "$file" "RAILWISE_${VERSION}_macos_intel.app.tar.gz"
                 ;;
               *)
                 name="$(basename "$file")"
@@ -310,6 +322,8 @@ jobs:
             esac
           done < <(find dist/desktop -type f \( \
             -name "*.dmg" -o \
+            -name "*.app.tar.gz" -o \
+            -name "*.app.tar.gz.sig" -o \
             -name "*.exe" \) -print0)
           mapfile -t files < <(find dist/release-assets -type f | sort)
           if [ "${#files[@]}" -eq 0 ]; then

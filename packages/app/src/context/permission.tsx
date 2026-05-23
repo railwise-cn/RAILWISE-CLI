@@ -8,6 +8,7 @@ import { useGlobalSync } from "./global-sync"
 import { useParams } from "@solidjs/router"
 import { base64Encode } from "@railwise/util/encode"
 import { decode64 } from "@/utils/base64"
+import { permissionReplyInput } from "@/utils/permission-reply"
 
 type PermissionRespondFn = (input: {
   sessionID: string
@@ -85,7 +86,7 @@ export const { use: usePermission, provider: PermissionProvider } = createSimple
     }
 
     const respond: PermissionRespondFn = (input) => {
-      globalSDK.client.permission.respond(input).catch(() => {
+      globalSDK.client.permission.reply(permissionReplyInput(input)).catch(() => {
         responded.delete(input.permissionID)
       })
     }

@@ -7,6 +7,7 @@ import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
+import { permissionReplyInput } from "@/utils/permission-reply"
 
 export function createSessionComposerBlocked() {
   const params = useParams()
@@ -65,7 +66,14 @@ export function createSessionComposerState() {
 
     setStore("responding", perm.id)
     sdk.client.permission
-      .respond({ sessionID: perm.sessionID, permissionID: perm.id, response })
+      .reply(
+        permissionReplyInput({
+          sessionID: perm.sessionID,
+          permissionID: perm.id,
+          response,
+          directory: sdk.directory,
+        }),
+      )
       .catch((err: unknown) => {
         const description = err instanceof Error ? err.message : String(err)
         showToast({ title: language.t("common.requestFailed"), description })

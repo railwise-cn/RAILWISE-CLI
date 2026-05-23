@@ -22,6 +22,7 @@ import { effectiveCapabilities, starterCapabilities, updateStarterCapability } f
 import {
   agentRoleLabel,
   collaborationTarget,
+  enabledSkillRows,
   modelRouteLabel,
   parseModelRoute,
   professionalSkills,
@@ -232,11 +233,13 @@ export default function AgentsPage() {
           .map((item) => ({ id: item.id, label: item.name, detail: permissionLabel(item) })),
   )
   const professionalSkillList = createMemo(() =>
-    professionalSkills(skills(), 8).map((skill) => ({
-      id: skill.location,
-      label: skill.name,
-      detail: skill.description,
-    })),
+    professionalSkills(skills(), 8)
+      .map((skill) => ({
+        id: skill.location,
+        label: skill.name,
+        detail: skill.description,
+      }))
+      .concat(skills().length ? [] : enabledSkillRows(capabilities(), 8)),
   )
   const marketList = createMemo(() => {
     const needle = query().trim().toLowerCase()

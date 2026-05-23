@@ -37,6 +37,14 @@ type Skill = {
   location: string
 }
 
+type Capability = {
+  id: string
+  kind: string
+  name: string
+  description: string
+  enabled: boolean
+}
+
 const skills = [
   "monitoring-design",
   "data-analysis",
@@ -101,6 +109,17 @@ export function professionalSkills(list: Skill[], limit = 12) {
     .slice()
     .sort((a, b) => skillRank(a) - skillRank(b) || a.name.localeCompare(b.name, "zh-Hans-CN"))
     .slice(0, limit)
+}
+
+export function enabledSkillRows(list: Capability[], limit = 8) {
+  return list
+    .filter((item) => item.kind === "skill" && item.enabled)
+    .slice(0, limit)
+    .map((item) => ({
+      id: item.id,
+      label: item.name,
+      detail: item.description,
+    }))
 }
 
 export function collaborationTarget(input: CollaborationDraft) {

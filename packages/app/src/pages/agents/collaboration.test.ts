@@ -4,6 +4,7 @@ import {
   agentRoleLabel,
   agentStudioSummary,
   collaborationTarget,
+  enabledSkillRows,
   modelRouteLabel,
   modelRoutingSummary,
   modelSetupState,
@@ -120,6 +121,40 @@ describe("model routing helpers", () => {
     )
 
     expect(skills.map((skill) => skill.name)).toEqual(["monitoring-design", "data-analysis", "standard-reference"])
+  })
+
+  test("builds Chinese skill rows from enabled Marketplace capabilities", () => {
+    const rows = enabledSkillRows([
+      {
+        id: "railwise.skill.report_delivery",
+        kind: "skill",
+        name: "成果报告交付",
+        description: "整理检查结果、技术说明、交付清单和报告草稿。",
+        enabled: true,
+      },
+      {
+        id: "railwise.skill.disabled",
+        kind: "skill",
+        name: "未启用能力",
+        description: "disabled",
+        enabled: false,
+      },
+      {
+        id: "railwise.tool.report_writer",
+        kind: "tool",
+        name: "报告文件生成",
+        description: "tool",
+        enabled: true,
+      },
+    ])
+
+    expect(rows).toEqual([
+      {
+        id: "railwise.skill.report_delivery",
+        label: "成果报告交付",
+        detail: "整理检查结果、技术说明、交付清单和报告草稿。",
+      },
+    ])
   })
 
   test("parses provider and model route from the matrix select value", () => {

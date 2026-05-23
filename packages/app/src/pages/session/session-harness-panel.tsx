@@ -28,6 +28,38 @@ function risk(event: HarnessEvent) {
   return "低风险"
 }
 
+export function eventKind(event: HarnessEvent) {
+  if (event.type.startsWith("permission.")) return "权限"
+  if (event.type.startsWith("tool.")) return "工具"
+  if (event.type === "artifact.created" || event.type === "session.completed") return "产物"
+  if (event.type === "skill.loaded") return "Skill"
+  return "运行"
+}
+
+export function eventStatus(event: HarnessEvent) {
+  if (event.type === "tool.started") return "进行中"
+  if (event.type === "permission.requested") return "待确认"
+  if (event.type === "tool.failed") return "失败"
+  if (event.type === "permission.resolved") return "已处理"
+  if (event.type === "tool.completed" || event.type === "session.completed" || event.type === "artifact.created")
+    return "已完成"
+  return "已记录"
+}
+
+export function visibleEvents(events: HarnessEvent[]) {
+  return events
+    .slice()
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, 8)
+}
+
+function detail(event: HarnessEvent) {
+  if (event.error) return event.error
+  if (event.artifactPath) return event.artifactPath
+  if (event.duration !== undefined) return `${event.detail ?? event.capabilityID ?? ""} ${event.duration}ms`.trim()
+  return event.detail ?? event.capabilityID
+}
+
 function clock(value: number) {
   return new Date(value).toLocaleTimeString("zh-CN", {
     hour: "2-digit",
@@ -42,8 +74,9 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
   const [events, setEvents] = createSignal<HarnessEvent[]>([])
   const [error, setError] = createSignal("")
 
-  const recent = createMemo(() => events().slice(-3).reverse())
+  const recent = createMemo(() => visibleEvents(events()))
   const agent = createMemo(() => (props.agent ? (agents[props.agent] ?? props.agent) : undefined))
+  const model = createMemo(() => status()?.model ?? events().findLast((event) => event.type === "model.selected")?.detail)
   const pending = createMemo(() => {
     const count = status()?.pendingPermissionCount
     if (!count) return "无待处理"
@@ -86,7 +119,7 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
 
   return (
     <section data-testid="session-harness-panel" class="shrink-0 border-b border-border-weak-base bg-surface-base">
-      <div class="mx-auto flex max-w-3xl flex-col gap-2 px-4 py-2">
+      <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-2">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="min-w-0">
             <div class="text-11-medium uppercase text-text-muted">RAILWISE Harness</div>
@@ -96,6 +129,9 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
           </div>
           <div class="flex flex-wrap items-center gap-1.5 text-12-regular text-text-weak">
             <span class="rounded-md border border-border-weak-base px-2 py-1">{mode(status())}</span>
+            <span class="max-w-56 truncate rounded-md border border-border-weak-base px-2 py-1">
+              模型 {model() ?? "未选择"}
+            </span>
             <span class="rounded-md border border-border-weak-base px-2 py-1">
               能力 {status()?.capabilityCount ?? "同步中"}
             </span>
@@ -112,22 +148,35 @@ export function SessionHarnessPanel(props: { sessionID?: string; agent?: string 
             </div>
           }
         >
-          <div class="grid gap-1.5 md:grid-cols-3">
+          <ol class="grid gap-1.5">
             <For each={recent()}>
               {(event) => (
-                <div class="min-w-0 rounded-md border border-border-weak-base px-2 py-1.5">
-                  <div class="flex items-center justify-between gap-2 text-11-regular text-text-muted">
-                    <span>{clock(event.createdAt)}</span>
-                    <span>{risk(event)}</span>
+                <li class="grid min-w-0 grid-cols-[auto_auto_1fr_auto] items-center gap-2 rounded-md border border-border-weak-base px-2 py-1.5 text-12-regular">
+                  <span class="rounded bg-surface-panel px-1.5 py-0.5 text-11-medium text-text-muted">
+                    {eventKind(event)}
+                  </span>
+                  <span
+                    classList={{
+                      "text-text-muted": eventStatus(event) !== "失败",
+                      "text-text-danger-base": eventStatus(event) === "失败",
+                    }}
+                  >
+                    {eventStatus(event)}
+                  </span>
+                  <div class="min-w-0">
+                    <div class="truncate text-12-medium text-text-strong">{event.title}</div>
+                    <Show when={detail(event)}>
+                      {(value) => <div class="truncate text-11-regular text-text-weak">{value()}</div>}
+                    </Show>
                   </div>
-                  <div class="truncate text-12-medium text-text-strong">{event.title}</div>
-                  <Show when={event.detail}>
-                    <div class="truncate text-12-regular text-text-weak">{event.detail}</div>
-                  </Show>
-                </div>
+                  <div class="text-right text-11-regular text-text-muted">
+                    <div>{clock(event.createdAt)}</div>
+                    <div>{risk(event)}</div>
+                  </div>
+                </li>
               )}
             </For>
-          </div>
+          </ol>
         </Show>
 
         <Show when={error()}>

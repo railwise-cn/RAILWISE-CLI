@@ -3,6 +3,7 @@ import { expect, test } from "./helpers/app"
 test("能力市场启用模型 Provider 并更新 Harness 计数", async ({ launchApp }) => {
   const { page } = await launchApp("/agents")
 
+  await page.locator(".rw-nav-actions").getByRole("button", { name: "能力市场" }).click()
   await page.getByTestId("market-filter-provider").click()
   await expect(page.getByTestId("market-capability-railwise.provider.deepseek")).toContainText("DeepSeek")
   await expect(page.getByTestId("market-capability-railwise.provider.deepseek")).toContainText("可启用")

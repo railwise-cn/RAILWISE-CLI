@@ -5,6 +5,7 @@ test("工具与 Skills 面板展示专业工程能力", async ({ launchApp }) =>
   const { page } = await launchApp("/agents")
 
   await visible(page.getByTestId("agents-page"))
+  await page.locator(".rw-nav-actions").getByRole("button", { name: "高级配置" }).click()
   await expect(page.getByTestId("agent-tool-item")).toHaveCount(3)
   await expect(page.getByTestId("agent-skill-item")).toHaveCount(3)
   await expect(page.getByTestId("agent-tool-item").filter({ hasText: "间接平差计算" })).toBeVisible()

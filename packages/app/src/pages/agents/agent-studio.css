@@ -37,12 +37,10 @@
 
 .railwise-codex {
   display: grid;
-  grid-template-areas:
-    "sidebar main"
-    "sidebar inspector";
-  grid-template-columns: 276px minmax(0, 1fr);
+  grid-template-areas: "sidebar main inspector";
+  grid-template-columns: 264px minmax(0, 1fr) 320px;
   align-items: start;
-  min-height: 100%;
+  min-height: 100vh;
   background: var(--rw-bg);
   overflow: auto;
 }
@@ -75,22 +73,23 @@
 .rw-main {
   grid-area: main;
   display: flex;
-  width: min(100%, 1120px);
+  width: min(100%, 980px);
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   margin: 0 auto;
   overflow: auto;
-  padding: 22px;
+  padding: 22px 18px;
 }
 
 .rw-inspector {
-  display: grid;
+  position: sticky;
+  top: 0;
+  display: flex;
   grid-area: inspector;
-  width: min(100%, 1120px);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 0 auto;
-  padding: 0 22px 22px;
-  overflow: visible;
+  height: 100vh;
+  overflow: auto;
+  border-left: 1px solid var(--rw-border);
+  background: color-mix(in srgb, var(--rw-surface) 72%, var(--rw-bg));
 }
 
 .rw-brand {
@@ -139,7 +138,7 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding: 12px;
 }
 
@@ -230,6 +229,7 @@
 }
 
 .rw-recent button,
+.rw-nav-actions button,
 .rw-market-nav button,
 .rw-prompt-bank button {
   min-width: 0;
@@ -248,6 +248,20 @@
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.rw-nav-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.rw-nav-actions button {
+  min-height: 34px;
+  padding: 0 10px;
+  color: var(--rw-text);
+  font-size: 13px;
+  font-weight: 680;
 }
 
 .rw-harness-grid {
@@ -302,6 +316,8 @@
 }
 
 .rw-market-nav button.active,
+.rw-nav-actions button.active,
+.rw-nav-actions button:hover,
 .rw-prompt-bank button:hover,
 .rw-recent button:hover {
   border-color: color-mix(in srgb, var(--rw-accent) 56%, var(--rw-border));
@@ -310,13 +326,13 @@
 }
 
 .rw-header {
-  min-height: 58px;
+  min-height: 48px;
 }
 
 .rw-header h1 {
   margin: 3px 0 0;
   color: var(--rw-text);
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 740;
   line-height: 1.15;
   letter-spacing: 0;
@@ -350,10 +366,10 @@
 }
 
 .rw-composer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
-  gap: 16px;
-  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
   box-shadow: var(--rw-shadow);
 }
 
@@ -365,21 +381,21 @@
 }
 
 .rw-message {
-  max-width: 680px;
+  max-width: 620px;
   border-radius: 8px;
   background: var(--rw-surface-soft);
-  padding: 13px 14px;
+  padding: 11px 12px;
 }
 
 .rw-plan {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid var(--rw-border);
   border-radius: 8px;
   background: var(--rw-surface);
-  padding: 12px;
+  padding: 10px;
 }
 
 .rw-plan__head,
@@ -410,6 +426,13 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 6px;
+}
+
+.rw-plan__summary {
+  margin: 0;
+  color: var(--rw-muted);
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .rw-plan__steps div {
@@ -460,13 +483,13 @@
   justify-content: space-between;
   gap: 16px;
   border-bottom: 1px solid var(--rw-border);
-  padding-bottom: 14px;
+  padding-bottom: 10px;
 }
 
 .rw-chat-head h2 {
   margin: 4px 0 0;
   color: var(--rw-text);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 740;
   line-height: 1.25;
   letter-spacing: 0;
@@ -534,7 +557,7 @@
 }
 
 .rw-prompt textarea {
-  min-height: 132px;
+  min-height: 176px;
   resize: vertical;
   padding: 11px 12px;
   line-height: 1.55;
@@ -543,12 +566,14 @@
 .rw-prompt-bank {
   display: flex;
   min-width: 0;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .rw-prompt-bank button {
-  min-height: 42px;
+  flex: 1 1 190px;
+  min-height: 38px;
   padding: 9px 10px;
   color: var(--rw-text);
   font-size: 12px;
@@ -562,6 +587,17 @@
   flex-direction: column;
   gap: 12px;
   padding: 14px;
+}
+
+.rw-secondary {
+  box-shadow: none;
+}
+
+.rw-secondary-summary {
+  margin: 0;
+  color: var(--rw-muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .rw-agent-row {
@@ -603,7 +639,8 @@
   -webkit-line-clamp: 2;
 }
 
-.rw-section-title label {
+.rw-section-title label,
+.rw-market-search {
   display: flex;
   min-width: min(320px, 100%);
   align-items: center;
@@ -614,6 +651,10 @@
   padding: 0 10px;
 }
 
+.rw-market-search {
+  min-height: 36px;
+}
+
 .rw-section-title > div {
   display: flex;
   min-width: 0;
@@ -621,7 +662,8 @@
   gap: 2px;
 }
 
-.rw-section-title label input {
+.rw-section-title label input,
+.rw-market-search input {
   min-height: 34px;
   border: 0;
   padding: 0;
@@ -955,15 +997,19 @@
 
 @media (max-width: 1180px) {
   .railwise-codex {
+    grid-template-areas:
+      "sidebar main"
+      "sidebar inspector";
     grid-template-columns: 254px minmax(0, 1fr);
   }
 
   .rw-inspector {
+    position: static;
+    display: grid;
+    height: auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .rw-composer {
-    grid-template-columns: 1fr;
+    border-left: 0;
+    background: var(--rw-bg);
   }
 }
 
@@ -978,6 +1024,7 @@
   .rw-main,
   .rw-inspector {
     width: 100%;
+    height: auto;
     overflow: visible;
   }
 

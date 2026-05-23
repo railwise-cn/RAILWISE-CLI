@@ -172,6 +172,8 @@ export default function AgentsPage() {
   const [studioRemote, setStudioRemote] = createSignal(false)
   const [marketRemote, setMarketRemote] = createSignal(false)
   const [busy, setBusy] = createSignal("")
+  const [advancedOpen, setAdvancedOpen] = createSignal(false)
+  const [marketOpen, setMarketOpen] = createSignal(false)
   const [routeSaving, setRouteSaving] = createSignal<Record<string, boolean>>({})
 
   function loadStudio() {
@@ -458,7 +460,7 @@ export default function AgentsPage() {
 
         <section class="rw-panel">
           <div class="rw-panel__bar">
-            <span>Harness</span>
+            <span>执行</span>
             <strong>{harness() ? modeLabel(harness()!.mode) : marketLoading() ? "同步中" : "本地安全"}</strong>
           </div>
           <div class="rw-harness-grid">
@@ -478,17 +480,30 @@ export default function AgentsPage() {
             </div>
           </div>
         </section>
+
+        <nav class="rw-nav-actions" aria-label="工作台入口">
+          <button type="button" classList={{ active: marketOpen() }} onClick={() => setMarketOpen((value) => !value)}>
+            能力市场
+          </button>
+          <button
+            type="button"
+            classList={{ active: advancedOpen() }}
+            onClick={() => setAdvancedOpen((value) => !value)}
+          >
+            高级配置
+          </button>
+        </nav>
       </aside>
 
       <section class="rw-main">
         <header class="rw-header">
           <div>
-            <span>RAILWISE 智能体 Harness</span>
-            <h1>把工程任务交给一组专业智能体</h1>
+            <span>RAILWISE</span>
+            <h1>把工程任务交给 RAILWISE</h1>
           </div>
           <button type="button" class="agent-button" onClick={connectProvider}>
             <Icon name="plus-small" size="small" />
-            接入模型
+            模型
           </button>
         </header>
 
@@ -496,34 +511,42 @@ export default function AgentsPage() {
           <div class="rw-thread">
             <div class="rw-chat-head">
               <div>
-                <span>工程任务对话</span>
-                <h2>告诉智能体要完成什么，其余交给 Harness 编排</h2>
+                <span>任务</span>
+                <h2>说清目标，其余交给后台编排</h2>
               </div>
-              <p>权限、工具和技能由 Harness 在后台编排；遇到敏感操作会进入会话确认。</p>
+              <p>权限请求会在会话中确认。</p>
             </div>
             <div class="rw-message rw-message--assistant">
               <strong>项目总控</strong>
               <p>
-                {selected()?.displayName ?? "项目总控"} 将作为入口接收任务，Harness 会按权限策略调度文件、工具、Skills
-                和专业智能体。
+                {selected()?.displayName ?? "项目总控"} 接收任务，后台按需调度智能体、工具和 Skills。
               </p>
             </div>
             <div class="rw-plan" data-testid="agent-harness-plan">
               <div class="rw-plan__head">
-                <span>Harness 调度预案</span>
+                <span>执行预览</span>
                 <strong>{draft().trim() ? "按当前任务更新" : "输入任务后自动细化"}</strong>
               </div>
-              <div class="rw-plan__steps">
-                <For each={plan()}>
-                  {(item, index) => (
-                    <div>
-                      <span>{index() + 1}</span>
-                      <strong>{item.label}</strong>
-                      <small>{item.detail}</small>
-                    </div>
-                  )}
-                </For>
-              </div>
+              <Show
+                when={draft().trim()}
+                fallback={
+                  <p class="rw-plan__summary">
+                    收到任务后自动选择专业智能体、Skills 和工具；写文件、执行命令或使用密钥前会确认。
+                  </p>
+                }
+              >
+                <div class="rw-plan__steps">
+                  <For each={plan()}>
+                    {(item, index) => (
+                      <div>
+                        <span>{index() + 1}</span>
+                        <strong>{item.label}</strong>
+                        <small>{item.detail}</small>
+                      </div>
+                    )}
+                  </For>
+                </div>
+              </Show>
             </div>
             <form
               class="rw-prompt"
@@ -573,29 +596,39 @@ export default function AgentsPage() {
           </div>
         </section>
 
-        <section class="rw-agent-list" aria-busy={loading()}>
+        <section class="rw-agent-list rw-secondary" aria-busy={loading()}>
           <div class="rw-section-title">
-            <span>专业智能体</span>
-            <strong>{agents().length} 个可用</strong>
+            <div>
+              <span>高级配置</span>
+              <strong>{agents().length} 个专业智能体</strong>
+            </div>
+            <button type="button" class="agent-button agent-button--ghost" onClick={() => setAdvancedOpen((value) => !value)}>
+              {advancedOpen() ? "收起" : "展开"}
+            </button>
           </div>
-          <div class="rw-agent-row">
-            <For each={agents()}>
-              {(agent) => (
-                <button
-                  type="button"
-                  classList={{ active: selectedAgent() === agent.name }}
-                  onClick={() => setSelectedAgent(agent.name)}
-                >
-                  <span>{agentRoleLabel(agent)}</span>
-                  <strong>{agent.displayName ?? agent.name}</strong>
-                  <small>{agentDescription(agent)}</small>
-                </button>
-              )}
-            </For>
-          </div>
+          <Show
+            when={advancedOpen()}
+            fallback={<p class="rw-secondary-summary">默认自动选择专业能力；需要精细配置时再展开。</p>}
+          >
+            <div class="rw-agent-row">
+              <For each={agents()}>
+                {(agent) => (
+                  <button
+                    type="button"
+                    classList={{ active: selectedAgent() === agent.name }}
+                    onClick={() => setSelectedAgent(agent.name)}
+                  >
+                    <span>{agentRoleLabel(agent)}</span>
+                    <strong>{agent.displayName ?? agent.name}</strong>
+                    <small>{agentDescription(agent)}</small>
+                  </button>
+                )}
+              </For>
+            </div>
+          </Show>
         </section>
 
-        <section class="rw-market">
+        <section class="rw-market rw-secondary">
           <div class="rw-section-title">
             <div>
               <span>能力市场</span>
@@ -603,85 +636,93 @@ export default function AgentsPage() {
                 {marketRemote() ? `${capabilities().length} 项能力` : `本地预置 ${capabilities().length} 项能力`}
               </strong>
             </div>
-            <label>
+            <button type="button" class="agent-button agent-button--ghost" onClick={() => setMarketOpen((value) => !value)}>
+              {marketOpen() ? "收起" : "打开"}
+            </button>
+          </div>
+          <Show
+            when={marketOpen()}
+            fallback={<p class="rw-secondary-summary">工具、Skills、模型和 MCP 保留在这里，按需安装或启用。</p>}
+          >
+            <label class="rw-market-search">
               <Icon name="magnifying-glass" size="small" />
               <input value={query()} onInput={(event) => setQuery(event.currentTarget.value)} placeholder="搜索能力" />
             </label>
-          </div>
-          <nav class="rw-market-nav" aria-label="能力市场分类">
-            <For each={marketFilters}>
-              {(item) => (
-                <button
-                  type="button"
-                  data-testid={`market-filter-${item.value}`}
-                  classList={{ active: filter() === item.value }}
-                  onClick={() => setFilter(item.value)}
-                >
-                  {item.label}
-                </button>
-              )}
-            </For>
-          </nav>
-          <Show when={marketError()}>
-            <p class={marketRemote() ? "agent-error" : "agent-empty"}>{marketError()}</p>
-          </Show>
-          <div class="rw-market-grid" aria-busy={marketLoading()}>
-            <For each={marketList()}>
-              {(capability) => (
-                <article
-                  class="rw-capability"
-                  data-testid={`market-capability-${capability.id}`}
-                  classList={{ disabled: !capability.enabled }}
-                >
-                  <div class="rw-capability__top">
-                    <span>{kindLabel(capability.kind)}</span>
-                    <strong>{!capability.installed ? "未安装" : capability.enabled ? "已启用" : "可启用"}</strong>
-                  </div>
-                  <h2>{capability.name}</h2>
-                  <p>{capability.description}</p>
-                  <small>{permissionLabel(capability)}</small>
-                  <div class="rw-tags">
-                    <For each={capability.tags ?? []}>{(tag) => <span>{tag}</span>}</For>
-                  </div>
-                  <div class="rw-capability__actions">
-                    <button
-                      type="button"
-                      class="agent-button agent-button--ghost"
-                      data-testid={`market-capability-toggle-${capability.id}`}
-                      disabled={busy() === capability.id}
-                      onClick={() =>
-                        void changeCapability(
-                          capability,
-                          !capability.installed ? "install" : capability.enabled ? "disable" : "enable",
-                        )
-                      }
-                    >
-                      {busy() === capability.id
-                        ? "处理中"
-                        : !capability.installed
-                          ? "安装"
-                          : capability.enabled
-                            ? "停用"
-                            : "启用"}
-                    </button>
-                    <Show when={capability.installed && !capability.enabled}>
+            <nav class="rw-market-nav" aria-label="能力市场分类">
+              <For each={marketFilters}>
+                {(item) => (
+                  <button
+                    type="button"
+                    data-testid={`market-filter-${item.value}`}
+                    classList={{ active: filter() === item.value }}
+                    onClick={() => setFilter(item.value)}
+                  >
+                    {item.label}
+                  </button>
+                )}
+              </For>
+            </nav>
+            <Show when={marketError()}>
+              <p class={marketRemote() ? "agent-error" : "agent-empty"}>{marketError()}</p>
+            </Show>
+            <div class="rw-market-grid" aria-busy={marketLoading()}>
+              <For each={marketList()}>
+                {(capability) => (
+                  <article
+                    class="rw-capability"
+                    data-testid={`market-capability-${capability.id}`}
+                    classList={{ disabled: !capability.enabled }}
+                  >
+                    <div class="rw-capability__top">
+                      <span>{kindLabel(capability.kind)}</span>
+                      <strong>{!capability.installed ? "未安装" : capability.enabled ? "已启用" : "可启用"}</strong>
+                    </div>
+                    <h2>{capability.name}</h2>
+                    <p>{capability.description}</p>
+                    <small>{permissionLabel(capability)}</small>
+                    <div class="rw-tags">
+                      <For each={capability.tags ?? []}>{(tag) => <span>{tag}</span>}</For>
+                    </div>
+                    <div class="rw-capability__actions">
                       <button
                         type="button"
                         class="agent-button agent-button--ghost"
-                        data-testid={`market-capability-uninstall-${capability.id}`}
+                        data-testid={`market-capability-toggle-${capability.id}`}
                         disabled={busy() === capability.id}
-                        onClick={() => void changeCapability(capability, "uninstall")}
+                        onClick={() =>
+                          void changeCapability(
+                            capability,
+                            !capability.installed ? "install" : capability.enabled ? "disable" : "enable",
+                          )
+                        }
                       >
-                        卸载
+                        {busy() === capability.id
+                          ? "处理中"
+                          : !capability.installed
+                            ? "安装"
+                            : capability.enabled
+                              ? "停用"
+                              : "启用"}
                       </button>
-                    </Show>
-                  </div>
-                </article>
-              )}
-            </For>
-          </div>
-          <Show when={!marketLoading() && marketList().length === 0}>
-            <div class="agent-empty">没有匹配的能力。</div>
+                      <Show when={capability.installed && !capability.enabled}>
+                        <button
+                          type="button"
+                          class="agent-button agent-button--ghost"
+                          data-testid={`market-capability-uninstall-${capability.id}`}
+                          disabled={busy() === capability.id}
+                          onClick={() => void changeCapability(capability, "uninstall")}
+                        >
+                          卸载
+                        </button>
+                      </Show>
+                    </div>
+                  </article>
+                )}
+              </For>
+            </div>
+            <Show when={!marketLoading() && marketList().length === 0}>
+              <div class="agent-empty">没有匹配的能力。</div>
+            </Show>
           </Show>
         </section>
       </section>
@@ -737,45 +778,47 @@ export default function AgentsPage() {
           </Show>
         </section>
 
-        <section class="rw-panel">
-          <div class="rw-panel__bar">
-            <span>工具</span>
-            <strong>{professionalTools().length ? `${professionalTools().length} 项` : "按任务加载"}</strong>
-          </div>
-          <div class="rw-mini-list">
-            <For each={professionalTools().slice(0, 7)}>
-              {(tool) => (
-                <div data-testid="agent-tool-item">
-                  <strong>{tool.label}</strong>
-                  <small>{tool.detail}</small>
-                </div>
-              )}
-            </For>
-          </div>
-        </section>
+        <Show when={advancedOpen()}>
+          <section class="rw-panel">
+            <div class="rw-panel__bar">
+              <span>工具</span>
+              <strong>{professionalTools().length ? `${professionalTools().length} 项` : "按任务加载"}</strong>
+            </div>
+            <div class="rw-mini-list">
+              <For each={professionalTools().slice(0, 3)}>
+                {(tool) => (
+                  <div data-testid="agent-tool-item">
+                    <strong>{tool.label}</strong>
+                    <small>{tool.detail}</small>
+                  </div>
+                )}
+              </For>
+            </div>
+          </section>
 
-        <section class="rw-panel">
-          <div class="rw-panel__bar">
-            <span>Skills</span>
-            <strong>{professionalSkillList().length ? `${professionalSkillList().length} 项` : "按任务加载"}</strong>
-          </div>
-          <div class="rw-mini-list">
-            <For each={professionalSkillList().slice(0, 6)}>
-              {(skill) => (
-                <div data-testid="agent-skill-item">
-                  <strong>{skill.label}</strong>
-                  <small>{skill.detail}</small>
+          <section class="rw-panel">
+            <div class="rw-panel__bar">
+              <span>Skills</span>
+              <strong>{professionalSkillList().length ? `${professionalSkillList().length} 项` : "按任务加载"}</strong>
+            </div>
+            <div class="rw-mini-list">
+              <For each={professionalSkillList().slice(0, 3)}>
+                {(skill) => (
+                  <div data-testid="agent-skill-item">
+                    <strong>{skill.label}</strong>
+                    <small>{skill.detail}</small>
+                  </div>
+                )}
+              </For>
+              <Show when={!professionalSkillList().length}>
+                <div>
+                  <strong>从能力市场启用 Skill</strong>
+                  <small>复测检查、平差分析、规范速查、报告交付</small>
                 </div>
-              )}
-            </For>
-            <Show when={!professionalSkillList().length}>
-              <div>
-                <strong>从能力市场启用 Skill</strong>
-                <small>复测检查、平差分析、规范速查、报告交付</small>
-              </div>
-            </Show>
-          </div>
-        </section>
+              </Show>
+            </div>
+          </section>
+        </Show>
 
         <Show when={error()}>
           <p class={studioRemote() ? "agent-error" : "agent-empty"}>{error()}</p>

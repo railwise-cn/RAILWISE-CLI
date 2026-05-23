@@ -21,6 +21,7 @@ import { useAgentStudioApi } from "./api"
 import { effectiveCapabilities, starterCapabilities, updateStarterCapability } from "./capabilities"
 import {
   agentRoleLabel,
+  collaborationPlan,
   collaborationTarget,
   enabledSkillRows,
   modelRouteLabel,
@@ -274,6 +275,14 @@ export default function AgentsPage() {
   )
   const routeAgent = createMemo(() => selected() ?? agents()[0])
   const canStart = createMemo(() => directory().trim().length > 0 && draft().trim().length > 0 && !!selectedAgent())
+  const plan = createMemo(() =>
+    collaborationPlan({
+      agent: selected(),
+      agents: agents(),
+      capabilities: capabilities(),
+      prompt: draft(),
+    }),
+  )
 
   const routeValue = (agent: AgentStudioItem) => {
     if (!agent.model) return ""
@@ -498,6 +507,23 @@ export default function AgentsPage() {
                 {selected()?.displayName ?? "项目总控"} 将作为入口接收任务，Harness 会按权限策略调度文件、工具、Skills
                 和专业智能体。
               </p>
+            </div>
+            <div class="rw-plan" data-testid="agent-harness-plan">
+              <div class="rw-plan__head">
+                <span>Harness 调度预案</span>
+                <strong>{draft().trim() ? "按当前任务更新" : "输入任务后自动细化"}</strong>
+              </div>
+              <div class="rw-plan__steps">
+                <For each={plan()}>
+                  {(item, index) => (
+                    <div>
+                      <span>{index() + 1}</span>
+                      <strong>{item.label}</strong>
+                      <small>{item.detail}</small>
+                    </div>
+                  )}
+                </For>
+              </div>
             </div>
             <form
               class="rw-prompt"

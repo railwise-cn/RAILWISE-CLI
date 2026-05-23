@@ -29,6 +29,7 @@ type Config = {
         applicationFolderPosition?: { x?: number; y?: number }
       }
     }
+    linux?: unknown
   }
   plugins?: {
     updater?: {
@@ -104,6 +105,15 @@ check(
   "release target matrix",
   missingTargets.length === 0,
   missingTargets.length === 0 ? targets.join(", ") : `missing: ${missingTargets.join(", ")}`,
+)
+check(
+  "release omits Linux desktop",
+  config.bundle?.linux === undefined &&
+    !workflow.includes("unknown-linux") &&
+    !workflow.includes("AppImage") &&
+    !workflow.includes(".deb") &&
+    !workflow.includes(".rpm"),
+  "Desktop ships Windows x64 plus macOS Apple Silicon and Intel only",
 )
 check(
   "release signing env",

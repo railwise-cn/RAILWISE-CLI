@@ -12,6 +12,8 @@ test("Codex 风格 Harness 工作台首屏视觉验收", async ({ launchApp }, i
   await expect(page.getByText("RAILWISE 智能体 Harness")).toBeVisible()
   await expect(page.getByText("工程任务对话")).toBeVisible()
   await expect(page.getByText("权限、工具和技能由 Harness 在后台编排")).toBeVisible()
+  await expect(page.getByTestId("agent-harness-plan").getByText("Harness 调度预案")).toBeVisible()
+  await expect(page.getByTestId("agent-harness-plan").getByText("询问确认")).toBeVisible()
   await expect(page.getByTestId("agents-page").locator(".rw-market").getByText("能力市场")).toBeVisible()
   await expect(page.locator(".rw-workspace").getByText("项目文件夹")).toBeVisible()
   await expect(page.locator(".rw-sidebar")).not.toContainText("0 已启用")

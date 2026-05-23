@@ -40,20 +40,6 @@
           "y": 220
         }
       }
-    },
-    "linux": {
-      "deb": {
-        "depends": ["libwebkit2gtk-4.1-0"],
-        "section": "science",
-        "files": {
-          "/usr/share/metainfo/com.railwiseai.desktop.metainfo.xml": "release/appstream.metainfo.xml"
-        }
-      },
-      "rpm": {
-        "compression": {
-          "type": "none"
-        }
-      }
     }
   },
   "plugins": {

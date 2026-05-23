@@ -16,16 +16,6 @@ export const SIDECAR_BINARIES: Array<{ rustTarget: string; ocBinary: string; ass
     ocBinary: "railwise-windows-x64-baseline",
     assetExt: "zip",
   },
-  {
-    rustTarget: "x86_64-unknown-linux-gnu",
-    ocBinary: "railwise-linux-x64-baseline",
-    assetExt: "tar.gz",
-  },
-  {
-    rustTarget: "aarch64-unknown-linux-gnu",
-    ocBinary: "railwise-linux-arm64",
-    assetExt: "tar.gz",
-  },
 ]
 
 export const RUST_TARGET = Bun.env.RUST_TARGET

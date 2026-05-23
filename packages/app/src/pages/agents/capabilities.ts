@@ -412,3 +412,7 @@ export function effectiveCapabilities(list: CapabilityManifest[]) {
 export function toggleStarterCapability(list: CapabilityManifest[], id: string, enabled: boolean) {
   return list.map((item) => (item.id === id ? { ...item, enabled } : item))
 }
+
+export function updateStarterCapability(list: CapabilityManifest[], id: string, patch: Partial<CapabilityManifest>) {
+  return list.map((item) => (item.id === id ? { ...item, ...patch } : item))
+}

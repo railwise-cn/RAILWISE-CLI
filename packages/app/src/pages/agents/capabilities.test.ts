@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import type { CapabilityManifest } from "@railwise/sdk/v2"
-import { effectiveCapabilities, starterCapabilities, toggleStarterCapability } from "./capabilities"
+import { effectiveCapabilities, starterCapabilities, toggleStarterCapability, updateStarterCapability } from "./capabilities"
 
 describe("starter capabilities", () => {
   test("keeps the Desktop workbench useful before Marketplace API syncs", () => {
@@ -44,5 +44,15 @@ describe("starter capabilities", () => {
 
     expect(current.find((item) => item.id === "railwise.provider.deepseek")?.enabled).toBe(true)
     expect(starterCapabilities.find((item) => item.id === "railwise.provider.deepseek")?.enabled).toBe(false)
+  })
+
+  test("can update local starter installation state", () => {
+    const current = updateStarterCapability(starterCapabilities, "railwise.mcp.feishu", {
+      enabled: false,
+      installed: false,
+    })
+
+    expect(current.find((item) => item.id === "railwise.mcp.feishu")?.installed).toBe(false)
+    expect(starterCapabilities.find((item) => item.id === "railwise.mcp.feishu")?.installed).toBe(true)
   })
 })

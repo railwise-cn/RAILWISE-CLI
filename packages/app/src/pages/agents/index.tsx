@@ -18,7 +18,7 @@ import { useProviders } from "@/hooks/use-providers"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import { useAgentStudioApi } from "./api"
-import { effectiveCapabilities, starterCapabilities, toggleStarterCapability } from "./capabilities"
+import { effectiveCapabilities, starterCapabilities, updateStarterCapability } from "./capabilities"
 import {
   agentRoleLabel,
   collaborationTarget,
@@ -341,19 +341,32 @@ export default function AgentsPage() {
     }
   }
 
-  const toggleCapability = async (capability: CapabilityManifest, enabled: boolean) => {
+  const updateCapability = (capability: CapabilityManifest) => {
+    setCapabilities((current) => current.map((item) => (item.id === capability.id ? capability : item)))
+  }
+
+  const changeCapability = async (capability: CapabilityManifest, action: "enable" | "disable" | "install" | "uninstall") => {
     setBusy(capability.id)
     try {
-      const result = enabled
-        ? await global.client.marketplace.capability.enable({ id: capability.id })
-        : await global.client.marketplace.capability.disable({ id: capability.id })
-      if (result.data) {
-        setCapabilities((current) => current.map((item) => (item.id === capability.id ? result.data! : item)))
-      }
+      const result =
+        action === "install"
+          ? await global.client.marketplace.capability.install({ id: capability.id })
+          : action === "uninstall"
+            ? await global.client.marketplace.capability.uninstall({ id: capability.id })
+            : action === "enable"
+              ? await global.client.marketplace.capability.enable({ id: capability.id })
+              : await global.client.marketplace.capability.disable({ id: capability.id })
+      if (result.data) updateCapability(result.data)
       setMarketError("")
     } catch (err) {
       if (!marketRemote()) {
-        setCapabilities((current) => toggleStarterCapability(current, capability.id, enabled))
+        const patch =
+          action === "install"
+            ? { installed: true, enabled: false }
+            : action === "uninstall"
+              ? { installed: false, enabled: false }
+              : { enabled: action === "enable" }
+        setCapabilities((current) => updateStarterCapability(current, capability.id, patch))
         setMarketError("服务器未连接，已临时更新本地预置能力；连接后会同步真实状态。")
         return
       }
@@ -577,7 +590,7 @@ export default function AgentsPage() {
                 >
                   <div class="rw-capability__top">
                     <span>{kindLabel(capability.kind)}</span>
-                    <strong>{capability.enabled ? "已启用" : "可启用"}</strong>
+                    <strong>{!capability.installed ? "未安装" : capability.enabled ? "已启用" : "可启用"}</strong>
                   </div>
                   <h2>{capability.name}</h2>
                   <p>{capability.description}</p>
@@ -585,15 +598,30 @@ export default function AgentsPage() {
                   <div class="rw-tags">
                     <For each={capability.tags ?? []}>{(tag) => <span>{tag}</span>}</For>
                   </div>
-                  <button
-                    type="button"
-                    class="agent-button agent-button--ghost"
-                    data-testid={`market-capability-toggle-${capability.id}`}
-                    disabled={busy() === capability.id}
-                    onClick={() => void toggleCapability(capability, !capability.enabled)}
-                  >
-                    {busy() === capability.id ? "处理中" : capability.enabled ? "停用" : "启用"}
-                  </button>
+                  <div class="rw-capability__actions">
+                    <button
+                      type="button"
+                      class="agent-button agent-button--ghost"
+                      data-testid={`market-capability-toggle-${capability.id}`}
+                      disabled={busy() === capability.id}
+                      onClick={() =>
+                        void changeCapability(capability, !capability.installed ? "install" : capability.enabled ? "disable" : "enable")
+                      }
+                    >
+                      {busy() === capability.id ? "处理中" : !capability.installed ? "安装" : capability.enabled ? "停用" : "启用"}
+                    </button>
+                    <Show when={capability.installed && !capability.enabled}>
+                      <button
+                        type="button"
+                        class="agent-button agent-button--ghost"
+                        data-testid={`market-capability-uninstall-${capability.id}`}
+                        disabled={busy() === capability.id}
+                        onClick={() => void changeCapability(capability, "uninstall")}
+                      >
+                        卸载
+                      </button>
+                    </Show>
+                  </div>
                 </article>
               )}
             </For>

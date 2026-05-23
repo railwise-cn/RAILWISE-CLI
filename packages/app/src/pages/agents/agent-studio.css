@@ -515,6 +515,12 @@
   min-height: 34px;
 }
 
+.rw-capability__actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 8px;
+}
+
 .rw-tags {
   display: flex;
   min-width: 0;

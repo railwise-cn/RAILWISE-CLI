@@ -8,7 +8,7 @@ RAILWISE 现在按三条产品线开发和验收：
 
 - **RAILWISE Core**（`packages/railwise` + `packages/sdk/js`）— 共享智能工程引擎，负责 Agent、工作流、规范 Wiki、测量工具、会话和交付包。
 - **RAILWISE CLI**（`packages/railwise/src/cli`）— 面向开发者、脚本、CI 和自动化的命令行产品。
-- **RAILWISE Desktop**（`packages/desktop`）— 面向工程测绘和监测业务用户的 Tauri 2 桌面工作台，支持 Windows / macOS / Linux 离线安装。
+- **RAILWISE Desktop**（`packages/desktop`）— 面向工程测绘和监测业务用户的 Tauri 2 桌面工作台，支持 Windows 与 macOS 离线安装。
 
 详细边界见 [产品边界与开发实施文档](docs/dev/00-product-boundaries.md)。
 

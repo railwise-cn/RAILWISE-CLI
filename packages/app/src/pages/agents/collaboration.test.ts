@@ -3,6 +3,7 @@ import { base64Encode } from "@railwise/util/encode"
 import {
   agentRoleLabel,
   agentStudioSummary,
+  collaborationPlan,
   collaborationTarget,
   enabledSkillRows,
   modelRouteLabel,
@@ -65,6 +66,58 @@ describe("model routing helpers", () => {
     expect(agentRoleLabel({ name: "chief_manager", mode: "primary" })).toBe("主控")
     expect(agentRoleLabel({ name: "solution_architect", mode: "all" })).toBe("专业智能体")
     expect(agentRoleLabel({ name: "ppt_master", mode: "subagent" })).toBe("专业智能体")
+  })
+
+  test("previews a professional Harness route for CPIII review tasks", () => {
+    const plan = collaborationPlan({
+      agent: { name: "chief_manager", displayName: "项目总控", mode: "primary" },
+      agents: [
+        { name: "chief_manager", displayName: "项目总控", mode: "primary" },
+        { name: "cpiii_specialist", displayName: "CPIII 测量专家", mode: "subagent" },
+        { name: "adjustment_computer", displayName: "平差计算员", mode: "subagent" },
+        { name: "railway_norm_consultant", displayName: "铁路规范顾问", mode: "subagent" },
+        { name: "technical_writer", displayName: "技术报告编写员", mode: "subagent" },
+      ],
+      capabilities: [
+        {
+          id: "railwise.skill.standard_reference",
+          kind: "skill",
+          name: "规范条文速查",
+          description: "查询规范条文。",
+          enabled: true,
+        },
+        {
+          id: "railwise.skill.report_delivery",
+          kind: "skill",
+          name: "成果报告交付",
+          description: "整理报告。",
+          enabled: true,
+        },
+        {
+          id: "railwise.tool.adjustment_indirect",
+          kind: "tool",
+          name: "间接平差计算",
+          description: "运行平差。",
+          enabled: true,
+        },
+        {
+          id: "railwise.tool.wiki_query",
+          kind: "tool",
+          name: "规范 Wiki 查询",
+          description: "查询 Wiki。",
+          enabled: true,
+        },
+      ],
+      prompt: "导入 CPIII 复测成果，核对规范限差，并生成质量审查摘要。",
+    })
+
+    expect(plan.map((item) => item.label)).toEqual([
+      "项目总控",
+      "CPIII 测量专家、平差计算员、铁路规范顾问、技术报告编写员",
+      "规范条文速查、成果报告交付",
+      "间接平差计算、规范 Wiki 查询",
+      "询问确认",
+    ])
   })
 
   test("summarizes bound and defaulted agent models", () => {

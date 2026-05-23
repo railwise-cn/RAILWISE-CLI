@@ -23,6 +23,7 @@ type WorkspaceProject = {
 
 type Agent = {
   name: string
+  displayName?: string
   mode: "subagent" | "primary" | "all"
   hidden?: boolean
   model?: {
@@ -43,6 +44,12 @@ type Capability = {
   name: string
   description: string
   enabled: boolean
+}
+
+export type CollaborationPlanItem = {
+  kind: "agent" | "skill" | "tool" | "permission"
+  label: string
+  detail: string
 }
 
 const skills = [
@@ -71,6 +78,76 @@ export function agentStudioSummary(agents: Agent[]) {
     primary,
     collaborators: visible.length - primary,
   }
+}
+
+export function collaborationPlan(input: {
+  agent?: Agent
+  agents: Agent[]
+  capabilities: Capability[]
+  prompt: string
+}): CollaborationPlanItem[] {
+  const text = input.prompt.trim()
+  const has = (pattern: RegExp) => pattern.test(text)
+  const visible = input.agents.filter((agent) => !agent.hidden)
+  const capability = input.capabilities.filter((item) => item.enabled)
+  const name = (agent?: Agent) => agent?.displayName ?? agent?.name ?? "项目总控"
+  const findAgent = (names: string[]) =>
+    names.map((item) => visible.find((agent) => agent.name === item)).filter((agent): agent is Agent => Boolean(agent))
+  const find = (kind: string, ids: string[], fallback: string[]) => {
+    const rows = capability.filter((item) => item.kind === kind)
+    const picked = ids
+      .map((id) => rows.find((item) => item.id === id))
+      .filter((item): item is Capability => Boolean(item))
+    if (picked.length) return picked.map((item) => item.name).slice(0, 3)
+    return rows
+      .map((item) => item.name)
+      .filter((item) => fallback.some((word) => item.includes(word)))
+      .slice(0, 3)
+  }
+  const specialists = [
+    ...(has(/CPIII|CPⅢ|复测|轨道|控制网|精调/i) ? findAgent(["cpiii_specialist"]) : []),
+    ...(has(/CPIII|CPⅢ|复测|平差|粗差|残差|精度|观测/i) ? findAgent(["adjustment_computer"]) : []),
+    ...(has(/规范|条文|引用|限差/i) ? findAgent(["railway_norm_consultant", "norm_librarian"]) : []),
+    ...(has(/报告|交付|摘要|总结/i) ? findAgent(["technical_writer"]) : []),
+    ...(has(/质量|审查|风险|缺失/i) ? findAgent(["qa_reviewer"]) : []),
+  ].filter((agent, index, list) => list.findIndex((item) => item.name === agent.name) === index)
+  const skills =
+    has(/报告|交付|摘要|总结/i) || has(/规范|条文|引用|限差/i)
+      ? find("skill", ["railwise.skill.standard_reference", "railwise.skill.report_delivery"], ["规范", "报告"])
+      : find("skill", ["railwise.skill.survey_review", "railwise.skill.data_analysis"], ["复测", "平差", "资料"])
+  const tools =
+    has(/平差|粗差|残差|精度|观测|CPIII|CPⅢ/i) || has(/规范|条文|引用|限差/i)
+      ? find("tool", ["railwise.tool.adjustment_indirect", "railwise.tool.wiki_query"], ["平差", "规范", "Wiki"])
+      : find("tool", ["railwise.tool.file_reader", "railwise.tool.report_writer"], ["文件", "报告"])
+  return [
+    {
+      kind: "agent",
+      label: name(input.agent),
+      detail: "接收任务、拆解步骤，并决定是否需要调用专业智能体。",
+    },
+    {
+      kind: "agent",
+      label: specialists.length ? specialists.map(name).join("、") : "按任务选择专业智能体",
+      detail: specialists.length
+        ? "作为子智能体参与资料审查、计算核对和报告生成。"
+        : "Harness 会根据任务内容自动选择专业能力。",
+    },
+    {
+      kind: "skill",
+      label: skills.length ? skills.join("、") : "按任务加载 Skills",
+      detail: "把专业流程约束注入会话，避免只做通用问答。",
+    },
+    {
+      kind: "tool",
+      label: tools.length ? tools.join("、") : "按任务调用工具",
+      detail: "文件读取、规范查询、平差计算和报告生成都通过权限受控工具执行。",
+    },
+    {
+      kind: "permission",
+      label: "询问确认",
+      detail: "写文件、访问外部目录、执行命令或使用密钥前进入会话确认。",
+    },
+  ]
 }
 
 function normalizeDirectory(value: string) {

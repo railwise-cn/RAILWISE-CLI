@@ -1,4 +1,4 @@
-import { CapabilityManifest, type CapabilityPermission } from "./schema"
+import type { CapabilityManifest, CapabilityPermission } from "@railwise/sdk/v2"
 
 const none: CapabilityPermission = {
   filesystem: "none",
@@ -29,7 +29,7 @@ const external: CapabilityPermission = {
   external_directory: true,
 }
 
-export const builtins = CapabilityManifest.array().parse([
+export const starterCapabilities: CapabilityManifest[] = [
   {
     id: "railwise.harness.safe",
     kind: "harness_profile",
@@ -402,4 +402,13 @@ export const builtins = CapabilityManifest.array().parse([
     permissions: network,
     tags: ["MCP", "飞书", "知识库"],
   },
-])
+]
+
+export function effectiveCapabilities(list: CapabilityManifest[]) {
+  if (list.length) return list
+  return starterCapabilities
+}
+
+export function toggleStarterCapability(list: CapabilityManifest[], id: string, enabled: boolean) {
+  return list.map((item) => (item.id === id ? { ...item, enabled } : item))
+}

@@ -18,6 +18,7 @@ import { useProviders } from "@/hooks/use-providers"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import { useAgentStudioApi } from "./api"
+import { effectiveCapabilities, starterCapabilities, toggleStarterCapability } from "./capabilities"
 import {
   agentRoleLabel,
   collaborationTarget,
@@ -54,6 +55,7 @@ const marketFilters: { value: MarketFilter; label: string }[] = [
   { value: "workflow", label: "工作流" },
   { value: "provider", label: "模型" },
   { value: "mcp", label: "MCP" },
+  { value: "harness_profile", label: "Harness" },
 ]
 
 const prompts = [
@@ -154,7 +156,7 @@ export default function AgentsPage() {
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
   const [harness, setHarness] = createSignal<HarnessStatus>()
-  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
+  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>(starterCapabilities)
   const [directory, setDirectory] = createSignal("")
   const [manualDirectory, setManualDirectory] = createSignal(false)
   const [selectedAgent, setSelectedAgent] = createSignal("chief_manager")
@@ -165,6 +167,8 @@ export default function AgentsPage() {
   const [marketLoading, setMarketLoading] = createSignal(true)
   const [error, setError] = createSignal("")
   const [marketError, setMarketError] = createSignal("")
+  const [studioRemote, setStudioRemote] = createSignal(false)
+  const [marketRemote, setMarketRemote] = createSignal(false)
   const [busy, setBusy] = createSignal("")
   const [routeSaving, setRouteSaving] = createSignal<Record<string, boolean>>({})
 
@@ -174,9 +178,11 @@ export default function AgentsPage() {
       .then(([agents, toolset, skillset]) => {
         if (agents.status === "fulfilled") {
           setItems(agents.value)
+          setStudioRemote(true)
           setError("")
         } else {
-          setError(agents.reason instanceof Error ? agents.reason.message : String(agents.reason))
+          setStudioRemote(false)
+          setError("智能体配置服务未连接，当前使用本地预置协作入口。")
         }
         setTools(result(toolset, []))
         setSkills(result(skillset, []))
@@ -192,10 +198,13 @@ export default function AgentsPage() {
     ])
     if (status.status === "fulfilled" && status.value.data) setHarness(status.value.data)
     if (market.status === "fulfilled" && market.value.data) {
-      setCapabilities(market.value.data.data)
+      const data = effectiveCapabilities(market.value.data.data)
+      setCapabilities(data)
+      setMarketRemote(market.value.data.data.length > 0)
       setMarketError("")
     } else if (market.status === "rejected") {
-      setMarketError(market.reason instanceof Error ? market.reason.message : String(market.reason))
+      setMarketRemote(false)
+      setMarketError("正在使用本地预置能力；连接服务器后会自动同步 Marketplace。")
     }
     setMarketLoading(false)
   }
@@ -343,6 +352,11 @@ export default function AgentsPage() {
       }
       setMarketError("")
     } catch (err) {
+      if (!marketRemote()) {
+        setCapabilities((current) => toggleStarterCapability(current, capability.id, enabled))
+        setMarketError("服务器未连接，已临时更新本地预置能力；连接后会同步真实状态。")
+        return
+      }
       setMarketError(err instanceof Error ? err.message : String(err))
     } finally {
       setBusy("")
@@ -412,12 +426,12 @@ export default function AgentsPage() {
         <section class="rw-panel">
           <div class="rw-panel__bar">
             <span>Harness</span>
-            <strong>{harness() ? modeLabel(harness()!.mode) : marketLoading() ? "加载中" : "待连接"}</strong>
+            <strong>{harness() ? modeLabel(harness()!.mode) : marketLoading() ? "同步中" : "本地安全"}</strong>
           </div>
           <div class="rw-harness-grid">
             <div>
               <span>能力</span>
-              <strong>{marketLoading() ? "加载中" : capabilities().length ? `${enabledCount()} 已启用` : "待加载"}</strong>
+              <strong>{enabledCount()} 已启用</strong>
             </div>
             <div>
               <span>权限</span>
@@ -433,7 +447,7 @@ export default function AgentsPage() {
         <section class="rw-panel">
           <div class="rw-panel__bar">
             <span>能力市场</span>
-            <strong>{marketLoading() ? "同步中" : capabilities().length ? `${capabilities().length} 项` : "待连接"}</strong>
+            <strong>{marketRemote() ? `${capabilities().length} 项` : `本地预置 ${capabilities().length} 项`}</strong>
           </div>
           <nav class="rw-market-nav" aria-label="能力市场分类">
             <For each={marketFilters}>
@@ -523,7 +537,7 @@ export default function AgentsPage() {
         <section class="rw-agent-list" aria-busy={loading()}>
           <div class="rw-section-title">
             <span>专业智能体</span>
-            <strong>{loading() ? "加载中" : agents().length ? `${agents().length} 个可用` : "待加载"}</strong>
+            <strong>{agents().length} 个可用</strong>
           </div>
           <div class="rw-agent-row">
             <For each={agents()}>
@@ -551,7 +565,7 @@ export default function AgentsPage() {
             </label>
           </div>
           <Show when={marketError()}>
-            <p class="agent-error">{marketError()}</p>
+            <p class={marketRemote() ? "agent-error" : "agent-empty"}>{marketError()}</p>
           </Show>
           <div class="rw-market-grid" aria-busy={marketLoading()}>
             <For each={marketList()}>
@@ -682,7 +696,7 @@ export default function AgentsPage() {
         </section>
 
         <Show when={error()}>
-          <p class="agent-error">{error()}</p>
+          <p class={studioRemote() ? "agent-error" : "agent-empty"}>{error()}</p>
         </Show>
       </aside>
     </main>

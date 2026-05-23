@@ -398,7 +398,7 @@ export const builtins = CapabilityManifest.array().parse([
     version: "0.1.0",
     source: "builtin",
     enabled: false,
-    installed: true,
+    installed: false,
     permissions: network,
     tags: ["MCP", "飞书", "知识库"],
   },

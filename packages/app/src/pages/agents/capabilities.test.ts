@@ -48,11 +48,10 @@ describe("starter capabilities", () => {
 
   test("can update local starter installation state", () => {
     const current = updateStarterCapability(starterCapabilities, "railwise.mcp.feishu", {
-      enabled: false,
-      installed: false,
+      installed: true,
     })
 
-    expect(current.find((item) => item.id === "railwise.mcp.feishu")?.installed).toBe(false)
-    expect(starterCapabilities.find((item) => item.id === "railwise.mcp.feishu")?.installed).toBe(true)
+    expect(current.find((item) => item.id === "railwise.mcp.feishu")?.installed).toBe(true)
+    expect(starterCapabilities.find((item) => item.id === "railwise.mcp.feishu")?.installed).toBe(false)
   })
 })

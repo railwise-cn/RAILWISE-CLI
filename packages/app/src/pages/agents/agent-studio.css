@@ -37,11 +37,14 @@
 
 .railwise-codex {
   display: grid;
-  grid-template-columns: 286px minmax(0, 1fr) 330px;
-  gap: 1px;
+  grid-template-areas:
+    "sidebar main"
+    "sidebar inspector";
+  grid-template-columns: 276px minmax(0, 1fr);
+  align-items: start;
   min-height: 100%;
-  background: var(--rw-border);
-  overflow: hidden;
+  background: var(--rw-bg);
+  overflow: auto;
 }
 
 .rw-sidebar,
@@ -56,16 +59,38 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: auto;
   padding: 18px;
 }
 
+.rw-sidebar {
+  position: sticky;
+  top: 0;
+  grid-area: sidebar;
+  height: 100vh;
+  overflow: auto;
+  border-right: 1px solid var(--rw-border);
+  background: color-mix(in srgb, var(--rw-surface) 74%, var(--rw-bg));
+}
+
 .rw-main {
+  grid-area: main;
   display: flex;
+  width: min(100%, 1120px);
   flex-direction: column;
   gap: 16px;
+  margin: 0 auto;
   overflow: auto;
   padding: 22px;
+}
+
+.rw-inspector {
+  display: grid;
+  grid-area: inspector;
+  width: min(100%, 1120px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 auto;
+  padding: 0 22px 22px;
+  overflow: visible;
 }
 
 .rw-brand {
@@ -78,6 +103,7 @@
 
 .rw-brand span,
 .rw-header span,
+.rw-chat-head span,
 .rw-section-title span,
 .rw-panel__bar span,
 .rw-capability__top span,
@@ -263,8 +289,9 @@
 }
 
 .rw-market-nav {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -324,9 +351,9 @@
 
 .rw-composer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 270px;
-  gap: 14px;
-  padding: 14px;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 16px;
+  padding: 18px;
   box-shadow: var(--rw-shadow);
 }
 
@@ -342,6 +369,33 @@
   border-radius: 8px;
   background: var(--rw-surface-soft);
   padding: 13px 14px;
+}
+
+.rw-chat-head {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--rw-border);
+  padding-bottom: 14px;
+}
+
+.rw-chat-head h2 {
+  margin: 4px 0 0;
+  color: var(--rw-text);
+  font-size: 20px;
+  font-weight: 740;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.rw-chat-head p {
+  max-width: 320px;
+  margin: 2px 0 0;
+  color: var(--rw-muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .rw-message strong,
@@ -362,6 +416,7 @@
 }
 
 .rw-message p,
+.rw-chat-head p,
 .rw-capability p,
 .rw-agent-profile p,
 .agent-card p,
@@ -475,6 +530,13 @@
   border-radius: 7px;
   background: var(--rw-surface);
   padding: 0 10px;
+}
+
+.rw-section-title > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .rw-section-title label input {
@@ -815,10 +877,7 @@
   }
 
   .rw-inspector {
-    grid-column: 1 / -1;
-    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--rw-border);
   }
 
   .rw-composer {
@@ -836,7 +895,15 @@
   .rw-sidebar,
   .rw-main,
   .rw-inspector {
+    width: 100%;
     overflow: visible;
+  }
+
+  .rw-sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--rw-border);
   }
 
   .rw-inspector {
@@ -844,6 +911,7 @@
   }
 
   .rw-header,
+  .rw-chat-head,
   .rw-section-title,
   .rw-prompt__bar,
   .agent-detail__bar {

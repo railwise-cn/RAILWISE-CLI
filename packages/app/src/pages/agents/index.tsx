@@ -222,7 +222,11 @@ export default function AgentsPage() {
       .filter((agent) => !agent.hidden && !systemAgents.has(agent.name))
       .sort((a, b) => rank(a) - rank(b)),
   )
-  const fallbackAgents = createMemo(() => capabilities().filter((item) => item.kind === "agent").map(capabilityAgent))
+  const fallbackAgents = createMemo(() =>
+    capabilities()
+      .filter((item) => item.kind === "agent")
+      .map(capabilityAgent),
+  )
   const agents = createMemo(() => (productAgents().length ? productAgents() : fallbackAgents()))
   const selected = createMemo(() => agents().find((agent) => agent.name === selectedAgent()) ?? agents()[0])
   const professionalTools = createMemo(() =>
@@ -254,6 +258,7 @@ export default function AgentsPage() {
     })
   })
   const enabledCount = createMemo(() => capabilities().filter((item) => item.enabled).length)
+  const enabledLabel = createMemo(() => (enabledCount() ? `${enabledCount()} 已启用` : "待配置"))
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const visibleModels = createMemo(() =>
     models
@@ -348,7 +353,10 @@ export default function AgentsPage() {
     setCapabilities((current) => current.map((item) => (item.id === capability.id ? capability : item)))
   }
 
-  const changeCapability = async (capability: CapabilityManifest, action: "enable" | "disable" | "install" | "uninstall") => {
+  const changeCapability = async (
+    capability: CapabilityManifest,
+    action: "enable" | "disable" | "install" | "uninstall",
+  ) => {
     setBusy(capability.id)
     try {
       const result =
@@ -447,38 +455,19 @@ export default function AgentsPage() {
           <div class="rw-harness-grid">
             <div>
               <span>能力</span>
-              <strong>{enabledCount()} 已启用</strong>
+              <strong>{enabledLabel()}</strong>
             </div>
             <div>
               <span>权限</span>
-              <strong>{harness()?.pendingPermissionCount ? `${harness()!.pendingPermissionCount} 待确认` : "无待处理"}</strong>
+              <strong>
+                {harness()?.pendingPermissionCount ? `${harness()!.pendingPermissionCount} 待确认` : "无待处理"}
+              </strong>
             </div>
             <div>
               <span>执行</span>
               <strong>{harness()?.runningToolCount ? `${harness()!.runningToolCount} 运行中` : "空闲"}</strong>
             </div>
           </div>
-        </section>
-
-        <section class="rw-panel">
-          <div class="rw-panel__bar">
-            <span>能力市场</span>
-            <strong>{marketRemote() ? `${capabilities().length} 项` : `本地预置 ${capabilities().length} 项`}</strong>
-          </div>
-          <nav class="rw-market-nav" aria-label="能力市场分类">
-            <For each={marketFilters}>
-              {(item) => (
-                <button
-                  type="button"
-                  data-testid={`market-filter-${item.value}`}
-                  classList={{ active: filter() === item.value }}
-                  onClick={() => setFilter(item.value)}
-                >
-                  {item.label}
-                </button>
-              )}
-            </For>
-          </nav>
         </section>
       </aside>
 
@@ -496,10 +485,18 @@ export default function AgentsPage() {
 
         <section class="rw-composer" data-testid="agent-collaboration-start">
           <div class="rw-thread">
+            <div class="rw-chat-head">
+              <div>
+                <span>工程任务对话</span>
+                <h2>告诉智能体要完成什么，其余交给 Harness 编排</h2>
+              </div>
+              <p>权限、工具和技能由 Harness 在后台编排；遇到敏感操作会进入会话确认。</p>
+            </div>
             <div class="rw-message rw-message--assistant">
               <strong>项目总控</strong>
               <p>
-                {selected()?.displayName ?? "项目总控"} 将作为入口接收任务，Harness 会按权限策略调度文件、工具、Skills 和专业智能体。
+                {selected()?.displayName ?? "项目总控"} 将作为入口接收任务，Harness 会按权限策略调度文件、工具、Skills
+                和专业智能体。
               </p>
             </div>
             <form
@@ -574,12 +571,31 @@ export default function AgentsPage() {
 
         <section class="rw-market">
           <div class="rw-section-title">
-            <span>能力市场</span>
+            <div>
+              <span>能力市场</span>
+              <strong>
+                {marketRemote() ? `${capabilities().length} 项能力` : `本地预置 ${capabilities().length} 项能力`}
+              </strong>
+            </div>
             <label>
               <Icon name="magnifying-glass" size="small" />
               <input value={query()} onInput={(event) => setQuery(event.currentTarget.value)} placeholder="搜索能力" />
             </label>
           </div>
+          <nav class="rw-market-nav" aria-label="能力市场分类">
+            <For each={marketFilters}>
+              {(item) => (
+                <button
+                  type="button"
+                  data-testid={`market-filter-${item.value}`}
+                  classList={{ active: filter() === item.value }}
+                  onClick={() => setFilter(item.value)}
+                >
+                  {item.label}
+                </button>
+              )}
+            </For>
+          </nav>
           <Show when={marketError()}>
             <p class={marketRemote() ? "agent-error" : "agent-empty"}>{marketError()}</p>
           </Show>
@@ -608,10 +624,19 @@ export default function AgentsPage() {
                       data-testid={`market-capability-toggle-${capability.id}`}
                       disabled={busy() === capability.id}
                       onClick={() =>
-                        void changeCapability(capability, !capability.installed ? "install" : capability.enabled ? "disable" : "enable")
+                        void changeCapability(
+                          capability,
+                          !capability.installed ? "install" : capability.enabled ? "disable" : "enable",
+                        )
                       }
                     >
-                      {busy() === capability.id ? "处理中" : !capability.installed ? "安装" : capability.enabled ? "停用" : "启用"}
+                      {busy() === capability.id
+                        ? "处理中"
+                        : !capability.installed
+                          ? "安装"
+                          : capability.enabled
+                            ? "停用"
+                            : "启用"}
                     </button>
                     <Show when={capability.installed && !capability.enabled}>
                       <button
@@ -689,7 +714,7 @@ export default function AgentsPage() {
         <section class="rw-panel">
           <div class="rw-panel__bar">
             <span>工具</span>
-            <strong>{professionalTools().length ? `${professionalTools().length} 项` : "待加载"}</strong>
+            <strong>{professionalTools().length ? `${professionalTools().length} 项` : "按任务加载"}</strong>
           </div>
           <div class="rw-mini-list">
             <For each={professionalTools().slice(0, 7)}>
@@ -706,7 +731,7 @@ export default function AgentsPage() {
         <section class="rw-panel">
           <div class="rw-panel__bar">
             <span>Skills</span>
-            <strong>{professionalSkillList().length ? `${professionalSkillList().length} 项` : "市场同步"}</strong>
+            <strong>{professionalSkillList().length ? `${professionalSkillList().length} 项` : "按任务加载"}</strong>
           </div>
           <div class="rw-mini-list">
             <For each={professionalSkillList().slice(0, 6)}>

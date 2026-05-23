@@ -1,5 +1,6 @@
 import { test, expect } from "bun:test"
 import os from "os"
+import { Harness } from "../../src/harness"
 import { PermissionNext } from "../../src/permission/next"
 import { Instance } from "../../src/project/instance"
 import { tmpdir } from "../fixture/fixture"
@@ -499,6 +500,7 @@ test("ask - returns pending promise when action is ask", async () => {
     directory: tmp.path,
     fn: async () => {
       const promise = PermissionNext.ask({
+        id: "permission_pending",
         sessionID: "session_test",
         permission: "bash",
         patterns: ["ls"],
@@ -508,7 +510,12 @@ test("ask - returns pending promise when action is ask", async () => {
       })
       // Promise should be pending, not resolved
       expect(promise).toBeInstanceOf(Promise)
-      // Don't await - just verify it returns a promise
+      const settled = promise.catch((e) => e)
+      await PermissionNext.reply({
+        requestID: "permission_pending",
+        reply: "reject",
+      })
+      expect(await settled).toBeInstanceOf(PermissionNext.RejectedError)
     },
   })
 })
@@ -538,6 +545,44 @@ test("reply - once resolves the pending ask", async () => {
       await expect(askPromise).resolves.toBeUndefined()
     },
   })
+})
+
+test("reply - records Harness permission lifecycle", async () => {
+  await using tmp = await tmpdir({ git: true })
+  Harness.clear("session_harness_permission")
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const ask = PermissionNext.ask({
+        id: "permission_harness",
+        sessionID: "session_harness_permission",
+        permission: "external_directory",
+        patterns: ["/tmp/railwise-input"],
+        metadata: {},
+        always: ["/tmp/railwise-input"],
+        ruleset: [],
+      })
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(Harness.timeline("session_harness_permission").map((event) => event.type)).toEqual([
+        "permission.requested",
+      ])
+      expect((await Harness.status({ workspace: tmp.path })).pendingPermissionCount).toBe(1)
+
+      await PermissionNext.reply({
+        requestID: "permission_harness",
+        reply: "once",
+      })
+
+      await expect(ask).resolves.toBeUndefined()
+      expect(Harness.timeline("session_harness_permission").map((event) => event.type)).toEqual([
+        "permission.requested",
+        "permission.resolved",
+      ])
+      expect((await Harness.status({ workspace: tmp.path })).pendingPermissionCount).toBe(0)
+    },
+  })
+  Harness.clear("session_harness_permission")
 })
 
 test("reply - reject throws RejectedError", async () => {

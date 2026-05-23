@@ -6,16 +6,21 @@ export namespace Harness {
   const events = new Map<string, HarnessEvent[]>()
 
   function counts() {
+    const key = (event: HarnessEvent) => {
+      if (event.type === "permission.requested") return event.id
+      if (event.type === "permission.resolved") return event.detail ?? event.id.split(":")[0]
+      return event.detail ?? event.capabilityID ?? event.id
+    }
     const state = Array.from(events.values())
       .flat()
       .sort((a, b) => a.createdAt - b.createdAt)
       .reduce(
         (state, event) => {
-          const key = event.detail ?? event.capabilityID ?? event.id
-          if (event.type === "permission.requested") state.permission.add(key)
-          if (event.type === "permission.resolved") state.permission.delete(key)
-          if (event.type === "tool.started") state.tool.add(key)
-          if (event.type === "tool.completed" || event.type === "tool.failed") state.tool.delete(key)
+          const id = key(event)
+          if (event.type === "permission.requested") state.permission.add(id)
+          if (event.type === "permission.resolved") state.permission.delete(id)
+          if (event.type === "tool.started") state.tool.add(id)
+          if (event.type === "tool.completed" || event.type === "tool.failed") state.tool.delete(id)
           return state
         },
         { permission: new Set<string>(), tool: new Set<string>() },

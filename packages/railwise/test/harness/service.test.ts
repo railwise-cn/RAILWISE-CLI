@@ -29,11 +29,11 @@ describe("Harness service", () => {
   test("derives active permission and tool counts from timeline events", async () => {
     Harness.clear("ses_status")
     Harness.record({
-      id: "evt_permission_request",
+      id: "perm_external",
       sessionID: "ses_status",
       type: "permission.requested",
       title: "请求读取外部目录",
-      detail: "perm_external",
+      detail: "/tmp/railwise-input",
       createdAt: 1779498000000,
       risk: "medium",
     })

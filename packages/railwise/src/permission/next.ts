@@ -1,6 +1,7 @@
 import { Bus } from "@/bus"
 import { BusEvent } from "@/bus/bus-event"
 import { Config } from "@/config/config"
+import { Harness } from "@/harness"
 import { Identifier } from "@/id/id"
 import { Instance } from "@/project/instance"
 import { Database, eq } from "@/storage/db"
@@ -128,6 +129,32 @@ export namespace PermissionNext {
     }
   })
 
+  function recordAsked(info: Request) {
+    Harness.record({
+      id: info.id,
+      sessionID: info.sessionID,
+      type: "permission.requested",
+      title: `请求权限：${info.permission}`,
+      detail: info.patterns.join(", "),
+      createdAt: Date.now(),
+      risk: "medium",
+      capabilityID: info.permission,
+    })
+  }
+
+  function recordReplied(info: Request, reply: Reply) {
+    Harness.record({
+      id: `${info.id}:${Date.now()}`,
+      sessionID: info.sessionID,
+      type: "permission.resolved",
+      title: reply === "reject" ? "已拒绝权限请求" : "已允许权限请求",
+      detail: info.id,
+      createdAt: Date.now(),
+      risk: reply === "reject" ? "low" : "medium",
+      capabilityID: info.permission,
+    })
+  }
+
   export const ask = fn(
     Request.partial({ id: true }).extend({
       ruleset: Ruleset,
@@ -152,6 +179,7 @@ export namespace PermissionNext {
               resolve,
               reject,
             }
+            recordAsked(info)
             Bus.publish(Event.Asked, info)
           })
         }
@@ -171,6 +199,7 @@ export namespace PermissionNext {
       const existing = s.pending[input.requestID]
       if (!existing) return
       delete s.pending[input.requestID]
+      recordReplied(existing.info, input.reply)
       Bus.publish(Event.Replied, {
         sessionID: existing.info.sessionID,
         requestID: existing.info.id,
@@ -183,6 +212,7 @@ export namespace PermissionNext {
         for (const [id, pending] of Object.entries(s.pending)) {
           if (pending.info.sessionID === sessionID) {
             delete s.pending[id]
+            recordReplied(pending.info, "reject")
             Bus.publish(Event.Replied, {
               sessionID: pending.info.sessionID,
               requestID: pending.info.id,
@@ -216,6 +246,7 @@ export namespace PermissionNext {
           )
           if (!ok) continue
           delete s.pending[id]
+          recordReplied(pending.info, "always")
           Bus.publish(Event.Replied, {
             sessionID: pending.info.sessionID,
             requestID: pending.info.id,

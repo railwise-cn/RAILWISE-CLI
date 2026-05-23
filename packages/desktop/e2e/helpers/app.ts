@@ -1,16 +1,7 @@
 import { expect, test as base, type BrowserContext, type Page, type Route } from "@playwright/test"
 
-type WorkspaceFile = {
-  path: string
-  kind: "csv" | "dxf" | "pptx"
-}
-
-type LaunchOptions = {
-  workspaceFiles?: WorkspaceFile[]
-}
-
 type Fixtures = {
-  launchApp: (path?: string, opts?: LaunchOptions) => Promise<{ page: Page; context: BrowserContext }>
+  launchApp: (path?: string) => Promise<{ page: Page; context: BrowserContext }>
 }
 
 const server = "http://127.0.0.1:4096"
@@ -27,30 +18,6 @@ const dxf = {
   ],
   bounds: { minX: -10, minY: -10, maxX: 120, maxY: 80 },
   totalEntityCount: 2,
-}
-
-const summary = {
-  projects: [
-    {
-      id: "p1",
-      name: "京沪高铁沉降监测",
-      type: "bridge",
-      status: "active",
-      progress: 76,
-      lastActivity: "2026-04-26T08:00:00.000Z",
-      activeTaskCount: 3,
-      description: "连续梁沉降与水平位移监测。",
-      pointCount: 128,
-      alertCount: 2,
-    },
-  ],
-  alerts: [
-    { id: "a1", projectId: "p1", level: "warn", message: "JC-002 沉降接近预警阈值", time: "2026-04-26T08:10:00.000Z" },
-  ],
-  recentSessions: [{ id: "s1", directory: "/tmp/railwise-e2e", title: "外业数据首检", time: { updated: Date.now() } }],
-  activeAgents: [
-    { sessionId: "s1", agentName: "qa_inspector", startedAt: "2026-04-26T08:00:00.000Z", status: "running" },
-  ],
 }
 
 const agents = [
@@ -254,10 +221,135 @@ const commands = [
   },
 ]
 
+const permissions = {
+  read: { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false },
+  write: { filesystem: "write", network: false, shell: false, external_directory: false, secrets: false },
+  network: { filesystem: "none", network: true, shell: false, external_directory: false, secrets: true },
+} as const
+
+const capabilities = [
+  {
+    id: "railwise.harness.safe",
+    kind: "harness_profile",
+    name: "本地安全模式",
+    description: "默认要求用户确认写文件、执行命令和访问外部目录。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: permissions.read,
+    tags: ["Harness", "安全"],
+  },
+  {
+    id: "railwise.agent.chief_manager",
+    kind: "agent",
+    name: "项目总控",
+    description: "理解任务、拆解计划，并调度专业智能体执行。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: permissions.read,
+    tags: ["主控", "调度"],
+  },
+  {
+    id: "railwise.agent.cpiii_specialist",
+    kind: "agent",
+    name: "CPIII 测量专家",
+    description: "负责 CPIII 控制网、轨道精调和测量成果复核。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: permissions.read,
+    tags: ["测量", "CPIII"],
+  },
+  {
+    id: "railwise.tool.adjustment_indirect",
+    kind: "tool",
+    name: "间接平差计算",
+    description: "运行确定性间接平差，返回未知数、残差和精度统计。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: permissions.write,
+    tags: ["平差", "计算"],
+  },
+  {
+    id: "railwise.skill.survey_review",
+    kind: "skill",
+    name: "复测资料检查",
+    description: "检查线路复测资料完整性、缺失文件和交付风险。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: permissions.read,
+    tags: ["测绘", "资料检查"],
+  },
+  {
+    id: "railwise.workflow.survey_package_review",
+    kind: "workflow",
+    name: "复测资料完整性检查",
+    description: "从资料目录出发，检查原始数据、成果文件、缺失项和下一步计划。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: permissions.read,
+    tags: ["工作流", "复测"],
+  },
+  {
+    id: "railwise.provider.deepseek",
+    kind: "provider",
+    name: "DeepSeek",
+    description: "推荐默认模型提供方，可用于主控和专业智能体。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: false,
+    installed: true,
+    permissions: permissions.network,
+    tags: ["模型", "推荐"],
+  },
+] as const
+
+const harness = {
+  mode: "safe",
+  workspace: "/tmp/railwise-e2e",
+  model: "DeepSeek V4",
+  activeAgent: "chief_manager",
+  capabilityCount: capabilities.filter((item) => item.enabled).length,
+  pendingPermissionCount: 0,
+  runningToolCount: 0,
+}
+
+const timeline = [
+  {
+    id: "event-session",
+    sessionID: "workflow-e2e",
+    type: "session.started",
+    title: "会话已进入 Harness",
+    detail: "项目总控接收任务并等待执行。",
+    createdAt: Date.now(),
+    risk: "low",
+  },
+  {
+    id: "event-agent",
+    sessionID: "workflow-e2e",
+    type: "agent.selected",
+    title: "选择项目总控",
+    detail: "chief_manager",
+    createdAt: Date.now(),
+    risk: "low",
+    capabilityID: "railwise.agent.chief_manager",
+  },
+] as const
+
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
-    await use(async (path = "/dashboard", opts = {}) => {
-      await setup(page, opts)
+    await use(async (path = "/agents") => {
+      await setup(page)
       await page.goto(path)
       await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 10_000 })
       return { page, context }
@@ -267,26 +359,26 @@ export const test = base.extend<Fixtures>({
 
 export { expect }
 
-async function setup(page: Page, opts: LaunchOptions) {
+async function setup(page: Page) {
   await page.route("**/event", (route) =>
     route.fulfill({
       contentType: "text/event-stream",
       body: 'event: message\ndata: {"type":"server.connected","properties":{}}\n\n',
     }),
   )
-  await page.route("**/dashboard/summary", (route) => json(route, summary))
-  await page.route("**/dashboard/projects/*/points", (route) =>
-    json(route, {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: { type: "Point", coordinates: [116.4, 39.9] },
-          properties: { name: "JC-001", status: "green", latestValue: -1.2, unit: "mm", owner: "E2E" },
-        },
-      ],
-    }),
-  )
+  await page.route("**/harness/status", (route) => json(route, harness))
+  await page.route("**/harness/session/*/timeline", (route) => json(route, timeline))
+  await page.route("**/marketplace/capabilities", (route) => json(route, { data: capabilities }))
+  await page.route("**/marketplace/capabilities/*/enable", (route) => {
+    const id = route.request().url().split("/capabilities/")[1]?.split("/enable")[0] ?? ""
+    const item = capabilities.find((entry) => entry.id === decodeURIComponent(id))
+    return json(route, item ? { ...item, enabled: true } : capabilities[0])
+  })
+  await page.route("**/marketplace/capabilities/*/disable", (route) => {
+    const id = route.request().url().split("/capabilities/")[1]?.split("/disable")[0] ?? ""
+    const item = capabilities.find((entry) => entry.id === decodeURIComponent(id))
+    return json(route, item ? { ...item, enabled: false } : capabilities[0])
+  })
   await page.route("**/agent-studio/workflow/run", (route) => {
     const input = route.request().postDataJSON() as { workflowId?: string }
     const item = input.workflowId === cpiii.id ? cpiii : workflow
@@ -388,6 +480,32 @@ async function setup(page: Page, opts: LaunchOptions) {
     }),
   )
   await page.route("**/agent-studio/list", (route) => json(route, agents))
+  await page.route("**/agent-studio/tool/list", (route) =>
+    json(route, [
+      { id: "adjustment_indirect", label: "间接平差计算", group: "survey" },
+      { id: "wiki_query", label: "规范 Wiki 查询", group: "knowledge" },
+      { id: "report_writer", label: "报告文件生成", group: "core" },
+    ]),
+  )
+  await page.route("**/agent-studio/skill/list", (route) =>
+    json(route, [
+      {
+        name: "monitoring-design",
+        description: "监测方案设计",
+        location: "/tmp/railwise-e2e/.railwise/skill/monitoring-design",
+      },
+      {
+        name: "data-analysis",
+        description: "测绘数据平差与变形分析",
+        location: "/tmp/railwise-e2e/.railwise/skill/data-analysis",
+      },
+      {
+        name: "standard-reference",
+        description: "规范条文速查",
+        location: "/tmp/railwise-e2e/.railwise/skill/standard-reference",
+      },
+    ]),
+  )
   await page.route("**/agent-studio/chief_manager", (route) => {
     if (route.request().method() === "PUT") return json(route, true)
     return json(route, { ...agents[0], rawMarkdown: "---\nname: chief_manager\n---\n你是 Railwise 总负责人。" })
@@ -477,22 +595,8 @@ async function setup(page: Page, opts: LaunchOptions) {
         },
         unregisterCallback: (id) => callbacks.delete(id),
       }
-      localStorage.setItem("rw_dashboard_cache", JSON.stringify(input.summary))
-      if (input.workspace.length > 0) {
-        localStorage.setItem(
-          "rw_workspace_recent",
-          JSON.stringify(
-            input.workspace.map((file) => ({
-              id: file.path,
-              name: file.path.split(/[\\/]/).pop() ?? file.path,
-              path: file.path,
-              kind: file.kind,
-            })),
-          ),
-        )
-      }
     },
-    { csv, dxf, server, summary, workspace: opts.workspaceFiles ?? [] },
+    { csv, dxf, server },
   )
 }
 

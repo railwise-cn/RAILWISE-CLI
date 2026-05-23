@@ -440,6 +440,7 @@ export default function AgentsPage() {
               {(item) => (
                 <button
                   type="button"
+                  data-testid={`market-filter-${item.value}`}
                   classList={{ active: filter() === item.value }}
                   onClick={() => setFilter(item.value)}
                 >
@@ -555,7 +556,11 @@ export default function AgentsPage() {
           <div class="rw-market-grid" aria-busy={marketLoading()}>
             <For each={marketList()}>
               {(capability) => (
-                <article class="rw-capability" classList={{ disabled: !capability.enabled }}>
+                <article
+                  class="rw-capability"
+                  data-testid={`market-capability-${capability.id}`}
+                  classList={{ disabled: !capability.enabled }}
+                >
                   <div class="rw-capability__top">
                     <span>{kindLabel(capability.kind)}</span>
                     <strong>{capability.enabled ? "已启用" : "可启用"}</strong>
@@ -569,6 +574,7 @@ export default function AgentsPage() {
                   <button
                     type="button"
                     class="agent-button agent-button--ghost"
+                    data-testid={`market-capability-toggle-${capability.id}`}
                     disabled={busy() === capability.id}
                     onClick={() => void toggleCapability(capability, !capability.enabled)}
                   >
@@ -643,7 +649,7 @@ export default function AgentsPage() {
           <div class="rw-mini-list">
             <For each={professionalTools().slice(0, 7)}>
               {(tool) => (
-                <div>
+                <div data-testid="agent-tool-item">
                   <strong>{tool.label}</strong>
                   <small>{tool.detail}</small>
                 </div>
@@ -660,7 +666,7 @@ export default function AgentsPage() {
           <div class="rw-mini-list">
             <For each={professionalSkillList().slice(0, 6)}>
               {(skill) => (
-                <div>
+                <div data-testid="agent-skill-item">
                   <strong>{skill.label}</strong>
                   <small>{skill.detail}</small>
                 </div>

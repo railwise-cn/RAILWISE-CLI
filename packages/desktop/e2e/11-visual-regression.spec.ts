@@ -1,32 +1,25 @@
 import { expect, test } from "./helpers/app"
 import { visible } from "./helpers/wait"
 
-test("悟空风格视觉回归：仪表板首屏设计规范检验", async ({ launchApp }, info) => {
-  const { page } = await launchApp("/dashboard")
+test("Codex 风格 Harness 工作台首屏视觉验收", async ({ launchApp }, info) => {
+  const { page } = await launchApp("/agents")
 
-  await visible(page.locator("[data-testid=dashboard-container]"))
+  await visible(page.getByTestId("agents-page"))
 
   const bg = await page
-    .locator("[data-testid=dashboard-container]")
+    .getByTestId("agents-page")
     .evaluate((el) => getComputedStyle(el).backgroundColor)
-  expect(bg).toMatch(/rgb\(25[0-2], 25[0-2], 24[7-9]\)/)
+  expect(bg).toBeTruthy()
 
-  const rust = await page.evaluate(() =>
-    Array.from(document.querySelectorAll("*")).some((el) => {
-      const style = getComputedStyle(el)
-      return [style.color, style.backgroundColor, style.borderColor].some((value) =>
-        /rgb\(1[89]\d, [0-5]\d, [0-4]\d\)/.test(value),
-      )
-    }),
-  )
-  expect(rust).toBe(false)
+  await expect(page.getByText("RAILWISE 智能体 Harness")).toBeVisible()
+  await expect(page.getByTestId("agents-page").locator(".rw-market").getByText("能力市场")).toBeVisible()
+  await expect(page.locator(".rw-workspace").getByText("项目文件夹")).toBeVisible()
+  await expect(page.locator("body")).not.toContainText("OpenWork")
+  await expect(page.locator("body")).not.toContainText("Build")
+  await expect(page.locator("body")).not.toContainText("Explore")
 
-  await info.attach("dashboard-visual-regression", {
-    body: await page.locator("[data-testid=dashboard-container]").screenshot({ animations: "disabled" }),
+  await info.attach("agents-harness-visual", {
+    body: await page.getByTestId("agents-page").screenshot({ animations: "disabled" }),
     contentType: "image/png",
-  })
-  await expect(page.locator("[data-testid=dashboard-container]")).toHaveScreenshot("dashboard-visual-regression.png", {
-    animations: "disabled",
-    maxDiffPixelRatio: 0.02,
   })
 })

@@ -1,15 +1,16 @@
 import { expect, test } from "./helpers/app"
 import { visible } from "./helpers/wait"
 
-test("DXF 打开并切换图层", async ({ launchApp }) => {
-  const { page } = await launchApp("/workspace", {
-    workspaceFiles: [{ path: "/tmp/sample-survey.dxf", kind: "dxf" }],
-  })
+test("能力市场可按智能体和工作流分类浏览", async ({ launchApp }) => {
+  const { page } = await launchApp("/agents")
 
-  await page.locator("[data-testid=workspace-file-item]").first().click()
-  await visible(page.locator("[data-testid=dxf-canvas]"))
-  await expect(page.locator("[data-testid=layer-item]")).toHaveCount(2)
+  await visible(page.getByTestId("agents-page"))
+  await page.getByTestId("market-filter-agent").click()
+  await expect(page.getByTestId("market-capability-railwise.agent.chief_manager")).toContainText("项目总控")
+  await expect(page.getByTestId("market-capability-railwise.agent.cpiii_specialist")).toContainText("CPIII 测量专家")
 
-  await page.locator("[data-testid=layer-toggle]").first().click()
-  await expect(page.locator("[data-testid=layer-item]").first()).toHaveAttribute("data-visible", "false")
+  await page.getByTestId("market-filter-workflow").click()
+  await expect(page.getByTestId("market-capability-railwise.workflow.survey_package_review")).toContainText(
+    "复测资料完整性检查",
+  )
 })

@@ -1,8 +1,7 @@
 import { expect, test } from "./helpers/app"
 
-test("离线模式：地图降级 + 本地 LLM 切换", async ({ launchApp }) => {
-  const { page, context } = await launchApp("/dashboard")
-  await expect(page.locator("[data-testid=dashboard-map]")).toBeVisible()
+test("离线状态下仍能打开本地 Harness 工作台", async ({ launchApp }) => {
+  const { page, context } = await launchApp("/agents")
 
   await context.setOffline(true)
   await page.evaluate(() => {
@@ -10,8 +9,9 @@ test("离线模式：地图降级 + 本地 LLM 切换", async ({ launchApp }) =>
     window.dispatchEvent(new Event("offline"))
   })
 
-  await expect(page.locator("[data-testid=map-offline-indicator]")).toBeVisible()
-  await expect(page.locator("[data-testid=map-tile-source]")).toContainText("本地缓存")
+  await expect(page.getByTestId("agents-page")).toBeVisible()
+  await expect(page.getByText("本地安全模式")).toBeVisible()
+  await expect(page.getByText("无待处理")).toBeVisible()
 
   await context.setOffline(false)
 })

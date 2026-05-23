@@ -1,12 +1,13 @@
 import { expect, test } from "./helpers/app"
 
-test("qa_inspector 数据首检 → 生成报告", async ({ launchApp }) => {
-  const { page } = await launchApp("/workspace", {
-    workspaceFiles: [{ path: "/tmp/monitor-data.csv", kind: "csv" }],
-  })
+test("能力市场启用模型 Provider 并更新 Harness 计数", async ({ launchApp }) => {
+  const { page } = await launchApp("/agents")
 
-  await page.locator("[data-testid=workspace-file-item]").first().click()
-  await page.locator("[data-testid=send-to-agent-btn]").click()
+  await page.getByTestId("market-filter-provider").click()
+  await expect(page.getByTestId("market-capability-railwise.provider.deepseek")).toContainText("DeepSeek")
+  await expect(page.getByTestId("market-capability-railwise.provider.deepseek")).toContainText("可启用")
 
-  await expect(page.getByText("已发送到 Agent 队列。")).toBeVisible()
+  await page.getByTestId("market-capability-toggle-railwise.provider.deepseek").click()
+  await expect(page.getByTestId("market-capability-railwise.provider.deepseek")).toContainText("已启用")
+  await expect(page.getByText("7 已启用")).toBeVisible()
 })

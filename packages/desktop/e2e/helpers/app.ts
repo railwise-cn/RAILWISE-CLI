@@ -312,6 +312,18 @@ const capabilities = [
     permissions: permissions.network,
     tags: ["模型", "推荐"],
   },
+  {
+    id: "railwise.mcp.feishu",
+    kind: "mcp",
+    name: "飞书知识库 MCP",
+    description: "连接企业云文档、知识库和项目协作资料。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: false,
+    installed: false,
+    permissions: permissions.network,
+    tags: ["MCP", "飞书", "知识库"],
+  },
 ] as const
 
 const harness = {
@@ -378,6 +390,16 @@ async function setup(page: Page) {
     const id = route.request().url().split("/capabilities/")[1]?.split("/disable")[0] ?? ""
     const item = capabilities.find((entry) => entry.id === decodeURIComponent(id))
     return json(route, item ? { ...item, enabled: false } : capabilities[0])
+  })
+  await page.route("**/marketplace/capabilities/*/install", (route) => {
+    const id = route.request().url().split("/capabilities/")[1]?.split("/install")[0] ?? ""
+    const item = capabilities.find((entry) => entry.id === decodeURIComponent(id))
+    return json(route, item ? { ...item, enabled: false, installed: true } : capabilities[0])
+  })
+  await page.route("**/marketplace/capabilities/*/uninstall", (route) => {
+    const id = route.request().url().split("/capabilities/")[1]?.split("/uninstall")[0] ?? ""
+    const item = capabilities.find((entry) => entry.id === decodeURIComponent(id))
+    return json(route, item ? { ...item, enabled: false, installed: false } : capabilities[0])
   })
   await page.route("**/agent-studio/workflow/run", (route) => {
     const input = route.request().postDataJSON() as { workflowId?: string }

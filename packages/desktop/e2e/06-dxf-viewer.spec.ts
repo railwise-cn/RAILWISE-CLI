@@ -13,4 +13,11 @@ test("能力市场可按智能体和工作流分类浏览", async ({ launchApp }
   await expect(page.getByTestId("market-capability-railwise.workflow.survey_package_review")).toContainText(
     "复测资料完整性检查",
   )
+
+  await page.getByTestId("market-filter-mcp").click()
+  await expect(page.getByTestId("market-capability-railwise.mcp.feishu")).toContainText("未安装")
+  await page.getByTestId("market-capability-toggle-railwise.mcp.feishu").click()
+  await expect(page.getByTestId("market-capability-railwise.mcp.feishu")).toContainText("可启用")
+  await page.getByTestId("market-capability-uninstall-railwise.mcp.feishu").click()
+  await expect(page.getByTestId("market-capability-railwise.mcp.feishu")).toContainText("未安装")
 })

@@ -33,12 +33,17 @@ export namespace Harness {
 
   export async function status(input?: Partial<HarnessStatus>): Promise<HarnessStatus> {
     const active = counts()
+    const list = await Marketplace.list()
     return {
-      mode: input?.mode ?? "safe",
+      mode:
+        input?.mode ??
+        (list.some((item) => item.kind === "harness_profile" && item.id === "railwise.harness.delivery" && item.enabled)
+          ? "ask"
+          : "safe"),
       workspace: input?.workspace ?? Instance.directory,
       model: input?.model,
       activeAgent: input?.activeAgent,
-      capabilityCount: input?.capabilityCount ?? (await Marketplace.list()).filter((item) => item.enabled).length,
+      capabilityCount: input?.capabilityCount ?? list.filter((item) => item.enabled).length,
       pendingPermissionCount: input?.pendingPermissionCount ?? active.pendingPermissionCount,
       runningToolCount: input?.runningToolCount ?? active.runningToolCount,
     }

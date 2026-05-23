@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test"
+import path from "path"
 import { Harness } from "../../src/harness"
+import { Marketplace } from "../../src/marketplace"
+import { tmpdir } from "../fixture/fixture"
 
 describe("Harness service", () => {
   test("returns enabled built-in capabilities in safe mode", async () => {
@@ -147,5 +150,16 @@ describe("Harness service", () => {
     expect(timeline[2]?.title).toBe("复测成果报告.docx")
     expect(timeline[2]?.artifactPath).toBe("/tmp/railwise/report.docx")
     Harness.clear("ses_track_artifact")
+  })
+
+  test("derives Harness mode from the active profile", async () => {
+    await using tmp = await tmpdir()
+    Marketplace.configure(path.join(tmp.path, "marketplace.json"))
+
+    expect((await Harness.status({ workspace: "/tmp/railwise-status" })).mode).toBe("safe")
+    await Marketplace.set("railwise.harness.delivery", true)
+    expect((await Harness.status({ workspace: "/tmp/railwise-status" })).mode).toBe("ask")
+
+    Marketplace.configure()
   })
 })

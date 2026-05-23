@@ -410,7 +410,12 @@ export function effectiveCapabilities(list: CapabilityManifest[]) {
 }
 
 export function toggleStarterCapability(list: CapabilityManifest[], id: string, enabled: boolean) {
-  return list.map((item) => (item.id === id ? { ...item, enabled } : item))
+  const target = list.find((item) => item.id === id)
+  return list.map((item) => {
+    if (item.id === id) return { ...item, enabled }
+    if (enabled && target?.kind === "harness_profile" && item.kind === "harness_profile") return { ...item, enabled: false }
+    return item
+  })
 }
 
 export function updateStarterCapability(list: CapabilityManifest[], id: string, patch: Partial<CapabilityManifest>) {

@@ -63,10 +63,15 @@ export namespace Marketplace {
     const item = await get(id)
     if (!item || !item.installed) return
     const data = await load()
+    const peers =
+      enabled && item.kind === "harness_profile"
+        ? Object.fromEntries(builtins.filter((peer) => peer.kind === "harness_profile").map((peer) => [peer.id, false]))
+        : {}
     await save({
       ...data,
       enabled: {
         ...data.enabled,
+        ...peers,
         [id]: enabled,
       },
     })

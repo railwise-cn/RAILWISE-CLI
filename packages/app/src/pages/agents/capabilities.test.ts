@@ -46,6 +46,13 @@ describe("starter capabilities", () => {
     expect(starterCapabilities.find((item) => item.id === "railwise.provider.deepseek")?.enabled).toBe(false)
   })
 
+  test("keeps local harness profiles mutually exclusive", () => {
+    const current = toggleStarterCapability(starterCapabilities, "railwise.harness.delivery", true)
+
+    expect(current.find((item) => item.id === "railwise.harness.delivery")?.enabled).toBe(true)
+    expect(current.find((item) => item.id === "railwise.harness.safe")?.enabled).toBe(false)
+  })
+
   test("can update local starter installation state", () => {
     const current = updateStarterCapability(starterCapabilities, "railwise.mcp.feishu", {
       installed: true,

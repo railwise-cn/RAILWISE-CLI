@@ -36,6 +36,18 @@ describe("Marketplace service", () => {
     expect((await Marketplace.set("railwise.provider.deepseek", false))?.enabled).toBe(false)
   })
 
+  test("keeps harness profiles mutually exclusive", async () => {
+    await using _ = await isolate()
+
+    expect((await Marketplace.set("railwise.harness.delivery", true))?.enabled).toBe(true)
+    expect((await Marketplace.get("railwise.harness.delivery"))?.enabled).toBe(true)
+    expect((await Marketplace.get("railwise.harness.safe"))?.enabled).toBe(false)
+
+    expect((await Marketplace.set("railwise.harness.safe", true))?.enabled).toBe(true)
+    expect((await Marketplace.get("railwise.harness.safe"))?.enabled).toBe(true)
+    expect((await Marketplace.get("railwise.harness.delivery"))?.enabled).toBe(false)
+  })
+
   test("can install and uninstall capabilities independently from enablement", async () => {
     await using _ = await isolate()
 

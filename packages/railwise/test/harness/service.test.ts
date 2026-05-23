@@ -77,4 +77,46 @@ describe("Harness service", () => {
     expect(settled.runningToolCount).toBe(0)
     Harness.clear("ses_status")
   })
+
+  test("tracks tool lifecycle around async work", async () => {
+    Harness.clear("ses_track_tool")
+    const result = await Harness.trackTool(
+      {
+        sessionID: "ses_track_tool",
+        callID: "call_tool",
+        tool: "tool_wiki_query",
+        title: "查询规范库",
+        completedTitle: () => "规范库查询完成",
+      },
+      async () => "ok",
+    )
+
+    expect(result).toBe("ok")
+    expect(Harness.timeline("ses_track_tool").map((event) => event.type)).toEqual(["tool.started", "tool.completed"])
+
+    await expect(
+      Harness.trackTool(
+        {
+          sessionID: "ses_track_tool",
+          callID: "call_tool_error",
+          tool: "tool_wiki_query",
+          title: "查询规范库",
+        },
+        async () => {
+          throw new Error("wiki unavailable")
+        },
+      ),
+    ).rejects.toThrow("wiki unavailable")
+
+    const timeline = Harness.timeline("ses_track_tool")
+    expect(timeline.map((event) => event.type)).toEqual([
+      "tool.started",
+      "tool.completed",
+      "tool.started",
+      "tool.failed",
+    ])
+    expect(timeline[3]?.error).toBe("wiki unavailable")
+    expect((await Harness.status({ workspace: "/tmp/railwise-status" })).runningToolCount).toBe(0)
+    Harness.clear("ses_track_tool")
+  })
 })

@@ -53,6 +53,65 @@ export namespace Harness {
     return event
   }
 
+  export async function trackTool<T>(
+    input: {
+      sessionID: string
+      messageID?: string
+      callID?: string
+      tool: string
+      title: string
+      completedTitle?: (result: T) => string
+      capabilityID?: string
+      risk?: HarnessEvent["risk"]
+    },
+    run: () => Promise<T>,
+  ) {
+    const started = Date.now()
+    const id = input.callID ?? (input.messageID ? `${input.messageID}:${input.tool}` : `${input.tool}:${started}`)
+    record({
+      id: `${id}:tool:${input.tool}:started`,
+      sessionID: input.sessionID,
+      type: "tool.started",
+      title: input.title,
+      detail: id,
+      createdAt: started,
+      risk: input.risk ?? "low",
+      capabilityID: input.capabilityID ?? input.tool,
+    })
+    return run()
+      .then((result) => {
+        const end = Date.now()
+        record({
+          id: `${id}:tool:${input.tool}:completed`,
+          sessionID: input.sessionID,
+          type: "tool.completed",
+          title: input.completedTitle?.(result) ?? input.title,
+          detail: id,
+          createdAt: end,
+          duration: end - started,
+          risk: input.risk ?? "low",
+          capabilityID: input.capabilityID ?? input.tool,
+        })
+        return result
+      })
+      .catch((error) => {
+        const end = Date.now()
+        record({
+          id: `${id}:tool:${input.tool}:failed`,
+          sessionID: input.sessionID,
+          type: "tool.failed",
+          title: `工具失败 ${input.tool}`,
+          detail: id,
+          createdAt: end,
+          duration: end - started,
+          risk: "medium",
+          capabilityID: input.capabilityID ?? input.tool,
+          error: error instanceof Error ? error.message : String(error),
+        })
+        throw error
+      })
+  }
+
   export function clear(sessionID: string) {
     events.delete(sessionID)
   }

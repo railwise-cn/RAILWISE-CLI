@@ -3,6 +3,7 @@ import type { MessageV2 } from "../session/message-v2"
 import type { Agent } from "../agent/agent"
 import type { PermissionNext } from "../permission/next"
 import { Truncate } from "./truncation"
+import { Harness } from "../harness"
 
 export namespace Tool {
   interface Metadata {
@@ -55,34 +56,43 @@ export namespace Tool {
         const toolInfo = init instanceof Function ? await init(initCtx) : init
         const execute = toolInfo.execute
         toolInfo.execute = async (args, ctx) => {
-          const params = (() => {
-            try {
-              return toolInfo.parameters.parse(args)
-            } catch (error) {
-              if (error instanceof z.ZodError && toolInfo.formatValidationError) {
-                throw new Error(toolInfo.formatValidationError(error), { cause: error })
-              }
-              throw new Error(
-                `The ${id} tool was called with invalid arguments: ${error}.\nPlease rewrite the input so it satisfies the expected schema.`,
-                { cause: error },
-              )
-            }
-          })()
-          const result = await execute(params, ctx)
-          // skip truncation for tools that handle it themselves
-          if (result.metadata.truncated !== undefined) {
-            return result
-          }
-          const truncated = await Truncate.output(result.output, {}, initCtx?.agent)
-          return {
-            ...result,
-            output: truncated.content,
-            metadata: {
-              ...result.metadata,
-              truncated: truncated.truncated,
-              ...(truncated.truncated && { outputPath: truncated.outputPath }),
+          return Harness.trackTool(
+            {
+              sessionID: ctx.sessionID,
+              messageID: ctx.messageID,
+              callID: ctx.callID,
+              tool: id,
+              title: `执行工具 ${id}`,
+              completedTitle: (result) => result.title,
             },
-          }
+            async () => {
+              const params = (() => {
+                try {
+                  return toolInfo.parameters.parse(args)
+                } catch (error) {
+                  if (error instanceof z.ZodError && toolInfo.formatValidationError) {
+                    throw new Error(toolInfo.formatValidationError(error), { cause: error })
+                  }
+                  throw new Error(
+                    `The ${id} tool was called with invalid arguments: ${error}.\nPlease rewrite the input so it satisfies the expected schema.`,
+                    { cause: error },
+                  )
+                }
+              })()
+              const result = await execute(params, ctx)
+              if (result.metadata.truncated !== undefined) return result
+              const truncated = await Truncate.output(result.output, {}, initCtx?.agent)
+              return {
+                ...result,
+                output: truncated.content,
+                metadata: {
+                  ...result.metadata,
+                  truncated: truncated.truncated,
+                  ...(truncated.truncated && { outputPath: truncated.outputPath }),
+                },
+              }
+            },
+          )
         }
         return toolInfo
       },

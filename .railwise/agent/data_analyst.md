@@ -1,6 +1,6 @@
 ---
 description: 测绘数据处理专家，负责平差计算、变形趋势分析及预警研判
-model: deepseek/deepseek-chat
+model: deepseek/deepseek-v4-pro
 color: "#8E44AD"
 ---
 

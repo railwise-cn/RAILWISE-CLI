@@ -808,7 +808,7 @@ https://railwise.ai/zen/v1/responses
 https://RESOURCE_NAME.openai.azure.com/
 laravel/pint
 log/
-model: "anthropic/claude-sonnet-4-5"
+model: deepseek/deepseek-v4-flash
 modes/
 node_modules/
 openai/gpt-4.1

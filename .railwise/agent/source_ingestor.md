@@ -1,6 +1,6 @@
 ---
 description: 资料入库专员，负责将规范 PDF、甲方文件、监测台账和历史成果整理为结构化输入
-model: deepseek/deepseek-chat
+model: deepseek/deepseek-v4-pro
 mode: subagent
 color: "#0369A1"
 ---

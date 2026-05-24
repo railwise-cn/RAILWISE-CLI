@@ -1,6 +1,6 @@
 ---
 description: 严密平差计算专家，负责水准网、导线网、平面控制网与 CPIII 控制网的工具化计算和精度评定
-model: deepseek/deepseek-chat
+model: deepseek/deepseek-v4-pro
 mode: subagent
 color: "#6D28D9"
 ---

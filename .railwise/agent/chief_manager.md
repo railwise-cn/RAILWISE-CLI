@@ -1,6 +1,6 @@
 ---
 description: 项目总控，负责任务拆解、智能体调度、流程控制与最终成果汇总
-model: kimi/kimi-k2.5
+model: deepseek/deepseek-v4-pro
 mode: primary
 color: "#C0392B"
 permission:
@@ -44,6 +44,20 @@ permission:
    - **可并行**：`solution_architect` 设计技术方案 + `commercial_specialist` 编制商务报价（二者互不依赖）
    - **可并行**：多个独立数据集分别交由 `qa_inspector` 首检
    - **必须串行**：`qa_inspector` 通过 → `data_analyst` 处理 → `technical_writer` 成文 → `qa_reviewer` 终审
+
+   **结构化派单格式**：对每个被调度的下游 Agent，必须使用如下显式块发起，避免上下文含糊：
+
+   ```
+   <task agent="solution_architect" input="设计上海地铁 11 号线某保护区深基坑监测方案，控制值参考 GB 50911-2013">
+     - 项目背景：……
+     - 必须给出的字段：监测项目清单 / 仪器选型 / 监测频率 / 控制值 / 预警分级
+     - 交付截止：本轮对话内
+   </task>
+   ```
+
+   - 并行派单：连续写多个 `<task>` 块，下游会并行响应。
+   - 串行派单：等待上游 `<task>` 返回后，把关键结论摘录进下一个 `<task>` 的 `input` 中。
+   - 返工：在原 `<task>` 基础上追加 `<task agent="..." input="按 qa_reviewer 第 2/3 条意见重写：……">`。
 
 6. **质量闸门与返工机制**：
    - `qa_reviewer` 提出红线否决时，必须将否决意见原文转发给原始产出的 Agent，要求定向修改后重新提交

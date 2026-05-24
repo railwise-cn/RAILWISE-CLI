@@ -6,8 +6,8 @@ import { ModelsDev } from "../../provider/models"
 import { Config } from "../../config/config"
 
 const PROVIDERS: { id: string; hint: string; register?: string; note?: string }[] = [
-  { id: "zhipuai", hint: "智谱 GLM — 永久免费", register: "https://open.bigmodel.cn", note: "glm-4-flash / glm-z1-flash 永久免费，零成本起步首选" },
-  { id: "deepseek", hint: "DeepSeek — 注册送 500 万 tokens", register: "https://platform.deepseek.com", note: "数学推理最强的国产模型" },
+  { id: "deepseek", hint: "DeepSeek V4 — 推荐首选", register: "https://platform.deepseek.com", note: "国内直连、价格低、能力覆盖 95% 场景；V4 Pro 主用，V4 Flash 跑探索任务" },
+  { id: "zhipuai", hint: "智谱 GLM — 永久免费", register: "https://open.bigmodel.cn", note: "glm-4-flash / glm-z1-flash 永久免费，零成本起步备选" },
   { id: "kimi", hint: "Kimi — 注册送免费额度", register: "https://platform.moonshot.cn", note: "131K 长上下文，中文能力优秀" },
   { id: "minimax", hint: "MiniMax — 注册送免费额度", register: "https://platform.minimaxi.com", note: "百万上下文" },
   { id: "anthropic", hint: "Anthropic Claude — 付费", register: "https://console.anthropic.com" },
@@ -82,7 +82,7 @@ async function wizard() {
   const database = await ModelsDev.get()
   const configured: string[] = []
 
-  prompts.log.info("推荐：先注册智谱 GLM（永久免费），即可零成本体验全部功能")
+  prompts.log.info("推荐：DeepSeek V4 一站搞定 95% 场景；想零成本起步可先选智谱 GLM（永久免费）")
 
   configured.push(await addProvider(database))
 

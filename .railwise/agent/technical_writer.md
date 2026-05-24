@@ -1,6 +1,6 @@
 ---
 description: 专业工程文档编辑，将数据和方案转化为格式规范的监测日报、周报及总结报告
-model: kimi/kimi-k2.5
+model: deepseek/deepseek-v4-pro
 color: "#27AE60"
 ---
 

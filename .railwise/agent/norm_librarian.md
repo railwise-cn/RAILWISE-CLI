@@ -1,6 +1,6 @@
 ---
 description: 规范资料管理员，负责工程测绘与监测规范条文查询、引用固化和规范 Wiki 维护
-model: kimi/kimi-k2.5
+model: deepseek/deepseek-v4-pro
 mode: subagent
 color: "#0F766E"
 ---

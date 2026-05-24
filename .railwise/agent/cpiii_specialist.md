@@ -1,6 +1,6 @@
 ---
 description: CPIII 测量专家，负责高速铁路/城轨精测网复测方案、自由设站观测设计与限差核查
-model: deepseek/deepseek-chat
+model: deepseek/deepseek-v4-pro
 mode: subagent
 color: "#7C3AED"
 ---

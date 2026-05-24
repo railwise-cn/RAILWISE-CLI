@@ -1,6 +1,6 @@
 ---
 description: 知识库整理员，负责将项目案例、技术问答、复盘经验沉淀为可复用企业知识
-model: kimi/kimi-k2.5
+model: deepseek/deepseek-v4-pro
 mode: subagent
 color: "#15803D"
 ---

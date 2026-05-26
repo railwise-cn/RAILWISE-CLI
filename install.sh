@@ -3,6 +3,7 @@ set -e
 
 REPO="railwise-cn/RAILWISE-CLI"
 BINARY="railwise"
+ALIAS="rw"
 INSTALL_DIR="${RAILWISE_INSTALL_DIR:-/usr/local/bin}"
 
 get_arch() {
@@ -58,15 +59,51 @@ case "$EXT" in
 esac
 
 chmod +x "$TMPDIR/$BINARY"
+if [ -f "$TMPDIR/$ALIAS" ]; then
+  chmod +x "$TMPDIR/$ALIAS"
+fi
 
-if [ -w "$INSTALL_DIR" ]; then
-  mv "$TMPDIR/$BINARY" "$INSTALL_DIR/$BINARY"
+install_file() {
+  source="$1"
+  target="$2"
+  if [ -w "$INSTALL_DIR" ]; then
+    rm -f "$target"
+    mv "$source" "$target"
+  else
+    sudo rm -f "$target"
+    sudo mv "$source" "$target"
+  fi
+}
+
+link_alias() {
+  target="$INSTALL_DIR/$ALIAS"
+  if [ -w "$INSTALL_DIR" ]; then
+    rm -f "$target"
+    ln -s "$BINARY" "$target"
+  else
+    sudo rm -f "$target"
+    sudo ln -s "$BINARY" "$target"
+  fi
+}
+
+if [ ! -d "$INSTALL_DIR" ]; then
+  if mkdir -p "$INSTALL_DIR" 2>/dev/null; then
+    :
+  else
+    sudo mkdir -p "$INSTALL_DIR"
+  fi
+fi
+
+install_file "$TMPDIR/$BINARY" "$INSTALL_DIR/$BINARY"
+
+if [ -f "$TMPDIR/$ALIAS" ]; then
+  install_file "$TMPDIR/$ALIAS" "$INSTALL_DIR/$ALIAS"
 else
-  echo "Need sudo to install to $INSTALL_DIR"
-  sudo mv "$TMPDIR/$BINARY" "$INSTALL_DIR/$BINARY"
+  link_alias
 fi
 
 rm -rf "$TMPDIR"
 
 echo "railwise v${VERSION} installed to $INSTALL_DIR/$BINARY"
+echo "rw alias installed to $INSTALL_DIR/$ALIAS"
 $INSTALL_DIR/$BINARY --version 2>/dev/null || true

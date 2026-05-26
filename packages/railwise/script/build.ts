@@ -190,6 +190,15 @@ for (const item of targets) {
     },
   })
 
+  const alias = item.os === "win32" ? `dist/${name}/bin/rw.cmd` : `dist/${name}/bin/rw`
+  await Bun.write(
+    alias,
+    item.os === "win32" ? '@echo off\r\n"%~dp0railwise.exe" %*\r\n' : '#!/bin/sh\nexec "$(dirname "$0")/railwise" "$@"\n',
+  )
+  if (item.os !== "win32") {
+    await $`chmod 755 ${alias}`
+  }
+
   await $`rm -rf ./dist/${name}/bin/tui`
   await Bun.file(`dist/${name}/package.json`).write(
     JSON.stringify(

@@ -26,6 +26,7 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
       name: pkg.name + "-ai",
       bin: {
         [pkg.name]: `./bin/${pkg.name}`,
+        rw: `./bin/${pkg.name}`,
       },
       scripts: {
         postinstall: "node ./postinstall.mjs",
@@ -57,11 +58,11 @@ if (!Script.preview) {
 
   for (const name of Object.keys(binaries)) {
     if (name.includes("linux")) {
-      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise`.nothrow()
+      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise rw`.nothrow()
     } else if (name.includes("darwin")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise`.nothrow()
+      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise rw`.nothrow()
     } else if (name.includes("windows")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe`.nothrow()
+      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe rw.cmd`.nothrow()
     }
   }
 
@@ -94,6 +95,7 @@ class Railwise < Formula
       sha256 "${macX64Sha}"
       def install
         bin.install "railwise"
+        bin.install "rw"
       end
     end
     if Hardware::CPU.arm?
@@ -101,6 +103,7 @@ class Railwise < Formula
       sha256 "${macArm64Sha}"
       def install
         bin.install "railwise"
+        bin.install "rw"
       end
     end
   end
@@ -111,6 +114,7 @@ class Railwise < Formula
       sha256 "${x64Sha}"
       def install
         bin.install "railwise"
+        bin.install "rw"
       end
     end
     if Hardware::CPU.arm? and Hardware::CPU.is_64_bit?
@@ -118,6 +122,7 @@ class Railwise < Formula
       sha256 "${arm64Sha}"
       def install
         bin.install "railwise"
+        bin.install "rw"
       end
     end
   end

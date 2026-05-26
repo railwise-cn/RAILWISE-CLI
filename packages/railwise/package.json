@@ -13,7 +13,8 @@
     "db": "bun drizzle-kit"
   },
   "bin": {
-    "railwise": "./bin/railwise"
+    "railwise": "./bin/railwise",
+    "rw": "./bin/railwise"
   },
   "exports": {
     "./*": "./src/*.ts"

@@ -11,6 +11,7 @@
 ```bash
 npm install -g railwise-ai
 railwise --version
+rw --version
 ```
 
 国内网络较慢时可指定镜像：
@@ -21,11 +22,12 @@ npm install -g railwise-ai --registry=https://registry.npmmirror.com
 
 ### curl 安装脚本
 
-适用：macOS、Linux。安装脚本会从 GitHub Release 下载对应平台的 `railwise` 二进制。
+适用：macOS、Linux。安装脚本会从 GitHub Release 下载对应平台的 `railwise` 二进制，并同时安装 `rw` 快捷命令。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh
 railwise --version
+rw --version
 ```
 
 指定版本：
@@ -48,6 +50,7 @@ RAILWISE_INSTALL_DIR="$HOME/.local/bin" \
 ```bash
 brew install railwise-cn/tap/railwise
 railwise --version
+rw --version
 ```
 
 ### GitHub Release 手动安装
@@ -56,8 +59,8 @@ railwise --version
 
 1. 打开 https://github.com/railwise-cn/RAILWISE-CLI/releases。
 2. 下载对应平台包。
-3. 解压后把 `railwise` 或 `railwise.exe` 放入 PATH。
-4. 执行 `railwise --version` 验证。
+3. 解压后把 `railwise`/`rw` 或 `railwise.exe`/`rw.cmd` 放入 PATH。
+4. 执行 `railwise --version` 或 `rw --version` 验证。
 
 | 平台                | 文件                          |
 | ------------------- | ----------------------------- |
@@ -65,6 +68,16 @@ railwise --version
 | Linux x64           | `railwise-linux-x64.tar.gz`   |
 | Linux ARM64         | `railwise-linux-arm64.tar.gz` |
 | Windows x64         | `railwise-windows-x64.zip`    |
+
+## 命令别名
+
+安装完成后，`railwise` 和 `rw` 是同一个 CLI 入口。文档示例默认使用 `railwise`，日常输入可以使用更短的 `rw`：
+
+```bash
+rw
+rw run "检查本周监测数据并生成日报"
+rw serve --hostname 127.0.0.1 --port 4096
+```
 
 ### 源码开发安装
 

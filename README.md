@@ -25,6 +25,7 @@
 ```bash
 npm install -g railwise-ai
 railwise --version
+rw --version
 ```
 
 **curl 安装脚本（macOS / Linux）**
@@ -32,6 +33,7 @@ railwise --version
 ```bash
 curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh
 railwise --version
+rw --version
 ```
 
 指定版本：
@@ -45,6 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/instal
 ```bash
 brew install railwise-cn/tap/railwise
 railwise --version
+rw --version
 ```
 
 **GitHub Release 手动安装（离线/内网分发）**
@@ -58,7 +61,9 @@ railwise --version
 | Linux ARM64         | `railwise-linux-arm64.tar.gz` |
 | Windows x64         | `railwise-windows-x64.zip`    |
 
-解压后把 `railwise` 或 `railwise.exe` 放入 PATH 即可。
+解压后把 `railwise`/`rw` 或 `railwise.exe`/`rw.cmd` 放入 PATH 即可。
+
+安装完成后，`railwise` 和 `rw` 是同一个 CLI 入口。文档示例默认使用 `railwise`，日常输入可以使用更短的 `rw`。
 
 **源码安装（开发者）**
 
@@ -232,10 +237,11 @@ npm config set registry https://registry.npmmirror.com
 npm install -g railwise-ai
 ```
 
-安装完成后，输入 `railwise` 验证：
+安装完成后，输入 `railwise` 或 `rw` 验证：
 
 ```cmd
 railwise --version
+rw --version
 ```
 
 ### 第五步：获取 API Key（免费）
@@ -250,9 +256,10 @@ RAILWISE-CLI 需要 AI 模型的 API Key 才能工作。推荐使用**免费**�
 
 ```cmd
 railwise
+rw
 ```
 
-首次启动会进入设置向导，选择 `zhipuai` 作为 provider，粘贴你的 API Key 即可。之后也可以运行 `railwise setup` 重新配置。
+首次启动会进入设置向导，选择 `zhipuai` 作为 provider，粘贴你的 API Key 即可。之后也可以运行 `railwise setup` 或 `rw setup` 重新配置。
 
 系统会自动使用免费的 `glm-4-flash` 模型。如需更强的模型，可按[模型支持](#模型支持)章节配置其他厂商。
 
@@ -260,6 +267,7 @@ railwise
 
 ```cmd
 railwise
+rw
 railwise C:\Projects\Ningbo-Monitoring
 railwise run "检查本周监测数据并生成日报"
 railwise run -f data.csv "分析沉降趋势"

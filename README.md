@@ -14,27 +14,51 @@
 
 ---
 
-## 快速开始
+## RAILWISE-CLI 快速开始
 
-### 安装
+本节只针对命令行版本。Desktop 和 Web 是外壳与预览入口，CLI 才是工程测绘多智能体核心。
 
-**npm（推荐）**
+### 安装方式
+
+**npm（推荐，Windows / macOS / Linux）**
 
 ```bash
 npm install -g railwise-ai
+railwise --version
 ```
 
-**curl（Linux / macOS）**
+**curl 安装脚本（macOS / Linux）**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh
+railwise --version
+```
+
+指定版本：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.0.5
 ```
 
 **Homebrew（macOS / Linux）**
 
 ```bash
 brew install railwise-cn/tap/railwise
+railwise --version
 ```
+
+**GitHub Release 手动安装（离线/内网分发）**
+
+从 [Releases](https://github.com/railwise-cn/RAILWISE-CLI/releases) 下载对应平台包：
+
+| 平台                | 文件                          |
+| ------------------- | ----------------------------- |
+| macOS Apple Silicon | `railwise-darwin-arm64.zip`   |
+| Linux x64           | `railwise-linux-x64.tar.gz`   |
+| Linux ARM64         | `railwise-linux-arm64.tar.gz` |
+| Windows x64         | `railwise-windows-x64.zip`    |
+
+解压后把 `railwise` 或 `railwise.exe` 放入 PATH 即可。
 
 **源码安装（开发者）**
 
@@ -44,24 +68,83 @@ brew install railwise-cn/tap/railwise
 git clone https://github.com/railwise-cn/RAILWISE-CLI.git
 cd RAILWISE-CLI
 bun install
-cd packages/railwise && bun link && cd ../..
+bun run dev
+```
+
+### 更新方式
+
+优先使用 CLI 自带更新命令：
+
+```bash
+railwise upgrade
+railwise upgrade 1.0.5
+railwise upgrade --method npm
+```
+
+也可以使用原安装方式更新：
+
+```bash
+npm update -g railwise-ai
+brew upgrade railwise
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh
+```
+
+源码安装更新：
+
+```bash
+git pull origin dev
+bun install
+bun run dev
 ```
 
 ### 配置
 
+首次启动会进入设置向导。也可以手动运行：
+
 ```bash
-# 复制配置模板
-cp .railwise/railwise.json.example .railwise/railwise.json
-# 编辑 .railwise/railwise.json，填入你的 API Key
+railwise setup
+railwise auth login
 ```
 
-### 启动
+项目级配置可放在 `.railwise/railwise.json`，完整示例见 [`.railwise/railwise.json.example`](.railwise/railwise.json.example)。
+
+### 启动方式
+
+**交互式 TUI（最常用）**
 
 ```bash
 railwise
+railwise /path/to/project
+railwise --agent chief_manager
 ```
 
-开发模式（源码安装）：
+**一次性命令 / CI 脚本**
+
+```bash
+railwise run "检查本周监测数据并生成日报"
+railwise run -f data.csv "分析沉降趋势，输出结论"
+```
+
+**启动本地服务**
+
+```bash
+railwise serve --hostname 127.0.0.1 --port 4096
+```
+
+**连接已有服务**
+
+```bash
+railwise attach http://localhost:4096
+railwise run --attach http://localhost:4096 "继续整理报告"
+```
+
+**打开 Web 界面**
+
+```bash
+railwise web
+```
+
+**源码开发模式**
 
 ```bash
 bun run dev
@@ -113,7 +196,7 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 
 ---
 
-## Windows 安装指南（零基础）
+## Windows CLI 安装指南（零基础）
 
 如果你从未接触过编程工具，请按以下步骤操作。全程约 10 分钟。
 
@@ -169,9 +252,20 @@ RAILWISE-CLI 需要 AI 模型的 API Key 才能工作。推荐使用**免费**�
 railwise
 ```
 
-首次启动会进入设置向导，选择 `zhipuai` 作为 provider，粘贴你的 API Key 即可。
+首次启动会进入设置向导，选择 `zhipuai` 作为 provider，粘贴你的 API Key 即可。之后也可以运行 `railwise setup` 重新配置。
 
 系统会自动使用免费的 `glm-4-flash` 模型。如需更强的模型，可按[模型支持](#模型支持)章节配置其他厂商。
+
+### Windows 常用启动方式
+
+```cmd
+railwise
+railwise C:\Projects\Ningbo-Monitoring
+railwise run "检查本周监测数据并生成日报"
+railwise run -f data.csv "分析沉降趋势"
+railwise serve --hostname 127.0.0.1 --port 4096
+railwise attach http://localhost:4096
+```
 
 ### 常见问题
 
@@ -196,6 +290,7 @@ npm install -g railwise-ai --registry=https://registry.npmmirror.com
 **Q: 如何更新到最新版？**
 
 ```cmd
+railwise upgrade
 npm update -g railwise-ai
 ```
 

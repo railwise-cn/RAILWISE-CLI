@@ -199,6 +199,8 @@ for (const item of targets) {
     await $`chmod 755 ${alias}`
   }
 
+  await $`cp -R skill dist/${name}/bin/skill`
+
   await $`rm -rf ./dist/${name}/bin/tui`
   await Bun.file(`dist/${name}/package.json`).write(
     JSON.stringify(

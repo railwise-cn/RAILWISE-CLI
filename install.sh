@@ -4,7 +4,9 @@ set -e
 REPO="railwise-cn/RAILWISE-CLI"
 BINARY="railwise"
 ALIAS="rw"
+SKILL_DIR="skill"
 INSTALL_DIR="${RAILWISE_INSTALL_DIR:-/usr/local/bin}"
+SHARE_DIR="${RAILWISE_SHARE_DIR:-$(dirname "$INSTALL_DIR")/share/railwise}"
 
 get_arch() {
   arch=$(uname -m)
@@ -86,6 +88,27 @@ link_alias() {
   fi
 }
 
+install_tree() {
+  source="$1"
+  target="$2"
+  parent=$(dirname "$target")
+  if [ ! -d "$parent" ]; then
+    if mkdir -p "$parent" 2>/dev/null; then
+      :
+    else
+      sudo mkdir -p "$parent"
+    fi
+  fi
+
+  if [ -w "$parent" ]; then
+    rm -rf "$target"
+    cp -R "$source" "$target"
+  else
+    sudo rm -rf "$target"
+    sudo cp -R "$source" "$target"
+  fi
+}
+
 if [ ! -d "$INSTALL_DIR" ]; then
   if mkdir -p "$INSTALL_DIR" 2>/dev/null; then
     :
@@ -100,6 +123,11 @@ if [ -f "$TMPDIR/$ALIAS" ]; then
   install_file "$TMPDIR/$ALIAS" "$INSTALL_DIR/$ALIAS"
 else
   link_alias
+fi
+
+if [ -d "$TMPDIR/$SKILL_DIR" ]; then
+  install_tree "$TMPDIR/$SKILL_DIR" "$SHARE_DIR/$SKILL_DIR"
+  echo "built-in skills installed to $SHARE_DIR/$SKILL_DIR"
 fi
 
 rm -rf "$TMPDIR"

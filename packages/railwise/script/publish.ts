@@ -58,11 +58,11 @@ if (!Script.preview) {
 
   for (const name of Object.keys(binaries)) {
     if (name.includes("linux")) {
-      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise rw`.nothrow()
+      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise rw skill`.nothrow()
     } else if (name.includes("darwin")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise rw`.nothrow()
+      await $`cd ./dist/${name}/bin && zip -qr ../../${name}.zip railwise rw skill`.nothrow()
     } else if (name.includes("windows")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe rw.cmd`.nothrow()
+      await $`cd ./dist/${name}/bin && zip -qr ../../${name}.zip railwise.exe rw.cmd skill`.nothrow()
     }
   }
 
@@ -96,6 +96,7 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "skill"
       end
     end
     if Hardware::CPU.arm?
@@ -104,6 +105,7 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "skill"
       end
     end
   end
@@ -115,6 +117,7 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "skill"
       end
     end
     if Hardware::CPU.arm? and Hardware::CPU.is_64_bit?
@@ -123,6 +126,7 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "skill"
       end
     end
   end

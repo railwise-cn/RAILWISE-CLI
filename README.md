@@ -372,7 +372,7 @@ npm update -g railwise-ai
 | `report_export` | Markdown 转 DOCX 报告导出 |
 | `standard_query` | 工程规范/标准条文智能查询 |
 
-### 领域技能包（11 个）
+### 领域技能包（13 个）
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
@@ -389,6 +389,10 @@ npm update -g railwise-ai
 | `humanizer` | 报告润色：消除 AI 痕迹、注入工程判断、句式变化 |
 | `frontend-design` | 前端 UI：监测平台界面规范、预警四色体系、看板布局 |
 | `canvas-design` | 图表设计：趋势图配色、坐标轴规范、剖面图构造 |
+| `rail-monitoring-plan` | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
+| `operational-monitoring` | 运营监测：长期变形监测作业、期报/年报、预警处置与归档 |
+
+内置业务 skill 位于 `packages/railwise/skill/`；项目级自定义 skill 位于 `.railwise/skill/`。更多编辑和覆盖方式见 [`docs/user/07-skills.md`](docs/user/07-skills.md)。
 
 ### 业务命令（SOP 工作流）
 

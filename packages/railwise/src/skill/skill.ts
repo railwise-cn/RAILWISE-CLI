@@ -10,12 +10,20 @@ import { Global } from "@/global"
 import { Filesystem } from "@/util/filesystem"
 import { Flag } from "@/flag/flag"
 import { Bus } from "@/bus"
-import { Session } from "@/session"
 import { Discovery } from "./discovery"
 import { Glob } from "../util/glob"
+import { BusEvent } from "@/bus/bus-event"
 
 export namespace Skill {
   const log = Log.create({ service: "skill" })
+  const Error = BusEvent.define(
+    "session.error",
+    z.object({
+      sessionID: z.string().optional(),
+      error: z.unknown(),
+    }),
+  )
+
   export const Info = z.object({
     name: z.string(),
     description: z.string(),
@@ -48,6 +56,17 @@ export namespace Skill {
   const EXTERNAL_SKILL_PATTERN = "skills/**/SKILL.md"
   const RAILWISE_SKILL_PATTERN = "{skill,skills}/**/SKILL.md"
   const SKILL_PATTERN = "**/SKILL.md"
+  const BUILTIN_DIRS = [
+    process.env.RAILWISE_BUILTIN_SKILL_DIR,
+    path.join(import.meta.dirname, "../../skill"),
+    path.join(path.dirname(process.execPath), "skill"),
+    path.join(path.dirname(process.execPath), "..", "share", "railwise", "skill"),
+  ].filter((item): item is string => !!item)
+
+  function disabled() {
+    const value = process.env.RAILWISE_DISABLE_BUILTIN_SKILLS?.toLowerCase()
+    return value === "true" || value === "1"
+  }
 
   export const state = Instance.state(async () => {
     const skills: Record<string, Info> = {}
@@ -58,7 +77,7 @@ export namespace Skill {
         const message = ConfigMarkdown.FrontmatterError.isInstance(err)
           ? err.data.message
           : `Failed to parse skill ${match}`
-        Bus.publish(Session.Event.Error, { error: new NamedError.Unknown({ message }).toObject() })
+        Bus.publish(Error, { error: new NamedError.Unknown({ message }).toObject() })
         log.error("failed to load skill", { skill: match, err })
         return undefined
       })
@@ -87,8 +106,8 @@ export namespace Skill {
       }
     }
 
-    const scanExternal = async (root: string, scope: "global" | "project") => {
-      return Glob.scan(EXTERNAL_SKILL_PATTERN, {
+    const scan = async (root: string, pattern: string, scope: "builtin" | "global" | "project" | "config") => {
+      return Glob.scan(pattern, {
         cwd: root,
         absolute: true,
         include: "file",
@@ -101,13 +120,21 @@ export namespace Skill {
         })
     }
 
+    // Built-in RAILWISE business skills are loaded first so user/project skills can override them by name.
+    if (!disabled()) {
+      for (const root of [...new Set(BUILTIN_DIRS.map((item) => path.resolve(item)))]) {
+        if (!(await Filesystem.isDir(root))) continue
+        await scan(root, SKILL_PATTERN, "builtin")
+      }
+    }
+
     // Scan external skill directories (.claude/skills/, .agents/skills/, etc.)
     // Load global (home) first, then project-level (so project-level overwrites)
     if (!Flag.RAILWISE_DISABLE_EXTERNAL_SKILLS) {
       for (const dir of EXTERNAL_DIRS) {
         const root = path.join(Global.Path.home, dir)
         if (!(await Filesystem.isDir(root))) continue
-        await scanExternal(root, "global")
+        await scan(root, EXTERNAL_SKILL_PATTERN, "global")
       }
 
       for await (const root of Filesystem.up({
@@ -115,7 +142,7 @@ export namespace Skill {
         start: Instance.directory,
         stop: Instance.worktree,
       })) {
-        await scanExternal(root, "project")
+        await scan(root, EXTERNAL_SKILL_PATTERN, "project")
       }
     }
 

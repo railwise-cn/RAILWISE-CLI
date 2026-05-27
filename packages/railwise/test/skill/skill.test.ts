@@ -5,6 +5,8 @@ import { tmpdir } from "../fixture/fixture"
 import path from "path"
 import fs from "fs/promises"
 
+process.env.RAILWISE_DISABLE_BUILTIN_SKILLS = "1"
+
 async function createGlobalSkill(homeDir: string) {
   const skillDir = path.join(homeDir, ".claude", "skills", "global-test-skill")
   await fs.mkdir(skillDir, { recursive: true })
@@ -385,4 +387,31 @@ description: A skill in the .railwise/skills directory.
       expect(dirs.length).toBe(4)
     },
   })
+})
+
+test("discovers built-in RAILWISE business skills", async () => {
+  const previous = process.env.RAILWISE_DISABLE_BUILTIN_SKILLS
+  delete process.env.RAILWISE_DISABLE_BUILTIN_SKILLS
+
+  try {
+    await using tmp = await tmpdir({ git: true })
+
+    await Instance.provide({
+      directory: tmp.path,
+      fn: async () => {
+        const skills = await Skill.all()
+        expect(skills.find((item) => item.name === "rail-monitoring-plan")).toBeDefined()
+        expect(skills.find((item) => item.name === "operational-monitoring")).toBeDefined()
+        expect((await Skill.dirs()).some((item) => item.includes(path.join("skill", "rail-monitoring-plan")))).toBe(
+          true,
+        )
+      },
+    })
+  } finally {
+    if (previous === undefined) {
+      delete process.env.RAILWISE_DISABLE_BUILTIN_SKILLS
+    } else {
+      process.env.RAILWISE_DISABLE_BUILTIN_SKILLS = previous
+    }
+  }
 })

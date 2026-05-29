@@ -44,7 +44,7 @@ jobs:
             target: linux-arm64
           - os: macos-latest
             target: darwin-arm64
-          - os: macos-14
+          - os: macos-15-intel
             target: darwin-x64
           - os: windows-latest
             target: windows-x64
@@ -63,6 +63,10 @@ jobs:
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version || startsWith(github.ref, 'refs/tags/v')) && 'latest' || github.ref_name }}
 
+      - name: Verify target artifact
+        shell: bash
+        run: test -d "packages/railwise/dist/railwise-${{ matrix.target }}"
+
       - uses: actions/upload-artifact@v4
         with:
           name: railwise-${{ matrix.target }}
@@ -79,7 +83,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - uses: actions/download-artifact@v4
@@ -94,10 +98,9 @@ jobs:
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version || startsWith(github.ref, 'refs/tags/v')) && 'latest' || github.ref_name }}
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version || startsWith(github.ref, 'refs/tags/v')) && 'true' || '' }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          NPM_CONFIG_PROVENANCE: false
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Create GitHub Release
         if: inputs.bump || inputs.version || startsWith(github.ref, 'refs/tags/v')

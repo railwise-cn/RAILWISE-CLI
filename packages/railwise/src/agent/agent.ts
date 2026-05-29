@@ -17,7 +17,6 @@ import { PermissionNext } from "@/permission/next"
 import { mergeDeep, pipe, sortBy, values } from "remeda"
 import { Global } from "@/global"
 import path from "path"
-import { Plugin } from "@/plugin"
 import { Skill } from "../skill"
 
 export namespace Agent {
@@ -285,6 +284,7 @@ export namespace Agent {
     const defaultModel = input.model ?? (await Provider.defaultModel())
     const model = await Provider.getModel(defaultModel.providerID, defaultModel.modelID)
     const language = await Provider.getLanguage(model)
+    const { Plugin } = await import("@/plugin")
 
     const system = [PROMPT_GENERATE]
     await Plugin.trigger("experimental.chat.system.transform", { model }, { system })

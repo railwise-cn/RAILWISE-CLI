@@ -1,0 +1,4 @@
+{
+  "$schema": "https://railwise.ai/config.json",
+  "default_agent": "chief_manager"
+}

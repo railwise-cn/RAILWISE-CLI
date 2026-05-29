@@ -402,6 +402,9 @@ test("discovers built-in RAILWISE business skills", async () => {
         const skills = await Skill.all()
         expect(skills.find((item) => item.name === "rail-monitoring-plan")).toBeDefined()
         expect(skills.find((item) => item.name === "operational-monitoring")).toBeDefined()
+        expect(skills.find((item) => item.name === "docx")).toBeDefined()
+        expect(skills.find((item) => item.name === "xlsx")).toBeDefined()
+        expect(skills.length).toBeGreaterThanOrEqual(28)
         expect((await Skill.dirs()).some((item) => item.includes(path.join("skill", "rail-monitoring-plan")))).toBe(
           true,
         )

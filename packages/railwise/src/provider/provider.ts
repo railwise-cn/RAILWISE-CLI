@@ -6,7 +6,6 @@ import { mapValues, mergeDeep, omit, pickBy, sortBy } from "remeda"
 import { NoSuchModelError, type Provider as SDK } from "ai"
 import { Log } from "../util/log"
 import { BunProc } from "../bun"
-import { Plugin } from "../plugin"
 import { ModelsDev } from "./models"
 import { NamedError } from "@railwise/util/error"
 import { Auth } from "../auth"
@@ -927,6 +926,7 @@ export namespace Provider {
       }
     }
 
+    const { Plugin } = await import("../plugin")
     for (const plugin of await Plugin.list()) {
       if (!plugin.auth) continue
       const providerID = plugin.auth.provider

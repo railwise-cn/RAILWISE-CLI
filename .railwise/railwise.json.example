@@ -7,13 +7,10 @@
 
   // ========== 智能体模型映射（已内置，无需手动配置） ==========
   // 每个智能体在其 .md 文件的 frontmatter 中已设置推荐模型：
-  //   chief_manager      → kimi/kimi-k2.5       （通用推理、任务拆解）
-  //   solution_architect  → kimi/kimi-k2.5       （长上下文，131K，方案设计）
-  //   data_analyst        → deepseek/deepseek-chat（数学推理最强）
-  //   qa_inspector        → deepseek/deepseek-chat（精确规则判定）
-  //   qa_reviewer         → kimi/kimi-k2.5       （长上下文，文档审阅）
-  //   technical_writer    → kimi/kimi-k2.5       （中文写作，长输出）
-  //   commercial_specialist → kimi/kimi-k2.5     （商务中文写作）
+  //   chief_manager / solution_architect / data_analyst / qa_inspector
+  //   qa_reviewer / technical_writer / commercial_specialist
+  //   adjustment_computer / cpiii_specialist / norm_librarian
+  //   source_ingestor / knowledge_curator → deepseek/deepseek-v4-pro
   // 如需覆盖，在对应 .railwise/agent/*.md 的 frontmatter 中修改 model 字段即可
   // 若智能体指定的模型不可用，自动回退到上方 "model" 字段的全局默认模型
   // 只显示以下配置的 provider，避免模型列表中出现大量无关模型
@@ -155,7 +152,7 @@
   },
 
   // ========== 系统子代理模型配置 ==========
-  // 以下子代理由系统自动调用（不同于上方 7 个业务智能体）
+  // 以下子代理由系统自动调用（不同于上方 12 个业务智能体）
   // 未配置的子代理使用全局 "model" 字段的模型
   "agent": {
     // explore — 搜索项目代码、理解代码结构

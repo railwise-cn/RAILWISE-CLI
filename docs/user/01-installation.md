@@ -33,7 +33,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.0.5
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.8
 ```
 
 自定义安装目录：
@@ -98,12 +98,12 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.0.5
+railwise upgrade 1.2.8
 railwise upgrade --method npm
 railwise upgrade --method brew
 ```
 
-`railwise upgrade` 会尝试识别当前安装方式。识别失败时可用 `--method` 指定：`npm`、`pnpm`、`bun`、`brew`、`curl`、`choco`、`scoop`。
+`railwise upgrade` 会尝试识别当前安装方式。识别失败时可用 `--method` 指定：`npm`、`pnpm`、`bun`、`brew`、`curl`、`choco`、`scoop`。新版安装包会同时带上内置 Agent、Command 和 Skill。
 
 ### 包管理器更新
 

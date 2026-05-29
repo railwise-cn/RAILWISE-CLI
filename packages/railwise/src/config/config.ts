@@ -54,6 +54,18 @@ export namespace Config {
 
   const managedConfigDir = process.env.RAILWISE_TEST_MANAGED_CONFIG_DIR || getManagedConfigDir()
 
+  const builtinRoots = [
+    process.env.RAILWISE_BUILTIN_CONFIG_DIR,
+    path.join(import.meta.dirname, "../.."),
+    path.dirname(process.execPath),
+    path.join(path.dirname(process.execPath), "..", "share", "railwise"),
+  ].filter((item): item is string => Boolean(item))
+
+  function disableBuiltins() {
+    const value = process.env.RAILWISE_DISABLE_BUILTIN_CONFIG?.toLowerCase()
+    return value === "1" || value === "true" || value === "yes"
+  }
+
   // Custom merge function that concatenates array fields instead of replacing them
   function merge(target: Info, source: Info): Info {
     const merged = mergeDeep(target, source)
@@ -77,7 +89,7 @@ export namespace Config {
     // 5) .railwise directories (.railwise/agents/, .railwise/commands/, .railwise/plugins/, .railwise/railwise.json{,c})
     // 6) Inline config (RAILWISE_CONFIG_CONTENT)
     // Managed config directory is enterprise-only and always overrides everything above.
-    let result: Info = {}
+    let result: Info = await loadBuiltins()
     for (const [key, value] of Object.entries(auth)) {
       if (value.type === "wellknown") {
         process.env[value.key] = value.token
@@ -426,6 +438,20 @@ export namespace Config {
       }
       throw new InvalidError({ path: item, issues: parsed.error.issues }, { cause: parsed.error })
     }
+    return result
+  }
+
+  async function loadBuiltins() {
+    let result: Info = {}
+    if (disableBuiltins()) return result
+
+    for (const dir of unique(builtinRoots)) {
+      if (!existsSync(dir)) continue
+      result = merge(result, await loadFile(path.join(dir, "railwise.json")))
+      result.command = mergeDeep(result.command ?? {}, await loadCommand(dir))
+      result.agent = mergeDeep(result.agent ?? {}, await loadAgent(dir))
+    }
+
     return result
   }
 

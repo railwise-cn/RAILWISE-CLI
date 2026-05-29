@@ -575,6 +575,25 @@ test("defaultAgent returns build when no default_agent config", async () => {
   })
 })
 
+test("defaultAgent uses built-in chief manager when built-ins are enabled", async () => {
+  const prev = process.env.RAILWISE_DISABLE_BUILTIN_CONFIG
+  delete process.env.RAILWISE_DISABLE_BUILTIN_CONFIG
+
+  try {
+    await using tmp = await tmpdir()
+    await Instance.provide({
+      directory: tmp.path,
+      fn: async () => {
+        expect(await Agent.defaultAgent()).toBe("chief_manager")
+        expect(await Agent.get("chief_manager")).toBeDefined()
+      },
+    })
+  } finally {
+    if (prev === undefined) process.env.RAILWISE_DISABLE_BUILTIN_CONFIG = "1"
+    else process.env.RAILWISE_DISABLE_BUILTIN_CONFIG = prev
+  }
+})
+
 test("defaultAgent respects default_agent config set to plan", async () => {
   await using tmp = await tmpdir({
     config: {

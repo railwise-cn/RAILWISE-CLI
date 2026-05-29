@@ -5,6 +5,9 @@ REPO="railwise-cn/RAILWISE-CLI"
 BINARY="railwise"
 ALIAS="rw"
 SKILL_DIR="skill"
+AGENT_DIR="agent"
+COMMAND_DIR="command"
+CONFIG_FILE="railwise.json"
 INSTALL_DIR="${RAILWISE_INSTALL_DIR:-/usr/local/bin}"
 SHARE_DIR="${RAILWISE_SHARE_DIR:-$(dirname "$INSTALL_DIR")/share/railwise}"
 
@@ -128,6 +131,21 @@ fi
 if [ -d "$TMPDIR/$SKILL_DIR" ]; then
   install_tree "$TMPDIR/$SKILL_DIR" "$SHARE_DIR/$SKILL_DIR"
   echo "built-in skills installed to $SHARE_DIR/$SKILL_DIR"
+fi
+
+if [ -d "$TMPDIR/$AGENT_DIR" ]; then
+  install_tree "$TMPDIR/$AGENT_DIR" "$SHARE_DIR/$AGENT_DIR"
+  echo "built-in agents installed to $SHARE_DIR/$AGENT_DIR"
+fi
+
+if [ -d "$TMPDIR/$COMMAND_DIR" ]; then
+  install_tree "$TMPDIR/$COMMAND_DIR" "$SHARE_DIR/$COMMAND_DIR"
+  echo "built-in commands installed to $SHARE_DIR/$COMMAND_DIR"
+fi
+
+if [ -f "$TMPDIR/$CONFIG_FILE" ]; then
+  install_tree "$TMPDIR/$CONFIG_FILE" "$SHARE_DIR/$CONFIG_FILE"
+  echo "built-in config installed to $SHARE_DIR/$CONFIG_FILE"
 fi
 
 rm -rf "$TMPDIR"

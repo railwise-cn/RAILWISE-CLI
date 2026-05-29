@@ -1,31 +1,44 @@
-# RAILWISE-CLI Skills
+# RAILWISE-CLI Skills 与内置资源
 
 Skill 是 RAILWISE 给智能体按需加载的业务流程、规范和模板。它适合沉淀"遇到这种工程场景该怎么做"，工具则负责计算、解析和导出。
 
 ## 内置 Skills
 
-CLI 内置业务 skill 存放在：
+CLI 当前内置 28 个 skill，存放在：
 
 ```text
 packages/railwise/skill/
 ```
 
-当前新增的轨道交通业务 skill：
+核心轨道交通业务 skill：
 
 | Skill | 用途 |
 | --- | --- |
 | `rail-monitoring-plan` | 轨道交通控制保护区/地保监测方案编制、内审、专家评审与修订 |
 | `operational-monitoring` | 运营期结构长期变形监测作业、期报/年报、预警处置与资料归档 |
 
-发布时这些目录会随二进制一起打包。npm 二进制包会把它们放在二进制旁边；curl/Homebrew 会安装到 `share/railwise/skill`。
+常用办公与产物类 skill 也已内置：`docx`、`xlsx`、`pptx`、`pdf`、`doc-coauthoring`、`web-artifacts-builder`、`webapp-testing`、`brand-guidelines`、`theme-factory`、`mcp-builder`、`skill-creator`。
+
+## 内置 Agents 与 Commands
+
+CLI 内置 12 个 RAILWISE 业务智能体和 8 个 SOP 命令模板：
+
+```text
+packages/railwise/agent/
+packages/railwise/command/
+packages/railwise/railwise.json
+```
+
+默认主控智能体由 `packages/railwise/railwise.json` 指定为 `chief_manager`。发布时这些目录会随二进制一起打包。npm 二进制包会把它们放在平台二进制旁边；curl/Homebrew 会安装到 `share/railwise/`。
 
 ## 可编辑位置
 
-RAILWISE 会按顺序扫描这些位置，后加载的同名 skill 会覆盖前面的版本：
+RAILWISE 会按顺序扫描这些位置，后加载的同名资源会覆盖前面的版本：
 
 | 位置 | 用途 |
 | --- | --- |
-| `packages/railwise/skill/` | CLI 内置品牌 skill，适合稳定沉淀到发布包 |
+| `packages/railwise/agent/`、`packages/railwise/command/`、`packages/railwise/skill/` | CLI 内置品牌资源，适合稳定沉淀到发布包 |
+| `.railwise/agent/`、`.railwise/command/` | 当前项目级 Agent/Command 覆盖 |
 | `.railwise/skill/` 或 `.railwise/skills/` | 当前项目级 skill，适合项目模板、试验版、客户定制 |
 | `~/.config/railwise/skill/` 或 `~/.config/railwise/skills/` | 用户全局 RAILWISE skill |
 | `~/.railwise/skill/` 或 `~/.railwise/skills/` | 用户 home 下的全局 RAILWISE skill |
@@ -37,6 +50,8 @@ RAILWISE 会按顺序扫描这些位置，后加载的同名 skill 会覆盖前�
 ```bash
 railwise debug skill
 rw debug skill
+railwise debug agent
+rw debug agent
 ```
 
 ## 编辑建议
@@ -52,4 +67,4 @@ my-skill/
 └── assets/
 ```
 
-若要覆盖内置 skill，不要直接改安装目录；在项目 `.railwise/skill/<同名 skill>/SKILL.md` 放一份同名版本即可。
+若要覆盖内置资源，不要直接改安装目录；在项目 `.railwise/skill/<同名 skill>/SKILL.md`、`.railwise/agent/<同名 agent>.md` 或 `.railwise/command/<同名 command>.md` 放一份同名版本即可。

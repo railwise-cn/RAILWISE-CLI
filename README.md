@@ -39,7 +39,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.0.5
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.8
 ```
 
 **Homebrew（macOS / Linux）**
@@ -82,7 +82,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.0.5
+railwise upgrade 1.2.8
 railwise upgrade --method npm
 ```
 
@@ -306,21 +306,26 @@ npm update -g railwise-ai
 
 ## 系统架构
 
-### 自定义智能体（7 个领域专家）
+### 内置智能体（12 个领域专家）
 
-每个智能体拥有独立的默认模型配置，零配置即可获得最优模型分配：
+安装后即内置 RAILWISE 业务智能体，不需要手工复制 `.railwise/agent`。默认主控智能体为 `chief_manager`：
 
 | 智能体 | 角色 | 默认模型 | 职责 |
 |--------|------|---------|------|
-| `chief_manager` | 项目总工 | Kimi K2.5 | 任务分发、并行调度、质量闸门控制 |
-| `solution_architect` | 方案设计师 | Kimi K2.5 | 监测方案编制、技术路线规划 |
-| `data_analyst` | 数据分析师 | DeepSeek V3 | 平差计算、变形趋势分析、预警研判 |
-| `qa_inspector` | 外业质检员 | DeepSeek V3 | 原始数据完整性与闭合差审查 |
-| `qa_reviewer` | 内业审核员 | Kimi K2.5 | 报告质量终审（最高否决权） |
-| `technical_writer` | 技术文档员 | Kimi K2.5 | 监测日报/周报/月报撰写 |
-| `commercial_specialist` | 商务专员 | Kimi K2.5 | 投标文件、计量支付 |
+| `chief_manager` | 项目总工 | DeepSeek V4 Pro | 任务分发、并行调度、质量闸门控制 |
+| `solution_architect` | 方案设计师 | DeepSeek V4 Pro | 监测方案编制、技术路线规划 |
+| `data_analyst` | 数据分析师 | DeepSeek V4 Pro | 平差计算、变形趋势分析、预警研判 |
+| `adjustment_computer` | 平差计算专家 | DeepSeek V4 Pro | 水准网、导线网、CPIII 控制网工具化计算 |
+| `cpiii_specialist` | CPIII 专家 | DeepSeek V4 Pro | 高铁/城轨精测网复测方案与限差核查 |
+| `qa_inspector` | 外业质检员 | DeepSeek V4 Pro | 原始数据完整性与闭合差审查 |
+| `qa_reviewer` | 内业审核员 | DeepSeek V4 Pro | 报告质量终审（最高否决权） |
+| `technical_writer` | 技术文档员 | DeepSeek V4 Pro | 监测日报/周报/月报撰写 |
+| `commercial_specialist` | 商务专员 | DeepSeek V4 Pro | 投标文件、计量支付 |
+| `norm_librarian` | 规范资料管理员 | DeepSeek V4 Pro | 规范条文查询、引用固化、规范 Wiki 维护 |
+| `source_ingestor` | 资料入库专员 | DeepSeek V4 Pro | PDF、台账、历史成果结构化整理 |
+| `knowledge_curator` | 知识库整理员 | DeepSeek V4 Pro | 项目案例、FAQ、复盘经验沉淀 |
 
-> 模型选择逻辑：需要精确计算的智能体使用 DeepSeek V3（数学推理最强），需要长上下文和中文写作的使用 Kimi K2.5（131K 上下文）。可在 `.railwise/agent/*.md` 的 frontmatter 中自定义覆盖。
+> 可在项目 `.railwise/agent/*.md` 中放置同名 Agent 覆盖内置版本。
 
 ### 专用工具（19 个）
 
@@ -372,7 +377,7 @@ npm update -g railwise-ai
 | `report_export` | Markdown 转 DOCX 报告导出 |
 | `standard_query` | 工程规范/标准条文智能查询 |
 
-### 领域技能包（13 个）
+### 领域技能包（28 个）
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
@@ -391,8 +396,13 @@ npm update -g railwise-ai
 | `canvas-design` | 图表设计：趋势图配色、坐标轴规范、剖面图构造 |
 | `rail-monitoring-plan` | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
 | `operational-monitoring` | 运营监测：长期变形监测作业、期报/年报、预警处置与归档 |
+| `docx` / `xlsx` / `pptx` / `pdf` | 常用办公文档识读、编辑和输出 |
+| `doc-coauthoring` | 多人协作文档审阅、修改和交付 |
+| `webapp-testing` / `web-artifacts-builder` | Web 工具、看板和测试型产物构建 |
+| `brand-guidelines` / `theme-factory` | 品牌规范和主题系统 |
+| `mcp-builder` / `skill-creator` | MCP 与 skill 开发 |
 
-内置业务 skill 位于 `packages/railwise/skill/`；项目级自定义 skill 位于 `.railwise/skill/`。更多编辑和覆盖方式见 [`docs/user/07-skills.md`](docs/user/07-skills.md)。
+内置资源位于 `packages/railwise/agent/`、`packages/railwise/command/`、`packages/railwise/skill/`；项目级同名资源可在 `.railwise/` 下覆盖。更多编辑方式见 [`docs/user/07-skills.md`](docs/user/07-skills.md)。
 
 ### 业务命令（SOP 工作流）
 
@@ -439,6 +449,9 @@ RAILWISE-CLI/
 │   └── railwise.json           # 运行时配置（API 密钥，需自行创建）
 ├── packages/
 │   ├── railwise/               # CLI 核心引擎
+│   │   ├── agent/              # 内置 RAILWISE 业务智能体
+│   │   ├── command/            # 内置 SOP 命令模板
+│   │   └── skill/              # 内置技能包
 │   ├── nb-railwise/            # 插件 SDK（工具开发 API）
 │   ├── app/                    # TUI 前端
 │   ├── desktop/                # 桌面端（开发中）

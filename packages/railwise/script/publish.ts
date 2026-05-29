@@ -58,11 +58,11 @@ if (!Script.preview) {
 
   for (const name of Object.keys(binaries)) {
     if (name.includes("linux")) {
-      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise rw skill`.nothrow()
+      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise rw railwise.json skill agent command`.nothrow()
     } else if (name.includes("darwin")) {
-      await $`cd ./dist/${name}/bin && zip -qr ../../${name}.zip railwise rw skill`.nothrow()
+      await $`cd ./dist/${name}/bin && zip -qr ../../${name}.zip railwise rw railwise.json skill agent command`.nothrow()
     } else if (name.includes("windows")) {
-      await $`cd ./dist/${name}/bin && zip -qr ../../${name}.zip railwise.exe rw.cmd skill`.nothrow()
+      await $`cd ./dist/${name}/bin && zip -qr ../../${name}.zip railwise.exe rw.cmd railwise.json skill agent command`.nothrow()
     }
   }
 
@@ -96,7 +96,10 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "railwise.json"
         pkgshare.install "skill"
+        pkgshare.install "agent"
+        pkgshare.install "command"
       end
     end
     if Hardware::CPU.arm?
@@ -105,7 +108,10 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "railwise.json"
         pkgshare.install "skill"
+        pkgshare.install "agent"
+        pkgshare.install "command"
       end
     end
   end
@@ -117,7 +123,10 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "railwise.json"
         pkgshare.install "skill"
+        pkgshare.install "agent"
+        pkgshare.install "command"
       end
     end
     if Hardware::CPU.arm? and Hardware::CPU.is_64_bit?
@@ -126,7 +135,10 @@ class Railwise < Formula
       def install
         bin.install "railwise"
         bin.install "rw"
+        pkgshare.install "railwise.json"
         pkgshare.install "skill"
+        pkgshare.install "agent"
+        pkgshare.install "command"
       end
     end
   end

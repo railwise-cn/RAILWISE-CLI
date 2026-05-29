@@ -200,6 +200,9 @@ for (const item of targets) {
   }
 
   await $`cp -R skill dist/${name}/bin/skill`
+  await $`cp -R agent dist/${name}/bin/agent`
+  await $`cp -R command dist/${name}/bin/command`
+  await $`cp railwise.json dist/${name}/bin/railwise.json`
 
   await $`rm -rf ./dist/${name}/bin/tui`
   await Bun.file(`dist/${name}/package.json`).write(

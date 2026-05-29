@@ -27,16 +27,17 @@ const env = {
   RAILWISE_VERSION: process.env["RAILWISE_VERSION"],
   RAILWISE_RELEASE: process.env["RAILWISE_RELEASE"],
 }
+const ver = env.RAILWISE_VERSION?.replace(/^v(?=\d)/, "")
 const CHANNEL = await (async () => {
   if (env.RAILWISE_CHANNEL) return env.RAILWISE_CHANNEL
   if (env.RAILWISE_BUMP) return "latest"
-  if (env.RAILWISE_VERSION && !env.RAILWISE_VERSION.startsWith("0.0.0-")) return "latest"
+  if (ver && !ver.startsWith("0.0.0-")) return "latest"
   return await $`git branch --show-current`.text().then((x) => x.trim())
 })()
 const IS_PREVIEW = CHANNEL !== "latest"
 
 const VERSION = await (async () => {
-  if (env.RAILWISE_VERSION) return env.RAILWISE_VERSION
+  if (ver) return ver
   if (IS_PREVIEW) return `0.0.0-${CHANNEL}-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "")}`
   const version = await fetch(`https://registry.npmjs.org/${NPM_PACKAGE}/latest`)
     .then((res) => {

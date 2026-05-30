@@ -2,6 +2,8 @@
 
 Skill 是 RAILWISE 给智能体按需加载的业务流程、规范和模板。它适合沉淀"遇到这种工程场景该怎么做"，工具则负责计算、解析和导出。
 
+当前已验证发布版本 `railwise-ai@1.2.30` 会随安装包内置这些资源。安装后可用 `railwise agent list` 和 `railwise debug skill` 检查实际加载结果。
+
 ## 内置 Skills
 
 CLI 当前内置 28 个 skill，存放在：
@@ -48,6 +50,7 @@ RAILWISE 会按顺序扫描这些位置，后加载的同名资源会覆盖前�
 查看实际加载到的 skill 与路径：
 
 ```bash
+railwise agent list
 railwise debug skill
 rw debug skill
 railwise debug agent

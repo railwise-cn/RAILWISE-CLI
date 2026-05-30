@@ -4,6 +4,13 @@ A GitHub Action that integrates [railwise](https://railwise.ai) directly into yo
 
 Mention `/railwise` in your comment, and railwise will execute tasks within your GitHub Actions runner.
 
+For local setup, install the CLI package first:
+
+```bash
+npm install -g railwise-ai@latest
+railwise github install
+```
+
 ## Features
 
 #### Explain an issue
@@ -50,7 +57,7 @@ This allows for more targeted requests without needing to specify file paths or 
 
 ## Installation
 
-Run the following command in the terminal from your GitHub repo:
+Run the following command in the terminal from your GitHub repo after installing `railwise-ai`:
 
 ```bash
 railwise github install

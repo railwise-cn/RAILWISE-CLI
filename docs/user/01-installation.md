@@ -9,15 +9,18 @@
 适用：Windows、macOS、Linux。需要先安装 Node.js 和 npm。
 
 ```bash
-npm install -g railwise-ai
+npm install -g railwise-ai@latest
 railwise --version
 rw --version
+railwise agent list
 ```
+
+当前已验证发布版本：**v1.2.30**（2026-05-30）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.30`。
 
 国内网络较慢时可指定镜像：
 
 ```bash
-npm install -g railwise-ai --registry=https://registry.npmmirror.com
+npm install -g railwise-ai@latest --registry=https://registry.npmmirror.com
 ```
 
 ### curl 安装脚本
@@ -33,7 +36,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.8
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.30
 ```
 
 自定义安装目录：
@@ -98,7 +101,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.8
+railwise upgrade 1.2.30
 railwise upgrade --method npm
 railwise upgrade --method brew
 ```
@@ -108,7 +111,7 @@ railwise upgrade --method brew
 ### 包管理器更新
 
 ```bash
-npm update -g railwise-ai
+npm install -g railwise-ai@latest
 brew upgrade railwise
 ```
 

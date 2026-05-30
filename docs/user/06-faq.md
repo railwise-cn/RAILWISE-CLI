@@ -1,21 +1,73 @@
 # 常见问题
 
-## 为什么启动后打不开项目驾驶舱？
+## 为什么 Windows 安装后只有 build 和 plan，没有多智能体？
 
-确认本机没有旧的 5175 Web 预览页被误用。RAILWISE Desktop 应从桌面应用启动，默认落地页是 `/dashboard`。
+通常是安装到了旧版本、非 `railwise-ai` 包，或全局 PATH 指向了旧命令。请重新安装最新版并验证：
 
-## 离线环境能否使用？
+```bash
+npm install -g railwise-ai@latest
+railwise --version
+rw --version
+railwise agent list
+```
 
-可以。地图会降级到本地缓存提示，模型可切换到本地 Ollama 或企业内网模型服务。更新检查在离线环境会失败但不影响本地工作。
+`railwise agent list` 应能看到 `chief_manager`、`data_analyst`、`technical_writer`、`qa_reviewer` 等内置智能体。
+
+## `railwise` 和 `rw` 有区别吗？
+
+没有。两者指向同一个 CLI 入口。文档用 `railwise` 保持清晰，日常输入可以用 `rw`。
+
+## npm 安装很慢怎么办？
+
+国内网络可以临时指定镜像：
+
+```bash
+npm install -g railwise-ai@latest --registry=https://registry.npmmirror.com
+```
+
+企业内网也可以通过 GitHub Release 下载平台包，或把 npm 包同步到内部源。
+
+## 如何更新到最新版？
+
+```bash
+railwise upgrade
+npm install -g railwise-ai@latest
+```
+
+如果需要锁定当前已验证版本：
+
+```bash
+npm install -g railwise-ai@1.2.30
+```
 
 ## 文件会上传吗？
 
-桌面端优先本地读取文件。埋点默认关闭；启用后也只记录匿名 UI 计数和崩溃信息，不保存 Prompt 内容、项目名、文件名或文件路径。
+RAILWISE-CLI 默认在本地读取文件，模型调用时只会发送完成任务所需的上下文。涉及客户资料、合同、图纸和监测原始数据时，建议优先使用企业模型代理、私有模型或本地模型，并在提示词中要求只抽取必要摘要。
 
-## 自动更新失败怎么办？
+## 内置 Skill 放在哪里？能改吗？
 
-先确认网络能访问更新服务器。企业内网用户请联系管理员确认私有更新服务器配置。也可以下载安装包覆盖安装。
+内置资源位于安装包内，对应仓库路径是：
 
-## 如何重置显示后端？
+```text
+packages/railwise/agent/
+packages/railwise/command/
+packages/railwise/skill/
+```
 
-Linux 用户进入“设置 → 通用 → 显示”，切换 Wayland 选项后重启应用。Windows 和 macOS 不需要配置该项。
+不要直接改安装目录。需要项目定制时，在项目目录放 `.railwise/agent/`、`.railwise/command/` 或 `.railwise/skill/` 的同名文件覆盖。
+
+## 能识读和输出办公文档吗？
+
+可以。当前内置 `docx`、`xlsx`、`pptx`、`pdf`、`docx-generation`、`excel-operations` 等 skill，用于常用办公文档的识读、整理和输出。工程报告建议先生成 Markdown 初稿，再导出 Word、Excel、PPT 或 PDF。
+
+## 输出文件应该放哪里？
+
+推荐统一放在项目目录的 `output/` 下：
+
+```text
+output/runs/<run_id>/
+output/wiki/
+output/latest
+```
+
+这样原始资料、过程稿、最终交付物和知识库不会混在一起，后续复核也更容易。

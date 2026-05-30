@@ -19,6 +19,17 @@ The product goal is to make RAILWISE genuinely represent Ningbo Ruiwei's main wo
 
 RAILWISE also needs an automatic upstream update posture. The project is based on opencode and has useful inspiration from oh-my-opencode. CLI/Core should be able to detect upstream opencode and oh-my-opencode versions, summarize local divergence, and propose safe sync actions without mixing business code with Desktop release work.
 
+## Release Status
+
+As of 2026-05-30, the public CLI release verified on npm is `railwise-ai@1.2.30`. It installs both `railwise` and `rw`, bundles the RAILWISE agent/command/skill resources, and includes `rail-monitoring-plan`, `operational-monitoring`, and common Office document skills in the platform package. Users can verify the business kit with:
+
+```bash
+railwise --version
+rw --version
+railwise agent list
+railwise debug skill
+```
+
 ## Design Principles
 
 1. **CLI/Core is the business engine**  

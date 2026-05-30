@@ -4,7 +4,7 @@
 
 ---
 
-你可能想不到，一台闲置的安卓手机，也能跑起一个拥有 7 个 AI 智能体、19 个专业计算工具和 11 个领域技能包的测绘内业系统。
+你可能想不到，一台闲置的安卓手机，也能跑起一个拥有 12 个 AI 智能体、19 个专业计算工具和 28 个领域技能包的测绘内业系统。
 
 我们团队开发的 RAILWISE-CLI 原本是为桌面终端设计的——macOS、Linux、Windows，接上大屏幕，敲命令行，处理外业数据，出监测日报。但在实际项目中，我们发现了一个真实痛点：**外业现场没有电脑。**
 
@@ -22,9 +22,9 @@
 
 先说清楚技术原理，免得觉得玄乎。
 
-RAILWISE-CLI 是一个基于 [Bun](https://bun.sh)（JavaScript 运行时）的命令行程序。它的核心依赖就两样东西：**Bun 运行时**和**网络连接**（用来调用大模型 API）。所有 19 个专业计算工具（平差、坐标转换、轴力计算等）都是纯 TypeScript 代码，在本地执行，不依赖任何 GPU 或特殊硬件。
+RAILWISE-CLI 已经发布为 npm 包，正式安装时会自动匹配 Linux ARM64 预编译二进制；源码开发模式仍然可以使用 [Bun](https://bun.sh)。它的核心依赖很轻：**终端环境**和**网络连接**（用来调用大模型 API）。所有 19 个专业计算工具（平差、坐标转换、轴力计算等）都是本地执行，不依赖任何 GPU 或特殊硬件。
 
-现在的安卓手机，芯片都是 ARM64 架构（骁龙、天玑、麒麟无一例外），而 Bun 官方从很早就提供了 `linux-arm64` 的预编译二进制包。也就是说，只要我们能在手机上跑起一个 Linux 环境，Bun 就能装，RAILWISE-CLI 就能跑。
+现在的安卓手机，芯片都是 ARM64 架构（骁龙、天玑、麒麟无一例外），而 RAILWISE-CLI 发布包已经包含 `linux-arm64` 平台。也就是说，只要我们能在手机上跑起一个 Linux 环境，RAILWISE-CLI 就能跑。
 
 那怎么在手机上跑 Linux？答案是 **Termux + proot-distro**。
 
@@ -34,7 +34,7 @@ RAILWISE-CLI 是一个基于 [Bun](https://bun.sh)（JavaScript 运行时）的�
 整个链路就是：
 
 ```
-安卓手机 → Termux（终端模拟器）→ proot Ubuntu（完整 Linux）→ Bun（JS 运行时）→ RAILWISE-CLI
+安卓手机 → Termux（终端模拟器）→ proot Ubuntu（完整 Linux）→ npm / Bun → RAILWISE-CLI
 ```
 
 没有虚拟机，没有 Docker，没有 Root，纯用户态运行。
@@ -48,7 +48,7 @@ RAILWISE-CLI 是一个基于 [Bun](https://bun.sh)（JavaScript 运行时）的�
 - **系统**：Android 10 及以上（更低版本也可能可以，但我们没测过）
 - **架构**：ARM64（2020 年以后的手机基本都是）
 - **内存**：建议 4GB 以上（RAILWISE-CLI 本身占用不大，但 Ubuntu 环境需要一些内存）
-- **存储**：至少预留 2GB 空间（Ubuntu 基础环境约 500MB，Bun + RAILWISE-CLI 约 300MB，再留些余量）
+- **存储**：至少预留 2GB 空间（Ubuntu 基础环境约 500MB，RAILWISE-CLI 和运行时约 300MB，再留些余量）
 - **网络**：必须能访问外网（需要调用大模型 API；如果用 DeepSeek 等国内模型，只需要能访问国内网络）
 
 **实测机型参考**：我们用红米 Note 12 Turbo（天玑 7200-Ultra / 8GB RAM）和一台闲置的 Pixel 4a 都跑通了，体验流畅。
@@ -109,56 +109,51 @@ apt update && apt upgrade -y
 然后安装必要的依赖：
 
 ```bash
-apt install curl unzip git ca-certificates -y
+apt install curl unzip git ca-certificates nodejs npm -y
 ```
 
-### 3.3 安装 Bun
+### 3.3 安装 RAILWISE-CLI
 
-Bun 的安装非常简单，官方提供了一键安装脚本：
+正式体验推荐直接安装 npm 包：
+
+```bash
+npm install -g railwise-ai@latest
+railwise --version
+rw --version
+railwise agent list
+```
+
+看到 `chief_manager`、`data_analyst`、`technical_writer`、`qa_reviewer` 等智能体，说明多智能体资源已经随安装包正确落地。
+
+如果 npm 下载较慢，可以临时指定国内镜像：
+
+```bash
+npm install -g railwise-ai@latest --registry=https://registry.npmmirror.com
+```
+
+### 3.4 启动 RAILWISE-CLI
+
+```bash
+railwise
+rw
+```
+
+第一次运行会进入模型配置向导。配置好 API Key 后，你就能在手机上使用和电脑上一样的多智能体 AI 系统。
+
+### 3.5 源码开发模式
+
+如果你要调试 RAILWISE-CLI 本身，再安装 Bun 并克隆仓库：
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
-```
-
-安装完成后，刷新环境变量：
-
-```bash
 source ~/.bashrc
-```
-
-验证安装：
-
-```bash
-bun --version
-```
-
-如果输出了版本号（如 `1.3.x`），说明 Bun 安装成功。
-
-> 💡 **如果安装失败**：少数手机可能会遇到 `SystemError 13` 错误，这是 Android 10+ 的隐私保护机制导致的。解决方法是在 Termux（注意不是 Ubuntu 里）执行：
-> ```bash
-> # 退出 Ubuntu 回到 Termux
-> exit
-> # 用以下方式重新登入，绕过网络限制
-> proot-distro login ubuntu --bind /dev/net/tun:/dev/net/tun
-> ```
-
-### 3.4 克隆并运行 RAILWISE-CLI
-
-```bash
-# 克隆项目
 git clone https://github.com/railwise-cn/RAILWISE-CLI.git
 cd RAILWISE-CLI
-
-# 安装依赖
 bun install
-
-# 启动！
 bun run dev
 ```
 
-第一次 `bun install` 会下载所有依赖包，根据网络情况可能需要 2-5 分钟。之后的每次启动只需要 `bun run dev`，几秒钟就能进入系统。
-
-如果一切顺利，你会看到 RAILWISE-CLI 的启动界面——和电脑上一模一样的多智能体 AI 系统，现在跑在了你的手机上。
+日常使用不需要源码模式；它更适合开发、排查问题或验证分支。
 
 ---
 
@@ -239,13 +234,13 @@ RAILWISE-CLI 启动后，需要配置一个大模型 API 才能让智能体工�
 
 **语音输入**：安卓系统自带的语音输入在 Termux 里可以直接用。切换到语音输入法，说"帮我算一下四等水准路线长三点二公里闭合差二十八毫米"，识别准确率很高。
 
-**常用命令别名**：在 Ubuntu 的 `~/.bashrc` 里设置别名，减少重复输入：
+**常用命令别名**：安装后本来就有 `rw` 短命令。如果你还想固定进入某个项目目录，可以在 Ubuntu 的 `~/.bashrc` 里设置别名：
 
 ```bash
-alias rw='cd ~/RAILWISE-CLI && bun run dev'
+alias rwp='cd ~/projects/rail-monitoring && rw'
 ```
 
-以后只需要输入 `rw` 两个字母就能启动系统。
+以后只需要输入 `rwp` 就能进入项目并启动系统。
 
 **Termux 快捷键**：Termux 支持屏幕左滑呼出扩展键盘，提供 Tab、Ctrl、方向键等常用按键，配合终端操作非常方便。
 
@@ -255,7 +250,7 @@ alias rw='cd ~/RAILWISE-CLI && bun run dev'
 
 | 操作 | 耗时 | 备注 |
 |------|------|------|
-| 冷启动 RAILWISE-CLI | ~4 秒 | 首次 `bun run dev` |
+| 冷启动 RAILWISE-CLI | ~4 秒 | 首次 `railwise` |
 | 水准闭合差校核 | <1 秒 | `survey_calculator` 本地计算 |
 | 坐标转换（100 个点） | ~1 秒 | `coord_transform` 本地计算 |
 | 处理 CSV 监测数据（5000 行） | ~2 秒 | `monitoring_csv` 本地解析 |
@@ -318,9 +313,9 @@ A：可以，但有限制。手机内存通常是 6-12GB，建议单次处理的
 A：和电脑上一样：
 
 ```bash
-cd ~/RAILWISE-CLI
-git pull
-bun install
+npm install -g railwise-ai@latest
+railwise --version
+railwise agent list
 ```
 
 **Q：Termux 里中文显示乱码怎么办？**
@@ -337,7 +332,7 @@ apt install fonts-wqy-zenhei -y
 
 ## 八、写在最后
 
-让 RAILWISE-CLI 跑在手机上，这件事本身并不难——总共就是装 Termux、装 Ubuntu、装 Bun、克隆项目、启动，五步走完。真正让我们兴奋的是它带来的使用场景变化：
+让 RAILWISE-CLI 跑在手机上，这件事本身并不难——总共就是装 Termux、装 Ubuntu、装 npm 包、启动，几步走完。真正让我们兴奋的是它带来的使用场景变化：
 
 测量员站在基坑边上，掏出手机就能校核刚测完的数据；项目经理在赶往甲方的地铁上，就能让 AI 帮他先把监测日报的初稿拉出来；审核人员在工地食堂吃着午饭，手机上收到日报推送，打开 RAILWISE-CLI 让 `qa_reviewer` 跑一遍规范审查。
 
@@ -345,7 +340,7 @@ apt install fonts-wqy-zenhei -y
 
 而且，因为有跨会话记忆，你在手机上的每一次使用都不是孤立的——上午在工地用手机算的闭合差结果、下午在电脑上出的日报模板、晚上在手机上查的规范条文，这些信息都会沉淀为系统的长期记忆，让它越来越懂你的项目。**不是每次都从零开始，而是每次都在上次的基础上更进一步。**
 
-当然，手机端的体验不可能完全替代桌面端——屏幕小、打字慢、不适合长时间高强度操作。但作为桌面端的补充，它覆盖了一个之前完全空白的场景：**在现场、在路上、在任何没有电脑的地方，你依然可以调动一整个 AI 项目组为你工作。**
+当然，手机端的体验不可能完全替代电脑端命令行——屏幕小、打字慢、不适合长时间高强度操作。但作为 RAILWISE-CLI 的随身补充，它覆盖了一个之前完全空白的场景：**在现场、在路上、在任何没有电脑的地方，你依然可以调动一整个 AI 项目组为你工作。**
 
 如果你想试试，现在就可以开始。一台闲置的安卓手机，十分钟的安装时间，零成本。
 

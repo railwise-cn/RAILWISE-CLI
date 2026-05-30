@@ -4,6 +4,33 @@
 
 ---
 
+## v1.2.30 — RAILWISE-CLI 多智能体发布
+
+_发布日期: 2026-05-30_
+
+### 新增 / 固化
+
+- npm 包 `railwise-ai@1.2.30` 已发布，安装后同时提供 `railwise` 和 `rw` 两个命令入口。
+- 内置 12 个 RAILWISE 业务智能体、28 个 skill 和 8 个 SOP 命令模板，安装后可用 `railwise agent list`、`railwise debug skill` 验证。
+- 内置 `rail-monitoring-plan`（轨道交通控制保护区 / 地保监测方案编制）与 `operational-monitoring`（运营期结构长期变形监测流程）两个行业 skill。
+- 内置 `docx`、`xlsx`、`pptx`、`pdf`、`docx-generation`、`excel-operations` 等常用办公文档识读与输出能力。
+- npm Trusted Publishing 已接入 GitHub Actions OIDC，不再依赖长期 `NPM_TOKEN`。
+
+### 安装 / 更新
+
+```bash
+npm install -g railwise-ai@latest
+railwise --version
+rw --version
+railwise agent list
+```
+
+企业内网或复现发布时可锁定：
+
+```bash
+npm install -g railwise-ai@1.2.30
+```
+
 ## v1.3.0 — Desktop 中文化首版
 
 _发布日期: 待发布_

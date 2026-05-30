@@ -23,10 +23,13 @@
 **npm（推荐，Windows / macOS / Linux）**
 
 ```bash
-npm install -g railwise-ai
+npm install -g railwise-ai@latest
 railwise --version
 rw --version
+railwise agent list
 ```
+
+当前已验证发布版本：**v1.2.30**（2026-05-30）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.30`。
 
 **curl 安装脚本（macOS / Linux）**
 
@@ -39,7 +42,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.8
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.30
 ```
 
 **Homebrew（macOS / Linux）**
@@ -82,14 +85,14 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.8
+railwise upgrade 1.2.30
 railwise upgrade --method npm
 ```
 
 也可以使用原安装方式更新：
 
 ```bash
-npm update -g railwise-ai
+npm install -g railwise-ai@latest
 brew upgrade railwise
 curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh
 ```
@@ -153,6 +156,17 @@ railwise web
 
 ```bash
 bun run dev
+```
+
+### 输出目录
+
+工程交付物默认建议集中到项目本地 `output/`，避免报告、表格和图纸摘要散落在原始资料目录：
+
+```text
+output/
+  runs/<run_id>/    # 单次任务的草稿、报告、表格、图表、日志
+  wiki/             # 项目长期知识库
+  latest            # 最近一次成果
 ```
 
 ---
@@ -234,14 +248,15 @@ npm config set registry https://registry.npmmirror.com
 ### 第四步：安装 RAILWISE-CLI
 
 ```cmd
-npm install -g railwise-ai
+npm install -g railwise-ai@latest
 ```
 
-安装完成后，输入 `railwise` 或 `rw` 验证：
+安装完成后，输入 `railwise` 或 `rw` 验证，同时确认内置多智能体已经随包安装：
 
 ```cmd
 railwise --version
 rw --version
+railwise agent list
 ```
 
 ### 第五步：获取 API Key（免费）
@@ -292,14 +307,14 @@ npm config get prefix
 确认已设置国内镜像（第三步）。如果仍然很慢，可尝试：
 
 ```cmd
-npm install -g railwise-ai --registry=https://registry.npmmirror.com
+npm install -g railwise-ai@latest --registry=https://registry.npmmirror.com
 ```
 
 **Q: 如何更新到最新版？**
 
 ```cmd
 railwise upgrade
-npm update -g railwise-ai
+npm install -g railwise-ai@latest
 ```
 
 ---
@@ -402,6 +417,8 @@ npm update -g railwise-ai
 | `brand-guidelines` / `theme-factory` | 品牌规范和主题系统 |
 | `mcp-builder` / `skill-creator` | MCP 与 skill 开发 |
 
+需要“套 Word 模板”“参考企业模板导出”时，`docx-generation` 会优先走 `referenceDoc` + Pandoc 路线；模板可使用企业自有 `.docx`，也可使用 RAILWISE fork 的 `pandoc_docx_template` 中文参考模板。
+
 内置资源位于 `packages/railwise/agent/`、`packages/railwise/command/`、`packages/railwise/skill/`；项目级同名资源可在 `.railwise/` 下覆盖。更多编辑方式见 [`docs/user/07-skills.md`](docs/user/07-skills.md)。
 
 ### 业务命令（SOP 工作流）
@@ -409,7 +426,10 @@ npm update -g railwise-ai
 | 命令 | 用途 |
 |------|------|
 | `/daily-report` | 监测日报生成 |
+| `/monthly-report` | 监测月报 / 阶段报告 |
 | `/data-check` | 外业数据质检 |
+| `/trend-analysis` | 沉降、位移、收敛等趋势分析 |
+| `/emergency-response` | 预警、报警和应急处置快报 |
 | `/bid-prepare` | 投标文件编制 |
 | `/safety-check` | 安全巡检记录 |
 | `/payment-reminder` | 计量支付催款 |

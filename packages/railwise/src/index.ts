@@ -32,6 +32,7 @@ import { DbCommand } from "./cli/cmd/db"
 import { SetupCommand } from "./cli/cmd/setup"
 import { ProviderCommand } from "./cli/cmd/provider"
 import { FeishuCommand } from "./cli/cmd/feishu"
+import { SurveyCommand } from "./cli/cmd/survey"
 import path from "path"
 import { Global } from "./global"
 import { JsonMigration } from "./storage/json-migration"
@@ -148,6 +149,7 @@ const cli = yargs(hideBin(process.argv))
   .command(SetupCommand)
   .command(ProviderCommand)
   .command(FeishuCommand)
+  .command(SurveyCommand)
   .fail((msg, err) => {
     if (
       msg?.startsWith("Unknown argument") ||

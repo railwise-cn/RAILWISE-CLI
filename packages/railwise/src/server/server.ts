@@ -26,8 +26,6 @@ import { SessionRoutes } from "./routes/session"
 import { PtyRoutes } from "./routes/pty"
 import { McpRoutes } from "./routes/mcp"
 import { AgentStudioRoutes } from "./routes/agent-studio"
-import { DashboardRoutes } from "./routes/dashboard"
-import { TilesRoutes } from "./routes/tiles"
 import { TemplateRoutes } from "./routes/templates"
 import { FileRoutes } from "./routes/file"
 import { Config } from "../config/config"
@@ -240,8 +238,6 @@ export namespace Server {
         .route("/permission", PermissionRoutes())
         .route("/question", QuestionRoutes())
         .route("/provider", ProviderRoutes())
-        .route("/dashboard", DashboardRoutes())
-        .route("/tiles", TilesRoutes())
         .route("/templates", TemplateRoutes())
         .route("/", FileRoutes())
         .route("/agent-studio", AgentStudioRoutes())

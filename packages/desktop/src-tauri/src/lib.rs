@@ -655,8 +655,11 @@ async fn initialize(app: AppHandle) {
                     let app = app.clone();
                     Some(
                         async move {
-                            // Reduced timeout from 30s to 2s for faster failure detection
-                            let res = timeout(Duration::from_secs(2), health_check.0).await;
+                            // Cold starts can load user config, providers, and MCP metadata before
+                            // the health endpoint is ready. Keep fast polling in server.rs, but do
+                            // not fail the desktop shell before the packaged sidecar has a fair
+                            // chance to finish initialization.
+                            let res = timeout(Duration::from_secs(60), health_check.0).await;
                             let err = match res {
                                 Ok(Ok(Ok(()))) => None,
                                 Ok(Ok(Err(e))) => Some(e),

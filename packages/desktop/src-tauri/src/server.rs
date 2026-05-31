@@ -1,7 +1,6 @@
 use std::time::{Duration, Instant};
 
 use tauri::AppHandle;
-use tauri_plugin_dialog::{DialogExt, MessageDialogButtons, MessageDialogResult};
 use tauri_plugin_store::StoreExt;
 use tokio::task::JoinHandle;
 
@@ -91,13 +90,9 @@ pub async fn get_saved_server_url(app: &tauri::AppHandle) -> Option<String> {
         return Some(url);
     }
 
-    if let Some(cli_config) = cli::get_config(app).await
-        && let Some(url) = get_server_url_from_config(&cli_config)
-    {
-        tracing::info!(%url, "Using custom server URL from config");
-        return Some(url);
-    }
-
+    // Do not spawn `railwise debug config` during desktop boot. In packaged builds
+    // that can perform a full CLI config/provider load before the local server is
+    // even started, making the UI think startup has hung.
     None
 }
 
@@ -228,65 +223,4 @@ fn url_is_localhost(url: &reqwest::Url) -> bool {
                 .parse::<std::net::IpAddr>()
                 .is_ok_and(|ip| ip.is_loopback())
     })
-}
-
-/// Converts a bind address hostname to a valid URL hostname for connection.
-/// - `0.0.0.0` and `::` are wildcard bind addresses, not valid connect targets
-/// - IPv6 addresses need brackets in URLs (e.g., `::1` -> `[::1]`)
-fn normalize_hostname_for_url(hostname: &str) -> String {
-    // Wildcard bind addresses -> localhost equivalents
-    if hostname == "0.0.0.0" {
-        return "127.0.0.1".to_string();
-    }
-    if hostname == "::" {
-        return "[::1]".to_string();
-    }
-
-    // IPv6 addresses need brackets in URLs
-    if hostname.contains(':') && !hostname.starts_with('[') {
-        return format!("[{}]", hostname);
-    }
-
-    hostname.to_string()
-}
-
-fn get_server_url_from_config(config: &cli::Config) -> Option<String> {
-    let server = config.server.as_ref()?;
-    let port = server.port?;
-    tracing::debug!(port, "server.port found in OC config");
-    let hostname = server
-        .hostname
-        .as_ref()
-        .map(|v| normalize_hostname_for_url(v))
-        .unwrap_or_else(|| "127.0.0.1".to_string());
-
-    Some(format!("http://{}:{}", hostname, port))
-}
-
-pub async fn check_health_or_ask_retry(app: &AppHandle, url: &str) -> bool {
-    tracing::debug!(%url, "Checking health");
-    loop {
-        if check_health(url, None).await {
-            return true;
-        }
-
-        const RETRY: &str = "Retry";
-
-        let res = app.dialog()
-    		  .message(format!("Could not connect to configured server:\n{}\n\nWould you like to retry or start a local server instead?", url))
-    		  .title("Connection Failed")
-    		  .buttons(MessageDialogButtons::OkCancelCustom(RETRY.to_string(), "Start Local".to_string()))
-    		  .blocking_show_with_result();
-
-        match res {
-            MessageDialogResult::Custom(name) if name == RETRY => {
-                continue;
-            }
-            _ => {
-                break;
-            }
-        }
-    }
-
-    false
 }

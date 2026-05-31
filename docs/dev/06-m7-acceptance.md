@@ -26,7 +26,7 @@
 - 埋点默认关闭，首次启动弹窗请求授权；关闭时清空本地事件队列。
 - 埋点本地队列落在 `sqlite:railwise.telemetry.db`，通过 Tauri SQL plugin 写入 `telemetry_events` 和 `telemetry_state`。
 - 崩溃上报通过 `RAILWISE_SENTRY_DSN` / Glitchtip DSN 启用；默认空值不上报。
-- 桌面端不再暴露旧工作台路由，默认进入 `/dashboard`。
+- 桌面端不再暴露旧项目驾驶舱 UI，默认进入 `/agents` 智能体协作中枢；旧 `/dashboard` 仅作为兼容入口重定向。
 - `packages/desktop/scripts/sse-soak.ts` 将 `/event` 长连验收固化为命令，默认 30 分钟，支持 `--seconds`、`--minutes`、`--url` 和 `--heartbeat-timeout-ms`。
 - `scripts/verify-desktop-m7.ts` 将 M7 静态验收固化为命令，覆盖 E2E 清单、视觉基准、TTFUI、遥测隐私和文档交付。
 - `scripts/verify-desktop-acceptance.ts` 提供一条命令的 M7 回归验收，默认快检，`--full` 执行 30 分钟 SSE 长连。

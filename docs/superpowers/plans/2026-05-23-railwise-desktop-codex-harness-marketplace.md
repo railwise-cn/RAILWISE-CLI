@@ -46,7 +46,7 @@ Codex is the reference product pattern:
 
 ## Acceptance Criteria
 
-- Desktop launches to a clean workbench, not the existing Agent Studio dashboard.
+- Desktop launches to a clean Codex-style workbench, not a legacy project dashboard or stats surface.
 - First viewport contains no big `0` counters.
 - User can select a local folder and start a session from a single chat composer.
 - User can see Harness mode, active model, active capability set, and permission posture.
@@ -140,7 +140,7 @@ Codex is the reference product pattern:
 - Modify `packages/desktop/src-tauri/src/windows.rs`
   - Default webview URL `/#/home`.
 - Modify `packages/desktop/e2e/01-startup.spec.ts`
-  - Assert Desktop opens Workbench, not Agent Studio dashboard.
+  - Assert Desktop opens Workbench, not a legacy project dashboard or stats surface.
 
 ## UX Specification
 
@@ -889,7 +889,7 @@ git commit -m "feat(app): add capability marketplace"
 
 - [ ] **Step 1: Change default route**
 
-Default path must be `/home`, not `/agents` or `/dashboard`.
+Default path must be the Codex-style workbench route; legacy dashboard routes must only redirect away from the removed UI.
 
 - [ ] **Step 2: Preserve session routes**
 

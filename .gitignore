@@ -33,3 +33,17 @@ logs/
 *.bun-build
 output/
 .gstack/
+
+# TypeScript emit artifacts accidentally produced beside package sources/tests.
+packages/*/src/**/*.js
+packages/*/src/**/*.js.map
+packages/*/src/**/*.d.ts
+packages/*/src/**/*.d.ts.map
+packages/*/test/**/*.js
+packages/*/test/**/*.js.map
+packages/*/test/**/*.d.ts
+packages/*/test/**/*.d.ts.map
+packages/*/e2e/**/*.js
+packages/*/e2e/**/*.js.map
+packages/*/e2e/**/*.d.ts
+packages/*/e2e/**/*.d.ts.map

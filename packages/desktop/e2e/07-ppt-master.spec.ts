@@ -1,7 +1,7 @@
 import { expect, test } from "./helpers/app"
 
 test("ppt_master 全链路生成汇报 PPT", async ({ launchApp }) => {
-  const { page } = await launchApp("/dashboard")
+  const { page } = await launchApp("/agents")
 
   const ids = await page.evaluate(async () => {
     const response = await fetch("http://127.0.0.1:4096/templates/list")

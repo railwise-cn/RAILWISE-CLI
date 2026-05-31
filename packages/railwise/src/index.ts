@@ -33,6 +33,7 @@ import { SetupCommand } from "./cli/cmd/setup"
 import { ProviderCommand } from "./cli/cmd/provider"
 import { FeishuCommand } from "./cli/cmd/feishu"
 import { WorkflowCommand } from "./cli/cmd/workflow"
+import { SurveyCommand } from "./cli/cmd/survey"
 import path from "path"
 import { Global } from "./global"
 import { JsonMigration } from "./storage/json-migration"
@@ -150,6 +151,7 @@ const cli = yargs(hideBin(process.argv))
   .command(ProviderCommand)
   .command(FeishuCommand)
   .command(WorkflowCommand)
+  .command(SurveyCommand)
   .fail((msg, err) => {
     if (
       msg?.startsWith("Unknown argument") ||

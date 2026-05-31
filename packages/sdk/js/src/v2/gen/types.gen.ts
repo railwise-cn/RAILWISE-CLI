@@ -2143,52 +2143,6 @@ export type ProviderAuthAuthorization = {
   instructions: string
 }
 
-export type DashboardProjectCard = {
-  id: string
-  name: string
-  type: "metro" | "excavation" | "bridge" | "slope" | "highrise"
-  status: "active" | "completed" | "paused" | "error"
-  progress: number
-  lastActivity: string
-  activeTaskCount: number
-  description?: string
-  pointCount: number
-  alertCount: number
-  bboxJson?: string
-}
-
-export type DashboardAlert = {
-  id: string
-  projectId: string
-  pointId?: string
-  level: "warn" | "error"
-  message: string
-  time: string
-}
-
-export type DashboardSessionBrief = {
-  id: string
-  directory: string
-  title: string
-  time: {
-    updated: number
-  }
-}
-
-export type DashboardActiveAgent = {
-  sessionId: string
-  agentName: string
-  startedAt: string
-  status: "running" | "waiting" | "error"
-}
-
-export type DashboardSummary = {
-  projects: Array<DashboardProjectCard>
-  alerts: Array<DashboardAlert>
-  recentSessions: Array<DashboardSessionBrief>
-  activeAgents: Array<DashboardActiveAgent>
-}
-
 export type RailwiseTemplateVariable = {
   key: string
   label: string
@@ -2209,6 +2163,56 @@ export type RailwiseTemplate = {
   version?: string
   filePath?: string
   updatedAt?: number
+}
+
+export type HarnessTimelineResponse = {
+  data: Array<{
+    id: string
+    sessionID: string
+    type:
+      | "session.started"
+      | "plan.created"
+      | "agent.selected"
+      | "model.selected"
+      | "skill.loaded"
+      | "tool.requested"
+      | "permission.requested"
+      | "permission.resolved"
+      | "tool.started"
+      | "tool.completed"
+      | "tool.failed"
+      | "artifact.created"
+      | "session.completed"
+    title: string
+    detail?: string
+    createdAt: number
+    duration?: number
+    risk?: "low" | "medium" | "high"
+    capabilityID?: string
+    artifactPath?: string
+    error?: string
+  }>
+}
+
+export type MarketplaceCapabilitiesResponse = {
+  data: Array<{
+    id: string
+    kind: "agent" | "tool" | "skill" | "workflow" | "mcp" | "provider" | "harness_profile"
+    name: string
+    description: string
+    version: string
+    source: "builtin" | "local" | "remote"
+    enabled: boolean
+    installed: boolean
+    permissions: {
+      filesystem?: "none" | "read" | "write"
+      network?: boolean
+      shell?: boolean
+      external_directory?: boolean
+      secrets?: boolean
+    }
+    tags?: Array<string>
+  }>
 }
 
 export type Symbol = {
@@ -4568,139 +4572,6 @@ export type ProviderOauthCallbackResponses = {
 
 export type ProviderOauthCallbackResponse = ProviderOauthCallbackResponses[keyof ProviderOauthCallbackResponses]
 
-export type DashboardSummaryData = {
-  body?: never
-  path?: never
-  query?: {
-    directory?: string
-  }
-  url: "/dashboard/summary"
-}
-
-export type DashboardSummaryResponses = {
-  /**
-   * Dashboard summary
-   */
-  200: DashboardSummary
-}
-
-export type DashboardSummaryResponse = DashboardSummaryResponses[keyof DashboardSummaryResponses]
-
-export type DashboardProjectsData = {
-  body?: never
-  path?: never
-  query?: {
-    directory?: string
-  }
-  url: "/dashboard/projects"
-}
-
-export type DashboardProjectsResponses = {
-  /**
-   * ProjectCard[]
-   */
-  200: Array<DashboardProjectCard>
-}
-
-export type DashboardProjectsResponse = DashboardProjectsResponses[keyof DashboardProjectsResponses]
-
-export type DashboardProjectPointsData = {
-  body?: never
-  path: {
-    id: string
-  }
-  query?: {
-    directory?: string
-  }
-  url: "/dashboard/projects/{id}/points"
-}
-
-export type DashboardProjectPointsErrors = {
-  /**
-   * Not found
-   */
-  404: NotFoundError
-}
-
-export type DashboardProjectPointsError = DashboardProjectPointsErrors[keyof DashboardProjectPointsErrors]
-
-export type DashboardProjectPointsResponses = {
-  /**
-   * GeoJSON FeatureCollection
-   */
-  200: {
-    type: "FeatureCollection"
-    features: Array<unknown>
-  }
-}
-
-export type DashboardProjectPointsResponse = DashboardProjectPointsResponses[keyof DashboardProjectPointsResponses]
-
-export type DashboardProjectTimeseriesData = {
-  body?: never
-  path: {
-    id: string
-  }
-  query?: {
-    directory?: string
-    metric?: "settlement" | "displacement"
-    days?: number
-  }
-  url: "/dashboard/projects/{id}/timeseries"
-}
-
-export type DashboardProjectTimeseriesErrors = {
-  /**
-   * Bad request
-   */
-  400: BadRequestError
-  /**
-   * Not found
-   */
-  404: NotFoundError
-}
-
-export type DashboardProjectTimeseriesError = DashboardProjectTimeseriesErrors[keyof DashboardProjectTimeseriesErrors]
-
-export type DashboardProjectTimeseriesResponses = {
-  /**
-   * [[timestamps], [values]]
-   */
-  200: Array<Array<number>>
-}
-
-export type DashboardProjectTimeseriesResponse =
-  DashboardProjectTimeseriesResponses[keyof DashboardProjectTimeseriesResponses]
-
-export type TilesGetData = {
-  body?: never
-  path: {
-    z: number
-    x: number
-    y: number
-  }
-  query?: {
-    directory?: string
-  }
-  url: "/tiles/{z}/{x}/{y}"
-}
-
-export type TilesGetErrors = {
-  /**
-   * Not found
-   */
-  404: NotFoundError
-}
-
-export type TilesGetError = TilesGetErrors[keyof TilesGetErrors]
-
-export type TilesGetResponses = {
-  /**
-   * MBTiles tile bytes
-   */
-  200: unknown
-}
-
 export type TemplatesListData = {
   body?: never
   path?: never
@@ -4747,6 +4618,255 @@ export type TemplatesGetResponses = {
 }
 
 export type TemplatesGetResponse = TemplatesGetResponses[keyof TemplatesGetResponses]
+
+export type HarnessStatusData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/harness/status"
+}
+
+export type HarnessStatusResponses = {
+  /**
+   * Harness status
+   */
+  200: {
+    mode: "safe" | "ask" | "auto"
+    workspace?: string
+    model?: string
+    activeAgent?: string
+    capabilityCount: number
+    pendingPermissionCount: number
+    runningToolCount: number
+  }
+}
+
+export type HarnessStatusResponse = HarnessStatusResponses[keyof HarnessStatusResponses]
+
+export type HarnessSessionTimelineData = {
+  body?: never
+  path: {
+    sessionID: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/harness/session/{sessionID}/timeline"
+}
+
+export type HarnessSessionTimelineErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type HarnessSessionTimelineError = HarnessSessionTimelineErrors[keyof HarnessSessionTimelineErrors]
+
+export type HarnessSessionTimelineResponses = {
+  /**
+   * Harness timeline
+   */
+  200: HarnessTimelineResponse
+}
+
+export type HarnessSessionTimelineResponse = HarnessSessionTimelineResponses[keyof HarnessSessionTimelineResponses]
+
+export type HarnessSessionPermissionResolveData = {
+  body?: never
+  path: {
+    sessionID: string
+    permissionID: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/harness/session/{sessionID}/permission/{permissionID}"
+}
+
+export type HarnessSessionPermissionResolveErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type HarnessSessionPermissionResolveError =
+  HarnessSessionPermissionResolveErrors[keyof HarnessSessionPermissionResolveErrors]
+
+export type HarnessSessionPermissionResolveResponses = {
+  /**
+   * Permission resolution accepted
+   */
+  200: boolean
+}
+
+export type HarnessSessionPermissionResolveResponse =
+  HarnessSessionPermissionResolveResponses[keyof HarnessSessionPermissionResolveResponses]
+
+export type MarketplaceCapabilitiesListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities"
+}
+
+export type MarketplaceCapabilitiesListResponses = {
+  /**
+   * Marketplace capabilities
+   */
+  200: MarketplaceCapabilitiesResponse
+}
+
+export type MarketplaceCapabilitiesListResponse =
+  MarketplaceCapabilitiesListResponses[keyof MarketplaceCapabilitiesListResponses]
+
+export type MarketplaceCapabilitiesGetData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}"
+}
+
+export type MarketplaceCapabilitiesGetErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilitiesGetError = MarketplaceCapabilitiesGetErrors[keyof MarketplaceCapabilitiesGetErrors]
+
+export type MarketplaceCapabilitiesGetResponses = {
+  /**
+   * Marketplace capability
+   */
+  200: {
+    id: string
+    kind: "agent" | "tool" | "skill" | "workflow" | "mcp" | "provider" | "harness_profile"
+    name: string
+    description: string
+    version: string
+    source: "builtin" | "local" | "remote"
+    enabled: boolean
+    installed: boolean
+    permissions: {
+      filesystem?: "none" | "read" | "write"
+      network?: boolean
+      shell?: boolean
+      external_directory?: boolean
+      secrets?: boolean
+    }
+    tags?: Array<string>
+  }
+}
+
+export type MarketplaceCapabilitiesGetResponse =
+  MarketplaceCapabilitiesGetResponses[keyof MarketplaceCapabilitiesGetResponses]
+
+export type MarketplaceCapabilitiesEnableData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/enable"
+}
+
+export type MarketplaceCapabilitiesEnableErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilitiesEnableError =
+  MarketplaceCapabilitiesEnableErrors[keyof MarketplaceCapabilitiesEnableErrors]
+
+export type MarketplaceCapabilitiesEnableResponses = {
+  /**
+   * Enabled capability
+   */
+  200: {
+    id: string
+    kind: "agent" | "tool" | "skill" | "workflow" | "mcp" | "provider" | "harness_profile"
+    name: string
+    description: string
+    version: string
+    source: "builtin" | "local" | "remote"
+    enabled: boolean
+    installed: boolean
+    permissions: {
+      filesystem?: "none" | "read" | "write"
+      network?: boolean
+      shell?: boolean
+      external_directory?: boolean
+      secrets?: boolean
+    }
+    tags?: Array<string>
+  }
+}
+
+export type MarketplaceCapabilitiesEnableResponse =
+  MarketplaceCapabilitiesEnableResponses[keyof MarketplaceCapabilitiesEnableResponses]
+
+export type MarketplaceCapabilitiesDisableData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/disable"
+}
+
+export type MarketplaceCapabilitiesDisableErrors = {
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type MarketplaceCapabilitiesDisableError =
+  MarketplaceCapabilitiesDisableErrors[keyof MarketplaceCapabilitiesDisableErrors]
+
+export type MarketplaceCapabilitiesDisableResponses = {
+  /**
+   * Disabled capability
+   */
+  200: {
+    id: string
+    kind: "agent" | "tool" | "skill" | "workflow" | "mcp" | "provider" | "harness_profile"
+    name: string
+    description: string
+    version: string
+    source: "builtin" | "local" | "remote"
+    enabled: boolean
+    installed: boolean
+    permissions: {
+      filesystem?: "none" | "read" | "write"
+      network?: boolean
+      shell?: boolean
+      external_directory?: boolean
+      secrets?: boolean
+    }
+    tags?: Array<string>
+  }
+}
+
+export type MarketplaceCapabilitiesDisableResponse =
+  MarketplaceCapabilitiesDisableResponses[keyof MarketplaceCapabilitiesDisableResponses]
 
 export type FindTextData = {
   body?: never

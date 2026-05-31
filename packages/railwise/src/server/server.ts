@@ -26,6 +26,8 @@ import { SessionRoutes } from "./routes/session"
 import { PtyRoutes } from "./routes/pty"
 import { McpRoutes } from "./routes/mcp"
 import { AgentStudioRoutes } from "./routes/agent-studio"
+import { HarnessRoutes } from "./routes/harness"
+import { MarketplaceRoutes } from "./routes/marketplace"
 import { TemplateRoutes } from "./routes/templates"
 import { FileRoutes } from "./routes/file"
 import { Config } from "../config/config"
@@ -250,6 +252,8 @@ export namespace Server {
         .route("/question", QuestionRoutes())
         .route("/provider", ProviderRoutes())
         .route("/templates", TemplateRoutes())
+        .route("/harness", HarnessRoutes())
+        .route("/marketplace", MarketplaceRoutes())
         .route("/", FileRoutes())
         .route("/agent-studio", AgentStudioRoutes())
         .route("/mcp", McpRoutes())

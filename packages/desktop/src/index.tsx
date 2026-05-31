@@ -40,15 +40,9 @@ import { createMenu } from "./menu"
 import { StartupTimer, DEFAULT_BUDGETS } from "./performance"
 import { installTelemetry, track } from "./lib/telemetry"
 
-const Dashboard = lazy(() => import("./pages/dashboard"))
 const Workspace = lazy(() => import("./pages/workspace"))
 const WorkspaceDiff = lazy(() => import("./pages/workspace/diff"))
 const Loading = () => <div class="size-full" />
-const DashboardRoute = () => (
-  <Suspense fallback={<Loading />}>
-    <Dashboard />
-  </Suspense>
-)
 const WorkspaceRoute = () => (
   <Suspense fallback={<Loading />}>
     <Workspace />
@@ -59,12 +53,12 @@ const WorkspaceDiffRoute = () => (
     <WorkspaceDiff />
   </Suspense>
 )
-const DashboardRedirect = () => <Navigate href="/dashboard" />
+const AgentRedirect = () => <Navigate href="/agents" />
 
 function ensureStandaloneLanding() {
-  if (location.hash === "#/dashboard") return
+  if (location.hash.startsWith("#/agents")) return
   if (location.hash.startsWith("#/workspace")) return
-  history.replaceState(null, "", `${location.pathname}${location.search}#/dashboard`)
+  history.replaceState(null, "", `${location.pathname}${location.search}#/agents`)
 }
 
 // Create startup timer with performance budget and retry callback
@@ -73,15 +67,8 @@ const handleBudgetExceeded = async (phase: string, phaseData: any): Promise<bool
 
   switch (phase) {
     case 'sidecar-init':
-      // Kill stuck sidecar and retry with fresh port
-      try {
-        await commands.killSidecar()
-        console.log('🔄 Killed stuck sidecar, retrying with fresh port')
-        return true
-      } catch (error) {
-        console.error('Failed to kill sidecar:', error)
-        return false
-      }
+      console.warn('Sidecar startup exceeded the soft budget; continuing to wait for Rust initialization')
+      return false
 
     case 'server-connect':
       // Retry with cached server URL if available
@@ -618,7 +605,7 @@ render(() => {
                   const statusIcon = report.budgetStatus === 'ok' ? '🚀' :
                                    report.budgetStatus === 'warning' ? '⚠️' : '🚨'
 
-                  console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <3000ms)`)
+                  console.log(`${statusIcon} RAILWISE Desktop ready in ${report.total.toFixed(2)}ms (target: <15000ms)`)
 
                   // Log individual phase performance
                   report.phases.forEach(phase => {
@@ -664,20 +651,20 @@ render(() => {
               <Show when={!defaultServer.loading}>
                 <div class="railwise-app-shell" data-testid="app-shell">
                   <AppInterface
-                    defaultPath="/dashboard"
+                    defaultPath="/agents"
                     defaultServer={defaultServer.latest ?? ServerConnection.key(server)}
                     routes={
                       <>
-                        <Route path="/dashboard" component={DashboardRoute} />
-                        <Route path="/dashboard/*rest" component={DashboardRedirect} />
+                        <Route path="/dashboard" component={AgentRedirect} />
+                        <Route path="/dashboard/*rest" component={AgentRedirect} />
                         <Route path="/workspace" component={WorkspaceRoute} />
                         <Route path="/workspace/diff" component={WorkspaceDiffRoute} />
                         <Route path="/workspace/*rest" component={WorkspaceRoute} />
-                        <Route path="*rest" component={DashboardRedirect} />
+                        <Route path="*rest" component={AgentRedirect} />
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/dashboard", "/workspace", "/agents"]}
+                    standalonePaths={["/workspace", "/agents"]}
                     workbenchRoutes={false}
                   >
                     <Inner />

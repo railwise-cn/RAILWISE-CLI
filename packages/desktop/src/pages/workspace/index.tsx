@@ -179,8 +179,8 @@ export default function WorkspacePage() {
           <A class="workspace-open-link" href="/workspace/diff">
             版本对比
           </A>
-          <A class="workspace-open-link" href="/dashboard">
-            驾驶舱
+          <A class="workspace-open-link" href="/agents">
+            智能体
           </A>
         </div>
         <div class="workspace-search">

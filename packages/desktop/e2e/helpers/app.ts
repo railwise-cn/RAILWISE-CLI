@@ -230,6 +230,27 @@ const commands = [
   },
 ]
 
+const tools = [
+  { id: "agent.task", label: "智能体调度", group: "agent" },
+  { id: "norm.search", label: "规范检索", group: "knowledge" },
+  { id: "survey.adjustment", label: "平差计算", group: "survey" },
+  { id: "file.read", label: "文件读取", group: "core" },
+  { id: "report.export", label: "报告导出", group: "extension" },
+] as const
+
+const skills = [
+  {
+    name: "CPIII 复测",
+    description: "按高铁 CPIII 场景组织复测资料检查、规范引用和交付摘要。",
+    location: ".railwise/skills/cpiii-resurvey.md",
+  },
+  {
+    name: "沉降监测日报",
+    description: "汇总外业观测数据、异常点和日报结论。",
+    location: ".railwise/skills/settlement-daily.md",
+  },
+]
+
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
     await use(async (path = "/agents", opts = {}) => {
@@ -262,7 +283,7 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/global/event`, (route) =>
     route.fulfill({
       contentType: "text/event-stream",
-      body: 'event: message\ndata: {"type":"server.connected","properties":{}}\n\n',
+      body: 'event: message\ndata: {"directory":"global","payload":{"type":"server.connected","properties":{}}}\n\n',
     }),
   )
   await page.route(`${server}/path`, (route) =>
@@ -379,6 +400,8 @@ async function setup(page: Page, opts: LaunchOptions) {
     }),
   )
   await page.route(`${server}/agent-studio/list`, (route) => json(route, agents))
+  await page.route(`${server}/agent-studio/tool/list`, (route) => json(route, tools))
+  await page.route(`${server}/agent-studio/skill/list`, (route) => json(route, skills))
   await page.route(`${server}/agent-studio/chief_manager`, (route) => {
     if (route.request().method() === "PUT") return json(route, true)
     return json(route, { ...agents[0], rawMarkdown: "---\nname: chief_manager\n---\n你是 Railwise 总负责人。" })

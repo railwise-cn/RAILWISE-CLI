@@ -37,6 +37,10 @@ jobs:
             target: x86_64-apple-darwin
             platform: darwin
             bundles: dmg
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            platform: windows
+            bundles: nsis
 
     steps:
       - name: Checkout
@@ -64,8 +68,53 @@ jobs:
         working-directory: packages/desktop
         run: bun run predev -- --target ${{ matrix.target }}
 
+      - name: Detect optional signing secrets
+        id: signing
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ "${{ matrix.platform }}" = "darwin" ] \
+            && [ -n "$APPLE_CERTIFICATE" ] \
+            && [ -n "$APPLE_CERTIFICATE_PASSWORD" ] \
+            && [ -n "$APPLE_KEYCHAIN_PASSWORD" ] \
+            && [ -n "$APPLE_SIGNING_IDENTITY" ] \
+            && [ -n "$APPLE_ID" ] \
+            && [ -n "$APPLE_PASSWORD" ] \
+            && [ -n "$APPLE_TEAM_ID" ]; then
+            echo "macos=true" >> "$GITHUB_OUTPUT"
+            echo "mode=signed-notarized" >> "$GITHUB_OUTPUT"
+          else
+            echo "macos=false" >> "$GITHUB_OUTPUT"
+            echo "mode=unsigned" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "updater=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "updater=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare CI Tauri config
+        shell: bash
+        working-directory: packages/desktop
+        run: |
+          bun -e '
+          const config = await Bun.file("src-tauri/tauri.prod.conf.json").json()
+          if (!Bun.env.TAURI_SIGNING_PRIVATE_KEY) config.bundle.createUpdaterArtifacts = false
+          await Bun.write("src-tauri/tauri.ci.conf.json", JSON.stringify(config, null, 2) + "\n")
+          '
+          echo "Desktop build mode: ${{ steps.signing.outputs.mode }}"
+          echo "Updater artifacts: ${{ steps.signing.outputs.updater }}"
+
       - name: macOS Import Certificate
-        if: matrix.platform == 'darwin'
+        if: matrix.platform == 'darwin' && steps.signing.outputs.macos == 'true'
+        shell: bash
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
@@ -88,12 +137,12 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         working-directory: packages/desktop
-        run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.prod.conf.json
+        run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.ci.conf.json
 
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: railwise-desktop-${{ matrix.target }}
+          name: railwise-desktop-${{ matrix.target }}-${{ steps.signing.outputs.mode }}
           path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle
           if-no-files-found: error
           retention-days: 30
@@ -118,12 +167,13 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="desktop/v${VERSION}"
           fi
-          mapfile -t files < <(find dist/desktop -name "*.dmg" -type f | sort -u)
-          if [ "${#files[@]}" -ne 2 ]; then
-            printf "Expected exactly 2 public macOS installers, found %s:\n" "${#files[@]}"
+          mapfile -t files < <(find dist/desktop -type f \( -name "*.dmg" -o -name "*.exe" \) | sort -u)
+          if [ "${#files[@]}" -ne 3 ]; then
+            printf "Expected exactly 3 public desktop installers, found %s:\n" "${#files[@]}"
             printf "%s\n" "${files[@]}"
             exit 1
           fi
+          sha256sum "${files[@]}" > SHA256SUMS.txt
           if draft=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq ".isDraft" 2>/dev/null); then
             if [ "$draft" = "true" ]; then
               gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" -y
@@ -138,4 +188,5 @@ jobs:
             --notes "查看 CHANGELOG.md 了解更新内容" \
             --draft \
             --target "$GITHUB_SHA" \
-            "${files[@]}"
+            "${files[@]}" \
+            SHA256SUMS.txt

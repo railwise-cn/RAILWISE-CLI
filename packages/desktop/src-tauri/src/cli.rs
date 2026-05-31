@@ -1,4 +1,4 @@
-use futures::{FutureExt, Stream, StreamExt, future};
+use futures::{Stream, StreamExt, future};
 use process_wrap::tokio::CommandWrap;
 #[cfg(unix)]
 use process_wrap::tokio::ProcessGroup;
@@ -91,17 +91,6 @@ pub fn railwise_db_path(app: &tauri::AppHandle) -> PathBuf {
         .join("railwise.db")
 }
 
-#[derive(serde::Deserialize, Debug)]
-pub struct ServerConfig {
-    pub hostname: Option<String>,
-    pub port: Option<u32>,
-}
-
-#[derive(serde::Deserialize, Debug)]
-pub struct Config {
-    pub server: Option<ServerConfig>,
-}
-
 #[derive(Clone, Debug)]
 pub enum CommandEvent {
     Stdout(String),
@@ -127,25 +116,6 @@ impl CommandChild {
             .try_send(())
             .map_err(|e| std::io::Error::other(e.to_string()))
     }
-}
-
-pub async fn get_config(app: &AppHandle) -> Option<Config> {
-    let (events, _) = spawn_command(app, "debug config", &[]).ok()?;
-
-    events
-        .fold(String::new(), async |mut config_str, event| {
-            if let CommandEvent::Stdout(s) = &event {
-                config_str += s.as_str()
-            }
-            if let CommandEvent::Stderr(s) = &event {
-                config_str += s.as_str()
-            }
-
-            config_str
-        })
-        .map(|v| serde_json::from_str::<Config>(&v))
-        .await
-        .ok()
 }
 
 fn get_cli_install_dir() -> Option<PathBuf> {
@@ -234,7 +204,8 @@ fn install_cli_unix(sidecar: &Path) -> Result<String, String> {
 
 #[cfg(windows)]
 fn install_cli_windows(sidecar: &Path) -> Result<String, String> {
-    let dir = get_cli_install_dir().ok_or_else(|| "Could not determine install path".to_string())?;
+    let dir =
+        get_cli_install_dir().ok_or_else(|| "Could not determine install path".to_string())?;
     std::fs::create_dir_all(&dir).map_err(|e| format!("Failed to create install dir: {e}"))?;
 
     let install_path =

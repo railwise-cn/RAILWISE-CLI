@@ -1,6 +1,5 @@
 import { cmd } from "../cmd"
 import { UI } from "@/cli/ui"
-import { tui } from "./app"
 import { win32DisableProcessedInput, win32InstallCtrlCGuard } from "./win32"
 
 export const AttachCommand = cmd({
@@ -63,7 +62,8 @@ export const AttachCommand = cmd({
         const auth = `Basic ${Buffer.from(`railwise:${password}`).toString("base64")}`
         return { Authorization: auth }
       })()
-      await tui({
+      const app = await import("./app")
+      await app.tui({
         url: args.url,
         args: {
           continue: args.continue,

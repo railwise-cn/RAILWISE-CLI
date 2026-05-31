@@ -1,12 +1,6 @@
 import crypto from "node:crypto"
 import { Buffer } from "node:buffer"
-import type {
-  BotAdapter,
-  BotMessageHandler,
-  ExcelReport,
-  IncomingMessage,
-  OutgoingMessage,
-} from "./types.js"
+import type { BotAdapter, BotMessageHandler, ExcelReport, IncomingMessage, OutgoingMessage } from "./types.js"
 
 export interface FeishuAdapterOptions {
   appId?: string
@@ -29,14 +23,14 @@ export class FeishuAdapter implements BotAdapter {
     if (!this.opts.encryptKey) return true // Skip if key not configured
 
     try {
-      const b = Buffer.from(body);
-      const str = `${timestamp}${nonce}${this.opts.encryptKey}${b.toString('utf8')}`;
-      const hmac = crypto.createHash('sha256');
-      hmac.update(str);
-      const computedSign = hmac.digest('hex');
-      return computedSign === signature;
+      const b = Buffer.from(body)
+      const str = `${timestamp}${nonce}${this.opts.encryptKey}${b.toString("utf8")}`
+      const hmac = crypto.createHash("sha256")
+      hmac.update(str)
+      const computedSign = hmac.digest("hex")
+      return computedSign === signature
     } catch (e) {
-      return false;
+      return false
     }
   }
 
@@ -44,8 +38,7 @@ export class FeishuAdapter implements BotAdapter {
     this.client = this.init()
   }
 
-  async stop() {
-  }
+  async stop() {}
 
   setHandler(fn: BotMessageHandler) {
     this.handler = fn
@@ -72,14 +65,20 @@ export class FeishuAdapter implements BotAdapter {
 
   async handle(raw: unknown, headers?: Record<string, string>, rawBody?: string) {
     // Validate signature if headers are provided
-    if (headers && headers['x-lark-request-timestamp'] && headers['x-lark-request-nonce'] && headers['x-lark-signature'] && rawBody) {
-      const ts = headers['x-lark-request-timestamp'];
-      const nonce = headers['x-lark-request-nonce'];
-      const sign = headers['x-lark-signature'];
+    if (
+      headers &&
+      headers["x-lark-request-timestamp"] &&
+      headers["x-lark-request-nonce"] &&
+      headers["x-lark-signature"] &&
+      rawBody
+    ) {
+      const ts = headers["x-lark-request-timestamp"]
+      const nonce = headers["x-lark-request-nonce"]
+      const sign = headers["x-lark-signature"]
 
       if (!this.verifySignature(ts, nonce, rawBody, sign)) {
-        console.error("Feishu Webhook Signature Validation Failed");
-        return;
+        console.error("Feishu Webhook Signature Validation Failed")
+        return
       }
     }
 

@@ -41,12 +41,6 @@ import type {
   ConfigProvidersResponses,
   ConfigUpdateErrors,
   ConfigUpdateResponses,
-  DashboardProjectPointsErrors,
-  DashboardProjectPointsResponses,
-  DashboardProjectsResponses,
-  DashboardProjectTimeseriesErrors,
-  DashboardProjectTimeseriesResponses,
-  DashboardSummaryResponses,
   EventSubscribeResponses,
   EventTuiCommandExecute,
   EventTuiPromptAppend,
@@ -173,8 +167,6 @@ import type {
   TemplatesGetResponses,
   TemplatesListResponses,
   TextPartInput,
-  TilesGetErrors,
-  TilesGetResponses,
   ToolIdsErrors,
   ToolIdsResponses,
   ToolListErrors,
@@ -2199,151 +2191,6 @@ export class Provider extends HeyApiClient {
   }
 }
 
-export class Project2 extends HeyApiClient {
-  /**
-   * 监测点 GeoJSON
-   */
-  public points<ThrowOnError extends boolean = false>(
-    parameters: {
-      id: string
-      directory?: string
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams(
-      [parameters],
-      [
-        {
-          args: [
-            { in: "path", key: "id" },
-            { in: "query", key: "directory" },
-          ],
-        },
-      ],
-    )
-    return (options?.client ?? this.client).get<
-      DashboardProjectPointsResponses,
-      DashboardProjectPointsErrors,
-      ThrowOnError
-    >({
-      url: "/dashboard/projects/{id}/points",
-      ...options,
-      ...params,
-    })
-  }
-
-  /**
-   * 时序数据（uPlot 格式）
-   */
-  public timeseries<ThrowOnError extends boolean = false>(
-    parameters: {
-      id: string
-      directory?: string
-      metric?: "settlement" | "displacement"
-      days?: number
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams(
-      [parameters],
-      [
-        {
-          args: [
-            { in: "path", key: "id" },
-            { in: "query", key: "directory" },
-            { in: "query", key: "metric" },
-            { in: "query", key: "days" },
-          ],
-        },
-      ],
-    )
-    return (options?.client ?? this.client).get<
-      DashboardProjectTimeseriesResponses,
-      DashboardProjectTimeseriesErrors,
-      ThrowOnError
-    >({
-      url: "/dashboard/projects/{id}/timeseries",
-      ...options,
-      ...params,
-    })
-  }
-}
-
-export class Dashboard extends HeyApiClient {
-  /**
-   * 仪表板摘要
-   */
-  public summary<ThrowOnError extends boolean = false>(
-    parameters?: {
-      directory?: string
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
-    return (options?.client ?? this.client).get<DashboardSummaryResponses, unknown, ThrowOnError>({
-      url: "/dashboard/summary",
-      ...options,
-      ...params,
-    })
-  }
-
-  /**
-   * 项目列表（含 bbox）
-   */
-  public projects<ThrowOnError extends boolean = false>(
-    parameters?: {
-      directory?: string
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
-    return (options?.client ?? this.client).get<DashboardProjectsResponses, unknown, ThrowOnError>({
-      url: "/dashboard/projects",
-      ...options,
-      ...params,
-    })
-  }
-
-  private _project?: Project2
-  get project(): Project2 {
-    return (this._project ??= new Project2({ client: this.client }))
-  }
-}
-
-export class Tiles extends HeyApiClient {
-  /**
-   * 离线地图瓦片
-   */
-  public get<ThrowOnError extends boolean = false>(
-    parameters: {
-      z: number
-      x: number
-      y: number
-      directory?: string
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams(
-      [parameters],
-      [
-        {
-          args: [
-            { in: "path", key: "z" },
-            { in: "path", key: "x" },
-            { in: "path", key: "y" },
-            { in: "query", key: "directory" },
-          ],
-        },
-      ],
-    )
-    return (options?.client ?? this.client).get<TilesGetResponses, TilesGetErrors, ThrowOnError>({
-      url: "/tiles/{z}/{x}/{y}",
-      ...options,
-      ...params,
-    })
-  }
-}
-
 export class Templates extends HeyApiClient {
   /**
    * 业务模板列表
@@ -3929,16 +3776,6 @@ export class RailwiseClient extends HeyApiClient {
   private _provider?: Provider
   get provider(): Provider {
     return (this._provider ??= new Provider({ client: this.client }))
-  }
-
-  private _dashboard?: Dashboard
-  get dashboard(): Dashboard {
-    return (this._dashboard ??= new Dashboard({ client: this.client }))
-  }
-
-  private _tiles?: Tiles
-  get tiles(): Tiles {
-    return (this._tiles ??= new Tiles({ client: this.client }))
   }
 
   private _templates?: Templates

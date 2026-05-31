@@ -6,7 +6,7 @@ const SurveyPointSchema = {
   fs: "number",
   current_settlement: "number",
   cumulative_settlement: "number",
-  settlement_rate: "number"
+  settlement_rate: "number",
 }
 
 export interface SurveyPoint {
@@ -29,10 +29,7 @@ function getApiBase(): string {
   return process.env.MINIMAX_API_BASE || "https://api.minimaxi.chat/v1"
 }
 
-async function callMiniMaxVision(
-  imageData: Uint8Array,
-  idx: number
-): Promise<SurveyPoint[]> {
+async function callMiniMaxVision(imageData: Uint8Array, idx: number): Promise<SurveyPoint[]> {
   const apiKey = getApiKey()
   if (!apiKey) {
     throw new Error("MINIMAX_API_KEY environment variable not set")
@@ -45,7 +42,7 @@ async function callMiniMaxVision(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: "MiniMax-VL02",
@@ -56,19 +53,19 @@ async function callMiniMaxVision(
             {
               type: "image_url",
               image_url: {
-                url: `data:${mimeType};base64,${base64}`
-              }
+                url: `data:${mimeType};base64,${base64}`,
+              },
             },
             {
               type: "text",
-              text: `请识别这张工程测量现场照片中的水准尺读数。返回JSON数组格式，每个元素包含：pid(测点编号如P1), bs(后视读数), fs(前视读数), current_settlement(本次沉降mm), cumulative_settlement(累计沉降mm), settlement_rate(沉降速率mm/d)。如果图片中没有水准尺数据，请返回空数组[]。`
-            }
-          ]
-        }
+              text: `请识别这张工程测量现场照片中的水准尺读数。返回JSON数组格式，每个元素包含：pid(测点编号如P1), bs(后视读数), fs(前视读数), current_settlement(本次沉降mm), cumulative_settlement(累计沉降mm), settlement_rate(沉降速率mm/d)。如果图片中没有水准尺数据，请返回空数组[]。`,
+            },
+          ],
+        },
       ],
       temperature: 0.1,
-      max_tokens: 4096
-    })
+      max_tokens: 4096,
+    }),
   })
 
   if (!response.ok) {
@@ -76,7 +73,7 @@ async function callMiniMaxVision(
     throw new Error(`MiniMax API error: ${response.status} - ${errText}`)
   }
 
-  const data = await response.json() as any
+  const data = (await response.json()) as any
   const content = data.choices?.[0]?.message?.content
 
   if (!content) {
@@ -95,10 +92,7 @@ async function callMiniMaxVision(
   }
 }
 
-async function callMinerUOCR(
-  imageData: Uint8Array,
-  idx: number
-): Promise<SurveyPoint[]> {
+async function callMinerUOCR(imageData: Uint8Array, idx: number): Promise<SurveyPoint[]> {
   try {
     const fromFile = await loadMinerU()
     if (!fromFile) return []
@@ -137,9 +131,7 @@ function result_markdown_to_text(result: unknown): string {
   if (typeof result !== "object") return JSON.stringify(result)
   const record = result as Record<string, unknown>
   if (record.content) {
-    return typeof record.content === "string"
-      ? record.content
-      : JSON.stringify(record.content)
+    return typeof record.content === "string" ? record.content : JSON.stringify(record.content)
   }
   return JSON.stringify(result)
 }
@@ -162,7 +154,7 @@ function parseSettlementFromText(text: string): SurveyPoint[] {
           fs: fs,
           current_settlement: Math.round(currentSettlement * 10) / 10,
           cumulative_settlement: Math.round((currentSettlement + Math.random() * 2 - 1) * 10) / 10,
-          settlement_rate: Math.round((Math.random() * 0.4 - 0.2) * 10) / 10
+          settlement_rate: Math.round((Math.random() * 0.4 - 0.2) * 10) / 10,
         })
       }
     }
@@ -179,7 +171,7 @@ function parseSettlementFromText(text: string): SurveyPoint[] {
             fs: Number((base + 0.235).toFixed(3)),
             current_settlement: 1.0,
             cumulative_settlement: 1.5,
-            settlement_rate: 0.5
+            settlement_rate: 0.5,
           })
         }
       }
@@ -211,10 +203,7 @@ function generateFallbackData(idx: number): SurveyPoint[] {
   ]
 }
 
-export async function parseSurveyImage(
-  imageData: Uint8Array,
-  idx: number
-): Promise<SurveyPoint[]> {
+export async function parseSurveyImage(imageData: Uint8Array, idx: number): Promise<SurveyPoint[]> {
   try {
     const points = await callMiniMaxVision(imageData, idx)
     if (points.length > 0) {

@@ -37,7 +37,7 @@ export class ProductionManager {
     const logs = this.loadLogs()
 
     const obsCount = stations.reduce((acc, s) => acc + s.observations.length, 0)
-    const dateStr = new Date().toISOString().split('T')[0]
+    const dateStr = new Date().toISOString().split("T")[0]
 
     const newLog: ProductionLog = {
       timestamp: Date.now(),
@@ -45,7 +45,7 @@ export class ProductionManager {
       fileName,
       stationCount: stations.length,
       observationCount: obsCount,
-      dateStr
+      dateStr,
     }
 
     logs.push(newLog)
@@ -55,9 +55,9 @@ export class ProductionManager {
   }
 
   public generateDailyReport(dateStr?: string) {
-    const targetDate = dateStr || new Date().toISOString().split('T')[0]
+    const targetDate = dateStr || new Date().toISOString().split("T")[0]
     const logs = this.loadLogs()
-    const todayLogs = logs.filter(l => l.dateStr === targetDate)
+    const todayLogs = logs.filter((l) => l.dateStr === targetDate)
 
     if (todayLogs.length === 0) {
       return `📅 **产量日报 (${targetDate})**\n今日暂无数据上传。`
@@ -87,7 +87,7 @@ export class ProductionManager {
       ``,
       `💡 **智能调度建议**`,
       `- 昨日平均每站观测值数 ${(totalObs / (totalStations || 1)).toFixed(1)} 个，符合规范要求。`,
-      `- 按当前进度，预计还需 ${Math.ceil((projectTotalStations - historicalTotal) / (totalStations || 1))} 个工作日即可完成控制网外业任务，请注意合理安排休息。`
+      `- 按当前进度，预计还需 ${Math.ceil((projectTotalStations - historicalTotal) / (totalStations || 1))} 个工作日即可完成控制网外业任务，请注意合理安排休息。`,
     ].join("\n")
 
     return report

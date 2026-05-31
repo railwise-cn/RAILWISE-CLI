@@ -18,7 +18,7 @@ export interface IncomingMessage {
   groupId?: string
   text?: string
   images: ImageInfo[]
-  file?: { name: string, mime?: string, data?: Uint8Array }
+  file?: { name: string; mime?: string; data?: Uint8Array }
   raw?: unknown
   timestamp?: number
 }

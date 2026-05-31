@@ -217,15 +217,7 @@ type HarnessEventType =
 ### Capability Manifest
 
 ```ts
-export const CapabilityKind = z.enum([
-  "agent",
-  "tool",
-  "skill",
-  "workflow",
-  "mcp",
-  "provider",
-  "harness_profile",
-])
+export const CapabilityKind = z.enum(["agent", "tool", "skill", "workflow", "mcp", "provider", "harness_profile"])
 
 export const CapabilityPermission = z.object({
   filesystem: z.enum(["none", "read", "write"]).default("none"),

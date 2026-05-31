@@ -1,11 +1,5 @@
 import crypto from "node:crypto"
-import type {
-  BotAdapter,
-  BotMessageHandler,
-  ExcelReport,
-  IncomingMessage,
-  OutgoingMessage,
-} from "./types.js"
+import type { BotAdapter, BotMessageHandler, ExcelReport, IncomingMessage, OutgoingMessage } from "./types.js"
 
 export interface DingtalkAdapterOptions {
   appKey?: string
@@ -29,13 +23,13 @@ export class DingtalkAdapter implements BotAdapter {
     if (!this.opts.webhookSecret) return true // skip if secret not configured
 
     try {
-      const stringToSign = `${timestamp}\n${this.opts.webhookSecret}`;
-      const hmac = crypto.createHmac('sha256', this.opts.webhookSecret);
-      hmac.update(stringToSign);
-      const computedSign = hmac.digest('base64');
-      return computedSign === sign;
+      const stringToSign = `${timestamp}\n${this.opts.webhookSecret}`
+      const hmac = crypto.createHmac("sha256", this.opts.webhookSecret)
+      hmac.update(stringToSign)
+      const computedSign = hmac.digest("base64")
+      return computedSign === sign
     } catch (e) {
-      return false;
+      return false
     }
   }
 
@@ -43,8 +37,7 @@ export class DingtalkAdapter implements BotAdapter {
     this.client = this.init()
   }
 
-  async stop() {
-  }
+  async stop() {}
 
   setHandler(fn: BotMessageHandler) {
     this.handler = fn
@@ -71,10 +64,10 @@ export class DingtalkAdapter implements BotAdapter {
 
   async handle(raw: unknown, headers?: Record<string, string>) {
     // Check signature if headers are provided
-    if (headers && headers['timestamp'] && headers['sign']) {
-      if (!this.verifySignature(headers['timestamp'], headers['sign'])) {
-        console.error("DingTalk Webhook Signature Validation Failed");
-        return;
+    if (headers && headers["timestamp"] && headers["sign"]) {
+      if (!this.verifySignature(headers["timestamp"], headers["sign"])) {
+        console.error("DingTalk Webhook Signature Validation Failed")
+        return
       }
     }
 

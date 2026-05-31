@@ -40,7 +40,7 @@ const ConsoleBotAdapter: BotAdapter = {
     }
     process.stdout.write(`Saved to: ${outPath}` + EOL)
     process.stdout.write("================================" + EOL)
-  }
+  },
 }
 
 export const SurveyCommand = cmd({
@@ -77,12 +77,12 @@ export const SurveyCommand = cmd({
             images: [],
             file: {
               name: fileName,
-              data: fileContent
-            }
+              data: fileContent,
+            },
           }
 
           await processSurveyMessage(ConsoleBotAdapter, msg)
-        }
+        },
       )
       .command(
         "report",
@@ -96,9 +96,9 @@ export const SurveyCommand = cmd({
             images: [],
           }
           await processSurveyMessage(ConsoleBotAdapter, msg)
-        }
+        },
       )
       .demandCommand()
   },
-  handler: () => {}
+  handler: () => {},
 })

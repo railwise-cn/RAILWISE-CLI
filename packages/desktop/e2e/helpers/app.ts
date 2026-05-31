@@ -269,7 +269,8 @@ async function setup(page: Page, opts: LaunchOptions) {
     page.on("console", (msg) => console.log(`[browser:${msg.type()}] ${msg.text()}`))
     page.on("pageerror", (err) => console.log(`[browser:pageerror] ${err.stack ?? err.message}`))
     page.on("request", (req) => {
-      if (req.url().includes("/src/entry") || req.url().includes("/src/index")) console.log(`[browser:request] ${req.url()}`)
+      if (req.url().includes("/src/entry") || req.url().includes("/src/index"))
+        console.log(`[browser:request] ${req.url()}`)
     })
     page.on("response", (res) => {
       if (res.url().includes("/src/entry") || res.url().includes("/src/index")) {

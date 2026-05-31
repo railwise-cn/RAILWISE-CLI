@@ -36,6 +36,7 @@ import Layout from "@/pages/layout"
 import { ErrorPage } from "./pages/error"
 
 const Workbench = lazy(() => import("@/pages/workbench"))
+const Harness = lazy(() => import("@/pages/harness"))
 const Session = lazy(() => import("@/pages/session"))
 const AgentsIndex = lazy(() => import("@/pages/agents/index"))
 const AgentDetail = lazy(() => import("@/pages/agents/[name]"))
@@ -44,6 +45,12 @@ const Loading = () => <div class="size-full" />
 const WorkbenchRoute = () => (
   <Suspense fallback={<Loading />}>
     <Workbench />
+  </Suspense>
+)
+
+const HarnessRoute = () => (
+  <Suspense fallback={<Loading />}>
+    <Harness />
   </Suspense>
 )
 
@@ -209,6 +216,7 @@ export function AppInterface(props: {
             >
               <Route path="/" component={() => <Navigate href={props.defaultPath ?? "/home"} />} />
               <Route path="/home" component={WorkbenchRoute} />
+              <Route path="/harness" component={HarnessRoute} />
               <Route path="/agents" component={AgentsIndexRoute} />
               <Route path="/agents/:name" component={AgentDetailRoute} />
               {props.routes}

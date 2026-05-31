@@ -35,10 +35,10 @@ export class ProductionManager {
 
   public recordGsiUpload(userId: string, fileName: string, stations: StationRecord[]) {
     const logs = this.loadLogs()
-    
+
     const obsCount = stations.reduce((acc, s) => acc + s.observations.length, 0)
     const dateStr = new Date().toISOString().split('T')[0]
-    
+
     const newLog: ProductionLog = {
       timestamp: Date.now(),
       userId,
@@ -47,10 +47,10 @@ export class ProductionManager {
       observationCount: obsCount,
       dateStr
     }
-    
+
     logs.push(newLog)
     this.saveLogs(logs)
-    
+
     return newLog
   }
 
@@ -58,17 +58,17 @@ export class ProductionManager {
     const targetDate = dateStr || new Date().toISOString().split('T')[0]
     const logs = this.loadLogs()
     const todayLogs = logs.filter(l => l.dateStr === targetDate)
-    
+
     if (todayLogs.length === 0) {
       return `📅 **产量日报 (${targetDate})**\n今日暂无数据上传。`
     }
-    
+
     const totalFiles = todayLogs.length
     const totalStations = todayLogs.reduce((a, b) => a + b.stationCount, 0)
     const totalObs = todayLogs.reduce((a, b) => a + b.observationCount, 0)
-    
+
     const estimatedHours = (totalStations * 15) / 60
-    
+
     const projectTotalStations = 500
     const historicalTotal = logs.reduce((a, b) => a + b.stationCount, 0)
     const progressPct = ((historicalTotal / projectTotalStations) * 100).toFixed(1)

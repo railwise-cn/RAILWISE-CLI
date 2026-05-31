@@ -71,13 +71,13 @@ export class TrackTuning {
    */
   static calculateIrregularity(points: TrackPoint[]): TrackPoint[] {
     if (points.length < 3) return points;
-    
+
     const result = points.map(p => ({ ...p }));
-    
+
     // 计算10m长短波平顺度（高低与轨向）
     const v10m_y = this.calculateVersine(result, 10, 'y');
     const v10m_h = this.calculateVersine(result, 10, 'h');
-    
+
     // 计算30m长波平顺度（高低与轨向）
     const v30m_y = this.calculateVersine(result, 30, 'y');
     const v30m_h = this.calculateVersine(result, 30, 'h');
@@ -88,7 +88,7 @@ export class TrackTuning {
       result[i].versine30m_y = v30m_y[i];
       result[i].versine30m_h = v30m_h[i];
     }
-    
+
     return result;
   }
 
@@ -97,25 +97,25 @@ export class TrackTuning {
    * 用于轨道绝对调整量（精调）
    */
   static fitSplineBaseline(points: TrackPoint[]): TrackPoint[] {
-    // A full cubic spline implementation would be complex here, 
+    // A full cubic spline implementation would be complex here,
     // simulating a moving average smoothing for the baseline
     const window = 5;
     const result = [...points];
-    
+
     for (let i = 0; i < points.length; i++) {
       let sumH = 0;
       let count = 0;
-      
+
       for (let j = Math.max(0, i - window); j <= Math.min(points.length - 1, i + window); j++) {
         sumH += points[j].h;
         count++;
       }
-      
+
       const smoothedH = sumH / count;
       // Calculate absolute adjustment (绝对调整量)
       result[i].dh = (smoothedH - points[i].h) * 1000;
     }
-    
+
     return result;
   }
 }

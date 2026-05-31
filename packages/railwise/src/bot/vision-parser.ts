@@ -2,7 +2,7 @@ import type { BotAdapter, ImageInfo } from "./types.js"
 
 const SurveyPointSchema = {
   pid: "string",
-  bs: "number", 
+  bs: "number",
   fs: "number",
   current_settlement: "number",
   cumulative_settlement: "number",
@@ -137,8 +137,8 @@ function result_markdown_to_text(result: unknown): string {
   if (typeof result !== "object") return JSON.stringify(result)
   const record = result as Record<string, unknown>
   if (record.content) {
-    return typeof record.content === "string" 
-      ? record.content 
+    return typeof record.content === "string"
+      ? record.content
       : JSON.stringify(record.content)
   }
   return JSON.stringify(result)

@@ -36,9 +36,9 @@ export class GsiParser {
       for (const block of blocks) {
         if (block.length < 7) continue;
         const wi = block.substring(0, 2); // Word Index
-        
+
         let valueStr = block.substring(7).trim(); // Value starts after standard format info
-        
+
         // Remove trailing signs or non-numeric for parsing
         valueStr = valueStr.replace(/[^\d.-]/g, '');
         const value = parseInt(valueStr, 10);
@@ -87,7 +87,7 @@ export class GsiParser {
         };
         if (hasDistance) obs.slopeDistance = sd;
         if (rh > 0) obs.reflectorHeight = rh;
-        
+
         currentStation.observations.push(obs);
       }
     }

@@ -27,7 +27,7 @@ export class FeishuAdapter implements BotAdapter {
    */
   verifySignature(timestamp: string, nonce: string, body: string, signature: string): boolean {
     if (!this.opts.encryptKey) return true // Skip if key not configured
-    
+
     try {
       const b = Buffer.from(body);
       const str = `${timestamp}${nonce}${this.opts.encryptKey}${b.toString('utf8')}`;
@@ -76,7 +76,7 @@ export class FeishuAdapter implements BotAdapter {
       const ts = headers['x-lark-request-timestamp'];
       const nonce = headers['x-lark-request-nonce'];
       const sign = headers['x-lark-signature'];
-      
+
       if (!this.verifySignature(ts, nonce, rawBody, sign)) {
         console.error("Feishu Webhook Signature Validation Failed");
         return;

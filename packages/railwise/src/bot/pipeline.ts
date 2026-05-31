@@ -106,19 +106,19 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
       const text = new TextDecoder().decode(msg.file.data);
       const isTrimble = msg.file.name.endsWith('.dat');
       const stations = isTrimble ? TrimbleDatParser.parse(text) : GsiParser.parse(text);
-      
+
       prodManager.recordGsiUpload(msg.userId, msg.file.name, stations);
 
       const lsa = new LeastSquaresAdjustment();
-      
+
       if (stations.length > 0) {
         lsa.addKnownPoint(stations[0].stationId, 1000.0, 1000.0);
       }
-      
+
       for (let i = 1; i < stations.length; i++) {
         lsa.addUnknownPoint(stations[i].stationId, 1000.0 + i * 50, 1000.0 + i * 10);
       }
-      
+
       stations.forEach(st => {
         st.observations.forEach(obs => {
           if (!lsa['knownPoints'].has(obs.targetId) && !lsa['unknownPoints'].has(obs.targetId)) {
@@ -139,7 +139,7 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
       } catch (e) {
         console.error("Adjustment Failed", e);
       }
-      
+
       const trackPoints = Array.from(adjustedPoints.values()).map((p, idx) => ({
         id: p.id,
         mileage: idx * 5.0,
@@ -147,7 +147,7 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
         y: p.y,
         h: 100.0 + Math.random() * 0.05 - 0.025,
       }));
-      
+
       const tunedPoints = TrackTuning.fitSplineBaseline(trackPoints);
       const finalPoints = TrackTuning.calculateIrregularity(tunedPoints);
 
@@ -176,7 +176,7 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
           text: sum,
         })
       )
-      
+
       const tuningData = finalPoints.map(row => ({
         "测点编号": row.id,
         "设计里程": `DK123+${(row.mileage || 0).toFixed(3)}`,
@@ -222,7 +222,7 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
     const exceedCurrent = Math.abs(row.current_settlement) > SETTLEMENT_LIMIT
     const exceedRate = Math.abs(row.settlement_rate) > RATE_LIMIT
     const warn = exceedCurrent || exceedRate
-    
+
     return {
       ...row,
       warn,
@@ -230,7 +230,7 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
       exceedRate,
     }
   })
-  
+
   const bad = data.filter((row) => row.warn)
   const sum = [
     "## 平差分析结果 (RAILWISE)",
@@ -246,11 +246,11 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
       const current = row.exceedCurrent
         ? `**<font color=\"red\">${row.current_settlement.toFixed(1)}</font>**`
         : row.current_settlement.toFixed(1)
-        
+
       const rate = row.exceedRate
         ? `**<font color=\"red\">${row.settlement_rate.toFixed(1)}</font>**`
         : row.settlement_rate.toFixed(1)
-        
+
       const status = row.warn ? "**<font color=\"red\">超限</font>**" : "正常"
       return `| ${row.pid} | ${row.bs.toFixed(3)} | ${row.fs.toFixed(3)} | ${current} | ${row.cumulative_settlement.toFixed(1)} | ${rate} | ${status} |`
     }),
@@ -305,7 +305,7 @@ async function executeSurveyPipeline(bot: BotAdapter, msg: IncomingMessage) {
   const worksheet = xlsx.utils.json_to_sheet(worksheetData)
   const workbook = xlsx.utils.book_new()
   xlsx.utils.book_append_sheet(workbook, worksheet, "沉降数据表")
-  
+
   const excelBuffer = xlsx.write(workbook, { type: "buffer", bookType: "xlsx" })
 
   // Send Excel report with retry

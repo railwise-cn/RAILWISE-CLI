@@ -1018,4 +1018,3 @@ Placeholder scan:
 Type consistency:
 
 - `CapabilityManifest`, `HarnessStatus`, and `HarnessEvent` names are stable across backend, API, and frontend tasks.
-

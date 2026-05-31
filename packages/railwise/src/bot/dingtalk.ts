@@ -27,7 +27,7 @@ export class DingtalkAdapter implements BotAdapter {
    */
   verifySignature(timestamp: string, sign: string): boolean {
     if (!this.opts.webhookSecret) return true // skip if secret not configured
-    
+
     try {
       const stringToSign = `${timestamp}\n${this.opts.webhookSecret}`;
       const hmac = crypto.createHmac('sha256', this.opts.webhookSecret);

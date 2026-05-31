@@ -33,7 +33,7 @@ const ConsoleBotAdapter: BotAdapter = {
     process.stdout.write(EOL + "=== [Excel Report Generated] ===" + EOL)
     process.stdout.write(`File: ${params.name}` + EOL)
     process.stdout.write(`Summary: ${params.summary}` + EOL)
-    
+
     const outPath = path.join(process.cwd(), params.name)
     if (params.data) {
       fs.writeFileSync(outPath, params.data)
@@ -57,7 +57,7 @@ export const SurveyCommand = cmd({
             process.stderr.write("请提供文件路径 (Please provide a file path)." + EOL)
             process.exit(1)
           }
-          
+
           const filePath = path.resolve(process.cwd(), args.file as string)
           if (!fs.existsSync(filePath)) {
             process.stderr.write(`未找到文件 (File not found): ${filePath}` + EOL)
@@ -66,9 +66,9 @@ export const SurveyCommand = cmd({
 
           const fileContent = fs.readFileSync(filePath)
           const fileName = path.basename(filePath)
-          
+
           process.stdout.write(`正在处理文件 (Processing file): ${fileName}...` + EOL)
-          
+
           const msg: IncomingMessage = {
             platform: "console",
             userId: "cli-user",
@@ -80,7 +80,7 @@ export const SurveyCommand = cmd({
               data: fileContent
             }
           }
-          
+
           await processSurveyMessage(ConsoleBotAdapter, msg)
         }
       )

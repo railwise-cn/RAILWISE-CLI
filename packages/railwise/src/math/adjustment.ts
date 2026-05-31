@@ -25,7 +25,7 @@ export interface ObsDistance {
 export class LeastSquaresAdjustment {
   private knownPoints: Map<string, Point2D> = new Map();
   private unknownPoints: Map<string, Point2D> = new Map(); // Initial approximations
-  
+
   private obsAngles: ObsAngle[] = [];
   private obsDistances: ObsDistance[] = [];
 
@@ -59,12 +59,12 @@ export class LeastSquaresAdjustment {
     const unknownIds = Array.from(this.unknownPoints.keys());
     const numUnknowns = unknownIds.length * 2; // dx, dy for each
     const numObs = this.obsDistances.length + this.obsAngles.length;
-    
+
     // A matrix (Design matrix): numObs x numUnknowns
     const A = math.zeros(numObs, numUnknowns) as math.Matrix;
     // L matrix (Misclosure vector): numObs x 1
     const L = math.zeros(numObs, 1) as math.Matrix;
-    
+
     let rowIndex = 0;
 
     // Fill observation equations for Distances
@@ -72,19 +72,19 @@ export class LeastSquaresAdjustment {
       const obs = this.obsDistances[i];
       const p1 = this.getPoint(obs.from);
       const p2 = this.getPoint(obs.to);
-      
+
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
       const calcDist = Math.sqrt(dx * dx + dy * dy);
-      
+
       L.set([rowIndex, 0], obs.distance - calcDist);
-      
+
       if (this.unknownPoints.has(obs.from)) {
         const idx = unknownIds.indexOf(obs.from) * 2;
         A.set([rowIndex, idx], -dx / calcDist);
         A.set([rowIndex, idx + 1], -dy / calcDist);
       }
-      
+
       if (this.unknownPoints.has(obs.to)) {
         const idx = unknownIds.indexOf(obs.to) * 2;
         A.set([rowIndex, idx], dx / calcDist);
@@ -98,7 +98,7 @@ export class LeastSquaresAdjustment {
       const obs = this.obsAngles[i];
       const p1 = this.getPoint(obs.from);
       const p2 = this.getPoint(obs.to);
-      
+
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
       const calcDistSq = dx * dx + dy * dy;
@@ -123,7 +123,7 @@ export class LeastSquaresAdjustment {
         A.set([rowIndex, idx], c_x1);
         A.set([rowIndex, idx + 1], c_y1);
       }
-      
+
       if (this.unknownPoints.has(obs.to)) {
         const idx = unknownIds.indexOf(obs.to) * 2;
         A.set([rowIndex, idx], c_x2);
@@ -136,7 +136,7 @@ export class LeastSquaresAdjustment {
     const AT = math.transpose(A);
     const N = math.multiply(AT, A) as math.Matrix;
     const U = math.multiply(AT, L) as math.Matrix;
-    
+
     // Add Free Network constraints (Rank Defect) if needed
     // Typically for CPIII, N is singular if not enough known points exist.
     // In that case, we must add Moore-Penrose pseudo-inverse or inner constraints.
@@ -153,7 +153,7 @@ export class LeastSquaresAdjustment {
       const N_reg = math.add(N, math.multiply(lambda, I)) as math.Matrix;
       x = math.lusolve(N_reg, U) as math.Matrix;
     }
-    
+
     // Update approximations
     const result = new Map<string, Point2D>();
     for (let i = 0; i < unknownIds.length; i++) {
@@ -165,7 +165,7 @@ export class LeastSquaresAdjustment {
       // Update in place for next iteration
       this.unknownPoints.set(id, result.get(id)!);
     }
-    
+
     return result;
   }
 }

@@ -35,15 +35,15 @@ import DirectoryLayout from "@/pages/directory-layout"
 import Layout from "@/pages/layout"
 import { ErrorPage } from "./pages/error"
 
-const Home = lazy(() => import("@/pages/home"))
+const Workbench = lazy(() => import("@/pages/workbench"))
 const Session = lazy(() => import("@/pages/session"))
 const AgentsIndex = lazy(() => import("@/pages/agents/index"))
 const AgentDetail = lazy(() => import("@/pages/agents/[name]"))
 const Loading = () => <div class="size-full" />
 
-const HomeRoute = () => (
+const WorkbenchRoute = () => (
   <Suspense fallback={<Loading />}>
-    <Home />
+    <Workbench />
   </Suspense>
 )
 
@@ -193,7 +193,7 @@ export function AppInterface(props: {
   workbenchRoutes?: boolean
   servers?: Array<ServerConnection.Any>
 }) {
-  const standalone = createMemo(() => ["/agents", ...(props.standalonePaths ?? [])])
+  const standalone = createMemo(() => ["/home", "/marketplace", "/harness", "/agents", ...(props.standalonePaths ?? [])])
 
   return (
     <ServerProvider defaultServer={props.defaultServer} servers={props.servers}>
@@ -208,10 +208,10 @@ export function AppInterface(props: {
               )}
             >
               <Route path="/" component={() => <Navigate href={props.defaultPath ?? "/home"} />} />
+              <Route path="/home" component={WorkbenchRoute} />
               <Route path="/agents" component={AgentsIndexRoute} />
               <Route path="/agents/:name" component={AgentDetailRoute} />
               {props.routes}
-              {(props.workbenchRoutes ?? true) && <Route path="/home" component={HomeRoute} />}
               {((props.workbenchRoutes ?? true) || props.sessionRoutes) && (
                 <>
                   <Route path="/:dir" component={DirectoryLayout}>

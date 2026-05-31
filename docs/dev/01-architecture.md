@@ -22,9 +22,9 @@ RAILWISE CLI
 
 RAILWISE Desktop
   ├─ Tauri native shell
-  ├─ project dashboard
+  ├─ Agent Studio collaboration hub
   ├─ workspace file preview
-  ├─ Agent Studio visual orchestration
+  ├─ workflow orchestration
   ├─ delivery package review/export
   └─ signing / notarization / updater
 ```
@@ -40,9 +40,8 @@ Tauri 桌面壳
   └─ 本地日志、配置和 crash guard
 
 SolidJS 前端
-  ├─ /dashboard 项目驾驶舱
+  ├─ /agents 智能体协作中枢
   ├─ /workspace 数据与成果工作台
-  ├─ /agents 智能体编排台
   └─ 会话、模板、Prompt 队列、设置
 
 Railwise Core sidecar
@@ -54,7 +53,7 @@ Railwise Core sidecar
 
 ## 关键路径
 
-- 启动：Tauri 启动 sidecar，前端等待初始化完成后进入 `/dashboard`。
+- 启动：Tauri 启动 sidecar，前端等待初始化完成后进入 `/agents`。
 - 数据预览：桌面端命令解析本地文件，前端渲染表格、图层或文档预览。
 - 智能体任务：前端把上下文发送到 sidecar，sidecar 通过 SSE 推送状态和消息。
 - Agent Studio：工作流预设通过 `/agent-studio/workflow/run` 创建真实会话，并写入首条 chief_manager 调度消息；智能体 7 天调用统计来自本地 message 表。

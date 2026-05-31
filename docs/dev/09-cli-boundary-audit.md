@@ -28,7 +28,7 @@ CLI 命令保持在自己的产品边界内：
 CLI 目录扫描：
 
 ```bash
-rg -n "desktop|Desktop|packages/desktop|src-tauri|tauri|notarization|notarize|codesign|signing|installer|updater|update server|release artifact|app shell|dashboard|workspace" packages/railwise/src/cli packages/railwise/test/cli packages/railwise/script packages/railwise/bin
+rg -n "desktop|Desktop|packages/desktop|src-tauri|tauri|notarization|notarize|codesign|signing|installer|updater|update server|release artifact|app shell|Agent Studio|workspace" packages/railwise/src/cli packages/railwise/test/cli packages/railwise/script packages/railwise/bin
 ```
 
 结果只有一处通用 LSP 命中：
@@ -71,7 +71,7 @@ rg -n "RAILWISE_CLIENT|RAILWISE_DESKTOP|TAURI|DESKTOP|desktop" packages/railwise
 - `packages/desktop` 代码路径。
 - `packages/desktop/src-tauri` 配置。
 - Tauri updater、签名、公证、安装包流程。
-- Desktop dashboard / workspace / Agent Studio 的产品承诺。
+- Desktop workspace / Agent Studio 的产品承诺。
 - 只能在 Desktop 原生壳中成立的本地文件、窗口、菜单或更新体验。
 
 ---

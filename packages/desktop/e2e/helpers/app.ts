@@ -29,30 +29,6 @@ const dxf = {
   totalEntityCount: 2,
 }
 
-const summary = {
-  projects: [
-    {
-      id: "p1",
-      name: "京沪高铁沉降监测",
-      type: "bridge",
-      status: "active",
-      progress: 76,
-      lastActivity: "2026-04-26T08:00:00.000Z",
-      activeTaskCount: 3,
-      description: "连续梁沉降与水平位移监测。",
-      pointCount: 128,
-      alertCount: 2,
-    },
-  ],
-  alerts: [
-    { id: "a1", projectId: "p1", level: "warn", message: "JC-002 沉降接近预警阈值", time: "2026-04-26T08:10:00.000Z" },
-  ],
-  recentSessions: [{ id: "s1", directory: "/tmp/railwise-e2e", title: "外业数据首检", time: { updated: Date.now() } }],
-  activeAgents: [
-    { sessionId: "s1", agentName: "qa_inspector", startedAt: "2026-04-26T08:00:00.000Z", status: "running" },
-  ],
-}
-
 const agents = [
   {
     name: "chief_manager",
@@ -254,12 +230,33 @@ const commands = [
   },
 ]
 
+const tools = [
+  { id: "agent.task", label: "智能体调度", group: "agent" },
+  { id: "norm.search", label: "规范检索", group: "knowledge" },
+  { id: "survey.adjustment", label: "平差计算", group: "survey" },
+  { id: "file.read", label: "文件读取", group: "core" },
+  { id: "report.export", label: "报告导出", group: "extension" },
+] as const
+
+const skills = [
+  {
+    name: "CPIII 复测",
+    description: "按高铁 CPIII 场景组织复测资料检查、规范引用和交付摘要。",
+    location: ".railwise/skills/cpiii-resurvey.md",
+  },
+  {
+    name: "沉降监测日报",
+    description: "汇总外业观测数据、异常点和日报结论。",
+    location: ".railwise/skills/settlement-daily.md",
+  },
+]
+
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
-    await use(async (path = "/dashboard", opts = {}) => {
+    await use(async (path = "/agents", opts = {}) => {
       await setup(page, opts)
       await page.goto(path)
-      await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 10_000 })
+      await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 30_000 })
       return { page, context }
     })
   },
@@ -268,26 +265,41 @@ export const test = base.extend<Fixtures>({
 export { expect }
 
 async function setup(page: Page, opts: LaunchOptions) {
-  await page.route("**/event", (route) =>
+  if (process.env.RW_E2E_DEBUG === "1") {
+    page.on("console", (msg) => console.log(`[browser:${msg.type()}] ${msg.text()}`))
+    page.on("pageerror", (err) => console.log(`[browser:pageerror] ${err.stack ?? err.message}`))
+    page.on("request", (req) => {
+      if (req.url().includes("/src/entry") || req.url().includes("/src/index")) console.log(`[browser:request] ${req.url()}`)
+    })
+    page.on("response", (res) => {
+      if (res.url().includes("/src/entry") || res.url().includes("/src/index")) {
+        console.log(`[browser:response] ${res.status()} ${res.headers()["content-type"] ?? ""} ${res.url()}`)
+      }
+    })
+    page.on("requestfailed", (req) => console.log(`[browser:requestfailed] ${req.url()} ${req.failure()?.errorText}`))
+  }
+
+  await page.route(`${server}/global/health`, (route) => json(route, { healthy: true, version: "e2e" }))
+  await page.route(`${server}/global/event`, (route) =>
     route.fulfill({
       contentType: "text/event-stream",
-      body: 'event: message\ndata: {"type":"server.connected","properties":{}}\n\n',
+      body: 'event: message\ndata: {"directory":"global","payload":{"type":"server.connected","properties":{}}}\n\n',
     }),
   )
-  await page.route("**/dashboard/summary", (route) => json(route, summary))
-  await page.route("**/dashboard/projects/*/points", (route) =>
+  await page.route(`${server}/path`, (route) =>
     json(route, {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: { type: "Point", coordinates: [116.4, 39.9] },
-          properties: { name: "JC-001", status: "green", latestValue: -1.2, unit: "mm", owner: "E2E" },
-        },
-      ],
+      home: "/tmp",
+      state: "/tmp/railwise-e2e/state",
+      config: "/tmp/railwise-e2e/config",
+      worktree: "/tmp/railwise-e2e/worktree",
+      directory: "/tmp/railwise-e2e/worktree",
     }),
   )
-  await page.route("**/agent-studio/workflow/run", (route) => {
+  await page.route(`${server}/global/config`, (route) => json(route, {}))
+  await page.route(`${server}/project`, (route) => json(route, []))
+  await page.route(`${server}/provider`, (route) => json(route, { all: [], default: {}, connected: [] }))
+  await page.route(`${server}/provider/auth`, (route) => json(route, {}))
+  await page.route(`${server}/agent-studio/workflow/run`, (route) => {
     const input = route.request().postDataJSON() as { workflowId?: string }
     const item = input.workflowId === cpiii.id ? cpiii : workflow
     return json(route, {
@@ -299,8 +311,8 @@ async function setup(page: Page, opts: LaunchOptions) {
       artifacts: item.id === cpiii.id ? [artifact] : [],
     })
   })
-  await page.route("**/agent-studio/workflow/presets", (route) => json(route, [workflow, cpiii]))
-  await page.route("**/agent-studio/workflow/check/*", (route) =>
+  await page.route(`${server}/agent-studio/workflow/presets`, (route) => json(route, [workflow, cpiii]))
+  await page.route(`${server}/agent-studio/workflow/check/*`, (route) =>
     json(route, {
       workflowId: cpiii.id,
       ok: true,
@@ -311,7 +323,7 @@ async function setup(page: Page, opts: LaunchOptions) {
       ],
     }),
   )
-  await page.route("**/agent-studio/workflow/session/workflow-e2e", (route) =>
+  await page.route(`${server}/agent-studio/workflow/session/workflow-e2e`, (route) =>
     json(route, {
       sessionId: session.id,
       workflowId: cpiii.id,
@@ -321,9 +333,9 @@ async function setup(page: Page, opts: LaunchOptions) {
       artifacts: [artifact],
     }),
   )
-  await page.route("**/agent-studio/workflow/acceptance", (route) => json(route, acceptance))
-  await page.route("**/agent-studio/workflow/delivery/archive", (route) => json(route, delivery))
-  await page.route("**/agent-studio/format/report", (route) =>
+  await page.route(`${server}/agent-studio/workflow/acceptance`, (route) => json(route, acceptance))
+  await page.route(`${server}/agent-studio/workflow/delivery/archive`, (route) => json(route, delivery))
+  await page.route(`${server}/agent-studio/format/report`, (route) =>
     json(route, {
       generatedAt: "2026-04-26T08:29:00.000Z",
       sampleCount: 1,
@@ -357,7 +369,7 @@ async function setup(page: Page, opts: LaunchOptions) {
       },
     }),
   )
-  await page.route("**/agent-studio/wiki/status", (route) =>
+  await page.route(`${server}/agent-studio/wiki/status`, (route) =>
     json(route, {
       pageCount: 8,
       rawCount: 5,
@@ -378,7 +390,7 @@ async function setup(page: Page, opts: LaunchOptions) {
       logs: [],
     }),
   )
-  await page.route("**/agent-studio/wiki/report?*", (route) =>
+  await page.route(`${server}/agent-studio/wiki/report?*`, (route) =>
     json(route, {
       kind: "format",
       path: artifact.markdownPath,
@@ -387,20 +399,22 @@ async function setup(page: Page, opts: LaunchOptions) {
       content: "# 格式样本覆盖\n\nCPIII 平差样本通过。",
     }),
   )
-  await page.route("**/agent-studio/list", (route) => json(route, agents))
-  await page.route("**/agent-studio/chief_manager", (route) => {
+  await page.route(`${server}/agent-studio/list`, (route) => json(route, agents))
+  await page.route(`${server}/agent-studio/tool/list`, (route) => json(route, tools))
+  await page.route(`${server}/agent-studio/skill/list`, (route) => json(route, skills))
+  await page.route(`${server}/agent-studio/chief_manager`, (route) => {
     if (route.request().method() === "PUT") return json(route, true)
     return json(route, { ...agents[0], rawMarkdown: "---\nname: chief_manager\n---\n你是 Railwise 总负责人。" })
   })
-  await page.route("**/mcp", (route) => json(route, mcp))
-  await page.route("**/command", (route) => json(route, commands))
-  await page.route("**/templates/list", (route) => json(route, templates))
-  await page.route("**/session/workflow-e2e/message*", (route) => json(route, messages))
-  await page.route("**/session/workflow-e2e/todo*", (route) => json(route, []))
-  await page.route("**/session/workflow-e2e/diff*", (route) => json(route, []))
-  await page.route("**/session/workflow-e2e*", (route) => json(route, session))
-  await page.route("**/session/*/prompt_async", (route) => json(route, { ok: true }))
-  await page.route("**/session", (route) => json(route, { id: "queue-e2e" }))
+  await page.route(`${server}/mcp`, (route) => json(route, mcp))
+  await page.route(`${server}/command`, (route) => json(route, commands))
+  await page.route(`${server}/templates/list`, (route) => json(route, templates))
+  await page.route(`${server}/session/workflow-e2e/message*`, (route) => json(route, messages))
+  await page.route(`${server}/session/workflow-e2e/todo*`, (route) => json(route, []))
+  await page.route(`${server}/session/workflow-e2e/diff*`, (route) => json(route, []))
+  await page.route(`${server}/session/workflow-e2e*`, (route) => json(route, session))
+  await page.route(`${server}/session/*/prompt_async`, (route) => json(route, { ok: true }))
+  await page.route(`${server}/session`, (route) => json(route, { id: "queue-e2e" }))
 
   await page.addInitScript(
     (input) => {
@@ -421,6 +435,15 @@ async function setup(page: Page, opts: LaunchOptions) {
       const win = window as HarnessWindow
       const callbacks = new Map<number, (data: unknown) => unknown>()
       let next = 1
+      if (input.debug) {
+        window.addEventListener("error", (event) => {
+          console.log("[browser:window-error]", event.message, event.filename, event.lineno)
+        })
+        window.addEventListener("unhandledrejection", (event) => {
+          const reason = event.reason
+          console.log("[browser:unhandled]", reason?.stack ?? reason?.message ?? String(reason))
+        })
+      }
       win.__RAILWISE__ = { ...(win.__RAILWISE__ ?? {}), browserHarness: true, updatesEnabled: true }
       win.__TAURI_OS_PLUGIN_INTERNALS__ = {
         arch: "x86_64",
@@ -477,7 +500,6 @@ async function setup(page: Page, opts: LaunchOptions) {
         },
         unregisterCallback: (id) => callbacks.delete(id),
       }
-      localStorage.setItem("rw_dashboard_cache", JSON.stringify(input.summary))
       if (input.workspace.length > 0) {
         localStorage.setItem(
           "rw_workspace_recent",
@@ -492,7 +514,7 @@ async function setup(page: Page, opts: LaunchOptions) {
         )
       }
     },
-    { csv, dxf, server, summary, workspace: opts.workspaceFiles ?? [] },
+    { csv, dxf, server, workspace: opts.workspaceFiles ?? [], debug: process.env.RW_E2E_DEBUG === "1" },
   )
 }
 

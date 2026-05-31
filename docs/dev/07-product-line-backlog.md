@@ -99,13 +99,13 @@ cd packages/railwise && bun test --timeout 30000 test/cli test/server
 ### CL3 CLI Documentation
 
 - [x] README CLI quickstart 只讲安装、模型、配置、命令和 CI。
-- [x] 不混入 Desktop dashboard、Workspace、installer、updater 承诺。
+- [x] 不混入 Desktop Workspace、Agent Studio、installer、updater 承诺。
 - [x] CLI 命令边界审查记录见 [09-cli-boundary-audit.md](./09-cli-boundary-audit.md)。
 
 验收：
 
 ```bash
-rg -n "Desktop|dashboard|workspace|installer|updater" docs/user README.md
+rg -n "Desktop|workspace|Agent Studio|installer|updater" docs/user README.md
 ```
 
 命中必须是有意说明产品边界，而不是 CLI 功能承诺。

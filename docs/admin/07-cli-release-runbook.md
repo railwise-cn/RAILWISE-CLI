@@ -37,7 +37,7 @@
 cd packages/railwise && bun run typecheck
 cd packages/railwise && bun test --timeout 30000
 cd packages/sdk/js && bun run typecheck
-rg -n "Desktop|dashboard|workspace|installer|updater|notarization|codesign" docs/user README.md
+rg -n "Desktop|workspace|Agent Studio|installer|updater|notarization|codesign" docs/user README.md
 ```
 
 最后一条命中必须是产品边界说明，不能是 CLI 功能承诺。

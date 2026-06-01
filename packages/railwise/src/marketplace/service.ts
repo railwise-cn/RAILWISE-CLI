@@ -12,6 +12,16 @@ const State = z
   .catch({ enabled: {} })
 const file = path.join(Global.Path.state, "marketplace.json")
 const enabled = new Map<string, boolean>()
+const tools: Record<string, string> = {
+  bash: "railwise.mcp.local_tools",
+  edit: "railwise.mcp.local_tools",
+  write: "railwise.mcp.local_tools",
+  apply_patch: "railwise.mcp.local_tools",
+  read: "railwise.tool.file_reader",
+  glob: "railwise.tool.file_reader",
+  grep: "railwise.tool.file_reader",
+  skill: "railwise.skill.survey_review",
+}
 
 async function load() {
   return State.parse(await Bun.file(file).json().catch(() => ({})))
@@ -36,6 +46,20 @@ export namespace Marketplace {
 
   export function get(id: string) {
     return list().find((item) => item.id === id)
+  }
+
+  export function isEnabled(id: string) {
+    return get(id)?.enabled ?? false
+  }
+
+  export function toolEnabled(id: string) {
+    const capability = tools[id]
+    if (!capability) return true
+    return isEnabled(capability)
+  }
+
+  export function mcpEnabled() {
+    return isEnabled("railwise.mcp.local_tools")
   }
 
   async function save() {

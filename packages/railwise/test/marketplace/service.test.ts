@@ -38,6 +38,22 @@ describe("Marketplace service", () => {
     expect(Marketplace.get("railwise.mcp.local_tools")?.enabled).toBe(false)
   })
 
+  test("maps desktop tool access to marketplace capabilities", async () => {
+    expect(Marketplace.toolEnabled("read")).toBe(true)
+    expect(Marketplace.toolEnabled("bash")).toBe(false)
+    expect(Marketplace.mcpEnabled()).toBe(false)
+
+    await Marketplace.setEnabled("railwise.mcp.local_tools", true)
+
+    expect(Marketplace.toolEnabled("bash")).toBe(true)
+    expect(Marketplace.mcpEnabled()).toBe(true)
+
+    await Marketplace.setEnabled("railwise.tool.file_reader", false)
+
+    expect(Marketplace.toolEnabled("read")).toBe(false)
+    expect(Marketplace.toolEnabled("unknown_extension")).toBe(true)
+  })
+
   test("restores enablement from the local marketplace state file", async () => {
     await Filesystem.writeJson(path.join(Global.Path.state, "marketplace.json"), {
       enabled: {

@@ -227,8 +227,8 @@ export default function AgentsPage() {
       title: "Harness Profile",
       status: "本地安全模式",
       description: "Harness 管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际执行层。",
-      target: "/home",
-      action: "打开工作台",
+      target: "/harness",
+      action: "查看 Harness",
     },
   ])
   const activePackage = createMemo(() => market().find((item) => item.id === activeMarket()) ?? market()[0])

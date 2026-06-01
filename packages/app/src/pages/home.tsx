@@ -214,13 +214,17 @@ export default function Home() {
             </div>
 
             <section class="mt-4 grid gap-2 md:grid-cols-3" data-testid="home-harness-panel">
-              <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+              <button
+                type="button"
+                class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
+                onClick={() => navigate("/harness")}
+              >
                 <div class="flex items-center gap-2 text-12-medium text-text-strong">
                   <Icon name="circle-ban-sign" size="small" />
                   本地安全模式
                 </div>
                 <div class="mt-1 text-12-regular text-text-weak">高风险动作先确认</div>
-              </div>
+              </button>
               <div class="rounded-md border border-border-subtle bg-surface-element p-3">
                 <div class="text-12-medium text-text-strong">模型</div>
                 <div class="mt-1 truncate text-12-regular text-text-weak">{modelLabel()}</div>

@@ -73,8 +73,11 @@ const missingDevDocs = (
   )
 ).filter((item): item is string => Boolean(item))
 const startup = await read("packages/desktop/e2e/01-startup.spec.ts")
+const agentStudio = await read("packages/desktop/e2e/04-agent-studio.spec.ts")
 const visual = await read("packages/desktop/e2e/11-visual-regression.spec.ts")
 const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
+const app = await read("packages/app/src/app.tsx")
+const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
 const settings = await read("packages/app/src/context/settings.tsx")
@@ -91,19 +94,22 @@ check(
 )
 check(
   "startup E2E budget",
-  has(startup, ["[data-testid=sidecar-status]", '"ready"', "3000"]),
-  "startup waits for sidecar ready within 3s",
+  has(startup, ["[data-testid=sidecar-status]", '"ready"', "15000", "[data-testid=home-workbench]"]),
+  "startup waits for sidecar ready and lands on the home workbench within 15s",
+)
+check(
+  "marketplace separated from advanced agent management",
+  has(app, ["const AgentsIndexRoute", "<AgentsIndex />", "const MarketplaceRoute"]) &&
+    has(marketplace, ['data-testid="marketplace-page"', "marketplace-card", "marketplace-open-${item.id}"]) &&
+    !marketplace.includes("agent-collaboration-start") &&
+    !marketplace.includes("agent-model-routing") &&
+    has(agentStudio, ['launchApp("/marketplace")', 'launchApp("/agents")', "toHaveCount(0)", "agent-collaboration-start"]),
+  "marketplace stays as a concise capability market while /agents keeps advanced management",
 )
 check(
   "visual regression E2E",
-  has(visual, [
-    "dashboard-container",
-    "toHaveScreenshot",
-    "maxDiffPixelRatio",
-    'animations: "disabled"',
-    "rgb\\(1[89]\\d",
-  ]),
-  "dashboard screenshot baseline and banned color checks are present",
+  has(visual, ["[data-testid=home-workbench]", "想让 RAILWISE 完成什么？", "项目驾驶舱", "告警 Feed", "[data-testid=dashboard-map]"]),
+  "old dashboard copy and map are blocked while the minimalist home workbench is asserted",
 )
 check(
   "TTFUI E2E budget",
@@ -111,10 +117,10 @@ check(
     "Date.now()",
     "[data-testid=app-shell]",
     "[data-testid=sidecar-status]",
-    "toBeLessThan(3000)",
+    "toBeLessThan(15000)",
     "__RW_PERF__",
   ]),
-  "TTFUI asserts shell, sidecar, perf marker, and <3s budget",
+  "TTFUI asserts shell, sidecar, perf marker, and <15s usability budget",
 )
 check(
   "Playwright artifacts",

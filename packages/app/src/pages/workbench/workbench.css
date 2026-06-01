@@ -371,6 +371,14 @@
   background: #0f4ed3;
 }
 
+.workbench-resume a[data-state="warn"] {
+  background: #b54708;
+}
+
+.workbench-resume a[data-state="warn"]:hover {
+  background: #93370d;
+}
+
 .workbench-sessions {
   display: grid;
   gap: 8px;

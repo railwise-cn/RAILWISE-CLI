@@ -20,6 +20,7 @@ import {
   promptExamples,
   recentSessions,
   recentWorkspaces,
+  resumeActionLabel,
   runtimeLabel,
   sessionRuntimeLabel,
   sessionTitle,
@@ -271,7 +272,9 @@ export default function WorkbenchPage() {
                       {runtimeLabel(status())} · {time.format(session().time.updated ?? session().time.created)} 更新
                     </small>
                   </div>
-                  <A href={sessionHref(session().id)}>继续会话</A>
+                  <A href={sessionHref(session().id)} data-state={status()?.pendingPermissionCount ? "warn" : "ready"}>
+                    {resumeActionLabel(status())}
+                  </A>
                 </div>
               )}
             </Show>

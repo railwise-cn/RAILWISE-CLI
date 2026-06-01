@@ -1,8 +1,9 @@
 import "./workbench.css"
 import { A, useNavigate } from "@solidjs/router"
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
+import { createEffect, createMemo, createResource, createSignal, For, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
+import { useGlobalSDK } from "@/context/global-sdk"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLayout } from "@/context/layout"
 import { usePlatform } from "@/context/platform"
@@ -26,11 +27,11 @@ const agents = [
   { value: "norm_librarian", label: "规范资料员", note: "规范条文、交付清单与引用" },
 ] as const
 
-const events = [
-  { title: "会话准备", detail: "选择资料目录后建立本地上下文", tone: "ready" },
-  { title: "能力调度", detail: "按任务加载智能体、Skills 与工具", tone: "idle" },
-  { title: "权限门禁", detail: "文件写入、命令执行前会明确请求确认", tone: "safe" },
-] as const
+const modeLabel = {
+  safe: "本地安全模式",
+  ask: "等待确认",
+  auto: "自动执行",
+} as const
 
 export default function WorkbenchPage() {
   const dialog = useDialog()
@@ -38,11 +39,18 @@ export default function WorkbenchPage() {
   const navigate = useNavigate()
   const platform = usePlatform()
   const server = useServer()
+  const sdk = useGlobalSDK()
   const sync = useGlobalSync()
   const [directory, setDirectory] = createSignal("")
   const [manual, setManual] = createSignal(false)
   const [agent, setAgent] = createSignal(defaultAgent)
   const [draft, setDraft] = createSignal("")
+  const [status] = createResource(directory, (value) =>
+    sdk.client.harness
+      .status(value ? { directory: value } : undefined)
+      .then((result) => result.data)
+      .catch(() => undefined),
+  )
 
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
   const hasWorkspace = createMemo(() => directory().trim().length > 0)
@@ -50,6 +58,22 @@ export default function WorkbenchPage() {
   const workspace = createMemo(() => compactPath({ value: directory(), home: sync.data.path.home }))
   const selected = createMemo(() => agents.find((item) => item.value === agent()) ?? agents[0])
   const canStart = createMemo(() => hasWorkspace() && hasPrompt())
+  const capability = createMemo(() =>
+    status()?.capabilityCount ? `${status()!.capabilityCount} 项已启用` : "基础能力加载中",
+  )
+  const permission = createMemo(() =>
+    status()?.pendingPermissionCount ? `${status()!.pendingPermissionCount} 个请求等待处理` : "当前没有危险权限请求",
+  )
+  const runtime = createMemo(() => [
+    { title: "会话准备", detail: hasWorkspace() ? workspace() : "选择资料目录后建立本地上下文", tone: "ready" },
+    { title: "能力调度", detail: capability(), tone: "idle" },
+    { title: "权限门禁", detail: permission(), tone: status()?.pendingPermissionCount ? "warn" : "safe" },
+    {
+      title: "工具执行",
+      detail: status()?.runningToolCount ? `${status()!.runningToolCount} 个工具正在运行` : "当前无运行工具",
+      tone: status()?.runningToolCount ? "ready" : "idle",
+    },
+  ])
 
   const updateDirectory = (value: string) => {
     setManual(true)
@@ -220,11 +244,11 @@ export default function WorkbenchPage() {
           <dl class="workbench-facts">
             <div>
               <dt>运行模式</dt>
-              <dd>本地安全模式</dd>
+              <dd>{status() ? modeLabel[status()!.mode] : "连接中"}</dd>
             </div>
             <div>
               <dt>当前模型</dt>
-              <dd>{defaultModel}</dd>
+              <dd>{status()?.model ?? defaultModel}</dd>
             </div>
             <div>
               <dt>工作区</dt>
@@ -232,13 +256,14 @@ export default function WorkbenchPage() {
             </div>
             <div>
               <dt>权限状态</dt>
-              <dd>当前没有危险权限请求</dd>
+              <dd>{permission()}</dd>
             </div>
           </dl>
         </section>
 
         <section>
           <h2>能力集</h2>
+          <p>{capability()}</p>
           <div class="workbench-capabilities">
             <span>主控智能体</span>
             <span>测绘资料检查</span>
@@ -250,7 +275,7 @@ export default function WorkbenchPage() {
         <section>
           <h2>运行轨迹</h2>
           <ol class="workbench-timeline">
-            <For each={events}>
+            <For each={runtime()}>
               {(event) => (
                 <li data-tone={event.tone}>
                   <strong>{event.title}</strong>

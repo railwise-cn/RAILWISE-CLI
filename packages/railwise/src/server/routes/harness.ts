@@ -1,8 +1,7 @@
 import { Hono } from "hono"
 import { describeRoute, resolver, validator } from "hono-openapi"
 import z from "zod"
-import { HarnessEvent, HarnessStatus } from "../../harness"
-import { Marketplace } from "../../marketplace"
+import { Harness, HarnessEvent, HarnessStatus } from "../../harness"
 import { lazy } from "../../util/lazy"
 import { errors } from "../error"
 
@@ -32,15 +31,7 @@ export const HarnessRoutes = lazy(() =>
           ...errors(500),
         },
       }),
-      async (c) =>
-        c.json(
-          HarnessStatus.parse({
-            mode: "safe",
-            capabilityCount: Marketplace.list().filter((item) => item.enabled).length,
-            pendingPermissionCount: 0,
-            runningToolCount: 0,
-          }),
-        ),
+      async (c) => c.json(await Harness.status()),
     )
     .get(
       "/session/:sessionID/timeline",
@@ -61,7 +52,7 @@ export const HarnessRoutes = lazy(() =>
         },
       }),
       validator("param", z.object({ sessionID: z.string() })),
-      async (c) => c.json({ data: [] }),
+      async (c) => c.json({ data: await Harness.timeline(c.req.valid("param")) }),
     )
     .post(
       "/session/:sessionID/permission/:permissionID",
@@ -82,6 +73,6 @@ export const HarnessRoutes = lazy(() =>
         },
       }),
       validator("param", z.object({ sessionID: z.string(), permissionID: z.string() })),
-      async (c) => c.json(true),
+      async (c) => c.json(await Harness.resolvePermission(c.req.valid("param"))),
     ),
 )

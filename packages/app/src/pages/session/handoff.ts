@@ -4,6 +4,7 @@ import type { WorkflowRunArtifact } from "@/types/agent-studio"
 export type HandoffSession = {
   prompt: string
   files: Record<string, SelectedLineRange | null>
+  autoSubmit?: boolean
   workflowId?: string
   workflowName?: string
   artifacts?: WorkflowRunArtifact[]

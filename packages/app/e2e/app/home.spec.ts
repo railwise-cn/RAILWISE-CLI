@@ -1,4 +1,5 @@
 import { test, expect } from "../fixtures"
+import { seedProjects, sessionIDFromUrl } from "../actions"
 
 test("home renders the Workbench entrypoints", async ({ page }) => {
   await page.goto("/")
@@ -25,4 +26,35 @@ test("Workbench navigation opens capability pages", async ({ page }) => {
   await page.getByRole("link", { name: "Harness" }).click()
   await expect(page.getByTestId("harness-page")).toBeVisible()
   await expect(page.getByRole("heading", { name: "运行时控制台" })).toBeVisible()
+})
+
+test("Workbench starts a real submitted session from the task box", async ({ page, sdk, directory }) => {
+  test.setTimeout(120_000)
+  await seedProjects(page, { directory })
+  await page.goto("/")
+
+  const token = `E2E_OK_${Date.now()}`
+  await page
+    .getByPlaceholder("例如：检查当前线路复测资料，列出缺失文件并给出下一步执行计划。")
+    .fill(`Reply with exactly: ${token}`)
+  await page.getByRole("button", { name: "开始会话" }).click()
+  await expect(page).toHaveURL(/\/session\/[^/?#]+/, { timeout: 30_000 })
+
+  const sessionID = sessionIDFromUrl(page.url())
+  if (!sessionID) throw new Error(`Failed to parse session id from url: ${page.url()}`)
+
+  await expect
+    .poll(
+      async () => {
+        const messages = await sdk.session.messages({ sessionID, limit: 50 }).then((result) => result.data ?? [])
+        return messages
+          .filter((message) => message.info.role === "user")
+          .flatMap((message) => message.parts)
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join("\n")
+      },
+      { timeout: 30_000 },
+    )
+    .toContain(token)
 })

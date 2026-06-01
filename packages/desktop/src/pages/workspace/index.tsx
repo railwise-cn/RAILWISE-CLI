@@ -179,7 +179,7 @@ export default function WorkspacePage() {
           <A class="workspace-open-link" href="/workspace/diff">
             版本对比
           </A>
-          <A class="workspace-open-link" href="/agents">
+          <A class="workspace-open-link" href="/home">
             智能体
           </A>
         </div>

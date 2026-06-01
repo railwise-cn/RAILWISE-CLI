@@ -153,4 +153,50 @@ describe("Harness service", () => {
       },
     })
   })
+
+  test("scopes pending permissions to the requested workspace status", async () => {
+    await using tmp = await tmpdir({ git: true })
+    await Instance.provide({
+      directory: tmp.path,
+      fn: async () => {
+        const target = await Session.createNext({
+          directory: tmp.path,
+          title: "目标工作区",
+        })
+        const other = await Session.createNext({
+          directory: `${tmp.path}/other`,
+          title: "其他工作区",
+        })
+        const asks = [
+          PermissionNext.ask({
+            id: Identifier.ascending("permission"),
+            sessionID: target.id,
+            permission: "bash",
+            patterns: ["cat target"],
+            metadata: {},
+            always: [],
+            ruleset: [],
+          }),
+          PermissionNext.ask({
+            id: Identifier.ascending("permission"),
+            sessionID: other.id,
+            permission: "bash",
+            patterns: ["cat other"],
+            metadata: {},
+            always: [],
+            ruleset: [],
+          }),
+        ]
+
+        expect((await Harness.status()).pendingPermissionCount).toBe(2)
+        expect((await Harness.status({ directory: tmp.path })).pendingPermissionCount).toBe(1)
+        expect((await Harness.status({ sessionID: target.id })).pendingPermissionCount).toBe(1)
+
+        for (const permission of await PermissionNext.list()) {
+          await Harness.resolvePermission({ permissionID: permission.id })
+        }
+        await Promise.all(asks)
+      },
+    })
+  })
 })

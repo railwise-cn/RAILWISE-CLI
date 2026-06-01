@@ -31,7 +31,8 @@ export const HarnessRoutes = lazy(() =>
           ...errors(500),
         },
       }),
-      async (c) => c.json(await Harness.status()),
+      validator("query", z.object({ directory: z.string().optional() })),
+      async (c) => c.json(await Harness.status(c.req.valid("query"))),
     )
     .get(
       "/session/:sessionID/timeline",

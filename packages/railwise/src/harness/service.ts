@@ -81,16 +81,16 @@ export namespace Harness {
     return PermissionNext.list().catch(() => [])
   }
 
-  async function latest() {
+  async function latest(input?: { directory?: string }) {
     try {
-      return Array.from(Session.list({ limit: 1 }))[0]
+      return Array.from(Session.list({ directory: input?.directory, limit: 1 }))[0]
     } catch {
       return undefined
     }
   }
 
-  export async function status(input?: { sessionID?: string }) {
-    const session = input?.sessionID ? await Session.get(input.sessionID).catch(() => undefined) : await latest()
+  export async function status(input?: { directory?: string; sessionID?: string }) {
+    const session = input?.sessionID ? await Session.get(input.sessionID).catch(() => undefined) : await latest(input)
     const messages = session ? await Session.messages({ sessionID: session.id }).catch(() => []) : []
     const assistant = messages
       .map((item) => item.info)
@@ -100,7 +100,8 @@ export namespace Harness {
       .flatMap((item) => item.parts)
       .filter((part): part is MessageV2.ToolPart => part.type === "tool")
       .filter((part) => part.state.status === "running").length
-    const pending = await permissions()
+    const list = await permissions()
+    const pending = input?.directory || input?.sessionID ? list.filter((item) => item.sessionID === session?.id) : list
 
     return HarnessStatus.parse({
       mode: pending.length > 0 ? "ask" : "safe",

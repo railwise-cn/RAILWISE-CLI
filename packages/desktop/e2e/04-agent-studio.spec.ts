@@ -36,4 +36,5 @@ test("Harness 可以作为桌面独立路由打开", async ({ launchApp }) => {
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page.getByRole("heading", { name: "执行层状态" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-permissions]")).toContainText("当前没有等待审批的动作")
+  await expect(page.locator("[data-testid=harness-timeline]")).toContainText("还没有会话执行记录")
 })

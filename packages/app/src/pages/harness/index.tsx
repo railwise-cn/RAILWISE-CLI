@@ -1,7 +1,8 @@
 import { A } from "@solidjs/router"
 import { createMemo, createSignal, For, Show } from "solid-js"
-import type { PermissionRequest } from "@railwise/sdk/v2/client"
+import type { Part, PermissionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
 import { base64Encode } from "@railwise/util/encode"
+import { DateTime } from "luxon"
 import { Button } from "@railwise/ui/button"
 import { Icon, type IconProps } from "@railwise/ui/icon"
 import { showToast } from "@railwise/ui/toast"
@@ -18,6 +19,25 @@ type PermissionItem = {
 }
 
 type Reply = "once" | "always" | "reject"
+
+type ProjectStore = {
+  directory: string
+  store: ReturnType<ReturnType<typeof useGlobalSync>["child"]>[0]
+}
+
+type TimelineItem = {
+  directory: string
+  session: Session
+  status: SessionStatus
+  permission: number
+  question: number
+  todo: Todo[]
+  tools: {
+    running: number
+    errored: number
+    completed: number
+  }
+}
 
 function message(error: unknown) {
   if (error instanceof Error) return error.message
@@ -40,6 +60,29 @@ function metadata(request: PermissionRequest) {
     .slice(0, 3)
 }
 
+function statusLabel(status: SessionStatus) {
+  if (status.type === "busy") return "运行中"
+  if (status.type === "retry") return `重试中 ${status.attempt}`
+  return "空闲"
+}
+
+function timelineLabel(item: TimelineItem) {
+  if (item.permission > 0) return `${item.permission} 个权限待审批`
+  if (item.question > 0) return `${item.question} 个问题待回答`
+  if (item.tools.running > 0) return `${item.tools.running} 个工具运行中`
+  if (item.tools.errored > 0) return `${item.tools.errored} 个工具失败`
+  const active = item.todo.filter((todo) => todo.status === "in_progress").length
+  if (active > 0) return `${active} 个任务进行中`
+  const pending = item.todo.filter((todo) => todo.status === "pending").length
+  if (pending > 0) return `${pending} 个任务待处理`
+  if (item.tools.completed > 0) return `${item.tools.completed} 个工具已完成`
+  return "等待下一步输入"
+}
+
+function isToolPart(part: Part): part is ToolPart {
+  return part.type === "tool"
+}
+
 export default function HarnessPage() {
   const sync = useGlobalSync()
   const sdk = useGlobalSDK()
@@ -55,20 +98,49 @@ export default function HarnessPage() {
       .sort((a, b) => (b.time.updated ?? b.time.created) - (a.time.updated ?? a.time.created))
       .slice(0, 5),
   )
-  const permissions = createMemo<PermissionItem[]>(() => {
+  const stores = createMemo<ProjectStore[]>(() => {
     const seen = new Set<string>()
     return recent().flatMap((project) => {
       if (!project.worktree || seen.has(project.worktree)) return []
       seen.add(project.worktree)
-      const child = sync.child(project.worktree)
-      return Object.values(child[0].permission).flatMap((requests) =>
-        requests.map((request) => ({
-          directory: project.worktree,
-          request,
-        })),
-      )
+      return [{ directory: project.worktree, store: sync.child(project.worktree)[0] }]
     })
   })
+  const permissions = createMemo<PermissionItem[]>(() =>
+    stores().flatMap((project) =>
+      Object.values(project.store.permission).flatMap((requests) =>
+        requests.map((request) => ({
+          directory: project.directory,
+          request,
+        })),
+      ),
+    ),
+  )
+  const timeline = createMemo<TimelineItem[]>(() =>
+    stores()
+      .flatMap((project) =>
+        project.store.session.map((session) => {
+          const parts = Object.values(project.store.part)
+            .flat()
+            .filter((part): part is ToolPart => part.sessionID === session.id && isToolPart(part))
+          return {
+            directory: project.directory,
+            session,
+            status: project.store.session_status[session.id] ?? { type: "idle" as const },
+            permission: project.store.permission[session.id]?.length ?? 0,
+            question: project.store.question[session.id]?.length ?? 0,
+            todo: project.store.todo[session.id] ?? [],
+            tools: {
+              running: parts.filter((part) => part.state.status === "running").length,
+              errored: parts.filter((part) => part.state.status === "error").length,
+              completed: parts.filter((part) => part.state.status === "completed").length,
+            },
+          }
+        }),
+      )
+      .sort((a, b) => b.session.time.updated - a.session.time.updated)
+      .slice(0, 8),
+  )
   const mode = createMemo(() => (server.isLocal() ? "本地执行" : "远程连接"))
   const health = createMemo(() => {
     const value = server.healthy()
@@ -251,6 +323,58 @@ export default function HarnessPage() {
                       </Button>
                     </div>
                   </div>
+                )}
+              </For>
+            </div>
+          </Show>
+        </section>
+
+        <section class="rounded-lg border border-border-subtle bg-surface-panel p-4" data-testid="harness-timeline">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-15-medium text-text-strong">执行时间线</h2>
+              <p class="mt-1 text-12-regular text-text-weak">按最近项目聚合会话状态、权限、问题、任务和工具执行。</p>
+            </div>
+            <span class="rounded-md bg-surface-element px-2 py-1 text-12-medium text-text-weak">最近 {timeline().length} 条</span>
+          </div>
+
+          <Show
+            when={timeline().length > 0}
+            fallback={<div class="rounded-md bg-surface-element px-3 py-4 text-13-regular text-text-weak">还没有会话执行记录。</div>}
+          >
+            <div class="grid gap-2">
+              <For each={timeline()}>
+                {(item) => (
+                  <A
+                    href={`/${base64Encode(item.directory)}/session/${item.session.id}`}
+                    class="rounded-md border border-border-subtle bg-surface-element p-3 hover:bg-surface-raised-base-hover"
+                    data-testid="harness-timeline-item"
+                  >
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="truncate text-13-medium text-text-strong">{item.session.title || "未命名会话"}</span>
+                          <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{statusLabel(item.status)}</span>
+                        </div>
+                        <div class="mt-1 truncate text-12-mono text-text-weak" title={item.directory}>
+                          {compact(item.directory, sync.data.path.home)}
+                        </div>
+                      </div>
+                      <div class="text-right text-12-regular text-text-weak">
+                        {DateTime.fromMillis(item.session.time.updated).toRelative()}
+                      </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-2 text-12-regular text-text-weak">
+                      <span class="rounded bg-surface-panel px-2 py-1">{timelineLabel(item)}</span>
+                      <Show when={item.session.summary}>
+                        {(summary) => (
+                          <span class="rounded bg-surface-panel px-2 py-1">
+                            {summary().files} 文件 / +{summary().additions} / -{summary().deletions}
+                          </span>
+                        )}
+                      </Show>
+                    </div>
+                  </A>
                 )}
               </For>
             </div>

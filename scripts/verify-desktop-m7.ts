@@ -78,7 +78,10 @@ const e2eHelper = await read("packages/desktop/e2e/helpers/app.ts")
 const visual = await read("packages/desktop/e2e/11-visual-regression.spec.ts")
 const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
 const app = await read("packages/app/src/app.tsx")
+const home = await read("packages/app/src/pages/home.tsx")
 const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
+const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
+const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
 const settings = await read("packages/app/src/context/settings.tsx")
@@ -97,6 +100,32 @@ check(
   "startup E2E budget",
   has(startup, ["[data-testid=sidecar-status]", '"ready"', "15000", "[data-testid=home-workbench]"]),
   "startup waits for sidecar ready and lands on the home workbench within 15s",
+)
+check(
+  "home collaboration handoff",
+  has(home, [
+    'data-testid="home-project-directory"',
+    'data-testid="home-task-input"',
+    'data-testid="home-start-session"',
+    "collaborationTarget",
+    "setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })",
+  ]) &&
+    has(sessionComposer, [
+      "handoffAgent",
+      "handoffPromptParts",
+      "local.agent.set(agent)",
+      'data-testid="session-collaboration-panel"',
+    ]) &&
+    has(promptInput, ['data-testid="session-prompt-input"']) &&
+    has(startup, [
+      "[data-testid=home-project-directory]",
+      "[data-testid=home-task-input]",
+      "[data-testid=home-start-session]",
+      "[data-testid=session-collaboration-panel]",
+      "[data-testid=session-prompt-input]",
+      "chief_manager",
+    ]),
+  "home creates a chief_manager handoff and the session composer receives it as the primary collaboration path",
 )
 check(
   "marketplace separated from advanced agent management",

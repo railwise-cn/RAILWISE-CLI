@@ -266,7 +266,10 @@ export default function WorkbenchPage() {
                       <strong>{sessionTitle(session)}</strong>
                       <span>{time.format(session.time.updated ?? session.time.created)}</span>
                     </A>
-                    <A href={`/harness?sessionID=${session.id}`} aria-label={`查看 ${sessionTitle(session)} 的运行轨迹`}>
+                    <A
+                      href={`/harness?sessionID=${session.id}`}
+                      aria-label={`查看 ${sessionTitle(session)} 的运行轨迹`}
+                    >
                       轨迹
                     </A>
                   </li>

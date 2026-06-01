@@ -7,7 +7,7 @@ import { PromptInput } from "@/components/prompt-input"
 import { TemplateDrawer, useTemplateDrawerShortcut } from "@/components/session/template-drawer"
 import { useLanguage } from "@/context/language"
 import { useLocal } from "@/context/local"
-import { usePrompt } from "@/context/prompt"
+import { usePrompt, type Prompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { useAgentStudioApi } from "@/pages/agents/api"
@@ -24,6 +24,28 @@ import {
 } from "@/pages/session/composer/collaboration"
 import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
 import type { SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
+
+function agentFromPrompt(value?: string) {
+  return value?.trimStart().match(/^@([A-Za-z0-9_-]+)/)?.[1]
+}
+
+function promptLength(parts: Prompt) {
+  return parts.reduce((sum, part) => ("content" in part ? sum + part.content.length : sum), 0)
+}
+
+function handoffPromptParts(agent: string | undefined, value: string): Prompt {
+  const text = value.trim()
+  if (!agent) return [{ type: "text", content: text, start: 0, end: text.length }]
+
+  const mention = `@${agent}`
+  const body = text.startsWith(mention) ? text.slice(mention.length) : `\n${text}`
+  const head = { type: "agent" as const, name: agent, content: mention, start: 0, end: mention.length }
+  if (!body) return [head]
+  return [
+    head,
+    { type: "text" as const, content: body, start: mention.length, end: mention.length + body.length },
+  ]
+}
 
 export function SessionComposerRegion(props: {
   state: SessionComposerState
@@ -53,6 +75,7 @@ export function SessionComposerRegion(props: {
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
   const handoff = createMemo(() => getSessionHandoff(sessionKey()))
   const handoffPrompt = createMemo(() => handoff()?.prompt)
+  const handoffAgent = createMemo(() => handoff()?.agent ?? agentFromPrompt(handoffPrompt()))
 
   const previewPrompt = () =>
     prompt
@@ -66,7 +89,7 @@ export function SessionComposerRegion(props: {
       .join("")
       .trim()
 
-  const activeAgent = createMemo(() => local.agent.current()?.name ?? "未选择")
+  const activeAgent = createMemo(() => local.agent.current()?.name ?? handoffAgent() ?? "未选择")
   const agentPalette = createMemo(() => collaborationAgents(sync.data.agent).slice(0, 7))
   const workspaceName = createMemo(() => getFilename(sdk.directory) || sdk.directory)
   const visibleTools = createMemo(() => tools().slice(0, 6))
@@ -85,13 +108,21 @@ export function SessionComposerRegion(props: {
   })
 
   createEffect(() => {
+    const agent = handoffAgent()
+    if (!agent) return
+    if (!local.agent.list().some((item) => item.name === agent)) return
+    local.agent.set(agent)
+  })
+
+  createEffect(() => {
     if (!prompt.ready()) return
     const text = handoffPrompt()?.trim()
     if (!text) return
     const key = sessionKey()
     if (applied() === key) return
     if (prompt.dirty()) return
-    prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
+    const next = handoffPromptParts(handoffAgent(), text)
+    prompt.set(next, promptLength(next))
     setApplied(key)
   })
 

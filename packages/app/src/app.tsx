@@ -60,7 +60,9 @@ const SessionRoute = () => (
 const SessionIndexRoute = () => <Navigate href="session" />
 
 const AgentsIndexRoute = () => (
-  <Navigate href="/marketplace" />
+  <Suspense fallback={<Loading />}>
+    <AgentsIndex />
+  </Suspense>
 )
 
 const MarketplaceRoute = () => (

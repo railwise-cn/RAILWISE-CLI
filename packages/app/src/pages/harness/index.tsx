@@ -1,17 +1,52 @@
 import { A } from "@solidjs/router"
-import { createMemo, For, Show } from "solid-js"
+import { createMemo, createSignal, For, Show } from "solid-js"
+import type { PermissionRequest } from "@railwise/sdk/v2/client"
+import { base64Encode } from "@railwise/util/encode"
+import { Button } from "@railwise/ui/button"
 import { Icon, type IconProps } from "@railwise/ui/icon"
+import { showToast } from "@railwise/ui/toast"
+import { useGlobalSDK } from "@/context/global-sdk"
 import { useGlobalSync } from "@/context/global-sync"
 import { useModels } from "@/context/models"
 import { useServer } from "@/context/server"
 import { useProviders } from "@/hooks/use-providers"
 import { recommendedModel } from "@/pages/agents/collaboration"
 
+type PermissionItem = {
+  directory: string
+  request: PermissionRequest
+}
+
+type Reply = "once" | "always" | "reject"
+
+function message(error: unknown) {
+  if (error instanceof Error) return error.message
+  return String(error)
+}
+
+function compact(value: string, home: string) {
+  if (home && value === home) return "~"
+  if (home && value.startsWith(home + "/")) return "~" + value.slice(home.length)
+  return value
+}
+
+function metadata(request: PermissionRequest) {
+  return Object.entries(request.metadata ?? {})
+    .filter((entry) => entry[1] !== undefined && entry[1] !== null)
+    .map((entry) => ({
+      key: entry[0],
+      value: typeof entry[1] === "object" ? JSON.stringify(entry[1]) : String(entry[1]),
+    }))
+    .slice(0, 3)
+}
+
 export default function HarnessPage() {
   const sync = useGlobalSync()
+  const sdk = useGlobalSDK()
   const server = useServer()
   const providers = useProviders()
   const models = useModels()
+  const [responding, setResponding] = createSignal<Record<string, boolean>>({})
   const connected = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const visible = createMemo(() => models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })))
   const recent = createMemo(() =>
@@ -20,6 +55,20 @@ export default function HarnessPage() {
       .sort((a, b) => (b.time.updated ?? b.time.created) - (a.time.updated ?? a.time.created))
       .slice(0, 5),
   )
+  const permissions = createMemo<PermissionItem[]>(() => {
+    const seen = new Set<string>()
+    return recent().flatMap((project) => {
+      if (!project.worktree || seen.has(project.worktree)) return []
+      seen.add(project.worktree)
+      const child = sync.child(project.worktree)
+      return Object.values(child[0].permission).flatMap((requests) =>
+        requests.map((request) => ({
+          directory: project.worktree,
+          request,
+        })),
+      )
+    })
+  })
   const mode = createMemo(() => (server.isLocal() ? "本地执行" : "远程连接"))
   const health = createMemo(() => {
     const value = server.healthy()
@@ -34,6 +83,7 @@ export default function HarnessPage() {
     if (first) return `${first.provider.name} / ${first.name}`
     return `默认建议 ${recommendedModel}`
   })
+  const gate = createMemo(() => (permissions().length > 0 ? `${permissions().length} 个待审批` : "本地安全模式"))
   const steps = createMemo<Array<{ icon: IconProps["name"]; title: string; value: string; description: string }>>(() => [
     {
       icon: "folder",
@@ -50,7 +100,7 @@ export default function HarnessPage() {
     {
       icon: "circle-ban-sign",
       title: "权限闸门",
-      value: "本地安全模式",
+      value: gate(),
       description: "高风险命令、外部目录和文件写入需要显式确认。",
     },
     {
@@ -60,6 +110,32 @@ export default function HarnessPage() {
       description: "计划、工具调用、权限和产物会进入会话时间线。",
     },
   ])
+
+  function busy(request: PermissionRequest) {
+    return responding()[request.id] ?? false
+  }
+
+  function decide(item: PermissionItem, reply: Reply) {
+    const id = item.request.id
+    if (busy(item.request)) return
+    setResponding((current) => ({ ...current, [id]: true }))
+    void sdk.client.permission
+      .reply({
+        directory: item.directory,
+        requestID: id,
+        reply,
+      })
+      .catch((error) => {
+        showToast({ title: "权限处理失败", description: message(error) })
+      })
+      .finally(() => {
+        setResponding((current) => {
+          const next = { ...current }
+          delete next[id]
+          return next
+        })
+      })
+  }
 
   return (
     <main class="min-h-full px-6 py-5" data-testid="harness-page">
@@ -100,6 +176,85 @@ export default function HarnessPage() {
             <div class="mt-2 text-18-medium text-text-strong">智能体 / 工具 / Skills</div>
             <div class="mt-1 text-12-regular text-text-weak">由能力市场统一管理</div>
           </div>
+        </section>
+
+        <section class="rounded-lg border border-border-subtle bg-surface-panel p-4" data-testid="harness-permissions">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-15-medium text-text-strong">待审批动作</h2>
+              <p class="mt-1 text-12-regular text-text-weak">这里集中处理智能体发起的高风险工具请求。</p>
+            </div>
+            <span class="rounded-md bg-surface-element px-2 py-1 text-12-medium text-text-weak">{gate()}</span>
+          </div>
+
+          <Show
+            when={permissions().length > 0}
+            fallback={<div class="rounded-md bg-surface-element px-3 py-4 text-13-regular text-text-weak">当前没有等待审批的动作。</div>}
+          >
+            <div class="grid gap-2">
+              <For each={permissions()}>
+                {(item) => (
+                  <div class="rounded-md border border-border-subtle bg-surface-element p-3" data-testid="harness-permission-item">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="text-13-medium text-text-strong">{item.request.permission}</span>
+                          <span class="text-12-mono text-text-weak">{item.request.sessionID}</span>
+                        </div>
+                        <div class="mt-1 truncate text-12-mono text-text-weak" title={item.directory}>
+                          {compact(item.directory, sync.data.path.home)}
+                        </div>
+                      </div>
+                      <A
+                        href={`/${base64Encode(item.directory)}/session/${item.request.sessionID}`}
+                        class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-panel"
+                      >
+                        打开会话
+                      </A>
+                    </div>
+
+                    <Show when={item.request.patterns.length > 0}>
+                      <div class="mt-3 flex flex-wrap gap-2">
+                        <For each={item.request.patterns}>
+                          {(pattern) => <code class="rounded bg-surface-panel px-2 py-1 text-12-mono text-text-strong break-all">{pattern}</code>}
+                        </For>
+                      </div>
+                    </Show>
+
+                    <Show when={metadata(item.request).length > 0}>
+                      <div class="mt-3 grid gap-1 text-12-regular text-text-weak">
+                        <For each={metadata(item.request)}>
+                          {(entry) => (
+                            <div class="flex gap-2">
+                              <span class="shrink-0 text-text-strong">{entry.key}</span>
+                              <span class="truncate">{entry.value}</span>
+                            </div>
+                          )}
+                        </For>
+                      </div>
+                    </Show>
+
+                    <div class="mt-3 flex flex-wrap justify-end gap-2">
+                      <Button variant="ghost" size="small" disabled={busy(item.request)} onClick={() => decide(item, "reject")}>
+                        拒绝
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="small"
+                        disabled={busy(item.request) || item.request.always.length === 0}
+                        onClick={() => decide(item, "always")}
+                      >
+                        始终允许
+                      </Button>
+                      <Button variant="primary" size="small" disabled={busy(item.request)} onClick={() => decide(item, "once")}>
+                        允许一次
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </For>
+            </div>
+          </Show>
         </section>
 
         <section class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">

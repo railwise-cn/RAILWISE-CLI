@@ -3,7 +3,9 @@ import {
   compactPath,
   emptyPrompt,
   primaryActionLabel,
+  recentSessions,
   recentWorkspaces,
+  sessionTitle,
   shouldShowZeroCounter,
 } from "./workbench-state"
 
@@ -32,5 +34,20 @@ describe("workbench state", () => {
         { worktree: "/", time: { created: 1, updated: 40 } },
       ]).map((project) => project.worktree),
     ).toEqual(["/tmp/b", "/tmp/a"])
+  })
+
+  test("shows recent root sessions without archived or child sessions", () => {
+    expect(
+      recentSessions([
+        { id: "old", title: "旧会话", time: { created: 1 } },
+        { id: "child", title: "子会话", parentID: "new", time: { created: 40 } },
+        { id: "archived", title: "归档", time: { created: 50, archived: 60 } },
+        { id: "new", title: "最新会话", time: { created: 10, updated: 70 } },
+      ]).map((session) => session.id),
+    ).toEqual(["new", "old"])
+  })
+
+  test("falls back to a concise session title", () => {
+    expect(sessionTitle({ title: "  " })).toBe("未命名会话")
   })
 })

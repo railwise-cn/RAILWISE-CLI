@@ -6,6 +6,7 @@ test("home renders the Workbench entrypoints", async ({ page }) => {
   await expect(page.getByTestId("workbench-page")).toBeVisible()
   await expect(page.getByRole("heading", { name: "告诉 RAILWISE 你想完成什么" })).toBeVisible()
   await expect(page.getByRole("button", { name: "选择资料目录" })).toBeVisible()
+  await expect(page.getByText("会话产物")).toBeVisible()
   await expect(page.getByRole("link", { name: "能力市场" })).toBeVisible()
   await expect(page.getByRole("link", { name: "Harness" })).toBeVisible()
   await expect(page.getByRole("button", { name: "Open project" })).toHaveCount(0)

@@ -12,6 +12,17 @@ export type WorkspaceProject = {
   }
 }
 
+export type WorkspaceSession = {
+  id: string
+  title?: string
+  parentID?: string
+  time: {
+    created: number
+    updated?: number
+    archived?: number
+  }
+}
+
 export const defaultAgent = "chief_manager"
 export const defaultModel = "DeepSeek V4"
 
@@ -59,4 +70,15 @@ export function recentWorkspaces(projects: WorkspaceProject[], limit = 5) {
       return true
     })
     .slice(0, limit)
+}
+
+export function recentSessions(sessions: WorkspaceSession[], limit = 4) {
+  return sessions
+    .filter((session) => !session.parentID && !session.time.archived)
+    .sort((a, b) => (b.time.updated ?? b.time.created) - (a.time.updated ?? a.time.created))
+    .slice(0, limit)
+}
+
+export function sessionTitle(session: Pick<WorkspaceSession, "title">) {
+  return session.title?.trim() || "未命名会话"
 }

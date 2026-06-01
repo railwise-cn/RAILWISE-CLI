@@ -1,5 +1,6 @@
 import "./workbench.css"
 import { A, useNavigate } from "@solidjs/router"
+import { base64Encode } from "@railwise/util/encode"
 import { createEffect, createMemo, createResource, createSignal, For, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
@@ -17,7 +18,9 @@ import {
   emptyPrompt,
   primaryActionLabel,
   promptExamples,
+  recentSessions,
   recentWorkspaces,
+  sessionTitle,
 } from "./workbench-state"
 
 const agents = [
@@ -32,6 +35,13 @@ const modeLabel = {
   ask: "等待确认",
   auto: "自动执行",
 } as const
+
+const time = new Intl.DateTimeFormat("zh-CN", {
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+})
 
 export default function WorkbenchPage() {
   const dialog = useDialog()
@@ -56,6 +66,8 @@ export default function WorkbenchPage() {
   const hasWorkspace = createMemo(() => directory().trim().length > 0)
   const hasPrompt = createMemo(() => draft().trim().length > 0)
   const workspace = createMemo(() => compactPath({ value: directory(), home: sync.data.path.home }))
+  const workspaceStore = createMemo(() => (hasWorkspace() ? sync.child(directory())[0] : undefined))
+  const sessions = createMemo(() => recentSessions(workspaceStore()?.session ?? []))
   const selected = createMemo(() => agents.find((item) => item.value === agent()) ?? agents[0])
   const canStart = createMemo(() => hasWorkspace() && hasPrompt())
   const capability = createMemo(() =>
@@ -114,6 +126,8 @@ export default function WorkbenchPage() {
     navigate(target.href)
   }
 
+  const sessionHref = (sessionID: string) => `/${base64Encode(directory())}/session/${sessionID}`
+
   const primary = async () => {
     if (!hasWorkspace()) {
       await chooseDirectory()
@@ -126,6 +140,12 @@ export default function WorkbenchPage() {
     if (manual() || directory()) return
     const current = server.projects.last() ?? recent()[0]?.worktree
     if (current) setDirectory(current)
+  })
+
+  createEffect(() => {
+    const current = directory()
+    if (!current) return
+    void sync.project.loadSessions(current)
   })
 
   return (
@@ -234,7 +254,26 @@ export default function WorkbenchPage() {
 
         <section class="workbench-results" aria-label="会话产物">
           <h2>会话产物</h2>
-          <p>开始会话后，文件检查、工具调用、报告草稿和风险提示会在这里持续更新。</p>
+          <Show
+            when={sessions().length > 0}
+            fallback={<p>开始会话后，最近任务、工具调用和 Harness 轨迹会出现在这里。</p>}
+          >
+            <ul class="workbench-sessions">
+              <For each={sessions()}>
+                {(session) => (
+                  <li>
+                    <A href={sessionHref(session.id)}>
+                      <strong>{sessionTitle(session)}</strong>
+                      <span>{time.format(session.time.updated ?? session.time.created)}</span>
+                    </A>
+                    <A href={`/harness?sessionID=${session.id}`} aria-label={`查看 ${sessionTitle(session)} 的运行轨迹`}>
+                      轨迹
+                    </A>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </Show>
         </section>
       </section>
 

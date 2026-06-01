@@ -37,10 +37,6 @@ jobs:
             target: x86_64-apple-darwin
             platform: darwin
             bundles: dmg
-          - os: windows-2022
-            target: x86_64-pc-windows-msvc
-            platform: windows
-            bundles: nsis
 
     steps:
       - name: Checkout
@@ -167,9 +163,9 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="desktop/v${VERSION}"
           fi
-          mapfile -t files < <(find dist/desktop -type f \( -name "*.dmg" -o -name "*.exe" \) | sort -u)
-          if [ "${#files[@]}" -ne 3 ]; then
-            printf "Expected exactly 3 public desktop installers, found %s:\n" "${#files[@]}"
+          mapfile -t files < <(find dist/desktop -type f -name "*.dmg" | sort -u)
+          if [ "${#files[@]}" -ne 2 ]; then
+            printf "Expected exactly 2 public macOS installers, found %s:\n" "${#files[@]}"
             printf "%s\n" "${files[@]}"
             exit 1
           fi

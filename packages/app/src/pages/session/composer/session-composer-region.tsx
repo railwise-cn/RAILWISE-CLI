@@ -188,6 +188,9 @@ export function SessionComposerRegion(props: {
     if (prompt.dirty()) return
     prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
     setApplied(key)
+    if (!handoff()?.autoSubmit) return
+    setSessionHandoff(key, { autoSubmit: false })
+    requestAnimationFrame(() => setSubmitRequest((value) => value + 1))
   })
 
   useTemplateDrawerShortcut(() => setTemplates(true))

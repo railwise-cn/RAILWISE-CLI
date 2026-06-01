@@ -122,7 +122,7 @@ export default function WorkbenchPage() {
     })
     layout.projects.open(target.directory)
     server.projects.touch(target.directory)
-    setSessionHandoff(target.key, { prompt: target.prompt })
+    setSessionHandoff(target.key, { prompt: target.prompt, autoSubmit: true })
     navigate(target.href)
   }
 

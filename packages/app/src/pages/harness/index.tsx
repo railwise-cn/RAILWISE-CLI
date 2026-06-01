@@ -8,7 +8,12 @@ import { useGlobalSDK } from "@/context/global-sdk"
 
 export default function HarnessPage() {
   const sdk = useGlobalSDK()
-  const [status] = createResource(() => sdk.client.harness.status().then((result) => result.data).catch(() => undefined))
+  const [status] = createResource(() =>
+    sdk.client.harness
+      .status()
+      .then((result) => result.data)
+      .catch(() => undefined),
+  )
   const events = createMemo<HarnessEvent[]>(() => [])
 
   return (

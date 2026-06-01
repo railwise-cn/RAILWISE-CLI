@@ -1,11 +1,7 @@
 import type { HarnessEvent } from "./harness-timeline"
 import { harnessRiskLabel } from "./harness-timeline-state"
 
-export function HarnessPermissionCard(props: {
-  event?: HarnessEvent
-  onApprove?: () => void
-  onReject?: () => void
-}) {
+export function HarnessPermissionCard(props: { event?: HarnessEvent; onApprove?: () => void; onReject?: () => void }) {
   return (
     <section class="harness-permission">
       <div>

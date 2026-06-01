@@ -207,7 +207,13 @@ export function AppInterface(props: {
   workbenchRoutes?: boolean
   servers?: Array<ServerConnection.Any>
 }) {
-  const standalone = createMemo(() => ["/home", "/marketplace", "/harness", "/agents", ...(props.standalonePaths ?? [])])
+  const standalone = createMemo(() => [
+    "/home",
+    "/marketplace",
+    "/harness",
+    "/agents",
+    ...(props.standalonePaths ?? []),
+  ])
 
   return (
     <ServerProvider defaultServer={props.defaultServer} servers={props.servers}>

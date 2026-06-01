@@ -83,11 +83,7 @@ export default function MarketplacePage() {
         <div class="marketplace-tabs">
           <For each={kinds}>
             {(item) => (
-              <button
-                type="button"
-                classList={{ active: kind() === item.value }}
-                onClick={() => setKind(item.value)}
-              >
+              <button type="button" classList={{ active: kind() === item.value }} onClick={() => setKind(item.value)}>
                 {item.label}
               </button>
             )}
@@ -128,9 +124,7 @@ export default function MarketplacePage() {
                           <span>{capabilityRiskLabel(item)}</span>
                         </div>
                         <div class="marketplace-permissions">
-                          <For each={permissionLabels(item)}>
-                            {(label) => <span>{label}</span>}
-                          </For>
+                          <For each={permissionLabels(item)}>{(label) => <span>{label}</span>}</For>
                           <Show when={permissionLabels(item).length === 0}>
                             <span>无敏感权限</span>
                           </Show>

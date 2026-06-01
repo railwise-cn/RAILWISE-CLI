@@ -1,5 +1,11 @@
 import { describe, expect, test } from "bun:test"
-import { compactPath, emptyPrompt, primaryActionLabel, recentWorkspaces, shouldShowZeroCounter } from "./workbench-state"
+import {
+  compactPath,
+  emptyPrompt,
+  primaryActionLabel,
+  recentWorkspaces,
+  shouldShowZeroCounter,
+} from "./workbench-state"
 
 describe("workbench state", () => {
   test("uses Chinese empty prompts instead of zero counters", () => {

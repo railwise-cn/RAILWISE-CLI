@@ -4136,6 +4136,586 @@
         ]
       }
     },
+    "/harness/status": {
+      "get": {
+        "operationId": "harness.status",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Harness status",
+        "description": "Returns the current RAILWISE Harness runtime status.",
+        "responses": {
+          "200": {
+            "description": "Harness status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mode": {
+                      "type": "string",
+                      "enum": ["safe", "ask", "auto"]
+                    },
+                    "workspace": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "activeAgent": {
+                      "type": "string"
+                    },
+                    "capabilityCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "pendingPermissionCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "runningToolCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": ["mode", "capabilityCount", "pendingPermissionCount", "runningToolCount"]
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.harness.status({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/harness/session/{sessionID}/timeline": {
+      "get": {
+        "operationId": "harness.session.timeline",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sessionID",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Harness timeline",
+        "description": "Returns visible Harness events for a session.",
+        "responses": {
+          "200": {
+            "description": "Harness timeline",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HarnessTimelineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.harness.session.timeline({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/harness/session/{sessionID}/permission/{permissionID}": {
+      "post": {
+        "operationId": "harness.session.permission.resolve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sessionID",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "permissionID",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Resolve Harness permission",
+        "description": "Approves or rejects a pending Harness permission request.",
+        "responses": {
+          "200": {
+            "description": "Permission resolution accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.harness.session.permission.resolve({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/marketplace/capabilities": {
+      "get": {
+        "operationId": "marketplace.capabilities.list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Marketplace capabilities",
+        "description": "Returns built-in and installed RAILWISE capabilities.",
+        "responses": {
+          "200": {
+            "description": "Marketplace capabilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketplaceCapabilitiesResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.marketplace.capabilities.list({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/marketplace/capabilities/{id}": {
+      "get": {
+        "operationId": "marketplace.capabilities.get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Marketplace capability",
+        "responses": {
+          "200": {
+            "description": "Marketplace capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["agent", "tool", "skill", "workflow", "mcp", "provider", "harness_profile"]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": ["builtin", "local", "remote"]
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "installed": {
+                      "type": "boolean"
+                    },
+                    "permissions": {
+                      "type": "object",
+                      "properties": {
+                        "filesystem": {
+                          "default": "none",
+                          "type": "string",
+                          "enum": ["none", "read", "write"]
+                        },
+                        "network": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "shell": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "external_directory": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "secrets": {
+                          "default": false,
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "tags": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "name",
+                    "description",
+                    "version",
+                    "source",
+                    "enabled",
+                    "installed",
+                    "permissions"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.marketplace.capabilities.get({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/marketplace/capabilities/{id}/enable": {
+      "post": {
+        "operationId": "marketplace.capabilities.enable",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Enable capability",
+        "responses": {
+          "200": {
+            "description": "Enabled capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["agent", "tool", "skill", "workflow", "mcp", "provider", "harness_profile"]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": ["builtin", "local", "remote"]
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "installed": {
+                      "type": "boolean"
+                    },
+                    "permissions": {
+                      "type": "object",
+                      "properties": {
+                        "filesystem": {
+                          "default": "none",
+                          "type": "string",
+                          "enum": ["none", "read", "write"]
+                        },
+                        "network": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "shell": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "external_directory": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "secrets": {
+                          "default": false,
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "tags": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "name",
+                    "description",
+                    "version",
+                    "source",
+                    "enabled",
+                    "installed",
+                    "permissions"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.marketplace.capabilities.enable({\n  ...\n})"
+          }
+        ]
+      }
+    },
+    "/marketplace/capabilities/{id}/disable": {
+      "post": {
+        "operationId": "marketplace.capabilities.disable",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Disable capability",
+        "responses": {
+          "200": {
+            "description": "Disabled capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["agent", "tool", "skill", "workflow", "mcp", "provider", "harness_profile"]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": ["builtin", "local", "remote"]
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "installed": {
+                      "type": "boolean"
+                    },
+                    "permissions": {
+                      "type": "object",
+                      "properties": {
+                        "filesystem": {
+                          "default": "none",
+                          "type": "string",
+                          "enum": ["none", "read", "write"]
+                        },
+                        "network": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "shell": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "external_directory": {
+                          "default": false,
+                          "type": "boolean"
+                        },
+                        "secrets": {
+                          "default": false,
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "tags": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "name",
+                    "description",
+                    "version",
+                    "source",
+                    "enabled",
+                    "installed",
+                    "permissions"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "js",
+            "source": "import { createRailwiseClient } from \"@railwise/sdk\n\nconst client = createRailwiseClient()\nawait client.marketplace.capabilities.disable({\n  ...\n})"
+          }
+        ]
+      }
+    },
     "/find": {
       "get": {
         "operationId": "find.text",
@@ -11632,6 +12212,159 @@
           }
         },
         "required": ["id", "name", "category", "description", "agent", "prompt"]
+      },
+      "HarnessTimelineResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "sessionID": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "session.started",
+                    "plan.created",
+                    "agent.selected",
+                    "model.selected",
+                    "skill.loaded",
+                    "tool.requested",
+                    "permission.requested",
+                    "permission.resolved",
+                    "tool.started",
+                    "tool.completed",
+                    "tool.failed",
+                    "artifact.created",
+                    "session.completed"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "detail": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "duration": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "risk": {
+                  "default": "low",
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
+                },
+                "capabilityID": {
+                  "type": "string"
+                },
+                "artifactPath": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                }
+              },
+              "required": ["id", "sessionID", "type", "title", "createdAt"]
+            }
+          }
+        },
+        "required": ["data"]
+      },
+      "MarketplaceCapabilitiesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": ["agent", "tool", "skill", "workflow", "mcp", "provider", "harness_profile"]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string",
+                  "enum": ["builtin", "local", "remote"]
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "installed": {
+                  "type": "boolean"
+                },
+                "permissions": {
+                  "type": "object",
+                  "properties": {
+                    "filesystem": {
+                      "default": "none",
+                      "type": "string",
+                      "enum": ["none", "read", "write"]
+                    },
+                    "network": {
+                      "default": false,
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "default": false,
+                      "type": "boolean"
+                    },
+                    "external_directory": {
+                      "default": false,
+                      "type": "boolean"
+                    },
+                    "secrets": {
+                      "default": false,
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "tags": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "name",
+                "description",
+                "version",
+                "source",
+                "enabled",
+                "installed",
+                "permissions"
+              ]
+            }
+          }
+        },
+        "required": ["data"]
       },
       "Symbol": {
         "type": "object",

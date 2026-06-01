@@ -44,6 +44,7 @@ export function SessionComposerRegion(props: {
   const local = useLocal()
   const language = useLanguage()
   const [templates, setTemplates] = createSignal(false)
+  const [expanded, setExpanded] = createSignal(false)
   const [applied, setApplied] = createSignal("")
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
@@ -212,7 +213,7 @@ export function SessionComposerRegion(props: {
               >
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <div class="min-w-0">
-                    <div class="text-[12px] font-semibold text-[rgb(17,94,89)]">协作会话</div>
+                    <div class="text-[12px] font-semibold text-[rgb(17,94,89)]">协作</div>
                     <div class="truncate text-[12px] text-text-weak" title={sdk.directory}>
                       {workspaceName()} · 主智能体 {activeAgent()}
                     </div>
@@ -229,70 +230,78 @@ export function SessionComposerRegion(props: {
                     >
                       选择模型
                     </button>
+                    <button
+                      type="button"
+                      data-action="session-template-drawer"
+                      class="rounded-md border border-[rgba(117,86,32,0.18)] bg-white px-2 py-1 text-[12px] font-semibold text-[rgb(95,70,24)] hover:bg-[rgba(117,86,32,0.04)]"
+                      onClick={() => setTemplates(true)}
+                    >
+                      业务模板
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[12px] font-semibold text-text-base hover:bg-surface-raised-base-hover"
+                      aria-expanded={expanded()}
+                      onClick={() => setExpanded(!expanded())}
+                    >
+                      能力
+                    </button>
                   </div>
                 </div>
 
-                <div class="mt-2 flex flex-wrap gap-1.5">
-                  <For each={agentPalette()}>
-                    {(agent) => (
-                      <button
-                        type="button"
-                        class="rounded-full border border-[rgba(15,118,110,0.2)] bg-[rgba(15,118,110,0.06)] px-2.5 py-1 text-[12px] text-text-base hover:border-[rgba(15,118,110,0.45)]"
-                        title={`模型：${agentModelLabel(agent)}`}
-                        onClick={() => applyAgent(agent.name)}
-                      >
-                        @{agent.name}
-                      </button>
-                    )}
-                  </For>
-                </div>
+                <Show when={expanded()}>
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    <For each={agentPalette()}>
+                      {(agent) => (
+                        <button
+                          type="button"
+                          class="rounded-full border border-[rgba(15,118,110,0.2)] bg-[rgba(15,118,110,0.06)] px-2.5 py-1 text-[12px] text-text-base hover:border-[rgba(15,118,110,0.45)]"
+                          title={`模型：${agentModelLabel(agent)}`}
+                          onClick={() => applyAgent(agent.name)}
+                        >
+                          @{agent.name}
+                        </button>
+                      )}
+                    </For>
+                  </div>
 
-                <div class="mt-2 grid gap-2 md:grid-cols-2">
-                  <div class="min-w-0">
-                    <div class="mb-1 text-[11px] font-semibold text-text-weak">工具</div>
-                    <div class="flex flex-wrap gap-1.5">
-                      <For each={visibleTools()}>
-                        {(tool) => (
-                          <button
-                            type="button"
-                            class="rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[11px] text-text-base"
-                            title={tool.id}
-                            onClick={() => applyCapability("tool", tool.label)}
-                          >
-                            {tool.label}
-                          </button>
-                        )}
-                      </For>
+                  <div class="mt-2 grid gap-2 md:grid-cols-2">
+                    <div class="min-w-0">
+                      <div class="mb-1 text-[11px] font-semibold text-text-weak">工具</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <For each={visibleTools()}>
+                          {(tool) => (
+                            <button
+                              type="button"
+                              class="rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[11px] text-text-base"
+                              title={tool.id}
+                              onClick={() => applyCapability("tool", tool.label)}
+                            >
+                              {tool.label}
+                            </button>
+                          )}
+                        </For>
+                      </div>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="mb-1 text-[11px] font-semibold text-text-weak">Skills</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <For each={visibleSkills()}>
+                          {(skill) => (
+                            <button
+                              type="button"
+                              class="max-w-full truncate rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[11px] text-text-base"
+                              title={skill.description}
+                              onClick={() => applyCapability("skill", skill.name)}
+                            >
+                              {skill.name}
+                            </button>
+                          )}
+                        </For>
+                      </div>
                     </div>
                   </div>
-                  <div class="min-w-0">
-                    <div class="mb-1 text-[11px] font-semibold text-text-weak">Skills</div>
-                    <div class="flex flex-wrap gap-1.5">
-                      <For each={visibleSkills()}>
-                        {(skill) => (
-                          <button
-                            type="button"
-                            class="max-w-full truncate rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[11px] text-text-base"
-                            title={skill.description}
-                            onClick={() => applyCapability("skill", skill.name)}
-                          >
-                            {skill.name}
-                          </button>
-                        )}
-                      </For>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mb-2 flex justify-end">
-                <button
-                  type="button"
-                  data-action="session-template-drawer"
-                  class="rounded-md border border-[rgba(117,86,32,0.18)] bg-white px-3 py-1.5 text-[12px] font-semibold text-[rgb(95,70,24)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-[rgba(117,86,32,0.04)]"
-                  onClick={() => setTemplates(true)}
-                >
-                  业务模板
-                </button>
+                </Show>
               </div>
               <PromptInput
                 ref={(el) => {

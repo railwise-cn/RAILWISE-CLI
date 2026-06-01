@@ -2,7 +2,7 @@ import { expect, test } from "./helpers/app"
 import { visible } from "./helpers/wait"
 
 test("设置中心：MCP、智能体、命令页展示真实数据", async ({ launchApp }) => {
-  const { page } = await launchApp("/agents")
+  const { page } = await launchApp("/marketplace")
 
   await visible(page.locator("[data-testid=agents-page]"))
   await page.getByLabel(/设置|Settings/).first().click()

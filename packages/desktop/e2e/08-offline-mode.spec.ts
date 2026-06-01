@@ -1,7 +1,7 @@
 import { expect, test } from "./helpers/app"
 
-test("离线模式：智能体中枢保持本地入口可用", async ({ launchApp }) => {
-  const { page, context } = await launchApp("/agents")
+test("离线模式：能力市场保持本地入口可用", async ({ launchApp }) => {
+  const { page, context } = await launchApp("/marketplace")
   await expect(page.locator("[data-testid=agents-page]")).toBeVisible()
 
   await context.setOffline(true)

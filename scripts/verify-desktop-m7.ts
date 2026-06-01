@@ -74,6 +74,7 @@ const missingDevDocs = (
 ).filter((item): item is string => Boolean(item))
 const startup = await read("packages/desktop/e2e/01-startup.spec.ts")
 const agentStudio = await read("packages/desktop/e2e/04-agent-studio.spec.ts")
+const e2eHelper = await read("packages/desktop/e2e/helpers/app.ts")
 const visual = await read("packages/desktop/e2e/11-visual-regression.spec.ts")
 const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
 const app = await read("packages/app/src/app.tsx")
@@ -100,11 +101,30 @@ check(
 check(
   "marketplace separated from advanced agent management",
   has(app, ["const AgentsIndexRoute", "<AgentsIndex />", "const MarketplaceRoute"]) &&
-    has(marketplace, ['data-testid="marketplace-page"', "marketplace-card", "marketplace-open-${item.id}"]) &&
+    has(marketplace, [
+      'data-testid="marketplace-page"',
+      "marketplace-card",
+      "marketplace-open-${item.id}",
+      "marketplace-card-state-${item.id}",
+      "marketplace-preview-${selected().id}",
+    ]) &&
     !marketplace.includes("agent-collaboration-start") &&
     !marketplace.includes("agent-model-routing") &&
     has(agentStudio, ['launchApp("/marketplace")', 'launchApp("/agents")', "toHaveCount(0)", "agent-collaboration-start"]),
   "marketplace stays as a concise capability market while /agents keeps advanced management",
+)
+check(
+  "marketplace inventory state",
+  has(e2eHelper, ["/agent-studio/tool/list", "/agent-studio/skill/list", "规范条文查询", "monitoring-design"]) &&
+    has(agentStudio, [
+      "marketplace-card-state-agents",
+      "marketplace-card-state-tools",
+      "marketplace-card-state-skills",
+      "marketplace-card-state-providers",
+      "marketplace-preview-tools",
+      "marketplace-preview-skills",
+    ]),
+  "marketplace asserts enabled inventory state for agents, tools, skills, and provider setup",
 )
 check(
   "visual regression E2E",

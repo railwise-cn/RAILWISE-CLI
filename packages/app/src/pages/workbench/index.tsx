@@ -15,8 +15,10 @@ import { collaborationTarget } from "@/pages/agents/collaboration"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import {
   compactPath,
+  capabilitySummary,
   defaultAgent,
   emptyPrompt,
+  enabledCapabilityNames,
   harnessModelLabel,
   modelLabel,
   primaryActionLabel,
@@ -70,6 +72,12 @@ export default function WorkbenchPage() {
       .then((result) => result.data)
       .catch(() => undefined),
   )
+  const [capabilities] = createResource(() =>
+    sdk.client.marketplace.capabilities
+      .list()
+      .then((result) => result.data?.data ?? [])
+      .catch(() => []),
+  )
 
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
   const hasWorkspace = createMemo(() => directory().trim().length > 0)
@@ -85,8 +93,12 @@ export default function WorkbenchPage() {
   )
   const selected = createMemo(() => agents.find((item) => item.value === agent()) ?? agents[0])
   const canStart = createMemo(() => hasWorkspace() && hasPrompt())
+  const enabledCapabilities = createMemo(() => enabledCapabilityNames(capabilities() ?? []))
   const capability = createMemo(() =>
-    status()?.capabilityCount ? `${status()!.capabilityCount} 项已启用` : "基础能力加载中",
+    capabilitySummary({
+      count: status()?.capabilityCount ?? enabledCapabilities().length,
+      loading: status.loading && capabilities.loading,
+    }),
   )
   const permission = createMemo(() =>
     status()?.pendingPermissionCount ? `${status()!.pendingPermissionCount} 个请求等待处理` : "当前没有危险权限请求",
@@ -378,10 +390,9 @@ export default function WorkbenchPage() {
           <h2>能力集</h2>
           <p>{capability()}</p>
           <div class="workbench-capabilities">
-            <span>主控智能体</span>
-            <span>测绘资料检查</span>
-            <span>规范引用</span>
-            <span>文件读取</span>
+            <Show when={enabledCapabilities().length > 0} fallback={<span>打开能力市场启用专业能力</span>}>
+              <For each={enabledCapabilities()}>{(item) => <span>{item}</span>}</For>
+            </Show>
           </div>
         </section>
 

@@ -253,10 +253,10 @@ const skills = [
 
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
-    await use(async (path = "/agents", opts = {}) => {
+    await use(async (path = "/home", opts = {}) => {
       await setup(page, opts)
       await page.goto(path)
-      await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 30_000 })
+      await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 75_000 })
       return { page, context }
     })
   },

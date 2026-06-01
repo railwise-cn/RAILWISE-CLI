@@ -1,7 +1,9 @@
 import { describe, expect, test } from "bun:test"
 import {
   compactPath,
+  capabilitySummary,
   emptyPrompt,
+  enabledCapabilityNames,
   harnessModelLabel,
   modelLabel,
   primaryActionLabel,
@@ -37,6 +39,20 @@ describe("workbench state", () => {
     expect(harnessModelLabel({ fallback: "DeepSeek / DeepSeek V4", statusModel: "anthropic/claude", active: true })).toBe(
       "anthropic/claude",
     )
+  })
+
+  test("summarizes enabled marketplace capabilities for the workbench", () => {
+    expect(
+      enabledCapabilityNames([
+        { name: "项目总控", enabled: true },
+        { name: " 本地工具桥接 ", enabled: true },
+        { name: "DeepSeek", enabled: false },
+      ]),
+    ).toEqual(["项目总控", "本地工具桥接"])
+    expect(enabledCapabilityNames([{ name: "A", enabled: true }], 0)).toEqual([])
+    expect(capabilitySummary({ loading: true })).toBe("正在加载能力集")
+    expect(capabilitySummary({ count: 3 })).toBe("3 项已启用")
+    expect(capabilitySummary({ count: 0 })).toBe("尚未启用能力")
   })
 
   test("compacts home directory paths for recent workspaces", () => {

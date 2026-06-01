@@ -1,3 +1,5 @@
+import type { MarketplaceCapabilitiesResponse } from "@railwise/sdk/v2/client"
+
 export type WorkbenchAction = {
   hasWorkspace: boolean
   hasPrompt?: boolean
@@ -42,6 +44,8 @@ export type WorkbenchModel = {
     name?: string
   }
 }
+
+export type WorkbenchCapability = Pick<MarketplaceCapabilitiesResponse["data"][number], "enabled" | "name">
 
 export const defaultAgent = "chief_manager"
 export const defaultModel = "DeepSeek V4"
@@ -137,4 +141,18 @@ export function modelLabel(input?: WorkbenchModel) {
 export function harnessModelLabel(input: { active?: boolean; fallback: string; statusModel?: string }) {
   if (input.active && input.statusModel) return input.statusModel
   return input.fallback
+}
+
+export function enabledCapabilityNames(items: WorkbenchCapability[], limit = 8) {
+  return items
+    .filter((item) => item.enabled)
+    .map((item) => item.name.trim())
+    .filter(Boolean)
+    .slice(0, limit)
+}
+
+export function capabilitySummary(input: { count?: number; loading?: boolean }) {
+  if (input.loading) return "正在加载能力集"
+  if (input.count && input.count > 0) return `${input.count} 项已启用`
+  return "尚未启用能力"
 }

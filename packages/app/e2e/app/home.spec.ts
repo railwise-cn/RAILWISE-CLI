@@ -4,6 +4,9 @@ import { serverName } from "../utils"
 test("home renders and shows core entrypoints", async ({ page }) => {
   await page.goto("/")
 
+  await expect(page.locator("[data-testid=home-workbench]")).toBeVisible()
+  await expect(page.locator("[data-testid=home-chat-composer]")).toBeVisible()
+  await expect(page.locator("[data-testid=home-harness-panel]")).toBeVisible()
   await expect(page.getByRole("button", { name: "Open project" }).first()).toBeVisible()
   await expect(page.getByRole("button", { name: serverName })).toBeVisible()
 })

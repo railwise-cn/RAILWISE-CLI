@@ -28,6 +28,12 @@ export type WorkbenchRuntime = {
   pendingPermissionCount?: number
 }
 
+export type SessionRuntime = {
+  sessionID: string
+  latestID?: string
+  runtime?: WorkbenchRuntime
+}
+
 export const defaultAgent = "chief_manager"
 export const defaultModel = "DeepSeek V4"
 
@@ -92,4 +98,9 @@ export function runtimeLabel(input?: WorkbenchRuntime) {
   if (input?.pendingPermissionCount) return `${input.pendingPermissionCount} 个权限等待确认`
   if (input?.runningToolCount) return `${input.runningToolCount} 个工具正在运行`
   return "可继续协作"
+}
+
+export function sessionRuntimeLabel(input: SessionRuntime) {
+  if (input.sessionID !== input.latestID) return "已保存"
+  return runtimeLabel(input.runtime)
 }

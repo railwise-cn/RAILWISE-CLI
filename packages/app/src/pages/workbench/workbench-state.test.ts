@@ -6,6 +6,7 @@ import {
   recentSessions,
   recentWorkspaces,
   runtimeLabel,
+  sessionRuntimeLabel,
   sessionTitle,
   shouldShowZeroCounter,
 } from "./workbench-state"
@@ -56,5 +57,18 @@ describe("workbench state", () => {
     expect(runtimeLabel({ pendingPermissionCount: 2, runningToolCount: 1 })).toBe("2 个权限等待确认")
     expect(runtimeLabel({ runningToolCount: 3 })).toBe("3 个工具正在运行")
     expect(runtimeLabel({})).toBe("可继续协作")
+  })
+
+  test("only marks the latest session with live runtime status", () => {
+    expect(
+      sessionRuntimeLabel({
+        sessionID: "new",
+        latestID: "new",
+        runtime: { runningToolCount: 1 },
+      }),
+    ).toBe("1 个工具正在运行")
+    expect(sessionRuntimeLabel({ sessionID: "old", latestID: "new", runtime: { runningToolCount: 1 } })).toBe(
+      "已保存",
+    )
   })
 })

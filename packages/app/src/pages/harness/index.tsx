@@ -132,6 +132,7 @@ export default function HarnessPage() {
   const [focus, setFocus] = createSignal<string>()
   const [responding, setResponding] = createSignal<Record<string, boolean>>({})
   const [answering, setAnswering] = createSignal<Record<string, boolean>>({})
+  const [repairing, setRepairing] = createSignal<Record<string, boolean>>({})
   const [answers, setAnswers] = createSignal<Record<string, QuestionAnswer[]>>({})
   const [custom, setCustom] = createSignal<Record<string, string>>({})
   const connected = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
@@ -242,6 +243,14 @@ export default function HarnessPage() {
     return answering()[request.id] ?? false
   }
 
+  function repairKey(part: ToolPart) {
+    return `${part.sessionID}:${part.id}`
+  }
+
+  function repairingTool(part: ToolPart) {
+    return repairing()[repairKey(part)] ?? false
+  }
+
   function slot(request: QuestionRequest, index: number) {
     return `${request.id}:${index}`
   }
@@ -346,6 +355,52 @@ export default function HarnessPage() {
         setAnswering((current) => {
           const next = { ...current }
           delete next[request.id]
+          return next
+        })
+      })
+  }
+
+  function repairText(part: ToolPart) {
+    const input = preview(part.state.input)
+    const error = part.state.status === "error" ? part.state.error : ""
+    return [
+      "请继续处理刚才失败的工具调用。",
+      `工具：${part.tool}`,
+      `标题：${title(part)}`,
+      input ? `输入摘要：${input}` : "",
+      error ? `错误信息：${error}` : "",
+      "请先判断失败原因，再给出最小修复步骤，并继续执行可安全推进的下一步。",
+    ]
+      .filter(Boolean)
+      .join("\n")
+  }
+
+  function repair(item: TimelineItem, part: ToolPart) {
+    const id = repairKey(part)
+    if (repairingTool(part)) return
+    setRepairing((current) => ({ ...current, [id]: true }))
+    void sdk.client.session
+      .promptAsync({
+        directory: item.directory,
+        sessionID: item.session.id,
+        agent: "chief_manager",
+        parts: [
+          {
+            type: "text",
+            text: repairText(part),
+          },
+        ],
+      })
+      .then(() => {
+        showToast({ title: "已发送修复指令", description: "智能体会在原会话里继续处理失败工具调用。" })
+      })
+      .catch((error) => {
+        showToast({ title: "修复指令发送失败", description: message(error) })
+      })
+      .finally(() => {
+        setRepairing((current) => {
+          const next = { ...current }
+          delete next[id]
           return next
         })
       })
@@ -723,6 +778,19 @@ export default function HarnessPage() {
                             </Show>
                             <Show when={part.state.status === "error" ? part.state.error : ""}>
                               {(error) => <div class="mt-1 break-words text-12-regular text-text-danger-base">{error()}</div>}
+                            </Show>
+                            <Show when={part.state.status === "error"}>
+                              <div class="mt-2 flex flex-wrap justify-end gap-2">
+                                <A
+                                  href={`/${base64Encode(item().directory)}/session/${item().session.id}`}
+                                  class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-element"
+                                >
+                                  打开会话
+                                </A>
+                                <Button variant="primary" size="small" disabled={repairingTool(part)} onClick={() => repair(item(), part)}>
+                                  {repairingTool(part) ? "发送中" : "继续修复"}
+                                </Button>
+                              </div>
                             </Show>
                           </div>
                         )}

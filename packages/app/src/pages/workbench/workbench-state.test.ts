@@ -67,8 +67,6 @@ describe("workbench state", () => {
         runtime: { runningToolCount: 1 },
       }),
     ).toBe("1 个工具正在运行")
-    expect(sessionRuntimeLabel({ sessionID: "old", latestID: "new", runtime: { runningToolCount: 1 } })).toBe(
-      "已保存",
-    )
+    expect(sessionRuntimeLabel({ sessionID: "old", latestID: "new", runtime: { runningToolCount: 1 } })).toBe("已保存")
   })
 })

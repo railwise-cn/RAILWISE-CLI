@@ -57,6 +57,7 @@ const HomeRedirect = () => <Navigate href="/home" />
 
 function ensureStandaloneLanding() {
   if (location.hash.startsWith("#/home")) return
+  if (location.hash.startsWith("#/marketplace")) return
   if (location.hash.startsWith("#/agents")) return
   if (location.hash.startsWith("#/workspace")) return
   history.replaceState(null, "", `${location.pathname}${location.search}#/home`)
@@ -665,7 +666,7 @@ render(() => {
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/home", "/workspace", "/agents"]}
+                    standalonePaths={["/home", "/workspace", "/marketplace", "/agents"]}
                     workbenchRoutes={true}
                   >
                     <Inner />

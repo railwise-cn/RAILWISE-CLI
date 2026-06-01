@@ -446,7 +446,7 @@ export default function AgentsPage() {
           <Show
             when={activePackage().button}
             fallback={
-              <A href={activePackage().target ?? "/agents"} class="agent-button agent-button--ghost">
+              <A href={activePackage().target ?? "/marketplace"} class="agent-button agent-button--ghost">
                 {activePackage().action}
               </A>
             }

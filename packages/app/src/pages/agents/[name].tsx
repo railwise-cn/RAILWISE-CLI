@@ -59,7 +59,7 @@ export default function AgentDetailPage() {
   return (
     <main class="agent-studio agent-detail">
       <section class="agent-detail__bar">
-        <button type="button" class="agent-button agent-button--ghost" onClick={() => navigate("/agents")}>
+        <button type="button" class="agent-button agent-button--ghost" onClick={() => navigate("/marketplace")}>
           返回
         </button>
         <div>

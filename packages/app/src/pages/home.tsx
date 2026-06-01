@@ -160,8 +160,8 @@ export default function Home() {
           </Show>
 
           <div class="mt-auto flex flex-col gap-2 pt-6">
-            <Button variant="ghost" size="normal" class="justify-start" onClick={() => navigate("/agents")}>
-              能力库与智能体管理
+            <Button variant="ghost" size="normal" class="justify-start" onClick={() => navigate("/marketplace")}>
+              能力市场
             </Button>
           </div>
         </aside>
@@ -228,9 +228,9 @@ export default function Home() {
               <button
                 type="button"
                 class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
-                onClick={() => navigate("/agents")}
+                onClick={() => navigate("/marketplace")}
               >
-                <div class="text-12-medium text-text-strong">能力库</div>
+                <div class="text-12-medium text-text-strong">能力市场</div>
                 <div class="mt-1 text-12-regular text-text-weak">智能体 / 工具 / Skills</div>
               </button>
             </section>

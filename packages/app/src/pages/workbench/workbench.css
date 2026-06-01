@@ -337,6 +337,12 @@
   gap: 12px;
 }
 
+.workbench-context p {
+  margin: 0;
+  color: #667085;
+  font-size: 12px;
+}
+
 .workbench-facts {
   display: grid;
   gap: 8px;
@@ -413,6 +419,10 @@
 
 .workbench-timeline li[data-tone="safe"]::before {
   background: #12b76a;
+}
+
+.workbench-timeline li[data-tone="warn"]::before {
+  background: #f79009;
 }
 
 .workbench-timeline strong {

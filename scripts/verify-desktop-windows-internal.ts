@@ -8,6 +8,7 @@ const file = (...parts: string[]) => path.join(root, ...parts)
 const read = async (...parts: string[]) => Bun.file(file(...parts)).text()
 const exists = async (...parts: string[]) => Bun.file(file(...parts)).exists()
 const has = (text: string, values: string[]) => values.every((value) => text.includes(value))
+const bundleTargets = (value: unknown) => (Array.isArray(value) ? value : value ? [value] : []).map(String)
 const check = (name: string, passed: boolean, detail: string) => checks.push({ name, passed, detail })
 
 const workflowPath = ".github/workflows/desktop-windows-internal.yml"
@@ -69,6 +70,10 @@ check(
   "linux desktop packages disabled",
   config.bundle?.linux === undefined &&
     dev.bundle?.linux === undefined &&
+    [config.bundle?.targets, dev.bundle?.targets].every((value) => {
+      const targets = bundleTargets(value)
+      return targets.length === 2 && targets.includes("dmg") && targets.includes("nsis")
+    }) &&
     !release.includes("platform: linux") &&
     !release.includes("unknown-linux") &&
     !release.includes("bundles: deb") &&

@@ -11,6 +11,7 @@ type Config = {
   mainBinaryName?: string
   bundle?: {
     createUpdaterArtifacts?: boolean
+    targets?: string[] | string
     icon?: string[]
     windows?: {
       nsis?: {
@@ -62,6 +63,7 @@ const file = (...parts: string[]) => path.join(root, ...parts)
 const read = async (...parts: string[]) => Bun.file(file(...parts)).text()
 const exists = async (...parts: string[]) => Bun.file(file(...parts)).exists()
 const contains = (text: string, values: string[]) => values.every((value) => text.includes(value))
+const bundleTargets = (value: unknown) => (Array.isArray(value) ? value : value ? [value] : []).map(String)
 const check = (name: string, passed: boolean, detail: string) => checks.push({ name, passed, detail })
 
 const workflowPath = ".github/workflows/desktop-release.yml"
@@ -98,6 +100,7 @@ const notarization = [
   "APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}",
 ]
 const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
+const desktopTargets = ["dmg", "nsis"]
 const windows = [
   "windows-2022",
   "x86_64-pc-windows-msvc",
@@ -160,6 +163,18 @@ check(
     !adminDeploy.includes("Linux 安装包") &&
     !adminDeploy.includes("linux/"),
   "Desktop release excludes Linux installers and deployment docs do not promise Linux packages",
+)
+check(
+  "desktop bundle targets",
+  [config.bundle?.targets, devConfig.bundle?.targets].every((value) => {
+    const targets = bundleTargets(value)
+    return (
+      targets.length === desktopTargets.length &&
+      desktopTargets.every((item) => targets.includes(item)) &&
+      targets.every((item) => desktopTargets.includes(item))
+    )
+  }),
+  "Tauri configs only allow DMG and NSIS desktop installers",
 )
 check(
   "release omits Windows target",

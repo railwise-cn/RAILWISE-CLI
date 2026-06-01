@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router"
 import { createMemo, createSignal, For, Show } from "solid-js"
-import type { Part, PermissionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
+import type { Part, PermissionRequest, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
 import { base64Encode } from "@railwise/util/encode"
 import { DateTime } from "luxon"
 import { Button } from "@railwise/ui/button"
@@ -29,9 +29,10 @@ type TimelineItem = {
   directory: string
   session: Session
   status: SessionStatus
-  permission: number
-  question: number
+  permissions: PermissionRequest[]
+  questions: QuestionRequest[]
   todo: Todo[]
+  parts: ToolPart[]
   tools: {
     running: number
     errored: number
@@ -67,8 +68,8 @@ function statusLabel(status: SessionStatus) {
 }
 
 function timelineLabel(item: TimelineItem) {
-  if (item.permission > 0) return `${item.permission} 个权限待审批`
-  if (item.question > 0) return `${item.question} 个问题待回答`
+  if (item.permissions.length > 0) return `${item.permissions.length} 个权限待审批`
+  if (item.questions.length > 0) return `${item.questions.length} 个问题待回答`
   if (item.tools.running > 0) return `${item.tools.running} 个工具运行中`
   if (item.tools.errored > 0) return `${item.tools.errored} 个工具失败`
   const active = item.todo.filter((todo) => todo.status === "in_progress").length
@@ -79,8 +80,47 @@ function timelineLabel(item: TimelineItem) {
   return "等待下一步输入"
 }
 
+function key(item: TimelineItem) {
+  return `${item.directory}:${item.session.id}`
+}
+
 function isToolPart(part: Part): part is ToolPart {
   return part.type === "tool"
+}
+
+function state(part: ToolPart) {
+  if (part.state.status === "pending") return "等待中"
+  if (part.state.status === "running") return "运行中"
+  if (part.state.status === "error") return "失败"
+  return "完成"
+}
+
+function title(part: ToolPart) {
+  if (part.state.status === "running" && part.state.title) return part.state.title
+  if (part.state.status === "completed") return part.state.title
+  return part.tool
+}
+
+function duration(part: ToolPart) {
+  if (part.state.status === "pending") return ""
+  const end = part.state.status === "running" ? Date.now() : part.state.time.end
+  const value = Math.max(0, end - part.state.time.start)
+  if (value < 1000) return `${value}ms`
+  return `${Math.round(value / 100) / 10}s`
+}
+
+function preview(value: unknown) {
+  if (value === undefined || value === null) return ""
+  const text = typeof value === "string" ? value : JSON.stringify(value)
+  if (text.length <= 120) return text
+  return text.slice(0, 117) + "..."
+}
+
+function todoLabel(todo: Todo) {
+  if (todo.status === "in_progress") return "进行中"
+  if (todo.status === "completed") return "完成"
+  if (todo.status === "cancelled") return "取消"
+  return "待处理"
 }
 
 export default function HarnessPage() {
@@ -89,6 +129,7 @@ export default function HarnessPage() {
   const server = useServer()
   const providers = useProviders()
   const models = useModels()
+  const [focus, setFocus] = createSignal<string>()
   const [responding, setResponding] = createSignal<Record<string, boolean>>({})
   const connected = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const visible = createMemo(() => models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })))
@@ -127,9 +168,10 @@ export default function HarnessPage() {
             directory: project.directory,
             session,
             status: project.store.session_status[session.id] ?? { type: "idle" as const },
-            permission: project.store.permission[session.id]?.length ?? 0,
-            question: project.store.question[session.id]?.length ?? 0,
+            permissions: project.store.permission[session.id] ?? [],
+            questions: project.store.question[session.id] ?? [],
             todo: project.store.todo[session.id] ?? [],
+            parts,
             tools: {
               running: parts.filter((part) => part.state.status === "running").length,
               errored: parts.filter((part) => part.state.status === "error").length,
@@ -141,6 +183,12 @@ export default function HarnessPage() {
       .sort((a, b) => b.session.time.updated - a.session.time.updated)
       .slice(0, 8),
   )
+  const selected = createMemo(() => timeline().find((item) => key(item) === focus()) ?? timeline()[0])
+  const selectedKey = createMemo(() => {
+    const item = selected()
+    if (!item) return ""
+    return key(item)
+  })
   const mode = createMemo(() => (server.isLocal() ? "本地执行" : "远程连接"))
   const health = createMemo(() => {
     const value = server.healthy()
@@ -345,39 +393,198 @@ export default function HarnessPage() {
             <div class="grid gap-2">
               <For each={timeline()}>
                 {(item) => (
-                  <A
-                    href={`/${base64Encode(item.directory)}/session/${item.session.id}`}
-                    class="rounded-md border border-border-subtle bg-surface-element p-3 hover:bg-surface-raised-base-hover"
+                  <div
+                    class="rounded-md border border-border-subtle bg-surface-element p-3"
+                    classList={{ "border-border-weak-base bg-surface-raised-base": key(item) === selectedKey() }}
                     data-testid="harness-timeline-item"
                   >
-                    <div class="flex flex-wrap items-start justify-between gap-3">
-                      <div class="min-w-0">
-                        <div class="flex flex-wrap items-center gap-2">
-                          <span class="truncate text-13-medium text-text-strong">{item.session.title || "未命名会话"}</span>
-                          <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{statusLabel(item.status)}</span>
+                    <button type="button" class="block w-full text-left" onClick={() => setFocus(key(item))}>
+                      <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div class="min-w-0">
+                          <div class="flex flex-wrap items-center gap-2">
+                            <span class="truncate text-13-medium text-text-strong">{item.session.title || "未命名会话"}</span>
+                            <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{statusLabel(item.status)}</span>
+                          </div>
+                          <div class="mt-1 truncate text-12-mono text-text-weak" title={item.directory}>
+                            {compact(item.directory, sync.data.path.home)}
+                          </div>
                         </div>
-                        <div class="mt-1 truncate text-12-mono text-text-weak" title={item.directory}>
-                          {compact(item.directory, sync.data.path.home)}
+                        <div class="text-right text-12-regular text-text-weak">
+                          {DateTime.fromMillis(item.session.time.updated).toRelative()}
                         </div>
                       </div>
-                      <div class="text-right text-12-regular text-text-weak">
-                        {DateTime.fromMillis(item.session.time.updated).toRelative()}
+                    </button>
+                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-12-regular text-text-weak">
+                      <div class="flex flex-wrap gap-2">
+                        <span class="rounded bg-surface-panel px-2 py-1">{timelineLabel(item)}</span>
+                        <Show when={item.session.summary}>
+                          {(summary) => (
+                            <span class="rounded bg-surface-panel px-2 py-1">
+                              {summary().files} 文件 / +{summary().additions} / -{summary().deletions}
+                            </span>
+                          )}
+                        </Show>
                       </div>
+                      <A
+                        href={`/${base64Encode(item.directory)}/session/${item.session.id}`}
+                        class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-panel"
+                      >
+                        打开会话
+                      </A>
                     </div>
-                    <div class="mt-3 flex flex-wrap gap-2 text-12-regular text-text-weak">
-                      <span class="rounded bg-surface-panel px-2 py-1">{timelineLabel(item)}</span>
-                      <Show when={item.session.summary}>
-                        {(summary) => (
-                          <span class="rounded bg-surface-panel px-2 py-1">
-                            {summary().files} 文件 / +{summary().additions} / -{summary().deletions}
-                          </span>
-                        )}
-                      </Show>
-                    </div>
-                  </A>
+                  </div>
                 )}
               </For>
             </div>
+          </Show>
+        </section>
+
+        <section class="rounded-lg border border-border-subtle bg-surface-panel p-4" data-testid="harness-session-detail">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-15-medium text-text-strong">会话执行详情</h2>
+              <p class="mt-1 text-12-regular text-text-weak">查看单次协作里的待办、权限、问题和工具调用。</p>
+            </div>
+            <Show when={selected()}>
+              {(item) => (
+                <A
+                  href={`/${base64Encode(item().directory)}/session/${item().session.id}`}
+                  class="rounded-md border border-border-subtle px-3 py-2 text-13-medium text-text-strong hover:bg-surface-element"
+                >
+                  进入对话
+                </A>
+              )}
+            </Show>
+          </div>
+
+          <Show
+            when={selected()}
+            fallback={<div class="rounded-md bg-surface-element px-3 py-4 text-13-regular text-text-weak">还没有可查看的会话。</div>}
+          >
+            {(item) => (
+              <div class="grid gap-3">
+                <div class="rounded-md bg-surface-element p-3">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="truncate text-14-medium text-text-strong">{item().session.title || "未命名会话"}</span>
+                        <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{statusLabel(item().status)}</span>
+                      </div>
+                      <div class="mt-1 truncate text-12-mono text-text-weak" title={item().directory}>
+                        {compact(item().directory, sync.data.path.home)}
+                      </div>
+                    </div>
+                    <div class="text-right text-12-regular text-text-weak">
+                      {DateTime.fromMillis(item().session.time.updated).toRelative()}
+                    </div>
+                  </div>
+                  <div class="mt-3 flex flex-wrap gap-2 text-12-regular text-text-weak">
+                    <span class="rounded bg-surface-panel px-2 py-1">{item().permissions.length} 权限</span>
+                    <span class="rounded bg-surface-panel px-2 py-1">{item().questions.length} 问题</span>
+                    <span class="rounded bg-surface-panel px-2 py-1">{item().todo.length} 待办</span>
+                    <span class="rounded bg-surface-panel px-2 py-1">{item().parts.length} 工具调用</span>
+                  </div>
+                </div>
+
+                <div class="grid gap-3 lg:grid-cols-2">
+                  <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+                    <div class="mb-2 flex items-center justify-between">
+                      <h3 class="text-13-medium text-text-strong">当前待办</h3>
+                      <span class="text-12-regular text-text-weak">{item().todo.filter((todo) => todo.status === "completed").length}/{item().todo.length}</span>
+                    </div>
+                    <Show when={item().todo.length > 0} fallback={<div class="text-13-regular text-text-weak">暂无待办。</div>}>
+                      <div class="grid gap-1.5">
+                        <For each={item().todo.slice(0, 6)}>
+                          {(todo) => (
+                            <div class="flex gap-2 rounded bg-surface-panel px-2 py-1.5 text-12-regular">
+                              <span class="shrink-0 text-text-weak">{todoLabel(todo)}</span>
+                              <span class="min-w-0 break-words text-text-strong">{todo.content}</span>
+                            </div>
+                          )}
+                        </For>
+                      </div>
+                    </Show>
+                  </div>
+
+                  <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+                    <div class="mb-2 flex items-center justify-between">
+                      <h3 class="text-13-medium text-text-strong">等待人工介入</h3>
+                      <span class="text-12-regular text-text-weak">{item().permissions.length + item().questions.length}</span>
+                    </div>
+                    <Show
+                      when={item().permissions.length + item().questions.length > 0}
+                      fallback={<div class="text-13-regular text-text-weak">没有等待处理的权限或问题。</div>}
+                    >
+                      <div class="grid gap-2">
+                        <For each={item().permissions}>
+                          {(request) => (
+                            <div class="rounded bg-surface-panel p-2">
+                              <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="text-12-medium text-text-strong">{request.permission}</div>
+                                <div class="flex gap-1">
+                                  <Button variant="ghost" size="small" disabled={busy(request)} onClick={() => decide({ directory: item().directory, request }, "reject")}>
+                                    拒绝
+                                  </Button>
+                                  <Button variant="primary" size="small" disabled={busy(request)} onClick={() => decide({ directory: item().directory, request }, "once")}>
+                                    允许
+                                  </Button>
+                                </div>
+                              </div>
+                              <Show when={request.patterns[0]}>
+                                {(pattern) => <div class="mt-1 truncate text-12-mono text-text-weak">{pattern()}</div>}
+                              </Show>
+                            </div>
+                          )}
+                        </For>
+                        <For each={item().questions}>
+                          {(request) => (
+                            <div class="rounded bg-surface-panel p-2">
+                              <div class="text-12-medium text-text-strong">{request.questions[0]?.header ?? "待回答问题"}</div>
+                              <div class="mt-1 line-clamp-2 text-12-regular text-text-weak">{request.questions[0]?.question ?? "打开会话继续处理。"}</div>
+                            </div>
+                          )}
+                        </For>
+                      </div>
+                    </Show>
+                  </div>
+                </div>
+
+                <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+                  <div class="mb-2 flex items-center justify-between">
+                    <h3 class="text-13-medium text-text-strong">工具调用</h3>
+                    <span class="text-12-regular text-text-weak">{item().parts.length}</span>
+                  </div>
+                  <Show when={item().parts.length > 0} fallback={<div class="text-13-regular text-text-weak">暂无工具调用。</div>}>
+                    <div class="grid gap-2">
+                      <For each={item().parts.slice(-8).reverse()}>
+                        {(part) => (
+                          <div class="rounded bg-surface-panel p-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                              <div class="min-w-0">
+                                <div class="truncate text-12-medium text-text-strong">{title(part)}</div>
+                                <div class="mt-0.5 text-12-mono text-text-weak">{part.tool}</div>
+                              </div>
+                              <div class="shrink-0 text-right text-12-regular text-text-weak">
+                                <div>{state(part)}</div>
+                                <Show when={duration(part)}>
+                                  {(value) => <div>{value()}</div>}
+                                </Show>
+                              </div>
+                            </div>
+                            <Show when={preview(part.state.input)}>
+                              {(value) => <div class="mt-1 truncate text-12-mono text-text-weak">{value()}</div>}
+                            </Show>
+                            <Show when={part.state.status === "error" ? part.state.error : ""}>
+                              {(error) => <div class="mt-1 break-words text-12-regular text-text-danger-base">{error()}</div>}
+                            </Show>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
+                </div>
+              </div>
+            )}
           </Show>
         </section>
 

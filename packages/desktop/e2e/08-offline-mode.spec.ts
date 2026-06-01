@@ -10,6 +10,7 @@ test("离线模式：智能体中枢保持本地入口可用", async ({ launchAp
     window.dispatchEvent(new Event("offline"))
   })
 
+  await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
 

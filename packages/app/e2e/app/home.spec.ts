@@ -61,6 +61,7 @@ test("Workbench starts and resumes a real submitted session from the task box", 
   await page.goto("/")
   const resume = page.getByRole("link", { name: "继续会话" }).first()
   await expect(resume).toBeVisible()
+  await expect(page.getByText("可继续协作")).toBeVisible()
   await resume.click()
   await expect(page).toHaveURL(new RegExp(`/session/${sessionID}(?:[/?#]|$)`))
 })

@@ -5,6 +5,7 @@ import {
   primaryActionLabel,
   recentSessions,
   recentWorkspaces,
+  runtimeLabel,
   sessionTitle,
   shouldShowZeroCounter,
 } from "./workbench-state"
@@ -49,5 +50,11 @@ describe("workbench state", () => {
 
   test("falls back to a concise session title", () => {
     expect(sessionTitle({ title: "  " })).toBe("未命名会话")
+  })
+
+  test("summarizes runtime status for the resume card", () => {
+    expect(runtimeLabel({ pendingPermissionCount: 2, runningToolCount: 1 })).toBe("2 个权限等待确认")
+    expect(runtimeLabel({ runningToolCount: 3 })).toBe("3 个工具正在运行")
+    expect(runtimeLabel({})).toBe("可继续协作")
   })
 })

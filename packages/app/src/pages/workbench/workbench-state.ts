@@ -23,6 +23,11 @@ export type WorkspaceSession = {
   }
 }
 
+export type WorkbenchRuntime = {
+  runningToolCount?: number
+  pendingPermissionCount?: number
+}
+
 export const defaultAgent = "chief_manager"
 export const defaultModel = "DeepSeek V4"
 
@@ -81,4 +86,10 @@ export function recentSessions(sessions: WorkspaceSession[], limit = 4) {
 
 export function sessionTitle(session: Pick<WorkspaceSession, "title">) {
   return session.title?.trim() || "未命名会话"
+}
+
+export function runtimeLabel(input?: WorkbenchRuntime) {
+  if (input?.pendingPermissionCount) return `${input.pendingPermissionCount} 个权限等待确认`
+  if (input?.runningToolCount) return `${input.runningToolCount} 个工具正在运行`
+  return "可继续协作"
 }

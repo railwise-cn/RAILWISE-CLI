@@ -39,6 +39,7 @@ const Home = lazy(() => import("@/pages/home"))
 const Session = lazy(() => import("@/pages/session"))
 const AgentsIndex = lazy(() => import("@/pages/agents/index"))
 const AgentDetail = lazy(() => import("@/pages/agents/[name]"))
+const Marketplace = lazy(() => import("@/pages/marketplace"))
 const Loading = () => <div class="size-full" />
 
 const HomeRoute = () => (
@@ -58,8 +59,12 @@ const SessionRoute = () => (
 const SessionIndexRoute = () => <Navigate href="session" />
 
 const AgentsIndexRoute = () => (
+  <Navigate href="/marketplace" />
+)
+
+const MarketplaceRoute = () => (
   <Suspense fallback={<Loading />}>
-    <AgentsIndex />
+    <Marketplace />
   </Suspense>
 )
 
@@ -198,6 +203,7 @@ export function AppInterface(props: {
               <Route path="/" component={() => <Navigate href={props.defaultPath ?? "/home"} />} />
               <Route path="/agents" component={AgentsIndexRoute} />
               <Route path="/agents/:name" component={AgentDetailRoute} />
+              <Route path="/marketplace" component={MarketplaceRoute} />
               {props.routes}
               {(props.workbenchRoutes ?? true) && (
                 <>

@@ -5,7 +5,9 @@ import { Log } from "../../src/util/log"
 
 Log.init({ print: false })
 
-afterEach(() => Marketplace.reset())
+afterEach(async () => {
+  await Marketplace.reset()
+})
 
 describe("server.routes.marketplace", () => {
   test("returns built-in capabilities", async () => {

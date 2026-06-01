@@ -35,6 +35,14 @@ export type SessionRuntime = {
   runtime?: WorkbenchRuntime
 }
 
+export type WorkbenchModel = {
+  id?: string
+  name?: string
+  provider?: {
+    name?: string
+  }
+}
+
 export const defaultAgent = "chief_manager"
 export const defaultModel = "DeepSeek V4"
 
@@ -116,4 +124,17 @@ export function sessionRuntimeLabel(input: SessionRuntime) {
   return runtimeLabel(
     input.runtime?.pendingSessionID ? { runningToolCount: input.runtime.runningToolCount } : input.runtime,
   )
+}
+
+export function modelLabel(input?: WorkbenchModel) {
+  if (!input) return defaultModel
+  const model = input.name?.replace("(latest)", "").trim() || input.id
+  const provider = input.provider?.name?.trim()
+  if (provider && model) return `${provider} / ${model}`
+  return model ?? defaultModel
+}
+
+export function harnessModelLabel(input: { active?: boolean; fallback: string; statusModel?: string }) {
+  if (input.active && input.statusModel) return input.statusModel
+  return input.fallback
 }

@@ -2,6 +2,8 @@ import { describe, expect, test } from "bun:test"
 import {
   compactPath,
   emptyPrompt,
+  harnessModelLabel,
+  modelLabel,
   primaryActionLabel,
   recentSessions,
   recentWorkspaces,
@@ -22,6 +24,19 @@ describe("workbench state", () => {
   test("uses chat-first primary actions", () => {
     expect(primaryActionLabel({ hasWorkspace: false })).toBe("选择资料目录")
     expect(primaryActionLabel({ hasWorkspace: true })).toBe("开始会话")
+  })
+
+  test("labels the model that will be used without stale session data", () => {
+    expect(modelLabel()).toBe("DeepSeek V4")
+    expect(modelLabel({ id: "deepseek-v4", name: "DeepSeek V4 (latest)", provider: { name: "DeepSeek" } })).toBe(
+      "DeepSeek / DeepSeek V4",
+    )
+    expect(harnessModelLabel({ fallback: "DeepSeek / DeepSeek V4", statusModel: "anthropic/claude", active: false })).toBe(
+      "DeepSeek / DeepSeek V4",
+    )
+    expect(harnessModelLabel({ fallback: "DeepSeek / DeepSeek V4", statusModel: "anthropic/claude", active: true })).toBe(
+      "anthropic/claude",
+    )
   })
 
   test("compacts home directory paths for recent workspaces", () => {

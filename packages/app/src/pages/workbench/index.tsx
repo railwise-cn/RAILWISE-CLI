@@ -7,15 +7,18 @@ import { DialogSelectDirectory } from "@/components/dialog-select-directory"
 import { useGlobalSDK } from "@/context/global-sdk"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLayout } from "@/context/layout"
+import { useModels, type ModelKey } from "@/context/models"
 import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
+import { useProviders } from "@/hooks/use-providers"
 import { collaborationTarget } from "@/pages/agents/collaboration"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import {
   compactPath,
   defaultAgent,
-  defaultModel,
   emptyPrompt,
+  harnessModelLabel,
+  modelLabel,
   primaryActionLabel,
   promptExamples,
   primarySessionID,
@@ -55,6 +58,8 @@ export default function WorkbenchPage() {
   const server = useServer()
   const sdk = useGlobalSDK()
   const sync = useGlobalSync()
+  const models = useModels()
+  const providers = useProviders()
   const [directory, setDirectory] = createSignal("")
   const [manual, setManual] = createSignal(false)
   const [agent, setAgent] = createSignal(defaultAgent)
@@ -85,6 +90,33 @@ export default function WorkbenchPage() {
   )
   const permission = createMemo(() =>
     status()?.pendingPermissionCount ? `${status()!.pendingPermissionCount} 个请求等待处理` : "当前没有危险权限请求",
+  )
+  const configuredModel = () => {
+    const value = sync.data.config.model
+    if (!value) return undefined
+    const [providerID, ...rest] = value.split("/")
+    const modelID = rest.join("/")
+    if (!providerID || !modelID) return undefined
+    return { providerID, modelID }
+  }
+  const providerDefaultModel = () =>
+    providers.connected().flatMap((provider) => {
+      const modelID = providers.default()[provider.id] ?? Object.values(provider.models)[0]?.id
+      return modelID ? [{ providerID: provider.id, modelID }] : []
+    })[0]
+  const currentModel = createMemo(() =>
+    [configuredModel(), ...models.recent.list(), providerDefaultModel()]
+      .filter((item): item is ModelKey => !!item)
+      .map(models.find)
+      .find(Boolean),
+  )
+  const currentModelLabel = createMemo(() => modelLabel(currentModel()))
+  const harnessModel = createMemo(() =>
+    harnessModelLabel({
+      active: !!status()?.pendingPermissionCount || !!status()?.runningToolCount,
+      fallback: currentModelLabel(),
+      statusModel: status()?.model,
+    }),
   )
   const runtime = createMemo(() => [
     { title: "会话准备", detail: hasWorkspace() ? workspace() : "选择资料目录后建立本地上下文", tone: "ready" },
@@ -213,8 +245,8 @@ export default function WorkbenchPage() {
             <h1>告诉 RAILWISE 你想完成什么</h1>
           </div>
           <div class="workbench-model">
-            <span>默认模型</span>
-            <strong>{defaultModel}</strong>
+            <span>将使用模型</span>
+            <strong>{currentModelLabel()}</strong>
           </div>
         </header>
 
@@ -328,8 +360,8 @@ export default function WorkbenchPage() {
               <dd>{status() ? modeLabel[status()!.mode] : "连接中"}</dd>
             </div>
             <div>
-              <dt>当前模型</dt>
-              <dd>{status()?.model ?? defaultModel}</dd>
+              <dt>模型</dt>
+              <dd>{harnessModel()}</dd>
             </div>
             <div>
               <dt>工作区</dt>

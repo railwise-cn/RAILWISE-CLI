@@ -110,6 +110,7 @@ export function collaborationTarget(input: CollaborationDraft) {
   const prompt = input.prompt.trim()
 
   return {
+    agent,
     directory,
     key,
     href: `/${key}/session`,

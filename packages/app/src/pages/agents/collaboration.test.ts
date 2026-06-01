@@ -23,6 +23,7 @@ describe("collaborationTarget", () => {
     })
 
     expect(target.directory).toBe("/Users/WANGJIAWEI/CODE/RAILWISE-CLI")
+    expect(target.agent).toBe("chief_manager")
     expect(target.key).toBe(base64Encode("/Users/WANGJIAWEI/CODE/RAILWISE-CLI"))
     expect(target.href).toBe(`/${base64Encode("/Users/WANGJIAWEI/CODE/RAILWISE-CLI")}/session`)
     expect(target.prompt).toBe("@chief_manager\n检查当前工程资料并列出下一步")

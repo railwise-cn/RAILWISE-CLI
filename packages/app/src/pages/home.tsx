@@ -85,7 +85,7 @@ export default function Home() {
     })
     layout.projects.open(target.directory)
     server.projects.touch(target.directory)
-    setSessionHandoff(target.key, { prompt: target.prompt })
+    setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })
     navigate(target.href)
   }
 
@@ -186,6 +186,7 @@ export default function Home() {
             <div class="mt-2 flex gap-2">
               <input
                 id="home-directory"
+                data-testid="home-project-directory"
                 class="h-10 min-w-0 flex-1 rounded-md border border-border-subtle bg-surface-element px-3 text-13-mono text-text-strong"
                 value={selectedDirectory()}
                 onInput={(event) => updateDirectory(event.currentTarget.value)}
@@ -201,6 +202,7 @@ export default function Home() {
             </label>
             <textarea
               id="home-prompt"
+              data-testid="home-task-input"
               class="mt-2 min-h-42 resize-y rounded-md border border-border-subtle bg-surface-element p-4 text-14-regular text-text-strong outline-none"
               value={prompt()}
               onInput={(event) => setPrompt(event.currentTarget.value)}
@@ -208,7 +210,7 @@ export default function Home() {
             />
 
             <div class="mt-4 flex items-center justify-end">
-              <Button type="submit" disabled={!canStart()}>
+              <Button type="submit" disabled={!canStart()} data-testid="home-start-session">
                 开始协作
               </Button>
             </div>
@@ -216,6 +218,7 @@ export default function Home() {
             <section class="mt-4 grid gap-2 md:grid-cols-3" data-testid="home-harness-panel">
               <button
                 type="button"
+                data-testid="home-open-harness"
                 class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
                 onClick={() => navigate("/harness")}
               >
@@ -225,12 +228,13 @@ export default function Home() {
                 </div>
                 <div class="mt-1 text-12-regular text-text-weak">高风险动作先确认</div>
               </button>
-              <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+              <div class="rounded-md border border-border-subtle bg-surface-element p-3" data-testid="home-model-summary">
                 <div class="text-12-medium text-text-strong">模型</div>
                 <div class="mt-1 truncate text-12-regular text-text-weak">{modelLabel()}</div>
               </div>
               <button
                 type="button"
+                data-testid="home-open-marketplace"
                 class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
                 onClick={() => navigate("/marketplace")}
               >

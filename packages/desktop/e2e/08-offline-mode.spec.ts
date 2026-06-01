@@ -11,6 +11,8 @@ test("离线模式：智能体中枢保持本地入口可用", async ({ launchAp
   })
 
   await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
+  await page.getByRole("button", { name: "Skills" }).click()
+  await expect(page.locator("[data-testid=agent-market-panel]")).toContainText("专业流程")
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
 

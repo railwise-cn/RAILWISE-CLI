@@ -12,6 +12,7 @@ import { useModels } from "@/context/models"
 import { useServer } from "@/context/server"
 import { useProviders } from "@/hooks/use-providers"
 import { recommendedModel } from "@/pages/agents/collaboration"
+import { repairInstruction, toolInputPreview, toolRecovery, toolTitle } from "./recovery"
 
 type PermissionItem = {
   directory: string
@@ -95,25 +96,12 @@ function state(part: ToolPart) {
   return "完成"
 }
 
-function title(part: ToolPart) {
-  if (part.state.status === "running" && part.state.title) return part.state.title
-  if (part.state.status === "completed") return part.state.title
-  return part.tool
-}
-
 function duration(part: ToolPart) {
   if (part.state.status === "pending") return ""
   const end = part.state.status === "running" ? Date.now() : part.state.time.end
   const value = Math.max(0, end - part.state.time.start)
   if (value < 1000) return `${value}ms`
   return `${Math.round(value / 100) / 10}s`
-}
-
-function preview(value: unknown) {
-  if (value === undefined || value === null) return ""
-  const text = typeof value === "string" ? value : JSON.stringify(value)
-  if (text.length <= 120) return text
-  return text.slice(0, 117) + "..."
 }
 
 function todoLabel(todo: Todo) {
@@ -186,6 +174,19 @@ export default function HarnessPage() {
       )
       .sort((a, b) => b.session.time.updated - a.session.time.updated)
       .slice(0, 8),
+  )
+  const recoveries = createMemo(() =>
+    timeline()
+      .flatMap((item) =>
+        item.parts
+          .filter((part) => part.state.status === "error")
+          .map((part) => ({
+            item,
+            part,
+            recovery: toolRecovery(part),
+          })),
+      )
+      .slice(0, 6),
   )
   const selected = createMemo(() => timeline().find((item) => key(item) === focus()) ?? timeline()[0])
   const selectedKey = createMemo(() => {
@@ -360,21 +361,6 @@ export default function HarnessPage() {
       })
   }
 
-  function repairText(part: ToolPart) {
-    const input = preview(part.state.input)
-    const error = part.state.status === "error" ? part.state.error : ""
-    return [
-      "请继续处理刚才失败的工具调用。",
-      `工具：${part.tool}`,
-      `标题：${title(part)}`,
-      input ? `输入摘要：${input}` : "",
-      error ? `错误信息：${error}` : "",
-      "请先判断失败原因，再给出最小修复步骤，并继续执行可安全推进的下一步。",
-    ]
-      .filter(Boolean)
-      .join("\n")
-  }
-
   function repair(item: TimelineItem, part: ToolPart) {
     const id = repairKey(part)
     if (repairingTool(part)) return
@@ -387,7 +373,7 @@ export default function HarnessPage() {
         parts: [
           {
             type: "text",
-            text: repairText(part),
+            text: repairInstruction(part),
           },
         ],
       })
@@ -519,6 +505,55 @@ export default function HarnessPage() {
                         允许一次
                       </Button>
                     </div>
+                  </div>
+                )}
+              </For>
+            </div>
+          </Show>
+        </section>
+
+        <section class="rounded-lg border border-border-subtle bg-surface-panel p-4" data-testid="harness-recovery-queue">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-15-medium text-text-strong">失败恢复队列</h2>
+              <p class="mt-1 text-12-regular text-text-weak">优先处理最近失败的工具调用，按失败原因给出恢复方向。</p>
+            </div>
+            <span class="rounded-md bg-surface-element px-2 py-1 text-12-medium text-text-weak">{recoveries().length} 个失败项</span>
+          </div>
+
+          <Show
+            when={recoveries().length > 0}
+            fallback={<div class="rounded-md bg-surface-element px-3 py-4 text-13-regular text-text-weak">当前没有需要恢复的失败工具。</div>}
+          >
+            <div class="grid gap-2">
+              <For each={recoveries()}>
+                {(entry) => (
+                  <div class="rounded-md border border-border-subtle bg-surface-element p-3" data-testid="harness-recovery-item">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{entry.recovery.label}</span>
+                          <span class="truncate text-13-medium text-text-strong">{entry.item.session.title || "未命名会话"}</span>
+                        </div>
+                        <div class="mt-1 truncate text-12-regular text-text-weak">
+                          {toolTitle(entry.part)} · {entry.recovery.summary}
+                        </div>
+                      </div>
+                      <div class="flex shrink-0 gap-2">
+                        <A
+                          href={`/${base64Encode(entry.item.directory)}/session/${entry.item.session.id}`}
+                          class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-panel"
+                        >
+                          打开会话
+                        </A>
+                        <Button variant="primary" size="small" disabled={repairingTool(entry.part)} onClick={() => repair(entry.item, entry.part)}>
+                          {repairingTool(entry.part) ? "发送中" : "继续修复"}
+                        </Button>
+                      </div>
+                    </div>
+                    <Show when={entry.part.state.status === "error" ? entry.part.state.error : ""}>
+                      {(error) => <div class="mt-2 line-clamp-2 break-words text-12-regular text-text-danger-base">{error()}</div>}
+                    </Show>
                   </div>
                 )}
               </For>
@@ -763,7 +798,7 @@ export default function HarnessPage() {
                           <div class="rounded bg-surface-panel p-2">
                             <div class="flex flex-wrap items-center justify-between gap-2">
                               <div class="min-w-0">
-                                <div class="truncate text-12-medium text-text-strong">{title(part)}</div>
+                                <div class="truncate text-12-medium text-text-strong">{toolTitle(part)}</div>
                                 <div class="mt-0.5 text-12-mono text-text-weak">{part.tool}</div>
                               </div>
                               <div class="shrink-0 text-right text-12-regular text-text-weak">
@@ -773,14 +808,15 @@ export default function HarnessPage() {
                                 </Show>
                               </div>
                             </div>
-                            <Show when={preview(part.state.input)}>
+                            <Show when={toolInputPreview(part.state.input)}>
                               {(value) => <div class="mt-1 truncate text-12-mono text-text-weak">{value()}</div>}
                             </Show>
                             <Show when={part.state.status === "error" ? part.state.error : ""}>
                               {(error) => <div class="mt-1 break-words text-12-regular text-text-danger-base">{error()}</div>}
                             </Show>
                             <Show when={part.state.status === "error"}>
-                              <div class="mt-2 flex flex-wrap justify-end gap-2">
+                              <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+                                <span class="rounded bg-surface-element px-2 py-1 text-12-medium text-text-weak">{toolRecovery(part).label}</span>
                                 <A
                                   href={`/${base64Encode(item().directory)}/session/${item().session.id}`}
                                   class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-element"

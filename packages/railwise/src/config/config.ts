@@ -706,6 +706,8 @@ export namespace Config {
   })
   export type Skills = z.infer<typeof Skills>
 
+  const LegacyTool = z.union([z.boolean(), z.array(z.string())])
+
   export const Agent = z
     .object({
       model: ModelId.optional(),
@@ -716,7 +718,7 @@ export namespace Config {
       temperature: z.number().optional(),
       top_p: z.number().optional(),
       prompt: z.string().optional(),
-      tools: z.record(z.string(), z.boolean()).optional().describe("@deprecated Use 'permission' field instead"),
+      tools: z.record(z.string(), LegacyTool).optional().describe("@deprecated Use 'permission' field instead"),
       disable: z.boolean().optional(),
       description: z.string().optional().describe("Description of when to use the agent"),
       mode: z.enum(["subagent", "primary", "all"]).optional(),
@@ -794,8 +796,6 @@ export namespace Config {
       ref: "AgentConfig",
     })
   export type Agent = z.infer<typeof Agent>
-
-  const LegacyTool = z.union([z.boolean(), z.array(z.string())])
 
   export const Keybinds = z
     .object({

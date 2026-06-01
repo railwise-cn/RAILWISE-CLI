@@ -182,11 +182,23 @@
   padding: 16px;
 }
 
-.marketplace-card span {
+.marketplace-card__head {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.marketplace-card__label {
+  min-width: 0;
+  overflow: hidden;
   color: var(--agent-accent-strong);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .marketplace-card h2 {
@@ -206,6 +218,90 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   font-size: 13px;
+}
+
+.marketplace-preview,
+.marketplace-panel-preview {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.marketplace-preview {
+  min-height: 30px;
+}
+
+.marketplace-panel-preview {
+  margin-top: 10px;
+}
+
+.marketplace-preview span,
+.marketplace-panel-preview span {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid color-mix(in srgb, var(--agent-border) 82%, transparent);
+  border-radius: 999px;
+  background: var(--agent-soft);
+  padding: 4px 8px;
+}
+
+.marketplace-preview strong,
+.marketplace-panel-preview strong,
+.marketplace-preview small,
+.marketplace-panel-preview small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marketplace-preview strong,
+.marketplace-panel-preview strong {
+  color: var(--agent-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.marketplace-preview small,
+.marketplace-panel-preview small {
+  color: var(--agent-muted);
+  font-size: 11px;
+}
+
+.marketplace-state {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--agent-border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.marketplace-state--enabled {
+  border-color: color-mix(in srgb, #16935f 38%, transparent);
+  background: color-mix(in srgb, #16935f 11%, var(--agent-surface));
+  color: #16734d;
+}
+
+.marketplace-state--setup {
+  border-color: color-mix(in srgb, var(--agent-accent) 38%, transparent);
+  background: var(--agent-soft);
+  color: var(--agent-accent-strong);
+}
+
+.marketplace-state--empty,
+.marketplace-state--loading {
+  background: color-mix(in srgb, var(--agent-muted) 8%, var(--agent-surface));
+  color: var(--agent-muted);
 }
 
 .marketplace-card__footer {
@@ -284,7 +380,7 @@
   padding: 16px 18px;
 }
 
-.agent-market-panel span {
+.agent-market-panel > div > span:first-child {
   color: var(--agent-accent-strong);
   font-size: 12px;
   font-weight: 700;

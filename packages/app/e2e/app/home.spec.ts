@@ -86,7 +86,7 @@ test("Workbench routes pending permission requests back to the active session", 
     await seedSessionPermission(sdk, {
       sessionID,
       permission: "bash",
-      patterns: [project.directory],
+      patterns: ["README.md"],
       description: "seed workbench permission action",
     })
 

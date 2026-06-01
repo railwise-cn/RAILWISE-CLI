@@ -3,6 +3,9 @@
 import path from "node:path"
 
 type Config = {
+  build?: {
+    devUrl?: string
+  }
   productName?: string
   identifier?: string
   mainBinaryName?: string
@@ -63,11 +66,16 @@ const check = (name: string, passed: boolean, detail: string) => checks.push({ n
 
 const workflowPath = ".github/workflows/desktop-release.yml"
 const configPath = "packages/desktop/src-tauri/tauri.prod.conf.json"
+const devConfigPath = "packages/desktop/src-tauri/tauri.conf.json"
 const workflowExists = await exists(workflowPath)
 const configExists = await exists(configPath)
 const workflow = workflowExists ? await read(workflowPath) : ""
 const sidecar = await read("packages/desktop/scripts/utils.ts")
 const config = configExists ? ((await Bun.file(file(configPath)).json()) as Config) : {}
+const devConfig = (await Bun.file(file(devConfigPath)).json()) as Config
+const vite = await read("packages/desktop/vite.config.ts")
+const predev = await read("packages/desktop/scripts/predev.ts")
+const railwiseBuild = await read("packages/railwise/script/build.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
@@ -181,11 +189,28 @@ check(
   contains(workflow, [
     "working-directory: packages/desktop",
     "bun run predev -- --target",
+    'Bun.file("src-tauri/tauri.prod.conf.json").json()',
+    'Bun.write("src-tauri/tauri.ci.conf.json"',
     "bun run tauri -- build",
     "--bundles ${{ matrix.bundles }}",
-    "--config src-tauri/tauri.prod.conf.json",
+    "--config src-tauri/tauri.ci.conf.json",
   ]),
-  "production Tauri config is used and Bun forwards target/bundle release arguments",
+  "production Tauri config is converted to CI config and Bun forwards target/bundle release arguments",
+)
+check(
+  "desktop dev loopback host",
+  devConfig.build?.devUrl === "http://127.0.0.1:1420" && vite.includes('host: host || "127.0.0.1"'),
+  "development startup avoids localhost DNS resolution and binds Vite to loopback IP",
+)
+check(
+  "sidecar build can skip dependency reinstall",
+  contains(predev, ["RAILWISE_SKIP_INSTALL", "--skip-install", "bun run build --single --skip-install"]),
+  "local desktop verification can refresh the sidecar in restricted environments",
+)
+check(
+  "sidecar build reuses models snapshot offline",
+  contains(railwiseBuild, ["models-snapshot.ts", "Unable to refresh models.dev snapshot", "return undefined"]),
+  "CLI build does not fail solely because models.dev is temporarily unreachable",
 )
 check(
   "release public installer coverage",

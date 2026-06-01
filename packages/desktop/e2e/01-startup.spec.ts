@@ -19,6 +19,8 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await expect(page).toHaveURL(/\/session$/)
   await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
   await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("chief_manager")
+  await expect(page.locator("[data-testid=session-model-readiness]")).toContainText("发送前先接入模型")
+  await expect(page.locator("[data-testid=session-model-setup]")).toContainText("接入模型")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("@chief_manager")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
 })

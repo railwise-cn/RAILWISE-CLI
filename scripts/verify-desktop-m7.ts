@@ -113,8 +113,12 @@ check(
     has(sessionComposer, [
       "handoffAgent",
       "handoffPromptParts",
+      "modelAction",
+      "modelStatus",
       "local.agent.set(agent)",
       'data-testid="session-collaboration-panel"',
+      'data-testid="session-model-readiness"',
+      'data-testid="session-model-setup"',
     ]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
     has(startup, [
@@ -122,6 +126,8 @@ check(
       "[data-testid=home-task-input]",
       "[data-testid=home-start-session]",
       "[data-testid=session-collaboration-panel]",
+      "[data-testid=session-model-readiness]",
+      "[data-testid=session-model-setup]",
       "[data-testid=session-prompt-input]",
       "chief_manager",
     ]),

@@ -20,6 +20,7 @@ import {
   promptExamples,
   recentSessions,
   recentWorkspaces,
+  runtimeLabel,
   sessionTitle,
 } from "./workbench-state"
 
@@ -265,7 +266,9 @@ export default function WorkbenchPage() {
                   <div>
                     <span>继续上次会话</span>
                     <strong>{sessionTitle(session())}</strong>
-                    <small>{time.format(session().time.updated ?? session().time.created)} 更新</small>
+                    <small>
+                      {runtimeLabel(status())} · {time.format(session().time.updated ?? session().time.created)} 更新
+                    </small>
                   </div>
                   <A href={sessionHref(session().id)}>继续会话</A>
                 </div>

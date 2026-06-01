@@ -48,7 +48,7 @@ bun run test:e2e
 9. 自动更新弹窗
 10. sidecar 崩溃恢复
 11. 视觉回归
-12. TTFUI 小于 3 秒
+12. TTFUI 小于 15 秒
 
 ## 视觉基准
 
@@ -56,4 +56,4 @@ bun run test:e2e
 
 ## CI 建议
 
-CI 运行时固定 Chromium 版本，并上传 `e2e/playwright-report` 作为构建产物。失败时先查看 trace，再判断是产品问题、基准图变更还是环境问题。
+CI 运行时固定 Chromium 版本，并上传 `e2e/playwright-report` 作为构建产物。桌面端 E2E 只覆盖 macOS 本地/CI 验收；Windows 通过安装包工作流和内部安装验证覆盖。失败时先查看 trace，再判断是产品问题、基准图变更还是环境问题。

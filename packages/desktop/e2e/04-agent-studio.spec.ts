@@ -1,16 +1,29 @@
 import { expect, test } from "./helpers/app"
 import { visible } from "./helpers/wait"
 
-test("旧 agents 路由重定向到能力市场", async ({ launchApp }) => {
+test("能力市场保持极简能力包入口", async ({ launchApp }) => {
+  const { page } = await launchApp("/marketplace")
+
+  await visible(page.locator("[data-testid=marketplace-page]"))
+  await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
+  await expect(page.locator("[data-testid=agent-collaboration-start]")).toHaveCount(0)
+  await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
+})
+
+test("高级智能体管理作为独立路由打开", async ({ launchApp }) => {
   const { page } = await launchApp("/agents")
 
   await visible(page.locator("[data-testid=agents-page]"))
-  await expect(page).toHaveURL(/\/marketplace$/)
+  await expect(page).toHaveURL(/\/agents$/)
+  await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
+  await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
 })
 
 test("能力市场进入 chief_manager 高级配置并验证保存入口", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace")
 
+  await visible(page.locator("[data-testid=marketplace-page]"))
+  await page.locator("[data-testid=marketplace-open-agents]").click()
   await visible(page.locator("[data-testid=agents-page]"))
   await page.locator("[data-testid=agent-card-chief_manager]").click()
 
@@ -21,7 +34,7 @@ test("能力市场进入 chief_manager 高级配置并验证保存入口", async
 test("能力市场可以进入 Harness 执行层状态", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace")
 
-  await visible(page.locator("[data-testid=agents-page]"))
+  await visible(page.locator("[data-testid=marketplace-page]"))
   await page.getByRole("button", { name: "Harness" }).click()
   await page.getByRole("link", { name: "查看 Harness" }).click()
 

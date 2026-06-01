@@ -47,6 +47,7 @@ import { LLM } from "./llm"
 import { iife } from "@/util/iife"
 import { Shell } from "@/shell/shell"
 import { Truncate } from "@/tool/truncation"
+import { Marketplace } from "@/marketplace"
 
 // @ts-ignore
 globalThis.AI_SDK_LOG_WARNINGS = false
@@ -833,7 +834,8 @@ export namespace SessionPrompt {
       })
     }
 
-    for (const [key, item] of Object.entries(await MCP.tools())) {
+    const mcp = Flag.RAILWISE_CLIENT === "desktop" && !Marketplace.mcpEnabled() ? {} : await MCP.tools()
+    for (const [key, item] of Object.entries(mcp)) {
       const execute = item.execute
       if (!execute) continue
 

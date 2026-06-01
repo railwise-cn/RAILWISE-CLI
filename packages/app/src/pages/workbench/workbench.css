@@ -419,6 +419,32 @@
   font-size: 12px;
 }
 
+.workbench-sessions .workbench-session-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.workbench-sessions .workbench-session-meta span {
+  margin-top: 0;
+}
+
+.workbench-sessions .workbench-session-status {
+  width: fit-content;
+  max-width: 100%;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #155eef;
+  font-weight: 700;
+}
+
+.workbench-sessions .workbench-session-status[data-state="saved"] {
+  background: #f2f4f7;
+  color: #667085;
+}
+
 .workbench-sessions li > a:last-child {
   color: #155eef;
   font-size: 12px;

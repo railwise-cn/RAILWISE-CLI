@@ -76,7 +76,7 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", z.object({ id: z.string() })),
       async (c) => {
-        const item = Marketplace.setEnabled(c.req.valid("param").id, true)
+        const item = await Marketplace.setEnabled(c.req.valid("param").id, true)
         if (!item) return c.json({ error: "capability not found" }, 404)
         return c.json(item)
       },
@@ -100,7 +100,7 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", z.object({ id: z.string() })),
       async (c) => {
-        const item = Marketplace.setEnabled(c.req.valid("param").id, false)
+        const item = await Marketplace.setEnabled(c.req.valid("param").id, false)
         if (!item) return c.json({ error: "capability not found" }, 404)
         return c.json(item)
       },

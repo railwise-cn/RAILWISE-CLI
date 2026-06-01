@@ -24,3 +24,29 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("@chief_manager")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
 })
+
+test("已配置模型时首页任务可以创建会话并发送给 chief_manager", async ({ launchApp }) => {
+  const { page } = await launchApp("/home", { model: "configured" })
+
+  await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
+  await page.locator("[data-testid=home-project-directory]").fill("/tmp/railwise-e2e/worktree")
+  await page.locator("[data-testid=home-task-input]").fill("用主控智能体检查复测资料，并调用专业智能体列出风险。")
+  await page.locator("[data-testid=home-start-session]").click()
+
+  await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
+  await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("DeepSeek V4")
+  await expect(page.locator("[data-testid=session-model-readiness]")).toHaveCount(0)
+
+  const request = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-action=prompt-submit]").click()
+  const payload = (await request).postDataJSON() as {
+    agent: string
+    model: { providerID: string; modelID: string }
+    parts: unknown
+  }
+
+  await expect(page).toHaveURL(/\/session\/queue-e2e$/)
+  expect(payload.agent).toBe("chief_manager")
+  expect(payload.model).toEqual({ providerID: "deepseek", modelID: "deepseek-v4" })
+  expect(JSON.stringify(payload.parts)).toContain("用主控智能体检查复测资料")
+})

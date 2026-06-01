@@ -121,6 +121,7 @@ check(
       'data-testid="session-model-setup"',
     ]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
+    has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY"]) &&
     has(startup, [
       "[data-testid=home-project-directory]",
       "[data-testid=home-task-input]",
@@ -130,8 +131,12 @@ check(
       "[data-testid=session-model-setup]",
       "[data-testid=session-prompt-input]",
       "chief_manager",
+      'model: "configured"',
+      "/session/queue-e2e/prompt_async",
+      'payload.agent).toBe("chief_manager"',
+      'providerID: "deepseek", modelID: "deepseek-v4"',
     ]),
-  "home creates a chief_manager handoff and the session composer receives it as the primary collaboration path",
+  "home creates a chief_manager handoff and can send the first prompt when a model is configured",
 )
 check(
   "marketplace separated from advanced agent management",

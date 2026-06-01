@@ -251,6 +251,43 @@ const skills = [
   },
 ]
 
+const harness = {
+  mode: "safe",
+  workspace: "/tmp/railwise-e2e",
+  model: "deepseek/deepseek-v4",
+  activeAgent: "chief_manager",
+  capabilityCount: 5,
+  pendingPermissionCount: 0,
+  runningToolCount: 0,
+}
+
+const capabilities = [
+  {
+    id: "railwise.agent.chief_manager",
+    kind: "agent",
+    name: "项目总控",
+    description: "理解任务、拆解计划，并调度专业智能体执行。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false },
+    tags: ["主控", "调度"],
+  },
+  {
+    id: "railwise.provider.deepseek",
+    kind: "provider",
+    name: "DeepSeek",
+    description: "默认推荐的中文工程任务模型提供方。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: false,
+    installed: true,
+    permissions: { filesystem: "none", network: true, shell: false, external_directory: false, secrets: true },
+    tags: ["模型", "推荐"],
+  },
+]
+
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
     await use(async (path = "/home", opts = {}) => {
@@ -300,6 +337,29 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/project`, (route) => json(route, []))
   await page.route(`${server}/provider`, (route) => json(route, { all: [], default: {}, connected: [] }))
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
+  await page.route(`${server}/harness/status**`, (route) => json(route, harness))
+  await page.route(`${server}/harness/session/workflow-e2e/timeline`, (route) =>
+    json(route, {
+      data: [
+        {
+          id: "harness:workflow-e2e:started",
+          sessionID: "workflow-e2e",
+          type: "session.started",
+          title: "会话开始",
+          detail: "CPIII 规范查询与复测预案",
+          createdAt: 1_777_200_000_000,
+          risk: "low",
+        },
+      ],
+    }),
+  )
+  await page.route(`${server}/marketplace/capabilities`, (route) => json(route, { data: capabilities }))
+  await page.route(`${server}/marketplace/capabilities/*/enable`, (route) =>
+    json(route, { ...capabilities[0], enabled: true }),
+  )
+  await page.route(`${server}/marketplace/capabilities/*/disable`, (route) =>
+    json(route, { ...capabilities[0], enabled: false }),
+  )
   await page.route(`${server}/agent-studio/workflow/run`, (route) => {
     const input = route.request().postDataJSON() as { workflowId?: string }
     const item = input.workflowId === cpiii.id ? cpiii : workflow

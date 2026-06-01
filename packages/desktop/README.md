@@ -1,6 +1,6 @@
 # RAILWISE Desktop
 
-RAILWISE Desktop is the native engineering survey workstation for project dashboards, file review, visual Agent Studio workflows, and delivery package export.
+RAILWISE Desktop is the native engineering survey AI workbench. It opens to a focused task composer where users choose a local project folder, describe the engineering job, and let the RAILWISE Harness route agents, tools, skills, model providers, and permissions.
 
 It reuses RAILWISE Core through a local sidecar, but it is not positioned as a CLI wrapper. Desktop users should be able to complete the main workflow without knowing command-line commands.
 
@@ -50,11 +50,15 @@ bun run --cwd packages/desktop tauri build
 
 Desktop owns:
 
-- `/dashboard` project cockpit
+- `/home` Workbench-first task composer, project folder handoff, recent sessions, and Harness summary
+- `/harness` runtime console for planning, agent routing, tool calls, artifacts, and permission gates
+- `/marketplace` capability marketplace for agents, tools, Skills, workflows, MCP connectors, model providers, and Harness profiles
 - `/workspace` file import, preview, diff, and send-to-agent flows
-- `/agents` visual workflow orchestration
+- `/agents` advanced agent configuration for power users and debugging
 - delivery package review and export
 - native install, signing, notarization, crash recovery, and update UX
+
+`/dashboard` is a compatibility redirect and must not reintroduce the old project cockpit or zero-counter first screen.
 
 Desktop does not own CLI command design. CLI automation belongs in `packages/railwise/src/cli`.
 

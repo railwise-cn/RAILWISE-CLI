@@ -6,6 +6,7 @@ type WorkspaceFile = {
 }
 
 type LaunchOptions = {
+  model?: "configured"
   workspaceFiles?: WorkspaceFile[]
 }
 
@@ -119,6 +120,35 @@ const commands = [
   },
 ]
 
+const provider = {
+  all: [
+    {
+      id: "deepseek",
+      name: "DeepSeek",
+      source: "api",
+      env: ["DEEPSEEK_API_KEY"],
+      options: {},
+      models: {
+        "deepseek-v4": {
+          id: "deepseek-v4",
+          name: "DeepSeek V4",
+          family: "deepseek",
+          release_date: "2026-05-01",
+          attachment: false,
+          reasoning: true,
+          temperature: true,
+          tool_call: true,
+          cost: { input: 0.0000005, output: 0.0000015 },
+          limit: { context: 128000, output: 8192 },
+          options: {},
+        },
+      },
+    },
+  ],
+  default: { deepseek: "deepseek-v4" },
+  connected: ["deepseek"],
+}
+
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
     await use(async (path = "/home", opts = {}) => {
@@ -165,7 +195,9 @@ async function setup(page: Page, opts: LaunchOptions) {
   )
   await page.route(`${server}/global/config`, (route) => json(route, {}))
   await page.route(`${server}/project`, (route) => json(route, []))
-  await page.route(`${server}/provider`, (route) => json(route, { all: [], default: {}, connected: [] }))
+  await page.route(`${server}/provider`, (route) =>
+    json(route, opts.model === "configured" ? provider : { all: [], default: {}, connected: [] }),
+  )
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
   await page.route(`${server}/agent-studio/workflow/run`, (route) => json(route, { sessionId: "workflow-e2e" }))
   await page.route(`${server}/agent-studio/workflow/presets`, (route) => json(route, [workflow]))

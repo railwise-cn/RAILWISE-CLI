@@ -81,16 +81,16 @@ export namespace Harness {
     return PermissionNext.list().catch(() => [])
   }
 
-  async function latest() {
+  async function latest(input?: { directory?: string }) {
     try {
-      return Array.from(Session.list({ limit: 1 }))[0]
+      return Array.from(Session.list({ directory: input?.directory, limit: 1 }))[0]
     } catch {
       return undefined
     }
   }
 
-  export async function status(input?: { sessionID?: string }) {
-    const session = input?.sessionID ? await Session.get(input.sessionID).catch(() => undefined) : await latest()
+  export async function status(input?: { directory?: string; sessionID?: string }) {
+    const session = input?.sessionID ? await Session.get(input.sessionID).catch(() => undefined) : await latest(input)
     const messages = session ? await Session.messages({ sessionID: session.id }).catch(() => []) : []
     const assistant = messages
       .map((item) => item.info)
@@ -100,15 +100,28 @@ export namespace Harness {
       .flatMap((item) => item.parts)
       .filter((part): part is MessageV2.ToolPart => part.type === "tool")
       .filter((part) => part.state.status === "running").length
-    const pending = await permissions()
+    const list = await permissions()
+    const matched = await Promise.all(
+      list.map(async (item) => ({
+        item,
+        session: await Session.get(item.sessionID).catch(() => undefined),
+      })),
+    )
+    const pending = input?.sessionID
+      ? matched.filter((entry) => entry.item.sessionID === input.sessionID).map((entry) => entry.item)
+      : input?.directory
+        ? matched.filter((entry) => entry.session?.directory === input.directory).map((entry) => entry.item)
+        : list
+    const pendingSession = matched.find((entry) => entry.item.id === pending[0]?.id)?.session
 
     return HarnessStatus.parse({
       mode: pending.length > 0 ? "ask" : "safe",
-      workspace: session?.directory,
+      workspace: session?.directory ?? pendingSession?.directory,
       model: assistant ? model(assistant) : undefined,
       activeAgent: assistant?.agent,
       capabilityCount: Marketplace.list().filter((item) => item.enabled).length,
       pendingPermissionCount: pending.length,
+      pendingSessionID: pending[0]?.sessionID,
       runningToolCount: running,
     })
   }

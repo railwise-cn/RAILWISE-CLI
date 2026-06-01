@@ -1,5 +1,7 @@
 import { test, expect } from "../fixtures"
-import { seedProjects, sessionIDFromUrl } from "../actions"
+import { seedProjects, seedSessionPermission, sessionIDFromUrl } from "../actions"
+import { base64Decode } from "@railwise/util/encode"
+import { createSdk } from "../utils"
 
 test("home renders the Workbench entrypoints", async ({ page }) => {
   await page.goto("/")
@@ -64,5 +66,35 @@ test("Workbench starts and resumes a real submitted session from the task box", 
   await expect(page.locator(".workbench-resume")).toContainText("可继续协作")
   await expect(page.getByTestId("workbench-session-status").filter({ hasText: "可继续协作" })).toHaveCount(1)
   await resume.click()
+  await expect(page).toHaveURL(new RegExp(`/session/${sessionID}(?:[/?#]|$)`))
+})
+
+test("Workbench routes pending permission requests back to the active session", async ({ page, directory }) => {
+  test.setTimeout(120_000)
+  await seedProjects(page, { directory })
+  await page.goto("/")
+
+  await page
+    .getByPlaceholder("例如：检查当前线路复测资料，列出缺失文件并给出下一步执行计划。")
+    .fill("列出当前目录文件。")
+  await page.getByRole("button", { name: "开始会话" }).click()
+  await expect(page).toHaveURL(/\/session\/[^/?#]+/, { timeout: 30_000 })
+
+  const sessionID = sessionIDFromUrl(page.url())
+  if (!sessionID) throw new Error(`Failed to parse session id from url: ${page.url()}`)
+  const current = base64Decode(new URL(page.url()).pathname.split("/").filter(Boolean)[0] ?? "")
+
+  await seedSessionPermission(createSdk(current), {
+    sessionID,
+    permission: "bash",
+    patterns: ["README.md"],
+    description: "seed workbench permission action",
+  })
+
+  await page.goto("/")
+  const action = page.getByRole("link", { name: "处理权限" }).first()
+  await expect(action).toBeVisible()
+  await expect(page.locator(".workbench-resume")).toContainText("1 个权限等待确认")
+  await action.click()
   await expect(page).toHaveURL(new RegExp(`/session/${sessionID}(?:[/?#]|$)`))
 })

@@ -5,6 +5,8 @@ import {
   primaryActionLabel,
   recentSessions,
   recentWorkspaces,
+  primarySessionID,
+  resumeActionLabel,
   runtimeLabel,
   sessionRuntimeLabel,
   sessionTitle,
@@ -59,6 +61,17 @@ describe("workbench state", () => {
     expect(runtimeLabel({})).toBe("可继续协作")
   })
 
+  test("points the resume action at pending permissions", () => {
+    expect(resumeActionLabel({ pendingPermissionCount: 1 })).toBe("处理权限")
+    expect(resumeActionLabel({ runningToolCount: 1 })).toBe("继续会话")
+    expect(resumeActionLabel({})).toBe("继续会话")
+  })
+
+  test("prefers the pending permission session for the primary resume target", () => {
+    expect(primarySessionID({ latestID: "new", runtime: { pendingSessionID: "blocked" } })).toBe("blocked")
+    expect(primarySessionID({ latestID: "new", runtime: {} })).toBe("new")
+  })
+
   test("only marks the latest session with live runtime status", () => {
     expect(
       sessionRuntimeLabel({
@@ -68,5 +81,12 @@ describe("workbench state", () => {
       }),
     ).toBe("1 个工具正在运行")
     expect(sessionRuntimeLabel({ sessionID: "old", latestID: "new", runtime: { runningToolCount: 1 } })).toBe("已保存")
+    expect(
+      sessionRuntimeLabel({
+        sessionID: "old",
+        latestID: "new",
+        runtime: { pendingPermissionCount: 1, pendingSessionID: "old" },
+      }),
+    ).toBe("1 个权限等待确认")
   })
 })

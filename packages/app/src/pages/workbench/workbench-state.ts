@@ -26,6 +26,7 @@ export type WorkspaceSession = {
 export type WorkbenchRuntime = {
   runningToolCount?: number
   pendingPermissionCount?: number
+  pendingSessionID?: string
 }
 
 export type SessionRuntime = {
@@ -100,7 +101,19 @@ export function runtimeLabel(input?: WorkbenchRuntime) {
   return "可继续协作"
 }
 
+export function resumeActionLabel(input?: WorkbenchRuntime) {
+  if (input?.pendingPermissionCount) return "处理权限"
+  return "继续会话"
+}
+
+export function primarySessionID(input: { latestID?: string; runtime?: WorkbenchRuntime }) {
+  return input.runtime?.pendingSessionID ?? input.latestID
+}
+
 export function sessionRuntimeLabel(input: SessionRuntime) {
+  if (input.runtime?.pendingSessionID === input.sessionID) return runtimeLabel(input.runtime)
   if (input.sessionID !== input.latestID) return "已保存"
-  return runtimeLabel(input.runtime)
+  return runtimeLabel(
+    input.runtime?.pendingSessionID ? { runningToolCount: input.runtime.runningToolCount } : input.runtime,
+  )
 }

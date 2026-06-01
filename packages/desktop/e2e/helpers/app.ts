@@ -6,6 +6,7 @@ type WorkspaceFile = {
 }
 
 type LaunchOptions = {
+  pickerPath?: string
   workspaceFiles?: WorkspaceFile[]
 }
 
@@ -88,6 +89,13 @@ const session = {
   title: "工作流：CPIII 规范查询与复测预案",
   version: "v2",
   time: { created: 1_777_200_000_000, updated: 1_777_200_060_000 },
+}
+
+const queue = {
+  ...session,
+  id: "queue-e2e",
+  slug: "queue-e2e",
+  title: "检查当前目录中的测量资料",
 }
 
 const artifact = {
@@ -318,10 +326,16 @@ async function setup(page: Page, opts: LaunchOptions) {
   }
 
   await page.route(`${server}/global/health`, (route) => json(route, { healthy: true, version: "e2e" }))
+  const worktree = opts.pickerPath ?? "/tmp/railwise-e2e/worktree"
+
   await page.route(`${server}/global/event`, (route) =>
     route.fulfill({
       contentType: "text/event-stream",
-      body: 'event: message\ndata: {"directory":"global","payload":{"type":"server.connected","properties":{}}}\n\n',
+      body: [
+        'event: message\ndata: {"directory":"global","payload":{"type":"server.connected","properties":{}}}',
+        `event: message\ndata: ${JSON.stringify({ directory: worktree, payload: { type: "worktree.ready", properties: {} } })}`,
+        "",
+      ].join("\n\n"),
     }),
   )
   await page.route(`${server}/path`, (route) =>
@@ -470,6 +484,10 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/mcp`, (route) => json(route, mcp))
   await page.route(`${server}/command`, (route) => json(route, commands))
   await page.route(`${server}/templates/list`, (route) => json(route, templates))
+  await page.route(`${server}/session/queue-e2e/message*`, (route) => json(route, []))
+  await page.route(`${server}/session/queue-e2e/todo*`, (route) => json(route, []))
+  await page.route(`${server}/session/queue-e2e/diff*`, (route) => json(route, []))
+  await page.route(`${server}/session/queue-e2e*`, (route) => json(route, queue))
   await page.route(`${server}/session/workflow-e2e/message*`, (route) => json(route, messages))
   await page.route(`${server}/session/workflow-e2e/todo*`, (route) => json(route, []))
   await page.route(`${server}/session/workflow-e2e/diff*`, (route) => json(route, []))
@@ -538,6 +556,7 @@ async function setup(page: Page, opts: LaunchOptions) {
           if (command === "convert_pptx_to_images") return []
           if (command === "convert_docx_to_html") return "<article>DOCX E2E</article>"
           if (command === "parse_markdown_command") return "<article>Markdown E2E</article>"
+          if (command === "plugin:dialog|open") return input.pickerPath
           if (command === "get_default_server_url") return null
           if (command === "get_wsl_config") return { enabled: false }
           if (command === "set_wsl_config") return null
@@ -575,7 +594,14 @@ async function setup(page: Page, opts: LaunchOptions) {
         )
       }
     },
-    { csv, dxf, server, workspace: opts.workspaceFiles ?? [], debug: process.env.RW_E2E_DEBUG === "1" },
+    {
+      csv,
+      dxf,
+      server,
+      pickerPath: opts.pickerPath ?? "/tmp/railwise-e2e/worktree",
+      workspace: opts.workspaceFiles ?? [],
+      debug: process.env.RW_E2E_DEBUG === "1",
+    },
   )
 }
 

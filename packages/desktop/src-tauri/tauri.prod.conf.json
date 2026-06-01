@@ -5,6 +5,7 @@
   "mainBinaryName": "railwise",
   "bundle": {
     "createUpdaterArtifacts": true,
+    "targets": ["dmg", "nsis"],
     "icon": [
       "icons/railwise/32x32.png",
       "icons/railwise/128x128.png",

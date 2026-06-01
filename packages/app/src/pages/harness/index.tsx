@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router"
 import { createMemo, createSignal, For, Show } from "solid-js"
-import type { Part, PermissionRequest, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
+import type { Part, PermissionRequest, QuestionAnswer, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
 import { base64Encode } from "@railwise/util/encode"
 import { DateTime } from "luxon"
 import { Button } from "@railwise/ui/button"
@@ -131,6 +131,9 @@ export default function HarnessPage() {
   const models = useModels()
   const [focus, setFocus] = createSignal<string>()
   const [responding, setResponding] = createSignal<Record<string, boolean>>({})
+  const [answering, setAnswering] = createSignal<Record<string, boolean>>({})
+  const [answers, setAnswers] = createSignal<Record<string, QuestionAnswer[]>>({})
+  const [custom, setCustom] = createSignal<Record<string, string>>({})
   const connected = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const visible = createMemo(() => models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })))
   const recent = createMemo(() =>
@@ -235,6 +238,56 @@ export default function HarnessPage() {
     return responding()[request.id] ?? false
   }
 
+  function pending(request: QuestionRequest) {
+    return answering()[request.id] ?? false
+  }
+
+  function slot(request: QuestionRequest, index: number) {
+    return `${request.id}:${index}`
+  }
+
+  function values(request: QuestionRequest, index: number) {
+    return answers()[request.id]?.[index] ?? []
+  }
+
+  function typed(request: QuestionRequest, index: number) {
+    return custom()[slot(request, index)] ?? ""
+  }
+
+  function ready(request: QuestionRequest) {
+    return request.questions.length > 0 && request.questions.every((question, index) => result(request, index).length > 0)
+  }
+
+  function setValues(request: QuestionRequest, index: number, value: QuestionAnswer) {
+    setAnswers((current) => ({
+      ...current,
+      [request.id]: request.questions.map((_, i) => (i === index ? value : (current[request.id]?.[i] ?? []))),
+    }))
+  }
+
+  function pick(request: QuestionRequest, index: number, label: string, multiple: boolean | undefined) {
+    if (!multiple) {
+      setValues(request, index, [label])
+      return
+    }
+    const list = values(request, index)
+    setValues(request, index, list.includes(label) ? list.filter((item) => item !== label) : [...list, label])
+  }
+
+  function text(request: QuestionRequest, index: number, value: string) {
+    setCustom((current) => ({ ...current, [slot(request, index)]: value }))
+  }
+
+  function result(request: QuestionRequest, index: number) {
+    const input = typed(request, index).trim()
+    const value = values(request, index)
+    const question = request.questions[index]
+    if (!input || question?.custom === false) return value
+    if (!question?.multiple) return [input]
+    if (value.includes(input)) return value
+    return [...value, input]
+  }
+
   function decide(item: PermissionItem, reply: Reply) {
     const id = item.request.id
     if (busy(item.request)) return
@@ -252,6 +305,47 @@ export default function HarnessPage() {
         setResponding((current) => {
           const next = { ...current }
           delete next[id]
+          return next
+        })
+      })
+  }
+
+  function reply(directory: string, request: QuestionRequest) {
+    if (pending(request) || !ready(request)) return
+    setAnswering((current) => ({ ...current, [request.id]: true }))
+    void sdk.client.question
+      .reply({
+        directory,
+        requestID: request.id,
+        answers: request.questions.map((_, index) => result(request, index)),
+      })
+      .catch((error) => {
+        showToast({ title: "问题提交失败", description: message(error) })
+      })
+      .finally(() => {
+        setAnswering((current) => {
+          const next = { ...current }
+          delete next[request.id]
+          return next
+        })
+      })
+  }
+
+  function reject(directory: string, request: QuestionRequest) {
+    if (pending(request)) return
+    setAnswering((current) => ({ ...current, [request.id]: true }))
+    void sdk.client.question
+      .reject({
+        directory,
+        requestID: request.id,
+      })
+      .catch((error) => {
+        showToast({ title: "问题拒绝失败", description: message(error) })
+      })
+      .finally(() => {
+        setAnswering((current) => {
+          const next = { ...current }
+          delete next[request.id]
           return next
         })
       })
@@ -539,8 +633,61 @@ export default function HarnessPage() {
                         <For each={item().questions}>
                           {(request) => (
                             <div class="rounded bg-surface-panel p-2">
-                              <div class="text-12-medium text-text-strong">{request.questions[0]?.header ?? "待回答问题"}</div>
-                              <div class="mt-1 line-clamp-2 text-12-regular text-text-weak">{request.questions[0]?.question ?? "打开会话继续处理。"}</div>
+                              <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+                                <div class="text-12-medium text-text-strong">{request.questions[0]?.header ?? "待回答问题"}</div>
+                                <div class="flex gap-1">
+                                  <Button variant="ghost" size="small" disabled={pending(request)} onClick={() => reject(item().directory, request)}>
+                                    拒绝
+                                  </Button>
+                                  <Button variant="primary" size="small" disabled={pending(request) || !ready(request)} onClick={() => reply(item().directory, request)}>
+                                    提交
+                                  </Button>
+                                </div>
+                              </div>
+                              <div class="grid gap-2">
+                                <For each={request.questions}>
+                                  {(question, index) => (
+                                    <div class="rounded border border-border-subtle bg-surface-element p-2">
+                                      <div class="flex flex-wrap items-center gap-2">
+                                        <span class="text-12-medium text-text-strong">{question.header}</span>
+                                        <span class="rounded bg-surface-panel px-1.5 py-0.5 text-11-regular text-text-weak">
+                                          {question.multiple ? "多选" : "单选"}
+                                        </span>
+                                      </div>
+                                      <div class="mt-1 text-12-regular text-text-weak">{question.question}</div>
+                                      <Show when={question.options.length > 0}>
+                                        <div class="mt-2 flex flex-wrap gap-1.5">
+                                          <For each={question.options}>
+                                            {(option) => (
+                                              <button
+                                                type="button"
+                                                disabled={pending(request)}
+                                                class="rounded-md border border-border-subtle px-2 py-1 text-left text-12-regular text-text-strong hover:bg-surface-panel disabled:opacity-50"
+                                                classList={{ "bg-surface-raised-base border-border-weak-base": values(request, index()).includes(option.label) }}
+                                                onClick={() => pick(request, index(), option.label, question.multiple)}
+                                              >
+                                                <span>{option.label}</span>
+                                                <Show when={option.description}>
+                                                  <span class="ml-1 text-text-weak">{option.description}</span>
+                                                </Show>
+                                              </button>
+                                            )}
+                                          </For>
+                                        </div>
+                                      </Show>
+                                      <Show when={question.custom !== false}>
+                                        <textarea
+                                          class="mt-2 min-h-16 w-full resize-y rounded-md border border-border-subtle bg-surface-panel px-2 py-1.5 text-12-regular text-text-strong outline-none placeholder:text-text-weak disabled:opacity-50"
+                                          disabled={pending(request)}
+                                          placeholder="补充回答..."
+                                          value={typed(request, index())}
+                                          onInput={(event) => text(request, index(), event.currentTarget.value)}
+                                        />
+                                      </Show>
+                                    </div>
+                                  )}
+                                </For>
+                              </div>
                             </div>
                           )}
                         </For>

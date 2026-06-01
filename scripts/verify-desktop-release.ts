@@ -79,6 +79,7 @@ const railwiseBuild = await read("packages/railwise/script/build.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
+const adminDeploy = await read("docs/admin/01-deploy.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
 const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY",
@@ -154,8 +155,11 @@ check(
 )
 check(
   "release omits Linux target",
-  linux.every((item) => !workflow.includes(item)) && !sidecar.includes("linux-"),
-  "Beta release omits Linux installers",
+  linux.every((item) => !workflow.includes(item)) &&
+    !sidecar.includes("linux-") &&
+    !adminDeploy.includes("Linux 安装包") &&
+    !adminDeploy.includes("linux/"),
+  "Desktop release excludes Linux installers and deployment docs do not promise Linux packages",
 )
 check(
   "release omits Windows target",

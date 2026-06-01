@@ -140,6 +140,21 @@ export default function AgentsPage() {
   const setupState = createMemo(() =>
     modelSetupState({ connectedProviders: connectedProviders().length, visibleModels: visibleModels().length }),
   )
+  const agentStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (summary().total > 0) return `${summary().total} 个可用`
+    return "等待安装"
+  })
+  const toolStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (tools().length > 0) return `${tools().length} 个可用`
+    return "等待安装"
+  })
+  const skillStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (skills().length > 0) return `${skills().length} 个可用`
+    return "等待安装"
+  })
   const routedAgents = createMemo(() => collaborators().slice(0, 8))
   const visibleModelPreview = createMemo(() =>
     visibleModels()
@@ -297,27 +312,45 @@ export default function AgentsPage() {
     <main class="agent-studio" data-testid="agents-page">
       <section class="agent-hero">
         <div class="agent-hero__copy">
-          <span class="agent-kicker">RAILWISE Agent Studio</span>
-          <h1>多智能体协作中枢</h1>
-          <p>围绕工程测绘任务组织专业智能体、生产工具、Skills 与工作流，让一次会话直接进入执行。</p>
+          <span class="agent-kicker">RAILWISE 能力市场</span>
+          <h1>安装和管理专业能力</h1>
+          <p>像 Codex 一样，把智能体、工具、Skills、MCP、模型 Provider 与 Harness Profile 放在一个清晰的市场里；工作从首页对话框开始，高级配置留在这里。</p>
+          <div class="agent-hero__actions">
+            <A href="/home" class="agent-button agent-button--ghost">
+              打开工作台
+            </A>
+            <button type="button" class="agent-button" onClick={connectProvider}>
+              接入模型
+            </button>
+          </div>
         </div>
-        <div class="agent-hero__stats" aria-busy={loading()}>
-          <div class="agent-stat">
-            <span>智能体</span>
-            <strong>{summary().total}</strong>
-            <small>{summary().primary} 主控 / {summary().collaborators} 专业智能体</small>
+        <div class="agent-market__cards" aria-busy={loading()}>
+          <div class="agent-market-card">
+            <span>Agents</span>
+            <strong>智能体库</strong>
+            <small>{agentStatus()}</small>
           </div>
-          <div class="agent-stat">
-            <span>工具</span>
-            <strong>{tools().length}</strong>
-            <small>调度、规范、平差、文件执行</small>
+          <div class="agent-market-card">
+            <span>Tools</span>
+            <strong>工具链</strong>
+            <small>{toolStatus()}</small>
           </div>
-          <div class="agent-stat">
+          <div class="agent-market-card">
             <span>Skills</span>
-            <strong>{skills().length}</strong>
-            <small>可按任务加载的专业流程</small>
+            <strong>专业流程</strong>
+            <small>{skillStatus()}</small>
           </div>
         </div>
+      </section>
+
+      <section class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
+        <button type="button">Agents</button>
+        <button type="button">Tools</button>
+        <button type="button">Skills</button>
+        <button type="button">Workflows</button>
+        <button type="button">MCP</button>
+        <button type="button">Providers</button>
+        <button type="button">Harness</button>
       </section>
 
       <section class="agent-launch" data-testid="agent-collaboration-start">

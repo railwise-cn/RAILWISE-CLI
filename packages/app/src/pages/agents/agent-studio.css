@@ -22,14 +22,12 @@
 
 .agent-hero {
   display: grid;
-  grid-template-columns: minmax(360px, 1.1fr) minmax(360px, 0.9fr);
+  grid-template-columns: minmax(420px, 1fr) minmax(300px, 0.52fr);
   gap: 24px;
   align-items: stretch;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--agent-accent) 14%, transparent), transparent 42%),
-    var(--agent-surface);
+  background: var(--agent-surface);
   padding: 24px;
 }
 
@@ -51,7 +49,7 @@
 .agent-hero h1 {
   margin: 0;
   color: var(--agent-text);
-  font-size: 34px;
+  font-size: 30px;
   font-weight: 720;
   line-height: 1.12;
   letter-spacing: 0;
@@ -65,26 +63,33 @@
   line-height: 1.7;
 }
 
-.agent-hero__stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+.agent-hero__actions {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 4px;
 }
 
-.agent-stat {
+.agent-market__cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.agent-market-card {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 6px;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
   background: color-mix(in srgb, var(--agent-bg) 56%, var(--agent-surface));
-  padding: 14px;
+  padding: 12px;
 }
 
-.agent-stat span,
-.agent-stat small {
+.agent-market-card span,
+.agent-market-card small {
   overflow: hidden;
   color: var(--agent-muted);
   font-size: 12px;
@@ -92,11 +97,40 @@
   text-overflow: ellipsis;
 }
 
-.agent-stat strong {
+.agent-market-card strong {
+  overflow: hidden;
   color: var(--agent-text);
-  font-size: 30px;
-  font-weight: 720;
-  line-height: 1;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-market-tabs {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  border: 1px solid var(--agent-border);
+  border-radius: var(--agent-radius);
+  background: var(--agent-surface);
+  padding: 8px;
+}
+
+.agent-market-tabs button {
+  min-height: 34px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--agent-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.agent-market-tabs button:first-child {
+  border-color: color-mix(in srgb, var(--agent-accent) 48%, transparent);
+  background: var(--agent-soft);
+  color: var(--agent-accent-strong);
 }
 
 .agent-launch {
@@ -669,6 +703,9 @@
 }
 
 .agent-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 36px;
   border: 1px solid color-mix(in srgb, var(--agent-accent) 70%, transparent);
   border-radius: var(--agent-radius);
@@ -677,6 +714,7 @@
   padding: 0 14px;
   font-size: 13px;
   font-weight: 650;
+  text-decoration: none;
 }
 
 .agent-button:disabled {
@@ -995,7 +1033,8 @@
   }
 
   .agent-toolbar__controls,
-  .agent-hero__stats,
+  .agent-market__cards,
+  .agent-market-tabs,
   .agent-launch__path,
   .agent-model-routing__stats,
   .agent-rail,

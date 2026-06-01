@@ -63,13 +63,16 @@ const WorkspaceDiffRoute = () => (
     <WorkspaceDiff />
   </Suspense>
 )
-const AgentRedirect = () => <Navigate href="/agents" />
+const HomeRedirect = () => <Navigate href="/home" />
 
 function ensureStandaloneLanding() {
+  if (location.hash.startsWith("#/home")) return
+  if (location.hash.startsWith("#/harness")) return
+  if (location.hash.startsWith("#/marketplace")) return
   if (location.hash.startsWith("#/agents")) return
   if (location.hash.startsWith("#/workspace")) return
   if (/^#\/[^/]+\/session/.test(location.hash)) return
-  history.replaceState(null, "", `${location.pathname}${location.search}#/agents`)
+  history.replaceState(null, "", `${location.pathname}${location.search}#/home`)
 }
 
 // Create startup timer with performance budget and retry callback
@@ -684,20 +687,20 @@ render(() => {
               <Show when={!defaultServer.loading}>
                 <div class="railwise-app-shell" data-testid="app-shell">
                   <AppInterface
-                    defaultPath="/agents"
+                    defaultPath="/home"
                     defaultServer={defaultServer.latest ?? ServerConnection.key(server)}
                     routes={
                       <>
-                        <Route path="/dashboard" component={AgentRedirect} />
-                        <Route path="/dashboard/*rest" component={AgentRedirect} />
+                        <Route path="/dashboard" component={HomeRedirect} />
+                        <Route path="/dashboard/*rest" component={HomeRedirect} />
                         <Route path="/workspace" component={WorkspaceRoute} />
                         <Route path="/workspace/diff" component={WorkspaceDiffRoute} />
                         <Route path="/workspace/*rest" component={WorkspaceRoute} />
-                        <Route path="*rest" component={AgentRedirect} />
+                        <Route path="*rest" component={HomeRedirect} />
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/workspace", "/agents", "/:dir/session"]}
+                    standalonePaths={["/workspace", "/home", "/harness", "/marketplace", "/agents", "/:dir/session"]}
                     sessionRoutes
                     workbenchRoutes={false}
                   >

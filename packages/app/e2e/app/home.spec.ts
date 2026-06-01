@@ -1,21 +1,27 @@
 import { test, expect } from "../fixtures"
-import { serverName } from "../utils"
 
-test("home renders and shows core entrypoints", async ({ page }) => {
+test("home renders the Workbench entrypoints", async ({ page }) => {
   await page.goto("/")
 
-  await expect(page.getByRole("button", { name: "Open project" }).first()).toBeVisible()
-  await expect(page.getByRole("button", { name: serverName })).toBeVisible()
+  await expect(page.getByTestId("workbench-page")).toBeVisible()
+  await expect(page.getByRole("heading", { name: "告诉 RAILWISE 你想完成什么" })).toBeVisible()
+  await expect(page.getByRole("button", { name: "选择资料目录" })).toBeVisible()
+  await expect(page.getByRole("link", { name: "能力市场" })).toBeVisible()
+  await expect(page.getByRole("link", { name: "Harness" })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Open project" })).toHaveCount(0)
 })
 
-test("server picker dialog opens from home", async ({ page }) => {
+test("Workbench navigation opens capability pages", async ({ page }) => {
   await page.goto("/")
 
-  const trigger = page.getByRole("button", { name: serverName })
-  await expect(trigger).toBeVisible()
-  await trigger.click()
+  await page.getByRole("link", { name: "能力市场" }).click()
+  await expect(page.getByTestId("marketplace-page")).toBeVisible()
+  await expect(page.getByRole("heading", { name: "能力市场" })).toBeVisible()
 
-  const dialog = page.getByRole("dialog")
-  await expect(dialog).toBeVisible()
-  await expect(dialog.getByRole("textbox").first()).toBeVisible()
+  await page.getByRole("link", { name: "返回工作台" }).click()
+  await expect(page.getByTestId("workbench-page")).toBeVisible()
+
+  await page.getByRole("link", { name: "Harness" }).click()
+  await expect(page.getByTestId("harness-page")).toBeVisible()
+  await expect(page.getByRole("heading", { name: "运行时控制台" })).toBeVisible()
 })

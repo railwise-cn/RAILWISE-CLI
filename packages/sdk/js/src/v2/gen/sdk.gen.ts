@@ -62,8 +62,20 @@ import type {
   GlobalDisposeResponses,
   GlobalEventResponses,
   GlobalHealthResponses,
+  HarnessSessionPermissionResolveErrors,
+  HarnessSessionPermissionResolveResponses,
+  HarnessSessionTimelineErrors,
+  HarnessSessionTimelineResponses,
+  HarnessStatusResponses,
   InstanceDisposeResponses,
   LspStatusResponses,
+  MarketplaceCapabilitiesDisableErrors,
+  MarketplaceCapabilitiesDisableResponses,
+  MarketplaceCapabilitiesEnableErrors,
+  MarketplaceCapabilitiesEnableResponses,
+  MarketplaceCapabilitiesGetErrors,
+  MarketplaceCapabilitiesGetResponses,
+  MarketplaceCapabilitiesListResponses,
   McpAddErrors,
   McpAddResponses,
   McpAuthAuthenticateErrors,
@@ -2240,6 +2252,235 @@ export class Templates extends HeyApiClient {
   }
 }
 
+export class Permission2 extends HeyApiClient {
+  /**
+   * Resolve Harness permission
+   *
+   * Approves or rejects a pending Harness permission request.
+   */
+  public resolve<ThrowOnError extends boolean = false>(
+    parameters: {
+      sessionID: string
+      permissionID: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "sessionID" },
+            { in: "path", key: "permissionID" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      HarnessSessionPermissionResolveResponses,
+      HarnessSessionPermissionResolveErrors,
+      ThrowOnError
+    >({
+      url: "/harness/session/{sessionID}/permission/{permissionID}",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Session2 extends HeyApiClient {
+  /**
+   * Harness timeline
+   *
+   * Returns visible Harness events for a session.
+   */
+  public timeline<ThrowOnError extends boolean = false>(
+    parameters: {
+      sessionID: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "sessionID" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      HarnessSessionTimelineResponses,
+      HarnessSessionTimelineErrors,
+      ThrowOnError
+    >({
+      url: "/harness/session/{sessionID}/timeline",
+      ...options,
+      ...params,
+    })
+  }
+
+  private _permission?: Permission2
+  get permission(): Permission2 {
+    return (this._permission ??= new Permission2({ client: this.client }))
+  }
+}
+
+export class Harness extends HeyApiClient {
+  /**
+   * Harness status
+   *
+   * Returns the current RAILWISE Harness runtime status.
+   */
+  public status<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<HarnessStatusResponses, unknown, ThrowOnError>({
+      url: "/harness/status",
+      ...options,
+      ...params,
+    })
+  }
+
+  private _session?: Session2
+  get session(): Session2 {
+    return (this._session ??= new Session2({ client: this.client }))
+  }
+}
+
+export class Capabilities extends HeyApiClient {
+  /**
+   * Marketplace capabilities
+   *
+   * Returns built-in and installed RAILWISE capabilities.
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<MarketplaceCapabilitiesListResponses, unknown, ThrowOnError>({
+      url: "/marketplace/capabilities",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Marketplace capability
+   */
+  public get<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<
+      MarketplaceCapabilitiesGetResponses,
+      MarketplaceCapabilitiesGetErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Enable capability
+   */
+  public enable<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      MarketplaceCapabilitiesEnableResponses,
+      MarketplaceCapabilitiesEnableErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}/enable",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Disable capability
+   */
+  public disable<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      MarketplaceCapabilitiesDisableResponses,
+      MarketplaceCapabilitiesDisableErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}/disable",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Marketplace extends HeyApiClient {
+  private _capabilities?: Capabilities
+  get capabilities(): Capabilities {
+    return (this._capabilities ??= new Capabilities({ client: this.client }))
+  }
+}
+
 export class Find extends HeyApiClient {
   /**
    * Find text
@@ -3781,6 +4022,16 @@ export class RailwiseClient extends HeyApiClient {
   private _templates?: Templates
   get templates(): Templates {
     return (this._templates ??= new Templates({ client: this.client }))
+  }
+
+  private _harness?: Harness
+  get harness(): Harness {
+    return (this._harness ??= new Harness({ client: this.client }))
+  }
+
+  private _marketplace?: Marketplace
+  get marketplace(): Marketplace {
+    return (this._marketplace ??= new Marketplace({ client: this.client }))
   }
 
   private _find?: Find

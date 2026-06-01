@@ -91,7 +91,7 @@ export default function Home() {
 
   return (
     <main class="min-h-full px-6 py-5" data-testid="home-workbench">
-      <div class="grid h-full min-h-[calc(100vh-56px)] grid-cols-[260px_minmax(0,1fr)_280px] gap-4">
+      <div class="grid h-full min-h-[calc(100vh-56px)] grid-cols-[260px_minmax(0,1fr)] gap-4">
         <aside class="flex flex-col rounded-lg border border-border-subtle bg-surface-panel p-4">
           <div class="flex items-center gap-3">
             <Logo class="size-9 opacity-80" />
@@ -123,7 +123,7 @@ export default function Home() {
             </Button>
             <Show
               when={selectedDirectory()}
-              fallback={<div class="rounded-md bg-surface-element p-3 text-12-regular text-text-weak">选择资料目录后，RAILWISE 会把会话、文件和工具调用限制在该工作区。</div>}
+              fallback={<div class="rounded-md bg-surface-element p-3 text-12-regular text-text-weak">工作区未选择</div>}
             >
               {(path) => (
                 <button
@@ -170,9 +170,6 @@ export default function Home() {
           <div class="border-b border-border-subtle px-6 py-5">
             <div class="text-12-medium uppercase text-text-weak">本地 AI 工作台</div>
             <h1 class="mt-2 text-28-bold text-text-strong">想让 RAILWISE 完成什么？</h1>
-            <p class="mt-2 max-w-2xl text-14-regular text-text-weak">
-              选择工程资料目录，直接用一句话交代任务。主控智能体会把工作拆给规范、平差、资料整理和报告智能体。
-            </p>
           </div>
 
           <form
@@ -210,52 +207,35 @@ export default function Home() {
               placeholder="例如：检查当前线路复测资料，列出缺失文件，生成下一步执行计划。"
             />
 
-            <div class="mt-4 flex items-center justify-between">
-              <div class="flex items-center gap-2 text-12-regular text-text-weak">
-                <Icon name="circle-ban-sign" size="small" />
-                本地安全模式：写文件、执行命令和外部目录访问会先请求确认。
-              </div>
+            <div class="mt-4 flex items-center justify-end">
               <Button type="submit" disabled={!canStart()}>
                 开始协作
               </Button>
             </div>
+
+            <section class="mt-4 grid gap-2 md:grid-cols-3" data-testid="home-harness-panel">
+              <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+                <div class="flex items-center gap-2 text-12-medium text-text-strong">
+                  <Icon name="circle-ban-sign" size="small" />
+                  本地安全模式
+                </div>
+                <div class="mt-1 text-12-regular text-text-weak">高风险动作先确认</div>
+              </div>
+              <div class="rounded-md border border-border-subtle bg-surface-element p-3">
+                <div class="text-12-medium text-text-strong">模型</div>
+                <div class="mt-1 truncate text-12-regular text-text-weak">{modelLabel()}</div>
+              </div>
+              <button
+                type="button"
+                class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
+                onClick={() => navigate("/agents")}
+              >
+                <div class="text-12-medium text-text-strong">能力库</div>
+                <div class="mt-1 text-12-regular text-text-weak">智能体 / 工具 / Skills</div>
+              </button>
+            </section>
           </form>
         </section>
-
-        <aside class="flex flex-col gap-4">
-          <section class="rounded-lg border border-border-subtle bg-surface-panel p-4" data-testid="home-harness-panel">
-            <div class="text-12-medium uppercase text-text-weak">Harness</div>
-            <h2 class="mt-2 text-18-bold text-text-strong">本地安全模式</h2>
-            <p class="mt-2 text-13-regular text-text-weak">Harness 会把任务路由到智能体、Skills 与工具，并在高风险动作前停下来等你确认。</p>
-            <div class="mt-4 flex flex-col gap-2">
-              <div class="rounded-md bg-surface-element p-3">
-                <div class="text-12-medium text-text-weak">主控智能体</div>
-                <div class="text-13-medium text-text-strong">chief_manager</div>
-              </div>
-              <div class="rounded-md bg-surface-element p-3">
-                <div class="text-12-medium text-text-weak">模型</div>
-                <div class="text-13-medium text-text-strong">{modelLabel()}</div>
-              </div>
-              <div class="rounded-md bg-surface-element p-3">
-                <div class="text-12-medium text-text-weak">已启用能力</div>
-                <div class="mt-2 flex flex-wrap gap-1">
-                  <span class="rounded bg-surface-base px-2 py-1 text-11-medium text-text-strong">多智能体调度</span>
-                  <span class="rounded bg-surface-base px-2 py-1 text-11-medium text-text-strong">文件读取</span>
-                  <span class="rounded bg-surface-base px-2 py-1 text-11-medium text-text-strong">权限门禁</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="rounded-lg border border-border-subtle bg-surface-panel p-4">
-            <div class="text-12-medium uppercase text-text-weak">下一步</div>
-            <div class="mt-3 flex flex-col gap-2 text-13-regular text-text-weak">
-              <div>1. 打开资料目录</div>
-              <div>2. 输入任务目标</div>
-              <div>3. 在会话中查看工具调用、权限请求和产物</div>
-            </div>
-          </section>
-        </aside>
       </div>
     </main>
   )

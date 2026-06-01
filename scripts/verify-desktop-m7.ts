@@ -189,8 +189,16 @@ check(
     'trace: "on-first-retry"',
     'screenshot: "only-on-failure"',
     'video: "retain-on-failure"',
-  ]),
-  "HTML report, trace, screenshot, and video artifacts are configured",
+  ]) &&
+    has(config, [
+      'process.platform === "darwin"',
+      "zsh -lc",
+      "bun ./node_modules/vite/bin/vite.js",
+      "Library/Caches/ms-playwright",
+      "Google Chrome for Testing",
+      "PLAYWRIGHT_CHROMIUM_CHANNEL",
+    ]),
+  "HTML report, trace, screenshot, video artifacts, and the stable macOS Vite webServer command are configured",
 )
 check(
   "telemetry default off",

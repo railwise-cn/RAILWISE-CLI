@@ -1,9 +1,30 @@
 import { defineConfig, devices } from "@playwright/test"
+import { existsSync, readdirSync } from "node:fs"
+import { homedir } from "node:os"
+import path from "node:path"
 
 const port = Number(process.env.PLAYWRIGHT_PORT ?? 5185)
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`
-const command = `bun ./node_modules/vite/bin/vite.js --host 127.0.0.1 --port ${port}`
-const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
+const vite = `bun ./node_modules/vite/bin/vite.js --host 127.0.0.1 --port ${port}`
+const command = process.platform === "darwin" ? `zsh -lc '${vite}'` : vite
+const cached = () => {
+  const root = path.join(homedir(), "Library/Caches/ms-playwright")
+  if (!existsSync(root)) return undefined
+  return readdirSync(root)
+    .filter((item) => item.startsWith("chromium-"))
+    .sort()
+    .reverse()
+    .map((item) =>
+      path.join(
+        root,
+        item,
+        "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      ),
+    )
+    .find((item) => existsSync(item))
+}
+const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ?? (process.platform === "darwin" ? cached() : undefined)
+const channel = process.env.PLAYWRIGHT_CHROMIUM_CHANNEL
 const reuse = !process.env.CI
 const webServer =
   process.env.PLAYWRIGHT_SKIP_WEBSERVER === "1"
@@ -38,7 +59,7 @@ export default defineConfig({
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        ...(executablePath ? { launchOptions: { executablePath } } : { channel: "chrome" }),
+        ...(executablePath ? { launchOptions: { executablePath } } : channel ? { channel } : {}),
       },
     },
   ],

@@ -37,13 +37,6 @@
     "shortDescription": "RAILWISE 工程监测智能工作台",
     "longDescription": "面向工程测绘、结构监测、地铁线路监测一线工程师的多智能体桌面工作台",
     "externalBin": ["sidecars/railwise-cli"],
-    "linux": {
-      "rpm": {
-        "compression": {
-          "type": "none"
-        }
-      }
-    },
     "macOS": {
       "entitlements": "./entitlements.plist",
       "dmg": {

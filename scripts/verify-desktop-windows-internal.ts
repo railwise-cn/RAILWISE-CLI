@@ -14,6 +14,7 @@ const workflowPath = ".github/workflows/desktop-windows-internal.yml"
 const workflow = (await exists(workflowPath)) ? await read(workflowPath) : ""
 const release = await read(".github/workflows/desktop-release.yml")
 const config = await Bun.file(file("packages/desktop/src-tauri/tauri.prod.conf.json")).json()
+const dev = await Bun.file(file("packages/desktop/src-tauri/tauri.conf.json")).json()
 
 check("workflow exists", Boolean(workflow), workflowPath)
 check(
@@ -60,8 +61,19 @@ check(
   "public release remains macOS-only",
   has(release, ['-name "*.dmg"', "Expected exactly 2 public macOS installers"]) &&
     !release.includes('-name "*.exe"') &&
+    !release.includes("windows-2022") &&
     !release.includes("WINDOWS_CERTIFICATE"),
   "formal Desktop Release still publishes only the two notarized macOS DMGs",
+)
+check(
+  "linux desktop packages disabled",
+  config.bundle?.linux === undefined &&
+    dev.bundle?.linux === undefined &&
+    !release.includes("platform: linux") &&
+    !release.includes("unknown-linux") &&
+    !release.includes("bundles: deb") &&
+    !release.includes("bundles: rpm"),
+  "desktop distribution is limited to macOS public release plus Windows internal testing",
 )
 check(
   "windows installer config",

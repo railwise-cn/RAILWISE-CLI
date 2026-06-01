@@ -5,6 +5,7 @@ import {
   primaryActionLabel,
   recentSessions,
   recentWorkspaces,
+  resumeActionLabel,
   runtimeLabel,
   sessionRuntimeLabel,
   sessionTitle,
@@ -57,6 +58,12 @@ describe("workbench state", () => {
     expect(runtimeLabel({ pendingPermissionCount: 2, runningToolCount: 1 })).toBe("2 个权限等待确认")
     expect(runtimeLabel({ runningToolCount: 3 })).toBe("3 个工具正在运行")
     expect(runtimeLabel({})).toBe("可继续协作")
+  })
+
+  test("points the resume action at pending permissions", () => {
+    expect(resumeActionLabel({ pendingPermissionCount: 1 })).toBe("处理权限")
+    expect(resumeActionLabel({ runningToolCount: 1 })).toBe("继续会话")
+    expect(resumeActionLabel({})).toBe("继续会话")
   })
 
   test("only marks the latest session with live runtime status", () => {

@@ -100,6 +100,11 @@ export function runtimeLabel(input?: WorkbenchRuntime) {
   return "可继续协作"
 }
 
+export function resumeActionLabel(input?: WorkbenchRuntime) {
+  if (input?.pendingPermissionCount) return "处理权限"
+  return "继续会话"
+}
+
 export function sessionRuntimeLabel(input: SessionRuntime) {
   if (input.sessionID !== input.latestID) return "已保存"
   return runtimeLabel(input.runtime)

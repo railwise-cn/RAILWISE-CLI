@@ -4639,6 +4639,7 @@ export type HarnessStatusResponses = {
     activeAgent?: string
     capabilityCount: number
     pendingPermissionCount: number
+    pendingSessionID?: string
     runningToolCount: number
   }
 }

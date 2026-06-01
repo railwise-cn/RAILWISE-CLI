@@ -39,6 +39,7 @@ export const HarnessStatus = z.object({
   activeAgent: z.string().optional(),
   capabilityCount: z.number().int(),
   pendingPermissionCount: z.number().int(),
+  pendingSessionID: z.string().optional(),
   runningToolCount: z.number().int(),
 })
 

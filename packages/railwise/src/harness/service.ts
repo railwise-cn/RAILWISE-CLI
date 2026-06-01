@@ -101,15 +101,27 @@ export namespace Harness {
       .filter((part): part is MessageV2.ToolPart => part.type === "tool")
       .filter((part) => part.state.status === "running").length
     const list = await permissions()
-    const pending = input?.directory || input?.sessionID ? list.filter((item) => item.sessionID === session?.id) : list
+    const matched = await Promise.all(
+      list.map(async (item) => ({
+        item,
+        session: await Session.get(item.sessionID).catch(() => undefined),
+      })),
+    )
+    const pending = input?.sessionID
+      ? matched.filter((entry) => entry.item.sessionID === input.sessionID).map((entry) => entry.item)
+      : input?.directory
+        ? matched.filter((entry) => entry.session?.directory === input.directory).map((entry) => entry.item)
+        : list
+    const pendingSession = matched.find((entry) => entry.item.id === pending[0]?.id)?.session
 
     return HarnessStatus.parse({
       mode: pending.length > 0 ? "ask" : "safe",
-      workspace: session?.directory,
+      workspace: session?.directory ?? pendingSession?.directory,
       model: assistant ? model(assistant) : undefined,
       activeAgent: assistant?.agent,
       capabilityCount: Marketplace.list().filter((item) => item.enabled).length,
       pendingPermissionCount: pending.length,
+      pendingSessionID: pending[0]?.sessionID,
       runningToolCount: running,
     })
   }

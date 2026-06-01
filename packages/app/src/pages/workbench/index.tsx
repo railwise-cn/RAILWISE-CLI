@@ -21,6 +21,7 @@ import {
   recentSessions,
   recentWorkspaces,
   runtimeLabel,
+  sessionRuntimeLabel,
   sessionTitle,
 } from "./workbench-state"
 
@@ -280,7 +281,20 @@ export default function WorkbenchPage() {
                   <li>
                     <A href={sessionHref(session.id)}>
                       <strong>{sessionTitle(session)}</strong>
-                      <span>{time.format(session.time.updated ?? session.time.created)}</span>
+                      <span class="workbench-session-meta">
+                        <span>{time.format(session.time.updated ?? session.time.created)}</span>
+                        <span
+                          class="workbench-session-status"
+                          data-testid="workbench-session-status"
+                          data-state={session.id === latest()?.id ? "live" : "saved"}
+                        >
+                          {sessionRuntimeLabel({
+                            sessionID: session.id,
+                            latestID: latest()?.id,
+                            runtime: status(),
+                          })}
+                        </span>
+                      </span>
                     </A>
                     <A
                       href={`/harness?sessionID=${session.id}`}

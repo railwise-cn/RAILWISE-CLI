@@ -325,6 +325,52 @@
   background: #f8fafc;
 }
 
+.workbench-resume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid #b8c7e8;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.workbench-resume div {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.workbench-resume span,
+.workbench-resume small {
+  color: #667085;
+  font-size: 12px;
+}
+
+.workbench-resume strong {
+  overflow: hidden;
+  color: #101828;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workbench-resume a {
+  flex: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #155eef;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.workbench-resume a:hover {
+  background: #0f4ed3;
+}
+
 .workbench-sessions {
   display: grid;
   gap: 8px;
@@ -528,6 +574,11 @@
 
   .workbench-sessions li {
     grid-template-columns: 1fr;
+  }
+
+  .workbench-resume {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .workbench-composer select {

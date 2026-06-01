@@ -68,6 +68,7 @@ export default function WorkbenchPage() {
   const workspace = createMemo(() => compactPath({ value: directory(), home: sync.data.path.home }))
   const workspaceStore = createMemo(() => (hasWorkspace() ? sync.child(directory())[0] : undefined))
   const sessions = createMemo(() => recentSessions(workspaceStore()?.session ?? []))
+  const latest = createMemo(() => sessions()[0])
   const selected = createMemo(() => agents.find((item) => item.value === agent()) ?? agents[0])
   const canStart = createMemo(() => hasWorkspace() && hasPrompt())
   const capability = createMemo(() =>
@@ -258,6 +259,18 @@ export default function WorkbenchPage() {
             when={sessions().length > 0}
             fallback={<p>开始会话后，最近任务、工具调用和 Harness 轨迹会出现在这里。</p>}
           >
+            <Show when={latest()}>
+              {(session) => (
+                <div class="workbench-resume">
+                  <div>
+                    <span>继续上次会话</span>
+                    <strong>{sessionTitle(session())}</strong>
+                    <small>{time.format(session().time.updated ?? session().time.created)} 更新</small>
+                  </div>
+                  <A href={sessionHref(session().id)}>继续会话</A>
+                </div>
+              )}
+            </Show>
             <ul class="workbench-sessions">
               <For each={sessions()}>
                 {(session) => (

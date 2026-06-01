@@ -28,7 +28,7 @@ test("Workbench navigation opens capability pages", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "运行时控制台" })).toBeVisible()
 })
 
-test("Workbench starts a real submitted session from the task box", async ({ page, sdk, directory }) => {
+test("Workbench starts and resumes a real submitted session from the task box", async ({ page, sdk, directory }) => {
   test.setTimeout(120_000)
   await seedProjects(page, { directory })
   await page.goto("/")
@@ -57,4 +57,10 @@ test("Workbench starts a real submitted session from the task box", async ({ pag
       { timeout: 30_000 },
     )
     .toContain(token)
+
+  await page.goto("/")
+  const resume = page.getByRole("link", { name: "继续会话" }).first()
+  await expect(resume).toBeVisible()
+  await resume.click()
+  await expect(page).toHaveURL(new RegExp(`/session/${sessionID}(?:[/?#]|$)`))
 })

@@ -16,6 +16,7 @@ import { useAgentUpdates } from "@/hooks/use-agent-updates"
 import { useProviders } from "@/hooks/use-providers"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
+import type { Workflow } from "@/types/workflow"
 import { useAgentStudioApi } from "./api"
 import {
   agentRoleLabel,
@@ -56,6 +57,9 @@ const focus = [
   "source_ingestor",
 ]
 
+const marketIds = ["agents", "tools", "skills", "workflows", "mcp", "providers", "harness"] as const
+type MarketId = (typeof marketIds)[number]
+
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
   return fallback
@@ -74,20 +78,22 @@ export default function AgentsPage() {
   const [items, setItems] = createSignal<AgentStudioItem[]>([])
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
+  const [workflows, setWorkflows] = createSignal<Workflow[]>([])
   const [directory, setDirectory] = createSignal("")
   const [manualDirectory, setManualDirectory] = createSignal(false)
   const [selectedAgent, setSelectedAgent] = createSignal("chief_manager")
   const [draft, setDraft] = createSignal("")
   const [query, setQuery] = createSignal("")
   const [mode, setMode] = createSignal<ModeFilter>("all")
+  const [activeMarket, setActiveMarket] = createSignal<MarketId>("agents")
   const [loading, setLoading] = createSignal(true)
   const [error, setError] = createSignal("")
   const [routeSaving, setRouteSaving] = createSignal<Record<string, boolean>>({})
 
   function load() {
     setLoading(true)
-    void Promise.allSettled([api.list(), api.tools(), api.skills()])
-      .then(([agents, toolset, skillset]) => {
+    void Promise.allSettled([api.list(), api.tools(), api.skills(), api.presets()])
+      .then(([agents, toolset, skillset, presets]) => {
         if (agents.status === "fulfilled") {
           setItems(agents.value)
           setError("")
@@ -96,6 +102,7 @@ export default function AgentsPage() {
         }
         setTools(result(toolset, []))
         setSkills(result(skillset, []))
+        setWorkflows(result(presets, []))
       })
       .finally(() => setLoading(false))
   }
@@ -155,6 +162,76 @@ export default function AgentsPage() {
     if (skills().length > 0) return `${skills().length} 个可用`
     return "等待安装"
   })
+  const workflowStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (workflows().length > 0) return `${workflows().length} 个可用`
+    return "等待配置"
+  })
+  const market = createMemo(() => [
+    {
+      id: "agents" as const,
+      label: "Agents",
+      title: "智能体库",
+      status: agentStatus(),
+      description: "主控智能体负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
+      target: "#agent-matrix",
+      action: "查看智能体",
+    },
+    {
+      id: "tools" as const,
+      label: "Tools",
+      title: "工具链",
+      status: toolStatus(),
+      description: "工具会被 Harness 按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
+      target: "#agent-tools",
+      action: "查看工具",
+    },
+    {
+      id: "skills" as const,
+      label: "Skills",
+      title: "专业流程",
+      status: skillStatus(),
+      description: "Skills 是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
+      target: "#agent-skills",
+      action: "查看 Skills",
+    },
+    {
+      id: "workflows" as const,
+      label: "Workflows",
+      title: "工作流",
+      status: workflowStatus(),
+      description: "工作流把多个智能体串起来，适合外业首检、趋势分析、报告生成和审校链路。",
+      target: "#agent-workflows",
+      action: "查看工作流",
+    },
+    {
+      id: "mcp" as const,
+      label: "MCP",
+      title: "MCP 连接器",
+      status: "按项目启用",
+      description: "MCP 让智能体连接专业系统、知识库和外部工具。当前从项目会话和设置中心管理。",
+      target: "#agent-tools",
+      action: "查看相关工具",
+    },
+    {
+      id: "providers" as const,
+      label: "Providers",
+      title: "模型 Provider",
+      status: connectedProviders().length > 0 ? `${connectedProviders().length} 个已接入` : "待接入",
+      description: `默认建议 ${recommendedModel}，也可以把审校、平差和资料整理智能体绑定到不同模型。`,
+      button: "接入模型",
+    },
+    {
+      id: "harness" as const,
+      label: "Harness",
+      title: "Harness Profile",
+      status: "本地安全模式",
+      description: "Harness 管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际执行层。",
+      target: "/home",
+      action: "打开工作台",
+    },
+  ])
+  const activePackage = createMemo(() => market().find((item) => item.id === activeMarket()) ?? market()[0])
   const routedAgents = createMemo(() => collaborators().slice(0, 8))
   const visibleModelPreview = createMemo(() =>
     visibleModels()
@@ -344,13 +421,43 @@ export default function AgentsPage() {
       </section>
 
       <section class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
-        <button type="button">Agents</button>
-        <button type="button">Tools</button>
-        <button type="button">Skills</button>
-        <button type="button">Workflows</button>
-        <button type="button">MCP</button>
-        <button type="button">Providers</button>
-        <button type="button">Harness</button>
+        <For each={market()}>
+          {(item) => (
+            <button
+              type="button"
+              classList={{ active: activeMarket() === item.id }}
+              aria-pressed={activeMarket() === item.id}
+              onClick={() => setActiveMarket(item.id)}
+            >
+              {item.label}
+            </button>
+          )}
+        </For>
+      </section>
+
+      <section class="agent-market-panel" data-testid="agent-market-panel">
+        <div>
+          <span>{activePackage().label}</span>
+          <h2>{activePackage().title}</h2>
+          <p>{activePackage().description}</p>
+        </div>
+        <div class="agent-market-panel__status">
+          <strong>{activePackage().status}</strong>
+          <Show
+            when={activePackage().button}
+            fallback={
+              <A href={activePackage().target ?? "/agents"} class="agent-button agent-button--ghost">
+                {activePackage().action}
+              </A>
+            }
+          >
+            {(label) => (
+              <button type="button" class="agent-button agent-button--ghost" onClick={connectProvider}>
+                {label()}
+              </button>
+            )}
+          </Show>
+        </div>
       </section>
 
       <section class="agent-launch" data-testid="agent-collaboration-start">
@@ -549,7 +656,7 @@ export default function AgentsPage() {
         </section>
       </Show>
 
-      <section class="agent-toolbar">
+      <section class="agent-toolbar" id="agent-matrix">
         <div>
           <h2>智能体矩阵</h2>
           <p>选择专业智能体进入配置，也可以从工作流直接生成协作会话。</p>
@@ -582,7 +689,7 @@ export default function AgentsPage() {
       </Show>
 
       <section class="agent-inventory">
-        <div class="agent-inventory__column">
+        <div class="agent-inventory__column" id="agent-tools">
           <div class="agent-section__header">
             <div>
               <h2>工具链</h2>
@@ -611,7 +718,7 @@ export default function AgentsPage() {
             </For>
           </div>
         </div>
-        <div class="agent-inventory__column">
+        <div class="agent-inventory__column" id="agent-skills">
           <div class="agent-section__header">
             <div>
               <h2>Skills</h2>
@@ -634,7 +741,9 @@ export default function AgentsPage() {
         </div>
       </section>
 
-      <WorkflowGallery />
+      <div id="agent-workflows">
+        <WorkflowGallery />
+      </div>
     </main>
   )
 }

@@ -18,6 +18,7 @@ import {
   emptyPrompt,
   primaryActionLabel,
   promptExamples,
+  primarySessionID,
   recentSessions,
   recentWorkspaces,
   resumeActionLabel,
@@ -72,6 +73,11 @@ export default function WorkbenchPage() {
   const workspaceStore = createMemo(() => (hasWorkspace() ? sync.child(directory())[0] : undefined))
   const sessions = createMemo(() => recentSessions(workspaceStore()?.session ?? []))
   const latest = createMemo(() => sessions()[0])
+  const primarySession = createMemo(
+    () =>
+      sessions().find((session) => session.id === primarySessionID({ latestID: latest()?.id, runtime: status() })) ??
+      latest(),
+  )
   const selected = createMemo(() => agents.find((item) => item.value === agent()) ?? agents[0])
   const canStart = createMemo(() => hasWorkspace() && hasPrompt())
   const capability = createMemo(() =>
@@ -262,7 +268,7 @@ export default function WorkbenchPage() {
             when={sessions().length > 0}
             fallback={<p>开始会话后，最近任务、工具调用和 Harness 轨迹会出现在这里。</p>}
           >
-            <Show when={latest()}>
+            <Show when={primarySession()}>
               {(session) => (
                 <div class="workbench-resume">
                   <div>

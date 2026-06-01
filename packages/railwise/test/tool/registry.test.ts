@@ -4,6 +4,7 @@ import fs from "fs/promises"
 import { tmpdir } from "../fixture/fixture"
 import { Instance } from "../../src/project/instance"
 import { ToolRegistry } from "../../src/tool/registry"
+import { Marketplace } from "../../src/marketplace"
 
 describe("tool.registry", () => {
   test("loads tools from .railwise/tool (singular)", async () => {
@@ -118,5 +119,36 @@ describe("tool.registry", () => {
         expect(ids).toContain("cowsay")
       },
     })
+  })
+
+  test("desktop tools follow marketplace local capability toggles", async () => {
+    const client = process.env.RAILWISE_CLIENT
+    process.env.RAILWISE_CLIENT = "desktop"
+    await Marketplace.reset()
+    await using tmp = await tmpdir()
+
+    try {
+      await Instance.provide({
+        directory: tmp.path,
+        fn: async () => {
+          const ids = await ToolRegistry.ids()
+
+          expect(ids).toContain("read")
+          expect(ids).not.toContain("bash")
+          expect(ids).not.toContain("write")
+
+          await Marketplace.setEnabled("railwise.mcp.local_tools", true)
+
+          const next = await ToolRegistry.ids()
+
+          expect(next).toContain("bash")
+          expect(next).toContain("write")
+        },
+      })
+    } finally {
+      if (client === undefined) delete process.env.RAILWISE_CLIENT
+      else process.env.RAILWISE_CLIENT = client
+      await Marketplace.reset()
+    }
   })
 })

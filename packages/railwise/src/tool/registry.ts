@@ -47,6 +47,7 @@ import {
   VarianceComponentTool,
 } from "./adjustment"
 import { FormatConverterTool } from "./format"
+import { Marketplace } from "@/marketplace"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -160,7 +161,7 @@ export namespace ToolRegistry {
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),
       ...(Flag.RAILWISE_EXPERIMENTAL_PLAN_MODE && Flag.RAILWISE_CLIENT === "cli" ? [PlanExitTool, PlanEnterTool] : []),
       ...custom,
-    ]
+    ].filter((tool) => Flag.RAILWISE_CLIENT !== "desktop" || Marketplace.toolEnabled(tool.id))
   }
 
   export async function ids() {

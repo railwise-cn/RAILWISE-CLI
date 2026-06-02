@@ -197,6 +197,24 @@ check(
   "marketplace asserts enabled inventory state for agents, tools, skills, and provider setup",
 )
 check(
+  "minimal home workbench source",
+  has(home, [
+    'data-testid="home-workbench"',
+    'data-testid="home-chat-composer"',
+    'data-testid="home-project-directory"',
+    'data-testid="home-task-input"',
+    'data-testid="home-start-session"',
+    "想让 RAILWISE 完成什么？",
+    'navigate("/harness")',
+    'navigate("/marketplace")',
+  ]) &&
+    ["项目驾驶舱", "告警 Feed", "多智能体协作中枢", "智能体矩阵", "dashboard-map"].every(
+      (item) => !home.includes(item),
+    ),
+  "home source is a minimal chat workbench and does not carry legacy dashboard, map, or agent-hub copy",
+)
+
+check(
   "visual regression E2E",
   has(visual, [
     "[data-testid=home-workbench]",

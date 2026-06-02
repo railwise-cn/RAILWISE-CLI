@@ -51,7 +51,7 @@ const agents = [
 
 const tools = [
   { id: "task", label: "智能体任务调度", group: "agent" },
-  { id: "skill", label: "Skills 加载", group: "agent" },
+  { id: "skill", label: "专业流程加载", group: "agent" },
   { id: "standard_query_query_standard", label: "规范条文查询", group: "knowledge" },
   { id: "survey_calculator_leveling_closure", label: "水准闭合差检核", group: "survey" },
 ]

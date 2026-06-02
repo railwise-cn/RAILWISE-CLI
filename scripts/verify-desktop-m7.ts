@@ -14,7 +14,7 @@ const specs = [
   "01-startup.spec.ts",
   "02-import-csv.spec.ts",
   "03-qa-inspector.spec.ts",
-  "04-agent-studio.spec.ts",
+  "04-capability-marketplace.spec.ts",
   "05-workflow-pipeline.spec.ts",
   "06-dxf-viewer.spec.ts",
   "07-ppt-master.spec.ts",
@@ -73,7 +73,7 @@ const missingDevDocs = (
   )
 ).filter((item): item is string => Boolean(item))
 const startup = await read("packages/desktop/e2e/01-startup.spec.ts")
-const agentStudio = await read("packages/desktop/e2e/04-agent-studio.spec.ts")
+const agentStudio = await read("packages/desktop/e2e/04-capability-marketplace.spec.ts")
 const e2eHelper = await read("packages/desktop/e2e/helpers/app.ts")
 const visual = await read("packages/desktop/e2e/11-visual-regression.spec.ts")
 const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
@@ -90,6 +90,12 @@ const telemetry = await read("packages/desktop/src/lib/telemetry/index.ts")
 const store = await read("packages/desktop/src/lib/telemetry/store.ts")
 const privacy = await read("packages/desktop/src/lib/telemetry/privacy.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
+const desktopLanguageDocs = [
+  await read("docs/dev/01-architecture.md"),
+  await read("docs/dev/04-e2e-testing.md"),
+  await read("docs/dev/05-release-cadence.md"),
+  docs,
+].join("\n")
 
 check(
   "M7 E2E spec inventory",
@@ -157,6 +163,16 @@ check(
     has(agentStudio, ['launchApp("/marketplace")', 'launchApp("/agents")', "toHaveCount(0)", "agent-collaboration-start"]),
   "marketplace stays as one concise registry plus detail panel while /agents keeps advanced management",
 )
+check(
+  "desktop product language",
+  !desktopLanguageDocs.includes("Agent Studio") &&
+    !desktopLanguageDocs.includes("Harness Profile") &&
+    !desktopLanguageDocs.includes("工具/Skills") &&
+    !e2eHelper.includes("Skills 加载") &&
+    !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
+  "Desktop docs and E2E fixtures use capability market, professional workflow, and execution-layer language",
+)
+
 check(
   "marketplace inventory state",
   has(e2eHelper, ["/agent-studio/tool/list", "/agent-studio/skill/list", "规范条文查询", "monitoring-design"]) &&

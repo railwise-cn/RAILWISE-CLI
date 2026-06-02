@@ -233,16 +233,7 @@ export namespace Config {
 
     // Backwards compatibility: legacy top-level `tools` config
     if (result.tools) {
-      const perms: Record<string, Config.PermissionAction> = {}
-      for (const [tool, enabled] of Object.entries(result.tools)) {
-        const action: Config.PermissionAction = enabled ? "allow" : "deny"
-        if (tool === "write" || tool === "edit" || tool === "patch" || tool === "multiedit") {
-          perms.edit = action
-          continue
-        }
-        perms[tool] = action
-      }
-      result.permission = mergeDeep(perms, result.permission ?? {})
+      result.permission = mergeDeep(legacyPermission(result.tools), result.permission ?? {})
     }
 
     if (!result.username) result.username = os.userInfo().username
@@ -707,6 +698,23 @@ export namespace Config {
   export type Skills = z.infer<typeof Skills>
 
   const LegacyTool = z.union([z.boolean(), z.array(z.string())])
+  type LegacyTool = z.infer<typeof LegacyTool>
+
+  function legacyPermission(tools: Record<string, LegacyTool> | undefined) {
+    const permission: Permission = {}
+    for (const [tool, value] of Object.entries(tools ?? {})) {
+      const action: PermissionAction = value === false ? "deny" : "allow"
+      const names = Array.isArray(value) ? value : [tool]
+      for (const name of names) {
+        if (name === "write" || name === "edit" || name === "patch" || name === "multiedit") {
+          permission.edit = action
+          continue
+        }
+        permission[name] = action
+      }
+    }
+    return permission
+  }
 
   export const Agent = z
     .object({
@@ -771,16 +779,7 @@ export namespace Config {
       }
 
       // Convert legacy tools config to permissions
-      const permission: Permission = {}
-      for (const [tool, enabled] of Object.entries(agent.tools ?? {})) {
-        const action = enabled ? "allow" : "deny"
-        // write, edit, patch, multiedit all map to edit permission
-        if (tool === "write" || tool === "edit" || tool === "patch" || tool === "multiedit") {
-          permission.edit = action
-        } else {
-          permission[tool] = action
-        }
-      }
+      const permission = legacyPermission(agent.tools)
       Object.assign(permission, agent.permission)
 
       // Convert legacy maxSteps to steps

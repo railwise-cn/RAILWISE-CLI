@@ -993,9 +993,11 @@ test("accepts RAILWISE desktop profile metadata and categorized top-level tools"
       expect(config.version).toBe("1.0")
       expect(config.system?.domain).toBe("surveying_monitoring")
       expect(config.permission).toEqual({
-        surveying: "allow",
-        monitoring: "allow",
-        analysis: "allow",
+        total_station: "allow",
+        gnss: "allow",
+        level: "allow",
+        settlement: "allow",
+        least_squares: "allow",
       })
     },
   })
@@ -1025,8 +1027,10 @@ test("accepts categorized legacy agent tools", async () => {
     fn: async () => {
       const config = await Config.get()
       expect(config.agent?.survey_manager?.permission).toEqual({
-        surveying: "allow",
-        monitoring: "allow",
+        total_station: "allow",
+        gnss: "allow",
+        level: "allow",
+        settlement: "allow",
       })
     },
   })

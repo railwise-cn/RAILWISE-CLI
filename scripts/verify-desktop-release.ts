@@ -105,6 +105,7 @@ const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { 
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
+const appZipVerify = await read("packages/desktop/scripts/verify-macos-appzip.ts")
 const macStage = await read("packages/desktop/scripts/stage-macos-bundles.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
@@ -397,6 +398,7 @@ check(
       "--require-dmg",
       "--zip-output",
       "ditto -c -k --sequesterRsrc --keepParent",
+      "bun ./scripts/verify-macos-appzip.ts --zip",
       "bun ./scripts/sign-macos-app.ts --app",
       "bun ./scripts/verify-macos-dmg.ts --dmg",
       "ln -s /Applications",
@@ -444,6 +446,19 @@ check(
       '"target", "release", "bundle", "dmg"',
     ]),
   "Local and CI macOS DMG verification mounts the installer and checks the packaged app",
+)
+check(
+  "macOS app zip verification script",
+  pkg.scripts?.["verify:appzip"] === "bun ./scripts/verify-macos-appzip.ts" &&
+    contains(appZipVerify, [
+      'const zipArg = arg("--zip")',
+      "if (!target && !zipArg)",
+      "ditto -x -k",
+      "verify-macos-bundle.ts",
+      ".app.zip",
+      '"target", "release", "bundle", "dmg"',
+    ]),
+  "Sandbox fallback app zip is extracted and verified with the same app bundle checks",
 )
 check(
   "macOS bundle staging script",

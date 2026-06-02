@@ -15,6 +15,7 @@
     "sign:macos": "bun ./scripts/sign-macos-app.ts",
     "verify:macos": "bun ./scripts/verify-macos-bundle.ts",
     "verify:dmg": "bun ./scripts/verify-macos-dmg.ts",
+    "verify:appzip": "bun ./scripts/verify-macos-appzip.ts",
     "stage:macos:bundles": "bun ./scripts/stage-macos-bundles.ts",
     "dev": "vite",
     "build": "bun run typecheck && vite build",

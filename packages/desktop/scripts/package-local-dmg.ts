@@ -53,6 +53,7 @@ try {
     }
     await $`ditto -c -k --sequesterRsrc --keepParent ${app} ${zip}`
     if ((await stat(zip).catch(() => undefined))?.isFile() !== true) throw new Error(`Fallback app zip not created: ${zip}`)
+    if (!args.includes("--skip-verify")) await $`bun ./scripts/verify-macos-appzip.ts --zip ${zip}`
     console.log(
       [
         `Packaged fallback macOS app zip ${zip}`,

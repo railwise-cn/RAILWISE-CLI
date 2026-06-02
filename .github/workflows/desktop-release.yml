@@ -143,12 +143,10 @@ jobs:
         working-directory: packages/desktop
         run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.ci.conf.json
 
-      - name: Verify macOS bundle signature
+      - name: Verify macOS app bundle
         shell: bash
         working-directory: packages/desktop
-        run: |
-          APP="src-tauri/target/${{ matrix.target }}/release/bundle/macos/睿威智测 RAILWISE.app"
-          codesign --verify --deep --strict --verbose=4 "$APP"
+        run: bun run verify:macos -- --target ${{ matrix.target }}
 
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4

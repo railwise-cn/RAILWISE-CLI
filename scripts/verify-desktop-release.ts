@@ -79,6 +79,7 @@ const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
 const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
+const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
@@ -231,11 +232,10 @@ check(
 check(
   "release verifies macOS app signature",
   contains(workflow, [
-    "Verify macOS bundle signature",
-    'codesign --verify --deep --strict --verbose=4 "$APP"',
-    "bundle/macos/睿威智测 RAILWISE.app",
+    "Verify macOS app bundle",
+    "bun run verify:macos -- --target",
   ]),
-  "CI verifies the sealed app bundle before uploading release artifacts",
+  "CI verifies the app bundle before uploading release artifacts",
 )
 check(
   "desktop dev loopback host",
@@ -257,6 +257,18 @@ check(
       "apple-darwin",
     ]),
   "Local macOS app bundles can be sealed with ad-hoc signing when Developer ID is unavailable",
+)
+check(
+  "macOS bundle verification script",
+  pkg.scripts?.["verify:macos"] === "bun ./scripts/verify-macos-bundle.ts" &&
+    contains(macVerify, [
+      "CFBundleIdentifier",
+      "CFBundleExecutable",
+      "railwise-cli",
+      "executable ${arch}",
+      "codesign --verify --deep --strict --verbose=4",
+    ]),
+  "Local and CI macOS bundle verification checks plist, architecture, sidecar, and codesign",
 )
 check(
   "sidecar build reuses models snapshot offline",

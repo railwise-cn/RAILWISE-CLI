@@ -112,6 +112,15 @@ fn get_logs() -> String {
 
 #[tauri::command]
 #[specta::specta]
+fn get_log_dir(app: AppHandle) -> Result<String, String> {
+    app.path()
+        .app_log_dir()
+        .map(|dir| dir.to_string_lossy().to_string())
+        .map_err(|err| format!("Failed to resolve app log dir: {err}"))
+}
+
+#[tauri::command]
+#[specta::specta]
 async fn await_initialization(
     state: State<'_, ServerState>,
     init_state: State<'_, InitState>,
@@ -493,6 +502,7 @@ fn make_specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         // Then register them (separated by a comma)
         .commands(tauri_specta::collect_commands![
             kill_sidecar,
+            get_log_dir,
             cli::install_cli,
             await_initialization,
             server::get_default_server_url,

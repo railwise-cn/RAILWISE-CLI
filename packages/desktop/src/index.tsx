@@ -680,10 +680,16 @@ type ServerReadyData = { url: string; password: string | null }
 function StartupFailure(props: { error: unknown }) {
   const diagnosis = startupDiagnosis(props.error)
   const raw = String(props.error ?? "Unknown error")
-  const canOpen = diagnosis.issue === "config" || !!diagnosis.target
+  const canOpen = diagnosis.issue === "config" || diagnosis.issue === "server" || !!diagnosis.target
 
   const openTarget = async () => {
-    const target = diagnosis.target ?? (diagnosis.issue === "config" ? `${await homeDir()}/.config/railwise` : undefined)
+    const target =
+      diagnosis.target ??
+      (diagnosis.issue === "config"
+        ? `${await homeDir()}/.config/railwise`
+        : diagnosis.issue === "server"
+          ? await commands.getLogDir().catch(() => undefined)
+          : undefined)
     if (!target) return
     await openerOpenPath(target).catch(console.error)
   }
@@ -724,7 +730,7 @@ function StartupFailure(props: { error: unknown }) {
               class="rounded-md border border-border-subtle bg-surface-panel px-3 py-2 text-12-medium text-text-strong hover:bg-surface-element"
               onClick={() => void openTarget()}
             >
-              {diagnosis.action ?? "打开配置目录"}
+              {diagnosis.action ?? (diagnosis.issue === "server" ? "打开日志目录" : "打开配置目录")}
             </button>
           </Show>
         </div>

@@ -63,7 +63,8 @@ export function startupDiagnosis(error: unknown): StartupDiagnosis {
       issue: "server",
       title: "核心服务未能启动",
       summary: "桌面外壳已打开，但本地 RAILWISE 服务没有在预期时间内就绪。",
-      steps: ["先重新启动应用。", "如果连续失败，检查是否有旧进程占用本地服务。", "保留错误日志，继续定位 sidecar 启动原因。"],
+      action: "打开日志目录",
+      steps: ["先重新启动应用。", "如果连续失败，检查是否有旧进程占用本地服务。", "打开日志目录并保留最新日志，继续定位 sidecar 启动原因。"],
     }
   }
   return {

@@ -20,22 +20,24 @@ const arg = (name: string, fallback?: string) => {
 }
 
 const check = (name: string, passed: boolean, detail: string) => checks.push({ name, passed, detail })
-const target = arg("--target", Bun.env.RUST_TARGET ?? Bun.env.TAURI_ENV_TARGET_TRIPLE)
-if (!target) throw new Error("Missing --target or RUST_TARGET")
-if (!target.includes("apple-darwin")) throw new Error(`macOS bundle verification is not available for ${target}`)
+const appArg = arg("--app")
+const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
+if (!target && !appArg) throw new Error("Missing --app, --target or RUST_TARGET")
+if (target && !target.includes("apple-darwin")) throw new Error(`macOS bundle verification is not available for ${target}`)
 
 const config = (await Bun.file("src-tauri/tauri.prod.conf.json").json()) as Config
-const dir = path.join("src-tauri", "target", target, "release", "bundle", "macos")
-const apps = (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app"))
-const fallback = path.join(dir, `${config.productName ?? "睿威智测 RAILWISE"}.app`)
-const app = arg("--app", apps.length === 1 ? path.join(dir, apps[0]!) : fallback)
+const dir = target ? path.join("src-tauri", "target", target, "release", "bundle", "macos") : ""
+const apps = target ? (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app")) : []
+const fallback = target ? path.join(dir, `${config.productName ?? "睿威智测 RAILWISE"}.app`) : ""
+const app = appArg ?? (apps.length === 1 ? path.join(dir, apps[0]!) : fallback)
 const contents = path.join(app, "Contents")
 const macos = path.join(contents, "MacOS")
 const plist = path.join(contents, "Info.plist")
 const executable = config.mainBinaryName ?? "railwise"
 const bin = path.join(macos, executable)
 const sidecar = path.join(macos, "railwise-cli")
-const arch = target.startsWith("aarch64-") ? "arm64" : "x86_64"
+const arch = target?.startsWith("aarch64-") ? "arm64" : target?.startsWith("x86_64-") ? "x86_64" : undefined
+const mac = (text: string) => (arch ? text.includes(`executable ${arch}`) : /Mach-O 64-bit executable (arm64|x86_64)/.test(text))
 
 const exists = async (file: string) => Boolean(await stat(file).catch(() => undefined))
 const field = async (name: string) => (await $`/usr/libexec/PlistBuddy -c ${`Print :${name}`} ${plist}`.text()).trim()
@@ -53,11 +55,11 @@ if (await exists(plist)) {
 }
 
 if (await exists(bin)) {
-  check("main executable architecture", (await filetype(bin)).includes(`executable ${arch}`), arch)
+  check("main executable architecture", mac(await filetype(bin)), arch ?? "arm64 or x86_64")
 }
 
 if (await exists(sidecar)) {
-  check("sidecar architecture", (await filetype(sidecar)).includes(`executable ${arch}`), arch)
+  check("sidecar architecture", mac(await filetype(sidecar)), arch ?? "arm64 or x86_64")
 }
 
 await $`codesign --verify --deep --strict --verbose=4 ${app}`

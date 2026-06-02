@@ -478,11 +478,15 @@ check(
       "verify-macos-bundle.ts --app",
       "open -n",
       "pgrep -x",
+      "CLI health check OK",
+      "--ready-timeout",
+      "railwise-desktop_",
       "If Safari.app also fails to open from this shell",
       "--skip-launch",
+      "--skip-ready",
       "railwise-cli",
     ]),
-  "Normal macOS Terminal can run an app launch smoke while sandboxed shells can verify bundle-only mode",
+  "Normal macOS Terminal can run an app launch smoke that waits for sidecar readiness while sandboxed shells can verify bundle-only mode",
 )
 check(
   "macOS bundle staging script",

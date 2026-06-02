@@ -143,7 +143,7 @@ const listenForDeepLinks = async () => {
 const createPlatform = (): Platform => {
   const os = (() => {
     const type = ostype()
-    if (type === "macos" || type === "windows" || type === "linux") return type
+    if (type === "macos" || type === "windows") return type
     return undefined
   })()
 
@@ -444,15 +444,6 @@ const createPlatform = (): Platform => {
 
     setDefaultServerUrl: async (url: string | null) => {
       await commands.setDefaultServerUrl(url)
-    },
-
-    getDisplayBackend: async () => {
-      const result = await commands.getDisplayBackend().catch(() => null)
-      return result
-    },
-
-    setDisplayBackend: async (backend) => {
-      await commands.setDisplayBackend(backend)
     },
 
     parseMarkdown: (markdown: string) => commands.parseMarkdownCommand(markdown),

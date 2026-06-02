@@ -201,6 +201,15 @@
   font-size: 11px;
 }
 
+.marketplace-panel-permissions {
+  margin-top: 8px;
+}
+
+.marketplace-panel-permissions span {
+  border-color: color-mix(in srgb, var(--agent-accent) 24%, transparent);
+  background: color-mix(in srgb, var(--agent-accent) 7%, var(--agent-surface));
+}
+
 .marketplace-state {
   display: inline-flex;
   min-height: 22px;

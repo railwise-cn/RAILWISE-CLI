@@ -2,11 +2,13 @@ import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
 import { createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
+import type { CapabilityList, CapabilityManifest } from "@railwise/sdk/v2/client"
 import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { useAgentUpdates } from "@/hooks/use-agent-updates"
 import { useModels } from "@/context/models"
 import { useProviders } from "@/hooks/use-providers"
+import { useGlobalSDK } from "@/context/global-sdk"
 import { useAgentStudioApi } from "@/pages/agents/api"
 import {
   agentRoleLabel,
@@ -18,9 +20,18 @@ import {
 } from "@/pages/agents/collaboration"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
+import {
+  capabilitiesFor,
+  capabilityCount,
+  capabilityPreview,
+  marketplaceIds,
+  permissionSummary,
+  riskLabel,
+  sourceLabel,
+  type MarketplaceId,
+} from "./marketplace-state"
 
-const ids = ["agents", "tools", "skills", "workflows", "mcp", "providers", "harness"] as const
-type Id = (typeof ids)[number]
+type Id = MarketplaceId
 type Tone = "enabled" | "empty" | "loading" | "setup"
 
 const groups: Record<ToolInventoryItem["group"], string> = {
@@ -30,6 +41,8 @@ const groups: Record<ToolInventoryItem["group"], string> = {
   core: "基础执行",
   extension: "扩展能力",
 }
+
+type Preview = { title: string; meta: string }
 
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
@@ -44,6 +57,7 @@ function state(loading: boolean, count: number, empty = "待发现") {
 
 export default function MarketplacePage() {
   const api = useAgentStudioApi()
+  const sdk = useGlobalSDK()
   const dialog = useDialog()
   const models = useModels()
   const providers = useProviders()
@@ -51,18 +65,20 @@ export default function MarketplacePage() {
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
   const [workflows, setWorkflows] = createSignal<Workflow[]>([])
+  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
   const [active, setActive] = createSignal<Id>("agents")
   const [loading, setLoading] = createSignal(true)
   const [error, setError] = createSignal("")
 
   function load() {
     setLoading(true)
-    void Promise.allSettled([api.list(), api.tools(), api.skills(), api.presets()])
-      .then(([list, toolset, skillset, presets]) => {
+    void Promise.allSettled([api.list(), api.tools(), api.skills(), api.presets(), sdk.client.marketplace.capabilities.list()])
+      .then(([list, toolset, skillset, presets, registry]) => {
         setAgents(result(list, []))
         setTools(result(toolset, []))
         setSkills(result(skillset, []))
         setWorkflows(result(presets, []))
+        setCapabilities(result(registry as PromiseSettledResult<CapabilityList>, { data: [] as CapabilityManifest[] }).data)
         setError(list.status === "rejected" ? (list.reason instanceof Error ? list.reason.message : String(list.reason)) : "")
       })
       .finally(() => setLoading(false))
@@ -76,115 +92,139 @@ export default function MarketplacePage() {
   const visible = createMemo(() => models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })))
   const setup = createMemo(() => modelSetupState({ connectedProviders: connected().length, visibleModels: visible().length }))
   const summary = createMemo(() => agentStudioSummary(agents()))
+  const count = (id: Id, value = 0) => Math.max(value, capabilityCount(capabilities(), id))
+  const agentCount = createMemo(() => count("agents", summary().total))
+  const toolCount = createMemo(() => count("tools", tools().length))
+  const skillCount = createMemo(() => count("skills", skills().length))
+  const workflowCount = createMemo(() => count("workflows", workflows().length))
+  const mcpCount = createMemo(() => capabilityCount(capabilities(), "mcp"))
+  const providerCount = createMemo(() => capabilityCount(capabilities(), "providers"))
+  const harnessCount = createMemo(() => capabilityCount(capabilities(), "harness"))
   const providersState = createMemo(() => {
     if (setup() === "ready") return { label: "已启用", tone: "enabled" as Tone }
     if (setup() === "models-hidden") return { label: "待启用模型", tone: "setup" as Tone }
     return { label: "待接入", tone: "setup" as Tone }
   })
   const status = createMemo(() => ({
-    agents: loading() ? "同步中" : `${summary().total} 个可用`,
-    tools: loading() ? "同步中" : `${tools().length} 个可用`,
-    skills: loading() ? "同步中" : `${skills().length} 个可用`,
-    workflows: loading() ? "同步中" : `${workflows().length} 个可用`,
-    mcp: "按项目启用",
-    providers: connected().length > 0 ? `${connected().length} 个已接入` : "待接入",
-    harness: "本地安全模式",
+    agents: loading() ? "同步中" : `${agentCount()} 个可用`,
+    tools: loading() ? "同步中" : `${toolCount()} 个可用`,
+    skills: loading() ? "同步中" : `${skillCount()} 个可用`,
+    workflows: loading() ? "同步中" : `${workflowCount()} 个可用`,
+    mcp: mcpCount() > 0 ? `${mcpCount()} 个可配置` : "按项目启用",
+    providers: connected().length > 0 ? `${connected().length} 个已接入` : providerCount() > 0 ? `${providerCount()} 个待接入` : "待接入",
+    harness: harnessCount() > 0 ? "本地安全模式" : "待同步",
   }))
+  const preview = (id: Id, items: Preview[]) => (items.length > 0 ? items : capabilityPreview(capabilities(), id))
   const catalog = createMemo(() => [
     {
-      id: "agents" as const,
+      id: marketplaceIds[0],
       label: "智能体",
       title: "智能体库",
       detail: `${summary().primary} 主控 / ${summary().collaborators} 专业智能体`,
-      state: state(loading(), summary().total),
+      state: state(loading(), agentCount()),
       description: "选择主控、审校、平差、资料整理、报告生成等专业智能体。",
-      preview: visibleAgents()
-        .slice(0, 4)
-        .map((agent) => ({ title: agent.displayName ?? agent.name, meta: agentRoleLabel(agent) })),
+      preview: preview(
+        "agents",
+        visibleAgents()
+          .slice(0, 4)
+          .map((agent) => ({ title: agent.displayName ?? agent.name, meta: agentRoleLabel(agent) })),
+      ),
       href: "/agents",
-      action: summary().total > 0 ? "管理智能体" : "发现智能体",
+      action: agentCount() > 0 ? "管理智能体" : "发现智能体",
     },
     {
-      id: "tools" as const,
+      id: marketplaceIds[1],
       label: "工具",
       title: "工具链",
-      detail: `${tools().length} 个工具`,
-      state: state(loading(), tools().length),
+      detail: `${toolCount()} 个工具`,
+      state: state(loading(), toolCount()),
       description: "文件读取、规范检索、测绘生产、报告导出等工具由执行层调度。",
-      preview: tools()
-        .slice(0, 4)
-        .map((tool) => ({ title: tool.label, meta: groups[tool.group] })),
+      preview: preview(
+        "tools",
+        tools()
+          .slice(0, 4)
+          .map((tool) => ({ title: tool.label, meta: groups[tool.group] })),
+      ),
       href: "/agents#agent-tools",
       action: "查看工具",
     },
     {
-      id: "skills" as const,
+      id: marketplaceIds[2],
       label: "流程",
       title: "专业流程",
-      detail: `${skills().length} 个流程`,
-      state: state(loading(), skills().length),
+      detail: `${skillCount()} 个流程`,
+      state: state(loading(), skillCount()),
       description: "沉淀工程测绘作业方法、审查规则、交付流程和工具使用规范。",
-      preview: professionalSkills(skills(), 4).map((skill) => ({ title: skill.name, meta: skill.description })),
+      preview: preview(
+        "skills",
+        professionalSkills(skills(), 4).map((skill) => ({ title: skill.name, meta: skill.description })),
+      ),
       href: "/agents#agent-skills",
       action: "查看流程",
     },
     {
-      id: "workflows" as const,
+      id: marketplaceIds[3],
       label: "工作流",
       title: "工作流",
-      detail: `${workflows().length} 个工作流`,
-      state: state(loading(), workflows().length, "待配置"),
+      detail: `${workflowCount()} 个工作流`,
+      state: state(loading(), workflowCount(), "待配置"),
       description: "把多个智能体串成外业首检、监测分析、汇报 PPT 和报告审校链路。",
-      preview: workflows().slice(0, 4).map((workflow) => ({ title: workflow.name, meta: workflow.description })),
+      preview: preview(
+        "workflows",
+        workflows().slice(0, 4).map((workflow) => ({ title: workflow.name, meta: workflow.description })),
+      ),
       href: "/agents#agent-workflows",
       action: "查看工作流",
     },
     {
-      id: "mcp" as const,
+      id: marketplaceIds[4],
       label: "MCP",
       title: "MCP 连接器",
-      detail: "按项目启用",
-      state: { label: "待配置", tone: "setup" as Tone },
+      detail: mcpCount() > 0 ? `${mcpCount()} 个连接器` : "按项目启用",
+      state: state(loading(), capabilitiesFor(capabilities(), "mcp").filter((item) => item.enabled).length, "待配置"),
       description: "连接知识库、专业系统和外部工具；权限和审计由执行层统一接管。",
-      preview: [
+      preview: preview("mcp", [
         { title: "知识库连接", meta: "按项目授权" },
         { title: "专业系统", meta: "由执行层审计" },
         { title: "外部工具", meta: "权限确认后执行" },
-      ],
+      ]),
       href: "/harness",
       action: "查看执行层",
     },
     {
-      id: "providers" as const,
+      id: marketplaceIds[5],
       label: "模型",
       title: "模型 Provider",
       detail: setup() === "ready" ? `${visible().length} 个可见模型` : `默认建议 ${recommendedModel}`,
       state: providersState(),
       description: "接入 DeepSeek、OpenRouter 或 OpenAI 兼容模型，再按智能体分配模型。",
-      preview:
+      preview: preview(
+        "providers",
         connected().length > 0
           ? connected().slice(0, 4).map((provider) => ({ title: provider.name, meta: "已接入" }))
           : recommendedProviders.map((provider) => ({ title: provider.label, meta: "推荐接入" })),
+      ),
       action: "接入模型",
       button: true,
     },
     {
-      id: "harness" as const,
+      id: marketplaceIds[6],
       label: "执行层",
       title: "执行层配置",
       detail: "工作区 / 权限 / 审计",
-      state: { label: "已启用", tone: "enabled" as Tone },
+      state: loading() ? { label: "同步中", tone: "loading" as Tone } : { label: "已启用", tone: "enabled" as Tone },
       description: "管理本地执行边界、权限确认、工具事件、问题回答和失败恢复。",
-      preview: [
+      preview: preview("harness", [
         { title: "工作区边界", meta: "本地文件夹" },
         { title: "权限闸门", meta: "高风险动作确认" },
         { title: "工具审计", meta: "执行时间线" },
-      ],
+      ]),
       href: "/harness",
       action: "查看执行层",
     },
   ])
   const selected = createMemo(() => catalog().find((item) => item.id === active()) ?? catalog()[0])
+  const selectedCapabilities = createMemo(() => capabilitiesFor(capabilities(), selected().id))
 
   function connectProvider() {
     dialog.show(() => <DialogSelectProvider />)
@@ -263,6 +303,18 @@ export default function MarketplacePage() {
                 </span>
               </Show>
             </div>
+            <Show when={selectedCapabilities().length > 0}>
+              <div class="marketplace-panel-preview marketplace-panel-permissions" data-testid={`marketplace-permissions-${selected().id}`}>
+                <For each={selectedCapabilities().slice(0, 3)}>
+                  {(item) => (
+                    <span title={`${item.description} · ${sourceLabel(item.source)}`}>
+                      <strong>{item.name}</strong>
+                      <small>{permissionSummary(item.permissions)} · {riskLabel(item.permissions)}</small>
+                    </span>
+                  )}
+                </For>
+              </div>
+            </Show>
             <Show when={selected().id === "providers"}>
               <div class="agent-provider-actions" data-testid="marketplace-provider-actions">
                 <For each={recommendedProviders}>

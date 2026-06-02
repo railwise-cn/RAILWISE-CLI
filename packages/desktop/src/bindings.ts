@@ -12,8 +12,6 @@ export const commands = {
 	setDefaultServerUrl: (url: string | null) => __TAURI_INVOKE<null>("set_default_server_url", { url }),
 	getWslConfig: () => __TAURI_INVOKE<WslConfig>("get_wsl_config"),
 	setWslConfig: (config: WslConfig) => __TAURI_INVOKE<null>("set_wsl_config", { config }),
-	getDisplayBackend: () => __TAURI_INVOKE<"wayland" | "auto" | null>("get_display_backend"),
-	setDisplayBackend: (backend: LinuxDisplayBackend) => __TAURI_INVOKE<null>("set_display_backend", { backend }),
 	parseMarkdownCommand: (markdown: string) => __TAURI_INVOKE<string>("parse_markdown_command", { markdown }),
 	parseDxf: (path: string) => __TAURI_INVOKE<DxfDocument>("parse_dxf", { path }),
 	convertDwgToDxf: (path: string) => __TAURI_INVOKE<string>("convert_dwg_to_dxf", { path }),
@@ -64,8 +62,6 @@ export type DxfPoint = {
 	};
 
 export type InitStep = { phase: "server_waiting" } | { phase: "sqlite_waiting" } | { phase: "done" };
-
-export type LinuxDisplayBackend = "wayland" | "auto";
 
 export type LoadingWindowComplete = null;
 

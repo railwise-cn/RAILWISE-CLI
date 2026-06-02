@@ -2,10 +2,6 @@ mod cad;
 mod cli;
 mod constants;
 mod crash;
-#[cfg(target_os = "linux")]
-pub mod linux_display;
-#[cfg(target_os = "linux")]
-pub mod linux_windowing;
 mod logging;
 mod markdown;
 mod office;
@@ -27,7 +23,7 @@ use std::{
     time::Duration,
 };
 use tauri::{AppHandle, Listener, Manager, RunEvent, State, ipc::Channel};
-#[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
+#[cfg(all(debug_assertions, windows))]
 use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_specta::Event;
 use tokio::{
@@ -157,9 +153,9 @@ fn check_app_exists(app_name: &str) -> bool {
         check_macos_app(app_name)
     }
 
-    #[cfg(target_os = "linux")]
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
     {
-        check_linux_app(app_name)
+        false
     }
 }
 
@@ -317,8 +313,7 @@ fn resolve_app_path(app_name: &str) -> Option<String> {
 
     #[cfg(not(target_os = "windows"))]
     {
-        // On macOS/Linux, just return the app_name as-is since
-        // the opener plugin handles them correctly
+        // On macOS, just return the app_name as-is since the opener plugin handles it.
         Some(app_name.to_string())
     }
 }
@@ -347,48 +342,6 @@ fn check_macos_app(app_name: &str) -> bool {
         .output()
         .map(|output| output.status.success())
         .unwrap_or(false)
-}
-
-#[derive(serde::Serialize, serde::Deserialize, specta::Type)]
-#[serde(rename_all = "camelCase")]
-pub enum LinuxDisplayBackend {
-    Wayland,
-    Auto,
-}
-
-#[tauri::command]
-#[specta::specta]
-fn get_display_backend() -> Option<LinuxDisplayBackend> {
-    #[cfg(target_os = "linux")]
-    {
-        let prefer = linux_display::read_wayland().unwrap_or(false);
-        return Some(if prefer {
-            LinuxDisplayBackend::Wayland
-        } else {
-            LinuxDisplayBackend::Auto
-        });
-    }
-
-    #[cfg(not(target_os = "linux"))]
-    None
-}
-
-#[tauri::command]
-#[specta::specta]
-fn set_display_backend(_app: AppHandle, _backend: LinuxDisplayBackend) -> Result<(), String> {
-    #[cfg(target_os = "linux")]
-    {
-        let prefer = matches!(_backend, LinuxDisplayBackend::Wayland);
-        return linux_display::write_wayland(&_app, prefer);
-    }
-
-    #[cfg(not(target_os = "linux"))]
-    Ok(())
-}
-
-#[cfg(target_os = "linux")]
-fn check_linux_app(app_name: &str) -> bool {
-    return true;
 }
 
 #[tauri::command]
@@ -546,8 +499,6 @@ fn make_specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             server::set_default_server_url,
             server::get_wsl_config,
             server::set_wsl_config,
-            get_display_backend,
-            set_display_backend,
             markdown::parse_markdown_command,
             cad::parse_dxf,
             cad::convert_dwg_to_dxf,
@@ -748,7 +699,7 @@ async fn initialize(app: AppHandle) {
 }
 
 fn setup_app(app: &tauri::AppHandle, init_rx: watch::Receiver<InitStep>) {
-    #[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
+    #[cfg(all(debug_assertions, windows))]
     app.deep_link().register_all().ok();
 
     app.manage(InitState { current: init_rx });

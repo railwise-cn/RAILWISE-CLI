@@ -4,13 +4,29 @@ import path from "node:path"
 
 type Config = {
   build?: {
+    beforeBuildCommand?: string
+    beforeDevCommand?: string
     devUrl?: string
+    frontendDist?: string
+  }
+  app?: {
+    macOSPrivateApi?: boolean
+    withGlobalTauri?: boolean
+    windows?: {
+      create?: boolean
+      label?: string
+    }[]
+    security?: {
+      csp?: string
+    }
   }
   productName?: string
   identifier?: string
   mainBinaryName?: string
   bundle?: {
     createUpdaterArtifacts?: boolean
+    active?: boolean
+    externalBin?: string[]
     targets?: string[] | string
     icon?: string[]
     windows?: {
@@ -47,6 +63,11 @@ type Config = {
     }
   }
   plugins?: {
+    "deep-link"?: {
+      desktop?: {
+        schemes?: string[]
+      }
+    }
     updater?: {
       pubkey?: string
       endpoints?: string[]
@@ -383,6 +404,19 @@ check(
     config.identifier === "com.railwiseai.desktop" &&
     config.mainBinaryName === "railwise",
   `${config.productName ?? "missing"} / ${config.identifier ?? "missing"} / ${config.mainBinaryName ?? "missing"}`,
+)
+check(
+  "production runtime config",
+  config.build?.beforeBuildCommand === "bun run build" &&
+    config.build?.frontendDist === "../dist" &&
+    config.app?.windows?.some((item) => item.label === "main" && item.create === false) === true &&
+    config.app?.withGlobalTauri === true &&
+    config.app?.macOSPrivateApi === false &&
+    config.app?.security?.csp?.includes("http://127.0.0.1:*") === true &&
+    config.bundle?.active === true &&
+    config.bundle?.externalBin?.includes("sidecars/railwise-cli") === true &&
+    config.plugins?.["deep-link"]?.desktop?.schemes?.includes("railwise") === true,
+  "production Tauri config keeps build frontendDist, deferred main window, CSP, sidecar, and deep-link settings",
 )
 check(
   "updater config",

@@ -16,6 +16,7 @@
     "verify:macos": "bun ./scripts/verify-macos-bundle.ts",
     "verify:dmg": "bun ./scripts/verify-macos-dmg.ts",
     "verify:appzip": "bun ./scripts/verify-macos-appzip.ts",
+    "smoke:macos": "bun ./scripts/smoke-macos-app.ts",
     "stage:macos:bundles": "bun ./scripts/stage-macos-bundles.ts",
     "dev": "vite",
     "build": "bun run typecheck && vite build",

@@ -70,7 +70,6 @@ jobs:
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
@@ -79,7 +78,6 @@ jobs:
           if [ "${{ matrix.platform }}" = "darwin" ] \
             && [ -n "$APPLE_CERTIFICATE" ] \
             && [ -n "$APPLE_CERTIFICATE_PASSWORD" ] \
-            && [ -n "$APPLE_KEYCHAIN_PASSWORD" ] \
             && [ -n "$APPLE_SIGNING_IDENTITY" ] \
             && [ -n "$APPLE_ID" ] \
             && [ -n "$APPLE_PASSWORD" ] \
@@ -101,7 +99,7 @@ jobs:
         shell: bash
         run: |
           echo "Public RAILWISE Desktop macOS releases require Developer ID signing and notarization secrets."
-          echo "Set APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_KEYCHAIN_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_ID_PASSWORD, and APPLE_TEAM_ID."
+          echo "Set APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_ID_PASSWORD, and APPLE_TEAM_ID."
           exit 1
 
       - name: Prepare CI Tauri config
@@ -122,15 +120,15 @@ jobs:
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
         run: |
+          KEYCHAIN_PASSWORD="$(uuidgen)"
           echo "$APPLE_CERTIFICATE" | base64 --decode > cert.p12
-          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security set-keychain-settings -lut 21600 build.keychain
           security default-keychain -s build.keychain
-          security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security import cert.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/pkgbuild -T /usr/bin/productbuild
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
           security find-identity -v -p codesigning build.keychain
 
       - name: Build Tauri App

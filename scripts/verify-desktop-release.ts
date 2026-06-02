@@ -93,7 +93,6 @@ const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY_PASSWORD",
   "APPLE_CERTIFICATE",
   "APPLE_CERTIFICATE_PASSWORD",
-  "APPLE_KEYCHAIN_PASSWORD",
   "APPLE_SIGNING_IDENTITY",
   "APPLE_ID",
   "APPLE_ID_PASSWORD",
@@ -204,12 +203,14 @@ check(
     "Require macOS signing secrets",
     "steps.signing.outputs.macos != 'true'",
     "Public RAILWISE Desktop macOS releases require Developer ID signing and notarization secrets.",
+    "Set APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_ID_PASSWORD, and APPLE_TEAM_ID.",
   ]),
   "Public macOS beta releases fail fast instead of publishing unsigned DMGs",
 )
 check(
   "release keychain grants codesign",
   contains(workflow, [
+    'KEYCHAIN_PASSWORD="$(uuidgen)"',
     "security set-keychain-settings -lut 21600 build.keychain",
     "-T /usr/bin/codesign -T /usr/bin/pkgbuild -T /usr/bin/productbuild",
     "security set-key-partition-list -S apple-tool:,apple:,codesign:",

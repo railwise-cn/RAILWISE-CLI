@@ -294,6 +294,14 @@ check(
   "Local Desktop predev can infer the current macOS or Windows sidecar target",
 )
 check(
+  "macOS sidecar starts without shell profile",
+  contains(cli, ["let sidecar = get_sidecar_path(app);", "let mut cmd = Command::new(sidecar);", "cmd.args(args.split_whitespace());"]) &&
+    !cli.includes("fn get_user_shell()") &&
+    !cli.includes("Command::new(shell)") &&
+    !cli.includes('cmd.args(["-l", "-c"'),
+  "Packaged macOS sidecar launches directly instead of reading user shell profiles during startup",
+)
+check(
   "release omits Windows target",
   windows.every((item) => !workflow.includes(item)),
   "Windows publishing is paused until a Windows code-signing certificate is purchased",

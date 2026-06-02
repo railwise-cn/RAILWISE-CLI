@@ -80,6 +80,7 @@ const predev = await read("packages/desktop/scripts/predev.ts")
 const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
+const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
@@ -234,8 +235,10 @@ check(
   contains(workflow, [
     "Verify macOS app bundle",
     "bun run verify:macos -- --target",
+    "Verify macOS DMG contents",
+    "bun run verify:dmg -- --target",
   ]),
-  "CI verifies the app bundle before uploading release artifacts",
+  "CI verifies the app bundle and DMG contents before uploading release artifacts",
 )
 check(
   "desktop dev loopback host",
@@ -269,6 +272,17 @@ check(
       "codesign --verify --deep --strict --verbose=4",
     ]),
   "Local and CI macOS bundle verification checks plist, architecture, sidecar, and codesign",
+)
+check(
+  "macOS DMG verification script",
+  pkg.scripts?.["verify:dmg"] === "bun ./scripts/verify-macos-dmg.ts" &&
+    contains(dmgVerify, [
+      "hdiutil attach",
+      "-mountpoint",
+      "verify-macos-bundle.ts",
+      "hdiutil detach",
+    ]),
+  "Local and CI macOS DMG verification mounts the installer and checks the packaged app",
 )
 check(
   "sidecar build reuses models snapshot offline",

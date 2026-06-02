@@ -148,6 +148,11 @@ jobs:
         working-directory: packages/desktop
         run: bun run verify:macos -- --target ${{ matrix.target }}
 
+      - name: Verify macOS DMG contents
+        shell: bash
+        working-directory: packages/desktop
+        run: bun run verify:dmg -- --target ${{ matrix.target }}
+
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4
         with:

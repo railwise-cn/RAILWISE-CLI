@@ -15,6 +15,12 @@ type: implementation-spec
 
 This specification defines the completion of Milestone 1 (M1) foundation work for RAILWISE Desktop, focusing on brand replacement, complete Chinese internationalization, startup performance optimization, and visual token compliance according to the RAILWISE Desktop 开发实施文档 v1.0.
 
+**Superseded Platform Scope**:
+- As of 2026-06-02, Desktop no longer targets Linux packaging or public distribution.
+- Public Desktop release scope is macOS Apple Silicon DMG + macOS Intel DMG.
+- Windows is internal x64 NSIS testing only until a signing certificate is purchased.
+- Linux support remains CLI-only.
+
 **M1 Success Criteria**:
 - [ ] Brand replacement complete, all menus in Chinese, startup < 3s interactive
 - [ ] Visual compliance: no rust red (#C0392B), full 2.0 cream + warm brown theme
@@ -53,7 +59,7 @@ This specification defines the completion of Milestone 1 (M1) foundation work fo
 
 **Visual Assets**
 - Audit `packages/desktop/src-tauri/icons/railwise/` directory
-- Ensure consistent iconography across all platforms (Windows NSIS, macOS, Linux)
+- Ensure consistent iconography for macOS DMG and Windows NSIS artifacts
 - Update splash screen and loading assets in `src-tauri/assets/`
 - Verify NSIS installer assets (`nsis-header-railwise.bmp`, `nsis-sidebar-railwise.bmp`)
 
@@ -193,7 +199,7 @@ const startupPipeline = [
 
 **Startup Performance**
 - Automated timing tests: `bun run dev:desktop` → interactive < 3s
-- Cross-platform verification (Windows, macOS, Linux)
+- Desktop verification covers macOS public builds and Windows x64 internal builds only
 - Cold start vs. warm start measurements
 
 **Localization Testing**

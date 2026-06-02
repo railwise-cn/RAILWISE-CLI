@@ -4,7 +4,14 @@ RAILWISE Desktop 支持公网分发、共享 NAS 分发和企业内网私有更�
 
 ## 公网分发
 
-桌面端不发布 Linux 版本。正式公网分发只构建 macOS Apple Silicon 和 macOS Intel 两个 DMG；Windows 仅通过内部测试工作流生成未签名安装包，暂不进入公开 Release。发布产物上传到 Release 和对象存储，更新元数据由 `updates.railwise.cn` 返回。
+桌面端不发布 Linux 版本。正式公网分发只构建 macOS Apple Silicon 和 macOS Intel 两个 DMG；Windows 仅通过内部测试工作流生成未签名 x64 安装包，暂不进入公开 Release。发布产物上传到 Release 和对象存储，更新元数据由 `updates.railwise.cn` 返回。
+
+Desktop 平台范围固定如下：
+
+- macOS Apple Silicon：公开 DMG，需 Developer ID 签名和公证。
+- macOS Intel：公开 DMG，需 Developer ID 签名和公证。
+- Windows x64：内部测试 NSIS 安装包，暂不签名，暂不公开发布。
+- Linux：不构建、不测试、不发布 Desktop 安装包；Linux 仅保留在 CLI 产品语境中。
 
 ## 共享 NAS 分发
 

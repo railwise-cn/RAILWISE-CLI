@@ -42,6 +42,7 @@ Codex is the reference product pattern:
 - No team management.
 - No cloud sync.
 - No Windows code signing requirement for internal testing.
+- No Linux Desktop packaging, testing, or public installer support; Linux remains CLI-only.
 - No full replacement of the existing session engine.
 
 ## Acceptance Criteria
@@ -1018,4 +1019,3 @@ Placeholder scan:
 Type consistency:
 
 - `CapabilityManifest`, `HarnessStatus`, and `HarnessEvent` names are stable across backend, API, and frontend tasks.
-

@@ -19,6 +19,10 @@ const dev = await Bun.file(file("packages/desktop/src-tauri/tauri.conf.json")).j
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const cargo = await read("packages/desktop/src-tauri/Cargo.toml")
 const bindings = await read("packages/desktop/src/bindings.ts")
+const downloadTypes = await read("packages/console/app/src/routes/download/types.ts")
+const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
+const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
+const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage"]
 
 check("workflow exists", Boolean(workflow), workflowPath)
 check(
@@ -92,6 +96,11 @@ check(
     !(await exists("packages/desktop/src-tauri/src/linux_display.rs")) &&
     !(await exists("packages/desktop/src-tauri/src/linux_windowing.rs")),
   "Desktop native runtime no longer carries Linux/Wayland commands or modules",
+)
+check(
+  "linux download links removed",
+  [downloadTypes, downloadRoute, downloadPage].every((text) => linuxDownloads.every((item) => !text.includes(item))),
+  "Download route and UI do not advertise Linux desktop installers",
 )
 check(
   "windows installer config",

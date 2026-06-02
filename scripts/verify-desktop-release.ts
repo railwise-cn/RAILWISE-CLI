@@ -122,6 +122,9 @@ const platform = await read("packages/app/src/context/platform.tsx")
 const settings = await read("packages/app/src/components/settings-general.tsx")
 const desktop = await read("packages/desktop/src/index.tsx")
 const e2eHarness = await read("packages/desktop/e2e/helpers/app.ts")
+const downloadTypes = await read("packages/console/app/src/routes/download/types.ts")
+const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
+const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
 const adminDeploy = await read("docs/admin/01-deploy.md")
 const readme = await read("README.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
@@ -187,6 +190,7 @@ const nativeLinux = [
   "Wayland",
   "wayland",
 ]
+const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage"]
 
 check("release workflow exists", workflowExists, workflowPath)
 check(
@@ -245,6 +249,11 @@ check(
     !e2eHarness.includes('os_type: "linux"') &&
     !e2eHarness.includes('platform: "linux"'),
   "Desktop UI/runtime exposes macOS and Windows only; Linux remains CLI-only",
+)
+check(
+  "desktop download page omits Linux installers",
+  [downloadTypes, downloadRoute, downloadPage].every((text) => linuxDownloads.every((item) => !text.includes(item))),
+  "Download UI and /download/:platform route expose macOS DMG and Windows NSIS only",
 )
 check(
   "desktop native shell omits Linux runtime",

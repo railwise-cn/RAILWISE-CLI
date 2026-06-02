@@ -94,6 +94,16 @@ const telemetry = await read("packages/desktop/src/lib/telemetry/index.ts")
 const store = await read("packages/desktop/src/lib/telemetry/store.ts")
 const privacy = await read("packages/desktop/src/lib/telemetry/privacy.ts")
 const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
+const harnessSchema = await read("packages/railwise/src/harness/schema.ts")
+const harnessService = await read("packages/railwise/src/harness/service.ts")
+const marketplaceSchema = await read("packages/railwise/src/marketplace/schema.ts")
+const marketplaceService = await read("packages/railwise/src/marketplace/service.ts")
+const marketplaceBuiltin = await read("packages/railwise/src/marketplace/builtin.ts")
+const harnessRoute = await read("packages/railwise/src/server/routes/harness.ts")
+const marketplaceRoute = await read("packages/railwise/src/server/routes/marketplace.ts")
+const server = await read("packages/railwise/src/server/server.ts")
+const sdk = await read("packages/sdk/js/src/v2/gen/sdk.gen.ts")
+const sdkTypes = await read("packages/sdk/js/src/v2/gen/types.gen.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
 const desktopLanguageDocs = [
   await read("docs/dev/01-architecture.md"),
@@ -207,6 +217,20 @@ check(
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),
   "marketplace asserts enabled inventory state for agents, tools, skills, and provider setup",
+)
+check(
+  "backend harness marketplace contract",
+  has(harnessSchema, ["HarnessStatus", "HarnessEventType", "tool.started", "permission.resolved"]) &&
+    has(harnessService, ["export namespace Harness", "Marketplace.list().filter", "resolvePermission"]) &&
+    has(marketplaceSchema, ["CapabilityManifest", "harness_profile", "CapabilityPermission"]) &&
+    has(marketplaceService, ["export namespace Marketplace", "CapabilityManifest.parse", "CapabilityGroup.parse"]) &&
+    has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe"]) &&
+    has(harnessRoute, ["/status", "/session/:sessionID/timeline", "/session/:sessionID/permission/:permissionID"]) &&
+    has(marketplaceRoute, ["/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&
+    has(server, ['.route("/harness", HarnessRoutes())', '.route("/marketplace", MarketplaceRoutes())']) &&
+    has(sdk, ["get harness()", "get marketplace()", 'url: "/harness/status"', 'url: "/marketplace/capabilities"']) &&
+    has(sdkTypes, ["export type HarnessStatus", "export type CapabilityManifest"]),
+  "backend exposes Harness runtime and Marketplace capability contracts through server routes and SDK",
 )
 check(
   "minimal home workbench source",

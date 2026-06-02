@@ -78,6 +78,7 @@ const devConfig = (await Bun.file(file(devConfigPath)).json()) as Config
 const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
+const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
@@ -228,8 +229,14 @@ check(
 )
 check(
   "sidecar build reuses models snapshot offline",
-  contains(railwiseBuild, ["models-snapshot.ts", "Unable to refresh models.dev snapshot", "return undefined"]),
-  "CLI build does not fail solely because models.dev is temporarily unreachable",
+  contains(railwiseBuild, ["models(dir)", "modelsSource(modelsData)"]) &&
+    contains(railwiseModels, [
+      "MODELS_DEV_API_JSON",
+      "src/provider/models-snapshot.ts",
+      "test/tool/fixtures/models-api.json",
+      "handled: true",
+    ]),
+  "CLI build can seed or reuse models snapshot when models.dev is temporarily unreachable",
 )
 check(
   "release public installer coverage",

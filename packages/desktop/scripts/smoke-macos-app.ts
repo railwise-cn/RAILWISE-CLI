@@ -63,6 +63,23 @@ const logFiles = async (since: number) => {
 
 const tail = (text: string) => text.split("\n").slice(-80).join("\n")
 
+const probeLoopback = () => {
+  try {
+    const server = Bun.serve({
+      hostname: "127.0.0.1",
+      port: 0,
+      fetch() {
+        return new Response("ok")
+      },
+    })
+    const url = server.url.href
+    server.stop(true)
+    return { ok: true, detail: url }
+  } catch (err) {
+    return { ok: false, detail: err instanceof Error ? err.message : String(err) }
+  }
+}
+
 const waitForReady = async (since: number) => {
   const deadline = Date.now() + readyTimeout * 1_000
   let latest = ""
@@ -107,6 +124,19 @@ if (skipLaunch) {
   process.exit(0)
 }
 
+if (!skipReady) {
+  const loopback = probeLoopback()
+  if (!loopback.ok) {
+    throw new Error(
+      [
+        "Current shell cannot bind a local loopback port, so a full macOS app launch smoke cannot verify the sidecar server from this environment.",
+        `Loopback probe failed: ${loopback.detail}`,
+        "Run this smoke command from a normal macOS Terminal or Finder session, or use --skip-launch for bundle-only verification inside a sandboxed agent shell.",
+      ].join("\n"),
+    )
+  }
+}
+
 const running = async () =>
   (await $`pgrep -x ${executable}`.quiet().nothrow()).stdout
     .toString()
@@ -128,7 +158,7 @@ if (opened.exitCode !== 0) {
     [
       `Failed to launch macOS app with open -n: ${app}`,
       message,
-      "If Safari.app also fails to open from this shell, rerun this smoke command from a normal macOS Terminal instead of a sandboxed agent shell.",
+      "If Safari.app also fails to open from this shell, LaunchServices is blocked by the current environment; rerun this smoke command from a normal macOS Terminal or Finder session.",
     ].join("\n"),
   )
 }

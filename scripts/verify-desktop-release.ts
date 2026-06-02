@@ -513,6 +513,8 @@ check(
       "CLI health check OK",
       "--ready-timeout",
       "railwise-desktop_",
+      "Current shell cannot bind a local loopback port",
+      "Loopback probe failed",
       "If Safari.app also fails to open from this shell",
       "--skip-launch",
       "--skip-ready",

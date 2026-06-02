@@ -198,6 +198,18 @@ const nativeLinux = [
   "wayland",
 ]
 const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage", "Linux"]
+const windowsDownloads = [
+  "download.platform.windowsX64",
+  "windows-x64-nsis",
+  "railwise-desktop-windows-x64.exe",
+  "Windows (x64)",
+  "Desktop Beta is available for macOS and Windows",
+  "Download RAILWISE Desktop for macOS and Windows",
+  "桌面 Beta 版适用于 macOS 和 Windows",
+  "下载适用于 macOS 和 Windows 的 RAILWISE 桌面版",
+  "桌面 Beta 版適用於 macOS 與 Windows",
+  "下載適用於 macOS 與 Windows 的 RAILWISE 桌面版",
+]
 
 check("release workflow exists", workflowExists, workflowPath)
 check(
@@ -258,11 +270,18 @@ check(
   "Desktop UI/runtime exposes macOS and Windows only; Linux remains CLI-only",
 )
 check(
-  "desktop download page omits Linux installers",
+  "desktop download page exposes public macOS installers only",
   [downloadTypes, downloadRoute, downloadPage, ...i18n.map((text) =>
     text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`)),
-  )].every((text) => linuxDownloads.every((item) => !text.includes(item))),
-  "Download UI, locale labels, and /download/:platform route expose macOS DMG and Windows NSIS only",
+  )].every((text) => [...linuxDownloads, ...windowsDownloads].every((item) => !text.includes(item))) &&
+    contains(downloadTypes, ['darwin-${"x64" | "aarch64"}-dmg']) &&
+    contains(downloadRoute, [
+      "railwise-desktop-darwin-aarch64.dmg",
+      "railwise-desktop-darwin-x64.dmg",
+      "https://github.com/railwise-cn/RAILWISE-CLI/releases/latest/download/",
+    ]) &&
+    !downloadRoute.includes("https://github.com/anomalyco/railwise/releases/latest/download/"),
+  "Download UI, locale labels, and /download/:platform route expose the two public macOS DMGs from the RAILWISE repository",
 )
 check(
   "desktop native shell omits Linux runtime",
@@ -496,8 +515,10 @@ check(
       "path.join(\"src-tauri\", \"target\", target, \"release\", \"bundle\")",
       "path.join(\"src-tauri\", \"target\", \"release\", \"bundle\")",
       "endsWith(\".dmg\")",
+      "railwise-desktop-${platform}.dmg",
+      "Expected exactly one DMG",
     ]),
-  "CI uploads a deterministic bundle directory regardless of native or target-specific Tauri output paths",
+  "CI uploads deterministic macOS DMG filenames regardless of native or target-specific Tauri output paths",
 )
 check(
   "sidecar build reuses models snapshot offline",

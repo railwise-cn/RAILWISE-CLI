@@ -28,6 +28,18 @@ const i18n = await Promise.all(
   (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) => read(item)),
 )
 const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage", "Linux"]
+const publicWindowsDownloads = [
+  "download.platform.windowsX64",
+  "windows-x64-nsis",
+  "railwise-desktop-windows-x64.exe",
+  "Windows (x64)",
+  "Desktop Beta is available for macOS and Windows",
+  "Download RAILWISE Desktop for macOS and Windows",
+  "桌面 Beta 版适用于 macOS 和 Windows",
+  "下载适用于 macOS 和 Windows 的 RAILWISE 桌面版",
+  "桌面 Beta 版適用於 macOS 與 Windows",
+  "下載適用於 macOS 與 Windows 的 RAILWISE 桌面版",
+]
 
 check("workflow exists", Boolean(workflow), workflowPath)
 check(
@@ -111,11 +123,11 @@ check(
   "CI no longer builds a Tauri Linux desktop container image",
 )
 check(
-  "linux download links removed",
+  "public desktop download links are macOS-only",
   [downloadTypes, downloadRoute, downloadPage, ...i18n.map((text) =>
     text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`)),
-  )].every((text) => linuxDownloads.every((item) => !text.includes(item))),
-  "Download route and UI do not advertise Linux desktop installers",
+  )].every((text) => [...linuxDownloads, ...publicWindowsDownloads].every((item) => !text.includes(item))),
+  "Download route and UI do not advertise Linux desktop installers or internal Windows artifacts",
 )
 check(
   "windows installer config",

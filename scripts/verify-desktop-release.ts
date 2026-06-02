@@ -109,7 +109,7 @@ const appZipVerify = await read("packages/desktop/scripts/verify-macos-appzip.ts
 const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
 const macStage = await read("packages/desktop/scripts/stage-macos-bundles.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
-const railwiseModels = await read("packages/railwise/script/models.ts")
+const railwiseModels = await read("packages/railwise/src/provider/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const main = await read("packages/desktop/src-tauri/src/main.rs")
@@ -540,14 +540,14 @@ check(
 )
 check(
   "sidecar build reuses models snapshot offline",
-  contains(railwiseBuild, ["models(dir)", "modelsSource(modelsData)"]) &&
+  contains(railwiseBuild, ["MODELS_DEV_API_JSON", "src/provider/models-snapshot.ts", "Generated models-snapshot.ts"]) &&
     contains(railwiseModels, [
-      "MODELS_DEV_API_JSON",
-      "src/provider/models-snapshot.ts",
-      "test/tool/fixtures/models-api.json",
-      "handled: true",
+      "ModelsDev.Data",
+      "./models-snapshot",
+      "RAILWISE_DISABLE_MODELS_FETCH",
+      "RAILWISE_MODELS_PATH",
     ]),
-  "CLI build can seed or reuse models snapshot when models.dev is temporarily unreachable",
+  "CLI build can seed a models snapshot and runtime can reuse it when models.dev is temporarily unreachable",
 )
 check(
   "release public installer coverage",

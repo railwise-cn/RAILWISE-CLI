@@ -511,14 +511,18 @@ check(
   "macOS bundle staging script",
   pkg.scripts?.["stage:macos:bundles"] === "bun ./scripts/stage-macos-bundles.ts" &&
     contains(macStage, [
+      "--require-updater",
       '"desktop-release", target',
       "path.join(\"src-tauri\", \"target\", target, \"release\", \"bundle\")",
       "path.join(\"src-tauri\", \"target\", \"release\", \"bundle\")",
       "endsWith(\".dmg\")",
       "railwise-desktop-${platform}.dmg",
+      "railwise-desktop-${platform}.app.tar.gz",
+      "railwise-desktop-${platform}.app.tar.gz.sig",
       "Expected exactly one DMG",
+      "Expected exactly one updater archive and signature",
     ]),
-  "CI uploads deterministic macOS DMG filenames regardless of native or target-specific Tauri output paths",
+  "CI uploads deterministic macOS DMG and updater artifact filenames regardless of native or target-specific Tauri output paths",
 )
 check(
   "sidecar build reuses models snapshot offline",
@@ -535,17 +539,23 @@ check(
   "release public installer coverage",
   contains(workflow, [
     "merge-multiple: false",
+    "mapfile -t dmgs",
+    "mapfile -t updates",
     '-name "*.dmg"',
+    '-name "*.app.tar.gz"',
+    '-name "*.app.tar.gz.sig"',
     "Expected exactly 2 public macOS installers",
+    "Expected exactly 4 macOS updater artifacts",
     '--repo "$GITHUB_REPOSITORY"',
     "--draft",
     'gh release delete "$TAG"',
     '--target "$GITHUB_SHA"',
+    '"${dmgs[@]}"',
+    '"${updates[@]}"',
   ]) &&
     !workflow.includes('-name "*.exe"') &&
-    !workflow.includes('-name "*.tar.gz"') &&
     !workflow.includes('-name "*.zip"'),
-  "draft release uploads macOS Apple Silicon and Intel DMGs only",
+  "draft release uploads macOS Apple Silicon and Intel DMGs plus updater archives and signatures",
 )
 check("production config exists", configExists, configPath)
 check(

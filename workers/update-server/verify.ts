@@ -26,7 +26,7 @@ const manifest: Manifest = {
   platforms: {
     [platform]: {
       signature: "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZQ==",
-      url: "https://cdn.railwise.cn/desktop/1.3.1/RAILWISE_1.3.1_aarch64.dmg",
+      url: "https://cdn.railwise.cn/desktop/1.3.1/railwise-desktop-darwin-aarch64.app.tar.gz",
     },
   },
 }
@@ -79,7 +79,7 @@ await check("older client receives update", async () => {
     passed:
       res.status === 200 &&
       body?.version === "1.3.1" &&
-      body.platforms[platform]?.url === "https://cdn.railwise.cn/desktop/1.3.1/RAILWISE_1.3.1_aarch64.dmg",
+      body.platforms[platform]?.url === "https://cdn.railwise.cn/desktop/1.3.1/railwise-desktop-darwin-aarch64.app.tar.gz",
     detail: `status ${res.status}, version ${body?.version ?? "none"}`,
   }
 })

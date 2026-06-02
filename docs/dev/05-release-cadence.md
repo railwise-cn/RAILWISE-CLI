@@ -4,7 +4,7 @@ RAILWISE Desktop 使用 `desktop/v{major}.{minor}.{patch}` 标签发布，版本
 
 ## RC1
 
-RC1 进入 5 天内测，覆盖 10 名工程师或 PM 的真实项目样本，并完整运行 M7 的 12 条 E2E 用例。
+RC1 进入 5 天内测，覆盖 10 名工程师或 PM 的真实项目样本，并完整运行 M7 的 12 条 E2E 用例。人工验收必须按 `docs/dev/12-desktop-harness-marketplace-beta.md` 逐项记录。
 
 P0 包含崩溃、数据丢失、签名失败、公证失败和更新失败，必须当日修复。P1 包含功能缺失和严重 UI 异常，修复后并入 RC2。P2 体验优化进入下一迭代 backlog。
 
@@ -41,7 +41,7 @@ GA 前置检查会额外校验版本一致性、发版文档、更新服务配�
 bun run desktop:verify:ga
 ```
 
-正式发版前执行完整 live gate：
+正式发版前执行完整 live gate，并确认 `docs/dev/12-desktop-harness-marketplace-beta.md` 中的人工验收记录已完成：
 
 ```bash
 bun run desktop:verify:ga -- --full

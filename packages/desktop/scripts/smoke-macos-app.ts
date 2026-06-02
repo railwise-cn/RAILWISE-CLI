@@ -29,6 +29,8 @@ const timeout = Number(arg("--timeout", "15"))
 const readyTimeout = Number(arg("--ready-timeout", "60"))
 const skipLaunch = args.includes("--skip-launch")
 const skipReady = args.includes("--skip-ready")
+const skipProcessCheck = args.includes("--skip-process-check")
+const skipProcessCleanup = skipProcessCheck || args.includes("--skip-process-cleanup")
 
 const logDirs = () => {
   const home = Bun.env.HOME
@@ -80,7 +82,7 @@ const waitForReady = async (since: number) => {
       }
     }
 
-    if ((await running()).length === 0) {
+    if (!skipProcessCheck && (await running()).length === 0) {
       throw new Error(`macOS app process exited before sidecar was ready.\n${tail(latest)}`)
     }
 
@@ -112,8 +114,10 @@ const running = async () =>
     .split("\n")
     .filter(Boolean)
 
-for (const pid of await running()) {
-  await $`kill ${pid}`.quiet().nothrow()
+if (!skipProcessCleanup) {
+  for (const pid of await running()) {
+    await $`kill ${pid}`.quiet().nothrow()
+  }
 }
 
 const launched = Date.now()
@@ -129,19 +133,23 @@ if (opened.exitCode !== 0) {
   )
 }
 
-const started = Date.now()
-let pids: string[] = []
-while (Date.now() - started < timeout * 1000) {
+if (!skipProcessCheck) {
+  const started = Date.now()
+  let pids: string[] = []
+  while (Date.now() - started < timeout * 1000) {
+    pids = await running()
+    if (pids.length > 0) break
+    await sleep(500)
+  }
+
+  if (pids.length === 0) throw new Error(`macOS app process did not appear within ${timeout}s: ${executable}`)
+
+  await sleep(3000)
   pids = await running()
-  if (pids.length > 0) break
-  await sleep(500)
+  if (pids.length === 0) throw new Error(`macOS app process exited during smoke window: ${executable}`)
+} else {
+  await sleep(3000)
 }
-
-if (pids.length === 0) throw new Error(`macOS app process did not appear within ${timeout}s: ${executable}`)
-
-await sleep(3000)
-pids = await running()
-if (pids.length === 0) throw new Error(`macOS app process exited during smoke window: ${executable}`)
 
 const files = await readdir(path.join(app, "Contents", "MacOS"))
 if (!files.includes(executable) || !files.includes("railwise-cli")) {

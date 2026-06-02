@@ -254,7 +254,7 @@ check(
 )
 check(
   "macOS launch smoke readiness",
-  has(macSmoke, ["CLI health check OK", "--ready-timeout", "railwise-desktop_", "--skip-ready"]) &&
+  has(macSmoke, ["CLI health check OK", "--ready-timeout", "railwise-desktop_", "--skip-ready", "--skip-process-check"]) &&
     has(docs, ["macOS 启动烟测", "bun run smoke:macos -- --ready-timeout 90", "CLI health check OK"]),
   "macOS app smoke covers bundle verification, process launch, and sidecar readiness in normal Terminal",
 )

@@ -506,6 +506,8 @@ check(
       "If Safari.app also fails to open from this shell",
       "--skip-launch",
       "--skip-ready",
+      "--skip-process-check",
+      "--skip-process-cleanup",
       "railwise-cli",
     ]),
   "Normal macOS Terminal can run an app launch smoke that waits for sidecar readiness while sandboxed shells can verify bundle-only mode",

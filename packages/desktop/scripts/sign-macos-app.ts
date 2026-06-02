@@ -18,13 +18,14 @@ const arg = (name: string, fallback?: string) => {
 
 const appArg = arg("--app")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
-if (!target && !appArg) throw new Error("Missing --app, --target or RUST_TARGET")
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS signing is not available for ${target}`)
 
 const config = (await Bun.file("src-tauri/tauri.prod.conf.json").json()) as Config
-const dir = target ? path.join("src-tauri", "target", target, "release", "bundle", "macos") : ""
-const apps = target ? (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app")) : []
-const fallback = target ? path.join(dir, `${config.productName ?? "睿威智测 RAILWISE"}.app`) : ""
+const dir = target
+  ? path.join("src-tauri", "target", target, "release", "bundle", "macos")
+  : path.join("src-tauri", "target", "release", "bundle", "macos")
+const apps = (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app"))
+const fallback = path.join(dir, `${config.productName ?? "睿威智测 RAILWISE"}.app`)
 const app = appArg ?? (apps.length === 1 ? path.join(dir, apps[0]!) : fallback)
 
 const info = await stat(app).catch(() => undefined)

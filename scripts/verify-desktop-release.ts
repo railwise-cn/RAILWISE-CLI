@@ -390,6 +390,7 @@ check(
   "local Tauri config preparation script",
   pkg.scripts?.["prepare:tauri"] === "bun ./scripts/prepare-tauri-config.ts" &&
     pkg.scripts?.["build:macos:local"]?.includes("bun run prepare:tauri") === true &&
+    pkg.scripts?.["build:macos:local"]?.endsWith("&& bun run sign:macos") === true &&
     contains(prepare, [
       "src-tauri/tauri.prod.conf.json",
       "src-tauri/tauri.ci.conf.json",
@@ -419,7 +420,8 @@ check(
   pkg.scripts?.["sign:macos"] === "bun ./scripts/sign-macos-app.ts" &&
     contains(macSign, [
       'const appArg = arg("--app")',
-      "if (!target && !appArg)",
+      'path.join("src-tauri", "target", "release", "bundle", "macos")',
+      "apps.length === 1",
       "APPLE_SIGNING_IDENTITY",
       "codesign --force --deep --sign -",
       "codesign --verify --deep --strict --verbose=4",

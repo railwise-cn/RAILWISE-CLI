@@ -16,6 +16,9 @@ const workflow = (await exists(workflowPath)) ? await read(workflowPath) : ""
 const release = await read(".github/workflows/desktop-release.yml")
 const config = await Bun.file(file("packages/desktop/src-tauri/tauri.prod.conf.json")).json()
 const dev = await Bun.file(file("packages/desktop/src-tauri/tauri.conf.json")).json()
+const lib = await read("packages/desktop/src-tauri/src/lib.rs")
+const cargo = await read("packages/desktop/src-tauri/Cargo.toml")
+const bindings = await read("packages/desktop/src/bindings.ts")
 
 check("workflow exists", Boolean(workflow), workflowPath)
 check(
@@ -79,6 +82,16 @@ check(
     !release.includes("bundles: deb") &&
     !release.includes("bundles: rpm"),
   "desktop distribution is limited to macOS public release plus Windows internal testing",
+)
+check(
+  "linux native runtime removed",
+  !lib.includes('target_os = "linux"') &&
+    !lib.includes("LinuxDisplayBackend") &&
+    !cargo.includes('cfg(target_os = "linux")') &&
+    !bindings.includes("setDisplayBackend") &&
+    !(await exists("packages/desktop/src-tauri/src/linux_display.rs")) &&
+    !(await exists("packages/desktop/src-tauri/src/linux_windowing.rs")),
+  "Desktop native runtime no longer carries Linux/Wayland commands or modules",
 )
 check(
   "windows installer config",

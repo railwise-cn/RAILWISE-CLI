@@ -110,6 +110,12 @@ const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
+const main = await read("packages/desktop/src-tauri/src/main.rs")
+const windowsRs = await read("packages/desktop/src-tauri/src/windows.rs")
+const customizer = await read("packages/desktop/src-tauri/src/window_customizer.rs")
+const cargo = await read("packages/desktop/src-tauri/Cargo.toml")
+const bindings = await read("packages/desktop/src/bindings.ts")
+const icons = await read("packages/desktop/src-tauri/icons/railwise/README.md")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
 const infoPlist = await read("packages/desktop/src-tauri/Info.plist")
 const platform = await read("packages/app/src/context/platform.tsx")
@@ -169,6 +175,18 @@ const missingAssets = (
 ).filter((item): item is string => Boolean(item))
 const pubkey = config.plugins?.updater?.pubkey ?? ""
 const endpoint = "https://updates.railwise.cn/desktop/{{target}}/{{current_version}}"
+const nativeLinux = [
+  'target_os = "linux"',
+  "linux_display",
+  "linux_windowing",
+  "LinuxDisplayBackend",
+  "get_display_backend",
+  "set_display_backend",
+  "webkit2gtk",
+  "gtk =",
+  "Wayland",
+  "wayland",
+]
 
 check("release workflow exists", workflowExists, workflowPath)
 check(
@@ -227,6 +245,15 @@ check(
     !e2eHarness.includes('os_type: "linux"') &&
     !e2eHarness.includes('platform: "linux"'),
   "Desktop UI/runtime exposes macOS and Windows only; Linux remains CLI-only",
+)
+check(
+  "desktop native shell omits Linux runtime",
+  [main, lib, windowsRs, customizer, cargo, bindings, icons].every((text) =>
+    nativeLinux.every((item) => !text.includes(item)),
+  ) &&
+    !(await exists("packages/desktop/src-tauri/src/linux_display.rs")) &&
+    !(await exists("packages/desktop/src-tauri/src/linux_windowing.rs")),
+  "Desktop native shell removes Linux/Wayland runtime modules, commands, bindings, and target dependencies",
 )
 check(
   "sidecar infers host desktop target",

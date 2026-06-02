@@ -83,6 +83,7 @@ const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { 
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
+const macStage = await read("packages/desktop/scripts/stage-macos-bundles.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
@@ -251,6 +252,9 @@ check(
     "bun run verify:macos -- --target",
     "Verify macOS DMG contents",
     "bun run verify:dmg -- --target",
+    "Stage bundle artifacts",
+    "bun run stage:macos:bundles -- --target",
+    "target/desktop-release/${{ matrix.target }}",
   ]),
   "CI verifies the app bundle and DMG contents before uploading release artifacts",
 )
@@ -329,6 +333,17 @@ check(
       '"target", "release", "bundle", "dmg"',
     ]),
   "Local and CI macOS DMG verification mounts the installer and checks the packaged app",
+)
+check(
+  "macOS bundle staging script",
+  pkg.scripts?.["stage:macos:bundles"] === "bun ./scripts/stage-macos-bundles.ts" &&
+    contains(macStage, [
+      '"desktop-release", target',
+      "path.join(\"src-tauri\", \"target\", target, \"release\", \"bundle\")",
+      "path.join(\"src-tauri\", \"target\", \"release\", \"bundle\")",
+      "endsWith(\".dmg\")",
+    ]),
+  "CI uploads a deterministic bundle directory regardless of native or target-specific Tauri output paths",
 )
 check(
   "sidecar build reuses models snapshot offline",

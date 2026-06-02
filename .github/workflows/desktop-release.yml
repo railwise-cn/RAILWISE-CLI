@@ -147,11 +147,16 @@ jobs:
         working-directory: packages/desktop
         run: bun run verify:dmg -- --target ${{ matrix.target }}
 
+      - name: Stage bundle artifacts
+        shell: bash
+        working-directory: packages/desktop
+        run: bun run stage:macos:bundles -- --target ${{ matrix.target }}
+
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4
         with:
           name: railwise-desktop-${{ matrix.target }}-${{ steps.signing.outputs.mode }}
-          path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle
+          path: packages/desktop/src-tauri/target/desktop-release/${{ matrix.target }}
           if-no-files-found: error
           retention-days: 30
 

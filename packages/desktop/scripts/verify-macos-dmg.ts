@@ -21,11 +21,12 @@ const dir = path.join("src-tauri", "target", target, "release", "bundle", "dmg")
 const dmgs = (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg"))
 const dmg = arg("--dmg", dmgs.length === 1 ? path.join(dir, dmgs[0]!) : undefined)
 if (!dmg) throw new Error(`Expected exactly one DMG in ${dir}; found ${dmgs.length}`)
+const image = path.resolve(dmg)
 
 const mounted = async () => {
   const info = await $`hdiutil info`.quiet().text()
   const sections = info.split("image-path").slice(1).map((item) => `image-path${item}`)
-  const section = sections.find((item) => item.includes(dmg))
+  const section = sections.find((item) => item.includes(image))
   return section
     ?.split("\n")
     .map((item) => item.trim())
@@ -39,7 +40,7 @@ let attached = false
 
 try {
   if (!mount.startsWith("/Volumes/")) {
-    await $`hdiutil attach -readonly -noverify -noautoopen -nobrowse -mountpoint ${mount} ${dmg}`
+    await $`hdiutil attach -readonly -noverify -noautoopen -nobrowse -mountpoint ${mount} ${image}`
     attached = true
   }
 
@@ -47,7 +48,7 @@ try {
   if (apps.length !== 1) throw new Error(`Expected exactly one app in mounted DMG; found ${apps.length}`)
 
   await $`bun ./scripts/verify-macos-bundle.ts --target ${target} --app ${path.join(mount, apps[0]!)}`
-  console.log(`Verified macOS DMG ${dmg}`)
+  console.log(`Verified macOS DMG ${image}`)
 } finally {
   if (attached) await $`hdiutil detach ${mount}`.quiet().catch(() => undefined)
   if (!mount.startsWith("/Volumes/")) await rm(mount, { recursive: true, force: true })

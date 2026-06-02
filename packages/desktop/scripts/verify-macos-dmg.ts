@@ -13,13 +13,14 @@ const arg = (name: string, fallback?: string) => {
   return args[index + 1] ?? fallback
 }
 
-const target = arg("--target", Bun.env.RUST_TARGET ?? Bun.env.TAURI_ENV_TARGET_TRIPLE)
-if (!target) throw new Error("Missing --target or RUST_TARGET")
-if (!target.includes("apple-darwin")) throw new Error(`macOS DMG verification is not available for ${target}`)
+const dmgArg = arg("--dmg")
+const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
+if (!target && !dmgArg) throw new Error("Missing --dmg, --target or RUST_TARGET")
+if (target && !target.includes("apple-darwin")) throw new Error(`macOS DMG verification is not available for ${target}`)
 
-const dir = path.join("src-tauri", "target", target, "release", "bundle", "dmg")
-const dmgs = (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg"))
-const dmg = arg("--dmg", dmgs.length === 1 ? path.join(dir, dmgs[0]!) : undefined)
+const dir = target ? path.join("src-tauri", "target", target, "release", "bundle", "dmg") : ""
+const dmgs = target ? (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg")) : []
+const dmg = dmgArg ?? (dmgs.length === 1 ? path.join(dir, dmgs[0]!) : undefined)
 if (!dmg) throw new Error(`Expected exactly one DMG in ${dir}; found ${dmgs.length}`)
 const image = path.resolve(dmg)
 
@@ -47,7 +48,9 @@ try {
   const apps = (await readdir(mount)).filter((item) => item.endsWith(".app"))
   if (apps.length !== 1) throw new Error(`Expected exactly one app in mounted DMG; found ${apps.length}`)
 
-  await $`bun ./scripts/verify-macos-bundle.ts --target ${target} --app ${path.join(mount, apps[0]!)}`
+  const app = path.join(mount, apps[0]!)
+  if (target) await $`bun ./scripts/verify-macos-bundle.ts --target ${target} --app ${app}`
+  else await $`bun ./scripts/verify-macos-bundle.ts --app ${app}`
   console.log(`Verified macOS DMG ${image}`)
 } finally {
   if (attached) await $`hdiutil detach ${mount}`.quiet().catch(() => undefined)

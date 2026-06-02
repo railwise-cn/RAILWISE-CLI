@@ -94,7 +94,7 @@ export const dict = {
 
   "home.banner.badge": "Yeni",
   "home.banner.text": "Masaüstü uygulaması beta olarak kullanılabilir",
-  "home.banner.platforms": "macOS ve Windows'ta",
+  "home.banner.platforms": "macOS, Windows ve Linux'ta",
   "home.banner.downloadNow": "Şimdi indir",
   "home.banner.downloadBetaNow": "Masaüstü betayı şimdi indir",
 
@@ -485,9 +485,9 @@ export const dict = {
     "Kayıt Ol'a tıkladığınızda aboneliğiniz hemen başlar ve kartınızdan çekim yapılır.",
 
   "download.title": "RAILWISE | İndir",
-  "download.meta.description": "RAILWISE'u macOS ve Windows için indirin",
+  "download.meta.description": "RAILWISE Desktop'ı macOS için indirin",
   "download.hero.title": "RAILWISE'u İndir",
-  "download.hero.subtitle": "macOS ve Windows için Beta olarak sunuluyor",
+  "download.hero.subtitle": "Desktop Beta macOS için sunuluyor",
   "download.hero.button": "{{os}} için indir",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -498,7 +498,7 @@ export const dict = {
 
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
-  "download.platform.windowsX64": "Windows (x64)",
+
   "download.faq.a3.beforeLocal":
     "Tam olarak değil, ama muhtemelen. RAILWISE'u ücretli bir sağlayıcıya bağlamak istiyorsanız bir AI aboneliği gerekir, ancak",
   "download.faq.a3.localLink": "yerel modeller",

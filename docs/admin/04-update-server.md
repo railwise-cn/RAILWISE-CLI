@@ -18,11 +18,13 @@ GET /desktop/{{target}}/{{current_version}}
   "platforms": {
     "darwin-aarch64": {
       "signature": "...",
-      "url": "https://cdn.example.com/RAILWISE_1.3.1_aarch64.dmg"
+      "url": "https://cdn.example.com/railwise-desktop-darwin-aarch64.app.tar.gz"
     }
   }
 }
 ```
+
+`url` 必须指向 Tauri updater 产物（macOS 为 `.app.tar.gz`），不要使用给用户手动安装的 `.dmg`。对应的 `.sig` 内容写入 `signature` 字段。
 
 ## 灰度发布
 

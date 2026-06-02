@@ -107,6 +107,7 @@ const notarization = [
   "APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}",
 ]
 const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
+const scope = "桌面端不发布 Linux 版本"
 const desktopTargets = ["dmg", "nsis"]
 const windows = [
   "windows-2022",
@@ -166,10 +167,13 @@ check(
 check(
   "release omits Linux target",
   linux.every((item) => !workflow.includes(item)) &&
+    config.bundle?.linux === undefined &&
+    devConfig.bundle?.linux === undefined &&
+    adminDeploy.includes(scope) &&
     !sidecar.includes("linux-") &&
     !adminDeploy.includes("Linux 安装包") &&
     !adminDeploy.includes("linux/"),
-  "Desktop release excludes Linux installers and deployment docs do not promise Linux packages",
+  "Desktop release excludes Linux installers, Tauri Linux bundle config, and deployment docs explicitly mark Linux as CLI-only",
 )
 check(
   "desktop bundle targets",

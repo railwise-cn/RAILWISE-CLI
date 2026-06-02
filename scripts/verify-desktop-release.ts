@@ -311,6 +311,16 @@ check(
   "local desktop verification can refresh the sidecar in restricted environments",
 )
 check(
+  "sidecar build honors explicit desktop target",
+  contains(predev, ["const cli = sidecarConfig.ocBinary", "--target ${cli}"]) &&
+    contains(railwiseBuild, [
+      'const only = arg("--target")',
+      "return name(item) === only",
+      "throw new Error(`Unknown target: ${only}`)",
+    ]),
+  "Desktop predev maps macOS/Windows targets to the matching CLI sidecar build target",
+)
+check(
   "local Tauri config preparation script",
   pkg.scripts?.["prepare:tauri"] === "bun ./scripts/prepare-tauri-config.ts" &&
     pkg.scripts?.["build:macos:local"]?.includes("bun run prepare:tauri") === true &&

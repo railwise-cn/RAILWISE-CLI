@@ -22,7 +22,10 @@ const bindings = await read("packages/desktop/src/bindings.ts")
 const downloadTypes = await read("packages/console/app/src/routes/download/types.ts")
 const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
 const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
-const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage"]
+const i18n = await Promise.all(
+  (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) => read(item)),
+)
+const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage", "Linux"]
 
 check("workflow exists", Boolean(workflow), workflowPath)
 check(
@@ -99,7 +102,9 @@ check(
 )
 check(
   "linux download links removed",
-  [downloadTypes, downloadRoute, downloadPage].every((text) => linuxDownloads.every((item) => !text.includes(item))),
+  [downloadTypes, downloadRoute, downloadPage, ...i18n.map((text) =>
+    text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`)),
+  )].every((text) => linuxDownloads.every((item) => !text.includes(item))),
   "Download route and UI do not advertise Linux desktop installers",
 )
 check(

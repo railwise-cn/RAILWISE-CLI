@@ -479,9 +479,9 @@ export const dict = {
   "workspace.black.waitlist.enrollNote": 'عند النقر فوق "تسجيل"، يبدأ اشتراكك على الفور وسيتم خصم الرسوم من بطاقتك.',
 
   "download.title": "RAILWISE | تنزيل",
-  "download.meta.description": "نزّل RAILWISE لـ macOS، Windows، وLinux",
+  "download.meta.description": "نزّل RAILWISE Desktop لـ macOS وWindows",
   "download.hero.title": "تنزيل RAILWISE",
-  "download.hero.subtitle": "متاح في نسخة تجريبية لـ macOS، Windows، وLinux",
+  "download.hero.subtitle": "يتوفر Desktop Beta لـ macOS وWindows",
   "download.hero.button": "تنزيل لـ {{os}}",
   "download.section.terminal": "RAILWISE للطرفية",
   "download.section.desktop": "RAILWISE لسطح المكتب (Beta)",
@@ -493,8 +493,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "ليس بالضرورة، ولكن على الأرجح. ستحتاج إلى اشتراك ذكاء اصطناعي إذا كنت تريد ربط RAILWISE بمزوّد مدفوع، رغم أنه يمكنك العمل مع",

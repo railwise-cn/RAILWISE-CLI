@@ -125,6 +125,9 @@ const e2eHarness = await read("packages/desktop/e2e/helpers/app.ts")
 const downloadTypes = await read("packages/console/app/src/routes/download/types.ts")
 const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
 const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
+const i18n = await Promise.all(
+  (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) => read(item)),
+)
 const adminDeploy = await read("docs/admin/01-deploy.md")
 const readme = await read("README.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
@@ -190,7 +193,7 @@ const nativeLinux = [
   "Wayland",
   "wayland",
 ]
-const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage"]
+const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage", "Linux"]
 
 check("release workflow exists", workflowExists, workflowPath)
 check(
@@ -252,8 +255,10 @@ check(
 )
 check(
   "desktop download page omits Linux installers",
-  [downloadTypes, downloadRoute, downloadPage].every((text) => linuxDownloads.every((item) => !text.includes(item))),
-  "Download UI and /download/:platform route expose macOS DMG and Windows NSIS only",
+  [downloadTypes, downloadRoute, downloadPage, ...i18n.map((text) =>
+    text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`)),
+  )].every((text) => linuxDownloads.every((item) => !text.includes(item))),
+  "Download UI, locale labels, and /download/:platform route expose macOS DMG and Windows NSIS only",
 )
 check(
   "desktop native shell omits Linux runtime",

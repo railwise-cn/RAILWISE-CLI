@@ -485,9 +485,9 @@ export const dict = {
     "Kayıt Ol'a tıkladığınızda aboneliğiniz hemen başlar ve kartınızdan çekim yapılır.",
 
   "download.title": "RAILWISE | İndir",
-  "download.meta.description": "RAILWISE'u macOS, Windows ve Linux için indirin",
+  "download.meta.description": "RAILWISE Desktop'ı macOS ve Windows için indirin",
   "download.hero.title": "RAILWISE'u İndir",
-  "download.hero.subtitle": "macOS, Windows ve Linux için Beta olarak sunuluyor",
+  "download.hero.subtitle": "Desktop Beta macOS ve Windows için sunuluyor",
   "download.hero.button": "{{os}} için indir",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -499,8 +499,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "Tam olarak değil, ama muhtemelen. RAILWISE'u ücretli bir sağlayıcıya bağlamak istiyorsanız bir AI aboneliği gerekir, ancak",

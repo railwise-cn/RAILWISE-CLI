@@ -489,9 +489,9 @@ export const dict = {
     "Когда вы нажмете Подключиться, ваша подписка начнется немедленно, и с карты будет списана оплата.",
 
   "download.title": "RAILWISE | Скачать",
-  "download.meta.description": "Скачать RAILWISE для macOS, Windows и Linux",
+  "download.meta.description": "Скачать RAILWISE Desktop для macOS и Windows",
   "download.hero.title": "Скачать RAILWISE",
-  "download.hero.subtitle": "Доступна бета для macOS, Windows и Linux",
+  "download.hero.subtitle": "Бета Desktop доступна для macOS и Windows",
   "download.hero.button": "Скачать для {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -503,8 +503,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "Не обязательно, но возможно. Вам понадобится AI подписка, если вы хотите подключить RAILWISE к платному провайдеру, хотя вы можете работать с",

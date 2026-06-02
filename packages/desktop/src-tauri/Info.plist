@@ -4,5 +4,7 @@
 <dict>
   <key>LSRequiresCarbon</key>
   <false/>
+  <key>NSPrincipalClass</key>
+  <string>NSApplication</string>
 </dict>
 </plist>

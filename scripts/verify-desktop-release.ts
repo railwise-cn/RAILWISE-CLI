@@ -528,8 +528,11 @@ check(
 )
 check(
   "macOS modern launch services plist",
-  infoPlist.includes("<key>LSRequiresCarbon</key>") && infoPlist.includes("<false/>"),
-  "Info.plist explicitly prevents legacy Carbon launch metadata",
+  infoPlist.includes("<key>LSRequiresCarbon</key>") &&
+    infoPlist.includes("<false/>") &&
+    infoPlist.includes("<key>NSPrincipalClass</key>") &&
+    infoPlist.includes("<string>NSApplication</string>"),
+  "Info.plist explicitly prevents legacy Carbon launch metadata and declares NSApplication",
 )
 check(
   "release assets",

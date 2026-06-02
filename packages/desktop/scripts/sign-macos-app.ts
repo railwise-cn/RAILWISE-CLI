@@ -30,6 +30,19 @@ const app = appArg ?? (apps.length === 1 ? path.join(dir, apps[0]!) : fallback)
 const info = await stat(app).catch(() => undefined)
 if (!info?.isDirectory()) throw new Error(`App bundle not found: ${app}`)
 
+const plist = path.join(app, "Contents", "Info.plist")
+const ensure = async (key: string, type: string, value: string) => {
+  const result = await $`/usr/libexec/PlistBuddy -c ${`Print :${key}`} ${plist}`.quiet().nothrow()
+  if (result.exitCode === 0) {
+    await $`/usr/libexec/PlistBuddy -c ${`Set :${key} ${value}`} ${plist}`
+    return
+  }
+  await $`/usr/libexec/PlistBuddy -c ${`Add :${key} ${type} ${value}`} ${plist}`
+}
+
+await ensure("LSRequiresCarbon", "bool", "false")
+await ensure("NSPrincipalClass", "string", "NSApplication")
+
 const identity = Bun.env.APPLE_SIGNING_IDENTITY?.trim() || "-"
 
 if (identity === "-") {

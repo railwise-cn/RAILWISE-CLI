@@ -72,7 +72,11 @@ if (await exists(plist)) {
   check("bundle identifier", (await field("CFBundleIdentifier")) === config.identifier, config.identifier ?? "missing")
   check("bundle executable", (await field("CFBundleExecutable")) === executable, executable)
   check("bundle name", (await field("CFBundleName")) === config.productName, config.productName ?? "missing")
-  check("modern launch services plist", (await optional("LSRequiresCarbon")) !== "true", "LSRequiresCarbon must not be true")
+  check(
+    "modern launch services plist",
+    (await optional("LSRequiresCarbon")) !== "true" && (await optional("NSPrincipalClass")) === "NSApplication",
+    "LSRequiresCarbon must not be true and NSPrincipalClass must be NSApplication",
+  )
 }
 
 if (await exists(bin)) {

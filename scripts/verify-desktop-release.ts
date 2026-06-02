@@ -77,6 +77,8 @@ const config = configExists ? ((await Bun.file(file(configPath)).json()) as Conf
 const devConfig = (await Bun.file(file(devConfigPath)).json()) as Config
 const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
+const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
+const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
@@ -195,6 +197,15 @@ check(
   "Beta release keeps public macOS DMGs notarized while allowing Intel release compilation",
 )
 check(
+  "release requires macOS signing",
+  contains(workflow, [
+    "Require macOS signing secrets",
+    "steps.signing.outputs.macos != 'true'",
+    "Public RAILWISE Desktop macOS releases require Developer ID signing and notarization secrets.",
+  ]),
+  "Public macOS beta releases fail fast instead of publishing unsigned DMGs",
+)
+check(
   "release keychain grants codesign",
   contains(workflow, [
     "security set-keychain-settings -lut 21600 build.keychain",
@@ -218,6 +229,15 @@ check(
   "production Tauri config is converted to CI config and Bun forwards target/bundle release arguments",
 )
 check(
+  "release verifies macOS app signature",
+  contains(workflow, [
+    "Verify macOS bundle signature",
+    'codesign --verify --deep --strict --verbose=4 "$APP"',
+    "bundle/macos/睿威智测 RAILWISE.app",
+  ]),
+  "CI verifies the sealed app bundle before uploading release artifacts",
+)
+check(
   "desktop dev loopback host",
   devConfig.build?.devUrl === "http://127.0.0.1:1420" && vite.includes('host: host || "127.0.0.1"'),
   "development startup avoids localhost DNS resolution and binds Vite to loopback IP",
@@ -226,6 +246,17 @@ check(
   "sidecar build can skip dependency reinstall",
   contains(predev, ["RAILWISE_SKIP_INSTALL", "--skip-install", "bun run build --single --skip-install"]),
   "local desktop verification can refresh the sidecar in restricted environments",
+)
+check(
+  "local macOS ad-hoc signing script",
+  pkg.scripts?.["sign:macos"] === "bun ./scripts/sign-macos-app.ts" &&
+    contains(macSign, [
+      "APPLE_SIGNING_IDENTITY",
+      "codesign --force --deep --sign -",
+      "codesign --verify --deep --strict --verbose=4",
+      "apple-darwin",
+    ]),
+  "Local macOS app bundles can be sealed with ad-hoc signing when Developer ID is unavailable",
 )
 check(
   "sidecar build reuses models snapshot offline",

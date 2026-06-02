@@ -96,6 +96,14 @@ jobs:
             echo "updater=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Require macOS signing secrets
+        if: steps.signing.outputs.macos != 'true'
+        shell: bash
+        run: |
+          echo "Public RAILWISE Desktop macOS releases require Developer ID signing and notarization secrets."
+          echo "Set APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_KEYCHAIN_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_ID_PASSWORD, and APPLE_TEAM_ID."
+          exit 1
+
       - name: Prepare CI Tauri config
         shell: bash
         working-directory: packages/desktop
@@ -134,6 +142,13 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         working-directory: packages/desktop
         run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.ci.conf.json
+
+      - name: Verify macOS bundle signature
+        shell: bash
+        working-directory: packages/desktop
+        run: |
+          APP="src-tauri/target/${{ matrix.target }}/release/bundle/macos/睿威智测 RAILWISE.app"
+          codesign --verify --deep --strict --verbose=4 "$APP"
 
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4

@@ -77,6 +77,7 @@ const config = configExists ? ((await Bun.file(file(configPath)).json()) as Conf
 const devConfig = (await Bun.file(file(devConfigPath)).json()) as Config
 const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
+const prepare = await read("packages/desktop/scripts/prepare-tauri-config.ts")
 const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
@@ -235,8 +236,7 @@ check(
   contains(workflow, [
     "working-directory: packages/desktop",
     "bun run predev -- --target",
-    'Bun.file("src-tauri/tauri.prod.conf.json").json()',
-    'Bun.write("src-tauri/tauri.ci.conf.json"',
+    "bun run prepare:tauri",
     "bun run tauri -- build",
     "--bundles ${{ matrix.bundles }}",
     "--config src-tauri/tauri.ci.conf.json",
@@ -264,9 +264,23 @@ check(
   "local desktop verification can refresh the sidecar in restricted environments",
 )
 check(
+  "local Tauri config preparation script",
+  pkg.scripts?.["prepare:tauri"] === "bun ./scripts/prepare-tauri-config.ts" &&
+    pkg.scripts?.["build:macos:local"]?.includes("bun run prepare:tauri") === true &&
+    contains(prepare, [
+      "src-tauri/tauri.prod.conf.json",
+      "src-tauri/tauri.ci.conf.json",
+      "TAURI_SIGNING_PRIVATE_KEY",
+      "config.bundle.createUpdaterArtifacts = false",
+    ]),
+  "Local macOS app builds can reuse the CI config path and disable updater artifacts when signing keys are unavailable",
+)
+check(
   "local macOS ad-hoc signing script",
   pkg.scripts?.["sign:macos"] === "bun ./scripts/sign-macos-app.ts" &&
     contains(macSign, [
+      'const appArg = arg("--app")',
+      "if (!target && !appArg)",
       "APPLE_SIGNING_IDENTITY",
       "codesign --force --deep --sign -",
       "codesign --verify --deep --strict --verbose=4",
@@ -278,6 +292,8 @@ check(
   "macOS bundle verification script",
   pkg.scripts?.["verify:macos"] === "bun ./scripts/verify-macos-bundle.ts" &&
     contains(macVerify, [
+      'const appArg = arg("--app")',
+      "if (!target && !appArg)",
       "CFBundleIdentifier",
       "CFBundleExecutable",
       "railwise-cli",

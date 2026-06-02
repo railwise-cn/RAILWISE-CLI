@@ -19,6 +19,8 @@ const dev = await Bun.file(file("packages/desktop/src-tauri/tauri.conf.json")).j
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const cargo = await read("packages/desktop/src-tauri/Cargo.toml")
 const bindings = await read("packages/desktop/src/bindings.ts")
+const containers = await read("packages/containers/script/build.ts")
+const containersReadme = await read("packages/containers/README.md")
 const downloadTypes = await read("packages/console/app/src/routes/download/types.ts")
 const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
 const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
@@ -99,6 +101,14 @@ check(
     !(await exists("packages/desktop/src-tauri/src/linux_display.rs")) &&
     !(await exists("packages/desktop/src-tauri/src/linux_windowing.rs")),
   "Desktop native runtime no longer carries Linux/Wayland commands or modules",
+)
+check(
+  "linux desktop build container removed",
+  !containers.includes("tauri-linux") &&
+    !containersReadme.includes("tauri-linux") &&
+    containersReadme.includes("RAILWISE Desktop does not build or publish Linux installers") &&
+    !(await exists("packages/containers/tauri-linux/Dockerfile")),
+  "CI no longer builds a Tauri Linux desktop container image",
 )
 check(
   "linux download links removed",

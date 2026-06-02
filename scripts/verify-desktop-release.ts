@@ -116,6 +116,8 @@ const customizer = await read("packages/desktop/src-tauri/src/window_customizer.
 const cargo = await read("packages/desktop/src-tauri/Cargo.toml")
 const bindings = await read("packages/desktop/src/bindings.ts")
 const icons = await read("packages/desktop/src-tauri/icons/railwise/README.md")
+const containers = await read("packages/containers/script/build.ts")
+const containersReadme = await read("packages/containers/README.md")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
 const infoPlist = await read("packages/desktop/src-tauri/Info.plist")
 const platform = await read("packages/app/src/context/platform.tsx")
@@ -268,6 +270,14 @@ check(
     !(await exists("packages/desktop/src-tauri/src/linux_display.rs")) &&
     !(await exists("packages/desktop/src-tauri/src/linux_windowing.rs")),
   "Desktop native shell removes Linux/Wayland runtime modules, commands, bindings, and target dependencies",
+)
+check(
+  "desktop build containers omit Linux desktop image",
+  !containers.includes("tauri-linux") &&
+    !containersReadme.includes("tauri-linux") &&
+    containersReadme.includes("RAILWISE Desktop does not build or publish Linux installers") &&
+    !(await exists("packages/containers/tauri-linux/Dockerfile")),
+  "CI container image list no longer maintains a Tauri Linux desktop build image",
 )
 check(
   "sidecar infers host desktop target",

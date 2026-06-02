@@ -483,9 +483,9 @@ export const dict = {
     "「登録する」をクリックすると、サブスクリプションがすぐに開始され、カードに請求されます。",
 
   "download.title": "RAILWISE | ダウンロード",
-  "download.meta.description": "RAILWISE Desktop を macOS、Windows 向けにダウンロード",
+  "download.meta.description": "RAILWISE Desktop を macOS 向けにダウンロード",
   "download.hero.title": "RAILWISE をダウンロード",
-  "download.hero.subtitle": "Desktop ベータ版は macOS、Windows 向けに利用可能",
+  "download.hero.subtitle": "Desktop ベータ版は macOS 向けに利用可能",
   "download.hero.button": "{{os}} 向けダウンロード",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -496,7 +496,6 @@ export const dict = {
 
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
-  "download.platform.windowsX64": "Windows (x64)",
 
   "download.faq.a3.beforeLocal":
     "必ずしもそうではありませんが、おそらく必要です。RAILWISEを有料プロバイダーに接続したい場合はAIサブスクリプションが必要ですが、",

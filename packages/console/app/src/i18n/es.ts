@@ -486,9 +486,9 @@ export const dict = {
     "Cuando haces clic en Inscribirse, tu suscripción comienza inmediatamente y se cargará a tu tarjeta.",
 
   "download.title": "RAILWISE | Descargar",
-  "download.meta.description": "Descarga RAILWISE Desktop para macOS y Windows",
+  "download.meta.description": "Descarga RAILWISE Desktop para macOS",
   "download.hero.title": "Descargar RAILWISE",
-  "download.hero.subtitle": "Desktop Beta está disponible para macOS y Windows",
+  "download.hero.subtitle": "Desktop Beta está disponible para macOS",
   "download.hero.button": "Descargar para {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -499,7 +499,6 @@ export const dict = {
 
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
-  "download.platform.windowsX64": "Windows (x64)",
 
   "download.faq.a3.beforeLocal":
     "No necesariamente, pero probablemente. Necesitarás una suscripción de IA si quieres conectar RAILWISE a un proveedor de pago, aunque puedes trabajar con",

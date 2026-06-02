@@ -394,11 +394,14 @@ check(
     pkg.scripts?.["build:dmg:local"]?.includes("bun run package:dmg:local") === true &&
     contains(localDmg, [
       "hdiutil create -ov -format UDZO",
+      "--require-dmg",
+      "--zip-output",
+      "ditto -c -k --sequesterRsrc --keepParent",
       "bun ./scripts/sign-macos-app.ts --app",
       "bun ./scripts/verify-macos-dmg.ts --dmg",
       "ln -s /Applications",
     ]),
-  "Local macOS DMG validation can package and verify a mounted installer without Finder AppleScript",
+  "Local macOS packaging prefers DMG and falls back to a signed app zip when hdiutil is sandboxed",
 )
 check(
   "local macOS ad-hoc signing script",

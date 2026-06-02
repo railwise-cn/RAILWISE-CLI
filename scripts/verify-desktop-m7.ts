@@ -118,6 +118,8 @@ check(
     'data-testid="home-project-directory"',
     'data-testid="home-task-input"',
     'data-testid="home-start-session"',
+    "multiple: false",
+    "DialogSelectDirectory multiple={false}",
     "collaborationTarget",
     "setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })",
   ]) &&
@@ -218,6 +220,7 @@ check(
     'navigate("/harness")',
     'navigate("/marketplace")',
   ]) &&
+    !home.includes("DialogSelectDirectory multiple={true}") &&
     ["项目驾驶舱", "告警 Feed", "多智能体协作中枢", "智能体矩阵", "dashboard-map"].every(
       (item) => !home.includes(item),
     ),

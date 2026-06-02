@@ -13,6 +13,7 @@
 | Rust 检查       | ✅   | `cd packages/desktop/src-tauri && cargo check` 通过，仅保留既有 dead code warning                           |
 | app typecheck   | ✅   | `cd packages/app && bun run typecheck` 通过                                                                 |
 | ui typecheck    | ✅   | `cd packages/ui && bun run typecheck` 通过                                                                  |
+| macOS 启动烟测  | ✅   | `cd packages/desktop && bun run smoke:macos -- --ready-timeout 90` 会等待 app 进程和 sidecar 健康检查就绪；沙箱环境使用 `--skip-launch` 只验 bundle |
 | SSE 耐久脚本    | ✅   | `cd packages/desktop && bun run test:sse -- --minutes 30` 可执行 30 分钟长连验收；本机已用 `--seconds` 烟测 |
 | M7 静态验收脚本 | ✅   | `bun run script/verify-desktop-m7.ts` 检查 E2E 清单、视觉回归、TTFUI、遥测隐私和文档交付                    |
 | 总体验收脚本    | ✅   | `bun run desktop:verify` 执行静态快检，`--live` 串联 SSE 烟测和 E2E，`--full` 执行 30 分钟长连              |
@@ -29,5 +30,6 @@
 - 崩溃上报通过 `RAILWISE_SENTRY_DSN` / Glitchtip DSN 启用；默认空值不上报。
 - 桌面端不再暴露旧项目驾驶舱，默认进入 `/home`；旧 `/dashboard` 路由重定向到极简工作台。
 - `packages/desktop/scripts/sse-soak.ts` 将 `/event` 长连验收固化为命令，默认 30 分钟，支持 `--seconds`、`--minutes`、`--url` 和 `--heartbeat-timeout-ms`。
+- `packages/desktop/scripts/smoke-macos-app.ts` 将 macOS app 启动验收固化为命令：先验证 bundle、plist、架构和 codesign，再启动 app，并在普通 macOS 终端等待日志中的 `CLI health check OK`。
 - `scripts/verify-desktop-m7.ts` 将 M7 静态验收固化为命令，覆盖 E2E 清单、市场/高级管理拆分、视觉回归、TTFUI、遥测隐私和文档交付。
 - `scripts/verify-desktop-acceptance.ts` 提供一条命令的 M7 回归验收，默认快检，`--full` 执行 30 分钟 SSE 长连。

@@ -93,6 +93,7 @@ const general = await read("packages/app/src/components/settings-general.tsx")
 const telemetry = await read("packages/desktop/src/lib/telemetry/index.ts")
 const store = await read("packages/desktop/src/lib/telemetry/store.ts")
 const privacy = await read("packages/desktop/src/lib/telemetry/privacy.ts")
+const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
 const desktopLanguageDocs = [
   await read("docs/dev/01-architecture.md"),
@@ -247,6 +248,12 @@ check(
     "__RW_PERF__",
   ]),
   "TTFUI asserts shell, sidecar, perf marker, and <15s usability budget",
+)
+check(
+  "macOS launch smoke readiness",
+  has(macSmoke, ["CLI health check OK", "--ready-timeout", "railwise-desktop_", "--skip-ready"]) &&
+    has(docs, ["macOS 启动烟测", "bun run smoke:macos -- --ready-timeout 90", "CLI health check OK"]),
+  "macOS app smoke covers bundle verification, process launch, and sidecar readiness in normal Terminal",
 )
 check(
   "Playwright artifacts",

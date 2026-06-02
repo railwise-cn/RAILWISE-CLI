@@ -346,8 +346,10 @@ check(
 )
 check(
   "sidecar build can skip dependency reinstall",
-  contains(predev, ["RAILWISE_SKIP_INSTALL", "--skip-install", "bun run build --single --skip-install"]),
-  "local desktop verification can refresh the sidecar in restricted environments",
+  contains(predev, ["RAILWISE_SKIP_INSTALL", "--skip-install", "bun run build --single --skip-install"]) &&
+    pkg.scripts?.predev?.includes("--skip-install") === true &&
+    pkg.scripts?.["build:macos:local"]?.startsWith("bun run predev &&") === true,
+  "local desktop verification and dev startup can refresh the sidecar in restricted environments",
 )
 check(
   "sidecar build honors explicit desktop target",

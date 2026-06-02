@@ -39,6 +39,7 @@
     "externalBin": ["sidecars/railwise-cli"],
     "macOS": {
       "entitlements": "./entitlements.plist",
+      "infoPlist": "./Info.plist",
       "dmg": {
         "background": "assets/dmg-background.png",
         "windowSize": {

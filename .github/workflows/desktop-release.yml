@@ -150,7 +150,7 @@ jobs:
       - name: Stage bundle artifacts
         shell: bash
         working-directory: packages/desktop
-        run: bun run stage:macos:bundles -- --target ${{ matrix.target }}
+        run: bun run stage:macos:bundles -- --target ${{ matrix.target }} --require-updater
 
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4
@@ -180,13 +180,19 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="desktop/v${VERSION}"
           fi
-          mapfile -t files < <(find dist/desktop -type f -name "*.dmg" | sort -u)
-          if [ "${#files[@]}" -ne 2 ]; then
-            printf "Expected exactly 2 public macOS installers, found %s:\n" "${#files[@]}"
-            printf "%s\n" "${files[@]}"
+          mapfile -t dmgs < <(find dist/desktop -type f -name "*.dmg" | sort -u)
+          mapfile -t updates < <(find dist/desktop -type f \( -name "*.app.tar.gz" -o -name "*.app.tar.gz.sig" \) | sort -u)
+          if [ "${#dmgs[@]}" -ne 2 ]; then
+            printf "Expected exactly 2 public macOS installers, found %s:\n" "${#dmgs[@]}"
+            printf "%s\n" "${dmgs[@]}"
             exit 1
           fi
-          sha256sum "${files[@]}" > SHA256SUMS.txt
+          if [ "${#updates[@]}" -ne 4 ]; then
+            printf "Expected exactly 4 macOS updater artifacts, found %s:\n" "${#updates[@]}"
+            printf "%s\n" "${updates[@]}"
+            exit 1
+          fi
+          sha256sum "${dmgs[@]}" "${updates[@]}" > SHA256SUMS.txt
           if draft=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq ".isDraft" 2>/dev/null); then
             if [ "$draft" = "true" ]; then
               gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" -y
@@ -201,5 +207,6 @@ jobs:
             --notes "查看 CHANGELOG.md 了解更新内容" \
             --draft \
             --target "$GITHUB_SHA" \
-            "${files[@]}" \
+            "${dmgs[@]}" \
+            "${updates[@]}" \
             SHA256SUMS.txt

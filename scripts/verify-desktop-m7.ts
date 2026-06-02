@@ -83,6 +83,7 @@ const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
 const agentsPage = await read("packages/app/src/pages/agents/index.tsx")
 const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
+const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
@@ -172,6 +173,8 @@ check(
     !desktopLanguageDocs.includes("工具/Skills") &&
     !e2eHelper.includes("Skills 加载") &&
     !agentCollaborationTest.includes("Agent Studio") &&
+    !sessionCollaboration.includes("Skill「") &&
+    sessionCollaboration.includes("请使用专业流程") &&
     agentsPage.includes("RAILWISE 高级智能体管理") &&
     !agentsPage.includes("RAILWISE 能力市场") &&
     !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),

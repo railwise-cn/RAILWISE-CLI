@@ -106,11 +106,7 @@ jobs:
         shell: bash
         working-directory: packages/desktop
         run: |
-          bun -e '
-          const config = await Bun.file("src-tauri/tauri.prod.conf.json").json()
-          if (!Bun.env.TAURI_SIGNING_PRIVATE_KEY) config.bundle.createUpdaterArtifacts = false
-          await Bun.write("src-tauri/tauri.ci.conf.json", JSON.stringify(config, null, 2) + "\n")
-          '
+          bun run prepare:tauri
           echo "Desktop build mode: ${{ steps.signing.outputs.mode }}"
           echo "Updater artifacts: ${{ steps.signing.outputs.updater }}"
 

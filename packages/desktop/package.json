@@ -8,6 +8,8 @@
   "scripts": {
     "typecheck": "tsgo -b",
     "predev": "bun ./scripts/predev.ts",
+    "prepare:tauri": "bun ./scripts/prepare-tauri-config.ts",
+    "build:macos:local": "bun run predev -- --skip-install && bun run prepare:tauri && bun run tauri -- build --bundles app --config src-tauri/tauri.ci.conf.json",
     "sign:macos": "bun ./scripts/sign-macos-app.ts",
     "verify:macos": "bun ./scripts/verify-macos-bundle.ts",
     "verify:dmg": "bun ./scripts/verify-macos-dmg.ts",

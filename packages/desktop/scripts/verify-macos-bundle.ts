@@ -25,11 +25,27 @@ const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_T
 if (!target && !appArg) throw new Error("Missing --app, --target or RUST_TARGET")
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS bundle verification is not available for ${target}`)
 
+const exists = async (file: string) => Boolean(await stat(file).catch(() => undefined))
+const first = async (items: string[]) => {
+  for (const item of items) {
+    if (await exists(item)) return item
+  }
+}
 const config = (await Bun.file("src-tauri/tauri.prod.conf.json").json()) as Config
-const dir = target ? path.join("src-tauri", "target", target, "release", "bundle", "macos") : ""
-const apps = target ? (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app")) : []
-const fallback = target ? path.join(dir, `${config.productName ?? "睿威智测 RAILWISE"}.app`) : ""
-const app = appArg ?? (apps.length === 1 ? path.join(dir, apps[0]!) : fallback)
+const name = config.productName ?? "睿威智测 RAILWISE"
+const dirs = target
+  ? [
+      path.join("src-tauri", "target", target, "release", "bundle", "macos"),
+      path.join("src-tauri", "target", "release", "bundle", "macos"),
+    ]
+  : []
+const apps = (
+  await Promise.all(
+    dirs.map(async (dir) => (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app")).map((item) => path.join(dir, item))),
+  )
+).flat()
+const fallback = dirs.map((dir) => path.join(dir, `${name}.app`))
+const app = appArg ?? (apps.length === 1 ? apps[0]! : (await first(fallback)) ?? fallback[0] ?? "")
 const contents = path.join(app, "Contents")
 const macos = path.join(contents, "MacOS")
 const plist = path.join(contents, "Info.plist")
@@ -39,7 +55,6 @@ const sidecar = path.join(macos, "railwise-cli")
 const arch = target?.startsWith("aarch64-") ? "arm64" : target?.startsWith("x86_64-") ? "x86_64" : undefined
 const mac = (text: string) => (arch ? text.includes(`executable ${arch}`) : /Mach-O 64-bit executable (arm64|x86_64)/.test(text))
 
-const exists = async (file: string) => Boolean(await stat(file).catch(() => undefined))
 const field = async (name: string) => (await $`/usr/libexec/PlistBuddy -c ${`Print :${name}`} ${plist}`.text()).trim()
 const filetype = async (file: string) => (await $`file ${file}`.text()).trim()
 
@@ -62,8 +77,12 @@ if (await exists(sidecar)) {
   check("sidecar architecture", mac(await filetype(sidecar)), arch ?? "arm64 or x86_64")
 }
 
-await $`codesign --verify --deep --strict --verbose=4 ${app}`
-check("codesign strict verification", true, "valid on disk and satisfies Designated Requirement")
+try {
+  await $`codesign --verify --deep --strict --verbose=4 ${app}`
+  check("codesign strict verification", true, "valid on disk and satisfies Designated Requirement")
+} catch (err) {
+  check("codesign strict verification", false, err instanceof Error ? err.message : String(err))
+}
 
 for (const item of checks) console.log(`${item.passed ? "[ok]" : "[fail]"} ${item.name}: ${item.detail}`)
 

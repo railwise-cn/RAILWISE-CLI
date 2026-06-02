@@ -18,10 +18,19 @@ const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_T
 if (!target && !dmgArg) throw new Error("Missing --dmg, --target or RUST_TARGET")
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS DMG verification is not available for ${target}`)
 
-const dir = target ? path.join("src-tauri", "target", target, "release", "bundle", "dmg") : ""
-const dmgs = target ? (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg")) : []
-const dmg = dmgArg ?? (dmgs.length === 1 ? path.join(dir, dmgs[0]!) : undefined)
-if (!dmg) throw new Error(`Expected exactly one DMG in ${dir}; found ${dmgs.length}`)
+const dirs = target
+  ? [
+      path.join("src-tauri", "target", target, "release", "bundle", "dmg"),
+      path.join("src-tauri", "target", "release", "bundle", "dmg"),
+    ]
+  : []
+const dmgs = (
+  await Promise.all(
+    dirs.map(async (dir) => (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg")).map((item) => path.join(dir, item))),
+  )
+).flat()
+const dmg = dmgArg ?? (dmgs.length === 1 ? dmgs[0]! : undefined)
+if (!dmg) throw new Error(`Expected exactly one DMG in ${dirs.join(", ")}; found ${dmgs.length}`)
 const image = path.resolve(dmg)
 
 const mounted = async () => {

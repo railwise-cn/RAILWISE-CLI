@@ -69,6 +69,9 @@ const WorkspaceDiffRoute = () => (
 const HomeRedirect = () => <Navigate href="/home" />
 
 function ensureStandaloneLanding() {
+  const standalone = ["/home", "/harness", "/marketplace", "/agents", "/workspace"]
+  const hasPathRoute = standalone.some((path) => location.pathname === path || location.pathname.startsWith(path + "/"))
+  if (hasPathRoute || /^\/[^/]+\/session/.test(location.pathname)) return
   if (location.hash.startsWith("#/home")) return
   if (location.hash.startsWith("#/harness")) return
   if (location.hash.startsWith("#/marketplace")) return

@@ -80,6 +80,8 @@ const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
 const app = await read("packages/app/src/app.tsx")
 const home = await read("packages/app/src/pages/home.tsx")
 const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
+const agentsPage = await read("packages/app/src/pages/agents/index.tsx")
+const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
@@ -169,6 +171,9 @@ check(
     !desktopLanguageDocs.includes("Harness Profile") &&
     !desktopLanguageDocs.includes("工具/Skills") &&
     !e2eHelper.includes("Skills 加载") &&
+    !agentCollaborationTest.includes("Agent Studio") &&
+    agentsPage.includes("RAILWISE 高级智能体管理") &&
+    !agentsPage.includes("RAILWISE 能力市场") &&
     !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
   "Desktop docs and E2E fixtures use capability market, professional workflow, and execution-layer language",
 )

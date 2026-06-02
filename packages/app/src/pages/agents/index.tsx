@@ -389,9 +389,9 @@ export default function AgentsPage() {
     <main class="agent-studio" data-testid="agents-page">
       <section class="agent-hero">
         <div class="agent-hero__copy">
-          <span class="agent-kicker">RAILWISE 能力市场</span>
-          <h1>安装和管理专业能力</h1>
-          <p>像 Codex 一样，把智能体、工具、专业流程、MCP 与模型放进一个清晰的市场；工作从首页对话框开始，高级配置留在这里。</p>
+          <span class="agent-kicker">RAILWISE 高级智能体管理</span>
+          <h1>高级智能体管理</h1>
+          <p>管理智能体、模型路由、工具、专业流程与工作流；日常任务从首页对话框开始。</p>
           <div class="agent-hero__actions">
             <A href="/home" class="agent-button agent-button--ghost">
               打开工作台

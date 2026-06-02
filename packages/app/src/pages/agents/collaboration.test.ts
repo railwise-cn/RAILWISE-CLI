@@ -48,7 +48,7 @@ describe("model routing helpers", () => {
     ])
   })
 
-  test("summarizes primary and professional collaborators for Agent Studio", () => {
+  test("summarizes primary and professional collaborators for advanced agent management", () => {
     const summary = agentStudioSummary([
       { name: "chief_manager", mode: "primary" },
       { name: "solution_architect", mode: "all" },
@@ -93,7 +93,7 @@ describe("model routing helpers", () => {
     expect(modelSetupState({ connectedProviders: 1, visibleModels: 3 })).toBe("ready")
   })
 
-  test("prioritizes DeepSeek and OpenRouter for Agent Studio onboarding", () => {
+  test("prioritizes DeepSeek and OpenRouter for model onboarding", () => {
     expect(recommendedProviders.map((provider) => provider.id)).toEqual(["deepseek", "openrouter"])
   })
 

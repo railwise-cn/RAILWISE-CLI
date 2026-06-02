@@ -174,7 +174,7 @@ export default function AgentsPage() {
       title: "智能体库",
       status: agentStatus(),
       description: "主控智能体负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
-      target: "#agent-matrix",
+      target: "#agent-library",
       action: "查看智能体",
     },
     {
@@ -464,12 +464,12 @@ export default function AgentsPage() {
         <div class="agent-launch__project">
           <div class="agent-section__header">
             <div>
-              <h2>项目工作区</h2>
-              <p>以本地文件夹作为上下文，智能体直接在这个目录里工作。</p>
+              <h2>上下文文件夹</h2>
+              <p>选择本地目录作为会话上下文，日常任务仍从对话框开始。</p>
             </div>
           </div>
           <label class="agent-form__field">
-            <span>工作区文件夹</span>
+            <span>上下文目录</span>
             <div class="agent-launch__path">
               <input
                 data-testid="agent-project-directory"
@@ -608,7 +608,7 @@ export default function AgentsPage() {
 
           <div class="agent-model-routing__panel">
             <div class="agent-model-routing__bar">
-              <span>智能体模型矩阵</span>
+              <span>智能体模型分配</span>
               <small>{routeSummary().total} 个可见智能体</small>
             </div>
             <div class="agent-route-list">
@@ -656,10 +656,10 @@ export default function AgentsPage() {
         </section>
       </Show>
 
-      <section class="agent-toolbar" id="agent-matrix">
+      <section class="agent-toolbar" id="agent-library">
         <div>
-          <h2>智能体矩阵</h2>
-          <p>选择专业智能体进入配置，也可以从工作流直接生成协作会话。</p>
+          <h2>智能体库</h2>
+          <p>查看可用智能体并进入配置；真正协作从首页或上方对话框发起。</p>
         </div>
         <div class="agent-toolbar__controls">
           <input

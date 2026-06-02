@@ -78,6 +78,7 @@ const devConfig = (await Bun.file(file(devConfigPath)).json()) as Config
 const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
 const prepare = await read("packages/desktop/scripts/prepare-tauri-config.ts")
+const localDmg = await read("packages/desktop/scripts/package-local-dmg.ts")
 const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
@@ -276,6 +277,18 @@ check(
   "Local macOS app builds can reuse the CI config path and disable updater artifacts when signing keys are unavailable",
 )
 check(
+  "local macOS DMG packaging script",
+  pkg.scripts?.["package:dmg:local"] === "bun ./scripts/package-local-dmg.ts" &&
+    pkg.scripts?.["build:dmg:local"]?.includes("bun run package:dmg:local") === true &&
+    contains(localDmg, [
+      "hdiutil create -ov -format UDZO",
+      "bun ./scripts/sign-macos-app.ts --app",
+      "bun ./scripts/verify-macos-dmg.ts --dmg",
+      "ln -s /Applications",
+    ]),
+  "Local macOS DMG validation can package and verify a mounted installer without Finder AppleScript",
+)
+check(
   "local macOS ad-hoc signing script",
   pkg.scripts?.["sign:macos"] === "bun ./scripts/sign-macos-app.ts" &&
     contains(macSign, [
@@ -306,6 +319,8 @@ check(
   "macOS DMG verification script",
   pkg.scripts?.["verify:dmg"] === "bun ./scripts/verify-macos-dmg.ts" &&
     contains(dmgVerify, [
+      'const dmgArg = arg("--dmg")',
+      "if (!target && !dmgArg)",
       "hdiutil attach",
       "-mountpoint",
       "verify-macos-bundle.ts",

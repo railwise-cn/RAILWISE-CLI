@@ -16,7 +16,7 @@ test("高级智能体管理不再使用旧工作台语言", async ({ launchApp }
 
   await expect(page.getByTestId("agents-page")).toBeVisible()
   await expect(page.getByRole("heading", { name: "上下文文件夹" })).toBeVisible()
-  await expect(page.getByRole("heading", { name: "智能体库" })).toBeVisible()
+  await expect(page.locator("#agent-library").getByRole("heading", { name: "智能体库" })).toBeVisible()
   await expect(page.getByText("多智能体协作中枢")).toHaveCount(0)
   await expect(page.getByText("项目工作区")).toHaveCount(0)
   await expect(page.getByText("智能体矩阵")).toHaveCount(0)

@@ -29,7 +29,7 @@ test("高级智能体管理作为独立路由打开", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
   await expect(page.getByRole("heading", { name: "上下文文件夹" })).toBeVisible()
-  await expect(page.getByRole("heading", { name: "智能体库" })).toBeVisible()
+  await expect(page.locator("#agent-library").getByRole("heading", { name: "智能体库" })).toBeVisible()
   await expect(page.getByText("项目工作区")).toHaveCount(0)
   await expect(page.getByText("智能体矩阵")).toHaveCount(0)
   await expect(page.getByText("多智能体协作中枢")).toHaveCount(0)
@@ -43,5 +43,5 @@ test("能力市场可以进入执行层状态", async ({ launchApp }) => {
 
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page).toHaveURL(/\/harness$/)
-  await expect(page.getByRole("heading", { name: "执行层状态" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "运行时控制台" })).toBeVisible()
 })

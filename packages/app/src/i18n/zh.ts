@@ -446,7 +446,7 @@ export const dict = {
   "error.page.action.checkUpdates": "检查更新",
   "error.page.action.updateTo": "更新到 {{version}}",
   "error.page.report.prefix": "请将此错误报告给 RAILWISE 团队",
-  "error.page.report.link": "支持渠道",
+  "error.page.report.discord": "在 Discord 上",
   "error.page.version": "版本：{{version}}",
   "error.dev.rootNotFound": "未找到根元素。你是不是忘了把它添加到 index.html？或者 id 属性拼写错了？",
   "error.globalSync.connectFailed": "无法连接到服务器。是否有服务器正在 `{{url}}` 运行？",
@@ -579,17 +579,17 @@ export const dict = {
   "sidebar.project.viewAllSessions": "查看全部会话",
   "sidebar.project.clearNotifications": "清除通知",
 
-  "app.name": "RAILWISE",
+  "app.name.desktop": "RAILWISE Desktop",
 
-  "settings.section.application": "应用",
+  "settings.section.desktop": "桌面",
   "settings.section.server": "服务器",
 
   "settings.tab.general": "通用",
   "settings.tab.shortcuts": "快捷键",
 
-  "settings.platform.section.wsl": "WSL",
-  "settings.platform.wsl.title": "WSL 集成",
-  "settings.platform.wsl.description": "在 Windows 的 WSL 环境中运行 RAILWISE 服务器。",
+  "settings.desktop.section.wsl": "WSL",
+  "settings.desktop.wsl.title": "WSL 集成",
+  "settings.desktop.wsl.description": "在 Windows 的 WSL 环境中运行 RAILWISE 服务器。",
 
   "settings.general.section.appearance": "外观",
   "settings.general.section.notifications": "系统通知",
@@ -622,8 +622,7 @@ export const dict = {
   "settings.privacy.telemetry.title": "使用统计",
   "settings.privacy.telemetry.description": "共享匿名 UI 计数与崩溃报告，不保存 Prompt、项目名或文件路径。",
   "telemetry.consent.title": "帮助改进 RAILWISE",
-  "telemetry.consent.description":
-    "共享匿名 UI 计数与崩溃报告。Prompt、项目名、文件名和文件路径不会进入埋点，之后也可在设置中修改。",
+  "telemetry.consent.description": "共享匿名 UI 计数与崩溃报告。Prompt、项目名、文件名和文件路径不会进入埋点，之后也可在设置中修改。",
   "telemetry.consent.accept": "共享使用统计",
   "telemetry.consent.decline": "暂不启用",
 

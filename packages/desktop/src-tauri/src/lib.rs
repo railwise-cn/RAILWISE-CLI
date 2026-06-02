@@ -2,10 +2,6 @@ mod cad;
 mod cli;
 mod constants;
 mod crash;
-#[cfg(target_os = "linux")]
-pub mod linux_display;
-#[cfg(target_os = "linux")]
-pub mod linux_windowing;
 mod logging;
 mod markdown;
 mod office;
@@ -21,12 +17,13 @@ use futures::{
 use std::{
     env,
     net::TcpListener,
+    path::PathBuf,
     process::Command,
     sync::{Arc, Mutex},
     time::Duration,
 };
 use tauri::{AppHandle, Listener, Manager, RunEvent, State, ipc::Channel};
-#[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
+#[cfg(all(debug_assertions, windows))]
 use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_specta::Event;
 use tokio::{
@@ -34,7 +31,7 @@ use tokio::{
     time::{sleep, timeout},
 };
 
-use crate::cli::{railwise_db_path, sqlite_migration::SqliteMigrationProgress, sync_cli};
+use crate::cli::{sqlite_migration::SqliteMigrationProgress, sync_cli};
 use crate::constants::*;
 use crate::server::get_saved_server_url;
 use crate::windows::{LoadingWindow, MainWindow};
@@ -113,10 +110,13 @@ fn get_logs() -> String {
     logging::tail()
 }
 
-fn native_smoke_marker(marker: &str) {
-    if env::var_os("RAILWISE_NATIVE_SMOKE").is_some() {
-        eprintln!("railwise-native-smoke:{marker}");
-    }
+#[tauri::command]
+#[specta::specta]
+fn get_log_dir(app: AppHandle) -> Result<String, String> {
+    app.path()
+        .app_log_dir()
+        .map(|dir| dir.to_string_lossy().to_string())
+        .map_err(|err| format!("Failed to resolve app log dir: {err}"))
 }
 
 #[tauri::command]
@@ -162,9 +162,9 @@ fn check_app_exists(app_name: &str) -> bool {
         check_macos_app(app_name)
     }
 
-    #[cfg(target_os = "linux")]
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
     {
-        check_linux_app(app_name)
+        false
     }
 }
 
@@ -322,8 +322,7 @@ fn resolve_app_path(app_name: &str) -> Option<String> {
 
     #[cfg(not(target_os = "windows"))]
     {
-        // On macOS/Linux, just return the app_name as-is since
-        // the opener plugin handles them correctly
+        // On macOS, just return the app_name as-is since the opener plugin handles it.
         Some(app_name.to_string())
     }
 }
@@ -352,48 +351,6 @@ fn check_macos_app(app_name: &str) -> bool {
         .output()
         .map(|output| output.status.success())
         .unwrap_or(false)
-}
-
-#[derive(serde::Serialize, serde::Deserialize, specta::Type)]
-#[serde(rename_all = "camelCase")]
-pub enum LinuxDisplayBackend {
-    Wayland,
-    Auto,
-}
-
-#[tauri::command]
-#[specta::specta]
-fn get_display_backend() -> Option<LinuxDisplayBackend> {
-    #[cfg(target_os = "linux")]
-    {
-        let prefer = linux_display::read_wayland().unwrap_or(false);
-        return Some(if prefer {
-            LinuxDisplayBackend::Wayland
-        } else {
-            LinuxDisplayBackend::Auto
-        });
-    }
-
-    #[cfg(not(target_os = "linux"))]
-    None
-}
-
-#[tauri::command]
-#[specta::specta]
-fn set_display_backend(_app: AppHandle, _backend: LinuxDisplayBackend) -> Result<(), String> {
-    #[cfg(target_os = "linux")]
-    {
-        let prefer = matches!(_backend, LinuxDisplayBackend::Wayland);
-        return linux_display::write_wayland(&_app, prefer);
-    }
-
-    #[cfg(not(target_os = "linux"))]
-    Ok(())
-}
-
-#[cfg(target_os = "linux")]
-fn check_linux_app(app_name: &str) -> bool {
-    return true;
 }
 
 #[tauri::command]
@@ -545,14 +502,13 @@ fn make_specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         // Then register them (separated by a comma)
         .commands(tauri_specta::collect_commands![
             kill_sidecar,
+            get_log_dir,
             cli::install_cli,
             await_initialization,
             server::get_default_server_url,
             server::set_default_server_url,
             server::get_wsl_config,
             server::set_wsl_config,
-            get_display_backend,
-            set_display_backend,
             markdown::parse_markdown_command,
             cad::parse_dxf,
             cad::convert_dwg_to_dxf,
@@ -594,7 +550,6 @@ struct LoadingWindowComplete;
 
 async fn initialize(app: AppHandle) {
     tracing::info!("Initializing app");
-    native_smoke_marker("app.initializing");
 
     let (init_tx, init_rx) = watch::channel(InitStep::ServerWaiting);
 
@@ -608,7 +563,6 @@ async fn initialize(app: AppHandle) {
     let loading_window_complete = event_once_fut::<LoadingWindowComplete>(&app);
 
     tracing::info!("Main and loading windows created");
-    native_smoke_marker("windows.bootstrap.ready");
 
     // SQLite migration handling:
     // We only do this if the sqlite db doesn't exist, and we're expecting the sidecar to create it
@@ -616,10 +570,10 @@ async fn initialize(app: AppHandle) {
     // come from any invocation of the sidecar CLI. The progress is captured by a stdout stream interceptor.
     // Then in the loading task, we wait for sqlite migration to complete before
     // starting our health check against the server, otherwise long migrations could result in a timeout.
-    let needs_sqlite_migration = !sqlite_file_exists(&app);
+    let needs_sqlite_migration = !sqlite_file_exists();
     let sqlite_done = needs_sqlite_migration.then(|| {
         tracing::info!(
-            path = %railwise_db_path(&app).display(),
+            path = %railwise_db_path().expect("failed to get db path").display(),
             "Sqlite file not found, waiting for it to be generated"
         );
 
@@ -684,7 +638,6 @@ async fn initialize(app: AppHandle) {
                             }
 
                             tracing::info!("CLI health check OK");
-                            native_smoke_marker("sidecar.health_ok");
 
                             app.state::<ServerState>().set_child(Some(child));
 
@@ -733,7 +686,6 @@ async fn initialize(app: AppHandle) {
     } else {
         tracing::debug!("Showing main window without loading window");
         MainWindow::create(&app).expect("Failed to create main window");
-        native_smoke_marker("main_window.visible");
 
         None
     };
@@ -741,7 +693,6 @@ async fn initialize(app: AppHandle) {
     let _ = loading_task.await;
 
     tracing::info!("Loading done, completing initialisation");
-    native_smoke_marker("app.initialized");
     let _ = init_tx.send(InitStep::Done);
 
     if loading_window.is_some() {
@@ -751,7 +702,6 @@ async fn initialize(app: AppHandle) {
     }
 
     MainWindow::create(&app).expect("Failed to create main window");
-    native_smoke_marker("main_window.visible");
 
     if let Some(loading_window) = loading_window {
         let _ = loading_window.close();
@@ -759,7 +709,7 @@ async fn initialize(app: AppHandle) {
 }
 
 fn setup_app(app: &tauri::AppHandle, init_rx: watch::Receiver<InitStep>) {
-    #[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
+    #[cfg(all(debug_assertions, windows))]
     app.deep_link().register_all().ok();
 
     app.manage(InitState { current: init_rx });
@@ -815,7 +765,6 @@ async fn setup_server_connection(app: AppHandle) -> ServerConnection {
     let password = uuid::Uuid::new_v4().to_string();
 
     tracing::info!(port = local_port, "Spawning new local server");
-    native_smoke_marker("sidecar.spawn_requested");
     let (child, health_check) =
         server::spawn_local_server(app, hostname.to_string(), local_port, password.clone());
 
@@ -861,8 +810,26 @@ fn port_is_available(port: u32) -> bool {
     TcpListener::bind(format!("127.0.0.1:{}", port)).is_ok()
 }
 
-fn sqlite_file_exists(app: &AppHandle) -> bool {
-    railwise_db_path(app).exists()
+fn sqlite_file_exists() -> bool {
+    let Ok(path) = railwise_db_path() else {
+        return true;
+    };
+
+    path.exists()
+}
+
+fn railwise_db_path() -> Result<PathBuf, &'static str> {
+    let xdg_data_home = env::var_os("XDG_DATA_HOME").filter(|v| !v.is_empty());
+
+    let data_home = match xdg_data_home {
+        Some(v) => PathBuf::from(v),
+        None => {
+            let home = dirs::home_dir().ok_or("cannot determine home directory")?;
+            home.join(".local").join("share")
+        }
+    };
+
+    Ok(data_home.join("railwise").join("railwise.db"))
 }
 
 // Creates a `once` listener for the specified event and returns a future that resolves

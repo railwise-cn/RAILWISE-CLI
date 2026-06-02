@@ -443,7 +443,7 @@ export const dict = {
   "error.page.action.checkUpdates": "Buscar actualizaciones",
   "error.page.action.updateTo": "Actualizar a {{version}}",
   "error.page.report.prefix": "Por favor reporta este error al equipo de RAILWISE",
-  "error.page.report.link": "canal de soporte",
+  "error.page.report.discord": "en Discord",
   "error.page.version": "Versión: {{version}}",
 
   "error.dev.rootNotFound":
@@ -588,15 +588,15 @@ export const dict = {
   "sidebar.project.viewAllSessions": "Ver todas las sesiones",
   "sidebar.project.clearNotifications": "Borrar notificaciones",
 
-  "app.name": "RAILWISE",
+  "app.name.desktop": "RAILWISE Desktop",
 
-  "settings.section.application": "Aplicación",
+  "settings.section.desktop": "Escritorio",
   "settings.section.server": "Servidor",
   "settings.tab.general": "General",
   "settings.tab.shortcuts": "Atajos",
-  "settings.platform.section.wsl": "WSL",
-  "settings.platform.wsl.title": "Integración con WSL",
-  "settings.platform.wsl.description": "Ejecutar el servidor RAILWISE dentro de WSL en Windows.",
+  "settings.desktop.section.wsl": "WSL",
+  "settings.desktop.wsl.title": "Integración con WSL",
+  "settings.desktop.wsl.description": "Ejecutar el servidor RAILWISE dentro de WSL en Windows.",
 
   "settings.general.section.appearance": "Apariencia",
   "settings.general.section.notifications": "Notificaciones del sistema",

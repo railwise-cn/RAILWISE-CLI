@@ -13,6 +13,7 @@ import {
 import { Splash } from "@railwise/ui/logo"
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { Navigate, Route } from "@solidjs/router"
+import { homeDir } from "@tauri-apps/api/path"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { readImage } from "@tauri-apps/plugin-clipboard-manager"
 import { getCurrent, onOpenUrl } from "@tauri-apps/plugin-deep-link"
@@ -28,6 +29,7 @@ import {
   type Accessor,
   createResource,
   createSignal,
+  For,
   lazy,
   type JSX,
   onCleanup,
@@ -49,6 +51,7 @@ import { commands, type InitStep } from "./bindings"
 import { createMenu } from "./menu"
 import { StartupTimer, DEFAULT_BUDGETS } from "./performance"
 import { installTelemetry, track } from "./lib/telemetry"
+import { startupDiagnosis } from "./startup-diagnosis"
 
 const Workspace = lazy(() => import("./pages/workspace"))
 const WorkspaceDiff = lazy(() => import("./pages/workspace/diff"))
@@ -152,7 +155,7 @@ const listenForDeepLinks = async () => {
 const createPlatform = (): Platform => {
   const os = (() => {
     const type = ostype()
-    if (type === "macos" || type === "windows" || type === "linux") return type
+    if (type === "macos" || type === "windows") return type
     return undefined
   })()
 
@@ -457,15 +460,6 @@ const createPlatform = (): Platform => {
       await commands.setDefaultServerUrl(url)
     },
 
-    getDisplayBackend: async () => {
-      const result = await commands.getDisplayBackend().catch(() => null)
-      return result
-    },
-
-    setDisplayBackend: async (backend) => {
-      await commands.setDisplayBackend(backend)
-    },
-
     parseMarkdown: (markdown: string) => commands.parseMarkdownCommand(markdown),
 
     webviewZoom,
@@ -718,6 +712,54 @@ render(() => {
 
 type ServerReadyData = { url: string; password: string | null }
 
+function StartupFailure(props: { error: unknown }) {
+  const diagnosis = startupDiagnosis(props.error)
+  const raw = String(props.error ?? "Unknown error")
+  const canOpen = diagnosis.issue === "config" || diagnosis.issue === "server" || !!diagnosis.target
+
+  const action = diagnosis.action ?? (diagnosis.issue === "server" ? "打开日志目录" : "打开位置")
+
+  const openTarget = async () => {
+    const target = diagnosis.target ?? (await fallbackTarget())
+    if (!target) return
+    await openerOpenPath(target).catch(console.error)
+  }
+
+  const fallbackTarget = async () => {
+    if (diagnosis.issue === "config") return `${await homeDir()}/.config/railwise`
+    if (diagnosis.issue === "server") {
+      const dir = await commands.getLogDir()
+      return dir
+    }
+    return undefined
+  }
+
+  return (
+    <div class="h-screen w-screen flex flex-col items-center justify-center bg-background-base px-6">
+      <div data-tauri-decorum-tb class="flex flex-row absolute top-0 right-0 z-10 h-10" />
+      <div class="flex w-full max-w-xl flex-col items-center gap-4 text-center">
+        <Splash class="w-16 h-20 opacity-50" />
+        <div>
+          <p class="text-14-medium text-text-strong">{diagnosis.title}</p>
+          <p class="mt-2 text-12-regular text-text-weak">{diagnosis.summary}</p>
+        </div>
+        <div class="w-full rounded-lg border border-border-subtle bg-surface-panel p-4 text-left">
+          <p class="text-12-medium text-text-strong">建议处理</p>
+          <ol class="mt-2 list-decimal space-y-1 pl-4 text-12-regular text-text-weak">
+            <For each={diagnosis.steps}>{(step) => <li>{step}</li>}</For>
+          </ol>
+          <p class="mt-3 break-words whitespace-pre-wrap text-11-regular text-text-muted">{raw}</p>
+        </div>
+        <Show when={canOpen}>
+          <button class="rounded-md border border-border-subtle px-3 py-2 text-12-medium text-text-strong hover:bg-surface-hover" onClick={openTarget}>
+            {action}
+          </button>
+        </Show>
+      </div>
+    </div>
+  )
+}
+
 // Gate component that waits for the server to be ready
 function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.Element }) {
   const [serverData] = createResource(async () => {
@@ -737,18 +779,7 @@ function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.
   return (
     <Show
       when={serverData.state !== "errored"}
-      fallback={
-        <div class="h-screen w-screen flex flex-col items-center justify-center bg-background-base gap-4">
-          <Splash class="w-16 h-20 opacity-50" />
-          <div class="max-w-md px-4 text-center">
-            <p class="text-sm font-medium text-red-400">Failed to start server</p>
-            <p class="mt-2 text-xs text-zinc-400 break-words whitespace-pre-wrap">
-              {String(serverData.error ?? "Unknown error")}
-            </p>
-          </div>
-          <div data-tauri-decorum-tb class="flex flex-row absolute top-0 right-0 z-10 h-10" />
-        </div>
-      }
+      fallback={<StartupFailure error={serverData.error} />}
     >
       <Show
         when={serverData.state !== "pending" && serverData()}

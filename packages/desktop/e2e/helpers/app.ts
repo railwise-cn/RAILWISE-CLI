@@ -530,8 +530,8 @@ async function setup(page: Page, opts: LaunchOptions) {
         eol: "\n",
         exe_extension: "",
         family: "unix",
-        os_type: "linux",
-        platform: "linux",
+        os_type: "macos",
+        platform: "darwin",
         version: "e2e",
       }
       win.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => undefined }

@@ -439,7 +439,7 @@ export const dict = {
   "error.page.action.checkUpdates": "檢查更新",
   "error.page.action.updateTo": "更新到 {{version}}",
   "error.page.report.prefix": "請將此錯誤回報給 RAILWISE 團隊",
-  "error.page.report.link": "支援渠道",
+  "error.page.report.discord": "在 Discord 上",
   "error.page.version": "版本: {{version}}",
 
   "error.dev.rootNotFound": "找不到根元素。你是不是忘了把它新增到 index.html? 或者 id 屬性拼錯了?",
@@ -576,14 +576,14 @@ export const dict = {
   "sidebar.project.viewAllSessions": "查看全部工作階段",
   "sidebar.project.clearNotifications": "清除通知",
 
-  "app.name": "RAILWISE",
-  "settings.section.application": "應用",
+  "app.name.desktop": "RAILWISE Desktop",
+  "settings.section.desktop": "桌面",
   "settings.section.server": "伺服器",
   "settings.tab.general": "一般",
   "settings.tab.shortcuts": "快速鍵",
-  "settings.platform.section.wsl": "WSL",
-  "settings.platform.wsl.title": "WSL integration",
-  "settings.platform.wsl.description": "Run the RAILWISE server inside WSL on Windows.",
+  "settings.desktop.section.wsl": "WSL",
+  "settings.desktop.wsl.title": "WSL integration",
+  "settings.desktop.wsl.description": "Run the RAILWISE server inside WSL on Windows.",
 
   "settings.general.section.appearance": "外觀",
   "settings.general.section.notifications": "系統通知",

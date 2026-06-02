@@ -19,17 +19,6 @@ impl<R: Runtime> Plugin<R> for PinchZoomDisablePlugin {
         };
 
         let _ = webview_window.with_webview(|_webview| {
-            #[cfg(target_os = "linux")]
-            unsafe {
-                use gtk::GestureZoom;
-                use gtk::glib::ObjectExt;
-                use webkit2gtk::glib::gobject_ffi;
-
-                if let Some(data) = _webview.inner().data::<GestureZoom>("wk-view-zoom-gesture") {
-                    gobject_ffi::g_signal_handlers_destroy(data.as_ptr().cast());
-                }
-            }
-
             #[cfg(target_os = "macos")]
             {
                 // Note: Previously used private APIs to disable magnification gestures.

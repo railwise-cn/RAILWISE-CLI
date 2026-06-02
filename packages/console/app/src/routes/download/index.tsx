@@ -14,7 +14,7 @@ import { useI18n } from "~/context/i18n"
 import { useLanguage } from "~/context/language"
 import { LocaleLinks } from "~/component/locale-links"
 
-type OS = "macOS" | "Windows" | null
+type OS = "macOS" | null
 
 function detectOS(): OS {
   if (typeof navigator === "undefined") return null
@@ -22,7 +22,6 @@ function detectOS(): OS {
   const userAgent = navigator.userAgent.toLowerCase()
 
   if (platform.includes("mac") || userAgent.includes("mac")) return "macOS"
-  if (platform.includes("win") || userAgent.includes("win")) return "Windows"
   return null
 }
 
@@ -30,8 +29,6 @@ function getDownloadPlatform(os: OS): DownloadPlatform {
   switch (os) {
     case "macOS":
       return "darwin-aarch64-dmg"
-    case "Windows":
-      return "windows-x64-nsis"
     default:
       return "darwin-aarch64-dmg"
   }
@@ -189,29 +186,6 @@ export default function Download() {
                   <span>{i18n.t("download.platform.macosIntel")}</span>
                 </div>
                 <a href={language.route(getDownloadHref("darwin-x64-dmg"))} data-component="action-button">
-                  {i18n.t("download.action.download")}
-                </a>
-              </div>
-              <div data-component="download-row">
-                <div data-component="download-info">
-                  <span data-slot="icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clip-path="url(#clip0_2614_159729)">
-                        <path
-                          d="M2 2H11.481V11.4769H2V2ZM12.519 2H22V11.4769H12.519V2ZM2 12.519H11.481V22H2V12.519ZM12.519 12.519H22V22H12.519"
-                          fill="currentColor"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_2614_159729">
-                          <rect width="20" height="20" fill="white" transform="translate(2 2)" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </span>
-                  <span>{i18n.t("download.platform.windowsX64")}</span>
-                </div>
-                <a href={language.route(getDownloadHref("windows-x64-nsis"))} data-component="action-button">
                   {i18n.t("download.action.download")}
                 </a>
               </div>

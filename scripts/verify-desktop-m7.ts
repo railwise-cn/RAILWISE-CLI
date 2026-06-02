@@ -86,6 +86,7 @@ const sessionComposer = await read("packages/app/src/pages/session/composer/sess
 const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
+const acceptance = await read("scripts/verify-desktop-acceptance.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
 const settings = await read("packages/app/src/context/settings.tsx")
 const general = await read("packages/app/src/components/settings-general.tsx")
@@ -257,7 +258,15 @@ check(
       "Library/Caches/ms-playwright",
       "Google Chrome for Testing",
       "PLAYWRIGHT_CHROMIUM_CHANNEL",
-    ]),
+    ]) &&
+    config.includes("channel ? undefined") &&
+    has(acceptance, [
+      "const channel = Bun.env.PLAYWRIGHT_CHROMIUM_CHANNEL",
+      "channel\n    ? undefined",
+      "reachable ? \"1\" : undefined",
+      "PLAYWRIGHT_SKIP_WEBSERVER",
+    ]) &&
+    !acceptance.includes("reachable || live ?"),
   "HTML report, trace, screenshot, video artifacts, and the stable macOS Vite webServer command are configured",
 )
 check(

@@ -40,7 +40,7 @@ bun run test:e2e
 1. 启动和 sidecar 就绪时间
 2. CSV 导入和预览
 3. qa_inspector 首检报告
-4. Agent Studio 热更新
+4. 智能体与流程热更新
 5. 工作流流水线
 6. DXF 图层切换
 7. ppt_master 模板链路

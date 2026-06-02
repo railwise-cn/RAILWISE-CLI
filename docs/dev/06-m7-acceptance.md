@@ -21,9 +21,9 @@
 
 ## M7 交付
 
-- Playwright E2E 覆盖启动、CSV 导入、首检报告、能力市场、Agent Studio、工作流流水线、DXF、PPT、离线模式、更新流程、崩溃恢复、视觉回归、TTFUI 和设置入口。
-- `/marketplace` 保持为简洁能力市场；`/agents` 承载高级智能体管理、模型路由、工作流和工具/Skills 清单。
-- Agent Studio 工作流预设导入会创建真实会话，并写入 chief_manager 调度消息；卡片上的 7 天调用次数来自本地消息表。
+- Playwright E2E 覆盖启动、CSV 导入、首检报告、能力市场、高级智能体管理、工作流流水线、DXF、PPT、离线模式、更新流程、崩溃恢复、视觉回归、TTFUI 和设置入口。
+- `/marketplace` 保持为简洁能力市场；`/agents` 承载高级智能体管理、模型路由、工作流和工具/专业流程清单。
+- 高级智能体管理工作流预设导入会创建真实会话，并写入 chief_manager 调度消息；卡片上的 7 天调用次数来自本地消息表。
 - 埋点默认关闭，首次启动弹窗请求授权；关闭时清空本地事件队列。
 - 埋点本地队列落在 `sqlite:railwise.telemetry.db`，通过 Tauri SQL plugin 写入 `telemetry_events` 和 `telemetry_state`。
 - 崩溃上报通过 `RAILWISE_SENTRY_DSN` / Glitchtip DSN 启用；默认空值不上报。

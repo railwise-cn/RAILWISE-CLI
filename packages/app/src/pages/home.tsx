@@ -108,7 +108,7 @@ export default function Home() {
 
           <div class="flex items-center gap-2">
             <Button size="small" variant="ghost" onClick={() => navigate("/harness")}>
-              Harness
+              执行层
             </Button>
             <Button size="small" variant="ghost" onClick={() => navigate("/marketplace")}>
               能力市场
@@ -195,7 +195,7 @@ export default function Home() {
               onClick={() => navigate("/harness")}
             >
               <Icon name="circle-ban-sign" size="small" />
-              Harness
+              执行层
             </button>
             <div
               class="inline-flex max-w-[300px] items-center gap-2 rounded-full border border-border-subtle px-3 py-2 text-12-medium text-text-weak"

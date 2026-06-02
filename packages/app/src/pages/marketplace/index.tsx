@@ -93,11 +93,11 @@ export default function MarketplacePage() {
   const catalog = createMemo(() => [
     {
       id: "agents" as const,
-      label: "Agents",
+      label: "智能体",
       title: "智能体库",
       detail: `${summary().primary} 主控 / ${summary().collaborators} 专业智能体`,
       state: state(loading(), summary().total),
-      description: "管理主控、审校、平差、资料整理、报告生成等专业智能体。",
+      description: "选择主控、审校、平差、资料整理、报告生成等专业智能体。",
       preview: visibleAgents()
         .slice(0, 4)
         .map((agent) => ({ title: agent.displayName ?? agent.name, meta: agentRoleLabel(agent) })),
@@ -106,11 +106,11 @@ export default function MarketplacePage() {
     },
     {
       id: "tools" as const,
-      label: "Tools",
+      label: "工具",
       title: "工具链",
       detail: `${tools().length} 个工具`,
       state: state(loading(), tools().length),
-      description: "文件读取、规范检索、测绘生产、报告导出等工具由 Harness 调度。",
+      description: "文件读取、规范检索、测绘生产、报告导出等工具由执行层调度。",
       preview: tools()
         .slice(0, 4)
         .map((tool) => ({ title: tool.label, meta: groups[tool.group] })),
@@ -119,18 +119,18 @@ export default function MarketplacePage() {
     },
     {
       id: "skills" as const,
-      label: "Skills",
+      label: "流程",
       title: "专业流程",
-      detail: `${skills().length} 个 Skills`,
+      detail: `${skills().length} 个流程`,
       state: state(loading(), skills().length),
       description: "沉淀工程测绘作业方法、审查规则、交付流程和工具使用规范。",
       preview: professionalSkills(skills(), 4).map((skill) => ({ title: skill.name, meta: skill.description })),
       href: "/agents#agent-skills",
-      action: "查看 Skills",
+      action: "查看流程",
     },
     {
       id: "workflows" as const,
-      label: "Workflows",
+      label: "工作流",
       title: "工作流",
       detail: `${workflows().length} 个工作流`,
       state: state(loading(), workflows().length, "待配置"),
@@ -145,10 +145,10 @@ export default function MarketplacePage() {
       title: "MCP 连接器",
       detail: "按项目启用",
       state: { label: "待配置", tone: "setup" as Tone },
-      description: "连接知识库、专业系统和外部工具；权限和审计由 Harness 统一接管。",
+      description: "连接知识库、专业系统和外部工具；权限和审计由执行层统一接管。",
       preview: [
         { title: "知识库连接", meta: "按项目授权" },
-        { title: "专业系统", meta: "由 Harness 审计" },
+        { title: "专业系统", meta: "由执行层审计" },
         { title: "外部工具", meta: "权限确认后执行" },
       ],
       href: "/harness",
@@ -156,7 +156,7 @@ export default function MarketplacePage() {
     },
     {
       id: "providers" as const,
-      label: "Providers",
+      label: "模型",
       title: "模型 Provider",
       detail: setup() === "ready" ? `${visible().length} 个可见模型` : `默认建议 ${recommendedModel}`,
       state: providersState(),
@@ -170,8 +170,8 @@ export default function MarketplacePage() {
     },
     {
       id: "harness" as const,
-      label: "Harness",
-      title: "Harness Profile",
+      label: "执行层",
+      title: "执行层配置",
       detail: "工作区 / 权限 / 审计",
       state: { label: "已启用", tone: "enabled" as Tone },
       description: "管理本地执行边界、权限确认、工具事件、问题回答和失败恢复。",
@@ -181,7 +181,7 @@ export default function MarketplacePage() {
         { title: "工具审计", meta: "执行时间线" },
       ],
       href: "/harness",
-      action: "查看 Harness",
+      action: "查看执行层",
     },
   ])
   const selected = createMemo(() => catalog().find((item) => item.id === active()) ?? catalog()[0])
@@ -202,9 +202,9 @@ export default function MarketplacePage() {
     <main class="agent-studio marketplace-page" data-testid="marketplace-page">
       <section class="marketplace-shell">
         <div class="marketplace-shell__copy">
-          <span class="agent-kicker">RAILWISE Marketplace</span>
+          <span class="agent-kicker">RAILWISE 能力市场</span>
           <h1>能力市场</h1>
-          <p>安装、接入和管理智能体、工具、Skills、MCP、模型 Provider 与 Harness Profile。日常任务从工作台开始，这里只放能力配置。</p>
+          <p>安装和接入智能体、工具、专业流程、MCP 与模型。日常任务从工作台开始，这里只保留能力配置。</p>
         </div>
         <div class="marketplace-shell__actions">
           <A href="/home" class="agent-button agent-button--ghost">

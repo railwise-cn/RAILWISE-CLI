@@ -167,7 +167,12 @@ check(
       "marketplace-row-state-providers",
       "marketplace-preview-tools",
       "marketplace-preview-skills",
-    ]),
+      "执行层",
+      "流程",
+    ]) &&
+    !marketplace.includes("label: \"Agents\"") &&
+    !marketplace.includes("label: \"Tools\"") &&
+    !marketplace.includes("label: \"Skills\""),
   "marketplace asserts enabled inventory state for agents, tools, skills, and provider setup",
 )
 check(

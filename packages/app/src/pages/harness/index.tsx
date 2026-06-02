@@ -398,10 +398,10 @@ export default function HarnessPage() {
         <section class="rounded-lg border border-border-subtle bg-surface-panel p-5">
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <div class="text-12-medium uppercase text-text-weak">RAILWISE Harness</div>
+              <div class="text-12-medium text-text-weak">RAILWISE 执行层</div>
               <h1 class="mt-2 text-26-bold text-text-strong">执行层状态</h1>
               <p class="mt-2 max-w-2xl text-13-regular text-text-weak">
-                Harness 负责工作区边界、模型路由、工具权限和执行事件，让桌面端不是简单套壳，而是可控的本地 AI 工作台。
+                执行层负责工作区边界、模型路由、工具权限和执行事件，让桌面端不是简单套壳，而是可控的本地 AI 工作台。
               </p>
             </div>
             <div class="flex gap-2">
@@ -428,7 +428,7 @@ export default function HarnessPage() {
           </div>
           <div class="rounded-lg border border-border-subtle bg-surface-panel p-4">
             <div class="text-12-medium text-text-weak">能力集</div>
-            <div class="mt-2 text-18-medium text-text-strong">智能体 / 工具 / Skills</div>
+            <div class="mt-2 text-18-medium text-text-strong">智能体 / 工具 / 专业流程</div>
             <div class="mt-1 text-12-regular text-text-weak">由能力市场统一管理</div>
           </div>
         </section>

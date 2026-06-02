@@ -11,10 +11,10 @@ test("能力市场保持极简能力包入口", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=marketplace-row-state-skills]")).toContainText("已启用")
   await expect(page.locator("[data-testid=marketplace-row-state-providers]")).toContainText("待接入")
   await expect(page.locator("[data-testid=marketplace-preview-agents]")).toContainText("chief_manager")
-  await page.getByRole("button", { name: "Tools" }).click()
+  await page.getByRole("button", { name: "工具" }).click()
   await expect(page.locator("[data-testid=marketplace-state-tools]")).toContainText("已启用")
   await expect(page.locator("[data-testid=marketplace-preview-tools]")).toContainText("规范条文查询")
-  await page.getByRole("button", { name: "Skills" }).click()
+  await page.getByRole("button", { name: "流程" }).click()
   await expect(page.locator("[data-testid=marketplace-preview-skills]")).toContainText("monitoring-design")
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toHaveCount(0)
   await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
@@ -41,19 +41,19 @@ test("能力市场进入 chief_manager 高级配置并验证保存入口", async
   await expect(page.locator("[data-testid=save-agent-btn]")).toContainText(/已保存|保存/)
 })
 
-test("能力市场可以进入 Harness 执行层状态", async ({ launchApp }) => {
+test("能力市场可以进入执行层状态", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace")
 
   await visible(page.locator("[data-testid=marketplace-page]"))
-  await page.getByRole("button", { name: "Harness" }).click()
-  await page.getByRole("link", { name: "查看 Harness" }).click()
+  await page.getByRole("button", { name: "执行层" }).click()
+  await page.getByRole("link", { name: "查看执行层" }).click()
 
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page).toHaveURL(/\/harness$/)
   await expect(page.getByRole("heading", { name: "执行层状态" })).toBeVisible()
 })
 
-test("Harness 可以作为桌面独立路由打开", async ({ launchApp }) => {
+test("执行层可以作为桌面独立路由打开", async ({ launchApp }) => {
   const { page } = await launchApp("/harness")
 
   await visible(page.locator("[data-testid=harness-page]"))

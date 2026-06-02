@@ -170,7 +170,7 @@ export default function AgentsPage() {
   const market = createMemo(() => [
     {
       id: "agents" as const,
-      label: "Agents",
+      label: "智能体",
       title: "智能体库",
       status: agentStatus(),
       description: "主控智能体负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
@@ -179,25 +179,25 @@ export default function AgentsPage() {
     },
     {
       id: "tools" as const,
-      label: "Tools",
+      label: "工具",
       title: "工具链",
       status: toolStatus(),
-      description: "工具会被 Harness 按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
+      description: "工具会被执行层按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
       target: "#agent-tools",
       action: "查看工具",
     },
     {
       id: "skills" as const,
-      label: "Skills",
+      label: "流程",
       title: "专业流程",
       status: skillStatus(),
-      description: "Skills 是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
+      description: "专业流程是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
       target: "#agent-skills",
-      action: "查看 Skills",
+      action: "查看流程",
     },
     {
       id: "workflows" as const,
-      label: "Workflows",
+      label: "工作流",
       title: "工作流",
       status: workflowStatus(),
       description: "工作流把多个智能体串起来，适合外业首检、趋势分析、报告生成和审校链路。",
@@ -215,7 +215,7 @@ export default function AgentsPage() {
     },
     {
       id: "providers" as const,
-      label: "Providers",
+      label: "模型",
       title: "模型 Provider",
       status: connectedProviders().length > 0 ? `${connectedProviders().length} 个已接入` : "待接入",
       description: `默认建议 ${recommendedModel}，也可以把审校、平差和资料整理智能体绑定到不同模型。`,
@@ -223,12 +223,12 @@ export default function AgentsPage() {
     },
     {
       id: "harness" as const,
-      label: "Harness",
-      title: "Harness Profile",
+      label: "执行层",
+      title: "执行层配置",
       status: "本地安全模式",
-      description: "Harness 管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际执行层。",
+      description: "执行层管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际运行核心。",
       target: "/harness",
-      action: "查看 Harness",
+      action: "查看执行层",
     },
   ])
   const activePackage = createMemo(() => market().find((item) => item.id === activeMarket()) ?? market()[0])
@@ -391,7 +391,7 @@ export default function AgentsPage() {
         <div class="agent-hero__copy">
           <span class="agent-kicker">RAILWISE 能力市场</span>
           <h1>安装和管理专业能力</h1>
-          <p>像 Codex 一样，把智能体、工具、Skills、MCP、模型 Provider 与 Harness Profile 放在一个清晰的市场里；工作从首页对话框开始，高级配置留在这里。</p>
+          <p>像 Codex 一样，把智能体、工具、专业流程、MCP 与模型放进一个清晰的市场；工作从首页对话框开始，高级配置留在这里。</p>
           <div class="agent-hero__actions">
             <A href="/home" class="agent-button agent-button--ghost">
               打开工作台
@@ -403,17 +403,17 @@ export default function AgentsPage() {
         </div>
         <div class="agent-market__cards" aria-busy={loading()}>
           <div class="agent-market-card">
-            <span>Agents</span>
+            <span>智能体</span>
             <strong>智能体库</strong>
             <small>{agentStatus()}</small>
           </div>
           <div class="agent-market-card">
-            <span>Tools</span>
+            <span>工具</span>
             <strong>工具链</strong>
             <small>{toolStatus()}</small>
           </div>
           <div class="agent-market-card">
-            <span>Skills</span>
+            <span>流程</span>
             <strong>专业流程</strong>
             <small>{skillStatus()}</small>
           </div>
@@ -721,8 +721,8 @@ export default function AgentsPage() {
         <div class="agent-inventory__column" id="agent-skills">
           <div class="agent-section__header">
             <div>
-              <h2>Skills</h2>
-              <p>按任务加载的专业流程、审核方法和工具使用规范。</p>
+              <h2>专业流程</h2>
+              <p>按任务加载作业流程、审核方法和工具使用规范。</p>
             </div>
           </div>
           <div class="agent-skill-list">
@@ -735,7 +735,7 @@ export default function AgentsPage() {
               )}
             </For>
             <Show when={!skills().length && !loading()}>
-              <div class="agent-empty">当前未发现 Skills。</div>
+              <div class="agent-empty">当前未发现专业流程。</div>
             </Show>
           </div>
         </div>

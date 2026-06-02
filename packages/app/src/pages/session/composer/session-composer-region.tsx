@@ -357,7 +357,7 @@ export function SessionComposerRegion(props: {
                       </div>
                     </div>
                     <div class="min-w-0">
-                      <div class="mb-1 text-[11px] font-semibold text-text-weak">Skills</div>
+                      <div class="mb-1 text-[11px] font-semibold text-text-weak">流程</div>
                       <div class="flex flex-wrap gap-1.5">
                         <For each={visibleSkills()}>
                           {(skill) => (

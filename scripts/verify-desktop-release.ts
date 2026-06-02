@@ -312,6 +312,7 @@ check(
       "railwise-cli",
       "executable ${arch}",
       "codesign --verify --deep --strict --verbose=4",
+      '"target", "release", "bundle", "macos"',
     ]),
   "Local and CI macOS bundle verification checks plist, architecture, sidecar, and codesign",
 )
@@ -325,6 +326,7 @@ check(
       "-mountpoint",
       "verify-macos-bundle.ts",
       "hdiutil detach",
+      '"target", "release", "bundle", "dmg"',
     ]),
   "Local and CI macOS DMG verification mounts the installer and checks the packaged app",
 )

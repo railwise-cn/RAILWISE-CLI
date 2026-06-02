@@ -52,6 +52,12 @@ console.log(`Loaded ${migrations.length} migrations`)
 const singleFlag = process.argv.includes("--single")
 const baselineFlag = process.argv.includes("--baseline")
 const skipInstall = process.argv.includes("--skip-install")
+const arg = (key: string) => {
+  const index = process.argv.indexOf(key)
+  if (index === -1) return undefined
+  return process.argv[index + 1]
+}
+const only = arg("--target")
 
 const allTargets: {
   os: string
@@ -112,8 +118,24 @@ const allTargets: {
   },
 ]
 
+function name(item: (typeof allTargets)[number]) {
+  return [
+    pkg.name,
+    // changing to win32 flags npm for some reason
+    item.os === "win32" ? "windows" : item.os,
+    item.arch,
+    item.avx2 === false ? "baseline" : undefined,
+    item.abi === undefined ? undefined : item.abi,
+  ]
+    .filter(Boolean)
+    .join("-")
+}
+
 const targets = singleFlag
   ? allTargets.filter((item) => {
+      if (only) {
+        return name(item) === only
+      }
       if (item.os !== process.platform || item.arch !== process.arch) {
         return false
       }
@@ -133,6 +155,10 @@ const targets = singleFlag
     })
   : allTargets
 
+if (only && targets.length === 0) {
+  throw new Error(`Unknown target: ${only}`)
+}
+
 await $`rm -rf dist`
 
 const binaries: Record<string, string> = {}
@@ -141,18 +167,9 @@ if (!skipInstall) {
   await $`bun install --os="*" --cpu="*" @parcel/watcher@${pkg.dependencies["@parcel/watcher"]}`
 }
 for (const item of targets) {
-  const name = [
-    pkg.name,
-    // changing to win32 flags npm for some reason
-    item.os === "win32" ? "windows" : item.os,
-    item.arch,
-    item.avx2 === false ? "baseline" : undefined,
-    item.abi === undefined ? undefined : item.abi,
-  ]
-    .filter(Boolean)
-    .join("-")
-  console.log(`building ${name}`)
-  await $`mkdir -p dist/${name}/bin`
+  const target = name(item)
+  console.log(`building ${target}`)
+  await $`mkdir -p dist/${target}/bin`
 
   const parserWorker = fs.realpathSync(path.resolve(dir, "./node_modules/@opentui/core/parser.worker.js"))
   const workerPath = "./src/cli/cmd/tui/worker.ts"
@@ -172,8 +189,8 @@ for (const item of targets) {
       //@ts-ignore (bun types aren't up to date)
       autoloadTsconfig: true,
       autoloadPackageJson: true,
-      target: name.replace(pkg.name, "bun") as any,
-      outfile: `dist/${name}/bin/railwise`,
+      target: target.replace(pkg.name, "bun") as any,
+      outfile: `dist/${target}/bin/railwise`,
       execArgv: [`--user-agent=railwise/${Script.version}`, "--use-system-ca", "--"],
       windows: {},
     },
@@ -188,7 +205,7 @@ for (const item of targets) {
     },
   })
 
-  const alias = item.os === "win32" ? `dist/${name}/bin/rw.cmd` : `dist/${name}/bin/rw`
+  const alias = item.os === "win32" ? `dist/${target}/bin/rw.cmd` : `dist/${target}/bin/rw`
   await Bun.write(
     alias,
     item.os === "win32" ? '@echo off\r\n"%~dp0railwise.exe" %*\r\n' : '#!/bin/sh\nexec "$(dirname "$0")/railwise" "$@"\n',
@@ -197,13 +214,13 @@ for (const item of targets) {
     await $`chmod 755 ${alias}`
   }
 
-  await $`cp -R skill dist/${name}/bin/skill`
-  await $`cp -R agent dist/${name}/bin/agent`
-  await $`cp -R command dist/${name}/bin/command`
-  await $`cp railwise.json dist/${name}/bin/railwise.json`
+  await $`cp -R skill dist/${target}/bin/skill`
+  await $`cp -R agent dist/${target}/bin/agent`
+  await $`cp -R command dist/${target}/bin/command`
+  await $`cp railwise.json dist/${target}/bin/railwise.json`
 
-  await $`rm -rf ./dist/${name}/bin/tui`
-  await Bun.file(`dist/${name}/package.json`).write(
+  await $`rm -rf ./dist/${target}/bin/tui`
+  await Bun.file(`dist/${target}/package.json`).write(
     JSON.stringify(
       {
         name,
@@ -219,7 +236,7 @@ for (const item of targets) {
       2,
     ),
   )
-  binaries[name] = Script.version
+  binaries[target] = Script.version
 }
 
 if (Script.release) {

@@ -12,15 +12,18 @@ const target = arg("--target") || Bun.env.TAURI_ENV_TARGET_TRIPLE || Bun.env.RUS
 const skipInstall = Bun.argv.includes("--skip-install") || Bun.env.RAILWISE_SKIP_INSTALL === "1"
 
 const sidecarConfig = getCurrentSidecar(target)
+const cli = sidecarConfig.ocBinary
 
 const binaryPath = windowsify(`../railwise/dist/${sidecarConfig.ocBinary}/bin/railwise`)
 
 if (sidecarConfig.ocBinary.includes("-baseline")) {
   await (skipInstall
-    ? $`cd ../railwise && bun run build --single --baseline --skip-install`
-    : $`cd ../railwise && bun run build --single --baseline`)
+    ? $`cd ../railwise && bun run build --single --baseline --skip-install --target ${cli}`
+    : $`cd ../railwise && bun run build --single --baseline --target ${cli}`)
 } else {
-  await (skipInstall ? $`cd ../railwise && bun run build --single --skip-install` : $`cd ../railwise && bun run build --single`)
+  await (skipInstall
+    ? $`cd ../railwise && bun run build --single --skip-install --target ${cli}`
+    : $`cd ../railwise && bun run build --single --target ${cli}`)
 }
 
 await copyBinaryToSidecarFolder(binaryPath, target)

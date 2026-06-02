@@ -11,15 +11,15 @@ test("离线模式：能力市场保持本地入口可用", async ({ launchApp }
   })
 
   await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
-  await expect(page.locator("[data-testid=marketplace-card-state-agents]")).toContainText("已启用")
-  await expect(page.locator("[data-testid=marketplace-card-state-tools]")).toContainText("已启用")
+  await expect(page.locator("[data-testid=marketplace-row-state-agents]")).toContainText("已启用")
+  await expect(page.locator("[data-testid=marketplace-row-state-tools]")).toContainText("已启用")
   await page.getByRole("button", { name: "Skills" }).click()
   await expect(page.locator("[data-testid=agent-market-panel]")).toContainText("专业流程")
   await expect(page.locator("[data-testid=marketplace-state-skills]")).toContainText("已启用")
   await expect(page.locator("[data-testid=marketplace-preview-skills]")).toContainText("monitoring-design")
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toHaveCount(0)
   await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
-  await expect(page.locator("[data-testid=marketplace-open-agents]")).toBeVisible()
+  await expect(page.locator("[data-testid=marketplace-row-agents]")).toBeVisible()
 
   await context.setOffline(false)
 })

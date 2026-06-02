@@ -126,9 +126,7 @@
   min-width: 0;
 }
 
-.marketplace-shell h1,
-.marketplace-provider-strip h2,
-.marketplace-card h2 {
+.marketplace-shell h1 {
   margin: 0;
   color: var(--agent-text);
   letter-spacing: 0;
@@ -141,9 +139,7 @@
   line-height: 1.12;
 }
 
-.marketplace-shell p,
-.marketplace-provider-strip p,
-.marketplace-card p {
+.marketplace-shell p {
   margin: 0;
   color: var(--agent-muted);
   line-height: 1.55;
@@ -163,64 +159,6 @@
   gap: 10px;
 }
 
-.marketplace-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 12px;
-}
-
-.marketplace-card {
-  display: flex;
-  min-height: 178px;
-  min-width: 0;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
-  border: 1px solid var(--agent-border);
-  border-radius: var(--agent-radius);
-  background: var(--agent-surface);
-  padding: 16px;
-}
-
-.marketplace-card__head {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.marketplace-card__label {
-  min-width: 0;
-  overflow: hidden;
-  color: var(--agent-accent-strong);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.marketplace-card h2 {
-  margin-top: 7px;
-  overflow: hidden;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.marketplace-card p {
-  display: -webkit-box;
-  margin-top: 8px;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  font-size: 13px;
-}
-
-.marketplace-preview,
 .marketplace-panel-preview {
   display: flex;
   min-width: 0;
@@ -228,15 +166,10 @@
   gap: 7px;
 }
 
-.marketplace-preview {
-  min-height: 30px;
-}
-
 .marketplace-panel-preview {
   margin-top: 10px;
 }
 
-.marketplace-preview span,
 .marketplace-panel-preview span {
   display: inline-flex;
   min-width: 0;
@@ -249,9 +182,7 @@
   padding: 4px 8px;
 }
 
-.marketplace-preview strong,
 .marketplace-panel-preview strong,
-.marketplace-preview small,
 .marketplace-panel-preview small {
   min-width: 0;
   overflow: hidden;
@@ -259,14 +190,12 @@
   white-space: nowrap;
 }
 
-.marketplace-preview strong,
 .marketplace-panel-preview strong {
   color: var(--agent-text);
   font-size: 12px;
   font-weight: 700;
 }
 
-.marketplace-preview small,
 .marketplace-panel-preview small {
   color: var(--agent-muted);
   font-size: 11px;
@@ -304,63 +233,37 @@
   color: var(--agent-muted);
 }
 
-.marketplace-card__footer {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.marketplace-card__footer small {
-  min-width: 0;
-  overflow: hidden;
-  color: var(--agent-muted);
-  font-size: 12px;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.marketplace-provider-strip {
+.marketplace-console {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content;
-  gap: 16px;
-  align-items: center;
+  grid-template-columns: minmax(260px, 0.32fr) minmax(0, 1fr);
+  gap: 12px;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
   background: var(--agent-surface);
-  padding: 16px 18px;
-}
-
-.marketplace-provider-strip h2 {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.marketplace-provider-strip p {
-  margin-top: 5px;
-  font-size: 13px;
+  padding: 10px;
 }
 
 .agent-market-tabs {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
-  border: 1px solid var(--agent-border);
-  border-radius: var(--agent-radius);
-  background: var(--agent-surface);
-  padding: 8px;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .agent-market-tabs button {
-  min-height: 34px;
+  display: grid;
+  min-height: 62px;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 3px 10px;
+  align-items: center;
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
   color: var(--agent-muted);
-  font-size: 12px;
   font-weight: 700;
+  padding: 9px 10px;
+  text-align: left;
 }
 
 .agent-market-tabs button.active {
@@ -369,15 +272,50 @@
   color: var(--agent-accent-strong);
 }
 
+.agent-market-tabs button strong,
+.agent-market-tabs button small,
+.marketplace-row__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marketplace-row__label {
+  color: var(--agent-accent-strong);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.agent-market-tabs button strong {
+  color: var(--agent-text);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.agent-market-tabs button small {
+  color: var(--agent-muted);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.agent-market-tabs button .marketplace-state {
+  grid-row: 1 / span 3;
+  grid-column: 2;
+}
+
 .agent-market-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) max-content;
   gap: 16px;
-  align-items: center;
-  border: 1px solid var(--agent-border);
+  align-items: start;
+  min-height: 430px;
+  border: 0;
   border-radius: var(--agent-radius);
-  background: var(--agent-surface);
-  padding: 16px 18px;
+  background: color-mix(in srgb, var(--agent-bg) 42%, var(--agent-surface));
+  padding: 18px;
 }
 
 .agent-market-panel > div > span:first-child {
@@ -405,6 +343,7 @@
 .agent-market-panel__status {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
 }
 
@@ -1283,7 +1222,7 @@
 @media (max-width: 1160px) {
   .agent-hero,
   .marketplace-shell,
-  .marketplace-provider-strip,
+  .marketplace-console,
   .agent-launch,
   .agent-model-routing__body,
   .agent-inventory {
@@ -1291,7 +1230,7 @@
   }
 
   .marketplace-shell__actions,
-  .marketplace-provider-strip .agent-provider-actions {
+  .agent-market-panel .agent-provider-actions {
     justify-content: flex-start;
   }
 
@@ -1318,7 +1257,6 @@
   .agent-launch__chat-head,
   .agent-section__header,
   .agent-market-panel,
-  .marketplace-card__footer,
   .agent-market-panel__status {
     align-items: stretch;
     flex-direction: column;
@@ -1328,7 +1266,7 @@
   .agent-market__cards,
   .agent-market-tabs,
   .marketplace-shell,
-  .marketplace-provider-strip,
+  .marketplace-console,
   .agent-launch__path,
   .agent-model-routing__stats,
   .agent-rail,

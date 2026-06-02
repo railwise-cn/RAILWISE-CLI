@@ -143,24 +143,28 @@ check(
   has(app, ["const AgentsIndexRoute", "<AgentsIndex />", "const MarketplaceRoute"]) &&
     has(marketplace, [
       'data-testid="marketplace-page"',
-      "marketplace-card",
-      "marketplace-open-${item.id}",
-      "marketplace-card-state-${item.id}",
+      "marketplace-console",
+      "marketplace-row-${item.id}",
+      "marketplace-open-${selected().id}",
+      "marketplace-row-state-${item.id}",
       "marketplace-preview-${selected().id}",
     ]) &&
+    !marketplace.includes("marketplace-grid") &&
+    !marketplace.includes("marketplace-provider-strip") &&
+    !marketplace.includes("marketplace-card") &&
     !marketplace.includes("agent-collaboration-start") &&
     !marketplace.includes("agent-model-routing") &&
     has(agentStudio, ['launchApp("/marketplace")', 'launchApp("/agents")', "toHaveCount(0)", "agent-collaboration-start"]),
-  "marketplace stays as a concise capability market while /agents keeps advanced management",
+  "marketplace stays as one concise registry plus detail panel while /agents keeps advanced management",
 )
 check(
   "marketplace inventory state",
   has(e2eHelper, ["/agent-studio/tool/list", "/agent-studio/skill/list", "规范条文查询", "monitoring-design"]) &&
     has(agentStudio, [
-      "marketplace-card-state-agents",
-      "marketplace-card-state-tools",
-      "marketplace-card-state-skills",
-      "marketplace-card-state-providers",
+      "marketplace-row-state-agents",
+      "marketplace-row-state-tools",
+      "marketplace-row-state-skills",
+      "marketplace-row-state-providers",
       "marketplace-preview-tools",
       "marketplace-preview-skills",
     ]),

@@ -216,131 +216,84 @@ export default function MarketplacePage() {
         </div>
       </section>
 
-      <section class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
-        <For each={catalog()}>
-          {(item) => (
-            <button
-              type="button"
-              classList={{ active: active() === item.id }}
-              aria-pressed={active() === item.id}
-              onClick={() => setActive(item.id)}
-            >
-              {item.label}
-            </button>
-          )}
-        </For>
-      </section>
-
-      <section class="agent-market-panel" data-testid="agent-market-panel">
-        <div>
-          <span>{selected().label}</span>
-          <h2>{selected().title}</h2>
-          <p>{selected().description}</p>
-          <div class="marketplace-panel-preview" data-testid={`marketplace-preview-${selected().id}`}>
-            <For each={selected().preview.slice(0, 4)}>
-              {(item) => (
-                <span title={item.meta}>
-                  <strong>{item.title}</strong>
-                  <small>{item.meta}</small>
-                </span>
-              )}
-            </For>
-            <Show when={!loading() && selected().preview.length === 0}>
-              <span>
-                <strong>等待发现</strong>
-                <small>进入高级管理查看配置</small>
-              </span>
-            </Show>
-          </div>
-        </div>
-        <div class="agent-market-panel__status">
-          <span class={`marketplace-state marketplace-state--${selected().state.tone}`} data-testid={`marketplace-state-${selected().id}`}>
-            {selected().state.label}
-          </span>
-          <strong>{status()[selected().id]}</strong>
-          <Show
-            when={selected().button}
-            fallback={
-              <A href={selected().href ?? "/marketplace"} class="agent-button agent-button--ghost">
-                {selected().action}
-              </A>
-            }
-          >
-            <button type="button" class="agent-button agent-button--ghost" onClick={connectProvider}>
-              {selected().action}
-            </button>
-          </Show>
-        </div>
-      </section>
-
       <Show when={error()}>
         <p class="agent-error">{error()}</p>
       </Show>
 
-      <section class="marketplace-grid" aria-busy={loading()}>
-        <For each={catalog()}>
-          {(item) => (
-            <article class="marketplace-card" data-testid={`marketplace-card-${item.id}`}>
-              <div>
-                <div class="marketplace-card__head">
-                  <span class="marketplace-card__label">{item.label}</span>
-                  <span class={`marketplace-state marketplace-state--${item.state.tone}`} data-testid={`marketplace-card-state-${item.id}`}>
-                    {item.state.label}
-                  </span>
-                </div>
-                <h2>{item.title}</h2>
-                <p>{item.description}</p>
-              </div>
-              <div class="marketplace-preview">
-                <For each={item.preview.slice(0, 3)}>
-                  {(entry) => (
-                    <span title={entry.meta}>
-                      <strong>{entry.title}</strong>
-                      <small>{entry.meta}</small>
-                    </span>
-                  )}
-                </For>
-                <Show when={!loading() && item.preview.length === 0}>
-                  <span>
-                    <strong>等待发现</strong>
-                    <small>进入高级管理查看配置</small>
-                  </span>
-                </Show>
-              </div>
-              <div class="marketplace-card__footer">
+      <section class="marketplace-console" aria-busy={loading()}>
+        <nav class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
+          <For each={catalog()}>
+            {(item) => (
+              <button
+                type="button"
+                classList={{ active: active() === item.id }}
+                aria-pressed={active() === item.id}
+                data-testid={`marketplace-row-${item.id}`}
+                onClick={() => setActive(item.id)}
+              >
+                <span class="marketplace-row__label">{item.label}</span>
+                <strong>{item.title}</strong>
                 <small>{item.detail}</small>
-                <Show
-                  when={item.button}
-                  fallback={
-                    <A href={item.href ?? "/marketplace"} class="agent-button agent-button--ghost" data-testid={`marketplace-open-${item.id}`}>
-                      {item.action}
-                    </A>
-                  }
-                >
-                  <button type="button" class="agent-button agent-button--ghost" data-testid={`marketplace-open-${item.id}`} onClick={connectProvider}>
-                    {item.action}
-                  </button>
-                </Show>
-              </div>
-            </article>
-          )}
-        </For>
-      </section>
-
-      <section class="marketplace-provider-strip">
-        <div>
-          <h2>推荐模型接入</h2>
-          <p>默认建议 {recommendedModel}，不同智能体可在高级管理里单独绑定模型。</p>
-        </div>
-        <div class="agent-provider-actions">
-          <For each={recommendedProviders}>
-            {(provider) => (
-              <button type="button" onClick={() => connectPreferred(provider.id)}>
-                接入 {provider.label}
+                <span class={`marketplace-state marketplace-state--${item.state.tone}`} data-testid={`marketplace-row-state-${item.id}`}>
+                  {item.state.label}
+                </span>
               </button>
             )}
           </For>
-        </div>
+        </nav>
+
+        <section class="agent-market-panel" data-testid="agent-market-panel">
+          <div>
+            <span>{selected().label}</span>
+            <h2>{selected().title}</h2>
+            <p>{selected().description}</p>
+            <div class="marketplace-panel-preview" data-testid={`marketplace-preview-${selected().id}`}>
+              <For each={selected().preview.slice(0, 4)}>
+                {(item) => (
+                  <span title={item.meta}>
+                    <strong>{item.title}</strong>
+                    <small>{item.meta}</small>
+                  </span>
+                )}
+              </For>
+              <Show when={!loading() && selected().preview.length === 0}>
+                <span>
+                  <strong>等待发现</strong>
+                  <small>进入高级管理查看配置</small>
+                </span>
+              </Show>
+            </div>
+            <Show when={selected().id === "providers"}>
+              <div class="agent-provider-actions" data-testid="marketplace-provider-actions">
+                <For each={recommendedProviders}>
+                  {(provider) => (
+                    <button type="button" onClick={() => connectPreferred(provider.id)}>
+                      接入 {provider.label}
+                    </button>
+                  )}
+                </For>
+              </div>
+            </Show>
+          </div>
+          <div class="agent-market-panel__status">
+            <span class={`marketplace-state marketplace-state--${selected().state.tone}`} data-testid={`marketplace-state-${selected().id}`}>
+              {selected().state.label}
+            </span>
+            <strong>{status()[selected().id]}</strong>
+            <Show
+              when={selected().button}
+              fallback={
+                <A href={selected().href ?? "/marketplace"} class="agent-button agent-button--ghost" data-testid={`marketplace-open-${selected().id}`}>
+                  {selected().action}
+                </A>
+              }
+            >
+              <button type="button" class="agent-button agent-button--ghost" data-testid={`marketplace-open-${selected().id}`} onClick={connectProvider}>
+                {selected().action}
+              </button>
+            </Show>
+          </div>
+        </section>
       </section>
     </main>
   )

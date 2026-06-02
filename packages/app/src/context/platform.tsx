@@ -6,6 +6,7 @@ type PickerPaths = string | string[] | null
 type OpenDirectoryPickerOptions = { title?: string; multiple?: boolean }
 type OpenFilePickerOptions = { title?: string; multiple?: boolean }
 type SaveFilePickerOptions = { title?: string; defaultPath?: string }
+export type DisplayBackend = "native"
 type UpdateInfo = { updateAvailable: boolean; version?: string }
 
 export type Platform = {
@@ -14,6 +15,12 @@ export type Platform = {
 
   /** Desktop OS (Tauri only). RAILWISE Desktop is distributed for macOS and Windows only. */
   os?: "macos" | "windows"
+
+  /** User-facing app name */
+  appName?: string
+
+  /** Support or feedback URL */
+  supportUrl?: string
 
   /** App version */
   version?: string

@@ -23,8 +23,9 @@ const cached = () => {
     )
     .find((item) => existsSync(item))
 }
-const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ?? (process.platform === "darwin" ? cached() : undefined)
 const channel = process.env.PLAYWRIGHT_CHROMIUM_CHANNEL
+const executablePath =
+  process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ?? (channel ? undefined : process.platform === "darwin" ? cached() : undefined)
 const reuse = !process.env.CI
 const webServer =
   process.env.PLAYWRIGHT_SKIP_WEBSERVER === "1"

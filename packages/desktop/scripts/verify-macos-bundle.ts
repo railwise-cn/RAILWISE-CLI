@@ -56,6 +56,11 @@ const arch = target?.startsWith("aarch64-") ? "arm64" : target?.startsWith("x86_
 const mac = (text: string) => (arch ? text.includes(`executable ${arch}`) : /Mach-O 64-bit executable (arm64|x86_64)/.test(text))
 
 const field = async (name: string) => (await $`/usr/libexec/PlistBuddy -c ${`Print :${name}`} ${plist}`.text()).trim()
+const optional = async (name: string) => {
+  const result = await $`/usr/libexec/PlistBuddy -c ${`Print :${name}`} ${plist}`.quiet().nothrow()
+  if (result.exitCode !== 0) return undefined
+  return result.stdout.toString().trim()
+}
 const filetype = async (file: string) => (await $`file ${file}`.text()).trim()
 
 check("app bundle exists", (await stat(app).catch(() => undefined))?.isDirectory() === true, app)
@@ -67,6 +72,7 @@ if (await exists(plist)) {
   check("bundle identifier", (await field("CFBundleIdentifier")) === config.identifier, config.identifier ?? "missing")
   check("bundle executable", (await field("CFBundleExecutable")) === executable, executable)
   check("bundle name", (await field("CFBundleName")) === config.productName, config.productName ?? "missing")
+  check("modern launch services plist", (await optional("LSRequiresCarbon")) !== "true", "LSRequiresCarbon must not be true")
 }
 
 if (await exists(bin)) {

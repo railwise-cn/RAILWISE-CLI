@@ -42,6 +42,7 @@ type Config = {
     }
     macOS?: {
       entitlements?: string
+      infoPlist?: string
       dmg?: {
         background?: string
         windowSize?: { width?: number; height?: number }
@@ -110,6 +111,7 @@ const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
+const infoPlist = await read("packages/desktop/src-tauri/Info.plist")
 const platform = await read("packages/app/src/context/platform.tsx")
 const settings = await read("packages/app/src/components/settings-general.tsx")
 const desktop = await read("packages/desktop/src/index.tsx")
@@ -150,6 +152,7 @@ const assets = [
   config.bundle?.windows?.nsis?.headerImage,
   config.bundle?.windows?.nsis?.sidebarImage,
   config.bundle?.macOS?.entitlements,
+  config.bundle?.macOS?.infoPlist,
   config.bundle?.macOS?.dmg?.background,
   ...Object.values(config.bundle?.linux?.deb?.files ?? {}),
 ].filter((item): item is string => Boolean(item))
@@ -451,10 +454,16 @@ check(
 check(
   "macOS bundle config",
   config.bundle?.macOS?.entitlements === "./entitlements.plist" &&
+    config.bundle?.macOS?.infoPlist === "./Info.plist" &&
     config.bundle?.macOS?.dmg?.background === "assets/dmg-background.png" &&
     Boolean(config.bundle?.macOS?.dmg?.appPosition) &&
     Boolean(config.bundle?.macOS?.dmg?.applicationFolderPosition),
-  "DMG artwork, entitlements, and icon positions are configured",
+  "DMG artwork, entitlements, Info.plist, and icon positions are configured",
+)
+check(
+  "macOS modern launch services plist",
+  infoPlist.includes("<key>LSRequiresCarbon</key>") && infoPlist.includes("<false/>"),
+  "Info.plist explicitly prevents legacy Carbon launch metadata",
 )
 check(
   "release assets",

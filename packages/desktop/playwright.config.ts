@@ -4,6 +4,17 @@ const port = Number(process.env.PLAYWRIGHT_PORT ?? 5185)
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`
 const command = `bun ./node_modules/vite/bin/vite.js --host 127.0.0.1 --port ${port}`
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
+const channel = process.env.PLAYWRIGHT_CHROMIUM_CHANNEL
+const headless = process.env.PLAYWRIGHT_HEADLESS === "0" ? false : undefined
+const launchOptions = {
+  ...(headless === undefined ? {} : { headless }),
+  args: ["--disable-crash-reporter", "--disable-crashpad"],
+  ...(executablePath ? { executablePath } : {}),
+}
+const browser = {
+  launchOptions,
+  ...(channel && !executablePath ? { channel } : {}),
+}
 const reuse = !process.env.CI
 const webServer =
   process.env.PLAYWRIGHT_SKIP_WEBSERVER === "1"
@@ -38,7 +49,7 @@ export default defineConfig({
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        ...(executablePath ? { launchOptions: { executablePath } } : { channel: "chrome" }),
+        ...browser,
       },
     },
   ],

@@ -33,16 +33,7 @@ const value = (name: string) => {
 const full = has("--full")
 const live = has("--live") || full
 const e2eBase = Bun.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${Bun.env.PLAYWRIGHT_PORT ?? "5185"}`
-const channel = Bun.env.PLAYWRIGHT_CHROMIUM_CHANNEL
-const chrome =
-  Bun.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ??
-  (channel
-    ? undefined
-    : (await Bun.file(
-          "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell",
-        ).exists())
-      ? "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell"
-      : undefined)
+const chrome = Bun.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
 const reachable = live
   ? await fetch(e2eBase, { signal: AbortSignal.timeout(3_000) })
       .then((res) => res.ok)

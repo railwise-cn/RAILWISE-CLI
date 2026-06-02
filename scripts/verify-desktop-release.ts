@@ -110,6 +110,10 @@ const railwiseModels = await read("packages/railwise/script/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
+const platform = await read("packages/app/src/context/platform.tsx")
+const settings = await read("packages/app/src/components/settings-general.tsx")
+const desktop = await read("packages/desktop/src/index.tsx")
+const e2eHarness = await read("packages/desktop/e2e/helpers/app.ts")
 const adminDeploy = await read("docs/admin/01-deploy.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
 const secrets = [
@@ -207,6 +211,16 @@ check(
     )
   }),
   "Tauri configs only allow DMG and NSIS desktop installers",
+)
+check(
+  "desktop runtime omits Linux surface",
+  !platform.includes('"macos" | "windows" | "linux"') &&
+    !settings.includes('platform.os === "linux"') &&
+    !settings.includes("settings-wayland") &&
+    !desktop.includes('type === "linux"') &&
+    !e2eHarness.includes('os_type: "linux"') &&
+    !e2eHarness.includes('platform: "linux"'),
+  "Desktop UI/runtime exposes macOS and Windows only; Linux remains CLI-only",
 )
 check(
   "sidecar infers host desktop target",

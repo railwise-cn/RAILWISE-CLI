@@ -8,7 +8,7 @@ const arg = (name: string) => {
   return Bun.argv[index + 1]
 }
 
-const target = arg("--target") ?? Bun.env.TAURI_ENV_TARGET_TRIPLE ?? Bun.env.RUST_TARGET
+const target = arg("--target") || Bun.env.TAURI_ENV_TARGET_TRIPLE || Bun.env.RUST_TARGET || undefined
 const skipInstall = Bun.argv.includes("--skip-install") || Bun.env.RAILWISE_SKIP_INSTALL === "1"
 
 const sidecarConfig = getCurrentSidecar(target)

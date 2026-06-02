@@ -181,6 +181,18 @@ check(
   "Tauri configs only allow DMG and NSIS desktop installers",
 )
 check(
+  "sidecar infers host desktop target",
+  contains(sidecar, [
+    "function host()",
+    'process.platform === "darwin"',
+    'process.arch === "arm64" ? "aarch64-apple-darwin" : "x86_64-apple-darwin"',
+    'process.platform === "win32"',
+    '"x86_64-pc-windows-msvc"',
+    "Bun.env.RUST_TARGET || host()",
+  ]) && predev.includes('arg("--target") || Bun.env.TAURI_ENV_TARGET_TRIPLE || Bun.env.RUST_TARGET || undefined'),
+  "Local Desktop predev can infer the current macOS or Windows sidecar target",
+)
+check(
   "release omits Windows target",
   windows.every((item) => !workflow.includes(item)),
   "Windows publishing is paused until a Windows code-signing certificate is purchased",

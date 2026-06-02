@@ -39,6 +39,7 @@ const devDocs = [
   "02-templates-spec.md",
   "03-mcp-tools.md",
   "04-e2e-testing.md",
+  "12-desktop-harness-marketplace-beta.md",
 ]
 const missingSpecs = (
   await Promise.all(
@@ -107,6 +108,7 @@ const server = await read("packages/railwise/src/server/server.ts")
 const sdk = await read("packages/sdk/js/src/v2/gen/sdk.gen.ts")
 const sdkTypes = await read("packages/sdk/js/src/v2/gen/types.gen.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
+const betaQa = await read("docs/dev/12-desktop-harness-marketplace-beta.md")
 const desktopLanguageDocs = [
   await read("docs/dev/01-architecture.md"),
   await read("docs/dev/04-e2e-testing.md"),
@@ -384,6 +386,26 @@ check(
   "M7 acceptance record",
   has(docs, ["12 条核心 E2E", "视觉回归", "TTFUI", "bun run desktop:verify", "--full"]),
   "acceptance record links E2E, visual, TTFUI, and full verify command",
+)
+check(
+  "desktop beta QA checklist",
+  has(betaQa, [
+    "Desktop Harness Marketplace Beta QA",
+    "macOS Apple Silicon",
+    "macOS Intel",
+    "Linux：不做 Desktop 安装包",
+    "首屏是 Workbench",
+    "没有大面积 `0` 计数器",
+    "选择文件夹",
+    "执行层显示工作区边界",
+    "项目总控",
+    "本地文件读取",
+    "复测资料检查",
+    "DeepSeek",
+    "browserType.launch",
+    "不得发布 Beta",
+  ]),
+  "manual beta QA covers platform scope, workbench, harness, marketplace manifests, browser failure triage, and blockers",
 )
 
 for (const item of checks) console.log(`${item.passed ? "[ok]" : "[fail]"} ${item.name}: ${item.detail}`)

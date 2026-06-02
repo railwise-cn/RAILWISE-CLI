@@ -10,6 +10,7 @@
     "predev": "bun ./scripts/predev.ts",
     "sign:macos": "bun ./scripts/sign-macos-app.ts",
     "verify:macos": "bun ./scripts/verify-macos-bundle.ts",
+    "verify:dmg": "bun ./scripts/verify-macos-dmg.ts",
     "dev": "vite",
     "build": "bun run typecheck && vite build",
     "build:analyze": "bun run build && bun run analyze",

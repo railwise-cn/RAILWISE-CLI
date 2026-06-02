@@ -80,6 +80,8 @@ const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
 const app = await read("packages/app/src/app.tsx")
 const home = await read("packages/app/src/pages/home.tsx")
 const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
+const marketplaceState = await read("packages/app/src/pages/marketplace/marketplace-state.ts")
+const marketplaceStateTest = await read("packages/app/src/pages/marketplace/marketplace-state.test.ts")
 const agentsPage = await read("packages/app/src/pages/agents/index.tsx")
 const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
@@ -171,6 +173,9 @@ check(
       "marketplace-open-${selected().id}",
       "marketplace-row-state-${item.id}",
       "marketplace-preview-${selected().id}",
+      "marketplace-permissions-${selected().id}",
+      "sdk.client.marketplace.capabilities.list()",
+      "useGlobalSDK",
     ]) &&
     !marketplace.includes("marketplace-grid") &&
     !marketplace.includes("marketplace-provider-strip") &&
@@ -202,7 +207,15 @@ check(
 
 check(
   "marketplace inventory state",
-  has(e2eHelper, ["/agent-studio/tool/list", "/agent-studio/skill/list", "规范条文查询", "monitoring-design"]) &&
+  has(e2eHelper, [
+      "/marketplace/capabilities",
+      "/agent-studio/tool/list",
+      "/agent-studio/skill/list",
+      "railwise.agent.chief_manager",
+      "railwise.provider.deepseek",
+      "规范条文查询",
+      "monitoring-design",
+    ]) &&
     has(agentStudio, [
       "marketplace-row-state-agents",
       "marketplace-row-state-tools",
@@ -210,9 +223,16 @@ check(
       "marketplace-row-state-providers",
       "marketplace-preview-tools",
       "marketplace-preview-skills",
+      "marketplace-permissions-agents",
+      "marketplace-permissions-tools",
+      "marketplace-permissions-skills",
+      "marketplace-permissions-providers",
+      "网络 / 密钥",
       "执行层",
       "流程",
     ]) &&
+    has(marketplaceState, ["capabilitiesFor", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
+    has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),

@@ -177,9 +177,14 @@ check(
     !sessionCollaboration.includes("Skill「") &&
     sessionCollaboration.includes("请使用专业流程") &&
     agentsPage.includes("RAILWISE 高级智能体管理") &&
+    agentsPage.includes("上下文文件夹") &&
+    agentsPage.includes("智能体库") &&
+    agentsPage.includes("#agent-library") &&
     !agentsPage.includes("RAILWISE 能力市场") &&
+    !agentsPage.includes("项目工作区") &&
+    !agentsPage.includes("智能体矩阵") &&
     !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
-  "Desktop docs and E2E fixtures use capability market, professional workflow, and execution-layer language",
+  "Desktop docs, E2E fixtures, and advanced management page use capability market, professional workflow, and execution-layer language",
 )
 
 check(

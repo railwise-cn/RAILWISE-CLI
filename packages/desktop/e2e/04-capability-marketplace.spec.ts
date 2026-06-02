@@ -27,6 +27,10 @@ test("高级智能体管理作为独立路由打开", async ({ launchApp }) => {
   await expect(page).toHaveURL(/\/agents$/)
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
+  await expect(page.getByRole("heading", { name: "上下文文件夹" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "智能体库" })).toBeVisible()
+  await expect(page.getByText("项目工作区")).toHaveCount(0)
+  await expect(page.getByText("智能体矩阵")).toHaveCount(0)
 })
 
 test("能力市场进入 chief_manager 高级配置并验证保存入口", async ({ launchApp }) => {

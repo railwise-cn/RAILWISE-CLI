@@ -134,6 +134,7 @@ const i18n = await Promise.all(
 )
 const adminDeploy = await read("docs/admin/01-deploy.md")
 const readme = await read("README.md")
+const userInstall = await read("docs/user/01-installation.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
 const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY",
@@ -241,11 +242,13 @@ check(
     devConfig.bundle?.linux === undefined &&
     adminDeploy.includes(scope) &&
     readme.includes("Linux 仅保留 CLI，不做桌面安装包") &&
+    readme.includes("这些是 CLI 安装包，不包含 Desktop 安装包") &&
+    userInstall.includes("本页列出的 Linux 包只属于 CLI") &&
     !readme.includes("支持 Windows / macOS / Linux 离线安装") &&
     !sidecar.includes("linux-") &&
     !adminDeploy.includes("Linux 安装包") &&
     !adminDeploy.includes("linux/"),
-  "Desktop release excludes Linux installers, Tauri Linux bundle config, and deployment docs explicitly mark Linux as CLI-only",
+  "Desktop release excludes Linux installers, Tauri Linux bundle config, and installation docs explicitly separate CLI Linux from Desktop scope",
 )
 check(
   "desktop bundle targets",

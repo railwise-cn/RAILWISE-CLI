@@ -2,6 +2,8 @@
 
 本页只说明命令行版本 RAILWISE-CLI。CLI 是工程测绘多智能体核心，适合工程人员本机使用、内业自动化、CI 脚本和内网服务器部署。
 
+> 注意：本页列出的 Linux 包只属于 CLI；桌面端不考虑 Linux 平台。Desktop 公网发布仅包含 macOS Apple Silicon 与 macOS Intel。
+
 ## 安装方式
 
 ### npm（推荐）
@@ -56,14 +58,16 @@ railwise --version
 rw --version
 ```
 
-### GitHub Release 手动安装
+### GitHub Release 手动安装 CLI 二进制
 
 适用：离线环境、企业内网分发、没有 npm 的机器。
 
 1. 打开 https://github.com/railwise-cn/RAILWISE-CLI/releases。
-2. 下载对应平台包。
+2. 下载对应平台的 CLI 二进制包。
 3. 解压后把 `railwise`/`rw` 或 `railwise.exe`/`rw.cmd` 放入 PATH。
 4. 执行 `railwise --version` 或 `rw --version` 验证。
+
+下表是 CLI 二进制包清单，不包含 Desktop 安装包：
 
 | 平台                | 文件                          |
 | ------------------- | ----------------------------- |

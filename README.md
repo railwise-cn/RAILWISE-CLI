@@ -53,9 +53,11 @@ railwise --version
 rw --version
 ```
 
-**GitHub Release 手动安装（离线/内网分发）**
+**GitHub Release 手动安装 CLI（二进制，离线/内网分发）**
 
-从 [Releases](https://github.com/railwise-cn/RAILWISE-CLI/releases) 下载对应平台包：
+从 [Releases](https://github.com/railwise-cn/RAILWISE-CLI/releases) 下载对应平台的 CLI 二进制包：
+
+> 这些是 CLI 安装包，不包含 Desktop 安装包。桌面端只发布 macOS Apple Silicon 与 macOS Intel，Linux 不做桌面端。
 
 | 平台                | 文件                          |
 | ------------------- | ----------------------------- |

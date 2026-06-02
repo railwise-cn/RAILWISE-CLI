@@ -577,6 +577,21 @@ export type EventPermissionReplied = {
   }
 }
 
+export type EventSessionError = {
+  type: "session.error"
+  properties: {
+    sessionID?: string
+    error?:
+      | ProviderAuthError
+      | UnknownError
+      | MessageOutputLengthError
+      | MessageAbortedError
+      | StructuredOutputError
+      | ContextOverflowError
+      | ApiError
+  }
+}
+
 export type SessionStatus =
   | {
       type: "idle"
@@ -865,21 +880,6 @@ export type EventSessionDiff = {
   }
 }
 
-export type EventSessionError = {
-  type: "session.error"
-  properties: {
-    sessionID?: string
-    error?:
-      | ProviderAuthError
-      | UnknownError
-      | MessageOutputLengthError
-      | MessageAbortedError
-      | StructuredOutputError
-      | ContextOverflowError
-      | ApiError
-  }
-}
-
 export type EventVcsBranchUpdated = {
   type: "vcs.branch.updated"
   properties: {
@@ -974,6 +974,7 @@ export type Event =
   | EventMessagePartRemoved
   | EventPermissionAsked
   | EventPermissionReplied
+  | EventSessionError
   | EventSessionStatus
   | EventSessionIdle
   | EventQuestionAsked
@@ -993,7 +994,6 @@ export type Event =
   | EventSessionUpdated
   | EventSessionDeleted
   | EventSessionDiff
-  | EventSessionError
   | EventVcsBranchUpdated
   | EventPtyCreated
   | EventPtyUpdated
@@ -1467,7 +1467,7 @@ export type AgentConfig = {
    * @deprecated Use 'permission' field instead
    */
   tools?: {
-    [key: string]: boolean
+    [key: string]: boolean | Array<string>
   }
   disable?: boolean
   /**
@@ -1500,7 +1500,7 @@ export type AgentConfig = {
     | string
     | number
     | {
-        [key: string]: boolean
+        [key: string]: boolean | Array<string>
       }
     | boolean
     | "subagent"
@@ -1691,6 +1691,16 @@ export type Config = {
    */
   $schema?: string
   /**
+   * RAILWISE configuration profile version
+   */
+  version?: string
+  /**
+   * RAILWISE product profile metadata
+   */
+  system?: {
+    [key: string]: unknown
+  }
+  /**
    * Theme name to use for the interface
    */
   theme?: string
@@ -1861,7 +1871,7 @@ export type Config = {
   layout?: LayoutConfig
   permission?: PermissionConfig
   tools?: {
-    [key: string]: boolean
+    [key: string]: boolean | Array<string>
   }
   enterprise?: {
     /**
@@ -2143,50 +2153,77 @@ export type ProviderAuthAuthorization = {
   instructions: string
 }
 
-export type DashboardProjectCard = {
-  id: string
-  name: string
-  type: "metro" | "excavation" | "bridge" | "slope" | "highrise"
-  status: "active" | "completed" | "paused" | "error"
-  progress: number
-  lastActivity: string
-  activeTaskCount: number
-  description?: string
-  pointCount: number
-  alertCount: number
-  bboxJson?: string
+export type HarnessStatus = {
+  mode: "safe" | "ask" | "auto"
+  workspace?: string
+  model?: string
+  activeAgent?: string
+  capabilityCount: number
+  pendingPermissionCount: number
+  runningToolCount: number
 }
 
-export type DashboardAlert = {
+export type HarnessEvent = {
   id: string
-  projectId: string
-  pointId?: string
-  level: "warn" | "error"
-  message: string
-  time: string
-}
-
-export type DashboardSessionBrief = {
-  id: string
-  directory: string
+  sessionID: string
+  type:
+    | "session.started"
+    | "plan.created"
+    | "agent.selected"
+    | "model.selected"
+    | "skill.loaded"
+    | "tool.requested"
+    | "permission.requested"
+    | "permission.resolved"
+    | "tool.started"
+    | "tool.completed"
+    | "tool.failed"
+    | "artifact.created"
+    | "session.completed"
   title: string
-  time: {
-    updated: number
-  }
+  detail?: string
+  createdAt: number
+  duration?: number
+  risk?: "low" | "medium" | "high"
+  capabilityID?: string
+  artifactPath?: string
+  error?: string
 }
 
-export type DashboardActiveAgent = {
-  sessionId: string
-  agentName: string
-  startedAt: string
-  status: "running" | "waiting" | "error"
+export type HarnessPermissionResult = {
+  sessionID: string
+  permissionID: string
+  decision: "approve_once" | "approve_always" | "reject"
+  accepted: boolean
 }
 
-export type DashboardSummary = {
-  projects: Array<DashboardProjectCard>
-  alerts: Array<DashboardAlert>
-  recentSessions: Array<DashboardSessionBrief>
-  activeAgents: Array<DashboardActiveAgent>
+export type HarnessPermissionDecision = {
+  decision: "approve_once" | "approve_always" | "reject"
+}
+
+export type CapabilityPermission = {
+  filesystem?: "none" | "read" | "write"
+  network?: boolean
+  shell?: boolean
+  external_directory?: boolean
+  secrets?: boolean
+}
+
+export type CapabilityManifest = {
+  id: string
+  kind: "agent" | "tool" | "skill" | "workflow" | "mcp" | "provider" | "harness_profile"
+  name: string
+  description: string
+  version: string
+  source: "builtin" | "local" | "remote"
+  enabled: boolean
+  installed: boolean
+  permissions: CapabilityPermission
+  tags?: Array<string>
+}
+
+export type CapabilityList = {
+  data: Array<CapabilityManifest>
 }
 
 export type RailwiseTemplateVariable = {
@@ -2278,6 +2315,10 @@ export type AgentListItem = {
   }
   steps?: number
   /**
+   * Localized product-facing name for Agent Studio.
+   */
+  displayName?: string
+  /**
    * Absolute path of the backing .md file.
    */
   filePath?: string
@@ -2285,6 +2326,18 @@ export type AgentListItem = {
    * Message count by this agent in the last 7 days.
    */
   callCount7d?: number
+}
+
+export type ToolInventoryItem = {
+  id: string
+  label: string
+  group: "agent" | "knowledge" | "survey" | "core" | "extension"
+}
+
+export type SkillInventoryItem = {
+  name: string
+  description: string
+  location: string
 }
 
 export type WorkflowNode = {
@@ -2331,6 +2384,7 @@ export type AgentDetail = {
     [key: string]: unknown
   }
   steps?: number
+  displayName?: string
   filePath?: string
   /**
    * Full markdown source including frontmatter.
@@ -4381,136 +4435,179 @@ export type ProviderOauthCallbackResponses = {
 
 export type ProviderOauthCallbackResponse = ProviderOauthCallbackResponses[keyof ProviderOauthCallbackResponses]
 
-export type DashboardSummaryData = {
+export type HarnessStatusData = {
   body?: never
   path?: never
   query?: {
     directory?: string
   }
-  url: "/dashboard/summary"
+  url: "/harness/status"
 }
 
-export type DashboardSummaryResponses = {
-  /**
-   * Dashboard summary
-   */
-  200: DashboardSummary
-}
-
-export type DashboardSummaryResponse = DashboardSummaryResponses[keyof DashboardSummaryResponses]
-
-export type DashboardProjectsData = {
-  body?: never
-  path?: never
-  query?: {
-    directory?: string
-  }
-  url: "/dashboard/projects"
-}
-
-export type DashboardProjectsResponses = {
-  /**
-   * ProjectCard[]
-   */
-  200: Array<DashboardProjectCard>
-}
-
-export type DashboardProjectsResponse = DashboardProjectsResponses[keyof DashboardProjectsResponses]
-
-export type DashboardProjectPointsData = {
-  body?: never
-  path: {
-    id: string
-  }
-  query?: {
-    directory?: string
-  }
-  url: "/dashboard/projects/{id}/points"
-}
-
-export type DashboardProjectPointsErrors = {
-  /**
-   * Not found
-   */
-  404: NotFoundError
-}
-
-export type DashboardProjectPointsError = DashboardProjectPointsErrors[keyof DashboardProjectPointsErrors]
-
-export type DashboardProjectPointsResponses = {
-  /**
-   * GeoJSON FeatureCollection
-   */
-  200: {
-    type: "FeatureCollection"
-    features: Array<unknown>
-  }
-}
-
-export type DashboardProjectPointsResponse = DashboardProjectPointsResponses[keyof DashboardProjectPointsResponses]
-
-export type DashboardProjectTimeseriesData = {
-  body?: never
-  path: {
-    id: string
-  }
-  query?: {
-    directory?: string
-    metric?: "settlement" | "displacement"
-    days?: number
-  }
-  url: "/dashboard/projects/{id}/timeseries"
-}
-
-export type DashboardProjectTimeseriesErrors = {
+export type HarnessStatusErrors = {
   /**
    * Bad request
    */
   400: BadRequestError
-  /**
-   * Not found
-   */
-  404: NotFoundError
 }
 
-export type DashboardProjectTimeseriesError = DashboardProjectTimeseriesErrors[keyof DashboardProjectTimeseriesErrors]
+export type HarnessStatusError = HarnessStatusErrors[keyof HarnessStatusErrors]
 
-export type DashboardProjectTimeseriesResponses = {
+export type HarnessStatusResponses = {
   /**
-   * [[timestamps], [values]]
+   * Harness status
    */
-  200: Array<Array<number>>
+  200: HarnessStatus
 }
 
-export type DashboardProjectTimeseriesResponse =
-  DashboardProjectTimeseriesResponses[keyof DashboardProjectTimeseriesResponses]
+export type HarnessStatusResponse = HarnessStatusResponses[keyof HarnessStatusResponses]
 
-export type TilesGetData = {
+export type HarnessTimelineData = {
   body?: never
   path: {
-    z: number
-    x: number
-    y: number
+    sessionID: string
   }
   query?: {
     directory?: string
   }
-  url: "/tiles/{z}/{x}/{y}"
+  url: "/harness/session/{sessionID}/timeline"
 }
 
-export type TilesGetErrors = {
+export type HarnessTimelineErrors = {
   /**
-   * Not found
+   * Bad request
    */
-  404: NotFoundError
+  400: BadRequestError
 }
 
-export type TilesGetError = TilesGetErrors[keyof TilesGetErrors]
+export type HarnessTimelineError = HarnessTimelineErrors[keyof HarnessTimelineErrors]
 
-export type TilesGetResponses = {
+export type HarnessTimelineResponses = {
   /**
-   * MBTiles tile bytes
+   * Harness events
    */
+  200: Array<HarnessEvent>
+}
+
+export type HarnessTimelineResponse = HarnessTimelineResponses[keyof HarnessTimelineResponses]
+
+export type HarnessPermissionResolveData = {
+  body?: HarnessPermissionDecision
+  path: {
+    sessionID: string
+    permissionID: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/harness/session/{sessionID}/permission/{permissionID}"
+}
+
+export type HarnessPermissionResolveErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type HarnessPermissionResolveError = HarnessPermissionResolveErrors[keyof HarnessPermissionResolveErrors]
+
+export type HarnessPermissionResolveResponses = {
+  /**
+   * Permission decision result
+   */
+  200: HarnessPermissionResult
+}
+
+export type HarnessPermissionResolveResponse =
+  HarnessPermissionResolveResponses[keyof HarnessPermissionResolveResponses]
+
+export type MarketplaceCapabilitiesListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities"
+}
+
+export type MarketplaceCapabilitiesListErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type MarketplaceCapabilitiesListError =
+  MarketplaceCapabilitiesListErrors[keyof MarketplaceCapabilitiesListErrors]
+
+export type MarketplaceCapabilitiesListResponses = {
+  /**
+   * Capability list
+   */
+  200: CapabilityList
+}
+
+export type MarketplaceCapabilitiesListResponse =
+  MarketplaceCapabilitiesListResponses[keyof MarketplaceCapabilitiesListResponses]
+
+export type MarketplaceCapabilitiesGetData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}"
+}
+
+export type MarketplaceCapabilitiesGetErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type MarketplaceCapabilitiesGetError = MarketplaceCapabilitiesGetErrors[keyof MarketplaceCapabilitiesGetErrors]
+
+export type MarketplaceCapabilitiesGetResponses = {
+  /**
+   * Capability manifest
+   */
+  200: CapabilityManifest
+}
+
+export type MarketplaceCapabilitiesGetResponse =
+  MarketplaceCapabilitiesGetResponses[keyof MarketplaceCapabilitiesGetResponses]
+
+export type PostMarketplaceCapabilitiesIdEnableData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/enable"
+}
+
+export type PostMarketplaceCapabilitiesIdEnableResponses = {
+  200: unknown
+}
+
+export type PostMarketplaceCapabilitiesIdDisableData = {
+  body?: never
+  path: {
+    id: string
+  }
+  query?: {
+    directory?: string
+  }
+  url: "/marketplace/capabilities/{id}/disable"
+}
+
+export type PostMarketplaceCapabilitiesIdDisableResponses = {
   200: unknown
 }
 
@@ -4710,6 +4807,42 @@ export type AgentStudioListResponses = {
 }
 
 export type AgentStudioListResponse = AgentStudioListResponses[keyof AgentStudioListResponses]
+
+export type AgentStudioToolListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/tool/list"
+}
+
+export type AgentStudioToolListResponses = {
+  /**
+   * Tool inventory
+   */
+  200: Array<ToolInventoryItem>
+}
+
+export type AgentStudioToolListResponse = AgentStudioToolListResponses[keyof AgentStudioToolListResponses]
+
+export type AgentStudioSkillListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+  }
+  url: "/agent-studio/skill/list"
+}
+
+export type AgentStudioSkillListResponses = {
+  /**
+   * Skill inventory
+   */
+  200: Array<SkillInventoryItem>
+}
+
+export type AgentStudioSkillListResponse = AgentStudioSkillListResponses[keyof AgentStudioSkillListResponses]
 
 export type AgentStudioWorkflowPresetsData = {
   body?: never

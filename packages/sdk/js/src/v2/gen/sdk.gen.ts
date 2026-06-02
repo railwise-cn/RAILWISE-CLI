@@ -7,6 +7,8 @@ import type {
   AgentStudioGetErrors,
   AgentStudioGetResponses,
   AgentStudioListResponses,
+  AgentStudioSkillListResponses,
+  AgentStudioToolListResponses,
   AgentStudioUpdateErrors,
   AgentStudioUpdateResponses,
   AgentStudioWorkflowPresetsResponses,
@@ -27,12 +29,6 @@ import type {
   ConfigProvidersResponses,
   ConfigUpdateErrors,
   ConfigUpdateResponses,
-  DashboardProjectPointsErrors,
-  DashboardProjectPointsResponses,
-  DashboardProjectsResponses,
-  DashboardProjectTimeseriesErrors,
-  DashboardProjectTimeseriesResponses,
-  DashboardSummaryResponses,
   EventSubscribeResponses,
   EventTuiCommandExecute,
   EventTuiPromptAppend,
@@ -54,8 +50,19 @@ import type {
   GlobalDisposeResponses,
   GlobalEventResponses,
   GlobalHealthResponses,
+  HarnessPermissionDecision,
+  HarnessPermissionResolveErrors,
+  HarnessPermissionResolveResponses,
+  HarnessStatusErrors,
+  HarnessStatusResponses,
+  HarnessTimelineErrors,
+  HarnessTimelineResponses,
   InstanceDisposeResponses,
   LspStatusResponses,
+  MarketplaceCapabilitiesGetErrors,
+  MarketplaceCapabilitiesGetResponses,
+  MarketplaceCapabilitiesListErrors,
+  MarketplaceCapabilitiesListResponses,
   McpAddErrors,
   McpAddResponses,
   McpAuthAuthenticateErrors,
@@ -84,6 +91,8 @@ import type {
   PermissionRespondErrors,
   PermissionRespondResponses,
   PermissionRuleset,
+  PostMarketplaceCapabilitiesIdDisableResponses,
+  PostMarketplaceCapabilitiesIdEnableResponses,
   ProjectCurrentResponses,
   ProjectListResponses,
   ProjectUpdateErrors,
@@ -159,8 +168,6 @@ import type {
   TemplatesGetResponses,
   TemplatesListResponses,
   TextPartInput,
-  TilesGetErrors,
-  TilesGetResponses,
   ToolIdsErrors,
   ToolIdsResponses,
   ToolListErrors,
@@ -2185,13 +2192,79 @@ export class Provider extends HeyApiClient {
   }
 }
 
-export class Project2 extends HeyApiClient {
+export class Permission2 extends HeyApiClient {
   /**
-   * 监测点 GeoJSON
+   * Resolve Harness permission
+   *
+   * Record a user decision for a Harness permission request.
    */
-  public points<ThrowOnError extends boolean = false>(
+  public resolve<ThrowOnError extends boolean = false>(
     parameters: {
-      id: string
+      sessionID: string
+      permissionID: string
+      directory?: string
+      harnessPermissionDecision?: HarnessPermissionDecision
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "sessionID" },
+            { in: "path", key: "permissionID" },
+            { in: "query", key: "directory" },
+            { key: "harnessPermissionDecision", map: "body" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      HarnessPermissionResolveResponses,
+      HarnessPermissionResolveErrors,
+      ThrowOnError
+    >({
+      url: "/harness/session/{sessionID}/permission/{permissionID}",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+}
+
+export class Harness extends HeyApiClient {
+  /**
+   * Get Harness status
+   *
+   * Return the current local Harness execution posture for Desktop.
+   */
+  public status<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<HarnessStatusResponses, HarnessStatusErrors, ThrowOnError>({
+      url: "/harness/status",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Get Harness session timeline
+   *
+   * Return normalized Harness events for one session.
+   */
+  public timeline<ThrowOnError extends boolean = false>(
+    parameters: {
+      sessionID: string
       directory?: string
     },
     options?: Options<never, ThrowOnError>,
@@ -2201,110 +2274,57 @@ export class Project2 extends HeyApiClient {
       [
         {
           args: [
-            { in: "path", key: "id" },
+            { in: "path", key: "sessionID" },
             { in: "query", key: "directory" },
           ],
         },
       ],
     )
-    return (options?.client ?? this.client).get<
-      DashboardProjectPointsResponses,
-      DashboardProjectPointsErrors,
-      ThrowOnError
-    >({
-      url: "/dashboard/projects/{id}/points",
+    return (options?.client ?? this.client).get<HarnessTimelineResponses, HarnessTimelineErrors, ThrowOnError>({
+      url: "/harness/session/{sessionID}/timeline",
       ...options,
       ...params,
     })
   }
 
-  /**
-   * 时序数据（uPlot 格式）
-   */
-  public timeseries<ThrowOnError extends boolean = false>(
-    parameters: {
-      id: string
-      directory?: string
-      metric?: "settlement" | "displacement"
-      days?: number
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams(
-      [parameters],
-      [
-        {
-          args: [
-            { in: "path", key: "id" },
-            { in: "query", key: "directory" },
-            { in: "query", key: "metric" },
-            { in: "query", key: "days" },
-          ],
-        },
-      ],
-    )
-    return (options?.client ?? this.client).get<
-      DashboardProjectTimeseriesResponses,
-      DashboardProjectTimeseriesErrors,
-      ThrowOnError
-    >({
-      url: "/dashboard/projects/{id}/timeseries",
-      ...options,
-      ...params,
-    })
+  private _permission?: Permission2
+  get permission(): Permission2 {
+    return (this._permission ??= new Permission2({ client: this.client }))
   }
 }
 
-export class Dashboard extends HeyApiClient {
+export class Capabilities extends HeyApiClient {
   /**
-   * 仪表板摘要
+   * List marketplace capabilities
+   *
+   * Return built-in and installed capability manifests for Desktop Marketplace.
    */
-  public summary<ThrowOnError extends boolean = false>(
+  public list<ThrowOnError extends boolean = false>(
     parameters?: {
       directory?: string
     },
     options?: Options<never, ThrowOnError>,
   ) {
     const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
-    return (options?.client ?? this.client).get<DashboardSummaryResponses, unknown, ThrowOnError>({
-      url: "/dashboard/summary",
+    return (options?.client ?? this.client).get<
+      MarketplaceCapabilitiesListResponses,
+      MarketplaceCapabilitiesListErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities",
       ...options,
       ...params,
     })
   }
 
   /**
-   * 项目列表（含 bbox）
-   */
-  public projects<ThrowOnError extends boolean = false>(
-    parameters?: {
-      directory?: string
-    },
-    options?: Options<never, ThrowOnError>,
-  ) {
-    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
-    return (options?.client ?? this.client).get<DashboardProjectsResponses, unknown, ThrowOnError>({
-      url: "/dashboard/projects",
-      ...options,
-      ...params,
-    })
-  }
-
-  private _project?: Project2
-  get project(): Project2 {
-    return (this._project ??= new Project2({ client: this.client }))
-  }
-}
-
-export class Tiles extends HeyApiClient {
-  /**
-   * 离线地图瓦片
+   * Get marketplace capability
+   *
+   * Return one capability manifest by id.
    */
   public get<ThrowOnError extends boolean = false>(
     parameters: {
-      z: number
-      x: number
-      y: number
+      id: string
       directory?: string
     },
     options?: Options<never, ThrowOnError>,
@@ -2314,19 +2334,28 @@ export class Tiles extends HeyApiClient {
       [
         {
           args: [
-            { in: "path", key: "z" },
-            { in: "path", key: "x" },
-            { in: "path", key: "y" },
+            { in: "path", key: "id" },
             { in: "query", key: "directory" },
           ],
         },
       ],
     )
-    return (options?.client ?? this.client).get<TilesGetResponses, TilesGetErrors, ThrowOnError>({
-      url: "/tiles/{z}/{x}/{y}",
+    return (options?.client ?? this.client).get<
+      MarketplaceCapabilitiesGetResponses,
+      MarketplaceCapabilitiesGetErrors,
+      ThrowOnError
+    >({
+      url: "/marketplace/capabilities/{id}",
       ...options,
       ...params,
     })
+  }
+}
+
+export class Marketplace extends HeyApiClient {
+  private _capabilities?: Capabilities
+  get capabilities(): Capabilities {
+    return (this._capabilities ??= new Capabilities({ client: this.client }))
   }
 }
 
@@ -2558,6 +2587,44 @@ export class File extends HeyApiClient {
   }
 }
 
+export class Tool2 extends HeyApiClient {
+  /**
+   * List agent collaboration tools
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioToolListResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/tool/list",
+      ...options,
+      ...params,
+    })
+  }
+}
+
+export class Skill extends HeyApiClient {
+  /**
+   * List available skills
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "directory" }] }])
+    return (options?.client ?? this.client).get<AgentStudioSkillListResponses, unknown, ThrowOnError>({
+      url: "/agent-studio/skill/list",
+      ...options,
+      ...params,
+    })
+  }
+}
+
 export class Workflow extends HeyApiClient {
   /**
    * List built-in workflow presets
@@ -2703,6 +2770,16 @@ export class AgentStudio extends HeyApiClient {
         ...params.headers,
       },
     })
+  }
+
+  private _tool?: Tool2
+  get tool(): Tool2 {
+    return (this._tool ??= new Tool2({ client: this.client }))
+  }
+
+  private _skill?: Skill
+  get skill(): Skill {
+    return (this._skill ??= new Skill({ client: this.client }))
   }
 
   private _workflow?: Workflow
@@ -3557,6 +3634,56 @@ export class RailwiseClient extends HeyApiClient {
     RailwiseClient.__registry.set(this, args?.key)
   }
 
+  public postMarketplaceCapabilitiesIdEnable<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<PostMarketplaceCapabilitiesIdEnableResponses, unknown, ThrowOnError>({
+      url: "/marketplace/capabilities/{id}/enable",
+      ...options,
+      ...params,
+    })
+  }
+
+  public postMarketplaceCapabilitiesIdDisable<ThrowOnError extends boolean = false>(
+    parameters: {
+      id: string
+      directory?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "id" },
+            { in: "query", key: "directory" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<PostMarketplaceCapabilitiesIdDisableResponses, unknown, ThrowOnError>({
+      url: "/marketplace/capabilities/{id}/disable",
+      ...options,
+      ...params,
+    })
+  }
+
   private _global?: Global
   get global(): Global {
     return (this._global ??= new Global({ client: this.client }))
@@ -3622,14 +3749,14 @@ export class RailwiseClient extends HeyApiClient {
     return (this._provider ??= new Provider({ client: this.client }))
   }
 
-  private _dashboard?: Dashboard
-  get dashboard(): Dashboard {
-    return (this._dashboard ??= new Dashboard({ client: this.client }))
+  private _harness?: Harness
+  get harness(): Harness {
+    return (this._harness ??= new Harness({ client: this.client }))
   }
 
-  private _tiles?: Tiles
-  get tiles(): Tiles {
-    return (this._tiles ??= new Tiles({ client: this.client }))
+  private _marketplace?: Marketplace
+  get marketplace(): Marketplace {
+    return (this._marketplace ??= new Marketplace({ client: this.client }))
   }
 
   private _templates?: Templates

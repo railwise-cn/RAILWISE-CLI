@@ -117,6 +117,7 @@ const settings = await read("packages/app/src/components/settings-general.tsx")
 const desktop = await read("packages/desktop/src/index.tsx")
 const e2eHarness = await read("packages/desktop/e2e/helpers/app.ts")
 const adminDeploy = await read("docs/admin/01-deploy.md")
+const readme = await read("README.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
 const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY",
@@ -198,6 +199,8 @@ check(
     config.bundle?.linux === undefined &&
     devConfig.bundle?.linux === undefined &&
     adminDeploy.includes(scope) &&
+    readme.includes("Linux 仅保留 CLI，不做桌面安装包") &&
+    !readme.includes("支持 Windows / macOS / Linux 离线安装") &&
     !sidecar.includes("linux-") &&
     !adminDeploy.includes("Linux 安装包") &&
     !adminDeploy.includes("linux/"),

@@ -109,6 +109,7 @@ const appZipVerify = await read("packages/desktop/scripts/verify-macos-appzip.ts
 const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
 const macStage = await read("packages/desktop/scripts/stage-macos-bundles.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
+const railwiseBuildModels = await read("packages/railwise/script/models.ts")
 const railwiseModels = await read("packages/railwise/src/provider/models.ts")
 const cli = await read("packages/desktop/src-tauri/src/cli.rs")
 const lib = await read("packages/desktop/src-tauri/src/lib.rs")
@@ -540,7 +541,8 @@ check(
 )
 check(
   "sidecar build reuses models snapshot offline",
-  contains(railwiseBuild, ["MODELS_DEV_API_JSON", "src/provider/models-snapshot.ts", "Generated models-snapshot.ts"]) &&
+  contains(railwiseBuild, ["Generated models-snapshot.ts", "models(dir)"]) &&
+    contains(railwiseBuildModels, ["MODELS_DEV_API_JSON", "src/provider/models-snapshot.ts", "Unable to refresh models.dev snapshot"]) &&
     contains(railwiseModels, [
       "ModelsDev.Data",
       "./models-snapshot",

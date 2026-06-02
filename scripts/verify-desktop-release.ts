@@ -106,6 +106,7 @@ const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
 const appZipVerify = await read("packages/desktop/scripts/verify-macos-appzip.ts")
+const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
 const macStage = await read("packages/desktop/scripts/stage-macos-bundles.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
@@ -459,6 +460,19 @@ check(
       '"target", "release", "bundle", "dmg"',
     ]),
   "Sandbox fallback app zip is extracted and verified with the same app bundle checks",
+)
+check(
+  "macOS app launch smoke script",
+  pkg.scripts?.["smoke:macos"] === "bun ./scripts/smoke-macos-app.ts" &&
+    contains(macSmoke, [
+      "verify-macos-bundle.ts --app",
+      "open -n",
+      "pgrep -x",
+      "If Safari.app also fails to open from this shell",
+      "--skip-launch",
+      "railwise-cli",
+    ]),
+  "Normal macOS Terminal can run an app launch smoke while sandboxed shells can verify bundle-only mode",
 )
 check(
   "macOS bundle staging script",

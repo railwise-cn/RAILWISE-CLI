@@ -168,8 +168,17 @@ check(
 )
 check(
   "visual regression E2E",
-  has(visual, ["[data-testid=home-workbench]", "想让 RAILWISE 完成什么？", "项目驾驶舱", "告警 Feed", "[data-testid=dashboard-map]"]),
-  "old dashboard copy and map are blocked while the minimalist home workbench is asserted",
+  has(visual, [
+    "[data-testid=home-workbench]",
+    "[data-testid=home-chat-composer]",
+    "想让 RAILWISE 完成什么？",
+    "项目驾驶舱",
+    "告警 Feed",
+    "多智能体协作中枢",
+    "智能体矩阵",
+    "[data-testid=dashboard-map]",
+  ]),
+  "old dashboard, map, and agent-hub copy are blocked while the minimalist home composer is asserted",
 )
 check(
   "TTFUI E2E budget",

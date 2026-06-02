@@ -125,6 +125,7 @@ const infoPlist = await read("packages/desktop/src-tauri/Info.plist")
 const platform = await read("packages/app/src/context/platform.tsx")
 const settings = await read("packages/app/src/components/settings-general.tsx")
 const desktop = await read("packages/desktop/src/index.tsx")
+const startupDiagnosis = await read("packages/desktop/src/startup-diagnosis.ts")
 const e2eHarness = await read("packages/desktop/e2e/helpers/app.ts")
 const downloadTypes = await read("packages/console/app/src/routes/download/types.ts")
 const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
@@ -322,6 +323,14 @@ check(
     !cli.includes("Command::new(shell)") &&
     !cli.includes('cmd.args(["-l", "-c"'),
   "Packaged macOS sidecar launches directly instead of reading user shell profiles during startup",
+)
+check(
+  "startup failure exposes log directory",
+  contains(lib, ["fn get_log_dir(app: AppHandle) -> Result<String, String>", ".app_log_dir()", "get_log_dir,"]) &&
+    bindings.includes('getLogDir: () => __TAURI_INVOKE<string>("get_log_dir")') &&
+    contains(desktop, ['diagnosis.issue === "server"', "commands.getLogDir()", "打开日志目录"]) &&
+    contains(startupDiagnosis, ['issue: "server"', 'action: "打开日志目录"', "打开日志目录并保留最新日志"]),
+  "Server startup failures can open the Tauri app log directory from the failure screen",
 )
 check(
   "release omits Windows target",

@@ -29,7 +29,10 @@ describe("startupDiagnosis", () => {
   })
 
   it("classifies sidecar health failures", () => {
-    expect(startupDiagnosis("Failed to spawn RAILWISE Server (Health check timed out).").issue).toBe("server")
+    const diagnosis = startupDiagnosis("Failed to spawn RAILWISE Server (Health check timed out).")
+
+    expect(diagnosis.issue).toBe("server")
+    expect(diagnosis.action).toBe("打开日志目录")
   })
 
   it("falls back to unknown for uncategorized errors", () => {

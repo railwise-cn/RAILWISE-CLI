@@ -101,6 +101,7 @@ const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
 const prepare = await read("packages/desktop/scripts/prepare-tauri-config.ts")
 const localDmg = await read("packages/desktop/scripts/package-local-dmg.ts")
+const localInstall = await read("packages/desktop/scripts/install-macos-local.ts")
 const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
@@ -446,6 +447,18 @@ check(
       "ln -s /Applications",
     ]),
   "Local macOS packaging prefers DMG and falls back to a signed app zip when hdiutil is sandboxed",
+)
+check(
+  "local macOS install script",
+  pkg.scripts?.["install:macos:local"] === "bun ./scripts/install-macos-local.ts" &&
+    contains(localInstall, [
+      "railwise-macos-stale-apps",
+      "ditto -x -k",
+      "verify-macos-bundle.ts",
+      "--keep-stale",
+      "normal Terminal",
+    ]),
+  "Local macOS app zip can be installed from the latest build while stale app bundles are archived before Finder smoke testing",
 )
 check(
   "local macOS ad-hoc signing script",

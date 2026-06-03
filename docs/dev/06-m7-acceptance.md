@@ -31,5 +31,6 @@
 - 桌面端不再暴露旧项目驾驶舱，默认进入 `/home`；旧 `/dashboard` 路由重定向到极简工作台。
 - `packages/desktop/scripts/sse-soak.ts` 将 `/event` 长连验收固化为命令，默认 30 分钟，支持 `--seconds`、`--minutes`、`--url` 和 `--heartbeat-timeout-ms`。
 - `packages/desktop/scripts/smoke-macos-app.ts` 将 macOS app 启动验收固化为命令：先验证 bundle、plist、架构和 codesign，再启动 app，并在普通 macOS 终端等待日志中的 `CLI health check OK`。
+- 本机测试前先用 `cd packages/desktop && bun run install:macos:local` 安装最新 `.app.zip`。脚本会从 `bundle/dmg` 选择最新 app zip，归档 `/Applications` 和 `~/Applications` 下同名旧包到 `~/Desktop/railwise-macos-stale-apps/<timestamp>/`，再安装并复验 bundle，避免 Finder 启动到 5 月旧包或错误分支产物。
 - `scripts/verify-desktop-m7.ts` 将 M7 静态验收固化为命令，覆盖 E2E 清单、市场/高级管理拆分、视觉回归、TTFUI、遥测隐私和文档交付。
 - `scripts/verify-desktop-acceptance.ts` 提供一条命令的 M7 回归验收，默认快检，`--full` 执行 30 分钟 SSE 长连。

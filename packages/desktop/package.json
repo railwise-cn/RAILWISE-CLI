@@ -12,6 +12,7 @@
     "build:macos:local": "bun run predev && bun run prepare:tauri && bun run tauri -- build --bundles app --config src-tauri/tauri.ci.conf.json && bun run sign:macos",
     "package:dmg:local": "bun ./scripts/package-local-dmg.ts",
     "build:dmg:local": "bun run build:macos:local && bun run package:dmg:local",
+    "install:macos:local": "bun ./scripts/install-macos-local.ts",
     "sign:macos": "bun ./scripts/sign-macos-app.ts",
     "verify:macos": "bun ./scripts/verify-macos-bundle.ts",
     "verify:dmg": "bun ./scripts/verify-macos-dmg.ts",

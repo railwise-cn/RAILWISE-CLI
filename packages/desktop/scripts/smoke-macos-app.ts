@@ -62,6 +62,36 @@ const logFiles = async (since: number) => {
 }
 
 const tail = (text: string) => text.split("\n").slice(-80).join("\n")
+const sidecar = path.join(app, "Contents", "MacOS", "railwise-cli")
+
+const value = (input: string, name: string) => input.match(new RegExp(`--${name}\\s+([^\\s]+)`))?.[1]
+
+const sidecars = async () =>
+  (await $`pgrep -f ${sidecar}`.quiet().nothrow()).stdout.toString().trim().split("\n").filter(Boolean)
+
+const sidecarUrls = async () =>
+  (
+    await Promise.all(
+      (await sidecars()).map(async (pid) => {
+        const args = (await $`ps -p ${pid} -o args=`.quiet().nothrow()).stdout.toString()
+        const port = value(args, "port")
+        if (!port) return
+        return `http://${value(args, "hostname") ?? "127.0.0.1"}:${port}/global/health`
+      }),
+    )
+  ).filter((item): item is string => Boolean(item))
+
+const readyFromHttp = async () => {
+  for (const url of await sidecarUrls()) {
+    const res = await fetch(url, { signal: AbortSignal.timeout(1_000) }).catch(() => undefined)
+    if (res?.status === 200 || res?.status === 401) {
+      console.log(`macOS app sidecar ready from ${url} (HTTP ${res.status})`)
+      return true
+    }
+  }
+
+  return false
+}
 
 const probeLoopback = () => {
   try {
@@ -104,6 +134,8 @@ const waitForReady = async (since: number) => {
     if (!skipProcessCheck && (await running()).length === 0) {
       throw new Error(`macOS app process exited before sidecar was ready.\n${tail(latest)}`)
     }
+
+    if (await readyFromHttp()) return
 
     await sleep(500)
   }

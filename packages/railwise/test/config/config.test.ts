@@ -966,6 +966,76 @@ test("migrates legacy tools config to permissions - allow", async () => {
   })
 })
 
+test("accepts RAILWISE desktop profile metadata and categorized top-level tools", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await Filesystem.write(
+        path.join(dir, "railwise.json"),
+        JSON.stringify({
+          $schema: "https://railwise.ai/config.json",
+          version: "1.0",
+          system: {
+            domain: "surveying_monitoring",
+          },
+          tools: {
+            surveying: ["total_station", "gnss", "level"],
+            monitoring: ["settlement"],
+            analysis: ["least_squares"],
+          },
+        }),
+      )
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const config = await Config.get()
+      expect(config.version).toBe("1.0")
+      expect(config.system?.domain).toBe("surveying_monitoring")
+      expect(config.permission).toEqual({
+        total_station: "allow",
+        gnss: "allow",
+        level: "allow",
+        settlement: "allow",
+        least_squares: "allow",
+      })
+    },
+  })
+})
+
+test("accepts categorized legacy agent tools", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await Filesystem.write(
+        path.join(dir, "railwise.json"),
+        JSON.stringify({
+          $schema: "https://railwise.ai/config.json",
+          agent: {
+            survey_manager: {
+              tools: {
+                surveying: ["total_station", "gnss", "level"],
+                monitoring: ["settlement"],
+              },
+            },
+          },
+        }),
+      )
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const config = await Config.get()
+      expect(config.agent?.survey_manager?.permission).toEqual({
+        total_station: "allow",
+        gnss: "allow",
+        level: "allow",
+        settlement: "allow",
+      })
+    },
+  })
+})
+
 test("migrates legacy tools config to permissions - deny", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {

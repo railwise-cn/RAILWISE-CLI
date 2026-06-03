@@ -34,12 +34,15 @@ const arg = (name: string, fallback?: string) => {
 const flag = (name: string) => args.includes(name)
 
 const run = async (strings: TemplateStringsArray, ...values: unknown[]) => {
-  const result = await $(strings, ...values).quiet().nothrow()
+  const result = await $(strings, ...values)
+    .quiet()
+    .nothrow()
   if (result.exitCode === 0) return result.stdout.toString().trim()
   throw new Error((result.stderr.toString() || result.stdout.toString()).trim())
 }
 
-const json = async <T>(strings: TemplateStringsArray, ...values: unknown[]) => JSON.parse(await run(strings, ...values)) as T
+const json = async <T>(strings: TemplateStringsArray, ...values: unknown[]) =>
+  JSON.parse(await run(strings, ...values)) as T
 
 async function main() {
   const repo = arg("--repo", "railwise-cn/RAILWISE-CLI")!
@@ -58,21 +61,17 @@ async function main() {
     "SHA256SUMS.txt",
   ]
 
-  const lines = (
-    sha ? "" : await run`git ls-remote origin ${`refs/tags/${tag}`} ${`refs/tags/${tag}^{}`}`
-  )
+  const lines = (sha ? "" : await run`git ls-remote origin ${`refs/tags/${tag}`} ${`refs/tags/${tag}^{}`}`)
     .trim()
     .split("\n")
     .filter(Boolean)
-  const ref =
-    sha ??
-    lines
-      .map((line) => line.split(/\s+/))
-      .find((item) => item[1] === `refs/tags/${tag}^{}`)?.[0]
+  const ref = sha ?? lines.map((line) => line.split(/\s+/)).find((item) => item[1] === `refs/tags/${tag}^{}`)?.[0]
 
   if (!ref) throw new Error(`Unable to resolve ${tag} from origin`)
 
-  const runs = await json<Run[]>`gh run list --repo ${repo} --workflow ${workflow} --limit 30 --json databaseId,status,conclusion,headBranch,headSha,displayTitle,url`
+  const runs = await json<
+    Run[]
+  >`gh run list --repo ${repo} --workflow ${workflow} --limit 30 --json databaseId,status,conclusion,headBranch,headSha,displayTitle,url`
   const hit =
     runs.find((item) => item.headSha === ref && item.headBranch === tag) ?? runs.find((item) => item.headSha === ref)
   if (!hit) throw new Error(`No Desktop Release workflow run found for ${tag} (${ref})`)

@@ -1,5 +1,4 @@
 import { base64Decode } from "@railwise/util/encode"
-import type { Page } from "@playwright/test"
 import { test, expect } from "../fixtures"
 import {
   defocus,
@@ -8,6 +7,7 @@ import {
   openSidebar,
   setWorkspacesEnabled,
   sessionIDFromUrl,
+  waitWorkspaceItem,
 } from "../actions"
 import {
   projectSwitchSelector,
@@ -20,24 +20,6 @@ import { createSdk, dirSlug } from "../utils"
 
 function slugFromUrl(url: string) {
   return /\/([^/]+)\/session(?:\/|$)/.exec(url)?.[1] ?? ""
-}
-
-async function waitWorkspaceReady(page: Page, slug: string) {
-  await openSidebar(page)
-  await expect
-    .poll(
-      async () => {
-        const item = page.locator(workspaceItemSelector(slug)).first()
-        try {
-          await item.hover({ timeout: 500 })
-          return true
-        } catch {
-          return false
-        }
-      },
-      { timeout: 60_000 },
-    )
-    .toBe(true)
 }
 
 test("can switch between projects from sidebar", async ({ page, withProject }) => {
@@ -105,7 +87,7 @@ test("switching back to a project opens the latest workspace session", async ({ 
 
         const workspaceSlug = slugFromUrl(page.url())
         workspaceDir = base64Decode(workspaceSlug)
-        await waitWorkspaceReady(page, workspaceSlug)
+        await waitWorkspaceItem(page, workspaceSlug)
 
         const workspace = page.locator(workspaceItemSelector(workspaceSlug)).first()
         await workspace.hover()

@@ -1,30 +1,12 @@
 import { base64Decode } from "@railwise/util/encode"
 import type { Page } from "@playwright/test"
 import { test, expect } from "../fixtures"
-import { cleanupTestProject, openSidebar, sessionIDFromUrl, setWorkspacesEnabled } from "../actions"
+import { cleanupTestProject, openSidebar, sessionIDFromUrl, setWorkspacesEnabled, waitWorkspaceItem } from "../actions"
 import { promptSelector, workspaceItemSelector, workspaceNewSessionSelector } from "../selectors"
 import { createSdk } from "../utils"
 
 function slugFromUrl(url: string) {
   return /\/([^/]+)\/session(?:\/|$)/.exec(url)?.[1] ?? ""
-}
-
-async function waitWorkspaceReady(page: Page, slug: string) {
-  await openSidebar(page)
-  await expect
-    .poll(
-      async () => {
-        const item = page.locator(workspaceItemSelector(slug)).first()
-        try {
-          await item.hover({ timeout: 500 })
-          return true
-        } catch {
-          return false
-        }
-      },
-      { timeout: 60_000 },
-    )
-    .toBe(true)
 }
 
 async function createWorkspace(page: Page, root: string, seen: string[]) {
@@ -51,7 +33,7 @@ async function createWorkspace(page: Page, root: string, seen: string[]) {
 }
 
 async function openWorkspaceNewSession(page: Page, slug: string) {
-  await waitWorkspaceReady(page, slug)
+  await waitWorkspaceItem(page, slug)
 
   const item = page.locator(workspaceItemSelector(slug)).first()
   await item.hover()
@@ -107,11 +89,11 @@ test("new sessions from sidebar workspace actions stay in selected workspace", a
 
       const first = await createWorkspace(page, root, [])
       workspaces.push(first)
-      await waitWorkspaceReady(page, first.slug)
+      await waitWorkspaceItem(page, first.slug)
 
       const second = await createWorkspace(page, root, [first.slug])
       workspaces.push(second)
-      await waitWorkspaceReady(page, second.slug)
+      await waitWorkspaceItem(page, second.slug)
 
       const firstSession = await createSessionFromWorkspace(page, first.slug, `workspace one ${Date.now()}`)
       sessions.push(firstSession)

@@ -16,7 +16,9 @@ export async function GET({ params: { platform } }: APIEvent) {
   const assetName = assetNames[platform]
   if (!assetName) return new Response("Not Found", { status: 404 })
 
-  const resp = await fetch(`https://github.com/railwise-cn/RAILWISE-CLI/releases/latest/download/${assetName}`, {
+  const release = process.env.RAILWISE_DESKTOP_RELEASE_TAG ?? "desktop/v1.3.0-beta.18"
+  const segment = release === "latest" ? "latest/download" : `download/${encodeURIComponent(release)}`
+  const resp = await fetch(`https://github.com/railwise-cn/RAILWISE-CLI/releases/${segment}/${assetName}`, {
     cf: {
       // in case gh releases has rate limits
       cacheTtl: 60 * 5,

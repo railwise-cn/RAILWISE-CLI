@@ -49,6 +49,7 @@ async function main() {
   const tag = arg("--tag", "desktop/v1.3.0-beta.17")!
   const sha = arg("--sha")
   const download = flag("--download")
+  const published = flag("--published")
   const dir = arg("--download-dir", path.join("/private", "tmp", "railwise-official-release"))
   const workflow = "desktop-release.yml"
   const expect = [
@@ -90,7 +91,13 @@ async function main() {
     ["workflow run succeeded", hit.conclusion === "success", `${hit.status} / ${hit.conclusion ?? "none"}`],
     ["release tag", release.tagName === tag, release.tagName],
     ["release target", release.targetCommitish === ref, release.targetCommitish],
-    ["release is draft", release.isDraft, release.url],
+    [
+      "release visibility",
+      published ? !release.isDraft && release.isPrerelease : release.isDraft,
+      published
+        ? `draft=${release.isDraft} / prerelease=${release.isPrerelease} / ${release.url}`
+        : `draft=${release.isDraft} / ${release.url}`,
+    ],
     ["release asset count", names.length === expect.length, names.join(", ")],
     ["release expected assets", missing.length === 0, missing.join(", ") || "all present"],
     ["release has no extra assets", extra.length === 0, extra.join(", ") || "none"],
@@ -119,7 +126,7 @@ await main().catch((err) => {
     [
       "GitHub Desktop release verification failed.",
       err instanceof Error ? err.message : String(err),
-      "If this says api.github.com cannot be resolved, rerun from a network-enabled shell after GitHub API access recovers.",
+      "If this is an api.github.com or ssh.github.com network error, rerun from a network-enabled shell after GitHub access recovers.",
     ].join("\n"),
   )
   process.exit(1)

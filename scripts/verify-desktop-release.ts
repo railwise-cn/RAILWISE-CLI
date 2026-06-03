@@ -294,10 +294,13 @@ check(
     contains(downloadRoute, [
       "railwise-desktop-darwin-aarch64.dmg",
       "railwise-desktop-darwin-x64.dmg",
-      "https://github.com/railwise-cn/RAILWISE-CLI/releases/latest/download/",
+      "RAILWISE_DESKTOP_RELEASE_TAG",
+      "desktop/v1.3.0-beta.18",
+      "encodeURIComponent(release)",
+      "https://github.com/railwise-cn/RAILWISE-CLI/releases/",
     ]) &&
-    !downloadRoute.includes("https://github.com/anomalyco/railwise/releases/latest/download/"),
-  "Download UI, locale labels, and /download/:platform route expose the two public macOS DMGs from the RAILWISE repository",
+    !downloadRoute.includes("https://github.com/anomalyco/railwise/releases/"),
+  "Download UI, locale labels, and /download/:platform route expose the two public macOS DMGs from the RAILWISE repository; prerelease beta downloads use an explicit tag by default",
 )
 check(
   "desktop native shell omits Linux runtime",
@@ -598,8 +601,13 @@ check(
     '-name "*.app.tar.gz.sig"',
     "Expected exactly 2 public macOS installers",
     "Expected exactly 4 macOS updater artifacts",
+    "publish:",
+    "PUBLISH_RELEASE",
     '--repo "$GITHUB_REPOSITORY"',
-    "--draft",
+    "release_flags=(--draft)",
+    '[[ "$TAG" == *"-beta"* ]]',
+    "release_flags=(--prerelease)",
+    '"${release_flags[@]}"',
     'gh release delete "$TAG"',
     '--target "$GITHUB_SHA"',
     '"${dmgs[@]}"',
@@ -607,7 +615,7 @@ check(
   ]) &&
     !workflow.includes('-name "*.exe"') &&
     !workflow.includes('-name "*.zip"'),
-  "draft release uploads macOS Apple Silicon and Intel DMGs plus updater archives and signatures",
+  "GitHub release uploads macOS Apple Silicon and Intel DMGs plus updater archives; it defaults to draft and can publish an explicit prerelease beta",
 )
 check("production config exists", configExists, configPath)
 check(

@@ -240,10 +240,10 @@ check(
 )
 check(
   "release bundle matrix",
-  contains(workflow, ["bundles: dmg", "--bundles ${{ matrix.bundles }}"]) &&
+  contains(workflow, ["bundles: app,dmg", "--bundles ${{ matrix.bundles }}", "--require-updater"]) &&
     !workflow.includes("bundles: nsis") &&
     !workflow.includes('-name "*.msi"'),
-  "Beta release builds macOS DMG bundles only",
+  "Beta release builds macOS app and DMG bundles so app verification and updater artifacts are preserved",
 )
 check(
   "release omits Linux target",

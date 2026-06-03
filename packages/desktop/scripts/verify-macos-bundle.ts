@@ -27,6 +27,7 @@ if (target && !target.includes("apple-darwin"))
   throw new Error(`macOS bundle verification is not available for ${target}`)
 
 const exists = async (file: string) => Boolean(await stat(file).catch(() => undefined))
+const executableFile = async (file: string) => Boolean(((await stat(file).catch(() => undefined))?.mode ?? 0) & 0o111)
 const first = async (items: string[]) => {
   for (const item of items) {
     if (await exists(item)) return item
@@ -71,6 +72,8 @@ check("app bundle exists", (await stat(app).catch(() => undefined))?.isDirectory
 check("Info.plist exists", await exists(plist), plist)
 check("main executable exists", await exists(bin), bin)
 check("sidecar exists", await exists(sidecar), sidecar)
+check("main executable permission", await executableFile(bin), bin)
+check("sidecar executable permission", await executableFile(sidecar), sidecar)
 
 if (await exists(plist)) {
   check("bundle identifier", (await field("CFBundleIdentifier")) === config.identifier, config.identifier ?? "missing")

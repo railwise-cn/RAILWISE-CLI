@@ -251,7 +251,13 @@ const skills = [
   },
 ]
 
-const permissions = { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false } as const
+const permissions = {
+  filesystem: "read",
+  network: false,
+  shell: false,
+  external_directory: false,
+  secrets: false,
+} as const
 
 const capabilities = [
   {

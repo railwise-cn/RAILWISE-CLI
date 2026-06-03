@@ -25,13 +25,27 @@ const specs = [
   "11-visual-regression.spec.ts",
   "12-ttfui.spec.ts",
 ]
-const userDocs = ["01-installation.md", "02-quickstart.md", "03-agents.md", "04-templates.md", "05-workflow.md", "06-faq.md"]
+const userDocs = [
+  "01-installation.md",
+  "02-quickstart.md",
+  "03-agents.md",
+  "04-templates.md",
+  "05-workflow.md",
+  "06-faq.md",
+]
 const adminDocs = ["01-deploy.md", "02-model-config.md", "03-proxy.md", "04-update-server.md", "05-security.md"]
-const devDocs = ["CONTRIBUTING.md", "01-architecture.md", "02-templates-spec.md", "03-mcp-tools.md", "04-e2e-testing.md", "06-m7-acceptance.md"]
+const devDocs = [
+  "CONTRIBUTING.md",
+  "01-architecture.md",
+  "02-templates-spec.md",
+  "03-mcp-tools.md",
+  "04-e2e-testing.md",
+  "06-m7-acceptance.md",
+]
 const missing = async (base: string, files: string[]) =>
-  (await Promise.all(files.map(async (name) => ((await exists(base, name)) ? undefined : path.join(base, name))))).filter(
-    (item): item is string => Boolean(item),
-  )
+  (
+    await Promise.all(files.map(async (name) => ((await exists(base, name)) ? undefined : path.join(base, name))))
+  ).filter((item): item is string => Boolean(item))
 
 const missingSpecs = await missing("packages/desktop/e2e", specs)
 const missingUserDocs = await missing("docs/user", userDocs)
@@ -68,7 +82,9 @@ const docs = await read("docs/dev/06-m7-acceptance.md")
 check(
   "M7 E2E spec inventory",
   missingSpecs.length === 0 && !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
-  missingSpecs.length === 0 ? `${specs.length} required specs exist and legacy Agent Studio spec is removed` : `missing: ${missingSpecs.join(", ")}`,
+  missingSpecs.length === 0
+    ? `${specs.length} required specs exist and legacy Agent Studio spec is removed`
+    : `missing: ${missingSpecs.join(", ")}`,
 )
 check(
   "startup lands on workbench",
@@ -109,8 +125,21 @@ check(
 )
 check(
   "marketplace E2E mocks capabilities",
-  has(helper, ["/marketplace/capabilities", "railwise.agent.chief_manager", "railwise.provider.deepseek", "复测资料检查", "secrets: true"]) &&
-    has(marketplaceSpec, ["能力市场", "项目总控", "本地文件读取", "复测资料检查", "DeepSeek", "agent-collaboration-start"]),
+  has(helper, [
+    "/marketplace/capabilities",
+    "railwise.agent.chief_manager",
+    "railwise.provider.deepseek",
+    "复测资料检查",
+    "secrets: true",
+  ]) &&
+    has(marketplaceSpec, [
+      "能力市场",
+      "项目总控",
+      "本地文件读取",
+      "复测资料检查",
+      "DeepSeek",
+      "agent-collaboration-start",
+    ]),
   "browser tests cover capability cards, permissions, providers, and no collaboration form on marketplace",
 )
 check(
@@ -132,35 +161,66 @@ check(
   has(marketplaceSchema, ["CapabilityManifest", "CapabilityPermission", "harness_profile"]) &&
     has(marketplaceState, ["permissionLabels", "capabilityRisk", "filterCapabilities", "groupCapabilities"]) &&
     has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe"]) &&
-    has(marketplaceRoute, ["/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&
+    has(marketplaceRoute, [
+      "/capabilities",
+      "/capabilities/:id",
+      "/capabilities/:id/enable",
+      "/capabilities/:id/disable",
+    ]) &&
     has(server, ['.route("/marketplace", MarketplaceRoutes())']),
   "server exposes marketplace routes and built-in capability manifests",
 )
 check(
   "visual regression blocks legacy surfaces",
-  has(visual, ["workbench-page", "告诉 RAILWISE 你想完成什么", "多智能体协作中枢", "项目工作区", "智能体矩阵", "dashboard-map"]),
+  has(visual, [
+    "workbench-page",
+    "告诉 RAILWISE 你想完成什么",
+    "多智能体协作中枢",
+    "项目工作区",
+    "智能体矩阵",
+    "dashboard-map",
+  ]),
   "visual regression asserts old dashboard and agent-hub language stay absent",
 )
 check(
   "TTFUI budget",
-  has(ttfui, ["Date.now()", "[data-testid=app-shell]", "[data-testid=sidecar-status]", "toBeLessThan(15000)", "__RW_PERF__"]),
+  has(ttfui, [
+    "Date.now()",
+    "[data-testid=app-shell]",
+    "[data-testid=sidecar-status]",
+    "toBeLessThan(15000)",
+    "__RW_PERF__",
+  ]),
   "TTFUI asserts shell, sidecar, perf marker, and <15s usability budget",
 )
 check(
   "Playwright artifacts",
-  has(config, ["e2e/playwright-report", 'trace: "on-first-retry"', 'screenshot: "only-on-failure"', 'video: "retain-on-failure"']) &&
-    has(acceptance, ["PLAYWRIGHT_SKIP_WEBSERVER", "PLAYWRIGHT_BASE_URL"]),
+  has(config, [
+    "e2e/playwright-report",
+    'trace: "on-first-retry"',
+    'screenshot: "only-on-failure"',
+    'video: "retain-on-failure"',
+  ]) && has(acceptance, ["PLAYWRIGHT_SKIP_WEBSERVER", "PLAYWRIGHT_BASE_URL"]),
   "HTML report, trace, screenshot, video artifacts, and live-check env wiring are configured",
 )
 check(
   "telemetry default off",
   has(settings, ["telemetry: false", "telemetryPrompted: false"]) &&
-    has(consent, ['platform.platform !== "desktop"', "browserHarness", "telemetryPrompted", "railwise:telemetry-enabled"]),
+    has(consent, [
+      'platform.platform !== "desktop"',
+      "browserHarness",
+      "telemetryPrompted",
+      "railwise:telemetry-enabled",
+    ]),
   "desktop consent gates telemetry and defaults to disabled",
 )
 check(
   "telemetry settings control",
-  has(general, ["settings.privacy.setTelemetry", "settings.privacy.setTelemetryPrompted(true)", "railwise:telemetry-enabled"]),
+  has(general, [
+    "settings.privacy.setTelemetry",
+    "settings.privacy.setTelemetryPrompted(true)",
+    "railwise:telemetry-enabled",
+  ]),
   "privacy settings can enable or disable telemetry",
 )
 check(
@@ -170,9 +230,21 @@ check(
     has(telemetry, ["desktop_error", "captureError", "startBatcher"]),
   "telemetry is local, opt-in, and sanitizes sensitive values",
 )
-check("user docs", missingUserDocs.length === 0, missingUserDocs.length === 0 ? `${userDocs.length} user docs exist` : `missing: ${missingUserDocs.join(", ")}`)
-check("admin docs", missingAdminDocs.length === 0, missingAdminDocs.length === 0 ? `${adminDocs.length} admin docs exist` : `missing: ${missingAdminDocs.join(", ")}`)
-check("developer docs", missingDevDocs.length === 0, missingDevDocs.length === 0 ? "developer docs and M7 record exist" : `missing: ${missingDevDocs.join(", ")}`)
+check(
+  "user docs",
+  missingUserDocs.length === 0,
+  missingUserDocs.length === 0 ? `${userDocs.length} user docs exist` : `missing: ${missingUserDocs.join(", ")}`,
+)
+check(
+  "admin docs",
+  missingAdminDocs.length === 0,
+  missingAdminDocs.length === 0 ? `${adminDocs.length} admin docs exist` : `missing: ${missingAdminDocs.join(", ")}`,
+)
+check(
+  "developer docs",
+  missingDevDocs.length === 0,
+  missingDevDocs.length === 0 ? "developer docs and M7 record exist" : `missing: ${missingDevDocs.join(", ")}`,
+)
 check(
   "M7 acceptance record",
   has(docs, ["12 条核心 E2E", "视觉回归", "TTFUI", "bun run desktop:verify", "--full"]),

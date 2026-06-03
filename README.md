@@ -179,20 +179,20 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 
 ### 免费 / 低价模型（推荐新手）
 
-| 厂商 | 模型 | 免费额度 | 注册地址 |
-|------|------|----------|----------|
-| 智谱 GLM | `glm-4-flash-250414`、`glm-z1-flash` | 永久免费 | [open.bigmodel.cn](https://open.bigmodel.cn) |
+| 厂商     | 模型                                         | 免费额度             | 注册地址                                               |
+| -------- | -------------------------------------------- | -------------------- | ------------------------------------------------------ |
+| 智谱 GLM | `glm-4-flash-250414`、`glm-z1-flash`         | 永久免费             | [open.bigmodel.cn](https://open.bigmodel.cn)           |
 | DeepSeek | `deepseek-chat`（V3.2）、`deepseek-reasoner` | 注册送 500 万 tokens | [platform.deepseek.com](https://platform.deepseek.com) |
-| MiniMax | `MiniMax-M1`、`MiniMax-T1` | 注册送免费额度 | [platform.minimaxi.com](https://platform.minimaxi.com) |
-| Kimi | `kimi-k2.5`、`moonshot-v1-auto` | 注册送免费额度 | [platform.moonshot.cn](https://platform.moonshot.cn) |
+| MiniMax  | `MiniMax-M1`、`MiniMax-T1`                   | 注册送免费额度       | [platform.minimaxi.com](https://platform.minimaxi.com) |
+| Kimi     | `kimi-k2.5`、`moonshot-v1-auto`              | 注册送免费额度       | [platform.moonshot.cn](https://platform.moonshot.cn)   |
 
 ### 付费模型
 
-| 厂商 | 模型 | 说明 |
-|------|------|------|
-| Anthropic | Claude Opus / Sonnet | 最强编码能力 |
-| OpenAI | GPT-4o / o3 | 通用能力强 |
-| Google | Gemini 2.5 Pro / Flash | 超长上下文 |
+| 厂商      | 模型                   | 说明         |
+| --------- | ---------------------- | ------------ |
+| Anthropic | Claude Opus / Sonnet   | 最强编码能力 |
+| OpenAI    | GPT-4o / o3            | 通用能力强   |
+| Google    | Gemini 2.5 Pro / Flash | 超长上下文   |
 
 ### 配置方式
 
@@ -206,10 +206,10 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
     "deepseek": {
       "options": {
         "baseURL": "https://api.deepseek.com/v1",
-        "apiKey": "sk-your-deepseek-key"
-      }
-    }
-  }
+        "apiKey": "sk-your-deepseek-key",
+      },
+    },
+  },
 }
 ```
 
@@ -327,20 +327,20 @@ npm install -g railwise-ai@latest
 
 安装后即内置 RAILWISE 业务智能体，不需要手工复制 `.railwise/agent`。默认主控智能体为 `chief_manager`：
 
-| 智能体 | 角色 | 默认模型 | 职责 |
-|--------|------|---------|------|
-| `chief_manager` | 项目总工 | DeepSeek V4 Pro | 任务分发、并行调度、质量闸门控制 |
-| `solution_architect` | 方案设计师 | DeepSeek V4 Pro | 监测方案编制、技术路线规划 |
-| `data_analyst` | 数据分析师 | DeepSeek V4 Pro | 平差计算、变形趋势分析、预警研判 |
-| `adjustment_computer` | 平差计算专家 | DeepSeek V4 Pro | 水准网、导线网、CPIII 控制网工具化计算 |
-| `cpiii_specialist` | CPIII 专家 | DeepSeek V4 Pro | 高铁/城轨精测网复测方案与限差核查 |
-| `qa_inspector` | 外业质检员 | DeepSeek V4 Pro | 原始数据完整性与闭合差审查 |
-| `qa_reviewer` | 内业审核员 | DeepSeek V4 Pro | 报告质量终审（最高否决权） |
-| `technical_writer` | 技术文档员 | DeepSeek V4 Pro | 监测日报/周报/月报撰写 |
-| `commercial_specialist` | 商务专员 | DeepSeek V4 Pro | 投标文件、计量支付 |
-| `norm_librarian` | 规范资料管理员 | DeepSeek V4 Pro | 规范条文查询、引用固化、规范 Wiki 维护 |
-| `source_ingestor` | 资料入库专员 | DeepSeek V4 Pro | PDF、台账、历史成果结构化整理 |
-| `knowledge_curator` | 知识库整理员 | DeepSeek V4 Pro | 项目案例、FAQ、复盘经验沉淀 |
+| 智能体                  | 角色           | 默认模型        | 职责                                   |
+| ----------------------- | -------------- | --------------- | -------------------------------------- |
+| `chief_manager`         | 项目总工       | DeepSeek V4 Pro | 任务分发、并行调度、质量闸门控制       |
+| `solution_architect`    | 方案设计师     | DeepSeek V4 Pro | 监测方案编制、技术路线规划             |
+| `data_analyst`          | 数据分析师     | DeepSeek V4 Pro | 平差计算、变形趋势分析、预警研判       |
+| `adjustment_computer`   | 平差计算专家   | DeepSeek V4 Pro | 水准网、导线网、CPIII 控制网工具化计算 |
+| `cpiii_specialist`      | CPIII 专家     | DeepSeek V4 Pro | 高铁/城轨精测网复测方案与限差核查      |
+| `qa_inspector`          | 外业质检员     | DeepSeek V4 Pro | 原始数据完整性与闭合差审查             |
+| `qa_reviewer`           | 内业审核员     | DeepSeek V4 Pro | 报告质量终审（最高否决权）             |
+| `technical_writer`      | 技术文档员     | DeepSeek V4 Pro | 监测日报/周报/月报撰写                 |
+| `commercial_specialist` | 商务专员       | DeepSeek V4 Pro | 投标文件、计量支付                     |
+| `norm_librarian`        | 规范资料管理员 | DeepSeek V4 Pro | 规范条文查询、引用固化、规范 Wiki 维护 |
+| `source_ingestor`       | 资料入库专员   | DeepSeek V4 Pro | PDF、台账、历史成果结构化整理          |
+| `knowledge_curator`     | 知识库整理员   | DeepSeek V4 Pro | 项目案例、FAQ、复盘经验沉淀            |
 
 > 可在项目 `.railwise/agent/*.md` 中放置同名 Agent 覆盖内置版本。
 
@@ -348,76 +348,76 @@ npm install -g railwise-ai@latest
 
 #### 基础测量计算
 
-| 工具 | 功能 |
-|------|------|
-| `survey_calculator` | 水准/导线闭合差校核、最小二乘严密平差、预警等级判定 |
-| `coord_transform` | 高斯-克吕格正反算、七参数布尔莎坐标系转换（CGCS2000/WGS84/西安80/北京54） |
-| `angle_convert` | 角度多格式互转（度分秒/十进制度/弧度/密位/百分度） |
-| `distance_calculator` | 全站仪测距综合归算（气象改正→斜距化平→投影改正） |
-| `pile_stakeout` | 极坐标放样计算、里程桩号偏距计算、批量放样点生成 |
+| 工具                  | 功能                                                                      |
+| --------------------- | ------------------------------------------------------------------------- |
+| `survey_calculator`   | 水准/导线闭合差校核、最小二乘严密平差、预警等级判定                       |
+| `coord_transform`     | 高斯-克吕格正反算、七参数布尔莎坐标系转换（CGCS2000/WGS84/西安80/北京54） |
+| `angle_convert`       | 角度多格式互转（度分秒/十进制度/弧度/密位/百分度）                        |
+| `distance_calculator` | 全站仪测距综合归算（气象改正→斜距化平→投影改正）                          |
+| `pile_stakeout`       | 极坐标放样计算、里程桩号偏距计算、批量放样点生成                          |
 
 #### 基坑自动化监测
 
-| 工具 | 功能 |
-|------|------|
-| `inclinometer` | 测斜仪深层水平位移剖面计算（A+/A-/B+/B- 读数→累计位移）、多期趋势分析 |
-| `axial_force` | 支撑轴力计算（频率/应力/力值转换、温度补偿）、多道支撑对比分析 |
-| `water_level` | 地下水位监测分析（降水效果评估、水头差计算、漏斗形态判断）、多井等值线数据 |
+| 工具           | 功能                                                                       |
+| -------------- | -------------------------------------------------------------------------- |
+| `inclinometer` | 测斜仪深层水平位移剖面计算（A+/A-/B+/B- 读数→累计位移）、多期趋势分析      |
+| `axial_force`  | 支撑轴力计算（频率/应力/力值转换、温度补偿）、多道支撑对比分析             |
+| `water_level`  | 地下水位监测分析（降水效果评估、水头差计算、漏斗形态判断）、多井等值线数据 |
 
 #### 变形监测分析
 
-| 工具 | 功能 |
-|------|------|
-| `deformation_rate` | 变形速率分析、线性回归趋势预测、多测点对比 |
-| `cross_section` | 隧道收敛量计算、断面超欠挖分析、建筑限界检查 |
+| 工具               | 功能                                         |
+| ------------------ | -------------------------------------------- |
+| `deformation_rate` | 变形速率分析、线性回归趋势预测、多测点对比   |
+| `cross_section`    | 隧道收敛量计算、断面超欠挖分析、建筑限界检查 |
 
 #### 控制网与平差
 
-| 工具 | 功能 |
-|------|------|
-| `control_network` | 平面控制网严密平差（间接平差法、误差椭圆）、网形设计与精度预估 |
+| 工具               | 功能                                                            |
+| ------------------ | --------------------------------------------------------------- |
+| `control_network`  | 平面控制网严密平差（间接平差法、误差椭圆）、网形设计与精度预估  |
 | `cpiii_adjustment` | CPIII 自由测站后方交会、轨道控制网整网平差（平面+高程联合平差） |
 
 #### 盾构导向测量
 
-| 工具 | 功能 |
-|------|------|
+| 工具              | 功能                                                                     |
+| ----------------- | ------------------------------------------------------------------------ |
 | `shield_guidance` | 盾构机姿态解算（方位角/俯仰角/偏差）、偏差趋势分析、管片选型与拼装角计算 |
 
 #### 数据处理与输出
 
-| 工具 | 功能 |
-|------|------|
-| `monitoring_csv` | 自动化监测 CSV 海量数据清洗与统计 |
-| `format_parser` | 徕卡 GSI-8/GSI-16 及 DAT 格式文件解析 |
+| 工具              | 功能                                  |
+| ----------------- | ------------------------------------- |
+| `monitoring_csv`  | 自动化监测 CSV 海量数据清洗与统计     |
+| `format_parser`   | 徕卡 GSI-8/GSI-16 及 DAT 格式文件解析 |
 | `chart_generator` | SVG 趋势折线图生成（多测点 + 报警线） |
-| `report_export` | Markdown 转 DOCX 报告导出 |
-| `standard_query` | 工程规范/标准条文智能查询 |
+| `report_export`   | Markdown 转 DOCX 报告导出             |
+| `standard_query`  | 工程规范/标准条文智能查询             |
 
 ### 领域技能包（28 个）
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
-| 技能 | 用途 |
-|------|------|
-| `report-writing` | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照 |
-| `data-analysis` | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级 |
-| `bidding-knowledge` | 投标文件编制：评分办法、资质响应、报价策略 |
-| `standard-reference` | 工程规范速查：GB 50911/GB 50026/JGJ 8 条文索引 |
-| `monitoring-design` | 监测方案设计：测点布设、仪器选型、频率与报警值 |
-| `bun-file-io` | 文件操作：Bun 运行时文件读写最佳实践 |
-| `docx-generation` | Word 导出：Markdown→DOCX 映射、报告模板、命名规范 |
-| `excel-operations` | Excel 导出：Sheet 结构、标准列格式、多期对比表 |
-| `humanizer` | 报告润色：消除 AI 痕迹、注入工程判断、句式变化 |
-| `frontend-design` | 前端 UI：监测平台界面规范、预警四色体系、看板布局 |
-| `canvas-design` | 图表设计：趋势图配色、坐标轴规范、剖面图构造 |
-| `rail-monitoring-plan` | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
-| `operational-monitoring` | 运营监测：长期变形监测作业、期报/年报、预警处置与归档 |
-| `docx` / `xlsx` / `pptx` / `pdf` | 常用办公文档识读、编辑和输出 |
-| `doc-coauthoring` | 多人协作文档审阅、修改和交付 |
-| `webapp-testing` / `web-artifacts-builder` | Web 工具、看板和测试型产物构建 |
-| `brand-guidelines` / `theme-factory` | 品牌规范和主题系统 |
-| `mcp-builder` / `skill-creator` | MCP 与 skill 开发 |
+| 技能                                       | 用途                                                       |
+| ------------------------------------------ | ---------------------------------------------------------- |
+| `report-writing`                           | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照    |
+| `data-analysis`                            | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级     |
+| `bidding-knowledge`                        | 投标文件编制：评分办法、资质响应、报价策略                 |
+| `standard-reference`                       | 工程规范速查：GB 50911/GB 50026/JGJ 8 条文索引             |
+| `monitoring-design`                        | 监测方案设计：测点布设、仪器选型、频率与报警值             |
+| `bun-file-io`                              | 文件操作：Bun 运行时文件读写最佳实践                       |
+| `docx-generation`                          | Word 导出：Markdown→DOCX 映射、报告模板、命名规范          |
+| `excel-operations`                         | Excel 导出：Sheet 结构、标准列格式、多期对比表             |
+| `humanizer`                                | 报告润色：消除 AI 痕迹、注入工程判断、句式变化             |
+| `frontend-design`                          | 前端 UI：监测平台界面规范、预警四色体系、看板布局          |
+| `canvas-design`                            | 图表设计：趋势图配色、坐标轴规范、剖面图构造               |
+| `rail-monitoring-plan`                     | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
+| `operational-monitoring`                   | 运营监测：长期变形监测作业、期报/年报、预警处置与归档      |
+| `docx` / `xlsx` / `pptx` / `pdf`           | 常用办公文档识读、编辑和输出                               |
+| `doc-coauthoring`                          | 多人协作文档审阅、修改和交付                               |
+| `webapp-testing` / `web-artifacts-builder` | Web 工具、看板和测试型产物构建                             |
+| `brand-guidelines` / `theme-factory`       | 品牌规范和主题系统                                         |
+| `mcp-builder` / `skill-creator`            | MCP 与 skill 开发                                          |
 
 需要“套 Word 模板”“参考企业模板导出”时，`docx-generation` 会优先走 `referenceDoc` + Pandoc 路线；模板可使用企业自有 `.docx`，也可使用 RAILWISE fork 的 `pandoc_docx_template` 中文参考模板。
 
@@ -425,16 +425,16 @@ npm install -g railwise-ai@latest
 
 ### 业务命令（SOP 工作流）
 
-| 命令 | 用途 |
-|------|------|
-| `/daily-report` | 监测日报生成 |
-| `/monthly-report` | 监测月报 / 阶段报告 |
-| `/data-check` | 外业数据质检 |
-| `/trend-analysis` | 沉降、位移、收敛等趋势分析 |
-| `/emergency-response` | 预警、报警和应急处置快报 |
-| `/bid-prepare` | 投标文件编制 |
-| `/safety-check` | 安全巡检记录 |
-| `/payment-reminder` | 计量支付催款 |
+| 命令                  | 用途                       |
+| --------------------- | -------------------------- |
+| `/daily-report`       | 监测日报生成               |
+| `/monthly-report`     | 监测月报 / 阶段报告        |
+| `/data-check`         | 外业数据质检               |
+| `/trend-analysis`     | 沉降、位移、收敛等趋势分析 |
+| `/emergency-response` | 预警、报警和应急处置快报   |
+| `/bid-prepare`        | 投标文件编制               |
+| `/safety-check`       | 安全巡检记录               |
+| `/payment-reminder`   | 计量支付催款               |
 
 ---
 
@@ -523,23 +523,23 @@ RAILWISE-CLI 内置跨会话记忆系统——**用得越多越顺手**。系统
 ```jsonc
 {
   "memory": {
-    "enabled": true,          // 启用/禁用记忆系统（默认: true）
-    "autoCapture": true,      // 自动从压缩摘要提取（默认: true）
-    "maxMemories": 10         // 注入系统提示词的最大记忆数（默认: 10，范围: 1-50）
-  }
+    "enabled": true, // 启用/禁用记忆系统（默认: true）
+    "autoCapture": true, // 自动从压缩摘要提取（默认: true）
+    "maxMemories": 10, // 注入系统提示词的最大记忆数（默认: 10，范围: 1-50）
+  },
 }
 ```
 
 ### 记忆类别
 
-| 类别 | 说明 | 来源 |
-|------|------|------|
-| `discovery` | 关于项目结构、文件位置的发现 | `## Discoveries` |
-| `decision` | 项目目标与关键决策 | `## Goal` |
-| `pattern` | 编码风格与工作流模式 | `## Instructions` |
-| `fact` | 已完成的工作成果 | `## Accomplished` |
-| `preference` | 用户偏好 | 未来扩展 |
-| `error` | 踩坑与解决方案 | 未来扩展 |
+| 类别         | 说明                         | 来源              |
+| ------------ | ---------------------------- | ----------------- |
+| `discovery`  | 关于项目结构、文件位置的发现 | `## Discoveries`  |
+| `decision`   | 项目目标与关键决策           | `## Goal`         |
+| `pattern`    | 编码风格与工作流模式         | `## Instructions` |
+| `fact`       | 已完成的工作成果             | `## Accomplished` |
+| `preference` | 用户偏好                     | 未来扩展          |
+| `error`      | 踩坑与解决方案               | 未来扩展          |
 
 ---
 

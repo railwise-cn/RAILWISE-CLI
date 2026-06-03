@@ -25,7 +25,9 @@ const downloadTypes = await read("packages/console/app/src/routes/download/types
 const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
 const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
 const i18n = await Promise.all(
-  (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) => read(item)),
+  (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) =>
+    read(item),
+  ),
 )
 const linuxDownloads = ["linux-x64", "linuxDeb", "linuxRpm", "download.platform.linux", "AppImage", "Linux"]
 const publicWindowsDownloads = [
@@ -124,9 +126,12 @@ check(
 )
 check(
   "public desktop download links are macOS-only",
-  [downloadTypes, downloadRoute, downloadPage, ...i18n.map((text) =>
-    text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`)),
-  )].every((text) => [...linuxDownloads, ...publicWindowsDownloads].every((item) => !text.includes(item))),
+  [
+    downloadTypes,
+    downloadRoute,
+    downloadPage,
+    ...i18n.map((text) => text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`))),
+  ].every((text) => [...linuxDownloads, ...publicWindowsDownloads].every((item) => !text.includes(item))),
   "Download route and UI do not advertise Linux desktop installers or internal Windows artifacts",
 )
 check(

@@ -27,7 +27,15 @@ export function startupConfigPath(error: unknown) {
 export function startupDiagnosis(error: unknown): StartupDiagnosis {
   const value = text(error)
   const path = startupConfigPath(value)
-  if (match(value, ["configinvaliderror", "configjsonerror", "configuration is invalid", "railwise.json", "invalid input"])) {
+  if (
+    match(value, [
+      "configinvaliderror",
+      "configjsonerror",
+      "configuration is invalid",
+      "railwise.json",
+      "invalid input",
+    ])
+  ) {
     return {
       issue: "config",
       title: "配置文件需要修复",
@@ -55,7 +63,11 @@ export function startupDiagnosis(error: unknown): StartupDiagnosis {
       issue: "permission",
       title: "系统权限阻止启动",
       summary: "桌面端无法访问启动核心服务所需的文件或目录。",
-      steps: ["确认应用位于可执行目录，不在被系统隔离的位置。", "检查配置目录和项目目录是否有读写权限。", "重新启动应用后再试。"],
+      steps: [
+        "确认应用位于可执行目录，不在被系统隔离的位置。",
+        "检查配置目录和项目目录是否有读写权限。",
+        "重新启动应用后再试。",
+      ],
     }
   }
   if (match(value, ["health check", "timed out", "failed to spawn", "failed to start server", "connection"])) {
@@ -64,7 +76,11 @@ export function startupDiagnosis(error: unknown): StartupDiagnosis {
       title: "核心服务未能启动",
       summary: "桌面外壳已打开，但本地 RAILWISE 服务没有在预期时间内就绪。",
       action: "打开日志目录",
-      steps: ["先重新启动应用。", "如果连续失败，检查是否有旧进程占用本地服务。", "打开日志目录并保留最新日志，继续定位 sidecar 启动原因。"],
+      steps: [
+        "先重新启动应用。",
+        "如果连续失败，检查是否有旧进程占用本地服务。",
+        "打开日志目录并保留最新日志，继续定位 sidecar 启动原因。",
+      ],
     }
   }
   return {

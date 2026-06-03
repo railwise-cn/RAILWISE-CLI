@@ -26,7 +26,10 @@ const pkg = (await Bun.file("package.json").json()) as Package
 const name = config.productName ?? "睿威智测 RAILWISE"
 const arch = process.arch === "arm64" ? "aarch64" : process.arch === "x64" ? "x64" : process.arch
 const app = arg("--app", path.join("src-tauri", "target", "release", "bundle", "macos", `${name}.app`))!
-const output = arg("--output", path.join("src-tauri", "target", "release", "bundle", "dmg", `${name}_${pkg.version ?? "0.0.0"}_local_${arch}.dmg`))!
+const output = arg(
+  "--output",
+  path.join("src-tauri", "target", "release", "bundle", "dmg", `${name}_${pkg.version ?? "0.0.0"}_local_${arch}.dmg`),
+)!
 const zip = arg("--zip-output", output.replace(/\.dmg$/, ".app.zip"))!
 const stage = await mkdtemp(path.join(os.tmpdir(), "railwise-local-dmg-"))
 
@@ -52,7 +55,8 @@ try {
       )
     }
     await $`ditto -c -k --sequesterRsrc --keepParent ${app} ${zip}`
-    if ((await stat(zip).catch(() => undefined))?.isFile() !== true) throw new Error(`Fallback app zip not created: ${zip}`)
+    if ((await stat(zip).catch(() => undefined))?.isFile() !== true)
+      throw new Error(`Fallback app zip not created: ${zip}`)
     if (!args.includes("--skip-verify")) await $`bun ./scripts/verify-macos-appzip.ts --zip ${zip}`
     console.log(
       [
@@ -68,12 +72,7 @@ try {
   if (!fallback) {
     const files = await readdir(path.dirname(output))
     if (!files.includes(path.basename(output))) {
-      throw new Error(
-        [
-          `DMG not created: ${output}`,
-          `Use fallback app zip output instead: ${zip}`,
-        ].join("\n"),
-      )
+      throw new Error([`DMG not created: ${output}`, `Use fallback app zip output instead: ${zip}`].join("\n"))
     }
 
     if (!args.includes("--skip-verify")) await $`bun ./scripts/verify-macos-dmg.ts --dmg ${output}`

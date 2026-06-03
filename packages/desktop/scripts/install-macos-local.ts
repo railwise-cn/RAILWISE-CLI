@@ -70,9 +70,7 @@ const plist = async (file: string, key: string) =>
 
 const stale = async (dir: string) => {
   const files = await readdir(dir).catch(() => [])
-  return files
-    .filter((item) => item.startsWith(name) && item.endsWith(".app"))
-    .map((item) => path.join(dir, item))
+  return files.filter((item) => item.startsWith(name) && item.endsWith(".app")).map((item) => path.join(dir, item))
 }
 
 const move = async (from: string) => {
@@ -94,10 +92,14 @@ try {
   if ((await info(app))?.isDirectory() !== true) throw new Error(`Expected app bundle in zip: ${app}`)
 
   const file = path.join(app, "Contents", "Info.plist")
-  if ((await plist(file, "CFBundleIdentifier")) !== identifier) throw new Error(`Unexpected bundle identifier in ${file}`)
-  if ((await plist(file, "CFBundleExecutable")) !== executable) throw new Error(`Unexpected bundle executable in ${file}`)
-  if (!(await exists(path.join(app, "Contents", "MacOS", executable)))) throw new Error(`Main executable missing: ${executable}`)
-  if (!(await exists(path.join(app, "Contents", "MacOS", "railwise-cli")))) throw new Error("Sidecar executable missing: railwise-cli")
+  if ((await plist(file, "CFBundleIdentifier")) !== identifier)
+    throw new Error(`Unexpected bundle identifier in ${file}`)
+  if ((await plist(file, "CFBundleExecutable")) !== executable)
+    throw new Error(`Unexpected bundle executable in ${file}`)
+  if (!(await exists(path.join(app, "Contents", "MacOS", executable))))
+    throw new Error(`Main executable missing: ${executable}`)
+  if (!(await exists(path.join(app, "Contents", "MacOS", "railwise-cli"))))
+    throw new Error("Sidecar executable missing: railwise-cli")
 
   if (archiveStale) {
     for (const item of [...(await stale("/Applications")), ...(await stale(path.join(home, "Applications")))]) {

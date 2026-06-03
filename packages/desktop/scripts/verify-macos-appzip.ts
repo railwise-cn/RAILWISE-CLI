@@ -16,7 +16,8 @@ const arg = (name: string, fallback?: string) => {
 const zipArg = arg("--zip")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
 if (!target && !zipArg) throw new Error("Missing --zip, --target or RUST_TARGET")
-if (target && !target.includes("apple-darwin")) throw new Error(`macOS app zip verification is not available for ${target}`)
+if (target && !target.includes("apple-darwin"))
+  throw new Error(`macOS app zip verification is not available for ${target}`)
 
 const dirs = target
   ? [
@@ -27,7 +28,9 @@ const dirs = target
 const zips = (
   await Promise.all(
     dirs.map(async (dir) =>
-      (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app.zip")).map((item) => path.join(dir, item)),
+      (await readdir(dir).catch(() => []))
+        .filter((item) => item.endsWith(".app.zip"))
+        .map((item) => path.join(dir, item)),
     ),
   )
 ).flat()

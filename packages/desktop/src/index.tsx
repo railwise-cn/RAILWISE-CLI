@@ -754,7 +754,10 @@ function StartupFailure(props: { error: unknown }) {
           <p class="mt-3 break-words whitespace-pre-wrap text-11-regular text-text-muted">{raw}</p>
         </div>
         <Show when={canOpen}>
-          <button class="rounded-md border border-border-subtle px-3 py-2 text-12-medium text-text-strong hover:bg-surface-hover" onClick={openTarget}>
+          <button
+            class="rounded-md border border-border-subtle px-3 py-2 text-12-medium text-text-strong hover:bg-surface-hover"
+            onClick={openTarget}
+          >
             {action}
           </button>
         </Show>
@@ -780,10 +783,7 @@ function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.
   })
 
   return (
-    <Show
-      when={serverData.state !== "errored"}
-      fallback={<StartupFailure error={serverData.error} />}
-    >
+    <Show when={serverData.state !== "errored"} fallback={<StartupFailure error={serverData.error} />}>
       <Show
         when={serverData.state !== "pending" && serverData()}
         fallback={

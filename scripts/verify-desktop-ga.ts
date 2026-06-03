@@ -68,7 +68,15 @@ check(
 )
 check(
   "release cadence",
-  has(cadence, [tag, "10%", "30%", "100%", "bun run desktop:verify", "cd workers/update-server && bun ./verify.ts", "12-desktop-harness-marketplace-beta.md"]),
+  has(cadence, [
+    tag,
+    "10%",
+    "30%",
+    "100%",
+    "bun run desktop:verify",
+    "cd workers/update-server && bun ./verify.ts",
+    "12-desktop-harness-marketplace-beta.md",
+  ]),
   `${tag} rollout and preflight commands`,
 )
 check(

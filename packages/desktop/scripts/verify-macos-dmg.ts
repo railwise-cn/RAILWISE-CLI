@@ -26,7 +26,9 @@ const dirs = target
   : []
 const dmgs = (
   await Promise.all(
-    dirs.map(async (dir) => (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg")).map((item) => path.join(dir, item))),
+    dirs.map(async (dir) =>
+      (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".dmg")).map((item) => path.join(dir, item)),
+    ),
   )
 ).flat()
 const dmg = dmgArg ?? (dmgs.length === 1 ? dmgs[0]! : undefined)
@@ -35,7 +37,10 @@ const image = path.resolve(dmg)
 
 const mounted = async () => {
   const info = await $`hdiutil info`.quiet().text()
-  const sections = info.split("image-path").slice(1).map((item) => `image-path${item}`)
+  const sections = info
+    .split("image-path")
+    .slice(1)
+    .map((item) => `image-path${item}`)
   const section = sections.find((item) => item.includes(image))
   return section
     ?.split("\n")

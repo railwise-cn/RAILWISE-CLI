@@ -4,9 +4,9 @@ import { startupConfigPath, startupDiagnosis } from "./startup-diagnosis"
 
 describe("startupDiagnosis", () => {
   it("extracts the railwise config path", () => {
-    expect(startupConfigPath("Configuration is invalid at /Users/WANGJIAWEI/.config/railwise/railwise.json issues=[]")).toBe(
-      "/Users/WANGJIAWEI/.config/railwise/railwise.json",
-    )
+    expect(
+      startupConfigPath("Configuration is invalid at /Users/WANGJIAWEI/.config/railwise/railwise.json issues=[]"),
+    ).toBe("/Users/WANGJIAWEI/.config/railwise/railwise.json")
   })
 
   it("classifies invalid config errors", () => {

@@ -133,7 +133,9 @@ const downloadTypes = await read("packages/console/app/src/routes/download/types
 const downloadRoute = await read("packages/console/app/src/routes/download/[platform].ts")
 const downloadPage = await read("packages/console/app/src/routes/download/index.tsx")
 const i18n = await Promise.all(
-  (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) => read(item)),
+  (await Array.fromAsync(new Bun.Glob("packages/console/app/src/i18n/*.ts").scan({ cwd: root }))).map((item) =>
+    read(item),
+  ),
 )
 const adminDeploy = await read("docs/admin/01-deploy.md")
 const readme = await read("README.md")
@@ -154,7 +156,12 @@ const notarization = [
   "APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}",
   "APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}",
 ]
-const linux = ["x86_64-unknown-linux-gnu", "libwebkit2gtk-4.1-dev", 'matrix.platform == "linux"', "matrix.platform == 'linux'"]
+const linux = [
+  "x86_64-unknown-linux-gnu",
+  "libwebkit2gtk-4.1-dev",
+  'matrix.platform == "linux"',
+  "matrix.platform == 'linux'",
+]
 const scope = "桌面端不发布 Linux 版本"
 const desktopTargets = ["dmg", "nsis"]
 const windows = [
@@ -235,7 +242,7 @@ check(
   "release bundle matrix",
   contains(workflow, ["bundles: dmg", "--bundles ${{ matrix.bundles }}"]) &&
     !workflow.includes("bundles: nsis") &&
-    !workflow.includes("-name \"*.msi\""),
+    !workflow.includes('-name "*.msi"'),
   "Beta release builds macOS DMG bundles only",
 )
 check(
@@ -277,9 +284,12 @@ check(
 )
 check(
   "desktop download page exposes public macOS installers only",
-  [downloadTypes, downloadRoute, downloadPage, ...i18n.map((text) =>
-    text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`)),
-  )].every((text) => [...linuxDownloads, ...windowsDownloads].every((item) => !text.includes(item))) &&
+  [
+    downloadTypes,
+    downloadRoute,
+    downloadPage,
+    ...i18n.map((text) => text.slice(text.indexOf(`"download.title"`), text.indexOf(`"download.faq.a3.beforeLocal"`))),
+  ].every((text) => [...linuxDownloads, ...windowsDownloads].every((item) => !text.includes(item))) &&
     contains(downloadTypes, ['darwin-${"x64" | "aarch64"}-dmg']) &&
     contains(downloadRoute, [
       "railwise-desktop-darwin-aarch64.dmg",
@@ -320,7 +330,11 @@ check(
 )
 check(
   "macOS sidecar starts without shell profile",
-  contains(cli, ["let sidecar = get_sidecar_path(app);", "let mut cmd = Command::new(sidecar);", "cmd.args(args.split_whitespace());"]) &&
+  contains(cli, [
+    "let sidecar = get_sidecar_path(app);",
+    "let mut cmd = Command::new(sidecar);",
+    "cmd.args(args.split_whitespace());",
+  ]) &&
     !cli.includes("fn get_user_shell()") &&
     !cli.includes("Command::new(shell)") &&
     !cli.includes('cmd.args(["-l", "-c"'),
@@ -543,9 +557,9 @@ check(
     contains(macStage, [
       "--require-updater",
       '"desktop-release", target',
-      "path.join(\"src-tauri\", \"target\", target, \"release\", \"bundle\")",
-      "path.join(\"src-tauri\", \"target\", \"release\", \"bundle\")",
-      "endsWith(\".dmg\")",
+      'path.join("src-tauri", "target", target, "release", "bundle")',
+      'path.join("src-tauri", "target", "release", "bundle")',
+      'endsWith(".dmg")',
       "railwise-desktop-${platform}.dmg",
       "railwise-desktop-${platform}.app.tar.gz",
       "railwise-desktop-${platform}.app.tar.gz.sig",
@@ -557,7 +571,11 @@ check(
 check(
   "sidecar build reuses models snapshot offline",
   contains(railwiseBuild, ["Generated models-snapshot.ts", "models(dir)"]) &&
-    contains(railwiseBuildModels, ["MODELS_DEV_API_JSON", "src/provider/models-snapshot.ts", "Unable to refresh models.dev snapshot"]) &&
+    contains(railwiseBuildModels, [
+      "MODELS_DEV_API_JSON",
+      "src/provider/models-snapshot.ts",
+      "Unable to refresh models.dev snapshot",
+    ]) &&
     contains(railwiseModels, [
       "ModelsDev.Data",
       "./models-snapshot",

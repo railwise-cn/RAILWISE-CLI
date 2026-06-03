@@ -21,8 +21,11 @@ const dirs = [
   path.join("src-tauri", "target", "release", "bundle"),
 ]
 
-const hasDmg = async (dir: string) => (await readdir(path.join(dir, "dmg")).catch(() => [])).some((item) => item.endsWith(".dmg"))
-const source = (await Promise.all(dirs.map(async (dir) => ((await hasDmg(dir)) ? dir : undefined)))).find((item) => item)
+const hasDmg = async (dir: string) =>
+  (await readdir(path.join(dir, "dmg")).catch(() => [])).some((item) => item.endsWith(".dmg"))
+const source = (await Promise.all(dirs.map(async (dir) => ((await hasDmg(dir)) ? dir : undefined)))).find(
+  (item) => item,
+)
 if (!source) throw new Error(`Expected a macOS bundle with DMG in ${dirs.join(", ")}`)
 
 const output = path.join("src-tauri", "target", "desktop-release", target)
@@ -33,7 +36,8 @@ await cp(source, output, { recursive: true })
 const platform = target.startsWith("aarch64-") ? "darwin-aarch64" : "darwin-x64"
 const dmg = path.join(output, "dmg")
 const files = (await readdir(dmg)).filter((item) => item.endsWith(".dmg"))
-if (files.length !== 1) throw new Error(`Expected exactly one DMG in ${dmg}, found ${files.length}: ${files.join(", ")}`)
+if (files.length !== 1)
+  throw new Error(`Expected exactly one DMG in ${dmg}, found ${files.length}: ${files.join(", ")}`)
 await rename(path.join(dmg, files[0]), path.join(dmg, `railwise-desktop-${platform}.dmg`))
 
 const macos = path.join(output, "macos")

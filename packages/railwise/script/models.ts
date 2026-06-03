@@ -17,7 +17,9 @@ export async function models(dir: string, request: Request = fetch) {
       return { handled: true, data: undefined }
     }
     if (await Bun.file(fixture(dir)).exists()) {
-      console.warn(`Unable to refresh models.dev snapshot (${reason}); seeding from ${path.relative(dir, fixture(dir))}`)
+      console.warn(
+        `Unable to refresh models.dev snapshot (${reason}); seeding from ${path.relative(dir, fixture(dir))}`,
+      )
       return { handled: true, data: await Bun.file(fixture(dir)).text() }
     }
     return { handled: false, data: undefined }

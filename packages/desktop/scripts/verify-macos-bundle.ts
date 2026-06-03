@@ -23,7 +23,8 @@ const check = (name: string, passed: boolean, detail: string) => checks.push({ n
 const appArg = arg("--app")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
 if (!target && !appArg) throw new Error("Missing --app, --target or RUST_TARGET")
-if (target && !target.includes("apple-darwin")) throw new Error(`macOS bundle verification is not available for ${target}`)
+if (target && !target.includes("apple-darwin"))
+  throw new Error(`macOS bundle verification is not available for ${target}`)
 
 const exists = async (file: string) => Boolean(await stat(file).catch(() => undefined))
 const first = async (items: string[]) => {
@@ -41,11 +42,13 @@ const dirs = target
   : []
 const apps = (
   await Promise.all(
-    dirs.map(async (dir) => (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app")).map((item) => path.join(dir, item))),
+    dirs.map(async (dir) =>
+      (await readdir(dir).catch(() => [])).filter((item) => item.endsWith(".app")).map((item) => path.join(dir, item)),
+    ),
   )
 ).flat()
 const fallback = dirs.map((dir) => path.join(dir, `${name}.app`))
-const app = appArg ?? (apps.length === 1 ? apps[0]! : (await first(fallback)) ?? fallback[0] ?? "")
+const app = appArg ?? (apps.length === 1 ? apps[0]! : ((await first(fallback)) ?? fallback[0] ?? ""))
 const contents = path.join(app, "Contents")
 const macos = path.join(contents, "MacOS")
 const plist = path.join(contents, "Info.plist")
@@ -53,7 +56,8 @@ const executable = config.mainBinaryName ?? "railwise"
 const bin = path.join(macos, executable)
 const sidecar = path.join(macos, "railwise-cli")
 const arch = target?.startsWith("aarch64-") ? "arm64" : target?.startsWith("x86_64-") ? "x86_64" : undefined
-const mac = (text: string) => (arch ? text.includes(`executable ${arch}`) : /Mach-O 64-bit executable (arm64|x86_64)/.test(text))
+const mac = (text: string) =>
+  arch ? text.includes(`executable ${arch}`) : /Mach-O 64-bit executable (arm64|x86_64)/.test(text)
 
 const field = async (name: string) => (await $`/usr/libexec/PlistBuddy -c ${`Print :${name}`} ${plist}`.text()).trim()
 const optional = async (name: string) => {

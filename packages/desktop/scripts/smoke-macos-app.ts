@@ -88,7 +88,9 @@ const waitForReady = async (since: number) => {
   while (Date.now() < deadline) {
     for (const file of await logFiles(since)) {
       seen.push(file)
-      const text = await Bun.file(file).text().catch(() => "")
+      const text = await Bun.file(file)
+        .text()
+        .catch(() => "")
       latest = text || latest
       if (text.includes("CLI health check OK") || text.includes("Loading done, completing initialisation")) {
         console.log(`macOS app sidecar ready from ${file}`)
@@ -109,7 +111,9 @@ const waitForReady = async (since: number) => {
   throw new Error(
     [
       `macOS app did not report sidecar readiness within ${readyTimeout}s.`,
-      seen.length > 0 ? `Observed logs:\n${Array.from(new Set(seen)).join("\n")}` : `No railwise-desktop_*.log files found under ${logDirs().join(", ")}`,
+      seen.length > 0
+        ? `Observed logs:\n${Array.from(new Set(seen)).join("\n")}`
+        : `No railwise-desktop_*.log files found under ${logDirs().join(", ")}`,
       tail(latest),
     ].join("\n"),
   )
@@ -138,11 +142,7 @@ if (!skipReady) {
 }
 
 const running = async () =>
-  (await $`pgrep -x ${executable}`.quiet().nothrow()).stdout
-    .toString()
-    .trim()
-    .split("\n")
-    .filter(Boolean)
+  (await $`pgrep -x ${executable}`.quiet().nothrow()).stdout.toString().trim().split("\n").filter(Boolean)
 
 if (!skipProcessCleanup) {
   for (const pid of await running()) {

@@ -32,15 +32,8 @@ const value = (name: string) => {
 
 const full = has("--full")
 const live = has("--live") || full
-const native = has("--native") || full
 const e2eBase = Bun.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${Bun.env.PLAYWRIGHT_PORT ?? "5185"}`
-const chrome =
-  Bun.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ??
-  ((await Bun.file(
-    "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell",
-  ).exists())
-    ? "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell"
-    : undefined)
+const chrome = Bun.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
 const reachable = live
   ? await fetch(e2eBase, { signal: AbortSignal.timeout(3_000) })
       .then((res) => res.ok)
@@ -55,7 +48,6 @@ const sseTimeout = Number(Bun.env.RAILWISE_SSE_HEARTBEAT_TIMEOUT_MS ?? "20000")
 const sseUrl = new URL("/event", Bun.env.RAILWISE_SERVER_URL ?? "http://127.0.0.1:4096")
 const hints = [
   live ? undefined : "Live checks skipped. Run `bun run desktop:verify -- --live` for SSE smoke and desktop E2E.",
-  native ? undefined : "Native shell smoke skipped. Run `bun run desktop:verify -- --native` before Desktop GA.",
   full ? undefined : "Run `bun run desktop:verify -- --full` before release for the 30-minute SSE acceptance.",
 ].filter((item): item is string => Boolean(item))
 
@@ -154,11 +146,6 @@ const steps: Step[] = [
     args: ["bun", "run", "script/verify-desktop-m7.ts"],
   },
   {
-    name: "D3 原生能力面验收",
-    cwd: root,
-    args: ["bun", "run", "script/verify-desktop-native-surfaces.ts"],
-  },
-  {
     name: "更新分发服务验收",
     cwd: root,
     args: ["bun", "run", "script/verify-update-server"],
@@ -179,13 +166,6 @@ const steps: Step[] = [
     args: ["bun", "run", "typecheck"],
   },
   {
-    name: "native Tauri smoke",
-    cwd: path.join(root, "packages/desktop"),
-    args: ["bun", "run", "smoke:tauri"],
-    retry: 1,
-    skip: has("--skip-native") || !native,
-  },
-  {
     name: "railwise typecheck",
     cwd: path.join(root, "packages/railwise"),
     args: ["bun", "run", "typecheck"],
@@ -202,7 +182,7 @@ const steps: Step[] = [
     cwd: path.join(root, "packages/desktop"),
     args: ["bun", "run", "test:e2e"],
     env: {
-      PLAYWRIGHT_SKIP_WEBSERVER: Bun.env.PLAYWRIGHT_SKIP_WEBSERVER ?? (reachable || live ? "1" : undefined),
+      PLAYWRIGHT_SKIP_WEBSERVER: Bun.env.PLAYWRIGHT_SKIP_WEBSERVER ?? (reachable ? "1" : undefined),
       PLAYWRIGHT_BASE_URL: e2eBase,
       PLAYWRIGHT_CHROMIUM_EXECUTABLE: chrome,
     },

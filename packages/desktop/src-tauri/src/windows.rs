@@ -7,18 +7,6 @@ use tauri::{AppHandle, Manager, Runtime, WebviewUrl, WebviewWindow, WebviewWindo
 use tauri_plugin_window_state::AppHandleExt;
 use tokio::sync::mpsc;
 
-#[cfg(target_os = "linux")]
-use std::sync::OnceLock;
-
-#[cfg(target_os = "linux")]
-fn use_decorations() -> bool {
-    static DECORATIONS: OnceLock<bool> = OnceLock::new();
-    *DECORATIONS.get_or_init(|| {
-        crate::linux_windowing::use_decorations(&crate::linux_windowing::SessionEnv::capture())
-    })
-}
-
-#[cfg(not(target_os = "linux"))]
 fn use_decorations() -> bool {
     true
 }
@@ -61,7 +49,7 @@ impl MainWindow {
         .initialization_script(format!(
             r#"
             window.__RAILWISE__ ??= {{}};
-            window.__RAILWISE__.updatesEnabled = {UPDATER_ENABLED};
+            window.__RAILWISE__.updaterEnabled = {UPDATER_ENABLED};
             window.__RAILWISE__.wsl = {wsl_enabled};
           "#
         ));

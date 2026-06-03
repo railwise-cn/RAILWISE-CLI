@@ -93,7 +93,7 @@ export const dict = {
 
   "home.banner.badge": "Nowość",
   "home.banner.text": "Aplikacja desktopowa dostępna w wersji beta",
-  "home.banner.platforms": "na macOS i Windows",
+  "home.banner.platforms": "na macOS, Windows i Linux",
   "home.banner.downloadNow": "Pobierz teraz",
   "home.banner.downloadBetaNow": "Pobierz betę wersji desktopowej",
 
@@ -484,9 +484,9 @@ export const dict = {
     "Po kliknięciu Zapisz się, Twoja subskrypcja rozpocznie się natychmiast, a karta zostanie obciążona.",
 
   "download.title": "RAILWISE | Pobierz",
-  "download.meta.description": "Pobierz RAILWISE na macOS i Windows",
+  "download.meta.description": "Pobierz RAILWISE Desktop na macOS",
   "download.hero.title": "Pobierz RAILWISE",
-  "download.hero.subtitle": "Dostępne w wersji Beta na macOS i Windows",
+  "download.hero.subtitle": "Desktop Beta jest dostępna na macOS",
   "download.hero.button": "Pobierz na {{os}}",
   "download.section.terminal": "Terminal RAILWISE",
   "download.section.desktop": "Pulpit RAILWISE (Beta)",
@@ -497,7 +497,7 @@ export const dict = {
 
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
-  "download.platform.windowsX64": "Windows (x64)",
+
   "download.faq.a3.beforeLocal":
     "Niekoniecznie, ale prawdopodobnie. Będziesz potrzebować subskrypcji AI, jeśli chcesz połączyć RAILWISE z płatnym dostawcą, chociaż możesz pracować z",
   "download.faq.a3.localLink": "modelami lokalnymi",

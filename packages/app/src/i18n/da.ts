@@ -440,7 +440,7 @@ export const dict = {
   "error.page.action.checkUpdates": "Tjek for opdateringer",
   "error.page.action.updateTo": "Opdater til {{version}}",
   "error.page.report.prefix": "Rapporter venligst denne fejl til RAILWISE-teamet",
-  "error.page.report.link": "supportkanal",
+  "error.page.report.discord": "på Discord",
   "error.page.version": "Version: {{version}}",
 
   "error.dev.rootNotFound":
@@ -581,14 +581,14 @@ export const dict = {
   "sidebar.project.viewAllSessions": "Vis alle sessioner",
   "sidebar.project.clearNotifications": "Ryd notifikationer",
 
-  "app.name": "RAILWISE",
-  "settings.section.application": "Program",
+  "app.name.desktop": "RAILWISE Desktop",
+  "settings.section.desktop": "Desktop",
   "settings.section.server": "Server",
   "settings.tab.general": "Generelt",
   "settings.tab.shortcuts": "Genveje",
-  "settings.platform.section.wsl": "WSL",
-  "settings.platform.wsl.title": "WSL integration",
-  "settings.platform.wsl.description": "Kør RAILWISE-serveren inde i WSL på Windows.",
+  "settings.desktop.section.wsl": "WSL",
+  "settings.desktop.wsl.title": "WSL integration",
+  "settings.desktop.wsl.description": "Kør RAILWISE-serveren inde i WSL på Windows.",
 
   "settings.general.section.appearance": "Udseende",
   "settings.general.section.notifications": "Systemmeddelelser",
@@ -616,7 +616,7 @@ export const dict = {
   "settings.updates.row.startup.title": "Tjek for opdateringer ved opstart",
   "settings.updates.row.startup.description": "Tjek automatisk for opdateringer, når RAILWISE starter",
   "settings.updates.row.check.title": "Tjek for opdateringer",
-  "settings.updates.row.check.description": "Tjek manuelt for opdateringer og anvend dem, hvis de er tilgængelige",
+  "settings.updates.row.check.description": "Tjek manuelt for opdateringer og installer, hvis tilgængelig",
   "settings.updates.action.checkNow": "Tjek nu",
   "settings.updates.action.checking": "Tjekker...",
   "settings.updates.toast.latest.title": "Du er opdateret",

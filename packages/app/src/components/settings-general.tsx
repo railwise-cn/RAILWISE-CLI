@@ -1,10 +1,8 @@
-import { Component, Show, createMemo, createResource, type JSX } from "solid-js"
+import { Component, Show, createMemo, type JSX } from "solid-js"
 import { createStore } from "solid-js/store"
 import { Button } from "@railwise/ui/button"
-import { Icon } from "@railwise/ui/icon"
 import { Select } from "@railwise/ui/select"
 import { Switch } from "@railwise/ui/switch"
-import { Tooltip } from "@railwise/ui/tooltip"
 import { useTheme, type ColorScheme } from "@railwise/ui/theme"
 import { showToast } from "@railwise/ui/toast"
 import { useLanguage } from "@/context/language"
@@ -43,8 +41,6 @@ export const SettingsGeneral: Component = () => {
   const [store, setStore] = createStore({
     checking: false,
   })
-
-  const linux = createMemo(() => platform.platform === "desktop" && platform.os === "linux")
 
   const check = () => {
     if (!platform.checkUpdate) return
@@ -465,12 +461,12 @@ export const SettingsGeneral: Component = () => {
 
             return (
               <div class="flex flex-col gap-1">
-                <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.platform.section.wsl")}</h3>
+                <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.desktop.section.wsl")}</h3>
 
                 <div class="bg-surface-raised-base px-4 rounded-lg">
                   <SettingsRow
-                    title={language.t("settings.platform.wsl.title")}
-                    description={language.t("settings.platform.wsl.description")}
+                    title={language.t("settings.desktop.wsl.title")}
+                    description={language.t("settings.desktop.wsl.description")}
                   >
                     <div data-action="settings-wsl">
                       <Switch
@@ -489,42 +485,6 @@ export const SettingsGeneral: Component = () => {
         <UpdatesSection />
 
         <PrivacySection />
-
-        <Show when={linux()}>
-          {(_) => {
-            const [valueResource, actions] = createResource(() => platform.getDisplayBackend?.())
-            const value = () => (valueResource.state === "pending" ? undefined : valueResource.latest)
-
-            const onChange = (checked: boolean) =>
-              platform.setDisplayBackend?.(checked ? "wayland" : "auto").finally(() => actions.refetch())
-
-            return (
-              <div class="flex flex-col gap-1">
-                <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.general.section.display")}</h3>
-
-                <div class="bg-surface-raised-base px-4 rounded-lg">
-                  <SettingsRow
-                    title={
-                      <div class="flex items-center gap-2">
-                        <span>{language.t("settings.general.row.wayland.title")}</span>
-                        <Tooltip value={language.t("settings.general.row.wayland.tooltip")} placement="top">
-                          <span class="text-text-weak">
-                            <Icon name="help" size="small" />
-                          </span>
-                        </Tooltip>
-                      </div>
-                    }
-                    description={language.t("settings.general.row.wayland.description")}
-                  >
-                    <div data-action="settings-wayland">
-                      <Switch checked={value() === "wayland"} onChange={onChange} />
-                    </div>
-                  </SettingsRow>
-                </div>
-              </div>
-            )
-          }}
-        </Show>
       </div>
     </div>
   )

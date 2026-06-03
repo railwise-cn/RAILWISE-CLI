@@ -94,7 +94,7 @@ export const dict = {
 
   "home.banner.badge": "新",
   "home.banner.text": "桌面应用 Beta 版现已推出",
-  "home.banner.platforms": "支持 macOS 和 Windows",
+  "home.banner.platforms": "支持 macOS, Windows, 和 Linux",
   "home.banner.downloadNow": "立即下载",
   "home.banner.downloadBetaNow": "立即下载桌面 Beta 版",
 
@@ -469,9 +469,9 @@ export const dict = {
   "workspace.black.waitlist.enrollNote": "点击加入后，您的订阅将立即开始，并将从您的卡中扣费。",
 
   "download.title": "RAILWISE | 下载",
-  "download.meta.description": "下载适用于 macOS 和 Windows 的 RAILWISE",
+  "download.meta.description": "下载适用于 macOS 的 RAILWISE 桌面版",
   "download.hero.title": "下载 RAILWISE",
-  "download.hero.subtitle": "适用于 macOS 和 Windows 的 Beta 版",
+  "download.hero.subtitle": "桌面 Beta 版适用于 macOS",
   "download.hero.button": "下载 {{os}} 版",
   "download.section.terminal": "RAILWISE 终端",
   "download.section.desktop": "RAILWISE 桌面版 (Beta)",
@@ -482,7 +482,7 @@ export const dict = {
 
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
-  "download.platform.windowsX64": "Windows (x64)",
+
   "download.faq.a3.beforeLocal":
     "不一定，但可能需要。如果您想将 RAILWISE 连接到付费提供商，您需要 AI 订阅，尽管您可以配合",
   "download.faq.a3.localLink": "本地模型",

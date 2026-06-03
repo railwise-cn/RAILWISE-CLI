@@ -14,6 +14,7 @@ import {
   openSidebar,
   openWorkspaceMenu,
   setWorkspacesEnabled,
+  waitWorkspaceItem,
 } from "../actions"
 import { dropdownMenuContentSelector, inlineInputSelector, workspaceItemSelector } from "../selectors"
 import { createSdk, dirSlug } from "../utils"
@@ -43,21 +44,7 @@ async function setupWorkspaceTest(page: Page, project: { slug: string }) {
   const dir = base64Decode(slug)
 
   await openSidebar(page)
-
-  await expect
-    .poll(
-      async () => {
-        const item = page.locator(workspaceItemSelector(slug)).first()
-        try {
-          await item.hover({ timeout: 500 })
-          return true
-        } catch {
-          return false
-        }
-      },
-      { timeout: 60_000 },
-    )
-    .toBe(true)
+  await waitWorkspaceItem(page, slug)
 
   return { rootSlug, slug, directory: dir }
 }
@@ -106,21 +93,7 @@ test("can create a workspace", async ({ page, withProject }) => {
     const workspaceDir = base64Decode(workspaceSlug)
 
     await openSidebar(page)
-
-    await expect
-      .poll(
-        async () => {
-          const item = page.locator(workspaceItemSelector(workspaceSlug)).first()
-          try {
-            await item.hover({ timeout: 500 })
-            return true
-          } catch {
-            return false
-          }
-        },
-        { timeout: 60_000 },
-      )
-      .toBe(true)
+    await waitWorkspaceItem(page, workspaceSlug)
 
     await expect(page.locator(workspaceItemSelector(workspaceSlug)).first()).toBeVisible()
 
@@ -315,23 +288,6 @@ test("can reorder workspaces by drag and drop", async ({ page, withProject }) =>
       return slugs
     }
 
-    const waitReady = async (slug: string) => {
-      await expect
-        .poll(
-          async () => {
-            const item = page.locator(workspaceItemSelector(slug)).first()
-            try {
-              await item.hover({ timeout: 500 })
-              return true
-            } catch {
-              return false
-            }
-          },
-          { timeout: 60_000 },
-        )
-        .toBe(true)
-    }
-
     const drag = async (from: string, to: string) => {
       const src = page.locator(workspaceItemSelector(from)).first()
       const dst = page.locator(workspaceItemSelector(to)).first()
@@ -379,8 +335,8 @@ test("can reorder workspaces by drag and drop", async ({ page, withProject }) =>
       const a = workspaces[0].slug
       const b = workspaces[1].slug
 
-      await waitReady(a)
-      await waitReady(b)
+      await waitWorkspaceItem(page, a)
+      await waitWorkspaceItem(page, b)
 
       const list = async () => {
         const slugs = await listSlugs()

@@ -6,20 +6,21 @@ type PickerPaths = string | string[] | null
 type OpenDirectoryPickerOptions = { title?: string; multiple?: boolean }
 type OpenFilePickerOptions = { title?: string; multiple?: boolean }
 type SaveFilePickerOptions = { title?: string; defaultPath?: string }
+export type DisplayBackend = "native"
 type UpdateInfo = { updateAvailable: boolean; version?: string }
 
 export type Platform = {
   /** Platform discriminator */
   platform: "web" | "desktop"
 
-  /** Product label supplied by the host product */
+  /** Desktop OS (Tauri only). RAILWISE Desktop is distributed for macOS and Windows only. */
+  os?: "macos" | "windows"
+
+  /** User-facing app name */
   appName?: string
 
-  /** Support or help URL supplied by the host product */
+  /** Support or feedback URL */
   supportUrl?: string
-
-  /** Native shell OS */
-  os?: "macos" | "windows" | "linux"
 
   /** App version */
   version?: string
@@ -42,22 +43,22 @@ export type Platform = {
   /** Send a system notification (optional deep link) */
   notify(title: string, description?: string, href?: string): Promise<void>
 
-  /** Open directory picker dialog (native shell or server-backed web) */
+  /** Open directory picker dialog (native on Tauri, server-backed on web) */
   openDirectoryPickerDialog?(opts?: OpenDirectoryPickerOptions): Promise<PickerPaths>
 
-  /** Open native file picker dialog */
+  /** Open native file picker dialog (Tauri only) */
   openFilePickerDialog?(opts?: OpenFilePickerOptions): Promise<PickerPaths>
 
-  /** Save file picker dialog */
+  /** Save file picker dialog (Tauri only) */
   saveFilePickerDialog?(opts?: SaveFilePickerOptions): Promise<string | null>
 
   /** Storage mechanism, defaults to localStorage */
   storage?: (name?: string) => SyncStorage | AsyncStorage
 
-  /** Check for native shell updates */
+  /** Check for updates (Tauri only) */
   checkUpdate?(): Promise<UpdateInfo>
 
-  /** Install native shell updates */
+  /** Install updates (Tauri only) */
   update?(): Promise<void>
 
   /** Fetch override */
@@ -75,13 +76,7 @@ export type Platform = {
   /** Set the configured WSL integration (desktop only) */
   setWslEnabled?(config: boolean): Promise<void> | void
 
-  /** Get the preferred display backend (desktop only) */
-  getDisplayBackend?(): Promise<DisplayBackend | null> | DisplayBackend | null
-
-  /** Set the preferred display backend (desktop only) */
-  setDisplayBackend?(backend: DisplayBackend): Promise<void>
-
-  /** Parse markdown to HTML using native parser (returns unprocessed code blocks) */
+  /** Parse markdown to HTML using native parser (desktop only, returns unprocessed code blocks) */
   parseMarkdown?(markdown: string): Promise<string>
 
   /** Webview zoom level (desktop only) */
@@ -93,8 +88,6 @@ export type Platform = {
   /** Read image from clipboard (desktop only) */
   readClipboardImage?(): Promise<File | null>
 }
-
-export type DisplayBackend = "auto" | "wayland"
 
 export const { use: usePlatform, provider: PlatformProvider } = createSimpleContext({
   name: "Platform",

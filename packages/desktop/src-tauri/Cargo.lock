@@ -4220,7 +4220,6 @@ dependencies = [
  "comrak",
  "dirs",
  "futures",
- "gtk",
  "listeners",
  "objc2 0.6.3",
  "objc2-web-kit",
@@ -4257,7 +4256,6 @@ dependencies = [
  "tracing-appender",
  "tracing-subscriber",
  "uuid",
- "webkit2gtk",
  "windows 0.62.2",
 ]
 

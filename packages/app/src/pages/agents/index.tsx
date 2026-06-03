@@ -16,6 +16,7 @@ import { useAgentUpdates } from "@/hooks/use-agent-updates"
 import { useProviders } from "@/hooks/use-providers"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
+import type { Workflow } from "@/types/workflow"
 import { useAgentStudioApi } from "./api"
 import {
   agentRoleLabel,
@@ -56,6 +57,9 @@ const focus = [
   "source_ingestor",
 ]
 
+const marketIds = ["agents", "tools", "skills", "workflows", "mcp", "providers", "harness"] as const
+type MarketId = (typeof marketIds)[number]
+
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
   return fallback
@@ -74,20 +78,22 @@ export default function AgentsPage() {
   const [items, setItems] = createSignal<AgentStudioItem[]>([])
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
+  const [workflows, setWorkflows] = createSignal<Workflow[]>([])
   const [directory, setDirectory] = createSignal("")
   const [manualDirectory, setManualDirectory] = createSignal(false)
   const [selectedAgent, setSelectedAgent] = createSignal("chief_manager")
   const [draft, setDraft] = createSignal("")
   const [query, setQuery] = createSignal("")
   const [mode, setMode] = createSignal<ModeFilter>("all")
+  const [activeMarket, setActiveMarket] = createSignal<MarketId>("agents")
   const [loading, setLoading] = createSignal(true)
   const [error, setError] = createSignal("")
   const [routeSaving, setRouteSaving] = createSignal<Record<string, boolean>>({})
 
   function load() {
     setLoading(true)
-    void Promise.allSettled([api.list(), api.tools(), api.skills()])
-      .then(([agents, toolset, skillset]) => {
+    void Promise.allSettled([api.list(), api.tools(), api.skills(), api.presets()])
+      .then(([agents, toolset, skillset, presets]) => {
         if (agents.status === "fulfilled") {
           setItems(agents.value)
           setError("")
@@ -96,6 +102,7 @@ export default function AgentsPage() {
         }
         setTools(result(toolset, []))
         setSkills(result(skillset, []))
+        setWorkflows(result(presets, []))
       })
       .finally(() => setLoading(false))
   }
@@ -103,14 +110,17 @@ export default function AgentsPage() {
   onMount(load)
   useAgentUpdates(load)
 
-  const recent = createMemo(() => recentWorkspaces(sync.data.project, 4))
+  const recent = createMemo(() =>
+    recentWorkspaces(sync.data.project, 4),
+  )
   const summary = createMemo(() => agentStudioSummary(items()))
   const collaborators = createMemo(() =>
     items()
       .slice()
       .sort(
         (a, b) =>
-          Number(a.mode !== "primary") - Number(b.mode !== "primary") || a.name.localeCompare(b.name, "zh-Hans-CN"),
+          Number(a.mode !== "primary") - Number(b.mode !== "primary") ||
+          a.name.localeCompare(b.name, "zh-Hans-CN"),
       ),
   )
   const featured = createMemo(() =>
@@ -137,6 +147,91 @@ export default function AgentsPage() {
   const setupState = createMemo(() =>
     modelSetupState({ connectedProviders: connectedProviders().length, visibleModels: visibleModels().length }),
   )
+  const agentStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (summary().total > 0) return `${summary().total} 个可用`
+    return "等待安装"
+  })
+  const toolStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (tools().length > 0) return `${tools().length} 个可用`
+    return "等待安装"
+  })
+  const skillStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (skills().length > 0) return `${skills().length} 个可用`
+    return "等待安装"
+  })
+  const workflowStatus = createMemo(() => {
+    if (loading()) return "同步中"
+    if (workflows().length > 0) return `${workflows().length} 个可用`
+    return "等待配置"
+  })
+  const market = createMemo(() => [
+    {
+      id: "agents" as const,
+      label: "智能体",
+      title: "智能体库",
+      status: agentStatus(),
+      description: "主控智能体负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
+      target: "#agent-library",
+      action: "查看智能体",
+    },
+    {
+      id: "tools" as const,
+      label: "工具",
+      title: "工具链",
+      status: toolStatus(),
+      description: "工具会被执行层按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
+      target: "#agent-tools",
+      action: "查看工具",
+    },
+    {
+      id: "skills" as const,
+      label: "流程",
+      title: "专业流程",
+      status: skillStatus(),
+      description: "专业流程是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
+      target: "#agent-skills",
+      action: "查看流程",
+    },
+    {
+      id: "workflows" as const,
+      label: "工作流",
+      title: "工作流",
+      status: workflowStatus(),
+      description: "工作流把多个智能体串起来，适合外业首检、趋势分析、报告生成和审校链路。",
+      target: "#agent-workflows",
+      action: "查看工作流",
+    },
+    {
+      id: "mcp" as const,
+      label: "MCP",
+      title: "MCP 连接器",
+      status: "按项目启用",
+      description: "MCP 让智能体连接专业系统、知识库和外部工具。当前从项目会话和设置中心管理。",
+      target: "#agent-tools",
+      action: "查看相关工具",
+    },
+    {
+      id: "providers" as const,
+      label: "模型",
+      title: "模型 Provider",
+      status: connectedProviders().length > 0 ? `${connectedProviders().length} 个已接入` : "待接入",
+      description: `默认建议 ${recommendedModel}，也可以把审校、平差和资料整理智能体绑定到不同模型。`,
+      button: "接入模型",
+    },
+    {
+      id: "harness" as const,
+      label: "执行层",
+      title: "执行层配置",
+      status: "本地安全模式",
+      description: "执行层管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际运行核心。",
+      target: "/harness",
+      action: "查看执行层",
+    },
+  ])
+  const activePackage = createMemo(() => market().find((item) => item.id === activeMarket()) ?? market()[0])
   const routedAgents = createMemo(() => collaborators().slice(0, 8))
   const visibleModelPreview = createMemo(() =>
     visibleModels()
@@ -294,28 +389,74 @@ export default function AgentsPage() {
     <main class="agent-studio" data-testid="agents-page">
       <section class="agent-hero">
         <div class="agent-hero__copy">
-          <span class="agent-kicker">RAILWISE Agent Studio</span>
-          <h1>多智能体协作中枢</h1>
-          <p>围绕工程测绘任务组织专业智能体、生产工具、Skills 与工作流，让一次会话直接进入执行。</p>
+          <span class="agent-kicker">RAILWISE 高级智能体管理</span>
+          <h1>高级智能体管理</h1>
+          <p>管理智能体、模型路由、工具、专业流程与工作流；日常任务从首页对话框开始。</p>
+          <div class="agent-hero__actions">
+            <A href="/home" class="agent-button agent-button--ghost">
+              打开工作台
+            </A>
+            <button type="button" class="agent-button" onClick={connectProvider}>
+              接入模型
+            </button>
+          </div>
         </div>
-        <div class="agent-hero__stats" aria-busy={loading()}>
-          <div class="agent-stat">
+        <div class="agent-market__cards" aria-busy={loading()}>
+          <div class="agent-market-card">
             <span>智能体</span>
-            <strong>{summary().total}</strong>
-            <small>
-              {summary().primary} 主控 / {summary().collaborators} 专业智能体
-            </small>
+            <strong>智能体库</strong>
+            <small>{agentStatus()}</small>
           </div>
-          <div class="agent-stat">
+          <div class="agent-market-card">
             <span>工具</span>
-            <strong>{tools().length}</strong>
-            <small>调度、规范、平差、文件执行</small>
+            <strong>工具链</strong>
+            <small>{toolStatus()}</small>
           </div>
-          <div class="agent-stat">
-            <span>Skills</span>
-            <strong>{skills().length}</strong>
-            <small>可按任务加载的专业流程</small>
+          <div class="agent-market-card">
+            <span>流程</span>
+            <strong>专业流程</strong>
+            <small>{skillStatus()}</small>
           </div>
+        </div>
+      </section>
+
+      <section class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
+        <For each={market()}>
+          {(item) => (
+            <button
+              type="button"
+              classList={{ active: activeMarket() === item.id }}
+              aria-pressed={activeMarket() === item.id}
+              onClick={() => setActiveMarket(item.id)}
+            >
+              {item.label}
+            </button>
+          )}
+        </For>
+      </section>
+
+      <section class="agent-market-panel" data-testid="agent-market-panel">
+        <div>
+          <span>{activePackage().label}</span>
+          <h2>{activePackage().title}</h2>
+          <p>{activePackage().description}</p>
+        </div>
+        <div class="agent-market-panel__status">
+          <strong>{activePackage().status}</strong>
+          <Show
+            when={activePackage().button}
+            fallback={
+              <A href={activePackage().target ?? "/marketplace"} class="agent-button agent-button--ghost">
+                {activePackage().action}
+              </A>
+            }
+          >
+            {(label) => (
+              <button type="button" class="agent-button agent-button--ghost" onClick={connectProvider}>
+                {label()}
+              </button>
+            )}
+          </Show>
         </div>
       </section>
 
@@ -323,12 +464,12 @@ export default function AgentsPage() {
         <div class="agent-launch__project">
           <div class="agent-section__header">
             <div>
-              <h2>项目工作区</h2>
-              <p>以本地文件夹作为上下文，智能体直接在这个目录里工作。</p>
+              <h2>上下文文件夹</h2>
+              <p>选择本地目录作为会话上下文，日常任务仍从对话框开始。</p>
             </div>
           </div>
           <label class="agent-form__field">
-            <span>工作区文件夹</span>
+            <span>上下文目录</span>
             <div class="agent-launch__path">
               <input
                 data-testid="agent-project-directory"
@@ -419,9 +560,7 @@ export default function AgentsPage() {
           <div>
             <span>可见模型</span>
             <strong>{visibleModels().length}</strong>
-            <small>
-              {setupState() === "models-hidden" ? "Provider 已接入，需启用模型" : `默认建议 ${recommendedModel}`}
-            </small>
+            <small>{setupState() === "models-hidden" ? "Provider 已接入，需启用模型" : `默认建议 ${recommendedModel}`}</small>
           </div>
           <div>
             <span>专属绑定</span>
@@ -469,7 +608,7 @@ export default function AgentsPage() {
 
           <div class="agent-model-routing__panel">
             <div class="agent-model-routing__bar">
-              <span>智能体模型矩阵</span>
+              <span>智能体模型分配</span>
               <small>{routeSummary().total} 个可见智能体</small>
             </div>
             <div class="agent-route-list">
@@ -517,10 +656,10 @@ export default function AgentsPage() {
         </section>
       </Show>
 
-      <section class="agent-toolbar">
+      <section class="agent-toolbar" id="agent-library">
         <div>
-          <h2>智能体矩阵</h2>
-          <p>选择专业智能体进入配置，也可以从工作流直接生成协作会话。</p>
+          <h2>智能体库</h2>
+          <p>查看可用智能体并进入配置；真正协作从首页或上方对话框发起。</p>
         </div>
         <div class="agent-toolbar__controls">
           <input
@@ -540,7 +679,9 @@ export default function AgentsPage() {
       </Show>
 
       <section class="agent-grid" aria-busy={loading()}>
-        <For each={filtered()}>{(agent) => <AgentCard agent={agent} />}</For>
+        <For each={filtered()}>
+          {(agent) => <AgentCard agent={agent} />}
+        </For>
       </section>
 
       <Show when={!loading() && filtered().length === 0}>
@@ -548,7 +689,7 @@ export default function AgentsPage() {
       </Show>
 
       <section class="agent-inventory">
-        <div class="agent-inventory__column">
+        <div class="agent-inventory__column" id="agent-tools">
           <div class="agent-section__header">
             <div>
               <h2>工具链</h2>
@@ -577,11 +718,11 @@ export default function AgentsPage() {
             </For>
           </div>
         </div>
-        <div class="agent-inventory__column">
+        <div class="agent-inventory__column" id="agent-skills">
           <div class="agent-section__header">
             <div>
-              <h2>Skills</h2>
-              <p>按任务加载的专业流程、审核方法和工具使用规范。</p>
+              <h2>专业流程</h2>
+              <p>按任务加载作业流程、审核方法和工具使用规范。</p>
             </div>
           </div>
           <div class="agent-skill-list">
@@ -594,13 +735,15 @@ export default function AgentsPage() {
               )}
             </For>
             <Show when={!skills().length && !loading()}>
-              <div class="agent-empty">当前未发现 Skills。</div>
+              <div class="agent-empty">当前未发现专业流程。</div>
             </Show>
           </div>
         </div>
       </section>
 
-      <WorkflowGallery />
+      <div id="agent-workflows">
+        <WorkflowGallery />
+      </div>
     </main>
   )
 }

@@ -563,9 +563,18 @@ export async function setWorkspacesEnabled(page: Page, projectSlug: string, enab
   await expect(page.getByRole("button", { name: expected }).first()).toBeVisible()
 }
 
-export async function openWorkspaceMenu(page: Page, workspaceSlug: string) {
+export async function waitWorkspaceItem(page: Page, workspaceSlug: string) {
+  await openSidebar(page)
+
   const item = page.locator(workspaceItemSelector(workspaceSlug)).first()
+  await expect(item).toBeVisible({ timeout: 60_000 })
+  await item.scrollIntoViewIfNeeded()
   await expect(item).toBeVisible()
+  return item
+}
+
+export async function openWorkspaceMenu(page: Page, workspaceSlug: string) {
+  const item = await waitWorkspaceItem(page, workspaceSlug)
   await item.hover()
 
   const trigger = page.locator(workspaceMenuTriggerSelector(workspaceSlug)).first()

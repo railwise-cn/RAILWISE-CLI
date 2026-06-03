@@ -312,9 +312,6 @@ pub fn sync_cli(app: tauri::AppHandle) -> Result<(), String> {
     Ok(())
 }
 
-fn get_user_shell() -> String {
-    std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".to_string())
-}
 
 fn is_wsl_enabled(_app: &tauri::AppHandle) -> bool {
     get_wsl_config(_app.clone()).is_ok_and(|v| v.enabled)
@@ -391,16 +388,8 @@ pub fn spawn_command(
         }
     } else {
         let sidecar = get_sidecar_path(app);
-        let shell = get_user_shell();
-
-        let line = if shell.ends_with("/nu") {
-            format!("^\"{}\" {}", sidecar.display(), args)
-        } else {
-            format!("\"{}\" {}", sidecar.display(), args)
-        };
-
-        let mut cmd = Command::new(shell);
-        cmd.args(["-l", "-c", &line]);
+        let mut cmd = Command::new(sidecar);
+        cmd.args(args.split_whitespace());
 
         for (key, value) in envs {
             cmd.env(key, value);

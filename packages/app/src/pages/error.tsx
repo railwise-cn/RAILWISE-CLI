@@ -301,7 +301,7 @@ export const ErrorPage: Component<ErrorPageProps> = (props) => {
               class="flex items-center text-text-interactive-base gap-1"
               onClick={() => platform.openLink(platform.supportUrl ?? "https://railwise.ai/docs")}
             >
-              <div>{language.t("error.page.report.link")}</div>
+              <div>{language.t("error.page.report.discord")}</div>
               <Icon name="link" class="text-text-interactive-base" />
             </button>
           </div>

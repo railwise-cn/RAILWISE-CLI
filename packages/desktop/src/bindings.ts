@@ -6,14 +6,13 @@ import * as __TAURI_EVENT from "@tauri-apps/api/event";
 /** Commands */
 export const commands = {
 	killSidecar: () => __TAURI_INVOKE<void>("kill_sidecar"),
+	getLogDir: () => __TAURI_INVOKE<string>("get_log_dir"),
 	installCli: () => __TAURI_INVOKE<string>("install_cli"),
 	awaitInitialization: (events: Channel) => __TAURI_INVOKE<ServerReadyData>("await_initialization", { events }),
 	getDefaultServerUrl: () => __TAURI_INVOKE<string | null>("get_default_server_url"),
 	setDefaultServerUrl: (url: string | null) => __TAURI_INVOKE<null>("set_default_server_url", { url }),
 	getWslConfig: () => __TAURI_INVOKE<WslConfig>("get_wsl_config"),
 	setWslConfig: (config: WslConfig) => __TAURI_INVOKE<null>("set_wsl_config", { config }),
-	getDisplayBackend: () => __TAURI_INVOKE<"wayland" | "auto" | null>("get_display_backend"),
-	setDisplayBackend: (backend: LinuxDisplayBackend) => __TAURI_INVOKE<null>("set_display_backend", { backend }),
 	parseMarkdownCommand: (markdown: string) => __TAURI_INVOKE<string>("parse_markdown_command", { markdown }),
 	parseDxf: (path: string) => __TAURI_INVOKE<DxfDocument>("parse_dxf", { path }),
 	convertDwgToDxf: (path: string) => __TAURI_INVOKE<string>("convert_dwg_to_dxf", { path }),
@@ -64,8 +63,6 @@ export type DxfPoint = {
 	};
 
 export type InitStep = { phase: "server_waiting" } | { phase: "sqlite_waiting" } | { phase: "done" };
-
-export type LinuxDisplayBackend = "wayland" | "auto";
 
 export type LoadingWindowComplete = null;
 

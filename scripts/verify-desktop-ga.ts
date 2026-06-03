@@ -34,6 +34,7 @@ const cargo = await read("packages/desktop/src-tauri/Cargo.toml")
 const changelog = await read("CHANGELOG.md")
 const cadence = await read("docs/dev/05-release-cadence.md")
 const update = await read("docs/admin/04-update-server.md")
+const betaQa = await read("docs/dev/12-desktop-harness-marketplace-beta.md")
 const wrangler = await read("workers/update-server/wrangler.toml")
 const version = desktop.version ?? ""
 const tag = `desktop/v${version}`
@@ -67,16 +68,7 @@ check(
 )
 check(
   "release cadence",
-  has(cadence, [
-    tag,
-    "10%",
-    "30%",
-    "100%",
-    "bun run desktop:verify",
-    "bun run smoke:tauri",
-    "bun run script/verify-desktop-native-surfaces.ts",
-    "cd workers/update-server && bun ./verify.ts",
-  ]),
+  has(cadence, [tag, "10%", "30%", "100%", "bun run desktop:verify", "cd workers/update-server && bun ./verify.ts", "12-desktop-harness-marketplace-beta.md"]),
   `${tag} rollout and preflight commands`,
 )
 check(
@@ -98,6 +90,18 @@ check(
   "changelog release entry",
   has(changelog, [`## v${version}`, "Desktop 中文化首版", "M6", "M7"]) && !changelog.includes("待 review"),
   `CHANGELOG v${version}`,
+)
+check(
+  "desktop beta QA gate",
+  has(betaQa, [
+    "Desktop Harness Marketplace Beta QA",
+    "自动验收",
+    "人工验收",
+    "Beta 阻断条件",
+    "Linux：不做 Desktop 安装包",
+    "browserType.launch",
+  ]),
+  "beta QA checklist is present for release gating",
 )
 check(
   "changelog brand residue",

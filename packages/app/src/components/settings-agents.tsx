@@ -70,10 +70,7 @@ export const SettingsAgents: Component = () => {
           <div class="flex flex-col gap-1 min-w-0">
             <h2 class="text-16-medium text-text-strong">{language.t("settings.agents.title")}</h2>
             <p class="text-14-regular text-text-weak">
-              {text(
-                "查看当前智能体目录、热更新状态和最近调用量。",
-                "Review agents, hot-reload sources, and recent calls.",
-              )}
+              {text("查看当前智能体目录、热更新状态和最近调用量。", "Review agents, hot-reload sources, and recent calls.")}
             </p>
           </div>
           <div class="flex gap-2">
@@ -81,7 +78,7 @@ export const SettingsAgents: Component = () => {
               {loading() ? text("刷新中", "Refreshing") : text("刷新", "Refresh")}
             </Button>
             <Button size="large" variant="primary" icon="brain" onClick={() => open("/agents")}>
-              Agent Studio
+              {text("高级管理", "Manage")}
             </Button>
           </div>
         </div>
@@ -126,14 +123,8 @@ export const SettingsAgents: Component = () => {
                       </span>
                     </div>
                     <div class="flex items-center gap-3 shrink-0">
-                      <span class="text-12-regular text-text-weak">
-                        {text("7天", "7d")} {item.callCount7d ?? 0}
-                      </span>
-                      <Button
-                        size="small"
-                        variant="secondary"
-                        onClick={() => open(`/agents/${encodeURIComponent(item.name)}`)}
-                      >
+                      <span class="text-12-regular text-text-weak">{text("7天", "7d")} {item.callCount7d ?? 0}</span>
+                      <Button size="small" variant="secondary" onClick={() => open(`/agents/${encodeURIComponent(item.name)}`)}>
                         {text("打开", "Open")}
                       </Button>
                     </div>

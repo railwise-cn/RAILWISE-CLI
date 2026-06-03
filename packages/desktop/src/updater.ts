@@ -1,9 +1,9 @@
 import { check, type Update } from "@tauri-apps/plugin-updater"
 import { relaunch } from "@tauri-apps/plugin-process"
-import { type as ostype } from "@tauri-apps/plugin-os"
 
 import { initI18n, t } from "./i18n"
 import { commands } from "./bindings"
+import { os } from "./os"
 
 export const UPDATER_ENABLED = window.__RAILWISE__?.updaterEnabled ?? false
 export const updaterCheckEvent = "railwise:update-check"
@@ -77,7 +77,7 @@ export async function checkForUpdate(opts: {
 
 export async function installUpdate(update: NonNullable<Awaited<ReturnType<typeof check>>>) {
   try {
-    if (ostype() === "windows") await commands.killSidecar()
+    if (os() === "windows") await commands.killSidecar()
     await update.install()
   } catch {
     return false

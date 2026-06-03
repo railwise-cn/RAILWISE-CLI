@@ -1,5 +1,4 @@
 import { Menu, MenuItem, PredefinedMenuItem, Submenu } from "@tauri-apps/api/menu"
-import { type as ostype } from "@tauri-apps/plugin-os"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { openUrl } from "@tauri-apps/plugin-opener"
 
@@ -7,6 +6,7 @@ import { runUpdater, UPDATER_ENABLED } from "./updater"
 import { installCli } from "./cli"
 import { initI18n, t } from "./i18n"
 import { commands } from "./bindings"
+import { os } from "./os"
 
 const FEEDBACK_URL = "https://github.com/railwise-cn/RAILWISE-CLI/issues/new?template=feature_request.yml"
 const BUG_URL = "https://github.com/railwise-cn/RAILWISE-CLI/issues/new?template=bug_report.yml"
@@ -14,7 +14,7 @@ const DOCS_URL = "https://railwise.ai/docs"
 const FORUM_URL = "https://discord.com/invite/railwise"
 
 export async function createMenu(trigger: (id: string) => void) {
-  if (ostype() !== "macos") return
+  if (os() !== "macos") return
 
   await initI18n()
 

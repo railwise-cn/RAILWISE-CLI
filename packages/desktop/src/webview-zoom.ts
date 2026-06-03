@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 import { invoke } from "@tauri-apps/api/core"
-import { type as ostype } from "@tauri-apps/plugin-os"
 import { createSignal } from "solid-js"
+import { os } from "./os"
 
-const OS_NAME = ostype()
+const OS_NAME = os()
 
 const [webviewZoom, setWebviewZoom] = createSignal(1)
 

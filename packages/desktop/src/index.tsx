@@ -20,23 +20,25 @@ import { open, save } from "@tauri-apps/plugin-dialog"
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http"
 import { isPermissionGranted, requestPermission } from "@tauri-apps/plugin-notification"
 import { openPath as openerOpenPath } from "@tauri-apps/plugin-opener"
-import { type as ostype } from "@tauri-apps/plugin-os"
+import { homeDir } from "@tauri-apps/api/path"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { open as shellOpen } from "@tauri-apps/plugin-shell"
 import { Store } from "@tauri-apps/plugin-store"
-import { type Accessor, createResource, createSignal, lazy, type JSX, onCleanup, onMount, Show, Suspense } from "solid-js"
+import { type Accessor, createResource, createSignal, For, lazy, type JSX, onCleanup, onMount, Show, Suspense } from "solid-js"
 import { render } from "solid-js/web"
 import pkg from "../package.json"
 import { initI18n, t } from "./i18n"
 import { checkForUpdate, installUpdate, type DownloadedUpdate, updaterCheckEvent, UPDATER_ENABLED } from "./updater"
 import { UpdateController } from "./update-controller"
 import { webviewZoom } from "./webview-zoom"
+import { startupDiagnosis } from "./startup-diagnosis"
 import "./styles.css"
 import { Channel } from "@tauri-apps/api/core"
 import { IconButton } from "@railwise/ui/icon-button"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { commands, type InitStep } from "./bindings"
 import { createMenu } from "./menu"
+import { os as getOS } from "./os"
 import { StartupTimer, DEFAULT_BUDGETS } from "./performance"
 import { installTelemetry, track } from "./lib/telemetry"
 
@@ -113,6 +115,11 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(t("error.dev.rootNotFound"))
 }
 
+if (!("__TAURI_INTERNALS__" in window)) {
+  window.__RAILWISE__ ??= {}
+  window.__RAILWISE__.browserHarness = true
+}
+
 ensureStandaloneLanding()
 
 void initI18n()
@@ -139,11 +146,7 @@ const listenForDeepLinks = async () => {
 }
 
 const createPlatform = (): Platform => {
-  const os = (() => {
-    const type = ostype()
-    if (type === "macos" || type === "windows" || type === "linux") return type
-    return undefined
-  })()
+  const os = getOS()
 
   const wslHome = async () => {
     if (os !== "windows" || !window.__RAILWISE__?.wsl) return undefined
@@ -195,7 +198,7 @@ const createPlatform = (): Platform => {
       void shellOpen(url).catch(() => undefined)
     },
     async openPath(path: string, app?: string) {
-      const os = ostype()
+      const os = getOS()
       if (os === "windows") {
         const resolvedApp = (app && (await commands.resolveAppPath(app))) || app
         const resolvedPath = await (async () => {
@@ -444,15 +447,6 @@ const createPlatform = (): Platform => {
       await commands.setDefaultServerUrl(url)
     },
 
-    getDisplayBackend: async () => {
-      const result = await commands.getDisplayBackend().catch(() => null)
-      return result
-    },
-
-    setDisplayBackend: async (backend) => {
-      await commands.setDisplayBackend(backend)
-    },
-
     parseMarkdown: (markdown: string) => commands.parseMarkdownCommand(markdown),
 
     webviewZoom,
@@ -684,9 +678,75 @@ render(() => {
 
 type ServerReadyData = { url: string; password: string | null }
 
+function StartupFailure(props: { error: unknown }) {
+  const diagnosis = startupDiagnosis(props.error)
+  const raw = String(props.error ?? "Unknown error")
+  const canOpen = diagnosis.issue === "config" || !!diagnosis.target
+
+  const openTarget = async () => {
+    const target = diagnosis.target ?? (diagnosis.issue === "config" ? `${await homeDir()}/.config/railwise` : undefined)
+    if (!target) return
+    await openerOpenPath(target).catch(console.error)
+  }
+
+  return (
+    <div class="h-screen w-screen flex flex-col items-center justify-center bg-background-base px-6">
+      <div data-tauri-decorum-tb class="flex flex-row absolute top-0 right-0 z-10 h-10" />
+      <div class="flex w-full max-w-xl flex-col items-center gap-4 text-center">
+        <Splash class="w-16 h-20 opacity-50" />
+        <div>
+          <p class="text-14-medium text-text-strong">{diagnosis.title}</p>
+          <p class="mt-2 text-12-regular text-text-weak">{diagnosis.summary}</p>
+        </div>
+        <div class="w-full rounded-lg border border-border-subtle bg-surface-panel p-4 text-left">
+          <div class="text-12-medium text-text-strong">建议操作</div>
+          <ol class="mt-2 grid list-decimal gap-1.5 pl-4 text-12-regular text-text-weak">
+            <For each={diagnosis.steps}>{(step) => <li>{step}</li>}</For>
+          </ol>
+          <Show when={diagnosis.path}>
+            {(path) => (
+              <div class="mt-3 break-all rounded-md bg-surface-element px-2 py-1.5 text-12-mono text-text-weak">
+                {path()}
+              </div>
+            )}
+          </Show>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            class="rounded-md border border-border-subtle bg-surface-panel px-3 py-2 text-12-medium text-text-strong hover:bg-surface-element"
+            onClick={() => void relaunch().catch(console.error)}
+          >
+            重新启动应用
+          </button>
+          <Show when={canOpen}>
+            <button
+              type="button"
+              class="rounded-md border border-border-subtle bg-surface-panel px-3 py-2 text-12-medium text-text-strong hover:bg-surface-element"
+              onClick={() => void openTarget()}
+            >
+              {diagnosis.action ?? "打开配置目录"}
+            </button>
+          </Show>
+        </div>
+        <details class="w-full text-left">
+          <summary class="cursor-pointer text-12-medium text-text-weak">错误日志</summary>
+          <pre class="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-md border border-border-subtle bg-surface-panel p-3 text-12-mono text-text-weak">
+            {raw}
+          </pre>
+        </details>
+      </div>
+    </div>
+  )
+}
+
 // Gate component that waits for the server to be ready
 function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.Element }) {
   const [serverData] = createResource(async () => {
+    if (window.__RAILWISE__?.browserHarness && !("__TAURI_INTERNALS__" in window)) {
+      return { url: location.origin, password: null }
+    }
+
     // Start timing the actual sidecar initialization
     performanceTimer.startPhase("sidecar-init")
     try {
@@ -703,18 +763,7 @@ function ServerGate(props: { children: (data: Accessor<ServerReadyData>) => JSX.
   return (
     <Show
       when={serverData.state !== "errored"}
-      fallback={
-        <div class="h-screen w-screen flex flex-col items-center justify-center bg-background-base gap-4">
-          <Splash class="w-16 h-20 opacity-50" />
-          <div class="max-w-md px-4 text-center">
-            <p class="text-sm font-medium text-red-400">Failed to start server</p>
-            <p class="mt-2 text-xs text-zinc-400 break-words whitespace-pre-wrap">
-              {String(serverData.error ?? "Unknown error")}
-            </p>
-          </div>
-          <div data-tauri-decorum-tb class="flex flex-row absolute top-0 right-0 z-10 h-10" />
-        </div>
-      }
+      fallback={<StartupFailure error={serverData.error} />}
     >
       <Show
         when={serverData.state !== "pending" && serverData()}

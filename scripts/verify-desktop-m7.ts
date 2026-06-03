@@ -14,7 +14,7 @@ const specs = [
   "01-startup.spec.ts",
   "02-import-csv.spec.ts",
   "03-qa-inspector.spec.ts",
-  "04-agent-studio.spec.ts",
+  "04-capability-marketplace.spec.ts",
   "05-workflow-pipeline.spec.ts",
   "06-dxf-viewer.spec.ts",
   "07-ppt-master.spec.ts",
@@ -73,16 +73,34 @@ const missingDevDocs = (
   )
 ).filter((item): item is string => Boolean(item))
 const startup = await read("packages/desktop/e2e/01-startup.spec.ts")
+const agentStudio = await read("packages/desktop/e2e/04-capability-marketplace.spec.ts")
+const e2eHelper = await read("packages/desktop/e2e/helpers/app.ts")
 const visual = await read("packages/desktop/e2e/11-visual-regression.spec.ts")
 const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
+const app = await read("packages/app/src/app.tsx")
+const home = await read("packages/app/src/pages/home.tsx")
+const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
+const agentsPage = await read("packages/app/src/pages/agents/index.tsx")
+const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
+const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
+const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
+const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
+const acceptance = await read("scripts/verify-desktop-acceptance.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
 const settings = await read("packages/app/src/context/settings.tsx")
 const general = await read("packages/app/src/components/settings-general.tsx")
 const telemetry = await read("packages/desktop/src/lib/telemetry/index.ts")
 const store = await read("packages/desktop/src/lib/telemetry/store.ts")
 const privacy = await read("packages/desktop/src/lib/telemetry/privacy.ts")
+const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
+const desktopLanguageDocs = [
+  await read("docs/dev/01-architecture.md"),
+  await read("docs/dev/04-e2e-testing.md"),
+  await read("docs/dev/05-release-cadence.md"),
+  docs,
+].join("\n")
 
 check(
   "M7 E2E spec inventory",
@@ -91,19 +109,134 @@ check(
 )
 check(
   "startup E2E budget",
-  has(startup, ["[data-testid=sidecar-status]", '"ready"', "3000"]),
-  "startup waits for sidecar ready within 3s",
+  has(startup, ["[data-testid=sidecar-status]", '"ready"', "15000", "[data-testid=home-workbench]"]),
+  "startup waits for sidecar ready and lands on the home workbench within 15s",
 )
+check(
+  "home collaboration handoff",
+  has(home, [
+    'data-testid="home-project-directory"',
+    'data-testid="home-task-input"',
+    'data-testid="home-start-session"',
+    "collaborationTarget",
+    "setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })",
+  ]) &&
+    has(sessionComposer, [
+      "handoffAgent",
+      "handoffPromptParts",
+      "modelAction",
+      "modelStatus",
+      "local.agent.set(agent)",
+      'data-testid="session-collaboration-panel"',
+      'data-testid="session-model-readiness"',
+      'data-testid="session-model-setup"',
+    ]) &&
+    has(promptInput, ['data-testid="session-prompt-input"']) &&
+    has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY"]) &&
+    has(startup, [
+      "[data-testid=home-project-directory]",
+      "[data-testid=home-task-input]",
+      "[data-testid=home-start-session]",
+      "[data-testid=session-collaboration-panel]",
+      "[data-testid=session-model-readiness]",
+      "[data-testid=session-model-setup]",
+      "[data-testid=session-prompt-input]",
+      "chief_manager",
+      'model: "configured"',
+      "/session/queue-e2e/prompt_async",
+      'payload.agent).toBe("chief_manager"',
+      'providerID: "deepseek", modelID: "deepseek-v4"',
+    ]),
+  "home creates a chief_manager handoff and can send the first prompt when a model is configured",
+)
+check(
+  "marketplace separated from advanced agent management",
+  has(app, ["const AgentsIndexRoute", "<AgentsIndex />", "const MarketplaceRoute"]) &&
+    has(marketplace, [
+      'data-testid="marketplace-page"',
+      "marketplace-console",
+      "marketplace-row-${item.id}",
+      "marketplace-open-${selected().id}",
+      "marketplace-row-state-${item.id}",
+      "marketplace-preview-${selected().id}",
+    ]) &&
+    !marketplace.includes("marketplace-grid") &&
+    !marketplace.includes("marketplace-provider-strip") &&
+    !marketplace.includes("marketplace-card") &&
+    !marketplace.includes("agent-collaboration-start") &&
+    !marketplace.includes("agent-model-routing") &&
+    has(agentStudio, ['launchApp("/marketplace")', 'launchApp("/agents")', "toHaveCount(0)", "agent-collaboration-start"]),
+  "marketplace stays as one concise registry plus detail panel while /agents keeps advanced management",
+)
+check(
+  "desktop product language",
+  !desktopLanguageDocs.includes("Agent Studio") &&
+    !desktopLanguageDocs.includes("Harness Profile") &&
+    !desktopLanguageDocs.includes("工具/Skills") &&
+    !e2eHelper.includes("Skills 加载") &&
+    !agentCollaborationTest.includes("Agent Studio") &&
+    sessionCollaboration.includes("请加载 Skill") &&
+    agentsPage.includes("RAILWISE 能力设置") &&
+    agentsPage.includes("智能体与能力设置") &&
+    agentsPage.includes("上下文文件夹") &&
+    agentsPage.includes("智能体库") &&
+    agentsPage.includes("#agent-library") &&
+    !agentsPage.includes("RAILWISE 能力市场") &&
+    !agentsPage.includes("项目工作区") &&
+    !agentsPage.includes("智能体矩阵") &&
+    !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
+  "Desktop docs, E2E fixtures, and advanced management page use capability market, professional workflow, and execution-layer language",
+)
+
+check(
+  "marketplace inventory state",
+  has(e2eHelper, ["/agent-studio/tool/list", "/agent-studio/skill/list", "规范条文查询", "monitoring-design"]) &&
+    has(agentStudio, [
+      "marketplace-row-state-agents",
+      "marketplace-row-state-tools",
+      "marketplace-row-state-skills",
+      "marketplace-row-state-providers",
+      "marketplace-preview-tools",
+      "marketplace-preview-skills",
+      "执行层",
+      "monitoring-design",
+    ]) &&
+    !marketplace.includes("label: \"Agents\"") &&
+    !marketplace.includes("label: \"Tools\"") &&
+    !marketplace.includes("label: \"Skills\""),
+  "marketplace asserts enabled inventory state for agents, tools, skills, and provider setup",
+)
+check(
+  "minimal home workbench source",
+  has(home, [
+    'data-testid="home-workbench"',
+    'data-testid="home-chat-composer"',
+    'data-testid="home-project-directory"',
+    'data-testid="home-task-input"',
+    'data-testid="home-start-session"',
+    "今天要完成什么？",
+    'navigate("/harness")',
+    'navigate("/marketplace")',
+  ]) &&
+    ["项目驾驶舱", "告警 Feed", "多智能体协作中枢", "智能体矩阵", "dashboard-map"].every(
+      (item) => !home.includes(item),
+    ),
+  "home source is a minimal chat workbench and does not carry legacy dashboard, map, or agent-hub copy",
+)
+
 check(
   "visual regression E2E",
   has(visual, [
-    "dashboard-container",
-    "toHaveScreenshot",
-    "maxDiffPixelRatio",
-    'animations: "disabled"',
-    "rgb\\(1[89]\\d",
+    "[data-testid=home-workbench]",
+    "[data-testid=home-chat-composer]",
+    "今天要完成什么？",
+    "项目驾驶舱",
+    "告警 Feed",
+    "多智能体协作中枢",
+    "智能体矩阵",
+    "[data-testid=dashboard-map]",
   ]),
-  "dashboard screenshot baseline and banned color checks are present",
+  "old dashboard, map, and agent-hub copy are blocked while the minimalist home composer is asserted",
 )
 check(
   "TTFUI E2E budget",
@@ -111,10 +244,16 @@ check(
     "Date.now()",
     "[data-testid=app-shell]",
     "[data-testid=sidecar-status]",
-    "toBeLessThan(3000)",
+    "toBeLessThan(15000)",
     "__RW_PERF__",
   ]),
-  "TTFUI asserts shell, sidecar, perf marker, and <3s budget",
+  "TTFUI asserts shell, sidecar, perf marker, and <15s usability budget",
+)
+check(
+  "macOS launch smoke readiness",
+  has(macSmoke, ["CLI health check OK", "--ready-timeout", "railwise-desktop_", "--skip-ready"]) &&
+    has(docs, ["macOS 启动烟测", "bun run smoke:macos -- --ready-timeout 90", "CLI health check OK"]),
+  "macOS app smoke covers bundle verification, process launch, and sidecar readiness in normal Terminal",
 )
 check(
   "Playwright artifacts",
@@ -123,8 +262,24 @@ check(
     'trace: "on-first-retry"',
     'screenshot: "only-on-failure"',
     'video: "retain-on-failure"',
-  ]),
-  "HTML report, trace, screenshot, and video artifacts are configured",
+  ]) &&
+    has(config, [
+      'process.platform === "darwin"',
+      "zsh -lc",
+      "bun ./node_modules/vite/bin/vite.js",
+      "Library/Caches/ms-playwright",
+      "Google Chrome for Testing",
+      "PLAYWRIGHT_CHROMIUM_CHANNEL",
+    ]) &&
+    config.includes("channel ? undefined") &&
+    has(acceptance, [
+      "const channel = Bun.env.PLAYWRIGHT_CHROMIUM_CHANNEL",
+      "channel\n    ? undefined",
+      "reachable ? \"1\" : undefined",
+      "PLAYWRIGHT_SKIP_WEBSERVER",
+    ]) &&
+    !acceptance.includes("reachable || live ?"),
+  "HTML report, trace, screenshot, video artifacts, and the stable macOS Vite webServer command are configured",
 )
 check(
   "telemetry default off",

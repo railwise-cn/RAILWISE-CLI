@@ -33,13 +33,16 @@ const value = (name: string) => {
 const full = has("--full")
 const live = has("--live") || full
 const e2eBase = Bun.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${Bun.env.PLAYWRIGHT_PORT ?? "5185"}`
+const channel = Bun.env.PLAYWRIGHT_CHROMIUM_CHANNEL
 const chrome =
   Bun.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ??
-  ((await Bun.file(
-    "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell",
-  ).exists())
-    ? "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell"
-    : undefined)
+  (channel
+    ? undefined
+    : (await Bun.file(
+          "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+        ).exists())
+      ? "/Users/WANGJIAWEI/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+      : undefined)
 const reachable = live
   ? await fetch(e2eBase, { signal: AbortSignal.timeout(3_000) })
       .then((res) => res.ok)
@@ -188,7 +191,7 @@ const steps: Step[] = [
     cwd: path.join(root, "packages/desktop"),
     args: ["bun", "run", "test:e2e"],
     env: {
-      PLAYWRIGHT_SKIP_WEBSERVER: Bun.env.PLAYWRIGHT_SKIP_WEBSERVER ?? (reachable || live ? "1" : undefined),
+      PLAYWRIGHT_SKIP_WEBSERVER: Bun.env.PLAYWRIGHT_SKIP_WEBSERVER ?? (reachable ? "1" : undefined),
       PLAYWRIGHT_BASE_URL: e2eBase,
       PLAYWRIGHT_CHROMIUM_EXECUTABLE: chrome,
     },

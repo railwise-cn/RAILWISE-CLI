@@ -478,9 +478,9 @@ export const dict = {
   "workspace.black.waitlist.enrollNote": "등록을 클릭하면 구독이 즉시 시작되며 카드에 요금이 청구됩니다.",
 
   "download.title": "RAILWISE | 다운로드",
-  "download.meta.description": "macOS 및 Windows용 RAILWISE Desktop 다운로드",
+  "download.meta.description": "macOS용 RAILWISE Desktop 다운로드",
   "download.hero.title": "RAILWISE 다운로드",
-  "download.hero.subtitle": "Desktop 베타는 macOS 및 Windows에서 사용할 수 있습니다",
+  "download.hero.subtitle": "Desktop 베타는 macOS에서 사용할 수 있습니다",
   "download.hero.button": "{{os}}용 다운로드",
   "download.section.terminal": "RAILWISE 터미널",
   "download.section.desktop": "RAILWISE 데스크톱 (베타)",
@@ -491,7 +491,6 @@ export const dict = {
 
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
-  "download.platform.windowsX64": "Windows (x64)",
 
   "download.faq.a3.beforeLocal":
     "꼭 그렇지는 않지만, 아마도 필요할 것입니다. RAILWISE를 유료 제공자에 연결하려면 AI 구독이 필요할 수 있습니다. 하지만",

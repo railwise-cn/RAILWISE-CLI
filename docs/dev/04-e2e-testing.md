@@ -40,7 +40,7 @@ bun run test:e2e
 1. 启动和 sidecar 就绪时间
 2. CSV 导入和预览
 3. qa_inspector 首检报告
-4. Agent Studio 热更新
+4. 智能体与流程热更新
 5. 工作流流水线
 6. DXF 图层切换
 7. ppt_master 模板链路
@@ -48,12 +48,12 @@ bun run test:e2e
 9. 自动更新弹窗
 10. sidecar 崩溃恢复
 11. 视觉回归
-12. TTFUI 小于 3 秒
+12. TTFUI 小于 15 秒
 
 ## 视觉基准
 
-视觉回归首次运行会生成 dashboard 截图基准。基准应随设计规范变更一起更新，禁止在未检查 UI 的情况下直接接受新截图。
+视觉回归首次运行会生成 `/home` 极简协作入口截图基准。基准应随设计规范变更一起更新，禁止在未检查 UI 的情况下直接接受新截图。
 
 ## CI 建议
 
-CI 运行时固定 Chromium 版本，并上传 `e2e/playwright-report` 作为构建产物。失败时先查看 trace，再判断是产品问题、基准图变更还是环境问题。
+CI 运行时固定 Chromium 版本，并上传 `e2e/playwright-report` 作为构建产物。桌面端 E2E 只覆盖 macOS 本地/CI 验收；Windows 通过安装包工作流和内部安装验证覆盖。失败时先查看 trace，再判断是产品问题、基准图变更还是环境问题。

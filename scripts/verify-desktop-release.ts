@@ -497,11 +497,14 @@ check(
       "CFBundleIdentifier",
       "CFBundleExecutable",
       "railwise-cli",
+      "executableFile",
+      "main executable permission",
+      "sidecar executable permission",
       "executable ${arch}",
       "codesign --verify --deep --strict --verbose=4",
       '"target", "release", "bundle", "macos"',
     ]),
-  "Local and CI macOS bundle verification checks plist, architecture, sidecar, and codesign",
+  "Local and CI macOS bundle verification checks plist, architecture, executable bits, sidecar, and codesign",
 )
 check(
   "macOS DMG verification script",

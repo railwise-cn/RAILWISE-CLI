@@ -1,10 +1,11 @@
 .agent-studio {
-  --agent-bg: var(--bg-primary, rgb(246, 248, 247));
+  --agent-bg: var(--bg-primary, rgb(248, 247, 244));
   --agent-surface: var(--bg-secondary, rgb(255, 255, 255));
   --agent-text: var(--text-primary, rgb(10, 10, 9));
-  --agent-muted: var(--text-secondary, rgb(68, 82, 78));
-  --agent-accent: var(--accent-primary, rgb(15, 118, 110));
-  --agent-accent-strong: var(--accent-secondary, rgb(17, 94, 89));
+  --agent-muted: var(--text-secondary, rgb(73, 70, 64));
+  --agent-accent: var(--accent-primary, rgb(117, 86, 32));
+  --agent-accent-strong: var(--accent-secondary, rgb(86, 62, 24));
+  --agent-teal: rgb(15, 118, 110);
   --agent-border: color-mix(in srgb, var(--agent-muted) 18%, transparent);
   --agent-soft: color-mix(in srgb, var(--agent-accent) 8%, transparent);
   --agent-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.07));
@@ -12,10 +13,10 @@
   font-family: var(--font-family, "PingFang SC", "Helvetica Neue", sans-serif);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
   height: 100%;
   overflow: auto;
-  padding: 28px;
+  padding: 24px;
   background: var(--agent-bg);
   color: var(--agent-text);
 }
@@ -23,12 +24,12 @@
 .agent-hero {
   display: grid;
   grid-template-columns: minmax(420px, 1fr) minmax(300px, 0.52fr);
-  gap: 24px;
+  gap: 18px;
   align-items: stretch;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
   background: var(--agent-surface);
-  padding: 24px;
+  padding: 20px;
 }
 
 .agent-hero__copy {
@@ -49,7 +50,7 @@
 .agent-hero h1 {
   margin: 0;
   color: var(--agent-text);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 720;
   line-height: 1.12;
   letter-spacing: 0;
@@ -107,24 +108,163 @@
   white-space: nowrap;
 }
 
-.agent-market-tabs {
+.marketplace-page {
+  gap: 18px;
+}
+
+.marketplace-shell {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 18px;
+  align-items: center;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
   background: var(--agent-surface);
-  padding: 8px;
+  padding: 22px;
+}
+
+.marketplace-shell__copy {
+  min-width: 0;
+}
+
+.marketplace-shell h1 {
+  margin: 0;
+  color: var(--agent-text);
+  letter-spacing: 0;
+}
+
+.marketplace-shell h1 {
+  margin-top: 6px;
+  font-size: 30px;
+  font-weight: 720;
+  line-height: 1.12;
+}
+
+.marketplace-shell p {
+  margin: 0;
+  color: var(--agent-muted);
+  line-height: 1.55;
+}
+
+.marketplace-shell p {
+  max-width: 760px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.marketplace-shell__actions {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.marketplace-panel-preview {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.marketplace-panel-preview span {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 54px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid color-mix(in srgb, var(--agent-border) 82%, transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--agent-bg) 62%, var(--agent-surface));
+  padding: 8px 10px;
+}
+
+.marketplace-panel-preview strong,
+.marketplace-panel-preview small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marketplace-panel-preview strong {
+  color: var(--agent-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.marketplace-panel-preview small {
+  color: var(--agent-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.marketplace-state {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--agent-border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.marketplace-state--enabled {
+  border-color: color-mix(in srgb, #16935f 38%, transparent);
+  background: color-mix(in srgb, #16935f 11%, var(--agent-surface));
+  color: #16734d;
+}
+
+.marketplace-state--setup {
+  border-color: color-mix(in srgb, var(--agent-accent) 38%, transparent);
+  background: var(--agent-soft);
+  color: var(--agent-accent-strong);
+}
+
+.marketplace-state--empty,
+.marketplace-state--loading {
+  background: color-mix(in srgb, var(--agent-muted) 8%, var(--agent-surface));
+  color: var(--agent-muted);
+}
+
+.marketplace-console {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.32fr) minmax(0, 1fr);
+  gap: 12px;
+  border: 1px solid var(--agent-border);
+  border-radius: var(--agent-radius);
+  background: var(--agent-surface);
+  padding: 10px;
+}
+
+.agent-market-tabs {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .agent-market-tabs button {
-  min-height: 34px;
+  display: grid;
+  min-height: 62px;
+  min-width: 0;
+  grid-template-columns: 20px minmax(0, 1fr) max-content;
+  gap: 3px 10px;
+  align-items: center;
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
   color: var(--agent-muted);
-  font-size: 12px;
   font-weight: 700;
+  padding: 9px 10px;
+  text-align: left;
 }
 
 .agent-market-tabs button.active {
@@ -133,18 +273,121 @@
   color: var(--agent-accent-strong);
 }
 
+.agent-market-tabs button [data-component="icon"] {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+  color: var(--agent-accent-strong);
+}
+
+.agent-market-tabs button strong,
+.agent-market-tabs button small,
+.marketplace-row__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marketplace-row__label {
+  grid-column: 2;
+  color: var(--agent-accent-strong);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.agent-market-tabs button strong {
+  grid-column: 2;
+  color: var(--agent-text);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.agent-market-tabs button small {
+  grid-column: 2;
+  color: var(--agent-muted);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.agent-market-tabs button .marketplace-state {
+  grid-row: 1 / span 3;
+  grid-column: 3;
+}
+
+.agent-market-tabs--strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.agent-market-tabs__header {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px 4px;
+}
+
+.agent-market-tabs__header span {
+  color: var(--agent-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.agent-market-tabs__header strong {
+  color: var(--agent-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.agent-market-tabs--strip button {
+  min-height: 86px;
+  grid-template-columns: 22px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  border-color: var(--agent-border);
+  background: var(--agent-surface);
+  padding: 11px;
+}
+
+.agent-market-tabs--strip button [data-component="icon"] {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+}
+
+.agent-market-tabs--strip button strong,
+.agent-market-tabs--strip button small,
+.agent-market-tabs--strip .marketplace-row__label {
+  grid-column: 2;
+}
+
+.agent-market-tabs--strip button.active {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--agent-accent) 26%, transparent);
+}
+
+.agent-market-tabs--strip + .agent-market-panel {
+  min-height: 124px;
+  background: var(--agent-surface);
+  padding: 16px;
+}
+
 .agent-market-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) max-content;
   gap: 16px;
-  align-items: center;
-  border: 1px solid var(--agent-border);
+  align-items: start;
+  min-height: 390px;
+  border: 0;
   border-radius: var(--agent-radius);
-  background: var(--agent-surface);
-  padding: 16px 18px;
+  background: color-mix(in srgb, var(--agent-bg) 48%, var(--agent-surface));
+  padding: 18px;
 }
 
-.agent-market-panel span {
+.agent-market-panel > div > span:first-child {
   color: var(--agent-accent-strong);
   font-size: 12px;
   font-weight: 700;
@@ -169,6 +412,7 @@
 .agent-market-panel__status {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
 }
 
@@ -673,7 +917,7 @@
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
   background: var(--agent-surface);
-  box-shadow: var(--agent-shadow);
+  box-shadow: none;
   color: inherit;
   padding: 16px;
   text-decoration: none;
@@ -856,7 +1100,7 @@
 }
 
 .workflow-edge {
-  stroke: var(--agent-accent-strong);
+  stroke: var(--agent-teal);
   stroke-width: 1.8;
 }
 
@@ -1046,10 +1290,17 @@
 
 @media (max-width: 1160px) {
   .agent-hero,
+  .marketplace-shell,
+  .marketplace-console,
   .agent-launch,
   .agent-model-routing__body,
   .agent-inventory {
     grid-template-columns: 1fr;
+  }
+
+  .marketplace-shell__actions,
+  .agent-market-panel .agent-provider-actions {
+    justify-content: flex-start;
   }
 
   .agent-rail {
@@ -1083,6 +1334,8 @@
   .agent-toolbar__controls,
   .agent-market__cards,
   .agent-market-tabs,
+  .marketplace-shell,
+  .marketplace-console,
   .agent-launch__path,
   .agent-model-routing__stats,
   .agent-rail,

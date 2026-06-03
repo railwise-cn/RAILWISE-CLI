@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="174" y1="116" x2="850" y2="908" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fffdfa"/>
+      <stop offset="1" stop-color="#eee5d3"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+  <rect x="48" y="48" width="928" height="928" rx="194" fill="none" stroke="#d8ccb6" stroke-width="24"/>
+  <ellipse cx="512" cy="696" rx="284" ry="34" fill="#231815" opacity=".08"/>
+  <g transform="translate(194 332) scale(12)">
+    <path d="M15.65 16.07 11.1 0H0l8.03 29.6c4.48 0 9-.03 14 0l3-9.97c-4-3.13-8.92-3.48-9.38-3.56Z" fill="#231815"/>
+    <path d="M27.23 12.97 31.73.96 21.1 1l-4.73 12.44c3.98-.59 7.6-.79 10.86-.47Z" fill="#231815"/>
+    <path d="M50.31.96H34.63l-2.8 7.63 7.15-.03c.68 0 1.16.67.93 1.31-.46 1.32-1.2 3.38-1.82 5.09 3.24 1.14 6.17 2.81 8.31 4.57 1.06-1.96 4.3-10.77 6.04-15.54.54-1.47-.55-3.03-2.12-3.02Z" fill="#231815"/>
+    <path d="M45.54 21.96c-2.1-1.81-4.83-3.53-8.12-4.94-3.02-1.29-6.53-2.32-10.6-2.67-5.78-.5-10.74.47-10.74.47 6.4.23 17.79 4.4 20.93 14.84h15.01s-1.88-3.75-6.47-7.7Z" fill="#231815"/>
+  </g>
+</svg>

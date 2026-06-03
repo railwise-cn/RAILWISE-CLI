@@ -1,4 +1,17 @@
 [data-component="logo-mark"] {
   width: 24px;
-  aspect-ratio: 1;
+  aspect-ratio: 53 / 30;
+}
+
+[data-component="logo-splash"] {
+  width: 96px;
+  aspect-ratio: 53 / 30;
+}
+
+[data-component="logo-wordmark"] {
+  display: block;
+  width: 112px;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
 }

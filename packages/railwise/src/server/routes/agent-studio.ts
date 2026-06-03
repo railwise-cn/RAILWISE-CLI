@@ -161,19 +161,19 @@ const labels: Record<string, string> = {
 type ToolGroup = z.infer<typeof ToolInventorySchema>["group"]
 
 const railwiseAgents = [
-  ["chief_manager", "项目总控"],
-  ["solution_architect", "技术方案架构师"],
+  ["chief_manager", "总工程师"],
+  ["solution_architect", "方案总设"],
   ["qa_inspector", "外业数据首检"],
-  ["data_analyst", "测绘数据分析"],
-  ["qa_reviewer", "总工办质检"],
-  ["technical_writer", "工程报告编制"],
-  ["commercial_specialist", "商务招投标"],
+  ["data_analyst", "监测分析"],
+  ["qa_reviewer", "总工复核"],
+  ["technical_writer", "报告编制"],
+  ["commercial_specialist", "商务投标"],
   ["ppt_master", "汇报材料设计"],
   ["cpiii_specialist", "CPIII 测量专家"],
-  ["adjustment_computer", "严密平差计算"],
-  ["norm_librarian", "规范资料管理员"],
-  ["knowledge_curator", "知识库整理员"],
-  ["source_ingestor", "资料入库专员"],
+  ["adjustment_computer", "平差计算"],
+  ["norm_librarian", "规范资料"],
+  ["knowledge_curator", "知识沉淀"],
+  ["source_ingestor", "资料入库"],
 ] as const
 
 const railwiseAgentNames = new Map<string, string>(railwiseAgents)

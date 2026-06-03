@@ -35,7 +35,7 @@ export function capabilityPrompt(capability: Capability, prompt: string) {
   const line =
     capability.kind === "tool"
       ? `请调用工具「${capability.name}」处理当前任务。`
-      : `请使用 Skill「${capability.name}」执行当前任务。`
+      : `请加载 Skill「${capability.name}」执行当前任务。`
   if (!draft) return line
   if (draft.startsWith(line)) return draft
   return `${line}\n${draft}`

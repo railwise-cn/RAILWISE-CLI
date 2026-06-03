@@ -13,6 +13,29 @@ function auth(server: NonNullable<ReturnType<typeof useServer>["current"]>) {
 export function useAgentStudioApi() {
   const platform = usePlatform()
   const server = useServer()
+  const preview = window.__RAILWISE__?.browserHarness && !("__TAURI_INTERNALS__" in window)
+
+  if (preview) {
+    return {
+      list: async () => [] as AgentStudioItem[],
+      tools: async () => [] as ToolInventoryItem[],
+      skills: async () => [] as SkillInventoryItem[],
+      detail: async (name: string) =>
+        ({
+          name,
+          displayName: name,
+          description: "",
+          mode: "subagent",
+          permission: {},
+          options: {},
+          prompt: "",
+          rawMarkdown: `---\nname: ${name}\n---\n`,
+        }) satisfies AgentStudioDetail,
+      update: async () => false,
+      presets: async () => [] as Workflow[],
+      run: async (workflowId: string) => ({ sessionId: "", sessionTitle: "", workflowId, agentNames: [] }),
+    }
+  }
 
   async function request<T>(path: string, init?: RequestInit) {
     if (!server.current) throw new Error("Server not available")
@@ -23,6 +46,8 @@ export function useAgentStudioApi() {
       headers,
     })
     if (!response.ok) throw new Error(await response.text())
+    const type = response.headers.get("content-type") ?? ""
+    if (!type.includes("json")) throw new Error("Agent Studio API returned non-JSON response")
     return (await response.json()) as T
   }
 

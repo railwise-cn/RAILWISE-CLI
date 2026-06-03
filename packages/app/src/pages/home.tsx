@@ -37,6 +37,11 @@ export default function Home() {
     if (provider) return `${provider.name} / ${recommendedModel}`
     return `默认建议 ${recommendedModel}`
   })
+  const starters = [
+    "检查当前线路复测资料，列出缺失文件并给出下一步计划。",
+    "对外业监测数据做首检，标出异常点和复核建议。",
+    "根据资料起草监测方案大纲，并列出需要补充的依据。",
+  ]
 
   const serverDotClass = createMemo(() => {
     const healthy = server.healthy()
@@ -85,160 +90,153 @@ export default function Home() {
     })
     layout.projects.open(target.directory)
     server.projects.touch(target.directory)
-    setSessionHandoff(target.key, { prompt: target.prompt })
+    setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })
     navigate(target.href)
   }
 
   return (
-    <main class="min-h-full px-6 py-5" data-testid="home-workbench">
-      <div class="grid h-full min-h-[calc(100vh-56px)] grid-cols-[260px_minmax(0,1fr)] gap-4">
-        <aside class="flex flex-col rounded-lg border border-border-subtle bg-surface-panel p-4">
-          <div class="flex items-center gap-3">
-            <Logo class="size-9 opacity-80" />
+    <main class="min-h-full bg-surface-base px-5 py-5" data-testid="home-workbench">
+      <div class="mx-auto flex min-h-[calc(100vh-56px)] max-w-6xl flex-col">
+        <header class="flex items-center justify-between gap-3">
+          <button type="button" class="flex items-center gap-3 rounded-md px-2 py-1 text-left" onClick={() => navigate("/home")}>
+            <Logo class="h-8 w-32 opacity-90" />
             <div>
-              <div class="text-13-medium text-text-strong">RAILWISE</div>
-              <div class="text-12-regular text-text-weak">工程测绘智能体工作台</div>
+              <div class="text-13-medium text-text-strong">Desktop</div>
+              <div class="text-12-regular text-text-weak">工程智能体工作台</div>
             </div>
-          </div>
+          </button>
 
-          <Button
-            size="normal"
-            variant="ghost"
-            class="mt-4 justify-start text-13-regular text-text-weak"
-            onClick={() => dialog.show(() => <DialogSelectServer />)}
-          >
-            <div
-              classList={{
-                "size-2 rounded-full": true,
-                [serverDotClass()]: true,
-              }}
-            />
-            {server.name}
-          </Button>
-
-          <div class="mt-6 flex flex-col gap-2">
-            <div class="text-12-medium text-text-weak">工作区</div>
-            <Button icon="folder-add-left" size="normal" class="justify-start" onClick={chooseProject}>
-              {language.t("command.project.open")}
+          <div class="flex items-center gap-2">
+            <Button size="small" variant="ghost" icon="circle-ban-sign" onClick={() => navigate("/harness")}>
+              Harness
             </Button>
-            <Show
-              when={selectedDirectory()}
-              fallback={<div class="rounded-md bg-surface-element p-3 text-12-regular text-text-weak">工作区未选择</div>}
-            >
-              {(path) => (
-                <button
-                  type="button"
-                  class="rounded-md bg-surface-element p-3 text-left text-12-mono text-text-strong"
-                  title={path()}
-                  onClick={() => updateDirectory(path())}
-                >
-                  {compactPath(path())}
-                </button>
-              )}
-            </Show>
-          </div>
-
-          <Show when={recent().length}>
-            <div class="mt-6 flex flex-col gap-2">
-              <div class="text-12-medium text-text-weak">{language.t("home.recentProjects")}</div>
-              <For each={recent()}>
-                {(project) => (
-                  <button
-                    type="button"
-                    class="rounded-md px-2 py-2 text-left hover:bg-surface-element"
-                    title={project.worktree}
-                    onClick={() => updateDirectory(project.worktree)}
-                  >
-                    <div class="truncate text-12-mono text-text-strong">{compactPath(project.worktree)}</div>
-                    <div class="text-11-regular text-text-weak">
-                      {DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative()}
-                    </div>
-                  </button>
-                )}
-              </For>
-            </div>
-          </Show>
-
-          <div class="mt-auto flex flex-col gap-2 pt-6">
-            <Button variant="ghost" size="normal" class="justify-start" onClick={() => navigate("/marketplace")}>
+            <Button size="small" variant="ghost" icon="providers" onClick={() => navigate("/marketplace")}>
               能力市场
             </Button>
+            <Button size="small" variant="ghost" onClick={() => dialog.show(() => <DialogSelectServer />)}>
+              <div
+                classList={{
+                  "size-2 rounded-full": true,
+                  [serverDotClass()]: true,
+                }}
+              />
+              {server.name}
+            </Button>
           </div>
-        </aside>
+        </header>
 
-        <section class="flex min-w-0 flex-col rounded-lg border border-border-subtle bg-surface-panel">
-          <div class="border-b border-border-subtle px-6 py-5">
-            <div class="text-12-medium uppercase text-text-weak">本地 AI 工作台</div>
-            <h1 class="mt-2 text-28-bold text-text-strong">想让 RAILWISE 完成什么？</h1>
+        <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-8">
+          <div class="mb-5 text-center">
+            <h1 class="text-[30px] font-semibold leading-tight text-text-strong">今天要完成什么？</h1>
           </div>
 
           <form
-            class="flex flex-1 flex-col p-6"
+            class="rounded-lg border border-border-subtle bg-surface-panel p-3 shadow-sm"
             data-testid="home-chat-composer"
             onSubmit={(event) => {
               event.preventDefault()
               start()
             }}
           >
-            <label class="text-13-medium text-text-strong" for="home-directory">
-              工作区文件夹
-            </label>
-            <div class="mt-2 flex gap-2">
+            <div class="flex flex-wrap items-center gap-2 border-b border-border-subtle pb-3">
+              <label class="sr-only" for="home-directory">
+                工作区文件夹
+              </label>
               <input
                 id="home-directory"
-                class="h-10 min-w-0 flex-1 rounded-md border border-border-subtle bg-surface-element px-3 text-13-mono text-text-strong"
+                data-testid="home-project-directory"
+                class="h-9 min-w-[260px] flex-1 rounded-md border border-border-subtle bg-surface-element px-3 text-13-mono text-text-strong outline-none"
                 value={selectedDirectory()}
                 onInput={(event) => updateDirectory(event.currentTarget.value)}
                 placeholder="/Users/name/CODE/project"
               />
-              <Button type="button" variant="secondary" onClick={chooseProject}>
+              <Button type="button" size="normal" variant="secondary" icon="folder-add-left" onClick={chooseProject}>
                 选择文件夹
               </Button>
             </div>
 
-            <label class="mt-5 text-13-medium text-text-strong" for="home-prompt">
+            <label class="sr-only" for="home-prompt">
               对话
             </label>
             <textarea
               id="home-prompt"
-              class="mt-2 min-h-42 resize-y rounded-md border border-border-subtle bg-surface-element p-4 text-14-regular text-text-strong outline-none"
+              data-testid="home-task-input"
+              class="min-h-[170px] w-full resize-none bg-transparent p-4 text-15-regular text-text-strong outline-none"
               value={prompt()}
               onInput={(event) => setPrompt(event.currentTarget.value)}
-              placeholder="例如：检查当前线路复测资料，列出缺失文件，生成下一步执行计划。"
+              placeholder="选择资料文件夹后，直接说任务。例：检查当前线路复测资料，列出缺失文件并生成下一步执行计划。"
             />
 
-            <div class="mt-4 flex items-center justify-end">
-              <Button type="submit" disabled={!canStart()}>
+            <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle pt-3">
+              <div class="flex flex-wrap gap-2">
+                <For each={starters}>
+                  {(item) => (
+                    <button
+                      type="button"
+                      class="rounded-full border border-border-subtle px-3 py-1.5 text-12-regular text-text-weak hover:bg-surface-element hover:text-text-strong"
+                      onClick={() => setPrompt(item)}
+                    >
+                      {item.split("，")[0]}
+                    </button>
+                  )}
+                </For>
+              </div>
+              <Button type="submit" disabled={!canStart()} data-testid="home-start-session">
                 开始协作
               </Button>
             </div>
-
-            <section class="mt-4 grid gap-2 md:grid-cols-3" data-testid="home-harness-panel">
-              <button
-                type="button"
-                class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
-                onClick={() => navigate("/harness")}
-              >
-                <div class="flex items-center gap-2 text-12-medium text-text-strong">
-                  <Icon name="circle-ban-sign" size="small" />
-                  本地安全模式
-                </div>
-                <div class="mt-1 text-12-regular text-text-weak">高风险动作先确认</div>
-              </button>
-              <div class="rounded-md border border-border-subtle bg-surface-element p-3">
-                <div class="text-12-medium text-text-strong">模型</div>
-                <div class="mt-1 truncate text-12-regular text-text-weak">{modelLabel()}</div>
-              </div>
-              <button
-                type="button"
-                class="rounded-md border border-border-subtle bg-surface-element p-3 text-left hover:bg-surface-raised-base-hover"
-                onClick={() => navigate("/marketplace")}
-              >
-                <div class="text-12-medium text-text-strong">能力市场</div>
-                <div class="mt-1 text-12-regular text-text-weak">智能体 / 工具 / Skills</div>
-              </button>
-            </section>
           </form>
+
+          <section class="mt-4 flex flex-wrap items-center justify-center gap-2" data-testid="home-harness-panel">
+            <button
+              type="button"
+              data-testid="home-open-harness"
+              class="inline-flex items-center gap-2 rounded-full border border-border-subtle px-3 py-2 text-12-medium text-text-weak hover:bg-surface-panel hover:text-text-strong"
+              onClick={() => navigate("/harness")}
+            >
+              <Icon name="circle-ban-sign" size="small" />
+              Harness
+            </button>
+            <div
+              class="inline-flex max-w-[300px] items-center gap-2 rounded-full border border-border-subtle px-3 py-2 text-12-medium text-text-weak"
+              data-testid="home-model-summary"
+            >
+              <Icon name="models" size="small" />
+              <span class="truncate">{modelLabel()}</span>
+            </div>
+            <button
+              type="button"
+              data-testid="home-open-marketplace"
+              class="inline-flex items-center gap-2 rounded-full border border-border-subtle px-3 py-2 text-12-medium text-text-weak hover:bg-surface-panel hover:text-text-strong"
+              onClick={() => navigate("/marketplace")}
+            >
+              <Icon name="providers" size="small" />
+              能力市场
+            </button>
+          </section>
+
+          <Show when={recent().length}>
+            <section class="mt-8">
+              <div class="mb-2 text-center text-12-medium text-text-weak">{language.t("home.recentProjects")}</div>
+              <div class="grid gap-2 md:grid-cols-2">
+                <For each={recent()}>
+                  {(project) => (
+                    <button
+                      type="button"
+                      class="flex items-center justify-between gap-3 rounded-md border border-border-subtle px-3 py-2 text-left hover:bg-surface-panel"
+                      title={project.worktree}
+                      onClick={() => updateDirectory(project.worktree)}
+                    >
+                      <span class="truncate text-12-mono text-text-strong">{compactPath(project.worktree)}</span>
+                      <span class="shrink-0 text-11-regular text-text-weak">
+                        {DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative()}
+                      </span>
+                    </button>
+                  )}
+                </For>
+              </div>
+            </section>
+          </Show>
         </section>
       </div>
     </main>

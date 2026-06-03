@@ -77,8 +77,8 @@ export const SettingsAgents: Component = () => {
             <Button size="large" variant="secondary" icon="arrow-up" disabled={loading()} onClick={load}>
               {loading() ? text("刷新中", "Refreshing") : text("刷新", "Refresh")}
             </Button>
-            <Button size="large" variant="primary" icon="brain" onClick={() => open("/marketplace")}>
-              能力市场
+            <Button size="large" variant="primary" icon="brain" onClick={() => open("/agents")}>
+              {text("高级管理", "Manage")}
             </Button>
           </div>
         </div>

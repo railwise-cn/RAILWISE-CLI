@@ -6,6 +6,7 @@ type WorkspaceFile = {
 }
 
 type LaunchOptions = {
+  model?: "configured"
   workspaceFiles?: WorkspaceFile[]
 }
 
@@ -45,6 +46,31 @@ const agents = [
     permission: {},
     options: {},
     prompt: "你是外业数据质检员。",
+  },
+]
+
+const tools = [
+  { id: "task", label: "智能体任务调度", group: "agent" },
+  { id: "skill", label: "专业技能加载", group: "agent" },
+  { id: "standard_query_query_standard", label: "规范条文查询", group: "knowledge" },
+  { id: "survey_calculator_leveling_closure", label: "水准闭合差检核", group: "survey" },
+]
+
+const skills = [
+  {
+    name: "monitoring-design",
+    description: "工程监测方案设计",
+    location: "/tmp/railwise-e2e/.railwise/skill/monitoring-design/SKILL.md",
+  },
+  {
+    name: "data-analysis",
+    description: "测绘数据平差与变形分析",
+    location: "/tmp/railwise-e2e/.railwise/skill/data-analysis/SKILL.md",
+  },
+  {
+    name: "standard-reference",
+    description: "规范条文速查",
+    location: "/tmp/railwise-e2e/.railwise/skill/standard-reference/SKILL.md",
   },
 ]
 
@@ -94,6 +120,35 @@ const commands = [
   },
 ]
 
+const provider = {
+  all: [
+    {
+      id: "deepseek",
+      name: "DeepSeek",
+      source: "api",
+      env: ["DEEPSEEK_API_KEY"],
+      options: {},
+      models: {
+        "deepseek-v4": {
+          id: "deepseek-v4",
+          name: "DeepSeek V4",
+          family: "deepseek",
+          release_date: "2026-05-01",
+          attachment: false,
+          reasoning: true,
+          temperature: true,
+          tool_call: true,
+          cost: { input: 0.0000005, output: 0.0000015 },
+          limit: { context: 128000, output: 8192 },
+          options: {},
+        },
+      },
+    },
+  ],
+  default: { deepseek: "deepseek-v4" },
+  connected: ["deepseek"],
+}
+
 export const test = base.extend<Fixtures>({
   launchApp: async ({ page, context }, use) => {
     await use(async (path = "/home", opts = {}) => {
@@ -140,11 +195,15 @@ async function setup(page: Page, opts: LaunchOptions) {
   )
   await page.route(`${server}/global/config`, (route) => json(route, {}))
   await page.route(`${server}/project`, (route) => json(route, []))
-  await page.route(`${server}/provider`, (route) => json(route, { all: [], default: {}, connected: [] }))
+  await page.route(`${server}/provider`, (route) =>
+    json(route, opts.model === "configured" ? provider : { all: [], default: {}, connected: [] }),
+  )
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
   await page.route(`${server}/agent-studio/workflow/run`, (route) => json(route, { sessionId: "workflow-e2e" }))
   await page.route(`${server}/agent-studio/workflow/presets`, (route) => json(route, [workflow]))
   await page.route(`${server}/agent-studio/list`, (route) => json(route, agents))
+  await page.route(`${server}/agent-studio/tool/list`, (route) => json(route, tools))
+  await page.route(`${server}/agent-studio/skill/list`, (route) => json(route, skills))
   await page.route(`${server}/agent-studio/chief_manager`, (route) => {
     if (route.request().method() === "PUT") return json(route, true)
     return json(route, { ...agents[0], rawMarkdown: "---\nname: chief_manager\n---\n你是 Railwise 总负责人。" })
@@ -189,8 +248,8 @@ async function setup(page: Page, opts: LaunchOptions) {
         eol: "\n",
         exe_extension: "",
         family: "unix",
-        os_type: "linux",
-        platform: "linux",
+        os_type: "macos",
+        platform: "macos",
         version: "e2e",
       }
       win.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => undefined }

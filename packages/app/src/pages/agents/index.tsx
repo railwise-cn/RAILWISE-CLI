@@ -17,10 +17,16 @@ import { useProviders } from "@/hooks/use-providers"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
+import { Icon } from "@railwise/ui/icon"
 import { useAgentStudioApi } from "./api"
 import {
+  agentDisplayName,
   agentRoleLabel,
   agentStudioSummary,
+  builtinAgents,
+  builtinSkills,
+  builtinTools,
+  builtinWorkflows,
   collaborationTarget,
   modelRouteLabel,
   modelRoutingSummary,
@@ -35,7 +41,7 @@ import {
 
 const modes = [
   { value: "all", label: "全部" },
-  { value: "primary", label: "主控智能体" },
+  { value: "primary", label: "总工程师" },
   { value: "collaborator", label: "专业智能体" },
 ] as const
 type ModeFilter = (typeof modes)[number]["value"]
@@ -59,6 +65,16 @@ const focus = [
 
 const marketIds = ["agents", "tools", "skills", "workflows", "mcp", "providers", "harness"] as const
 type MarketId = (typeof marketIds)[number]
+
+const marketIcons = {
+  agents: "brain",
+  tools: "settings-gear",
+  skills: "checklist",
+  workflows: "branch",
+  mcp: "mcp",
+  providers: "models",
+  harness: "circle-ban-sign",
+} as const
 
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
@@ -113,9 +129,13 @@ export default function AgentsPage() {
   const recent = createMemo(() =>
     recentWorkspaces(sync.data.project, 4),
   )
-  const summary = createMemo(() => agentStudioSummary(items()))
+  const displayItems = createMemo(() => (items().length > 0 ? items() : builtinAgents))
+  const displayTools = createMemo(() => (tools().length > 0 ? tools() : builtinTools))
+  const displaySkills = createMemo(() => (skills().length > 0 ? skills() : builtinSkills))
+  const displayWorkflows = createMemo(() => (workflows().length > 0 ? workflows() : builtinWorkflows))
+  const summary = createMemo(() => agentStudioSummary(displayItems()))
   const collaborators = createMemo(() =>
-    items()
+    displayItems()
       .slice()
       .sort(
         (a, b) =>
@@ -125,7 +145,7 @@ export default function AgentsPage() {
   )
   const featured = createMemo(() =>
     focus
-      .map((name) => items().find((agent) => agent.name === name))
+      .map((name) => displayItems().find((agent) => agent.name === name))
       .filter((agent): agent is AgentStudioItem => Boolean(agent))
       .slice(0, 6),
   )
@@ -134,16 +154,16 @@ export default function AgentsPage() {
       .map((group) => ({
         group,
         label: groups[group],
-        items: tools().filter((tool) => tool.group === group),
+        items: displayTools().filter((tool) => tool.group === group),
       }))
       .filter((group) => group.items.length > 0),
   )
-  const visibleSkills = createMemo(() => professionalSkills(skills(), 12))
+  const visibleSkills = createMemo(() => professionalSkills(displaySkills(), 16))
   const visibleModels = createMemo(() =>
     models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })),
   )
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
-  const routeSummary = createMemo(() => modelRoutingSummary(items()))
+  const routeSummary = createMemo(() => modelRoutingSummary(displayItems()))
   const setupState = createMemo(() =>
     modelSetupState({ connectedProviders: connectedProviders().length, visibleModels: visibleModels().length }),
   )
@@ -154,50 +174,50 @@ export default function AgentsPage() {
   })
   const toolStatus = createMemo(() => {
     if (loading()) return "同步中"
-    if (tools().length > 0) return `${tools().length} 个可用`
+    if (displayTools().length > 0) return `${displayTools().length} 个可用`
     return "等待安装"
   })
   const skillStatus = createMemo(() => {
     if (loading()) return "同步中"
-    if (skills().length > 0) return `${skills().length} 个可用`
+    if (displaySkills().length > 0) return `${displaySkills().length} 个可用`
     return "等待安装"
   })
   const workflowStatus = createMemo(() => {
     if (loading()) return "同步中"
-    if (workflows().length > 0) return `${workflows().length} 个可用`
+    if (displayWorkflows().length > 0) return `${displayWorkflows().length} 个可用`
     return "等待配置"
   })
   const market = createMemo(() => [
     {
       id: "agents" as const,
-      label: "Agents",
+      label: "智能体",
       title: "智能体库",
       status: agentStatus(),
-      description: "主控智能体负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
-      target: "#agent-matrix",
+      description: "总工程师负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
+      target: "#agent-library",
       action: "查看智能体",
     },
     {
       id: "tools" as const,
-      label: "Tools",
+      label: "工具",
       title: "工具链",
       status: toolStatus(),
-      description: "工具会被 Harness 按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
+      description: "工具会被执行层按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
       target: "#agent-tools",
       action: "查看工具",
     },
     {
       id: "skills" as const,
-      label: "Skills",
-      title: "专业流程",
+      label: "技能",
+      title: "Skills 专业技能",
       status: skillStatus(),
       description: "Skills 是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
       target: "#agent-skills",
-      action: "查看 Skills",
+      action: "查看技能",
     },
     {
       id: "workflows" as const,
-      label: "Workflows",
+      label: "工作流",
       title: "工作流",
       status: workflowStatus(),
       description: "工作流把多个智能体串起来，适合外业首检、趋势分析、报告生成和审校链路。",
@@ -215,7 +235,7 @@ export default function AgentsPage() {
     },
     {
       id: "providers" as const,
-      label: "Providers",
+      label: "模型",
       title: "模型 Provider",
       status: connectedProviders().length > 0 ? `${connectedProviders().length} 个已接入` : "待接入",
       description: `默认建议 ${recommendedModel}，也可以把审校、平差和资料整理智能体绑定到不同模型。`,
@@ -224,15 +244,15 @@ export default function AgentsPage() {
     {
       id: "harness" as const,
       label: "Harness",
-      title: "Harness Profile",
+      title: "Harness 执行层",
       status: "本地安全模式",
-      description: "Harness 管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际执行层。",
+      description: "执行层管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际运行核心。",
       target: "/harness",
-      action: "查看 Harness",
+      action: "查看执行层",
     },
   ])
   const activePackage = createMemo(() => market().find((item) => item.id === activeMarket()) ?? market()[0])
-  const routedAgents = createMemo(() => collaborators().slice(0, 8))
+  const routedAgents = createMemo(() => collaborators().slice(0, 10))
   const visibleModelPreview = createMemo(() =>
     visibleModels()
       .slice()
@@ -254,7 +274,7 @@ export default function AgentsPage() {
 
   const filtered = createMemo(() => {
     const needle = query().trim().toLowerCase()
-    return items().filter((agent) => {
+    return displayItems().filter((agent) => {
       const visible =
         mode() === "all" ||
         (mode() === "primary" && agent.mode === "primary") ||
@@ -262,7 +282,7 @@ export default function AgentsPage() {
       const found =
         !needle ||
         agent.name.toLowerCase().includes(needle) ||
-        (agent.displayName ?? "").toLowerCase().includes(needle) ||
+        agentDisplayName(agent).toLowerCase().includes(needle) ||
         (agent.description ?? agent.prompt ?? "").toLowerCase().includes(needle)
       return visible && found
     })
@@ -379,9 +399,9 @@ export default function AgentsPage() {
 
   createEffect(() => {
     const current = selectedAgent()
-    if (items().some((agent) => agent.name === current)) return
-    const chief = items().find((agent) => agent.name === "chief_manager")
-    const first = chief ?? items()[0]
+    if (displayItems().some((agent) => agent.name === current)) return
+    const chief = displayItems().find((agent) => agent.name === "chief_manager")
+    const first = chief ?? displayItems()[0]
     if (first) setSelectedAgent(first.name)
   })
 
@@ -389,9 +409,9 @@ export default function AgentsPage() {
     <main class="agent-studio" data-testid="agents-page">
       <section class="agent-hero">
         <div class="agent-hero__copy">
-          <span class="agent-kicker">RAILWISE 能力市场</span>
-          <h1>安装和管理专业能力</h1>
-          <p>像 Codex 一样，把智能体、工具、Skills、MCP、模型 Provider 与 Harness Profile 放在一个清晰的市场里；工作从首页对话框开始，高级配置留在这里。</p>
+          <span class="agent-kicker">RAILWISE 能力设置</span>
+          <h1>智能体与能力设置</h1>
+          <p>配置总工程师、专业智能体、模型路由、工具、Skills 与工作流；日常任务从首页对话框开始。</p>
           <div class="agent-hero__actions">
             <A href="/home" class="agent-button agent-button--ghost">
               打开工作台
@@ -403,24 +423,28 @@ export default function AgentsPage() {
         </div>
         <div class="agent-market__cards" aria-busy={loading()}>
           <div class="agent-market-card">
-            <span>Agents</span>
+            <span>智能体</span>
             <strong>智能体库</strong>
             <small>{agentStatus()}</small>
           </div>
           <div class="agent-market-card">
-            <span>Tools</span>
+            <span>工具</span>
             <strong>工具链</strong>
             <small>{toolStatus()}</small>
           </div>
           <div class="agent-market-card">
-            <span>Skills</span>
-            <strong>专业流程</strong>
+            <span>技能</span>
+            <strong>Skills</strong>
             <small>{skillStatus()}</small>
           </div>
         </div>
       </section>
 
-      <section class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
+      <section class="agent-market-tabs agent-market-tabs--strip" aria-label="能力市场分类" data-testid="agent-marketplace">
+        <div class="agent-market-tabs__header">
+          <span>能力市场</span>
+          <strong>按需启用智能体、工具、Skills、MCP、模型与 Harness</strong>
+        </div>
         <For each={market()}>
           {(item) => (
             <button
@@ -429,7 +453,10 @@ export default function AgentsPage() {
               aria-pressed={activeMarket() === item.id}
               onClick={() => setActiveMarket(item.id)}
             >
-              {item.label}
+              <Icon name={marketIcons[item.id]} size="small" />
+              <span class="marketplace-row__label">{item.label}</span>
+              <strong>{item.title}</strong>
+              <small>{item.status}</small>
             </button>
           )}
         </For>
@@ -464,12 +491,12 @@ export default function AgentsPage() {
         <div class="agent-launch__project">
           <div class="agent-section__header">
             <div>
-              <h2>项目工作区</h2>
-              <p>以本地文件夹作为上下文，智能体直接在这个目录里工作。</p>
+              <h2>上下文文件夹</h2>
+              <p>选择本地目录作为会话上下文，日常任务仍从对话框开始。</p>
             </div>
           </div>
           <label class="agent-form__field">
-            <span>工作区文件夹</span>
+            <span>上下文目录</span>
             <div class="agent-launch__path">
               <input
                 data-testid="agent-project-directory"
@@ -517,7 +544,7 @@ export default function AgentsPage() {
                   <For each={collaborators()}>
                     {(agent) => (
                       <option value={agent.name}>
-                        {agent.displayName ?? agent.name} · {agentRoleLabel(agent)} · @{agent.name}
+                        {agentDisplayName(agent)} · {agentRoleLabel(agent)} · @{agent.name}
                       </option>
                     )}
                   </For>
@@ -544,7 +571,7 @@ export default function AgentsPage() {
         <div class="agent-section__header">
           <div>
             <h2>模型接入与智能体路由</h2>
-            <p>默认建议 {recommendedModel}；主控、审校、平差等智能体可以分别绑定不同模型。</p>
+            <p>默认建议 {recommendedModel}；总工程师、审校、平差等智能体可以分别绑定不同模型。</p>
           </div>
           <button type="button" class="agent-button" onClick={connectProvider}>
             接入模型
@@ -608,7 +635,7 @@ export default function AgentsPage() {
 
           <div class="agent-model-routing__panel">
             <div class="agent-model-routing__bar">
-              <span>智能体模型矩阵</span>
+              <span>智能体模型分配</span>
               <small>{routeSummary().total} 个可见智能体</small>
             </div>
             <div class="agent-route-list">
@@ -616,7 +643,7 @@ export default function AgentsPage() {
                 {(agent) => (
                   <div class="agent-route-row">
                     <div>
-                      <strong>{agent.displayName ?? agent.name}</strong>
+                      <strong>{agentDisplayName(agent)}</strong>
                       <small>{agentRoleLabel(agent)}</small>
                     </div>
                     <div class="agent-route-row__controls">
@@ -647,8 +674,8 @@ export default function AgentsPage() {
           <For each={featured()}>
             {(agent) => (
               <A href={`/agents/${agent.name}`} class="agent-rail__item">
-                <span>{agent.mode === "primary" ? "主控" : "协作"}</span>
-                <strong>{agent.displayName ?? agent.name}</strong>
+                <span>{agent.mode === "primary" ? "总工" : "协作"}</span>
+                <strong>{agentDisplayName(agent)}</strong>
                 <small>{agent.description ?? "参与多智能体生产链路"}</small>
               </A>
             )}
@@ -656,10 +683,10 @@ export default function AgentsPage() {
         </section>
       </Show>
 
-      <section class="agent-toolbar" id="agent-matrix">
+      <section class="agent-toolbar" id="agent-library">
         <div>
-          <h2>智能体矩阵</h2>
-          <p>选择专业智能体进入配置，也可以从工作流直接生成协作会话。</p>
+          <h2>智能体库</h2>
+          <p>查看可用智能体并进入配置；真正协作从首页或上方对话框发起。</p>
         </div>
         <div class="agent-toolbar__controls">
           <input
@@ -721,8 +748,8 @@ export default function AgentsPage() {
         <div class="agent-inventory__column" id="agent-skills">
           <div class="agent-section__header">
             <div>
-              <h2>Skills</h2>
-              <p>按任务加载的专业流程、审核方法和工具使用规范。</p>
+              <h2>Skills 专业技能</h2>
+              <p>按任务加载作业方法、审核规则和工具使用规范。</p>
             </div>
           </div>
           <div class="agent-skill-list">
@@ -734,7 +761,7 @@ export default function AgentsPage() {
                 </div>
               )}
             </For>
-            <Show when={!skills().length && !loading()}>
+            <Show when={!displaySkills().length && !loading()}>
               <div class="agent-empty">当前未发现 Skills。</div>
             </Show>
           </div>

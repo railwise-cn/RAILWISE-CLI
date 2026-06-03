@@ -23,6 +23,7 @@ describe("collaborationTarget", () => {
     })
 
     expect(target.directory).toBe("/Users/WANGJIAWEI/CODE/RAILWISE-CLI")
+    expect(target.agent).toBe("chief_manager")
     expect(target.key).toBe(base64Encode("/Users/WANGJIAWEI/CODE/RAILWISE-CLI"))
     expect(target.href).toBe(`/${base64Encode("/Users/WANGJIAWEI/CODE/RAILWISE-CLI")}/session`)
     expect(target.prompt).toBe("@chief_manager\n检查当前工程资料并列出下一步")
@@ -47,7 +48,7 @@ describe("model routing helpers", () => {
     ])
   })
 
-  test("summarizes primary and professional collaborators for Agent Studio", () => {
+  test("summarizes primary and professional collaborators for advanced agent management", () => {
     const summary = agentStudioSummary([
       { name: "chief_manager", mode: "primary" },
       { name: "solution_architect", mode: "all" },
@@ -61,7 +62,7 @@ describe("model routing helpers", () => {
   })
 
   test("uses product-facing role labels instead of coding agent terms", () => {
-    expect(agentRoleLabel({ name: "chief_manager", mode: "primary" })).toBe("主控")
+    expect(agentRoleLabel({ name: "chief_manager", mode: "primary" })).toBe("公司总工")
     expect(agentRoleLabel({ name: "solution_architect", mode: "all" })).toBe("专业智能体")
     expect(agentRoleLabel({ name: "ppt_master", mode: "subagent" })).toBe("专业智能体")
   })
@@ -92,7 +93,7 @@ describe("model routing helpers", () => {
     expect(modelSetupState({ connectedProviders: 1, visibleModels: 3 })).toBe("ready")
   })
 
-  test("prioritizes DeepSeek and OpenRouter for Agent Studio onboarding", () => {
+  test("prioritizes DeepSeek and OpenRouter for model onboarding", () => {
     expect(recommendedProviders.map((provider) => provider.id)).toEqual(["deepseek", "openrouter"])
   })
 

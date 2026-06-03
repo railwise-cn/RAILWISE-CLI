@@ -2,6 +2,7 @@ import type { SelectedLineRange } from "@/context/file"
 
 type HandoffSession = {
   prompt: string
+  agent?: string
   files: Record<string, SelectedLineRange | null>
 }
 

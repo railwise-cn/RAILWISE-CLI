@@ -2,14 +2,17 @@ import { For, Show, createEffect, createMemo, createSignal, onMount } from "soli
 import { useParams } from "@solidjs/router"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { getFilename } from "@railwise/util/path"
+import { DialogManageModels } from "@/components/dialog-manage-models"
 import { DialogSelectModel } from "@/components/dialog-select-model"
+import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { PromptInput } from "@/components/prompt-input"
 import { TemplateDrawer, useTemplateDrawerShortcut } from "@/components/session/template-drawer"
 import { useLanguage } from "@/context/language"
 import { useLocal } from "@/context/local"
-import { usePrompt } from "@/context/prompt"
+import { usePrompt, type Prompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
+import { useProviders } from "@/hooks/use-providers"
 import { useAgentStudioApi } from "@/pages/agents/api"
 import { getSessionHandoff, setSessionHandoff } from "@/pages/session/handoff"
 import { SessionPermissionDock } from "@/pages/session/composer/session-permission-dock"
@@ -24,6 +27,28 @@ import {
 } from "@/pages/session/composer/collaboration"
 import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
 import type { SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
+
+function agentFromPrompt(value?: string) {
+  return value?.trimStart().match(/^@([A-Za-z0-9_-]+)/)?.[1]
+}
+
+function promptLength(parts: Prompt) {
+  return parts.reduce((sum, part) => ("content" in part ? sum + part.content.length : sum), 0)
+}
+
+function handoffPromptParts(agent: string | undefined, value: string): Prompt {
+  const text = value.trim()
+  if (!agent) return [{ type: "text", content: text, start: 0, end: text.length }]
+
+  const mention = `@${agent}`
+  const body = text.startsWith(mention) ? text.slice(mention.length) : `\n${text}`
+  const head = { type: "agent" as const, name: agent, content: mention, start: 0, end: mention.length }
+  if (!body) return [head]
+  return [
+    head,
+    { type: "text" as const, content: body, start: mention.length, end: mention.length + body.length },
+  ]
+}
 
 export function SessionComposerRegion(props: {
   state: SessionComposerState
@@ -43,6 +68,7 @@ export function SessionComposerRegion(props: {
   const prompt = usePrompt()
   const local = useLocal()
   const language = useLanguage()
+  const providers = useProviders()
   const [templates, setTemplates] = createSignal(false)
   const [expanded, setExpanded] = createSignal(false)
   const [applied, setApplied] = createSignal("")
@@ -53,6 +79,7 @@ export function SessionComposerRegion(props: {
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
   const handoff = createMemo(() => getSessionHandoff(sessionKey()))
   const handoffPrompt = createMemo(() => handoff()?.prompt)
+  const handoffAgent = createMemo(() => handoff()?.agent ?? agentFromPrompt(handoffPrompt()))
 
   const previewPrompt = () =>
     prompt
@@ -66,16 +93,33 @@ export function SessionComposerRegion(props: {
       .join("")
       .trim()
 
-  const activeAgent = createMemo(() => local.agent.current()?.name ?? "未选择")
+  const activeAgent = createMemo(() => local.agent.current()?.name ?? handoffAgent() ?? "未选择")
   const agentPalette = createMemo(() => collaborationAgents(sync.data.agent).slice(0, 7))
   const workspaceName = createMemo(() => getFilename(sdk.directory) || sdk.directory)
   const visibleTools = createMemo(() => tools().slice(0, 6))
   const visibleSkills = createMemo(() => skills().slice(0, 6))
   const currentModel = createMemo(() => local.model.current())
+  const visibleModels = createMemo(() =>
+    local.model.list().filter((model) => local.model.visible({ providerID: model.provider.id, modelID: model.id })),
+  )
+  const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const currentModelLabel = createMemo(() => {
     const model = currentModel()
     if (!model) return "未选择模型"
     return `${model.provider.name} / ${model.name}`
+  })
+  const modelAction = createMemo(() => {
+    if (currentModel()) return
+    if (visibleModels().length > 0) return { label: "选择模型", open: () => dialog.show(() => <DialogSelectModel />) }
+    if (connectedProviders().length > 0)
+      return { label: "启用模型", open: () => dialog.show(() => <DialogManageModels />) }
+    return { label: "接入模型", open: () => dialog.show(() => <DialogSelectProvider />) }
+  })
+  const modelStatus = createMemo(() => {
+    if (currentModel()) return
+    if (visibleModels().length > 0) return "发送前请选择一个可用模型"
+    if (connectedProviders().length > 0) return "模型 Provider 已接入，先启用一个模型"
+    return `发送前先接入模型，建议 ${recommendedModel} 或 OpenRouter`
   })
 
   createEffect(() => {
@@ -85,13 +129,21 @@ export function SessionComposerRegion(props: {
   })
 
   createEffect(() => {
+    const agent = handoffAgent()
+    if (!agent) return
+    if (!local.agent.list().some((item) => item.name === agent)) return
+    local.agent.set(agent)
+  })
+
+  createEffect(() => {
     if (!prompt.ready()) return
     const text = handoffPrompt()?.trim()
     if (!text) return
     const key = sessionKey()
     if (applied() === key) return
     if (prompt.dirty()) return
-    prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
+    const next = handoffPromptParts(handoffAgent(), text)
+    prompt.set(next, promptLength(next))
     setApplied(key)
   })
 
@@ -248,6 +300,27 @@ export function SessionComposerRegion(props: {
                     </button>
                   </div>
                 </div>
+
+                <Show when={modelStatus()}>
+                  <div
+                    class="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-[rgba(117,86,32,0.18)] bg-[rgba(117,86,32,0.06)] px-2.5 py-2 text-[12px]"
+                    data-testid="session-model-readiness"
+                  >
+                    <span class="text-[rgb(95,70,24)]">{modelStatus()}</span>
+                    <Show when={modelAction()}>
+                      {(action) => (
+                        <button
+                          type="button"
+                          class="rounded-md border border-[rgba(117,86,32,0.22)] bg-white px-2 py-1 font-semibold text-[rgb(95,70,24)] hover:bg-[rgba(117,86,32,0.04)]"
+                          data-testid="session-model-setup"
+                          onClick={() => action().open()}
+                        >
+                          {action().label}
+                        </button>
+                      )}
+                    </Show>
+                  </div>
+                </Show>
 
                 <Show when={expanded()}>
                   <div class="mt-2 flex flex-wrap gap-1.5">

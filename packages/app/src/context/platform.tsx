@@ -12,8 +12,8 @@ export type Platform = {
   /** Platform discriminator */
   platform: "web" | "desktop"
 
-  /** Desktop OS (Tauri only) */
-  os?: "macos" | "windows" | "linux"
+  /** Desktop OS (Tauri only). RAILWISE Desktop is distributed for macOS and Windows only. */
+  os?: "macos" | "windows"
 
   /** App version */
   version?: string
@@ -69,12 +69,6 @@ export type Platform = {
   /** Set the configured WSL integration (desktop only) */
   setWslEnabled?(config: boolean): Promise<void> | void
 
-  /** Get the preferred display backend (desktop only) */
-  getDisplayBackend?(): Promise<DisplayBackend | null> | DisplayBackend | null
-
-  /** Set the preferred display backend (desktop only) */
-  setDisplayBackend?(backend: DisplayBackend): Promise<void>
-
   /** Parse markdown to HTML using native parser (desktop only, returns unprocessed code blocks) */
   parseMarkdown?(markdown: string): Promise<string>
 
@@ -87,8 +81,6 @@ export type Platform = {
   /** Read image from clipboard (desktop only) */
   readClipboardImage?(): Promise<File | null>
 }
-
-export type DisplayBackend = "auto" | "wayland"
 
 export const { use: usePlatform, provider: PlatformProvider } = createSimpleContext({
   name: "Platform",

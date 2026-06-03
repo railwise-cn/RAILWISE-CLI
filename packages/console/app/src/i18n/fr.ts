@@ -494,9 +494,9 @@ export const dict = {
     "Lorsque vous cliquez sur S'inscrire, votre abonnement démarre immédiatement et votre carte sera débitée.",
 
   "download.title": "RAILWISE | Téléchargement",
-  "download.meta.description": "Téléchargez RAILWISE pour macOS, Windows et Linux",
+  "download.meta.description": "Téléchargez RAILWISE Desktop pour macOS et Windows",
   "download.hero.title": "Télécharger RAILWISE",
-  "download.hero.subtitle": "Disponible en bêta pour macOS, Windows et Linux",
+  "download.hero.subtitle": "Desktop Beta est disponible pour macOS et Windows",
   "download.hero.button": "Télécharger pour {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Bêta)",
@@ -508,8 +508,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "Pas forcément, mais probablement. Vous aurez besoin d'un abonnement IA si vous voulez connecter RAILWISE à un fournisseur payant, mais vous pouvez travailler avec des",

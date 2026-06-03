@@ -483,9 +483,9 @@ export const dict = {
     "Når du klikker på Tilmeld, starter dit abonnement med det samme, og dit kort vil blive debiteret.",
 
   "download.title": "RAILWISE | Download",
-  "download.meta.description": "Download RAILWISE til macOS, Windows og Linux",
+  "download.meta.description": "Download RAILWISE Desktop til macOS og Windows",
   "download.hero.title": "Download RAILWISE",
-  "download.hero.subtitle": "Tilgængelig i beta til macOS, Windows og Linux",
+  "download.hero.subtitle": "Desktop Beta er tilgængelig til macOS og Windows",
   "download.hero.button": "Download til {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -497,8 +497,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "Ikke nødvendigvis, men sandsynligvis. Du skal bruge et AI-abonnement hvis du vil forbinde RAILWISE til en betalt udbyder, men du kan arbejde med",

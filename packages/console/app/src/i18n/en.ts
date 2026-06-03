@@ -477,9 +477,9 @@ export const dict = {
     "When you click Enroll, your subscription starts immediately and your card will be charged.",
 
   "download.title": "RAILWISE | Download",
-  "download.meta.description": "Download RAILWISE for macOS, Windows, and Linux",
+  "download.meta.description": "Download RAILWISE Desktop for macOS and Windows",
   "download.hero.title": "Download RAILWISE",
-  "download.hero.subtitle": "Available in Beta for macOS, Windows, and Linux",
+  "download.hero.subtitle": "Desktop Beta is available for macOS and Windows",
   "download.hero.button": "Download for {{os}}",
   "download.section.terminal": "RAILWISE Terminal",
   "download.section.desktop": "RAILWISE Desktop (Beta)",
@@ -491,8 +491,6 @@ export const dict = {
   "download.platform.macosAppleSilicon": "macOS (Apple Silicon)",
   "download.platform.macosIntel": "macOS (Intel)",
   "download.platform.windowsX64": "Windows (x64)",
-  "download.platform.linuxDeb": "Linux (.deb)",
-  "download.platform.linuxRpm": "Linux (.rpm)",
 
   "download.faq.a3.beforeLocal":
     "Not necessarily, but probably. You'll need an AI subscription if you want to connect RAILWISE to a paid provider, although you can work with",

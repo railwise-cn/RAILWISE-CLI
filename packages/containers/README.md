@@ -9,8 +9,11 @@ Images
 - `base`: Ubuntu 24.04 with common build tools and utilities
 - `bun-node`: `base` plus Bun and Node.js 24
 - `rust`: `bun-node` plus Rust (stable, minimal profile)
-- `tauri-linux`: `rust` plus Tauri Linux build dependencies
 - `publish`: `bun-node` plus Docker CLI and AUR tooling
+
+RAILWISE Desktop does not build or publish Linux installers. Linux remains
+CLI-only, so the CI container set no longer carries a Tauri Linux desktop
+image.
 
 Build
 

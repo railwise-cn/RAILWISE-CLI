@@ -37,10 +37,6 @@ jobs:
             target: x86_64-apple-darwin
             platform: darwin
             bundles: dmg
-          - os: windows-2022
-            target: x86_64-pc-windows-msvc
-            platform: windows
-            bundles: nsis
 
     steps:
       - name: Checkout
@@ -74,7 +70,6 @@ jobs:
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
@@ -83,7 +78,6 @@ jobs:
           if [ "${{ matrix.platform }}" = "darwin" ] \
             && [ -n "$APPLE_CERTIFICATE" ] \
             && [ -n "$APPLE_CERTIFICATE_PASSWORD" ] \
-            && [ -n "$APPLE_KEYCHAIN_PASSWORD" ] \
             && [ -n "$APPLE_SIGNING_IDENTITY" ] \
             && [ -n "$APPLE_ID" ] \
             && [ -n "$APPLE_PASSWORD" ] \
@@ -100,15 +94,19 @@ jobs:
             echo "updater=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Require macOS signing secrets
+        if: steps.signing.outputs.macos != 'true'
+        shell: bash
+        run: |
+          echo "Public RAILWISE Desktop macOS releases require Developer ID signing and notarization secrets."
+          echo "Set APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_ID_PASSWORD, and APPLE_TEAM_ID."
+          exit 1
+
       - name: Prepare CI Tauri config
         shell: bash
         working-directory: packages/desktop
         run: |
-          bun -e '
-          const config = await Bun.file("src-tauri/tauri.prod.conf.json").json()
-          if (!Bun.env.TAURI_SIGNING_PRIVATE_KEY) config.bundle.createUpdaterArtifacts = false
-          await Bun.write("src-tauri/tauri.ci.conf.json", JSON.stringify(config, null, 2) + "\n")
-          '
+          bun run prepare:tauri
           echo "Desktop build mode: ${{ steps.signing.outputs.mode }}"
           echo "Updater artifacts: ${{ steps.signing.outputs.updater }}"
 
@@ -118,15 +116,15 @@ jobs:
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
         run: |
+          KEYCHAIN_PASSWORD="$(uuidgen)"
           echo "$APPLE_CERTIFICATE" | base64 --decode > cert.p12
-          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security set-keychain-settings -lut 21600 build.keychain
           security default-keychain -s build.keychain
-          security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security import cert.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/pkgbuild -T /usr/bin/productbuild
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
           security find-identity -v -p codesigning build.keychain
 
       - name: Build Tauri App
@@ -139,11 +137,26 @@ jobs:
         working-directory: packages/desktop
         run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.ci.conf.json
 
+      - name: Verify macOS app bundle
+        shell: bash
+        working-directory: packages/desktop
+        run: bun run verify:macos -- --target ${{ matrix.target }}
+
+      - name: Verify macOS DMG contents
+        shell: bash
+        working-directory: packages/desktop
+        run: bun run verify:dmg -- --target ${{ matrix.target }}
+
+      - name: Stage bundle artifacts
+        shell: bash
+        working-directory: packages/desktop
+        run: bun run stage:macos:bundles -- --target ${{ matrix.target }} --require-updater
+
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4
         with:
           name: railwise-desktop-${{ matrix.target }}-${{ steps.signing.outputs.mode }}
-          path: packages/desktop/src-tauri/target/${{ matrix.target }}/release/bundle
+          path: packages/desktop/src-tauri/target/desktop-release/${{ matrix.target }}
           if-no-files-found: error
           retention-days: 30
 
@@ -167,13 +180,19 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="desktop/v${VERSION}"
           fi
-          mapfile -t files < <(find dist/desktop -type f \( -name "*.dmg" -o -name "*.exe" \) | sort -u)
-          if [ "${#files[@]}" -ne 3 ]; then
-            printf "Expected exactly 3 public desktop installers, found %s:\n" "${#files[@]}"
-            printf "%s\n" "${files[@]}"
+          mapfile -t dmgs < <(find dist/desktop -type f -name "*.dmg" | sort -u)
+          mapfile -t updates < <(find dist/desktop -type f \( -name "*.app.tar.gz" -o -name "*.app.tar.gz.sig" \) | sort -u)
+          if [ "${#dmgs[@]}" -ne 2 ]; then
+            printf "Expected exactly 2 public macOS installers, found %s:\n" "${#dmgs[@]}"
+            printf "%s\n" "${dmgs[@]}"
             exit 1
           fi
-          sha256sum "${files[@]}" > SHA256SUMS.txt
+          if [ "${#updates[@]}" -ne 4 ]; then
+            printf "Expected exactly 4 macOS updater artifacts, found %s:\n" "${#updates[@]}"
+            printf "%s\n" "${updates[@]}"
+            exit 1
+          fi
+          sha256sum "${dmgs[@]}" "${updates[@]}" > SHA256SUMS.txt
           if draft=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq ".isDraft" 2>/dev/null); then
             if [ "$draft" = "true" ]; then
               gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" -y
@@ -188,5 +207,6 @@ jobs:
             --notes "查看 CHANGELOG.md 了解更新内容" \
             --draft \
             --target "$GITHUB_SHA" \
-            "${files[@]}" \
+            "${dmgs[@]}" \
+            "${updates[@]}" \
             SHA256SUMS.txt

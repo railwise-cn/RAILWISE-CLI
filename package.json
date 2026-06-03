@@ -13,6 +13,7 @@
     "rebrand:audit": "bun ./scripts/rebrand-audit.ts",
     "script/rebrand-audit.ts": "bun ./scripts/rebrand-audit.ts",
     "script/verify-desktop-release.ts": "bun ./scripts/verify-desktop-release.ts",
+    "script/verify-desktop-github-release.ts": "bun ./scripts/verify-desktop-github-release.ts",
     "script/verify-desktop-m7.ts": "bun ./scripts/verify-desktop-m7.ts",
     "script/verify-update-server": "bun --cwd workers/update-server ./verify.ts",
     "desktop:verify": "bun ./scripts/verify-desktop-acceptance.ts",

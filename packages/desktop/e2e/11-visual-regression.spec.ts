@@ -54,6 +54,31 @@ test("智能体工作台不再使用旧管理页语言", async ({ launchApp }) =
   await expect(page.getByText("多智能体协作中枢")).toHaveCount(0)
 })
 
+test("项目侧栏提供清晰会话入口并隐藏工作区后台标签", async ({ launchApp }) => {
+  const worktree = "/tmp/railwise-e2e/empty-project"
+  const { page } = await launchApp("/home", {
+    emptySessions: true,
+    projects: [{ id: "empty-project", worktree, vcs: "git", time: { created: Date.now(), updated: Date.now() } }],
+  })
+
+  await visible(page.locator("[data-testid=home-workbench]"))
+  const sidebar = page.locator("[data-component=sidebar-nav-desktop]")
+  await expect(sidebar).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(sidebar).not.toContainText(worktree)
+  await expect(sidebar).toContainText("还没有会话")
+  await expect(sidebar).toContainText("从新建会话开始协作。")
+
+  await sidebar.locator("[data-action=project-menu]").last().click()
+  await page.getByText("启用工作区").click()
+
+  const workspace = page.locator("[data-component=workspace-item]").first()
+  await expect(workspace).toContainText("主工作区")
+  await expect(workspace).not.toContainText("本地 :")
+  await expect(workspace).not.toContainText("沙盒 :")
+  await expect(sidebar).not.toContainText(worktree)
+})
+
 test("智能体详情不再使用后台编辑语言", async ({ launchApp }) => {
   const { page } = await launchApp("/agents/chief_manager")
 

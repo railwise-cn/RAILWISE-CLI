@@ -35,6 +35,18 @@ test("智能体工作台不再使用旧管理页语言", async ({ launchApp }) =
   await expect(page.getByText("多智能体协作中枢")).toHaveCount(0)
 })
 
+test("智能体详情不再使用后台编辑语言", async ({ launchApp }) => {
+  const { page } = await launchApp("/agents/chief_manager")
+
+  await visible(page.locator("[data-testid=agent-detail-page]"))
+  await expect(page.locator("[data-testid=agent-detail-shell]")).toContainText("智能体配置")
+  await expect(page.getByRole("heading", { name: "能力定义" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "预览" })).toBeVisible()
+  await expect(page.getByText("Markdown 配置")).toHaveCount(0)
+  await expect(page.getByText("高级管理")).toHaveCount(0)
+  await expect(page.getByText("高级")).toHaveCount(0)
+})
+
 test("能力市场与执行层不再使用后台管理语言", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace")
 

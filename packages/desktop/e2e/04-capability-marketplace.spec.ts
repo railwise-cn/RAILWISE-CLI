@@ -53,8 +53,13 @@ test("能力市场进入 chief_manager 配置并验证保存入口", async ({ la
   await visible(page.locator("[data-testid=agents-page]"))
   await page.locator("[data-testid=agent-card-chief_manager]").click()
 
+  await visible(page.locator("[data-testid=agent-detail-page]"))
+  await expect(page.locator("[data-testid=agent-detail-shell]")).toContainText("智能体配置")
+  await expect(page.getByRole("heading", { name: "能力定义" })).toBeVisible()
   await visible(page.locator("[data-testid=agent-prompt-editor]"))
   await expect(page.locator("[data-testid=save-agent-btn]")).toContainText(/已保存|保存/)
+  await expect(page.getByText("Markdown 配置")).toHaveCount(0)
+  await expect(page.getByText("高级")).toHaveCount(0)
 })
 
 test("能力市场可以进入执行控制台", async ({ launchApp }) => {

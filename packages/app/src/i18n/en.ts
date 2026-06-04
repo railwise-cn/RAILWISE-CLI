@@ -639,6 +639,8 @@ export const dict = {
   "sidebar.project.recentSessions": "Recent sessions",
   "sidebar.project.viewAllSessions": "View all sessions",
   "sidebar.project.clearNotifications": "Clear notifications",
+  "sidebar.sessions.empty.title": "No sessions yet",
+  "sidebar.sessions.empty.description": "Start with a new session.",
 
   "app.name.desktop": "RAILWISE Desktop",
 
@@ -850,6 +852,10 @@ export const dict = {
   "workspace.new": "New workspace",
   "workspace.type.local": "local",
   "workspace.type.sandbox": "sandbox",
+  "workspace.label.main": "Main workspace",
+  "workspace.label.local": "Local project",
+  "workspace.label.sandbox": "Workspace",
+  "workspace.label.branch": "Branch {{branch}}",
   "workspace.create.failed.title": "Failed to create workspace",
   "workspace.delete.failed.title": "Failed to delete workspace",
   "workspace.resetting.title": "Resetting workspace",

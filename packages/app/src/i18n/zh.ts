@@ -632,6 +632,8 @@ export const dict = {
   "sidebar.project.recentSessions": "最近会话",
   "sidebar.project.viewAllSessions": "查看全部会话",
   "sidebar.project.clearNotifications": "清除通知",
+  "sidebar.sessions.empty.title": "还没有会话",
+  "sidebar.sessions.empty.description": "从新建会话开始协作。",
 
   "app.name.desktop": "RAILWISE Desktop",
 
@@ -840,6 +842,10 @@ export const dict = {
   "workspace.new": "新建工作区",
   "workspace.type.local": "本地",
   "workspace.type.sandbox": "沙盒",
+  "workspace.label.main": "主工作区",
+  "workspace.label.local": "本机项目",
+  "workspace.label.sandbox": "工作区",
+  "workspace.label.branch": "分支 {{branch}}",
   "workspace.create.failed.title": "创建工作区失败",
   "workspace.delete.failed.title": "删除工作区失败",
   "workspace.resetting.title": "正在重置工作区",

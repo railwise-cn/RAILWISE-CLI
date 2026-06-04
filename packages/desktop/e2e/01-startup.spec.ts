@@ -68,6 +68,11 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   }
 
   await expect(page).toHaveURL(/\/session\/queue-e2e$/)
+  await expect(page.locator("[data-testid=session-turn-execution]").first()).toBeVisible()
+  await expect(page.locator("[data-testid=session-turn-execution-agent]").first()).toContainText("chief_manager")
+  await expect(page.locator("[data-testid=session-turn-execution-model]").first()).toContainText("DeepSeek V4")
+  await expect(page.locator("[data-testid=session-turn-execution-tools]").first()).toHaveText("1/1 完成")
+  await expect(page.locator("[data-testid=session-turn-execution-tool-name]").first()).toContainText("水准闭合差检核")
   await expect(page.locator("[data-testid=session-runtime-state]")).toHaveText("阻塞")
   await expect(page.locator("[data-testid=session-runtime-blockers]")).toHaveText("1 项待处理")
   await expect(page.locator("[data-testid=session-runtime-todos]")).toHaveText("1/2 完成")

@@ -1,10 +1,12 @@
-import { test, expect } from "bun:test"
+import { test, expect, spyOn } from "bun:test"
 import path from "path"
 
 import { tmpdir } from "../fixture/fixture"
 import { Instance } from "../../src/project/instance"
 import { Provider } from "../../src/provider/provider"
 import { Env } from "../../src/env"
+import { Log } from "../../src/util/log"
+import { ModelsDev } from "../../src/provider/models"
 
 test("provider loaded from env variable", async () => {
   await using tmp = await tmpdir({
@@ -108,6 +110,44 @@ test("enabled_providers restricts to only listed providers", async () => {
       expect(providers["openai"]).toBeUndefined()
     },
   })
+})
+
+test("enabled_providers skips custom loaders outside allowlist without provider errors", async () => {
+  const models = await ModelsDev.get()
+  const get = spyOn(ModelsDev, "get").mockImplementation(
+    async () => Object.fromEntries(Object.entries(models).filter((entry) => entry[0] !== "railwise")) as typeof models,
+  )
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await Bun.write(
+        path.join(dir, "railwise.json"),
+        JSON.stringify({
+          $schema: "https://railwise.ai/config.json",
+          enabled_providers: ["anthropic"],
+        }),
+      )
+    },
+  })
+
+  const error = spyOn(Log.create({ service: "provider" }), "error").mockImplementation(() => {})
+
+  try {
+    await Instance.provide({
+      directory: tmp.path,
+      init: async () => {
+        Env.set("ANTHROPIC_API_KEY", "test-api-key")
+      },
+      fn: async () => {
+        await Provider.list()
+        expect(
+          error.mock.calls.some((call) => String(call[0]).includes("Provider does not exist in model list railwise")),
+        ).toBe(false)
+      },
+    })
+  } finally {
+    get.mockRestore()
+    error.mockRestore()
+  }
 })
 
 test("model whitelist filters models for provider", async () => {

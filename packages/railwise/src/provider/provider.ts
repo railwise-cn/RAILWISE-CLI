@@ -966,10 +966,10 @@ export namespace Provider {
     }
 
     for (const [providerID, fn] of Object.entries(CUSTOM_LOADERS)) {
-      if (disabled.has(providerID)) continue
+      if (!isProviderAllowed(providerID)) continue
       const data = database[providerID]
       if (!data) {
-        log.error("Provider does not exist in model list " + providerID)
+        log.debug("Provider does not exist in model list " + providerID)
         continue
       }
       const result = await fn(data)

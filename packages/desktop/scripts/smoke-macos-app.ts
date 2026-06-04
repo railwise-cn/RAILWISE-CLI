@@ -31,6 +31,9 @@ const skipLaunch = args.includes("--skip-launch")
 const skipReady = args.includes("--skip-ready")
 const skipProcessCheck = args.includes("--skip-process-check")
 const skipProcessCleanup = skipProcessCheck || args.includes("--skip-process-cleanup")
+const preserveRustLog = args.includes("--preserve-rust-log")
+
+if (!preserveRustLog) Bun.env.RUST_LOG = "railwise_lib=info,railwise_desktop=info,sidecar=info"
 
 const logDirs = () => {
   const home = Bun.env.HOME

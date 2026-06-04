@@ -23,6 +23,7 @@ type WorkspaceProject = {
 
 type Agent = {
   name: string
+  displayName?: string
   mode: "subagent" | "primary" | "all"
   hidden?: boolean
   model?: {

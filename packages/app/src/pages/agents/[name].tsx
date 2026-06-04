@@ -10,6 +10,7 @@ import { modeLabel } from "@/utils/agent-card"
 import { shortDescription } from "@/utils/agent-markdown"
 import { Icon } from "@railwise/ui/icon"
 import { useAgentStudioApi } from "./api"
+import { agentDisplayName } from "@/utils/agent-display"
 
 export default function AgentDetailPage() {
   const api = useAgentStudioApi()
@@ -54,7 +55,7 @@ export default function AgentDetailPage() {
     if (name === params.name) load()
   })
 
-  const title = createMemo(() => agent()?.displayName ?? agent()?.name ?? params.name)
+  const title = createMemo(() => agentDisplayName(agent() ?? params.name))
   const summary = createMemo(() => shortDescription(agent()?.description ?? agent()?.prompt ?? "", 120))
   const source = createMemo(() => {
     const value = agent()?.filePath

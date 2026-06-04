@@ -6,6 +6,7 @@ import { useDialog } from "@railwise/ui/context/dialog"
 import { useGlobalSDK } from "@/context/global-sdk"
 import { useLanguage } from "@/context/language"
 import type { AgentStudioItem } from "@/types/agent-studio"
+import { agentDisplayName } from "@/utils/agent-display"
 
 export const SettingsAgents: Component = () => {
   const language = useLanguage()
@@ -121,7 +122,7 @@ export const SettingsAgents: Component = () => {
                   <div class="flex flex-wrap items-center justify-between gap-4 px-4 py-3 border-b border-border-weak-base last:border-none">
                     <div class="flex flex-col gap-1 min-w-0">
                       <div class="flex flex-wrap items-center gap-2">
-                        <span class="text-14-medium text-text-strong">{item.name}</span>
+                        <span class="text-14-medium text-text-strong">{agentDisplayName(item)}</span>
                         <span class="text-11-regular text-text-base bg-surface-raised-base px-1.5 py-0.5 rounded-md">
                           {mode(item.mode)}
                         </span>

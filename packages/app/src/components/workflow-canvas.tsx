@@ -2,6 +2,7 @@ import { For } from "solid-js"
 import { useNavigate } from "@solidjs/router"
 import type { Workflow } from "@/types/workflow"
 import { edgePath } from "@/utils/workflow-canvas"
+import { agentDisplayName } from "@/utils/agent-display"
 
 export function WorkflowCanvas(props: { workflow: Workflow }) {
   const navigate = useNavigate()
@@ -38,14 +39,14 @@ export function WorkflowCanvas(props: { workflow: Workflow }) {
                 if (event.key === "Enter") navigate(`/agents/${item.agent}`)
               }}
             >
-              <title>{item.agent}</title>
+              <title>{agentDisplayName(item.agent)}</title>
               <rect class="workflow-node__card" width="150" height="70" rx="8" />
               <rect class="workflow-node__bar" width="6" height="70" rx="3" fill={item.color} />
               <text class="workflow-node__label" x="18" y="30">
                 {item.label}
               </text>
               <text class="workflow-node__agent" x="18" y="51">
-                @{item.agent}
+                {agentDisplayName(item.agent)}
               </text>
             </g>
           )}

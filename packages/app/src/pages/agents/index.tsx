@@ -34,6 +34,7 @@ import {
   recommendedProviders,
   updateAgentModelRoute,
 } from "./collaboration"
+import { agentDisplayName } from "@/utils/agent-display"
 
 const modes = [
   { value: "all", label: "全部" },
@@ -527,7 +528,7 @@ export default function AgentsPage() {
                   <For each={collaborators()}>
                     {(agent) => (
                       <option value={agent.name}>
-                        {agent.displayName ?? agent.name} · {agentRoleLabel(agent)}
+                        {agentDisplayName(agent)} · {agentRoleLabel(agent)}
                       </option>
                     )}
                   </For>
@@ -694,7 +695,7 @@ export default function AgentsPage() {
                 {(agent) => (
                   <div class="agent-route-row">
                     <div>
-                      <strong>{agent.displayName ?? agent.name}</strong>
+                      <strong>{agentDisplayName(agent)}</strong>
                       <small>{agentRoleLabel(agent)}</small>
                     </div>
                     <div class="agent-route-row__controls">
@@ -726,7 +727,7 @@ export default function AgentsPage() {
             {(agent) => (
               <A href={`/agents/${agent.name}`} class="agent-rail__item">
                 <span>{agent.mode === "primary" ? "主控" : "协作"}</span>
-                <strong>{agent.displayName ?? agent.name}</strong>
+                <strong>{agentDisplayName(agent)}</strong>
                 <small>{agent.description ?? "参与多智能体生产链路"}</small>
               </A>
             )}

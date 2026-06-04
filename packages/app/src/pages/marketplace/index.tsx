@@ -18,6 +18,7 @@ import {
   recommendedModel,
   recommendedProviders,
 } from "@/pages/agents/collaboration"
+import { agentDisplayName } from "@/utils/agent-display"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 import {
@@ -128,7 +129,7 @@ export default function MarketplacePage() {
         "agents",
         visibleAgents()
           .slice(0, 4)
-          .map((agent) => ({ title: agent.displayName ?? agent.name, meta: agentRoleLabel(agent) })),
+          .map((agent) => ({ title: agentDisplayName(agent), meta: agentRoleLabel(agent) })),
       ),
       href: "/agents",
       action: agentCount() > 0 ? "打开智能体" : "发现智能体",

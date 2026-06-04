@@ -115,6 +115,78 @@ const templates = [
   },
 ]
 
+const queueSession = {
+  id: "queue-e2e",
+  slug: "queue-e2e",
+  projectID: "railwise-e2e",
+  directory: "/tmp/railwise-e2e/worktree",
+  title: "复测资料检查",
+  version: "e2e",
+  time: { created: Date.now(), updated: Date.now() },
+}
+
+const queueTodos = [
+  { content: "检查复测资料目录", status: "completed", priority: "high" },
+  { content: "列出缺失文件", status: "in_progress", priority: "high" },
+]
+
+const queuePermission = {
+  id: "perm-e2e",
+  sessionID: "queue-e2e",
+  permission: "edit",
+  patterns: ["成果报告.md"],
+  metadata: {},
+  always: [],
+}
+
+const queueMessages = [
+  {
+    info: {
+      id: "msg_1",
+      sessionID: "queue-e2e",
+      role: "user",
+      time: { created: Date.now() - 2_000 },
+      agent: "chief_manager",
+      model: { providerID: "deepseek", modelID: "deepseek-v4" },
+    },
+    parts: [{ id: "prt_1", sessionID: "queue-e2e", messageID: "msg_1", type: "text", text: "检查复测资料" }],
+  },
+  {
+    info: {
+      id: "msg_2",
+      sessionID: "queue-e2e",
+      role: "assistant",
+      time: { created: Date.now() - 1_000, completed: Date.now() - 500 },
+      parentID: "msg_1",
+      modelID: "deepseek-v4",
+      providerID: "deepseek",
+      mode: "primary",
+      agent: "chief_manager",
+      path: { cwd: "/tmp/railwise-e2e/worktree", root: "/tmp/railwise-e2e/worktree" },
+      cost: 0.001,
+      tokens: { input: 1200, output: 240, reasoning: 0, cache: { read: 0, write: 0 } },
+    },
+    parts: [
+      {
+        id: "prt_2",
+        sessionID: "queue-e2e",
+        messageID: "msg_2",
+        type: "tool",
+        callID: "call-e2e",
+        tool: "survey_calculator_leveling_closure",
+        state: {
+          status: "completed",
+          input: { file: "复测资料.xlsx" },
+          output: "闭合差满足限差。",
+          title: "水准闭合差检核",
+          metadata: {},
+          time: { start: Date.now() - 900, end: Date.now() - 700 },
+        },
+      },
+    ],
+  },
+]
+
 const mcp = {
   railwise_inspector: { status: "connected" },
   report_exporter: { status: "disabled" },
@@ -308,6 +380,12 @@ async function setup(page: Page, opts: LaunchOptions) {
   )
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
   await page.route(`${server}/agent`, (route) => json(route, agents))
+  await page.route(`${server}/session/status`, (route) => json(route, { "queue-e2e": { type: "busy" } }))
+  await page.route(`${server}/permission`, (route) => json(route, [queuePermission]))
+  await page.route(`${server}/question`, (route) => json(route, []))
+  await page.route(`${server}/session/queue-e2e`, (route) => json(route, queueSession))
+  await page.route(`${server}/session/queue-e2e/message**`, (route) => json(route, queueMessages))
+  await page.route(`${server}/session/queue-e2e/todo`, (route) => json(route, queueTodos))
   await page.route(`${server}/marketplace/capabilities`, (route) => json(route, { data: capabilities }))
   await page.route(`${server}/agent-studio/workflow/run`, (route) => json(route, { sessionId: "workflow-e2e" }))
   await page.route(`${server}/agent-studio/workflow/presets`, (route) => json(route, [workflow]))
@@ -344,6 +422,21 @@ async function setup(page: Page, opts: LaunchOptions) {
       const callbacks = new Map<number, (data: unknown) => unknown>()
       let next = 1
       let resource = 1000
+      const stores = new Map<number, Map<string, unknown>>()
+      const storePaths = new Map<string, number>()
+      const seedStore = (path: string, data: Map<string, unknown>) => {
+        const rid = resource++
+        storePaths.set(path, rid)
+        stores.set(rid, data)
+        return rid
+      }
+      const loadStore = (path: string) => {
+        const cached = storePaths.get(path)
+        if (cached) return cached
+        return seedStore(path, new Map())
+      }
+      const readStore = (rid: unknown) => stores.get(Number(rid))
+      seedStore("railwise.global.dat", new Map([["language", JSON.stringify({ locale: "zh" })]]))
       if (input.debug) {
         window.addEventListener("error", (event) => {
           console.log("[browser:window-error]", event.message, event.filename, event.lineno)
@@ -395,6 +488,37 @@ async function setup(page: Page, opts: LaunchOptions) {
           if (command === "check_app_exists") return true
           if (command === "resolve_app_path") return null
           if (command === "wsl_path") return args.path
+          if (command === "plugin:store|load") return loadStore(typeof args.path === "string" ? args.path : "default.dat")
+          if (command === "plugin:store|get_store") return storePaths.get(typeof args.path === "string" ? args.path : "") ?? null
+          if (command === "plugin:store|get") {
+            const store = readStore(args.rid)
+            const key = typeof args.key === "string" ? args.key : ""
+            if (!store || !store.has(key)) return [null, false]
+            return [store.get(key), true]
+          }
+          if (command === "plugin:store|set") {
+            const store = readStore(args.rid)
+            if (store && typeof args.key === "string") store.set(args.key, args.value)
+            return null
+          }
+          if (command === "plugin:store|delete") {
+            const store = readStore(args.rid)
+            if (!store || typeof args.key !== "string") return false
+            return store.delete(args.key)
+          }
+          if (command === "plugin:store|has") {
+            const store = readStore(args.rid)
+            return typeof args.key === "string" ? (store?.has(args.key) ?? false) : false
+          }
+          if (command === "plugin:store|clear" || command === "plugin:store|reset") {
+            readStore(args.rid)?.clear()
+            return null
+          }
+          if (command === "plugin:store|keys") return Array.from(readStore(args.rid)?.keys() ?? [])
+          if (command === "plugin:store|values") return Array.from(readStore(args.rid)?.values() ?? [])
+          if (command === "plugin:store|entries") return Array.from(readStore(args.rid)?.entries() ?? [])
+          if (command === "plugin:store|length") return readStore(args.rid)?.size ?? 0
+          if (command === "plugin:store|reload" || command === "plugin:store|save") return null
           if (command === "plugin:menu|new") {
             const kind = typeof args.kind === "string" ? args.kind : "MenuItem"
             return [resource++, `${kind.toLowerCase()}-e2e-${resource}`]

@@ -79,3 +79,16 @@ test("能力市场与执行层不再使用后台管理语言", async ({ launchAp
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
   await expect(page.getByText("执行层状态")).toHaveCount(0)
 })
+
+test("文件工作区使用统一项目侧栏", async ({ launchApp }) => {
+  const worktree = "/Users/WANGJIAWEI/CODE/RAILWISE-CLI"
+  const { page } = await launchApp("/workspace/diff", {
+    projects: [{ id: "railwise-cli", worktree, time: { created: Date.now(), updated: Date.now() } }],
+  })
+
+  await visible(page.locator("[data-testid=workspace-diff-container]"))
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
+  await expect(page.getByRole("heading", { name: "版本对比" })).toBeVisible()
+})

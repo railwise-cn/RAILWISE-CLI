@@ -35,6 +35,27 @@ describe("prompt-input editor dom", () => {
     expect(getTextLength(container)).toBe(5)
   })
 
+  test("length helpers use data content for rendered agent pills", () => {
+    const container = document.createElement("div")
+    const pill = document.createElement("span")
+    pill.dataset.type = "agent"
+    pill.dataset.name = "chief_manager"
+    pill.dataset.content = "@chief_manager"
+    pill.textContent = "RAILWISE"
+    container.appendChild(document.createTextNode("先"))
+    container.appendChild(pill)
+    container.appendChild(document.createTextNode("后"))
+    document.body.appendChild(container)
+
+    expect(getNodeLength(pill)).toBe("@chief_manager".length)
+    expect(getTextLength(container)).toBe("先".length + "@chief_manager".length + "后".length)
+
+    setCursorPosition(container, "先@chief_manager".length)
+    expect(getCursorPosition(container)).toBe("先@chief_manager".length)
+
+    container.remove()
+  })
+
   test("setCursorPosition and getCursorPosition round-trip with pills and breaks", () => {
     const container = document.createElement("div")
     const pill = document.createElement("span")

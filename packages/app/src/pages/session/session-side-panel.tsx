@@ -2,6 +2,7 @@ import { For, Match, Show, Switch, createEffect, createMemo, onCleanup, type JSX
 import { createStore } from "solid-js/store"
 import { createMediaQuery } from "@solid-primitives/media"
 import { useParams } from "@solidjs/router"
+import type { Part, ToolPart } from "@railwise/sdk/v2/client"
 import { Tabs } from "@railwise/ui/tabs"
 import { Icon, type IconProps } from "@railwise/ui/icon"
 import { IconButton } from "@railwise/ui/icon-button"
@@ -21,6 +22,7 @@ import { DialogSelectFile } from "@/components/dialog-select-file"
 import { SessionContextTab, SortableTab, FileVisual } from "@/components/session"
 import { useCommand } from "@/context/command"
 import { useFile, type SelectedLineRange } from "@/context/file"
+import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"
 import { useLayout } from "@/context/layout"
 import { useLocal } from "@/context/local"
@@ -42,6 +44,10 @@ const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
   "node_modules",
   "serve.log",
 ])
+
+function isToolPart(part: Part): part is ToolPart {
+  return part.type === "tool"
+}
 
 function StatusItem(props: {
   icon: IconProps["name"]
@@ -75,6 +81,7 @@ export function SessionSidePanel(props: {
   const layout = useLayout()
   const sdk = useSDK()
   const sync = useSync()
+  const globalSync = useGlobalSync()
   const local = useLocal()
   const file = useFile()
   const language = useLanguage()
@@ -93,6 +100,13 @@ export function SessionSidePanel(props: {
   const info = createMemo(() => (params.id ? sync.session.get(params.id) : undefined))
   const diffs = createMemo(() => (params.id ? (sync.data.session_diff[params.id] ?? []) : []))
   const messages = createMemo(() => (params.id ? (sync.data.message[params.id] ?? []) : []))
+  const pendingPermissions = createMemo(() => (params.id ? (sync.data.permission[params.id] ?? []) : []))
+  const pendingQuestions = createMemo(() => (params.id ? (sync.data.question[params.id] ?? []) : []))
+  const todos = createMemo(() => {
+    const id = params.id
+    if (!id) return []
+    return globalSync.data.session_todo[id] ?? sync.data.todo[id] ?? []
+  })
   const reviewCount = createMemo(() => Math.max(info()?.summary?.files ?? 0, diffs().length))
   const hasReview = createMemo(() => reviewCount() > 0)
   const diffsReady = createMemo(() => {
@@ -132,6 +146,59 @@ export function SessionSidePanel(props: {
     if (!context) return language.t("session.side.context.empty")
     if (context.usage === null) return `${context.total.toLocaleString(language.locale())} ${language.t("context.usage.tokens")}`
     return language.t("session.side.context.percent", { percent: context.usage.toLocaleString(language.locale()) })
+  })
+  const blockers = createMemo(() => pendingPermissions().length + pendingQuestions().length)
+  const blockerLabel = createMemo(() => {
+    if (!params.id) return language.t("session.side.runtime.blockers.ready")
+    if (blockers() === 0) return language.t("session.side.runtime.blockers.none")
+    return language.t("session.side.runtime.blockers.pending", { count: blockers().toLocaleString(language.locale()) })
+  })
+  const todoLabel = createMemo(() => {
+    const list = todos()
+    if (!params.id) return language.t("session.side.runtime.todos.ready")
+    if (list.length === 0) return language.t("session.side.runtime.todos.empty")
+    const done = list.filter((todo) => todo.status === "completed" || todo.status === "cancelled").length
+    return language.t("session.side.runtime.todos.progress", {
+      done: done.toLocaleString(language.locale()),
+      total: list.length.toLocaleString(language.locale()),
+    })
+  })
+  const toolParts = createMemo(() =>
+    messages()
+      .flatMap((message) => sync.data.part[message.id] ?? [])
+      .filter(isToolPart),
+  )
+  const toolStats = createMemo(() => {
+    const tools = toolParts()
+    return {
+      total: tools.length,
+      running: tools.filter((part) => part.state.status === "pending" || part.state.status === "running").length,
+      done: tools.filter((part) => part.state.status === "completed").length,
+      error: tools.filter((part) => part.state.status === "error").length,
+    }
+  })
+  const toolLabel = createMemo(() => {
+    const stats = toolStats()
+    if (stats.total === 0) return language.t("session.side.runtime.tools.empty")
+    if (stats.running > 0)
+      return language.t("session.side.runtime.tools.running", { count: stats.running.toLocaleString(language.locale()) })
+    if (stats.error > 0)
+      return language.t("session.side.runtime.tools.error", { count: stats.error.toLocaleString(language.locale()) })
+    return language.t("session.side.runtime.tools.done", {
+      done: stats.done.toLocaleString(language.locale()),
+      total: stats.total.toLocaleString(language.locale()),
+    })
+  })
+  const sessionState = createMemo(() => (params.id ? sync.data.session_status[params.id] : undefined))
+  const runtimeStateLabel = createMemo(() => {
+    const state = sessionState()
+    if (blockers() > 0) return language.t("session.side.runtime.state.blocked")
+    if (!params.id) return language.t("session.side.runtime.state.ready")
+    if (!state) return language.t("session.side.runtime.state.loading")
+    if (state.type === "busy") return language.t("session.side.runtime.state.busy")
+    if (state.type === "retry")
+      return language.t("session.side.runtime.state.retry", { attempt: state.attempt.toLocaleString(language.locale()) })
+    return language.t("session.side.runtime.state.idle")
   })
   const kinds = createMemo(() => {
     const merge = (a: "add" | "del" | "mix" | undefined, b: "add" | "del" | "mix") => {
@@ -467,6 +534,37 @@ export function SessionSidePanel(props: {
                   </span>
                   <span class="truncate text-text-strong">{contextLabel()}</span>
                 </button>
+                <div data-testid="session-runtime-panel" class="mt-3 border-t border-border-subtle pt-2">
+                  <div class="mb-1 flex items-center justify-between gap-2">
+                    <div class="text-11-medium text-text-weak">{language.t("session.side.runtime.title")}</div>
+                    <div
+                      data-testid="session-runtime-state"
+                      class="rounded-md bg-surface-base px-2 py-0.5 text-11-medium text-text-weak"
+                    >
+                      {runtimeStateLabel()}
+                    </div>
+                  </div>
+                  <div class="space-y-1">
+                    <StatusItem
+                      icon="warning"
+                      label={language.t("session.side.runtime.blockers")}
+                      value={blockerLabel()}
+                      testId="session-runtime-blockers"
+                    />
+                    <StatusItem
+                      icon="checklist"
+                      label={language.t("session.side.runtime.todos")}
+                      value={todoLabel()}
+                      testId="session-runtime-todos"
+                    />
+                    <StatusItem
+                      icon="console"
+                      label={language.t("session.side.runtime.tools")}
+                      value={toolLabel()}
+                      testId="session-runtime-tools"
+                    />
+                  </div>
+                </div>
               </div>
               <Tabs
                 variant="pill"

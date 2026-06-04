@@ -569,9 +569,8 @@ render(() => {
               menuTrigger = (id) => cmd.trigger(id)
 
               // UI is now interactive - server connection is complete
-              performanceTimer.endPhase("server-connect").then(() => {
-                performanceTimer.startPhase("ui-ready")
-              }).catch(console.error)
+              void performanceTimer.endPhase("server-connect").catch(console.error)
+              performanceTimer.startPhase("ui-ready")
 
               onMount(() => {
                 if (import.meta.env.DEV) {

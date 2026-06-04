@@ -20,6 +20,16 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await page.locator("[data-testid=home-start-session]").click()
 
   await expect(page).toHaveURL(/\/session$/)
+  const card = page.locator("[data-testid=session-new-project-card]")
+  await visible(card, 15000)
+  expect(
+    await card.evaluate((node) => {
+      const box = node.getBoundingClientRect()
+      return document.elementsFromPoint(box.x + 24, box.y + 24).some((item) => item === node || node.contains(item))
+    }),
+  ).toBe(true)
+  await expect(page.locator("[data-testid=session-new-project-name]")).toHaveText("worktree")
+  await expect(card).not.toContainText("/tmp/railwise-e2e")
   await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
   await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("chief_manager")
   await expect(page.locator("[data-testid=session-model-readiness]")).toContainText("发送前先接入模型")

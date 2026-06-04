@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 
 import path from "node:path"
+import os from "node:os"
+import { mkdtemp, rm } from "node:fs/promises"
 
 type Step = {
   name: string
@@ -54,11 +56,71 @@ const sseDuration =
     ? Number(sseSeconds) * 1_000
     : Number(value("--sse-minutes") ?? Bun.env.RAILWISE_VERIFY_SSE_MINUTES ?? "30") * 60_000) || 30 * 60_000
 const sseTimeout = Number(Bun.env.RAILWISE_SSE_HEARTBEAT_TIMEOUT_MS ?? "20000")
-const sseUrl = new URL("/event", Bun.env.RAILWISE_SERVER_URL ?? "http://127.0.0.1:4096")
+const serverUrl = new URL(Bun.env.RAILWISE_SERVER_URL ?? "http://127.0.0.1:4096")
+const sseUrl = new URL("/event", serverUrl)
 const hints = [
   live ? undefined : "Live checks skipped. Run `bun run desktop:verify -- --live` for SSE smoke and desktop E2E.",
   full ? undefined : "Run `bun run desktop:verify -- --full` before release for the 30-minute SSE acceptance.",
 ].filter((item): item is string => Boolean(item))
+let ownedServer: Bun.Subprocess<"ignore", "inherit", "inherit"> | undefined
+let ownedServerHome: string | undefined
+
+async function probe(url: URL) {
+  return await fetch(url, { signal: AbortSignal.timeout(3_000) })
+    .then((res) => res.ok || res.status === 401)
+    .catch(() => false)
+}
+
+async function ensureServer() {
+  if (!live) return
+  if (await probe(new URL("/path", serverUrl))) return
+  if (!["127.0.0.1", "localhost"].includes(serverUrl.hostname)) return
+
+  ownedServerHome = await mkdtemp(path.join(os.tmpdir(), "railwise-desktop-verify-"))
+  ownedServer = Bun.spawn(
+    [
+      "bun",
+      "run",
+      "--conditions=browser",
+      path.join(root, "packages/railwise/src/index.ts"),
+      "serve",
+      "--hostname",
+      serverUrl.hostname,
+      "--port",
+      serverUrl.port || "4096",
+    ],
+    {
+      cwd: root,
+      stdin: "ignore",
+      stdout: "inherit",
+      stderr: "inherit",
+      env: {
+        ...Bun.env,
+        RAILWISE_SERVER_PASSWORD: "",
+        RAILWISE_TEST_HOME: path.join(ownedServerHome, "home"),
+        XDG_DATA_HOME: path.join(ownedServerHome, "data"),
+        XDG_CACHE_HOME: path.join(ownedServerHome, "cache"),
+        XDG_CONFIG_HOME: path.join(ownedServerHome, "config"),
+        XDG_STATE_HOME: path.join(ownedServerHome, "state"),
+      },
+    },
+  )
+
+  for (let i = 0; i < 40; i++) {
+    if (await probe(new URL("/path", serverUrl))) return
+    await Bun.sleep(500)
+  }
+}
+
+async function cleanup() {
+  ownedServer?.kill()
+  await ownedServer?.exited.catch(() => undefined)
+  if (ownedServerHome) await rm(ownedServerHome, { recursive: true, force: true }).catch(() => undefined)
+}
+
+process.on("exit", () => {
+  ownedServer?.kill()
+})
 
 async function sse() {
   const abort = new AbortController()
@@ -202,6 +264,8 @@ const steps: Step[] = [
 
 let failed = 0
 
+await ensureServer()
+
 for (const step of steps) {
   if (step.skip) {
     console.log(`- ${step.name}: skipped`)
@@ -234,6 +298,8 @@ for (const step of steps) {
   failed += 1
   console.error(`✗ ${step.name} failed with exit code ${code}`)
 }
+
+await cleanup()
 
 if (failed > 0) {
   console.error(`\n${failed} acceptance step(s) failed.`)

@@ -21,6 +21,8 @@ type TauriConfig = {
 
 const root = path.resolve(import.meta.dir, "..")
 const args = Bun.argv.slice(2)
+const full = args.includes("--full")
+const live = args.includes("--live") || full
 const checks: { name: string; passed: boolean; detail: string }[] = []
 const file = (...parts: string[]) => path.join(root, ...parts)
 const read = async (...parts: string[]) => Bun.file(file(...parts)).text()
@@ -128,8 +130,10 @@ if (failed.length > 0) {
   process.exit(1)
 }
 
-if (!args.includes("--full")) {
-  console.log("\nGA static readiness passed. Run `bun run desktop:verify:ga -- --full` for the 30-minute live gate.")
-} else {
+if (full) {
   console.log("\nGA full readiness passed.")
+} else if (live) {
+  console.log("\nGA live readiness passed. Run `bun run desktop:verify:ga -- --full` for the 30-minute live gate.")
+} else {
+  console.log("\nGA static readiness passed. Run `bun run desktop:verify:ga -- --full` for the 30-minute live gate.")
 }

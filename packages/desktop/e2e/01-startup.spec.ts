@@ -53,6 +53,17 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("Chief_manager")
   await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("chief_manager")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
+
+  await page.locator("[data-action=session-template-drawer]").click()
+  const drawer = page.locator("[data-testid=template-drawer]")
+  await visible(drawer, 15000)
+  await expect(drawer).toContainText("任务模板")
+  await expect(drawer).not.toContainText("业务模板")
+  await page.locator("[data-testid=category-tab-ppt]").click()
+  await page.locator("[data-testid=template-card-project-ppt]").click()
+  await expect(drawer).toContainText("汇报生成")
+  await expect(drawer).toContainText("填入对话")
+  await expect(drawer).not.toContainText("ppt_master")
 })
 
 test("已配置模型时首页任务可以创建会话并发送给 chief_manager", async ({ launchApp }) => {

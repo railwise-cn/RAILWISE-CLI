@@ -55,6 +55,49 @@
   border-left: 1px solid var(--agent-border);
 }
 
+.agent-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+  text-decoration: none;
+}
+
+.agent-brand__logo {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--agent-border);
+  border-radius: 8px;
+  color: var(--agent-accent-strong);
+}
+
+.agent-brand strong,
+.agent-brand small {
+  display: block;
+  line-height: 1.2;
+}
+
+.agent-brand strong {
+  color: var(--agent-text);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.agent-brand small {
+  margin-top: 3px;
+  color: var(--agent-muted);
+  font-size: 12px;
+}
+
 .agent-command-topbar {
   display: flex;
   justify-content: flex-end;

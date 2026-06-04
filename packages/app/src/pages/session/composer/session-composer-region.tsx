@@ -120,7 +120,7 @@ export function SessionComposerRegion(props: {
   const modelStatus = createMemo(() => {
     if (currentModel()) return
     if (visibleModels().length > 0) return "发送前请选择一个可用模型"
-    if (connectedProviders().length > 0) return "模型 Provider 已接入，先启用一个模型"
+    if (connectedProviders().length > 0) return "模型服务已接入，先启用一个模型"
     return `发送前先接入模型，建议 ${recommendedModel} 或 OpenRouter`
   })
 
@@ -370,7 +370,7 @@ export function SessionComposerRegion(props: {
                       </div>
                     </div>
                     <div class="min-w-0">
-                      <div class="mb-1 text-[11px] font-semibold text-text-weak">流程</div>
+                      <div class="mb-1 text-[11px] font-semibold text-text-weak">技能</div>
                       <div class="flex flex-wrap gap-1.5">
                         <For each={visibleSkills()}>
                           {(skill) => (

@@ -1,5 +1,6 @@
 import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
+import { agentDisplayName } from "@/utils/agent-display"
 import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import "./template-drawer.css"
@@ -137,8 +138,8 @@ export function TemplateDrawer(props: {
       <div class="template-drawer-backdrop" onClick={props.onClose} />
       <aside class="template-drawer" data-testid="template-drawer" data-prevent-autofocus>
         <header class="template-drawer-header">
-          <strong>业务模板</strong>
-          <button type="button" onClick={props.onClose} aria-label="关闭模板抽屉">
+          <strong>任务模板</strong>
+          <button type="button" onClick={props.onClose} aria-label="关闭任务模板">
             ×
           </button>
         </header>
@@ -175,7 +176,7 @@ export function TemplateDrawer(props: {
                         >
                           <strong>{template.name}</strong>
                           <span>{template.description}</span>
-                          <em style={agentStyle(template.agent)}>{template.agent}</em>
+                          <em style={agentStyle(template.agent)}>{agentDisplayName(template.agent)}</em>
                         </button>
                       )}
                     </For>
@@ -192,7 +193,7 @@ export function TemplateDrawer(props: {
                 <div class="template-detail-title">
                   <strong>{template().name}</strong>
                   <span>{template().description}</span>
-                  <em style={agentStyle(template().agent)}>{template().agent}</em>
+                  <em style={agentStyle(template().agent)}>{agentDisplayName(template().agent)}</em>
                 </div>
 
                 <For each={template().variables ?? []}>
@@ -239,7 +240,7 @@ export function TemplateDrawer(props: {
           {(template) => (
             <footer class="template-drawer-footer">
               <button type="button" data-testid="template-send-btn" disabled={!valid()} onClick={submit}>
-                填入 {template().agent}
+                填入对话
               </button>
             </footer>
           )}

@@ -7,6 +7,7 @@ import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { WorkflowGallery } from "@/components/workflow-gallery"
+import { DateTime } from "luxon"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLayout } from "@/context/layout"
 import { useModels } from "@/context/models"
@@ -14,6 +15,7 @@ import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 import { useAgentUpdates } from "@/hooks/use-agent-updates"
 import { useProviders } from "@/hooks/use-providers"
+import { Icon } from "@railwise/ui/icon"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
@@ -144,6 +146,27 @@ export default function AgentsPage() {
   )
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const routeSummary = createMemo(() => modelRoutingSummary(items()))
+  const selectedProject = createMemo(() => recent().find((project) => project.worktree === directory()))
+  const selectedName = createMemo(() => projectName(directory()))
+  const selectedMeta = createMemo(() => {
+    const project = selectedProject()
+    if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
+    if (directory()) return "本地工作区"
+    return "先选择项目"
+  })
+  const activeAgent = createMemo(() => collaborators().find((agent) => agent.name === selectedAgent()))
+  const serverDotClass = createMemo(() => {
+    const healthy = server.healthy()
+    if (healthy === true) return "agent-status-dot--ready"
+    if (healthy === false) return "agent-status-dot--blocked"
+    return "agent-status-dot--idle"
+  })
+  const serverLabel = createMemo(() => {
+    const healthy = server.healthy()
+    if (healthy === true) return "已连接"
+    if (healthy === false) return "待连接"
+    return "检查中"
+  })
   const setupState = createMemo(() =>
     modelSetupState({ connectedProviders: connectedProviders().length, visibleModels: visibleModels().length }),
   )
@@ -251,6 +274,11 @@ export default function AgentsPage() {
   const canStart = createMemo(
     () => directory().trim().length > 0 && selectedAgent().trim().length > 0 && draft().trim().length > 0,
   )
+  const starters = [
+    "检查当前线路复测资料，列出缺失文件并给出下一步计划。",
+    "对外业监测数据做首检，标出异常点和复核建议。",
+    "根据资料起草监测方案大纲，并列出需要补充的依据。",
+  ]
 
   const filtered = createMemo(() => {
     const needle = query().trim().toLowerCase()
@@ -268,11 +296,10 @@ export default function AgentsPage() {
     })
   })
 
-  const compactPath = (value: string) => {
-    const home = sync.data.path.home
-    if (home && value === home) return "~"
-    if (home && value.startsWith(home + "/")) return "~" + value.slice(home.length)
-    return value
+  function projectName(value: string) {
+    const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
+    const parts = clean.split("/").filter(Boolean)
+    return parts.at(-1) ?? "未选择项目"
   }
 
   const updateDirectory = (value: string) => {
@@ -367,7 +394,7 @@ export default function AgentsPage() {
     })
     layout.projects.open(target.directory)
     server.projects.touch(target.directory)
-    setSessionHandoff(target.key, { prompt: target.prompt })
+    setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })
     navigate(target.href)
   }
 
@@ -387,157 +414,208 @@ export default function AgentsPage() {
 
   return (
     <main class="agent-studio" data-testid="agents-page">
-      <section class="agent-hero">
-        <div class="agent-hero__copy">
-          <span class="agent-kicker">RAILWISE 高级智能体管理</span>
-          <h1>高级智能体管理</h1>
-          <p>管理智能体、模型路由、工具、专业流程与工作流；日常任务从首页对话框开始。</p>
-          <div class="agent-hero__actions">
-            <A href="/home" class="agent-button agent-button--ghost">
-              打开工作台
-            </A>
-            <button type="button" class="agent-button" onClick={connectProvider}>
-              接入模型
-            </button>
-          </div>
-        </div>
-        <div class="agent-market__cards" aria-busy={loading()}>
-          <div class="agent-market-card">
-            <span>智能体</span>
-            <strong>智能体库</strong>
-            <small>{agentStatus()}</small>
-          </div>
-          <div class="agent-market-card">
-            <span>工具</span>
-            <strong>工具链</strong>
-            <small>{toolStatus()}</small>
-          </div>
-          <div class="agent-market-card">
-            <span>流程</span>
-            <strong>专业流程</strong>
-            <small>{skillStatus()}</small>
-          </div>
-        </div>
-      </section>
+      <section class="agent-command-shell" data-testid="agent-collaboration-start">
+        <aside class="agent-command-sidebar">
+          <button type="button" class="agent-brand" onClick={() => navigate("/home")}>
+            <span class="agent-brand__logo">
+              <Icon name="brain" size="small" />
+            </span>
+            <span>
+              <strong>RAILWISE</strong>
+              <small>Agent Studio</small>
+            </span>
+          </button>
 
-      <section class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
-        <For each={market()}>
-          {(item) => (
-            <button
-              type="button"
-              classList={{ active: activeMarket() === item.id }}
-              aria-pressed={activeMarket() === item.id}
-              onClick={() => setActiveMarket(item.id)}
-            >
-              {item.label}
-            </button>
-          )}
-        </For>
-      </section>
+          <div class="agent-sidebar-section">
+            <div class="agent-sidebar-section__bar">
+              <span>能力市场</span>
+              <A href="/marketplace">全部</A>
+            </div>
+            <nav class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
+              <For each={market()}>
+                {(item) => (
+                  <button
+                    type="button"
+                    classList={{ active: activeMarket() === item.id }}
+                    aria-pressed={activeMarket() === item.id}
+                    onClick={() => setActiveMarket(item.id)}
+                  >
+                    <span>{item.label}</span>
+                    <small>{item.status}</small>
+                  </button>
+                )}
+              </For>
+            </nav>
+          </div>
 
-      <section class="agent-market-panel" data-testid="agent-market-panel">
-        <div>
-          <span>{activePackage().label}</span>
-          <h2>{activePackage().title}</h2>
-          <p>{activePackage().description}</p>
-        </div>
-        <div class="agent-market-panel__status">
-          <strong>{activePackage().status}</strong>
-          <Show
-            when={activePackage().button}
-            fallback={
-              <A href={activePackage().target ?? "/marketplace"} class="agent-button agent-button--ghost">
-                {activePackage().action}
-              </A>
-            }
-          >
-            {(label) => (
-              <button type="button" class="agent-button agent-button--ghost" onClick={connectProvider}>
-                {label()}
+          <div class="agent-sidebar-section">
+            <div class="agent-sidebar-section__bar">
+              <span>最近项目</span>
+              <button type="button" onClick={chooseDirectory} aria-label="添加项目">
+                <Icon name="plus-small" size="small" />
               </button>
-            )}
-          </Show>
-        </div>
-      </section>
-
-      <section class="agent-launch" data-testid="agent-collaboration-start">
-        <div class="agent-launch__project">
-          <div class="agent-section__header">
-            <div>
-              <h2>上下文文件夹</h2>
-              <p>选择本地目录作为会话上下文，日常任务仍从对话框开始。</p>
+            </div>
+            <div class="agent-project-list">
+              <Show when={recent().length} fallback={<div class="agent-project-empty">选择文件夹后会出现在这里。</div>}>
+                <For each={recent()}>
+                  {(project) => (
+                    <button
+                      type="button"
+                      classList={{ active: project.worktree === directory() }}
+                      onClick={() => updateDirectory(project.worktree)}
+                    >
+                      <span>
+                        <Icon name="folder" size="small" />
+                      </span>
+                      <strong>{projectName(project.worktree)}</strong>
+                      <small>{DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative()}</small>
+                    </button>
+                  )}
+                </For>
+              </Show>
             </div>
           </div>
-          <label class="agent-form__field">
-            <span>上下文目录</span>
-            <div class="agent-launch__path">
-              <input
-                data-testid="agent-project-directory"
-                value={directory()}
-                onInput={(event) => updateDirectory(event.currentTarget.value)}
-                placeholder="/Users/name/CODE/project"
-              />
+        </aside>
+
+        <section class="agent-command-main">
+          <header class="agent-command-topbar">
+            <A href="/home" class="agent-pill">
+              <Icon name="folder" size="small" />
+              工作台
+            </A>
+            <A href="/harness" class="agent-pill">
+              <Icon name="server" size="small" />
+              执行层
+            </A>
+            <button type="button" class="agent-pill" onClick={connectProvider}>
+              <Icon name="models" size="small" />
+              接入模型
+            </button>
+          </header>
+
+          <form
+            class="agent-composer"
+            onSubmit={(event) => {
+              event.preventDefault()
+              startCollaboration()
+            }}
+          >
+            <div class="agent-composer__title">
+              <h1>让 RAILWISE 组织哪项工作？</h1>
+            </div>
+            <div class="agent-composer__project">
+              <span>
+                <Icon name="folder" size="small" />
+              </span>
+              <div>
+                <strong>{selectedName()}</strong>
+                <small>{selectedMeta()}</small>
+              </div>
               <button type="button" class="agent-button agent-button--ghost" onClick={chooseDirectory}>
                 选择文件夹
               </button>
             </div>
-          </label>
-          <Show when={recent().length}>
-            <div class="agent-launch__recent" aria-label="最近工作区">
-              <For each={recent()}>
-                {(project) => (
-                  <button type="button" title={project.worktree} onClick={() => updateDirectory(project.worktree)}>
-                    {compactPath(project.worktree)}
-                  </button>
-                )}
-              </For>
-            </div>
-          </Show>
-        </div>
-
-        <form
-          class="agent-launch__chat"
-          onSubmit={(event) => {
-            event.preventDefault()
-            startCollaboration()
-          }}
-        >
-          <div class="agent-launch__chat-head">
-            <label class="agent-form__field">
-              <span>协作智能体</span>
+            <div class="agent-composer__agent">
+              <label for="agent-collaboration-agent">协作角色</label>
               <select
+                id="agent-collaboration-agent"
                 data-testid="agent-collaboration-agent"
                 value={selectedAgent()}
                 onInput={(event) => setSelectedAgent(event.currentTarget.value)}
               >
-                <Show
-                  when={collaborators().length}
-                  fallback={<option value={selectedAgent()}>{selectedAgent()}</option>}
-                >
+                <Show when={collaborators().length} fallback={<option value={selectedAgent()}>{selectedAgent()}</option>}>
                   <For each={collaborators()}>
                     {(agent) => (
                       <option value={agent.name}>
-                        {agent.displayName ?? agent.name} · {agentRoleLabel(agent)} · @{agent.name}
+                        {agent.displayName ?? agent.name} · {agentRoleLabel(agent)}
                       </option>
                     )}
                   </For>
                 </Show>
               </select>
-            </label>
-            <button type="submit" class="agent-button" data-testid="agent-start-session" disabled={!canStart()}>
-              开始协作
-            </button>
-          </div>
-          <label class="agent-form__field">
-            <span>任务输入</span>
+              <small>{activeAgent()?.description ?? "选择一个智能体作为本次任务入口。"}</small>
+            </div>
             <textarea
               data-testid="agent-collaboration-prompt"
               value={draft()}
               onInput={(event) => setDraft(event.currentTarget.value)}
-              placeholder="输入要完成的任务，例如：检查当前线路复测资料，列出缺失文件并给出下一步执行计划。"
+              placeholder="例如：检查当前线路复测资料，列出缺失文件，并生成下一步执行计划。"
             />
-          </label>
-        </form>
+            <div class="agent-composer__footer">
+              <div class="agent-starters">
+                <For each={starters}>
+                  {(item) => (
+                    <button type="button" onClick={() => setDraft(item)}>
+                      {item.split("，")[0]}
+                    </button>
+                  )}
+                </For>
+              </div>
+              <button type="submit" class="agent-button" data-testid="agent-start-session" disabled={!canStart()}>
+                开始协作
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="agent-command-inspector">
+          <section class="agent-inspector-card" data-testid="agent-market-panel">
+            <div class="agent-inspector-card__bar">
+              <span>{activePackage().label}</span>
+              <strong>{activePackage().status}</strong>
+            </div>
+            <h2>{activePackage().title}</h2>
+            <p>{activePackage().description}</p>
+            <Show
+              when={activePackage().button}
+              fallback={
+                <A href={activePackage().target ?? "/marketplace"} class="agent-button agent-button--ghost">
+                  {activePackage().action}
+                </A>
+              }
+            >
+              {(label) => (
+                <button type="button" class="agent-button agent-button--ghost" onClick={connectProvider}>
+                  {label()}
+                </button>
+              )}
+            </Show>
+          </section>
+
+          <section class="agent-inspector-card">
+            <div class="agent-inspector-card__line">
+              <Icon name="server" size="small" />
+              <span>执行层</span>
+              <i class={`agent-status-dot ${serverDotClass()}`} />
+            </div>
+            <strong>{serverLabel()}</strong>
+            <small>工具权限、文件边界和高风险动作由执行层接管。</small>
+          </section>
+
+          <section class="agent-inspector-card">
+            <div class="agent-inspector-card__line">
+              <Icon name="models" size="small" />
+              <span>模型</span>
+            </div>
+            <strong>{connectedProviders().length > 0 ? `${connectedProviders()[0]?.name} / ${recommendedModel}` : `默认建议 ${recommendedModel}`}</strong>
+            <small>{routeSummary().bound} 个专属绑定，{routeSummary().defaulted} 个继承默认。</small>
+          </section>
+
+          <section class="agent-inspector-card agent-inspector-card--metrics" aria-busy={loading()}>
+            <div>
+              <span>智能体</span>
+              <strong>{summary().total}</strong>
+            </div>
+            <div>
+              <span>工具</span>
+              <strong>{tools().length}</strong>
+            </div>
+            <div>
+              <span>流程</span>
+              <strong>{skills().length}</strong>
+            </div>
+          </section>
+        </aside>
       </section>
 
       <section class="agent-model-routing" data-testid="agent-model-routing">

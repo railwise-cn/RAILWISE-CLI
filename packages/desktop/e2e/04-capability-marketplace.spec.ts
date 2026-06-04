@@ -28,15 +28,18 @@ test("能力市场保持极简能力包入口", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
 })
 
-test("高级智能体管理作为独立路由打开", async ({ launchApp }) => {
+test("智能体工作台作为独立路由打开", async ({ launchApp }) => {
   const { page } = await launchApp("/agents")
 
   await visible(page.locator("[data-testid=agents-page]"))
   expect(new URL(page.url()).pathname).toBe("/agents")
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
-  await expect(page.getByRole("heading", { name: "上下文文件夹" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "让 RAILWISE 组织哪项工作？" })).toBeVisible()
+  await expect(page.getByText("能力市场").first()).toBeVisible()
   await expect(page.locator("#agent-library").getByRole("heading", { name: "智能体库" })).toBeVisible()
+  await expect(page.locator("[data-testid=agent-project-directory]")).toHaveCount(0)
+  await expect(page.getByText("高级智能体管理")).toHaveCount(0)
   await expect(page.getByText("项目工作区")).toHaveCount(0)
   await expect(page.getByText("智能体矩阵")).toHaveCount(0)
 })

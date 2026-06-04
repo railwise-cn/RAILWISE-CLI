@@ -1,12 +1,19 @@
 import { describe, expect, test } from "bun:test"
 import type { CapabilityManifest } from "@railwise/sdk/v2/client"
-import { capabilitiesFor, capabilityCount, capabilityPreview, permissionSummary, riskLabel } from "./marketplace-state"
+import {
+  capabilitiesFor,
+  capabilityCount,
+  capabilityPreview,
+  normalizeCapabilities,
+  permissionSummary,
+  riskLabel,
+} from "./marketplace-state"
 
 const list: CapabilityManifest[] = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "项目总控",
+    name: "RAILWISE 主控",
     description: "调度专业智能体。",
     version: "0.1.0",
     source: "builtin",
@@ -46,7 +53,7 @@ describe("marketplace capability state", () => {
     expect(capabilityCount(list, "agents")).toBe(1)
     expect(capabilityCount(list, "providers")).toBe(1)
     expect(capabilityCount(list, "tools")).toBe(0)
-    expect(capabilitiesFor(list, "agents")[0]?.name).toBe("项目总控")
+    expect(capabilitiesFor(list, "agents")[0]?.name).toBe("RAILWISE 主控")
   })
 
   test("summarizes permissions for compact UI chips", () => {
@@ -63,5 +70,12 @@ describe("marketplace capability state", () => {
         meta: "网络 / 密钥 · 内置 · 高风险",
       },
     ])
+  })
+
+  test("normalizes server and sdk capability response shapes", () => {
+    expect(normalizeCapabilities(list)).toHaveLength(2)
+    expect(normalizeCapabilities({ data: list })).toHaveLength(2)
+    expect(normalizeCapabilities({ data: { data: list } })).toHaveLength(2)
+    expect(normalizeCapabilities({ data: null })).toEqual([])
   })
 })

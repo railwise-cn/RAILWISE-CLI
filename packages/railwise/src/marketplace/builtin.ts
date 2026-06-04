@@ -22,7 +22,7 @@ export const builtins: CapabilityManifest[] = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "项目总控",
+    name: "RAILWISE 主控",
     description: "理解任务、拆解计划，并调度专业智能体执行。",
     version: "0.1.0",
     source: "builtin",
@@ -77,7 +77,7 @@ export const builtins: CapabilityManifest[] = [
     id: "railwise.workflow.metro_monitoring_report",
     kind: "workflow",
     name: "地铁监测月报",
-    description: "串联数据首检、异常分析、报告编制和总工审校。",
+    description: "串联数据首检、异常分析、报告编制和技术审校。",
     version: "0.1.0",
     source: "builtin",
     enabled: true,

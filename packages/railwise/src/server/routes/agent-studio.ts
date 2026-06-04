@@ -52,7 +52,7 @@ const WorkflowSchema = z
 
 const AgentListItemSchema = Agent.Info.extend({
   displayName: z.string().optional().meta({
-    description: "Localized product-facing name for Agent Studio.",
+    description: "Localized product-facing name for RailWISE capability settings.",
   }),
   filePath: z.string().optional().meta({
     description: "Absolute path of the backing .md file.",
@@ -161,11 +161,11 @@ const labels: Record<string, string> = {
 type ToolGroup = z.infer<typeof ToolInventorySchema>["group"]
 
 const railwiseAgents = [
-  ["chief_manager", "项目总控"],
+  ["chief_manager", "RAILWISE 主控"],
   ["solution_architect", "技术方案架构师"],
   ["qa_inspector", "外业数据首检"],
   ["data_analyst", "测绘数据分析"],
-  ["qa_reviewer", "总工办质检"],
+  ["qa_reviewer", "技术复核"],
   ["technical_writer", "工程报告编制"],
   ["commercial_specialist", "商务招投标"],
   ["ppt_master", "汇报材料设计"],

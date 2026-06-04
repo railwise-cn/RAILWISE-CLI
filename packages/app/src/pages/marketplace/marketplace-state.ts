@@ -18,6 +18,24 @@ export function capabilitiesFor(list: CapabilityManifest[], id: MarketplaceId) {
   return list.filter((item) => kinds[id].includes(item.kind))
 }
 
+function data(value: unknown) {
+  if (!value || typeof value !== "object") return
+  if (!("data" in value)) return
+  return value.data
+}
+
+export function normalizeCapabilities(value: unknown): CapabilityManifest[] {
+  if (Array.isArray(value)) return value as CapabilityManifest[]
+
+  const body = data(value)
+  if (Array.isArray(body)) return body as CapabilityManifest[]
+
+  const nested = data(body)
+  if (Array.isArray(nested)) return nested as CapabilityManifest[]
+
+  return []
+}
+
 export function capabilityCount(list: CapabilityManifest[], id: MarketplaceId) {
   return capabilitiesFor(list, id).length
 }

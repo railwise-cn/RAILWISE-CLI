@@ -38,7 +38,7 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   await expect(page.locator("[data-testid=session-model-readiness]")).toHaveCount(0)
 
   const request = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
-  await page.locator("[data-action=prompt-submit]").click()
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
   const payload = (await request).postDataJSON() as {
     agent: string
     model: { providerID: string; modelID: string }

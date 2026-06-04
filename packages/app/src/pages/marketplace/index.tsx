@@ -2,7 +2,7 @@ import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
 import { createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
-import type { CapabilityList, CapabilityManifest } from "@railwise/sdk/v2/client"
+import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { useAgentUpdates } from "@/hooks/use-agent-updates"
@@ -25,6 +25,7 @@ import {
   capabilityCount,
   capabilityPreview,
   marketplaceIds,
+  normalizeCapabilities,
   permissionSummary,
   riskLabel,
   sourceLabel,
@@ -78,7 +79,7 @@ export default function MarketplacePage() {
         setTools(result(toolset, []))
         setSkills(result(skillset, []))
         setWorkflows(result(presets, []))
-        setCapabilities(result(registry as PromiseSettledResult<CapabilityList>, { data: [] as CapabilityManifest[] }).data)
+        setCapabilities(registry.status === "fulfilled" ? normalizeCapabilities(registry.value) : [])
         setError(list.status === "rejected" ? (list.reason instanceof Error ? list.reason.message : String(list.reason)) : "")
       })
       .finally(() => setLoading(false))

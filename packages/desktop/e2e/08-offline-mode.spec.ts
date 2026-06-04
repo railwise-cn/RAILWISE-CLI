@@ -3,7 +3,7 @@ import { expect, test } from "./helpers/app"
 test("离线模式：能力市场保持本地入口可用", async ({ launchApp }) => {
   const { page, context } = await launchApp("/marketplace")
   await expect(page.locator("[data-testid=marketplace-page]")).toBeVisible()
-  await expect(page.locator("[data-testid=marketplace-permissions-agents]")).toContainText("项目总控")
+  await expect(page.locator("[data-testid=marketplace-permissions-agents]")).toContainText("RAILWISE 主控")
 
   await context.setOffline(true)
   await page.evaluate(() => {

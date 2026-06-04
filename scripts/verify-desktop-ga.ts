@@ -61,7 +61,7 @@ check(
 )
 check(
   "desktop product identity",
-  tauri.productName === "RAILWISE 智测工作台" &&
+  tauri.productName === "睿威智测 RAILWISE" &&
     tauri.identifier === "ai.railwise.desktop.dev" &&
     tauri.mainBinaryName === "railwise",
   `${tauri.productName ?? "missing"} / ${tauri.identifier ?? "missing"} / ${tauri.mainBinaryName ?? "missing"}`,

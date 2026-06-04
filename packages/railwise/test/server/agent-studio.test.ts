@@ -27,7 +27,7 @@ describe("server.routes.agent-studio", () => {
     )
     await Bun.write(
       path.join(tmp.path, ".railwise", "agent", "chief_manager.md"),
-      "---\ndescription: 项目总控，负责任务拆解、智能体调度、流程控制与最终成果汇总\nmode: primary\n---\n业务主控。",
+      "---\ndescription: 主控智能体，负责任务拆解、智能体调度、流程控制与最终成果汇总\nmode: primary\n---\n业务主控。",
     )
     await Bun.write(
       path.join(tmp.path, ".railwise", "agent", "qa_inspector.md"),
@@ -44,7 +44,7 @@ describe("server.routes.agent-studio", () => {
         expect(response.status).toBe(200)
         expect(names).toContain("chief_manager")
         expect(names).toContain("qa_inspector")
-        expect(list.find((agent) => agent.name === "chief_manager")?.displayName).toBe("项目总控")
+        expect(list.find((agent) => agent.name === "chief_manager")?.displayName).toBe("RAILWISE 主控")
         expect(list.find((agent) => agent.name === "qa_inspector")?.displayName).toBe("外业数据首检")
         expect(names).not.toContain("build")
         expect(names).not.toContain("plan")

@@ -534,7 +534,7 @@ export default function AgentsPage() {
               data-testid="agent-collaboration-prompt"
               value={draft()}
               onInput={(event) => setDraft(event.currentTarget.value)}
-              placeholder="告诉智能体要完成的任务，例如：检查当前线路复测资料，列出缺失文件并给出下一步执行计划。"
+              placeholder="输入要完成的任务，例如：检查当前线路复测资料，列出缺失文件并给出下一步执行计划。"
             />
           </label>
         </form>

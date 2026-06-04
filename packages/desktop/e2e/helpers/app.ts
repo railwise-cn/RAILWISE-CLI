@@ -136,7 +136,7 @@ const capabilities = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "项目总控",
+    name: "RAILWISE 主控",
     description: "理解任务、拆解计划，并调度专业智能体执行。",
     version: "0.1.0",
     source: "builtin",
@@ -173,7 +173,7 @@ const capabilities = [
     id: "railwise.workflow.metro_monitoring_report",
     kind: "workflow",
     name: "地铁监测月报",
-    description: "串联数据首检、异常分析、报告编制和总工审校。",
+    description: "串联数据首检、异常分析、报告编制和技术审校。",
     version: "0.1.0",
     source: "builtin",
     enabled: true,
@@ -281,11 +281,20 @@ async function setup(page: Page, opts: LaunchOptions) {
     }),
   )
   await page.route(`${server}/global/config`, (route) => json(route, {}))
+  await page.route(`${server}/config`, (route) => json(route, {}))
   await page.route(`${server}/project`, (route) => json(route, []))
+  await page.route(`${server}/project/current`, (route) =>
+    json(route, {
+      id: "railwise-e2e",
+      worktree: "/tmp/railwise-e2e/worktree",
+      time: { created: Date.now(), updated: Date.now() },
+    }),
+  )
   await page.route(`${server}/provider`, (route) =>
     json(route, opts.model === "configured" ? provider : { all: [], default: {}, connected: [] }),
   )
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
+  await page.route(`${server}/agent`, (route) => json(route, agents))
   await page.route(`${server}/marketplace/capabilities`, (route) => json(route, { data: capabilities }))
   await page.route(`${server}/agent-studio/workflow/run`, (route) => json(route, { sessionId: "workflow-e2e" }))
   await page.route(`${server}/agent-studio/workflow/presets`, (route) => json(route, [workflow]))
@@ -321,6 +330,7 @@ async function setup(page: Page, opts: LaunchOptions) {
       const win = window as HarnessWindow
       const callbacks = new Map<number, (data: unknown) => unknown>()
       let next = 1
+      let resource = 1000
       if (input.debug) {
         window.addEventListener("error", (event) => {
           console.log("[browser:window-error]", event.message, event.filename, event.lineno)
@@ -372,6 +382,18 @@ async function setup(page: Page, opts: LaunchOptions) {
           if (command === "check_app_exists") return true
           if (command === "resolve_app_path") return null
           if (command === "wsl_path") return args.path
+          if (command === "plugin:menu|new") {
+            const kind = typeof args.kind === "string" ? args.kind : "MenuItem"
+            return [resource++, `${kind.toLowerCase()}-e2e-${resource}`]
+          }
+          if (command === "plugin:menu|create_default") return [resource++, `menu-e2e-${resource}`]
+          if (command === "plugin:menu|items") return []
+          if (command === "plugin:menu|get") return null
+          if (command === "plugin:menu|text") return ""
+          if (command === "plugin:menu|is_enabled") return true
+          if (command === "plugin:menu|remove_at") return null
+          if (command === "plugin:menu|set_as_app_menu") return null
+          if (command === "plugin:menu|set_as_window_menu") return null
           if (command.startsWith("plugin:")) return null
           return null
         },

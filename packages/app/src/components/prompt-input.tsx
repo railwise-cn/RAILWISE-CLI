@@ -499,7 +499,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         color: agentColor(agent.name, agent.color),
       })),
   )
-  const agentNames = createMemo(() => local.agent.list().map((agent) => agent.name))
+  const agentOptions = createMemo(() => local.agent.list())
 
   const handleAtSelect = (option: AtOption | undefined) => {
     if (!option) return
@@ -1428,10 +1428,12 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                 >
                   <Select
                     size="normal"
-                    options={agentNames()}
-                    current={local.agent.current()?.name ?? ""}
-                    onSelect={local.agent.set}
-                    class="capitalize max-w-[160px]"
+                    options={agentOptions()}
+                    current={local.agent.current()}
+                    value={(agent) => agent.name}
+                    label={agentDisplayName}
+                    onSelect={(agent) => local.agent.set(agent?.name)}
+                    class="max-w-[160px]"
                     valueClass="truncate text-13-regular"
                     triggerStyle={{ height: "28px" }}
                     variant="ghost"

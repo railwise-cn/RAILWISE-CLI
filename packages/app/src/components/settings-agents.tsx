@@ -70,7 +70,10 @@ export const SettingsAgents: Component = () => {
           <div class="flex flex-col gap-1 min-w-0">
             <h2 class="text-16-medium text-text-strong">{language.t("settings.agents.title")}</h2>
             <p class="text-14-regular text-text-weak">
-              {text("查看当前智能体目录、热更新状态和最近调用量。", "Review agents, hot-reload sources, and recent calls.")}
+              {text(
+                "按能力包查看主控、专业智能体和自定义智能体；模型与权限在智能体工作台中配置。",
+                "Review primary, specialist, and custom agents; configure models and permissions in Agent Studio.",
+              )}
             </p>
           </div>
           <div class="flex gap-2">
@@ -78,22 +81,32 @@ export const SettingsAgents: Component = () => {
               {loading() ? text("刷新中", "Refreshing") : text("刷新", "Refresh")}
             </Button>
             <Button size="large" variant="primary" icon="brain" onClick={() => open("/agents")}>
-              {text("能力配置", "Configure")}
+              {text("打开智能体工作台", "Open Agent Studio")}
             </Button>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col gap-6 max-w-[720px]">
+      <div class="flex flex-col gap-6 max-w-[720px]" data-testid="settings-agents-panel">
+        <div class="rounded-xl border border-border-weak-base bg-surface-raised-base px-4 py-3">
+          <div class="text-13-medium text-text-strong">{text("智能体能力配置", "Agent capability configuration")}</div>
+          <div class="mt-1 text-12-regular text-text-weak">
+            {text(
+              "这里保留轻量总览；真正调整提示词、模型路由和权限时，进入对应智能体的配置页。",
+              "This panel stays lightweight; open an agent to edit prompts, model routing, and permissions.",
+            )}
+          </div>
+        </div>
+
         <div class="grid grid-cols-4 gap-3">
-          <Metric label={text("可见智能体", "Visible")} value={visible().length} />
-          <Metric label={text("主智能体", "Primary")} value={primary()} />
-          <Metric label={text("子智能体", "Sub-agents")} value={subagent()} />
+          <Metric label={text("全部", "All")} value={visible().length} />
+          <Metric label={text("主控", "Primary")} value={primary()} />
+          <Metric label={text("专业", "Specialist")} value={subagent()} />
           <Metric label={text("自定义", "Custom")} value={custom()} />
         </div>
 
         <div class="flex flex-col gap-2">
-          <h3 class="text-14-medium text-text-strong">{text("最近调用排序", "Sorted by recent calls")}</h3>
+          <h3 class="text-14-medium text-text-strong">{text("智能体能力", "Agent capabilities")}</h3>
           <div class="border border-border-weak-base rounded-lg overflow-hidden">
             <Show
               when={sorted().length > 0}
@@ -125,7 +138,7 @@ export const SettingsAgents: Component = () => {
                     <div class="flex items-center gap-3 shrink-0">
                       <span class="text-12-regular text-text-weak">{text("7天", "7d")} {item.callCount7d ?? 0}</span>
                       <Button size="small" variant="secondary" onClick={() => open(`/agents/${encodeURIComponent(item.name)}`)}>
-                        {text("打开", "Open")}
+                        {text("配置", "Configure")}
                       </Button>
                     </div>
                   </div>

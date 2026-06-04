@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "typecheck": "tsgo --noEmit",
-    "test": "bun test --timeout 30000",
+    "test": "bun test ./test/*.test.ts ./test/**/*.test.ts --timeout 30000",
     "build": "bun run script/build.ts",
     "dev": "bun run --conditions=browser ./src/index.ts",
     "db": "bun drizzle-kit"

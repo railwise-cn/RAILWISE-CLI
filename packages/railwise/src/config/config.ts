@@ -269,15 +269,15 @@ export namespace Config {
 
   export async function installDependencies(dir: string) {
     const pkg = path.join(dir, "package.json")
-    const targetVersion = Installation.isLocal() ? "*" : Installation.VERSION
+    const targetVersion = await railwiseDependency()
 
     const json = await Filesystem.readJson<{ dependencies?: Record<string, string> }>(pkg).catch(() => ({
       dependencies: {},
     }))
-    json.dependencies = {
-      ...json.dependencies,
-      "nb-railwise": targetVersion,
-    }
+    const dependencies: Record<string, string> = { ...(json.dependencies ?? {}) }
+    if (targetVersion) dependencies["nb-railwise"] = targetVersion
+    else delete dependencies["nb-railwise"]
+    json.dependencies = dependencies
     await Filesystem.writeJson(pkg, json)
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
@@ -296,6 +296,11 @@ export namespace Config {
       ],
       { cwd: dir },
     ).catch(() => {})
+  }
+
+  async function railwiseDependency() {
+    if (Installation.isLocal()) return undefined
+    return Installation.VERSION
   }
 
   async function isWritable(dir: string) {
@@ -326,7 +331,9 @@ export namespace Config {
     const parsed = await Filesystem.readJson<{ dependencies?: Record<string, string> }>(pkg).catch(() => null)
     const dependencies = parsed?.dependencies ?? {}
     const depVersion = dependencies["nb-railwise"]
-    if (!depVersion) return true
+    if (!depVersion && !Installation.isLocal()) return true
+    if (Object.keys(dependencies).some((dep) => !existsSync(path.join(nodeModules, dep)))) return true
+    if (!depVersion) return false
 
     const targetVersion = Installation.isLocal() ? "latest" : Installation.VERSION
     if (targetVersion === "latest") {

@@ -767,18 +767,9 @@ export namespace Provider {
     const disabled = new Set(config.disabled_providers ?? [])
     const enabled = config.enabled_providers ? new Set(config.enabled_providers) : null
 
-    // Built-in + free-model providers bypass enabled_providers filtering
-    const builtin = new Set([
-      "github-copilot",
-      "github-copilot-enterprise",
-      "railwise",
-      ...Object.keys(FREE_MODELS),
-    ])
-
     function isProviderAllowed(providerID: string): boolean {
       if (disabled.has(providerID)) return false
-      if (builtin.has(providerID)) return true
-      if (enabled && !enabled.has(providerID)) return false
+      if (enabled) return enabled.has(providerID)
       return true
     }
 
@@ -1303,7 +1294,7 @@ export namespace Provider {
     return undefined
   }
 
-  const priority = ["deepseek-v4-pro", "deepseek-v4-flash", "claude-sonnet-4-5", "gpt-5"]
+  const priority = ["gpt-5", "claude-sonnet-4", "deepseek-v4-flash", "deepseek-v4-pro"]
   export function sort(models: Model[]) {
     return sortBy(
       models,

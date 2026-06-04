@@ -78,7 +78,7 @@ export const SettingsAgents: Component = () => {
               {loading() ? text("刷新中", "Refreshing") : text("刷新", "Refresh")}
             </Button>
             <Button size="large" variant="primary" icon="brain" onClick={() => open("/agents")}>
-              {text("高级管理", "Manage")}
+              {text("能力配置", "Configure")}
             </Button>
           </div>
         </div>

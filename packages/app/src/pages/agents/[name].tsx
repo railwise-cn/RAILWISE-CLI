@@ -1,5 +1,5 @@
 import "./agent-studio.css"
-import { useNavigate, useParams } from "@solidjs/router"
+import { A, useNavigate, useParams } from "@solidjs/router"
 import { createMemo, createSignal, onMount, Show } from "solid-js"
 import { AgentEditor } from "@/components/agent-editor"
 import { AgentPermissionForm } from "@/components/agent-permission-form"
@@ -8,6 +8,7 @@ import { useAgentUpdates } from "@/hooks/use-agent-updates"
 import type { AgentStudioDetail } from "@/types/agent-studio"
 import { modeLabel } from "@/utils/agent-card"
 import { shortDescription } from "@/utils/agent-markdown"
+import { Icon } from "@railwise/ui/icon"
 import { useAgentStudioApi } from "./api"
 
 export default function AgentDetailPage() {
@@ -55,30 +56,52 @@ export default function AgentDetailPage() {
 
   const title = createMemo(() => agent()?.displayName ?? agent()?.name ?? params.name)
   const summary = createMemo(() => shortDescription(agent()?.description ?? agent()?.prompt ?? "", 120))
+  const source = createMemo(() => {
+    const value = agent()?.filePath
+    if (!value) return "内置"
+    const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
+    return clean.split("/").filter(Boolean).at(-1) ?? "本地能力文件"
+  })
 
   return (
-    <main class="agent-studio agent-detail">
-      <section class="agent-detail__bar">
-        <button type="button" class="agent-button agent-button--ghost" onClick={() => navigate("/marketplace")}>
-          返回
+    <main class="agent-studio agent-detail" data-testid="agent-detail-page">
+      <section class="agent-detail__bar" data-testid="agent-detail-shell">
+        <button type="button" class="agent-button agent-button--ghost" onClick={() => navigate("/agents")}>
+          返回智能体库
         </button>
         <div>
+          <span class="agent-kicker">智能体配置</span>
           <h1>{title()}</h1>
           <p>
             <Show when={agent()} fallback="加载中">
               {(item) => `${modeLabel(item().mode)} · ${summary() || "暂无描述"}`}
             </Show>
           </p>
+          <div class="agent-detail__meta">
+            <span>
+              <Icon name="brain" size="small" />
+              {agent()?.name ?? params.name}
+            </span>
+            <span title={agent()?.filePath ?? ""}>
+              <Icon name="folder" size="small" />
+              {source()}
+            </span>
+          </div>
         </div>
-        <button
-          type="button"
-          class="agent-button"
-          data-testid="save-agent-btn"
-          disabled={!dirty() || saving()}
-          onClick={save}
-        >
-          {saving() ? "保存中" : dirty() ? "保存" : "已保存"}
-        </button>
+        <div class="agent-detail__actions">
+          <A href="/marketplace" class="agent-button agent-button--ghost">
+            能力市场
+          </A>
+          <button
+            type="button"
+            class="agent-button"
+            data-testid="save-agent-btn"
+            disabled={!dirty() || saving()}
+            onClick={save}
+          >
+            {saving() ? "保存中" : dirty() ? "保存" : "已保存"}
+          </button>
+        </div>
       </section>
 
       <Show when={error()}>
@@ -92,9 +115,9 @@ export default function AgentDetailPage() {
         <section class="agent-detail__grid">
           <div class="agent-panel agent-panel--editor">
             <div class="agent-panel__header">
-              <h2>Markdown 配置</h2>
+              <h2>能力定义</h2>
               <span class="agent-panel__link">
-                {agent()?.filePath ?? ".railwise/agent"}
+                {source()}
               </span>
             </div>
             <AgentEditor value={raw()} onChange={setRaw} />
@@ -102,7 +125,7 @@ export default function AgentDetailPage() {
 
           <div class="agent-panel">
             <div class="agent-panel__header">
-              <h2>实时预览</h2>
+              <h2>预览</h2>
             </div>
             <AgentPreview markdown={raw()} />
           </div>

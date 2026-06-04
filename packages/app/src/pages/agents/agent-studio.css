@@ -1696,11 +1696,51 @@
 
 .agent-detail__bar {
   flex: 0 0 auto;
+  border: 1px solid var(--agent-border);
+  border-radius: var(--agent-radius);
+  background: var(--agent-surface);
+  padding: 18px;
 }
 
 .agent-detail__bar > div {
   flex: 1;
   min-width: 0;
+}
+
+.agent-detail__actions,
+.agent-detail__meta {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.agent-detail__actions {
+  justify-content: flex-end;
+}
+
+.agent-detail__meta {
+  margin-top: 10px;
+}
+
+.agent-detail__meta span {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 260px;
+  min-height: 28px;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  border: 1px solid var(--agent-border);
+  border-radius: 999px;
+  background: var(--agent-soft);
+  color: var(--agent-muted);
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .agent-detail__grid {

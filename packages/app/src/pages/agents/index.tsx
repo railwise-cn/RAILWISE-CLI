@@ -710,7 +710,7 @@ export default function AgentsPage() {
                         </For>
                       </select>
                       <span>{routeSaving()[agent.name] ? "保存中" : modelRouteLabel(agent)}</span>
-                      <A href={`/agents/${agent.name}`}>高级</A>
+                      <A href={`/agents/${agent.name}`}>配置</A>
                     </div>
                   </div>
                 )}

@@ -115,6 +115,11 @@ html, body {
   height: 100%;
 }
 
+.railwise-app-shell {
+  display: flex;
+  flex-direction: column;
+}
+
 .desktop-settings-button {
   position: fixed;
   right: 16px;

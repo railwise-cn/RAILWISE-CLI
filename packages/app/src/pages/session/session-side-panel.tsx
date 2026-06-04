@@ -3,10 +3,12 @@ import { createStore } from "solid-js/store"
 import { createMediaQuery } from "@solid-primitives/media"
 import { useParams } from "@solidjs/router"
 import { Tabs } from "@railwise/ui/tabs"
+import { Icon, type IconProps } from "@railwise/ui/icon"
 import { IconButton } from "@railwise/ui/icon-button"
 import { Tooltip, TooltipKeybind } from "@railwise/ui/tooltip"
 import { ResizeHandle } from "@railwise/ui/resize-handle"
 import { Mark } from "@railwise/ui/logo"
+import { getFilename } from "@railwise/util/path"
 import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, closestCenter } from "@thisbeyond/solid-dnd"
 import type { DragEvent } from "@thisbeyond/solid-dnd"
 import { ConstrainDragYAxis, getDraggableId } from "@/utils/solid-dnd"
@@ -14,12 +16,15 @@ import { useDialog } from "@railwise/ui/context/dialog"
 
 import FileTree from "@/components/file-tree"
 import { SessionContextUsage } from "@/components/session-context-usage"
+import { getSessionContextMetrics } from "@/components/session/session-context-metrics"
 import { DialogSelectFile } from "@/components/dialog-select-file"
 import { SessionContextTab, SortableTab, FileVisual } from "@/components/session"
 import { useCommand } from "@/context/command"
 import { useFile, type SelectedLineRange } from "@/context/file"
 import { useLanguage } from "@/context/language"
 import { useLayout } from "@/context/layout"
+import { useLocal } from "@/context/local"
+import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { createFileTabListSync } from "@/pages/session/file-tab-scroll"
 import { FileTabContent } from "@/pages/session/file-tabs"
@@ -38,6 +43,29 @@ const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
   "serve.log",
 ])
 
+function StatusItem(props: {
+  icon: IconProps["name"]
+  label: string
+  value: string
+  testId?: string
+}) {
+  return (
+    <div class="flex min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5">
+      <div class="flex min-w-0 items-center gap-1.5 text-11-medium text-text-weak">
+        <Icon name={props.icon} size="small" class="shrink-0 text-icon-weak" />
+        <span class="truncate">{props.label}</span>
+      </div>
+      <div
+        data-testid={props.testId}
+        class="max-w-40 truncate text-right text-12-medium text-text-strong"
+        title={props.value}
+      >
+        {props.value}
+      </div>
+    </div>
+  )
+}
+
 export function SessionSidePanel(props: {
   reviewPanel: () => JSX.Element
   activeDiff?: string
@@ -45,7 +73,9 @@ export function SessionSidePanel(props: {
 }) {
   const params = useParams()
   const layout = useLayout()
+  const sdk = useSDK()
   const sync = useSync()
+  const local = useLocal()
   const file = useFile()
   const language = useLanguage()
   const command = useCommand()
@@ -62,6 +92,7 @@ export function SessionSidePanel(props: {
 
   const info = createMemo(() => (params.id ? sync.session.get(params.id) : undefined))
   const diffs = createMemo(() => (params.id ? (sync.data.session_diff[params.id] ?? []) : []))
+  const messages = createMemo(() => (params.id ? (sync.data.message[params.id] ?? []) : []))
   const reviewCount = createMemo(() => Math.max(info()?.summary?.files ?? 0, diffs().length))
   const hasReview = createMemo(() => reviewCount() > 0)
   const diffsReady = createMemo(() => {
@@ -72,6 +103,36 @@ export function SessionSidePanel(props: {
   })
 
   const diffFiles = createMemo(() => diffs().map((d) => d.file))
+  const projectName = createMemo(() => {
+    const root = sync.project?.worktree ?? sdk.directory
+    return sync.project?.name || getFilename(root) || language.t("session.side.project.empty")
+  })
+  const agentName = createMemo(() => local.agent.current()?.name ?? language.t("session.side.agent.empty"))
+  const modelName = createMemo(() => {
+    const model = local.model.current()
+    if (!model) return language.t("session.side.model.empty")
+    return `${model.provider.name} / ${model.name}`
+  })
+  const messageReady = createMemo(() => {
+    const id = params.id
+    if (!id) return true
+    return sync.data.message[id] !== undefined
+  })
+  const userMessages = createMemo(() => messages().filter((message) => message.role === "user"))
+  const progress = createMemo(() => {
+    if (!params.id) return language.t("session.side.progress.ready")
+    if (!messageReady()) return language.t("session.side.progress.loading")
+    if (userMessages().length === 0) return language.t("session.side.progress.waiting")
+    return language.t("session.side.progress.turns", { count: userMessages().length.toLocaleString(language.locale()) })
+  })
+  const metrics = createMemo(() => getSessionContextMetrics(messages(), sync.data.provider.all))
+  const contextLabel = createMemo(() => {
+    const context = metrics().context
+    if (!params.id) return language.t("session.side.context.pending")
+    if (!context) return language.t("session.side.context.empty")
+    if (context.usage === null) return `${context.total.toLocaleString(language.locale())} ${language.t("context.usage.tokens")}`
+    return language.t("session.side.context.percent", { percent: context.usage.toLocaleString(language.locale()) })
+  })
   const kinds = createMemo(() => {
     const merge = (a: "add" | "del" | "mix" | undefined, b: "add" | "del" | "mix") => {
       if (!a) return b
@@ -152,6 +213,14 @@ export function SessionSidePanel(props: {
   const showAllFiles = () => {
     if (fileTreeTab() !== "changes") return
     layout.fileTree.setTab("all")
+  }
+
+  const openContext = () => {
+    if (!params.id) return
+    if (!view().reviewPanel.opened()) view().reviewPanel.open()
+    if (layout.fileTree.opened() && layout.fileTree.tab() !== "all") layout.fileTree.setTab("all")
+    tabs().open("context")
+    tabs().setActive("context")
   }
 
   const [store, setStore] = createStore({
@@ -349,6 +418,56 @@ export function SessionSidePanel(props: {
               class="h-full flex flex-col overflow-hidden group/filetree"
               classList={{ "border-l border-border-weak-base": reviewOpen() }}
             >
+              <div
+                data-testid="session-status-panel"
+                class="shrink-0 border-b border-border-subtle bg-background-stronger px-3 py-3"
+              >
+                <div class="mb-2 flex items-center justify-between gap-2">
+                  <div class="text-12-medium text-text-strong">{language.t("session.side.title")}</div>
+                  <div class="rounded-md bg-surface-base px-2 py-1 text-11-medium text-text-weak">
+                    {params.id ? language.t("session.side.status.active") : language.t("session.side.status.ready")}
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <StatusItem
+                    icon="folder"
+                    label={language.t("session.side.project")}
+                    value={projectName()}
+                    testId="session-status-project"
+                  />
+                  <StatusItem
+                    icon="brain"
+                    label={language.t("session.side.agent")}
+                    value={agentName()}
+                    testId="session-status-agent"
+                  />
+                  <StatusItem
+                    icon="models"
+                    label={language.t("session.side.model")}
+                    value={modelName()}
+                    testId="session-status-model"
+                  />
+                  <StatusItem
+                    icon="checklist"
+                    label={language.t("session.side.progress")}
+                    value={progress()}
+                    testId="session-status-progress"
+                  />
+                </div>
+                <button
+                  type="button"
+                  data-testid="session-status-context"
+                  class="mt-2 flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-md border border-border-subtle bg-background-base px-2.5 text-left text-12-medium text-text-base hover:bg-background-hover disabled:cursor-default disabled:opacity-50 disabled:hover:bg-background-base"
+                  disabled={!params.id}
+                  onClick={openContext}
+                >
+                  <span class="flex min-w-0 items-center gap-1.5">
+                    <Icon name="bullet-list" size="small" class="shrink-0 text-icon-weak" />
+                    <span class="shrink-0 text-text-weak">{language.t("session.side.context")}</span>
+                  </span>
+                  <span class="truncate text-text-strong">{contextLabel()}</span>
+                </button>
+              </div>
               <Tabs
                 variant="pill"
                 value={fileTreeTab()}

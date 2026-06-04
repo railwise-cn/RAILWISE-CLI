@@ -28,12 +28,44 @@ const arch = process.arch === "arm64" ? "aarch64" : process.arch === "x64" ? "x6
 const app = arg("--app", path.join("src-tauri", "target", "release", "bundle", "macos", `${name}.app`))!
 const output = arg("--output", path.join("src-tauri", "target", "release", "bundle", "dmg", `${name}_${pkg.version ?? "0.0.0"}_local_${arch}.dmg`))!
 const zip = arg("--zip-output", output.replace(/\.dmg$/, ".app.zip"))!
+const identity = arg("--sign-identity", Bun.env.APPLE_SIGNING_IDENTITY?.trim())?.trim()
+const strict = args.includes("--require-developer-id")
 const stage = await mkdtemp(path.join(os.tmpdir(), "railwise-local-dmg-"))
 
 if ((await stat(app).catch(() => undefined))?.isDirectory() !== true) throw new Error(`App bundle not found: ${app}`)
 
+const signature = async () => {
+  const result = await $`codesign -dv --verbose=4 ${app}`.quiet().nothrow()
+  const text = result.stdout.toString() + result.stderr.toString()
+  return {
+    developer: text.includes("Authority=Developer ID Application:"),
+  }
+}
+
+const sign = async () => {
+  if (args.includes("--skip-sign")) return
+  if (!identity && (await signature()).developer) {
+    console.log(`Preserving existing Developer ID signature for ${app}`)
+    return
+  }
+  if (identity) {
+    await $`bun ./scripts/sign-macos-app.ts --app ${app} --identity ${identity}`
+    return
+  }
+  await $`bun ./scripts/sign-macos-app.ts --app ${app}`
+}
+
 try {
-  if (!args.includes("--skip-sign")) await $`bun ./scripts/sign-macos-app.ts --app ${app}`
+  await sign()
+  if (strict && !(await signature()).developer) {
+    throw new Error(
+      [
+        `Developer ID signature required for ${app}`,
+        "Pass --sign-identity 'Developer ID Application: ...' or set APPLE_SIGNING_IDENTITY.",
+        "Use --skip-sign only when the app is already signed with Developer ID.",
+      ].join("\n"),
+    )
+  }
 
   await mkdir(path.dirname(output), { recursive: true })
   await $`ditto ${app} ${path.join(stage, path.basename(app))}`

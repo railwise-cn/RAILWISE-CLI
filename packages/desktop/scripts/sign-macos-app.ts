@@ -18,6 +18,7 @@ const arg = (name: string, fallback?: string) => {
 
 const appArg = arg("--app")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
+const identityArg = arg("--identity", Bun.env.APPLE_SIGNING_IDENTITY?.trim())?.trim()
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS signing is not available for ${target}`)
 
 const config = (await Bun.file("src-tauri/tauri.prod.conf.json").json()) as Config
@@ -44,7 +45,7 @@ const ensure = async (key: string, type: string, value: string) => {
 await ensure("LSRequiresCarbon", "bool", "false")
 await ensure("NSPrincipalClass", "string", "NSApplication")
 
-const identity = Bun.env.APPLE_SIGNING_IDENTITY?.trim() || "-"
+const identity = identityArg || "-"
 
 if (identity === "-") {
   await $`codesign --force --deep --sign - ${app}`

@@ -496,7 +496,7 @@ export const dict = {
   "session.review.loadingChanges": "Loading changes...",
   "session.review.empty": "No changes in this session yet",
   "session.review.noChanges": "No changes",
-  "session.side.title": "Environment",
+  "session.side.title": "Status",
   "session.side.status.ready": "Ready",
   "session.side.status.active": "Active",
   "session.side.project": "Project",

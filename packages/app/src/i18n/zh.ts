@@ -496,7 +496,7 @@ export const dict = {
   "session.review.loadingChanges": "正在加载更改...",
   "session.review.empty": "此会话暂无更改",
   "session.review.noChanges": "无更改",
-  "session.side.title": "环境",
+  "session.side.title": "状态",
   "session.side.status.ready": "就绪",
   "session.side.status.active": "进行中",
   "session.side.project": "项目",

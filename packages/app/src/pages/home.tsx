@@ -209,7 +209,7 @@ export default function Home() {
                         [serverDotClass()]: true,
                       }}
                     />
-                    执行环境：{serverLabel()}
+                    连接：{serverLabel()}
                   </div>
                   <div class="inline-flex min-w-0 items-center gap-2" data-testid="home-model-summary">
                     <Icon name="models" size="small" />
@@ -223,7 +223,7 @@ export default function Home() {
                   onClick={() => navigate("/marketplace")}
                 >
                   <Icon name="providers" size="small" />
-                  配置能力
+                  能力市场
                 </button>
               </div>
             </section>
@@ -232,7 +232,7 @@ export default function Home() {
 
         <aside class="hidden w-72 shrink-0 flex-col border-l border-border-weak-base px-4 py-5 xl:flex">
           <div class="mb-5">
-            <div class="text-12-medium text-text-weak">工作区</div>
+            <div class="text-12-medium text-text-weak">当前项目</div>
             <div class="mt-2 rounded-lg border border-border-weak-base bg-surface-panel p-3">
               <div class="truncate text-14-medium text-text-strong">{selectedName()}</div>
               <div class="mt-1 text-12-regular text-text-weak">{selectedMeta()}</div>
@@ -241,7 +241,7 @@ export default function Home() {
 
           <div class="rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-harness-inspector">
             <div class="mb-3 flex items-center justify-between">
-              <div class="text-12-medium text-text-weak">环境</div>
+              <div class="text-12-medium text-text-weak">状态</div>
               <button type="button" class="text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/harness")}>
                 查看
               </button>
@@ -250,7 +250,7 @@ export default function Home() {
               <div class="flex items-start gap-2">
                 <Icon name="server" size="small" class="mt-0.5 shrink-0 text-text-weak" />
                 <div class="min-w-0 flex-1">
-                  <div class="text-13-medium text-text-strong">执行环境</div>
+                  <div class="text-13-medium text-text-strong">连接</div>
                   <div class="mt-1 flex items-center gap-2 text-12-regular text-text-weak">
                     <span
                       classList={{
@@ -272,7 +272,7 @@ export default function Home() {
               <div class="flex items-start gap-2">
                 <Icon name="providers" size="small" class="mt-0.5 shrink-0 text-text-weak" />
                 <div class="min-w-0 flex-1">
-                  <div class="text-13-medium text-text-strong">能力</div>
+                  <div class="text-13-medium text-text-strong">能力市场</div>
                   <button type="button" class="mt-1 text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/marketplace")}>
                     打开能力市场
                   </button>

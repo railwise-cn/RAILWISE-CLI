@@ -660,7 +660,7 @@ render(() => {
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/harness", "/workspace", "/marketplace"]}
+                    standalonePaths={["/workspace"]}
                     workbenchRoutes={true}
                   >
                     <Inner />

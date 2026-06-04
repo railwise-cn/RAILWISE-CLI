@@ -1,20 +1,24 @@
 import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
-import { createMemo, createSignal, For, onMount, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
 import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { useAgentUpdates } from "@/hooks/use-agent-updates"
+import { useGlobalSync } from "@/context/global-sync"
+import { useLayout } from "@/context/layout"
 import { useModels } from "@/context/models"
 import { useProviders } from "@/hooks/use-providers"
 import { useGlobalSDK } from "@/context/global-sdk"
+import { useServer } from "@/context/server"
 import { useAgentStudioApi } from "@/pages/agents/api"
 import {
   agentRoleLabel,
   agentStudioSummary,
   modelSetupState,
   professionalSkills,
+  recentWorkspaces,
   recommendedModel,
   recommendedProviders,
 } from "@/pages/agents/collaboration"
@@ -61,8 +65,11 @@ export default function MarketplacePage() {
   const api = useAgentStudioApi()
   const sdk = useGlobalSDK()
   const dialog = useDialog()
+  const layout = useLayout()
   const models = useModels()
   const providers = useProviders()
+  const server = useServer()
+  const sync = useGlobalSync()
   const [agents, setAgents] = createSignal<AgentStudioItem[]>([])
   const [tools, setTools] = createSignal<ToolInventoryItem[]>([])
   const [skills, setSkills] = createSignal<SkillInventoryItem[]>([])
@@ -89,6 +96,7 @@ export default function MarketplacePage() {
   onMount(load)
   useAgentUpdates(load)
 
+  const recent = createMemo(() => recentWorkspaces(sync.data.project, 1))
   const visibleAgents = createMemo(() => agents().filter((agent) => !agent.hidden))
   const connected = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const visible = createMemo(() => models.list().filter((model) => models.visible({ providerID: model.provider.id, modelID: model.id })))
@@ -239,6 +247,13 @@ export default function MarketplacePage() {
     }
     dialog.show(() => <DialogConnectProvider provider={id} />)
   }
+
+  createEffect(() => {
+    const current = server.projects.last() ?? recent()[0]?.worktree
+    if (!current) return
+    layout.projects.open(current)
+    if (server.projects.last() !== current) server.projects.touch(current)
+  })
 
   return (
     <main class="agent-studio marketplace-page" data-testid="marketplace-page">

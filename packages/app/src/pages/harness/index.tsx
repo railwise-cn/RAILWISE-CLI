@@ -1,6 +1,6 @@
 import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
-import { createMemo, createSignal, For, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
 import type { Part, PermissionRequest, QuestionAnswer, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
 import { base64Encode } from "@railwise/util/encode"
 import { DateTime } from "luxon"
@@ -9,6 +9,7 @@ import { Icon, type IconProps } from "@railwise/ui/icon"
 import { showToast } from "@railwise/ui/toast"
 import { useGlobalSDK } from "@/context/global-sdk"
 import { useGlobalSync } from "@/context/global-sync"
+import { useLayout } from "@/context/layout"
 import { useModels } from "@/context/models"
 import { useServer } from "@/context/server"
 import { useProviders } from "@/hooks/use-providers"
@@ -115,6 +116,7 @@ function todoLabel(todo: Todo) {
 export default function HarnessPage() {
   const sync = useGlobalSync()
   const sdk = useGlobalSDK()
+  const layout = useLayout()
   const server = useServer()
   const providers = useProviders()
   const models = useModels()
@@ -236,6 +238,13 @@ export default function HarnessPage() {
       description: "计划、工具调用、权限和产物会进入会话时间线。",
     },
   ])
+
+  createEffect(() => {
+    const current = server.projects.last() ?? recent()[0]?.worktree
+    if (!current) return
+    layout.projects.open(current)
+    if (server.projects.last() !== current) server.projects.touch(current)
+  })
 
   function busy(request: PermissionRequest) {
     return responding()[request.id] ?? false

@@ -380,6 +380,7 @@ async function setup(page: Page, opts: LaunchOptions) {
   )
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
   await page.route(`${server}/agent`, (route) => json(route, agents))
+  await page.route(`${server}/session?**`, (route) => json(route, [queueSession]))
   await page.route(`${server}/session/status`, (route) => json(route, { "queue-e2e": { type: "busy" } }))
   await page.route(`${server}/permission`, (route) => json(route, [queuePermission]))
   await page.route(`${server}/question`, (route) => json(route, []))

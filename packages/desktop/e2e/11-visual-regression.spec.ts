@@ -1,7 +1,7 @@
 import { expect, test } from "./helpers/app"
 import { visible } from "./helpers/wait"
 
-test("旧项目驾驶舱入口重定向到极简工作台", async ({ launchApp }) => {
+test("旧项目驾驶舱入口进入极简工作台与全局项目栏", async ({ launchApp }) => {
   const worktree = "/Users/WANGJIAWEI/CODE/RAILWISE-CLI"
   const { page } = await launchApp("/dashboard", {
     projects: [{ id: "railwise-cli", worktree, time: { created: Date.now(), updated: Date.now() } }],
@@ -10,9 +10,11 @@ test("旧项目驾驶舱入口重定向到极简工作台", async ({ launchApp }
   await visible(page.locator("[data-testid=home-workbench]"))
   await expect(page.getByRole("heading", { name: "想让 RAILWISE 完成什么？" })).toBeVisible()
   await expect(page.locator("[data-testid=home-chat-composer]")).toBeVisible()
-  await expect(page.getByRole("navigation", { name: "项目" })).toHaveCount(0)
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
   await expect(page.getByText("选择文件夹后会出现在这里。")).toHaveCount(0)
   await expect(page.getByText("RAILWISE-CLI").first()).toBeVisible()
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByText(worktree)).toHaveCount(0)
   await expect(page.getByPlaceholder("输入或粘贴项目路径（可选）")).toHaveCount(0)
   await expect(page.getByText("项目驾驶舱")).toHaveCount(0)

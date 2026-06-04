@@ -93,7 +93,7 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
   await expect(page.getByText("worktree").first()).toBeVisible()
   await expect(page.locator("[data-testid=home-project-directory]")).toContainText("worktree")
-  await page.locator("[data-testid=home-task-input]").fill("用主控智能体检查复测资料，并调用专业智能体列出风险。")
+  await page.locator("[data-testid=home-task-input]").fill("让 RAILWISE 检查复测资料，并调用专业智能体列出风险。")
   await page.locator("[data-testid=home-start-session]").click()
 
   await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
@@ -131,5 +131,5 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   await expect(page.locator("[data-testid=session-runtime-tool-summary]")).toContainText("闭合差满足限差")
   expect(payload.agent).toBe("chief_manager")
   expect(payload.model).toEqual({ providerID: "deepseek", modelID: "deepseek-v4" })
-  expect(JSON.stringify(payload.parts)).toContain("用主控智能体检查复测资料")
+  expect(JSON.stringify(payload.parts)).toContain("让 RAILWISE 检查复测资料")
 })

@@ -378,6 +378,17 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/provider`, (route) =>
     json(route, opts.model === "configured" ? provider : { all: [], default: {}, connected: [] }),
   )
+  await page.route(`${server}/file?**`, (route) => {
+    const url = new URL(route.request().url())
+    const root = (opts.workspaceFiles ?? []).map((file) => ({
+      name: file.path.split(/[\\/]/).pop() ?? file.path,
+      path: file.path.split(/[\\/]/).pop() ?? file.path,
+      absolute: file.path,
+      type: "file",
+      ignored: false,
+    }))
+    return json(route, url.searchParams.get("path") ? [] : root)
+  })
   await page.route(`${server}/provider/auth`, (route) => json(route, {}))
   await page.route(`${server}/agent`, (route) => json(route, agents))
   await page.route(`${server}/session?**`, (route) => json(route, [queueSession]))

@@ -54,22 +54,71 @@ function StatusItem(props: {
   label: string
   value: string
   testId?: string
+  rowTestId?: string
+  disabled?: boolean
+  expanded?: boolean
+  onClick?: () => void
 }) {
-  return (
-    <div class="flex min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5">
+  const content = (
+    <>
       <div class="flex min-w-0 items-center gap-1.5 text-11-medium text-text-weak">
         <Icon name={props.icon} size="small" class="shrink-0 text-icon-weak" />
         <span class="truncate">{props.label}</span>
       </div>
-      <div
-        data-testid={props.testId}
-        class="max-w-40 truncate text-right text-12-medium text-text-strong"
-        title={props.value}
-      >
-        {props.value}
+      <div class="flex min-w-0 items-center gap-1">
+        <div
+          data-testid={props.testId}
+          class="max-w-40 truncate text-right text-12-medium text-text-strong"
+          title={props.value}
+        >
+          {props.value}
+        </div>
+        <Show when={props.onClick && !props.disabled && props.expanded !== undefined}>
+          <Icon
+            name="chevron-down"
+            size="small"
+            class="shrink-0 text-icon-weak transition-transform"
+            classList={{ "rotate-180": props.expanded }}
+          />
+        </Show>
       </div>
+    </>
+  )
+
+  if (props.onClick) {
+    return (
+      <button
+        type="button"
+        data-testid={props.rowTestId}
+        class="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left hover:bg-background-hover disabled:cursor-default disabled:hover:bg-transparent"
+        disabled={props.disabled}
+        onClick={props.onClick}
+      >
+        {content}
+      </button>
+    )
+  }
+
+  return (
+    <div data-testid={props.rowTestId} class="flex min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5">
+      {content}
     </div>
   )
+}
+
+function compact(value: string) {
+  const text = value.replace(/\s+/g, " ").trim()
+  if (text.length <= 120) return text
+  return `${text.slice(0, 117)}...`
+}
+
+function stringify(value: unknown) {
+  if (typeof value === "string") return value
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
 }
 
 export function SessionSidePanel(props: {
@@ -189,6 +238,24 @@ export function SessionSidePanel(props: {
       total: stats.total.toLocaleString(language.locale()),
     })
   })
+  const recentTools = createMemo(() => toolParts().slice(-3).reverse())
+  const toolTitle = (part: ToolPart) => {
+    if (part.state.status === "completed") return part.state.title || part.tool
+    if (part.state.status === "running") return part.state.title || part.tool
+    return part.tool
+  }
+  const toolStateLabel = (part: ToolPart) => {
+    if (part.state.status === "pending") return language.t("session.side.runtime.tool.pending")
+    if (part.state.status === "running") return language.t("session.side.runtime.tool.running")
+    if (part.state.status === "completed") return language.t("session.side.runtime.tool.completed")
+    return language.t("session.side.runtime.tool.error")
+  }
+  const toolSummary = (part: ToolPart) => {
+    if (part.state.status === "pending") return compact(part.state.raw || stringify(part.state.input))
+    if (part.state.status === "running") return language.t("session.side.runtime.tool.runningSummary")
+    if (part.state.status === "completed") return compact(part.state.output)
+    return compact(part.state.error)
+  }
   const sessionState = createMemo(() => (params.id ? sync.data.session_status[params.id] : undefined))
   const runtimeStateLabel = createMemo(() => {
     const state = sessionState()
@@ -292,7 +359,25 @@ export function SessionSidePanel(props: {
 
   const [store, setStore] = createStore({
     activeDraggable: undefined as string | undefined,
+    toolsOpen: false,
   })
+
+  const focusPromptDock = () => {
+    const dock = document.querySelector('[data-component="session-prompt-dock"]')
+    if (!(dock instanceof HTMLElement)) return
+    dock.scrollIntoView({ block: "center", behavior: "smooth" })
+    requestAnimationFrame(() => {
+      const target = dock.querySelector(
+        'button:not([disabled]), textarea:not([disabled]), [contenteditable="true"]',
+      )
+      if (target instanceof HTMLElement) target.focus()
+    })
+  }
+
+  const toggleTools = () => {
+    if (toolStats().total === 0) return
+    setStore("toolsOpen", (value) => !value)
+  }
 
   const handleDragStart = (event: unknown) => {
     const id = getDraggableId(event)
@@ -550,20 +635,63 @@ export function SessionSidePanel(props: {
                       label={language.t("session.side.runtime.blockers")}
                       value={blockerLabel()}
                       testId="session-runtime-blockers"
+                      rowTestId="session-runtime-blockers-row"
+                      disabled={blockers() === 0}
+                      onClick={focusPromptDock}
                     />
                     <StatusItem
                       icon="checklist"
                       label={language.t("session.side.runtime.todos")}
                       value={todoLabel()}
                       testId="session-runtime-todos"
+                      rowTestId="session-runtime-todos-row"
+                      disabled={todos().length === 0}
+                      onClick={focusPromptDock}
                     />
                     <StatusItem
                       icon="console"
                       label={language.t("session.side.runtime.tools")}
                       value={toolLabel()}
                       testId="session-runtime-tools"
+                      rowTestId="session-runtime-tools-row"
+                      disabled={toolStats().total === 0}
+                      expanded={store.toolsOpen}
+                      onClick={toggleTools}
                     />
                   </div>
+                  <Show when={store.toolsOpen && recentTools().length > 0}>
+                    <div data-testid="session-runtime-tool-list" class="mt-2 space-y-1">
+                      <For each={recentTools()}>
+                        {(part) => (
+                          <div class="rounded-md border border-border-subtle bg-background-base px-2 py-1.5">
+                            <div class="flex min-w-0 items-center justify-between gap-2">
+                              <div
+                                data-testid="session-runtime-tool-name"
+                                class="min-w-0 truncate text-12-medium text-text-strong"
+                                title={toolTitle(part)}
+                              >
+                                {toolTitle(part)}
+                              </div>
+                              <div class="shrink-0 rounded bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak">
+                                {toolStateLabel(part)}
+                              </div>
+                            </div>
+                            <Show when={toolSummary(part)}>
+                              {(summary) => (
+                                <div
+                                  data-testid="session-runtime-tool-summary"
+                                  class="mt-1 line-clamp-2 text-11-regular text-text-weak"
+                                  title={summary()}
+                                >
+                                  {summary()}
+                                </div>
+                              )}
+                            </Show>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
                 </div>
               </div>
               <Tabs

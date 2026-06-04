@@ -1,6 +1,7 @@
 import { For, Show, createEffect, createMemo, createSignal, onMount } from "solid-js"
 import { useParams } from "@solidjs/router"
 import { useDialog } from "@railwise/ui/context/dialog"
+import { Icon } from "@railwise/ui/icon"
 import { getFilename } from "@railwise/util/path"
 import { DialogManageModels } from "@/components/dialog-manage-models"
 import { DialogSelectModel } from "@/components/dialog-select-model"
@@ -261,42 +262,53 @@ export function SessionComposerRegion(props: {
               }}
             >
               <div
-                class="mb-2 rounded-md border border-[rgba(15,118,110,0.18)] bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                class="mb-2 rounded-lg border border-border-weak-base bg-surface-base px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                 data-testid="session-collaboration-panel"
               >
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <div class="min-w-0">
-                    <div class="text-[12px] font-semibold text-[rgb(17,94,89)]">协作</div>
-                    <div class="truncate text-[12px] text-text-weak" title={sdk.directory}>
-                      {workspaceName()} · {activeAgent()}
+                  <div class="flex min-w-0 items-center gap-2">
+                    <span class="grid size-7 shrink-0 place-items-center rounded-md border border-border-subtle bg-surface-raised-base text-text-weak">
+                      <Icon name="new-session" size="small" />
+                    </span>
+                    <div class="min-w-0">
+                      <div class="text-12-medium text-text-strong">RAILWISE</div>
+                      <div class="truncate text-12-regular text-text-weak" title={sdk.directory}>
+                        {workspaceName()} · {activeAgent()}
+                      </div>
                     </div>
                   </div>
-                  <div class="flex flex-wrap items-center gap-2">
-                    <span class="rounded-md bg-[rgba(15,118,110,0.08)] px-2 py-1 text-[12px] text-[rgb(17,94,89)]">
-                      {currentModelLabel()}
+                  <div class="flex min-w-0 flex-wrap items-center justify-end gap-1.5">
+                    <span
+                      class="inline-flex max-w-[240px] items-center gap-1.5 truncate rounded-md border border-border-subtle bg-background-stronger px-2 py-1 text-12-medium text-text-base"
+                      title={currentModelLabel()}
+                    >
+                      <Icon name="models" size="small" class="shrink-0 text-icon-weak" />
+                      <span class="truncate">{currentModelLabel()}</span>
                     </span>
-                    <span class="text-[12px] text-text-weak">默认建议 {recommendedModel}</span>
                     <button
                       type="button"
-                      class="rounded-md border border-[rgba(15,118,110,0.22)] bg-white px-2 py-1 text-[12px] font-semibold text-[rgb(17,94,89)] hover:bg-[rgba(15,118,110,0.06)]"
+                      class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-12-medium text-text-weak hover:bg-background-hover hover:text-text-strong"
                       onClick={() => dialog.show(() => <DialogSelectModel />)}
                     >
-                      选择模型
+                      <Icon name="models" size="small" />
+                      模型
                     </button>
                     <button
                       type="button"
                       data-action="session-template-drawer"
-                      class="rounded-md border border-[rgba(117,86,32,0.18)] bg-white px-2 py-1 text-[12px] font-semibold text-[rgb(95,70,24)] hover:bg-[rgba(117,86,32,0.04)]"
+                      class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-12-medium text-text-weak hover:bg-background-hover hover:text-text-strong"
                       onClick={() => setTemplates(true)}
                     >
-                      业务模板
+                      <Icon name="bullet-list" size="small" />
+                      模板
                     </button>
                     <button
                       type="button"
-                      class="rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[12px] font-semibold text-text-base hover:bg-surface-raised-base-hover"
+                      class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-12-medium text-text-weak hover:bg-background-hover hover:text-text-strong"
                       aria-expanded={expanded()}
                       onClick={() => setExpanded(!expanded())}
                     >
+                      <Icon name="providers" size="small" />
                       能力
                     </button>
                   </div>
@@ -304,15 +316,15 @@ export function SessionComposerRegion(props: {
 
                 <Show when={modelStatus()}>
                   <div
-                    class="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-[rgba(117,86,32,0.18)] bg-[rgba(117,86,32,0.06)] px-2.5 py-2 text-[12px]"
+                    class="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-border-subtle bg-background-stronger px-2.5 py-2 text-12-regular"
                     data-testid="session-model-readiness"
                   >
-                    <span class="text-[rgb(95,70,24)]">{modelStatus()}</span>
+                    <span class="text-text-weak">{modelStatus()}</span>
                     <Show when={modelAction()}>
                       {(action) => (
                         <button
                           type="button"
-                          class="rounded-md border border-[rgba(117,86,32,0.22)] bg-white px-2 py-1 font-semibold text-[rgb(95,70,24)] hover:bg-[rgba(117,86,32,0.04)]"
+                          class="rounded-md border border-border-subtle bg-surface-base px-2 py-1 text-12-medium text-text-base hover:bg-background-hover"
                           data-testid="session-model-setup"
                           onClick={() => action().open()}
                         >
@@ -329,7 +341,7 @@ export function SessionComposerRegion(props: {
                       {(agent) => (
                         <button
                           type="button"
-                          class="rounded-full border border-[rgba(15,118,110,0.2)] bg-[rgba(15,118,110,0.06)] px-2.5 py-1 text-[12px] text-text-base hover:border-[rgba(15,118,110,0.45)]"
+                          class="rounded-full border border-border-subtle bg-background-stronger px-2.5 py-1 text-12-regular text-text-base hover:bg-background-hover"
                           title={`模型：${agentModelLabel(agent)} · ID：${agent.name}`}
                           onClick={() => applyAgent(agent.name)}
                         >

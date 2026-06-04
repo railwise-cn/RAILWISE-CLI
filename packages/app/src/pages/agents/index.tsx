@@ -406,6 +406,13 @@ export default function AgentsPage() {
   })
 
   createEffect(() => {
+    const current = directory()
+    if (!current) return
+    layout.projects.open(current)
+    server.projects.touch(current)
+  })
+
+  createEffect(() => {
     const current = selectedAgent()
     if (items().some((agent) => agent.name === current)) return
     const chief = items().find((agent) => agent.name === "chief_manager")
@@ -416,68 +423,6 @@ export default function AgentsPage() {
   return (
     <main class="agent-studio" data-testid="agents-page">
       <section class="agent-command-shell" data-testid="agent-collaboration-start">
-        <aside class="agent-command-sidebar">
-          <button type="button" class="agent-brand" onClick={() => navigate("/home")}>
-            <span class="agent-brand__logo">
-              <Icon name="brain" size="small" />
-            </span>
-            <span>
-              <strong>RAILWISE</strong>
-              <small>Agent Studio</small>
-            </span>
-          </button>
-
-          <div class="agent-sidebar-section">
-            <div class="agent-sidebar-section__bar">
-              <span>能力市场</span>
-              <A href="/marketplace">全部</A>
-            </div>
-            <nav class="agent-market-tabs" aria-label="能力市场分类" data-testid="agent-marketplace">
-              <For each={market()}>
-                {(item) => (
-                  <button
-                    type="button"
-                    classList={{ active: activeMarket() === item.id }}
-                    aria-pressed={activeMarket() === item.id}
-                    onClick={() => setActiveMarket(item.id)}
-                  >
-                    <span>{item.label}</span>
-                    <small>{item.status}</small>
-                  </button>
-                )}
-              </For>
-            </nav>
-          </div>
-
-          <div class="agent-sidebar-section">
-            <div class="agent-sidebar-section__bar">
-              <span>最近项目</span>
-              <button type="button" onClick={chooseDirectory} aria-label="添加项目">
-                <Icon name="plus-small" size="small" />
-              </button>
-            </div>
-            <div class="agent-project-list">
-              <Show when={recent().length} fallback={<div class="agent-project-empty">选择文件夹后会出现在这里。</div>}>
-                <For each={recent()}>
-                  {(project) => (
-                    <button
-                      type="button"
-                      classList={{ active: project.worktree === directory() }}
-                      onClick={() => updateDirectory(project.worktree)}
-                    >
-                      <span>
-                        <Icon name="folder" size="small" />
-                      </span>
-                      <strong>{projectName(project.worktree)}</strong>
-                      <small>{DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative()}</small>
-                    </button>
-                  )}
-                </For>
-              </Show>
-            </div>
-          </div>
-        </aside>
-
         <section class="agent-command-main">
           <header class="agent-command-topbar">
             <A href="/home" class="agent-pill">
@@ -493,6 +438,28 @@ export default function AgentsPage() {
               接入模型
             </button>
           </header>
+
+          <div class="agent-command-marketbar">
+            <div class="agent-command-marketbar__bar">
+              <span>能力市场</span>
+              <A href="/marketplace">全部</A>
+            </div>
+            <nav class="agent-market-tabs agent-market-tabs--inline" aria-label="能力市场分类" data-testid="agent-marketplace">
+              <For each={market()}>
+                {(item) => (
+                  <button
+                    type="button"
+                    classList={{ active: activeMarket() === item.id }}
+                    aria-pressed={activeMarket() === item.id}
+                    onClick={() => setActiveMarket(item.id)}
+                  >
+                    <span>{item.label}</span>
+                    <small>{item.status}</small>
+                  </button>
+                )}
+              </For>
+            </nav>
+          </div>
 
           <form
             class="agent-composer"

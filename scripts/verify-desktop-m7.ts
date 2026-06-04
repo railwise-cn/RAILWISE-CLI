@@ -93,6 +93,7 @@ const acceptance = await read("scripts/verify-desktop-acceptance.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
 const settings = await read("packages/app/src/context/settings.tsx")
 const general = await read("packages/app/src/components/settings-general.tsx")
+const agentsSettings = await read("packages/app/src/components/settings-agents.tsx")
 const telemetry = await read("packages/desktop/src/lib/telemetry/index.ts")
 const store = await read("packages/desktop/src/lib/telemetry/store.ts")
 const privacy = await read("packages/desktop/src/lib/telemetry/privacy.ts")
@@ -102,6 +103,9 @@ const harnessService = await read("packages/railwise/src/harness/service.ts")
 const marketplaceSchema = await read("packages/railwise/src/marketplace/schema.ts")
 const marketplaceService = await read("packages/railwise/src/marketplace/service.ts")
 const marketplaceBuiltin = await read("packages/railwise/src/marketplace/builtin.ts")
+const chief = await read("packages/railwise/agent/chief_manager.md")
+const cpiii = await read("packages/railwise/agent/cpiii_specialist.md")
+const reviewer = await read("packages/railwise/agent/qa_reviewer.md")
 const harnessRoute = await read("packages/railwise/src/server/routes/harness.ts")
 const marketplaceRoute = await read("packages/railwise/src/server/routes/marketplace.ts")
 const server = await read("packages/railwise/src/server/server.ts")
@@ -109,6 +113,7 @@ const sdk = await read("packages/sdk/js/src/v2/gen/sdk.gen.ts")
 const sdkTypes = await read("packages/sdk/js/src/v2/gen/types.gen.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
 const betaQa = await read("docs/dev/12-desktop-harness-marketplace-beta.md")
+const docsUser = [await read("docs/user/03-agents.md"), await read("docs/user/07-skills.md")].join("\n")
 const desktopLanguageDocs = [
   await read("docs/dev/01-architecture.md"),
   await read("docs/dev/04-e2e-testing.md"),
@@ -189,7 +194,13 @@ check(
 )
 check(
   "desktop product language",
-  !desktopLanguageDocs.includes("Agent Studio") &&
+  ["项目总控", "总控", "主控智能体", "主控、审校", "总工程师", "总工"].every(
+    (item) =>
+      ![home, marketplace, agentsPage, settings, agentsSettings, chief, cpiii, reviewer, docsUser].join("\n").includes(item),
+  ) &&
+    chief.includes("RAILWISE 协作入口") &&
+    chief.includes("【协作汇总交付物】") &&
+    !desktopLanguageDocs.includes("Agent Studio") &&
     !desktopLanguageDocs.includes("Harness Profile") &&
     !desktopLanguageDocs.includes("工具/Skills") &&
     !e2eHelper.includes("Skills 加载") &&

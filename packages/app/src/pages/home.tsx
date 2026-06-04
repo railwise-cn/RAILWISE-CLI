@@ -125,13 +125,14 @@ export default function Home() {
                 <div class="text-12-regular text-text-weak">Desktop</div>
               </div>
             </button>
-            <div class="ml-auto flex items-center gap-2">
-              <Button size="small" variant="ghost" icon="server" onClick={() => navigate("/harness")}>
-                执行层
-              </Button>
-              <Button size="small" variant="ghost" icon="providers" onClick={() => navigate("/marketplace")}>
-                能力市场
-              </Button>
+            <div class="ml-auto hidden items-center gap-2 text-12-regular text-text-weak lg:flex">
+              <span
+                classList={{
+                  "size-2 rounded-full": true,
+                  [serverDotClass()]: true,
+                }}
+              />
+              {serverLabel()}
             </div>
           </header>
 
@@ -159,7 +160,7 @@ export default function Home() {
                   </div>
                 </div>
                 <Button type="button" size="normal" variant="secondary" icon="folder-add-left" onClick={chooseProject}>
-                  选择文件夹
+                  选择项目
                 </Button>
               </div>
 
@@ -172,7 +173,7 @@ export default function Home() {
                 class="min-h-[210px] w-full resize-none bg-transparent p-4 text-15-regular text-text-strong outline-none"
                 value={prompt()}
                 onInput={(event) => setPrompt(event.currentTarget.value)}
-                placeholder="例如：检查当前线路复测资料，列出缺失文件，生成下一步执行计划。"
+                placeholder="让 RAILWISE 检查资料、分析数据、调用专业能力，并生成下一步执行计划。"
               />
 
               <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border-weak-base pt-3">
@@ -195,87 +196,89 @@ export default function Home() {
               </div>
             </form>
 
-            <section class="mt-4 flex flex-wrap items-center justify-center gap-2" data-testid="home-harness-panel">
-              <button
-                type="button"
-                data-testid="home-open-harness"
-                class="inline-flex items-center gap-2 rounded-full border border-border-weak-base px-3 py-2 text-12-medium text-text-weak hover:bg-surface-panel hover:text-text-strong"
-                onClick={() => navigate("/harness")}
-              >
-                <Icon name="server" size="small" />
-                执行层
-              </button>
-              <div
-                class="inline-flex max-w-[300px] items-center gap-2 rounded-full border border-border-weak-base px-3 py-2 text-12-medium text-text-weak"
-                data-testid="home-model-summary"
-              >
-                <Icon name="models" size="small" />
-                <span class="truncate">{modelLabel()}</span>
+            <section
+              class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel/70 px-4 py-3"
+              data-testid="home-harness-panel"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-12-regular text-text-weak">
+                  <div class="inline-flex items-center gap-2" data-testid="home-open-harness">
+                    <span
+                      classList={{
+                        "size-2 rounded-full": true,
+                        [serverDotClass()]: true,
+                      }}
+                    />
+                    执行环境：{serverLabel()}
+                  </div>
+                  <div class="inline-flex min-w-0 items-center gap-2" data-testid="home-model-summary">
+                    <Icon name="models" size="small" />
+                    <span class="truncate">模型：{modelLabel()}</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  data-testid="home-open-marketplace"
+                  class="inline-flex items-center gap-1.5 text-12-medium text-text-weak hover:text-text-strong"
+                  onClick={() => navigate("/marketplace")}
+                >
+                  <Icon name="providers" size="small" />
+                  配置能力
+                </button>
               </div>
-              <button
-                type="button"
-                data-testid="home-open-marketplace"
-                class="inline-flex items-center gap-2 rounded-full border border-border-weak-base px-3 py-2 text-12-medium text-text-weak hover:bg-surface-panel hover:text-text-strong"
-                onClick={() => navigate("/marketplace")}
-              >
-                <Icon name="providers" size="small" />
-                能力市场
-              </button>
             </section>
           </section>
         </section>
 
         <aside class="hidden w-72 shrink-0 flex-col border-l border-border-weak-base px-4 py-5 xl:flex">
           <div class="mb-5">
-            <div class="text-12-medium text-text-weak">当前项目</div>
+            <div class="text-12-medium text-text-weak">工作区</div>
             <div class="mt-2 rounded-lg border border-border-weak-base bg-surface-panel p-3">
               <div class="truncate text-14-medium text-text-strong">{selectedName()}</div>
               <div class="mt-1 text-12-regular text-text-weak">{selectedMeta()}</div>
             </div>
           </div>
 
-          <div class="space-y-2" data-testid="home-harness-inspector">
-            <button
-              type="button"
-              class="w-full rounded-lg border border-border-weak-base bg-surface-panel p-3 text-left hover:bg-surface-element"
-              onClick={() => navigate("/harness")}
-            >
-              <div class="flex items-center gap-2 text-13-medium text-text-strong">
-                <Icon name="server" size="small" />
-                执行层
+          <div class="rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-harness-inspector">
+            <div class="mb-3 flex items-center justify-between">
+              <div class="text-12-medium text-text-weak">环境</div>
+              <button type="button" class="text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/harness")}>
+                查看
+              </button>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-start gap-2">
+                <Icon name="server" size="small" class="mt-0.5 shrink-0 text-text-weak" />
+                <div class="min-w-0 flex-1">
+                  <div class="text-13-medium text-text-strong">执行环境</div>
+                  <div class="mt-1 flex items-center gap-2 text-12-regular text-text-weak">
+                    <span
+                      classList={{
+                        "size-2 rounded-full": true,
+                        [serverDotClass()]: true,
+                      }}
+                    />
+                    {serverLabel()}
+                  </div>
+                </div>
               </div>
-              <div class="mt-2 flex items-center gap-2 text-12-regular text-text-weak">
-                <span
-                  classList={{
-                    "size-2 rounded-full": true,
-                    [serverDotClass()]: true,
-                  }}
-                />
-                {serverLabel()}
+              <div class="flex items-start gap-2">
+                <Icon name="models" size="small" class="mt-0.5 shrink-0 text-text-weak" />
+                <div class="min-w-0 flex-1">
+                  <div class="text-13-medium text-text-strong">模型</div>
+                  <div class="mt-1 truncate text-12-regular text-text-weak">{modelLabel()}</div>
+                </div>
               </div>
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-lg border border-border-weak-base bg-surface-panel p-3 text-left hover:bg-surface-element"
-              onClick={() => navigate("/marketplace")}
-            >
-              <div class="flex items-center gap-2 text-13-medium text-text-strong">
-                <Icon name="models" size="small" />
-                模型
+              <div class="flex items-start gap-2">
+                <Icon name="providers" size="small" class="mt-0.5 shrink-0 text-text-weak" />
+                <div class="min-w-0 flex-1">
+                  <div class="text-13-medium text-text-strong">能力</div>
+                  <button type="button" class="mt-1 text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/marketplace")}>
+                    打开能力市场
+                  </button>
+                </div>
               </div>
-              <div class="mt-2 truncate text-12-regular text-text-weak">{modelLabel()}</div>
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-lg border border-border-weak-base bg-surface-panel p-3 text-left hover:bg-surface-element"
-              onClick={() => navigate("/marketplace")}
-            >
-              <div class="flex items-center gap-2 text-13-medium text-text-strong">
-                <Icon name="providers" size="small" />
-                能力市场
-              </div>
-              <div class="mt-2 text-12-regular text-text-weak">智能体、工具、流程统一安装。</div>
-            </button>
+            </div>
           </div>
         </aside>
       </div>

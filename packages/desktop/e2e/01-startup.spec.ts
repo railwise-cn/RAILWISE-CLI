@@ -68,6 +68,10 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   }
 
   await expect(page).toHaveURL(/\/session\/queue-e2e$/)
+  await expect(page.locator("[data-testid=session-runtime-state]")).toHaveText("阻塞")
+  await expect(page.locator("[data-testid=session-runtime-blockers]")).toHaveText("1 项待处理")
+  await expect(page.locator("[data-testid=session-runtime-todos]")).toHaveText("1/2 完成")
+  await expect(page.locator("[data-testid=session-runtime-tools]")).toHaveText("1/1 完成")
   expect(payload.agent).toBe("chief_manager")
   expect(payload.model).toEqual({ providerID: "deepseek", modelID: "deepseek-v4" })
   expect(JSON.stringify(payload.parts)).toContain("用主控智能体检查复测资料")

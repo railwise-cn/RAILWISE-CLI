@@ -9,6 +9,7 @@ test("旧项目驾驶舱入口进入极简工作台与全局项目栏", async ({
 
   await visible(page.locator("[data-testid=home-workbench]"))
   await expect(page.getByRole("heading", { name: "RAILWISE" })).toBeVisible()
+  await expect(page.locator("[data-testid=home-main-prompt]")).toHaveText("想让 RAILWISE 完成什么？")
   await expect(page.locator("[data-testid=home-chat-composer]")).toBeVisible()
   await expect(page.getByRole("button", { name: "选择项目" })).toBeVisible()
   await expect(page.getByRole("button", { name: /^执行层$/ })).toHaveCount(0)

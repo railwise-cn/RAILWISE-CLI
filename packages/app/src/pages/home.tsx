@@ -139,6 +139,9 @@ export default function Home() {
           <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-8">
             <div class="mb-5 text-center">
               <h1 class="text-30-bold text-text-strong">RAILWISE</h1>
+              <p class="mt-3 text-18-medium text-text-strong" data-testid="home-main-prompt">
+                想让 RAILWISE 完成什么？
+              </p>
             </div>
 
             <form
@@ -165,7 +168,7 @@ export default function Home() {
               </div>
 
               <label class="sr-only" for="home-prompt">
-                对话
+                想让 RAILWISE 完成什么？
               </label>
               <textarea
                 id="home-prompt"
@@ -173,7 +176,7 @@ export default function Home() {
                 class="min-h-[210px] w-full resize-none bg-transparent p-4 text-15-regular text-text-strong outline-none"
                 value={prompt()}
                 onInput={(event) => setPrompt(event.currentTarget.value)}
-                placeholder="描述要推进的工程任务，例如：检查复测资料并生成下一步计划。"
+                placeholder="例如：检查复测资料并生成下一步计划。"
               />
 
               <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border-weak-base pt-3">

@@ -15,6 +15,7 @@ test("普通浏览器预览不会因为缺少 Tauri internals 白屏", async ({ 
   await page.goto("/home")
   await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 30_000 })
   await expect(page.locator("[data-testid=home-workbench]")).toContainText("RAILWISE")
+  await expect(page.locator("[data-testid=home-workbench]")).toContainText("想让 RAILWISE 完成什么？")
   await expect(
     page.evaluate(
       () =>

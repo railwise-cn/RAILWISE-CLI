@@ -1,10 +1,16 @@
 import { expect, test } from "./helpers/app"
 import { visible } from "./helpers/wait"
 
+const worktree = "/Users/WANGJIAWEI/CODE/RAILWISE-CLI"
+const project = () => [{ id: "railwise-cli", worktree, time: { created: Date.now(), updated: Date.now() } }]
+
 test("能力市场保持极简能力包入口", async ({ launchApp }) => {
-  const { page } = await launchApp("/marketplace")
+  const { page } = await launchApp("/marketplace", { projects: project() })
 
   await visible(page.locator("[data-testid=marketplace-page]"))
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
   await expect(page.locator("[data-testid=marketplace-row-state-agents]")).toContainText("已启用")
   await expect(page.locator("[data-testid=marketplace-row-state-tools]")).toContainText("已启用")
@@ -29,11 +35,14 @@ test("能力市场保持极简能力包入口", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
 })
 
-test("智能体工作台作为独立路由打开", async ({ launchApp }) => {
-  const { page } = await launchApp("/agents")
+test("智能体工作台通过统一外壳打开", async ({ launchApp }) => {
+  const { page } = await launchApp("/agents", { projects: project() })
 
   await visible(page.locator("[data-testid=agents-page]"))
   expect(new URL(page.url()).pathname).toBe("/agents")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
   await expect(page.getByRole("heading", { name: "让 RAILWISE 组织哪项工作？" })).toBeVisible()
@@ -41,12 +50,11 @@ test("智能体工作台作为独立路由打开", async ({ launchApp }) => {
   await expect(page.locator("#agent-library").getByRole("heading", { name: "智能体库" })).toBeVisible()
   await expect(page.locator("[data-testid=agent-project-directory]")).toHaveCount(0)
   await expect(page.getByText("高级智能体管理")).toHaveCount(0)
-  await expect(page.getByText("项目工作区")).toHaveCount(0)
   await expect(page.getByText("智能体矩阵")).toHaveCount(0)
 })
 
 test("能力市场进入 chief_manager 配置并验证保存入口", async ({ launchApp }) => {
-  const { page } = await launchApp("/marketplace")
+  const { page } = await launchApp("/marketplace", { projects: project() })
 
   await visible(page.locator("[data-testid=marketplace-page]"))
   await page.locator("[data-testid=marketplace-open-agents]").click()
@@ -63,7 +71,7 @@ test("能力市场进入 chief_manager 配置并验证保存入口", async ({ la
 })
 
 test("能力市场可以进入执行控制台", async ({ launchApp }) => {
-  const { page } = await launchApp("/marketplace")
+  const { page } = await launchApp("/marketplace", { projects: project() })
 
   await visible(page.locator("[data-testid=marketplace-page]"))
   await page.getByRole("button", { name: "执行层" }).click()
@@ -71,17 +79,24 @@ test("能力市场可以进入执行控制台", async ({ launchApp }) => {
 
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page).toHaveURL(/\/harness$/)
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
 })
 
-test("执行层可以作为桌面独立路由打开", async ({ launchApp }) => {
-  const { page } = await launchApp("/harness")
+test("执行层可以通过统一外壳打开", async ({ launchApp }) => {
+  const { page } = await launchApp("/harness", { projects: project() })
 
   await visible(page.locator("[data-testid=harness-page]"))
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
-  await expect(page.locator("[data-testid=harness-permissions]")).toContainText("当前没有等待审批的动作")
+  await expect(page.locator("[data-testid=harness-permission-item]")).toBeVisible()
+  await expect(page.locator("[data-testid=harness-permissions]")).toContainText("成果报告.md")
   await expect(page.locator("[data-testid=harness-timeline]")).toContainText("还没有会话执行记录")
   await expect(page.locator("[data-testid=harness-session-detail]")).toContainText("还没有可查看的会话")
   await expect(page.getByText("执行层状态")).toHaveCount(0)

@@ -59,16 +59,23 @@ test("智能体详情不再使用后台编辑语言", async ({ launchApp }) => {
 })
 
 test("能力市场与执行层不再使用后台管理语言", async ({ launchApp }) => {
-  const { page } = await launchApp("/marketplace")
+  const worktree = "/Users/WANGJIAWEI/CODE/RAILWISE-CLI"
+  const { page } = await launchApp("/marketplace", {
+    projects: [{ id: "railwise-cli", worktree, time: { created: Date.now(), updated: Date.now() } }],
+  })
 
   await visible(page.locator("[data-testid=marketplace-page]"))
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByText("进入高级管理")).toHaveCount(0)
-  await expect(page.getByText("项目工作区")).toHaveCount(0)
 
   await page.goto("/harness")
   await visible(page.locator("[data-testid=harness-page]"))
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
   await expect(page.getByText("执行层状态")).toHaveCount(0)
-  await expect(page.getByText("项目工作区")).toHaveCount(0)
 })

@@ -1,8 +1,14 @@
 import { expect, test } from "./helpers/app"
 
 test("离线模式：能力市场保持本地入口可用", async ({ launchApp }) => {
-  const { page, context } = await launchApp("/marketplace")
+  const worktree = "/Users/WANGJIAWEI/CODE/RAILWISE-CLI"
+  const { page, context } = await launchApp("/marketplace", {
+    projects: [{ id: "railwise-cli", worktree, time: { created: Date.now(), updated: Date.now() } }],
+  })
   await expect(page.locator("[data-testid=marketplace-page]")).toBeVisible()
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=marketplace-permissions-agents]")).toContainText("RAILWISE 主控")
 
   await context.setOffline(true)

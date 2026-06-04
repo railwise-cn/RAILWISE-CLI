@@ -63,6 +63,21 @@ function toolTitle(part: ToolPart) {
   return part.tool
 }
 
+function compact(value: string) {
+  const text = value.replace(/\s+/g, " ").trim()
+  if (text.length <= 120) return text
+  return `${text.slice(0, 117)}...`
+}
+
+function stringify(value: unknown) {
+  if (typeof value === "string") return value
+  try {
+    return JSON.stringify(value) ?? ""
+  } catch {
+    return String(value)
+  }
+}
+
 export function MessageTimeline(props: {
   mobileChanges: boolean
   mobileFallback: JSX.Element
@@ -420,6 +435,18 @@ export function MessageTimeline(props: {
     })
 
     const latestTool = createMemo(() => toolParts().at(-1))
+    const toolStateLabel = (part: ToolPart) => {
+      if (part.state.status === "pending") return language.t("session.execution.tool.pending")
+      if (part.state.status === "running") return language.t("session.execution.tool.running")
+      if (part.state.status === "completed") return language.t("session.execution.tool.completed")
+      return language.t("session.execution.tool.error")
+    }
+    const toolSummary = (part: ToolPart) => {
+      if (part.state.status === "pending") return compact(part.state.raw || stringify(part.state.input))
+      if (part.state.status === "running") return language.t("session.execution.tool.runningSummary")
+      if (part.state.status === "completed") return compact(part.state.output)
+      return compact(part.state.error)
+    }
     const icon = createMemo<IconProps["name"]>(() => {
       const value = stats()
       if (value.error > 0) return "warning"
@@ -431,33 +458,51 @@ export function MessageTimeline(props: {
     return (
       <Show when={assistantMessages().length > 0 || toolParts().length > 0}>
         <div data-testid="session-turn-execution" class="mb-3 px-4 md:px-5">
-          <div class="inline-flex max-w-full items-center gap-2 rounded-full border border-border-subtle bg-background-base px-2.5 py-1 text-11-medium text-text-weak shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-            <Icon name={icon()} size="small" class="shrink-0 text-icon-weak" />
-            <span data-testid="session-turn-execution-agent" class="truncate text-text-strong" title={agentLabel()}>
-              {agentLabel()}
-            </span>
-            <span class="h-3 w-px shrink-0 bg-border-subtle" />
-            <Icon name="models" size="small" class="shrink-0 text-icon-weak" />
-            <span data-testid="session-turn-execution-model" class="truncate" title={modelLabel()}>
-              {modelLabel()}
-            </span>
-            <span class="h-3 w-px shrink-0 bg-border-subtle" />
-            <Icon name="console" size="small" class="shrink-0 text-icon-weak" />
-            <span data-testid="session-turn-execution-tools" class="shrink-0">
-              {toolLabel()}
-            </span>
+          <div class="max-w-3xl rounded-lg border border-border-subtle bg-background-base/95 px-3 py-2 text-11-medium text-text-weak shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <div class="flex min-w-0 items-center justify-between gap-3">
+              <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                <Icon name={icon()} size="small" class="shrink-0 text-icon-weak" />
+                <span data-testid="session-turn-execution-title" class="shrink-0 text-text-strong">
+                  {language.t("session.execution.title")}
+                </span>
+                <span class="h-3 w-px shrink-0 bg-border-subtle" />
+                <span data-testid="session-turn-execution-agent" class="truncate text-text-strong" title={agentLabel()}>
+                  {agentLabel()}
+                </span>
+                <span class="h-3 w-px shrink-0 bg-border-subtle" />
+                <Icon name="models" size="small" class="shrink-0 text-icon-weak" />
+                <span data-testid="session-turn-execution-model" class="truncate" title={modelLabel()}>
+                  {modelLabel()}
+                </span>
+              </div>
+              <span data-testid="session-turn-execution-tools" class="shrink-0">
+                {toolLabel()}
+              </span>
+            </div>
             <Show when={latestTool()}>
               {(part) => (
-                <>
-                  <span class="text-text-weak">·</span>
+                <div class="mt-2 flex min-w-0 items-start gap-2 border-t border-border-subtle pt-2 text-12-regular">
                   <span
                     data-testid="session-turn-execution-tool-name"
-                    class="max-w-56 truncate text-text-base"
+                    class="min-w-0 truncate text-text-base"
                     title={toolTitle(part())}
                   >
                     {toolTitle(part())}
                   </span>
-                </>
+                  <span
+                    data-testid="session-turn-execution-tool-state"
+                    class="shrink-0 rounded-full bg-background-panel px-1.5 py-0.5 text-11-medium text-text-weak"
+                  >
+                    {toolStateLabel(part())}
+                  </span>
+                  <span
+                    data-testid="session-turn-execution-tool-summary"
+                    class="min-w-0 truncate text-text-weak"
+                    title={toolSummary(part())}
+                  >
+                    {toolSummary(part())}
+                  </span>
+                </div>
               )}
             </Show>
           </div>

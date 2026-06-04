@@ -198,7 +198,7 @@ check(
     (item) =>
       ![home, marketplace, agentsPage, settings, agentsSettings, chief, cpiii, reviewer, docsUser].join("\n").includes(item),
   ) &&
-    chief.includes("RAILWISE 协作入口") &&
+    chief.includes("RAILWISE 默认协作") &&
     chief.includes("【协作汇总交付物】") &&
     !desktopLanguageDocs.includes("Agent Studio") &&
     !desktopLanguageDocs.includes("Harness Profile") &&
@@ -248,7 +248,7 @@ check(
       "技能",
     ]) &&
     has(marketplaceState, ["capabilitiesFor", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
-    has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek", "RAILWISE 协作入口"]) &&
+    has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),
@@ -414,7 +414,7 @@ check(
     "没有大面积 `0` 计数器",
     "选择文件夹",
     "执行层显示工作区边界",
-    "RAILWISE 协作入口",
+    "RAILWISE 默认协作",
     "本地文件读取",
     "复测资料检查",
     "DeepSeek",

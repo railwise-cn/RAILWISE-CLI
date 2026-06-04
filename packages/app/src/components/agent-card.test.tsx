@@ -14,7 +14,7 @@ describe("AgentCard", () => {
   })
 
   test("maps known modes to Chinese labels", () => {
-    expect(modeLabel("primary")).toBe("协作入口")
+    expect(modeLabel("primary")).toBe("默认协作")
     expect(modeLabel("subagent")).toBe("专业智能体")
     expect(modeLabel("all")).toBe("专业智能体")
   })

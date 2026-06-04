@@ -34,11 +34,11 @@ import {
   recommendedProviders,
   updateAgentModelRoute,
 } from "./collaboration"
-import { agentDisplayName } from "@/utils/agent-display"
+import { agentDescription, agentDisplayName } from "@/utils/agent-display"
 
 const modes = [
   { value: "all", label: "全部" },
-  { value: "primary", label: "协作入口" },
+  { value: "primary", label: "默认协作" },
   { value: "collaborator", label: "专业智能体" },
 ] as const
 type ModeFilter = (typeof modes)[number]["value"]
@@ -66,6 +66,12 @@ type MarketId = (typeof marketIds)[number]
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
   return fallback
+}
+
+function metric(loading: boolean, value: number) {
+  if (loading) return "…"
+  if (value > 0) return String(value)
+  return "待同步"
 }
 
 export default function AgentsPage() {
@@ -153,7 +159,7 @@ export default function AgentsPage() {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
     if (directory()) return "本地工作区"
-    return "先选择项目"
+    return "选择项目后开始会话"
   })
   const activeAgent = createMemo(() => collaborators().find((agent) => agent.name === selectedAgent()))
   const serverDotClass = createMemo(() => {
@@ -197,7 +203,7 @@ export default function AgentsPage() {
       label: "智能体",
       title: "智能体",
       status: agentStatus(),
-      description: "RAILWISE 负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
+      description: "RAILWISE 负责理解任务与调度协作，专业智能体负责规范、平差、资料整理和报告产出。",
       target: "#agent-library",
       action: "查看智能体",
     },
@@ -263,6 +269,14 @@ export default function AgentsPage() {
       .sort((a, b) => a.provider.name.localeCompare(b.provider.name) || a.name.localeCompare(b.name))
       .slice(0, 6),
   )
+  const bindingLabel = createMemo(() => {
+    if (routeSummary().bound > 0) return `${routeSummary().bound} 个专属绑定，${routeSummary().defaulted} 个继承默认。`
+    return "未单独绑定，先使用默认模型。"
+  })
+  const routeTotalLabel = createMemo(() => {
+    if (routeSummary().total > 0) return `${routeSummary().total} 个可见智能体`
+    return "等待智能体同步"
+  })
   const modelOptions = createMemo(() =>
     visibleModels()
       .slice()
@@ -300,7 +314,7 @@ export default function AgentsPage() {
   function projectName(value: string) {
     const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
     const parts = clean.split("/").filter(Boolean)
-    return parts.at(-1) ?? "未选择项目"
+    return parts.at(-1) ?? "选择项目"
   }
 
   const updateDirectory = (value: string) => {
@@ -484,14 +498,14 @@ export default function AgentsPage() {
               </button>
             </div>
             <div class="agent-composer__agent">
-              <label for="agent-collaboration-agent">入口</label>
+              <label for="agent-collaboration-agent">协作模式</label>
               <select
                 id="agent-collaboration-agent"
                 data-testid="agent-collaboration-agent"
                 value={selectedAgent()}
                 onInput={(event) => setSelectedAgent(event.currentTarget.value)}
               >
-                <Show when={collaborators().length} fallback={<option value={selectedAgent()}>{selectedAgent()}</option>}>
+                <Show when={collaborators().length} fallback={<option value={selectedAgent()}>RAILWISE</option>}>
                   <For each={collaborators()}>
                     {(agent) => (
                       <option value={agent.name}>
@@ -501,7 +515,7 @@ export default function AgentsPage() {
                   </For>
                 </Show>
               </select>
-              <small>{activeAgent()?.description ?? "选择本次任务的入口。"}</small>
+              <small>{agentDescription(activeAgent()) || "选择本次任务由哪个智能体开始。"}</small>
             </div>
             <textarea
               data-testid="agent-collaboration-prompt"
@@ -566,21 +580,21 @@ export default function AgentsPage() {
               <span>模型</span>
             </div>
             <strong>{connectedProviders().length > 0 ? `${connectedProviders()[0]?.name} / ${recommendedModel}` : `默认建议 ${recommendedModel}`}</strong>
-            <small>{routeSummary().bound} 个专属绑定，{routeSummary().defaulted} 个继承默认。</small>
+            <small>{bindingLabel()}</small>
           </section>
 
           <section class="agent-inspector-card agent-inspector-card--metrics" aria-busy={loading()}>
             <div>
               <span>智能体</span>
-              <strong>{summary().total}</strong>
+              <strong>{metric(loading(), summary().total)}</strong>
             </div>
             <div>
               <span>工具</span>
-              <strong>{tools().length}</strong>
+              <strong>{metric(loading(), tools().length)}</strong>
             </div>
             <div>
               <span>技能</span>
-              <strong>{skills().length}</strong>
+              <strong>{metric(loading(), skills().length)}</strong>
             </div>
           </section>
         </aside>
@@ -600,18 +614,18 @@ export default function AgentsPage() {
         <div class="agent-model-routing__stats">
           <div>
             <span>已接入 Provider</span>
-            <strong>{connectedProviders().length}</strong>
+            <strong>{connectedProviders().length > 0 ? connectedProviders().length : "未接入"}</strong>
             <small>{setupState() === "needs-provider" ? "建议先接入 DeepSeek 或 OpenRouter" : "可用于模型路由"}</small>
           </div>
           <div>
             <span>可见模型</span>
-            <strong>{visibleModels().length}</strong>
+            <strong>{visibleModels().length > 0 ? visibleModels().length : "待启用"}</strong>
             <small>{setupState() === "models-hidden" ? "Provider 已接入，需启用模型" : `默认建议 ${recommendedModel}`}</small>
           </div>
           <div>
             <span>专属绑定</span>
-            <strong>{routeSummary().bound}</strong>
-            <small>{routeSummary().defaulted} 个智能体继承默认模型</small>
+            <strong>{routeSummary().bound > 0 ? routeSummary().bound : "默认"}</strong>
+            <small>{routeSummary().total > 0 ? `${routeSummary().defaulted} 个智能体继承默认模型` : "等待智能体同步"}</small>
           </div>
         </div>
 
@@ -655,7 +669,7 @@ export default function AgentsPage() {
           <div class="agent-model-routing__panel">
             <div class="agent-model-routing__bar">
               <span>智能体模型分配</span>
-              <small>{routeSummary().total} 个可见智能体</small>
+              <small>{routeTotalLabel()}</small>
             </div>
             <div class="agent-route-list">
               <For each={routedAgents()}>
@@ -693,9 +707,9 @@ export default function AgentsPage() {
           <For each={featured()}>
             {(agent) => (
               <A href={`/agents/${agent.name}`} class="agent-rail__item">
-                <span>{agent.mode === "primary" ? "入口" : "协作"}</span>
+                <span>{agent.mode === "primary" ? "默认" : "协作"}</span>
                 <strong>{agentDisplayName(agent)}</strong>
-                <small>{agent.description ?? "参与多智能体生产链路"}</small>
+                <small>{agentDescription(agent) || "参与多智能体生产链路"}</small>
               </A>
             )}
           </For>

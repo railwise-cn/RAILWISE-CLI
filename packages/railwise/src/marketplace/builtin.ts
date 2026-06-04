@@ -22,7 +22,7 @@ export const builtins: CapabilityManifest[] = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "RAILWISE 协作入口",
+    name: "RAILWISE 默认协作",
     description: "接收任务、拆解计划，并协调专业智能体执行。",
     version: "0.1.0",
     source: "builtin",

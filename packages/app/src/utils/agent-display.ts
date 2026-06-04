@@ -15,6 +15,10 @@ const builtins: Record<string, string> = {
   ppt_master: "汇报生成",
 }
 
+const descriptions: Record<string, string> = {
+  chief_manager: "由 RAILWISE 理解任务、拆解步骤，并按需要调度专业智能体与工具。",
+}
+
 export function agentDisplayName(input?: AgentLike | string | null) {
   const name = typeof input === "string" ? input : input?.name
   const label = typeof input === "string" ? undefined : input?.displayName?.trim()
@@ -22,6 +26,13 @@ export function agentDisplayName(input?: AgentLike | string | null) {
   if (label) return label
   if (!name) return ""
   return builtins[name] ?? name.replaceAll("_", " ")
+}
+
+export function agentDescription(input?: (AgentLike & { description?: string; prompt?: string }) | string | null) {
+  const name = typeof input === "string" ? input : input?.name
+  if (name && descriptions[name]) return descriptions[name]
+  if (typeof input === "string") return ""
+  return input?.description ?? input?.prompt ?? ""
 }
 
 export function agentInitial(input?: AgentLike | string | null) {

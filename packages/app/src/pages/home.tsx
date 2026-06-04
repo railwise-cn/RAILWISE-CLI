@@ -60,7 +60,7 @@ export default function Home() {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
     if (selectedDirectory()) return "本地工作区"
-    return "先选择项目"
+    return "选择项目后开始会话"
   })
 
   createEffect(() => {
@@ -73,7 +73,7 @@ export default function Home() {
   function projectName(value: string) {
     const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
     const parts = clean.split("/").filter(Boolean)
-    return parts.at(-1) ?? "未选择项目"
+    return parts.at(-1) ?? "选择项目"
   }
 
   function selectDirectory(value: string) {

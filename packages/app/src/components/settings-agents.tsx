@@ -37,7 +37,7 @@ export const SettingsAgents: Component = () => {
   )
 
   const mode = (value: AgentStudioItem["mode"]) => {
-    if (value === "primary") return text("协作入口", "Entry")
+    if (value === "primary") return text("默认协作", "Default")
     if (value === "subagent") return text("专业智能体", "Specialist")
     return text("全部", "All")
   }
@@ -72,8 +72,8 @@ export const SettingsAgents: Component = () => {
             <h2 class="text-16-medium text-text-strong">{language.t("settings.agents.title")}</h2>
             <p class="text-14-regular text-text-weak">
               {text(
-                "按能力包查看 RAILWISE 协作入口、专业智能体和自定义智能体；模型与权限在智能体工作台中配置。",
-                "Review the RAILWISE entry, specialist, and custom agents; configure models and permissions in Agent Studio.",
+                "按能力包查看 RAILWISE 默认协作、专业智能体和自定义智能体；模型与权限在智能体工作台中配置。",
+                "Review the RAILWISE default collaboration, specialist, and custom agents; configure models and permissions in Agent Studio.",
               )}
             </p>
           </div>
@@ -101,7 +101,7 @@ export const SettingsAgents: Component = () => {
 
         <div class="grid grid-cols-4 gap-3">
           <Metric label={text("全部", "All")} value={visible().length} />
-          <Metric label={text("入口", "Entry")} value={primary()} />
+          <Metric label={text("默认", "Default")} value={primary()} />
           <Metric label={text("专业", "Specialist")} value={subagent()} />
           <Metric label={text("自定义", "Custom")} value={custom()} />
         </div>

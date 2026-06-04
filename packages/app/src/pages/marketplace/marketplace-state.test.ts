@@ -13,7 +13,7 @@ const list: CapabilityManifest[] = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "RAILWISE 协作入口",
+    name: "RAILWISE 默认协作",
     description: "调度专业智能体。",
     version: "0.1.0",
     source: "builtin",
@@ -53,7 +53,7 @@ describe("marketplace capability state", () => {
     expect(capabilityCount(list, "agents")).toBe(1)
     expect(capabilityCount(list, "providers")).toBe(1)
     expect(capabilityCount(list, "tools")).toBe(0)
-    expect(capabilitiesFor(list, "agents")[0]?.name).toBe("RAILWISE 协作入口")
+    expect(capabilitiesFor(list, "agents")[0]?.name).toBe("RAILWISE 默认协作")
   })
 
   test("summarizes permissions for compact UI chips", () => {

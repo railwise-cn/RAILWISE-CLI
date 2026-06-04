@@ -10,7 +10,7 @@ import { modeLabel } from "@/utils/agent-card"
 import { shortDescription } from "@/utils/agent-markdown"
 import { Icon } from "@railwise/ui/icon"
 import { useAgentStudioApi } from "./api"
-import { agentDisplayName } from "@/utils/agent-display"
+import { agentDescription, agentDisplayName } from "@/utils/agent-display"
 
 export default function AgentDetailPage() {
   const api = useAgentStudioApi()
@@ -56,7 +56,7 @@ export default function AgentDetailPage() {
   })
 
   const title = createMemo(() => agentDisplayName(agent() ?? params.name))
-  const summary = createMemo(() => shortDescription(agent()?.description ?? agent()?.prompt ?? "", 120))
+  const summary = createMemo(() => shortDescription(agentDescription(agent()) || "", 120))
   const source = createMemo(() => {
     const value = agent()?.filePath
     if (!value) return "内置"
@@ -81,7 +81,7 @@ export default function AgentDetailPage() {
           <div class="agent-detail__meta">
             <span>
               <Icon name="brain" size="small" />
-              {agent()?.name ?? params.name}
+              {title()}
             </span>
             <span title={agent()?.filePath ?? ""}>
               <Icon name="folder" size="small" />

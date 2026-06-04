@@ -51,7 +51,7 @@ function message(error: unknown) {
 function projectName(value: string) {
   const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
   const parts = clean.split("/").filter(Boolean)
-  return parts.at(-1) ?? "未选择项目"
+  return parts.at(-1) ?? "选择项目"
 }
 
 function metadata(request: PermissionRequest) {

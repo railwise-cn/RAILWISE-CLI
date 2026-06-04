@@ -31,7 +31,7 @@ packages/railwise/command/
 packages/railwise/railwise.json
 ```
 
-默认 RAILWISE 协作入口由 `packages/railwise/railwise.json` 指定为 `chief_manager`。发布时这些目录会随二进制一起打包。npm 二进制包会把它们放在平台二进制旁边；curl/Homebrew 会安装到 `share/railwise/`。
+默认 RAILWISE 协作智能体由 `packages/railwise/railwise.json` 指定为 `chief_manager`。发布时这些目录会随二进制一起打包。npm 二进制包会把它们放在平台二进制旁边；curl/Homebrew 会安装到 `share/railwise/`。
 
 ## 可编辑位置
 

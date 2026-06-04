@@ -49,7 +49,7 @@ const agents = [
     mode: "primary",
     permission: {},
     options: {},
-    prompt: "你是 Railwise 总负责人。",
+    prompt: "你负责理解任务、拆解步骤，并按需要调度专业智能体与工具。",
   },
   {
     name: "qa_inspector",
@@ -220,7 +220,7 @@ const capabilities = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "RAILWISE 协作入口",
+    name: "RAILWISE 默认协作",
     description: "接收任务、拆解计划，并协调专业智能体执行。",
     version: "0.1.0",
     source: "builtin",
@@ -408,7 +408,7 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/agent-studio/skill/list`, (route) => json(route, skills))
   await page.route(`${server}/agent-studio/chief_manager`, (route) => {
     if (route.request().method() === "PUT") return json(route, true)
-    return json(route, { ...agents[0], rawMarkdown: "---\nname: chief_manager\n---\n你是 Railwise 总负责人。" })
+    return json(route, { ...agents[0], rawMarkdown: "---\nname: chief_manager\n---\n你负责理解任务、拆解步骤，并按需要调度专业智能体与工具。" })
   })
   await page.route(`${server}/mcp`, (route) => json(route, mcp))
   await page.route(`${server}/command`, (route) => json(route, commands))

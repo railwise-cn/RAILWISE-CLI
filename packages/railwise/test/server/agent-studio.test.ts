@@ -27,7 +27,7 @@ describe("server.routes.agent-studio", () => {
     )
     await Bun.write(
       path.join(tmp.path, ".railwise", "agent", "chief_manager.md"),
-      "---\ndescription: RAILWISE 协作入口，负责任务拆解、智能体调度、流程控制与最终成果汇总\nmode: primary\n---\n业务协作入口。",
+      "---\ndescription: RAILWISE 默认协作，负责任务拆解、智能体调度、流程控制与最终成果汇总\nmode: primary\n---\n业务协作。",
     )
     await Bun.write(
       path.join(tmp.path, ".railwise", "agent", "qa_inspector.md"),

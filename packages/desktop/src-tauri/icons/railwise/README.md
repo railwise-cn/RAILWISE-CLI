@@ -1,20 +1,18 @@
 # icons/railwise/
 
-> 睿威智测 RAILWISE 品牌图标目录（M1 §3.3.3）。
+> 睿威智测 RAILWISE 品牌图标目录。
 
-## 当前状态（M1 baseline）
+## 当前状态
 
-本目录的图标资源在 M1 阶段从 `icons/dev/` 直接复制而来，作为构建占位，
-确保 `bun run dev:desktop` 与 `tauri build` 不被路径迁移破坏。
+本目录的图标资源由官方 RailWISE 标志中的品牌 Mark 生成，源文件为
+`src-tauri/assets/railwise-app-icon.svg`。Tauri 打包配置会从这里读取 macOS
+`.icns`、Windows `.ico` 与 PNG fallback。
 
-## 待办（设计交付后）
-
-设计团队提供 `assets/railwise-logo-1024.png` 后，按下列方式重生成：
+## 重新生成
 
 ```bash
 cd packages/desktop
-bun run tauri icon ../../assets/railwise-logo-1024.png
-# 自动输出多分辨率到 src-tauri/icons/，把生成结果整理覆盖到 icons/railwise/
+bun run tauri icon src-tauri/assets/railwise-app-icon.svg -o src-tauri/icons/railwise
 ```
 
 ## 必备文件清单（开发实施文档 §3.3.3）

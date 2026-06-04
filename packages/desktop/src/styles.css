@@ -144,28 +144,30 @@ input, textarea, [contenteditable], .selectable-text {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f7f8fb;
+  background: #f7f4ee;
   z-index: 9999;
   font-family: var(--railwise-font-family);
 }
 
 .loading-content {
-  width: min(480px, calc(100vw - 48px));
-  padding: 28px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  width: min(420px, calc(100vw - 48px));
+  padding: 30px;
+  border: 1px solid rgba(47, 38, 24, 0.10);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.10);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 80px rgba(47, 38, 24, 0.12);
 }
 
 .loading-brand {
   display: flex;
-  align-items: center;
-  gap: 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 }
 
 .railwise-logo img {
-  width: 116px;
+  width: 192px;
+  max-width: 100%;
   height: auto;
   display: block;
 }
@@ -193,7 +195,7 @@ input, textarea, [contenteditable], .selectable-text {
 
 .loading-kicker {
   margin-bottom: 4px;
-  color: rgba(15, 23, 42, 0.54);
+  color: rgba(47, 38, 24, 0.58);
   font-size: 12px;
   font-weight: 600;
 }
@@ -202,15 +204,15 @@ input, textarea, [contenteditable], .selectable-text {
   margin: 0;
   color: rgb(10, 10, 9);
   font-family: var(--railwise-font-family);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 680;
   line-height: 1.25;
 }
 
 .loading-body {
-  margin-top: 28px;
+  margin-top: 24px;
   padding-top: 22px;
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  border-top: 1px solid rgba(47, 38, 24, 0.10);
 }
 
 .loading-state {

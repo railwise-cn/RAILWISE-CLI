@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, For } from "solid-js"
 import { Button } from "@railwise/ui/button"
-import { Logo } from "@railwise/ui/logo"
+import { Mark } from "@railwise/ui/logo"
 import { useLayout } from "@/context/layout"
 import { useNavigate } from "@solidjs/router"
 import { Icon } from "@railwise/ui/icon"
@@ -119,7 +119,7 @@ export default function Home() {
         <section class="flex min-w-0 flex-1 flex-col px-5 py-5 lg:px-8">
           <header class="flex items-center justify-between gap-3">
             <button type="button" class="flex items-center gap-3 rounded-md px-2 py-1 text-left lg:hidden" onClick={() => navigate("/home")}>
-              <Logo class="size-8 opacity-85" />
+              <Mark class="size-8 opacity-85" />
               <div>
                 <div class="text-13-medium text-text-strong">RAILWISE</div>
                 <div class="text-12-regular text-text-weak">Desktop</div>

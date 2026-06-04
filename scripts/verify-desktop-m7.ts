@@ -206,11 +206,11 @@ check(
     !e2eHelper.includes("Skills 加载") &&
     !agentCollaborationTest.includes("Agent Studio") &&
     !sessionCollaboration.includes("Skill「") &&
-    sessionCollaboration.includes("请使用专业流程") &&
-    agentsPage.includes("让 RAILWISE 组织哪项工作？") &&
+    sessionCollaboration.includes("请使用技能") &&
+    agentsPage.includes("RAILWISE 协作") &&
     agentsPage.includes("agent-collaboration-start") &&
     agentsPage.includes("模型接入与智能体路由") &&
-    agentsPage.includes("智能体库") &&
+    agentsPage.includes("<h2>智能体</h2>") &&
     agentsPage.includes("#agent-library") &&
     !agentsPage.includes("RAILWISE 高级智能体管理") &&
     !agentsPage.includes("上下文文件夹") &&
@@ -218,7 +218,7 @@ check(
     !agentsPage.includes("项目工作区") &&
     !agentsPage.includes("智能体矩阵") &&
     !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
-  "Desktop docs, E2E fixtures, and advanced management page use capability market, professional workflow, and execution-layer language",
+  "Desktop docs, E2E fixtures, and advanced management page use concise collaboration, skill, and execution-layer language",
 )
 
 check(
@@ -245,7 +245,7 @@ check(
       "marketplace-permissions-providers",
       "网络 / 密钥",
       "执行层",
-      "流程",
+      "技能",
     ]) &&
     has(marketplaceState, ["capabilitiesFor", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
     has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek", "RAILWISE 协作入口"]) &&
@@ -276,7 +276,8 @@ check(
     'data-testid="home-project-directory"',
     'data-testid="home-task-input"',
     'data-testid="home-start-session"',
-    "想让 RAILWISE 完成什么？",
+    "描述要推进的工程任务",
+    "开始协作",
     'navigate("/harness")',
     'navigate("/marketplace")',
   ]) &&
@@ -292,7 +293,8 @@ check(
   has(visual, [
     "[data-testid=home-workbench]",
     "[data-testid=home-chat-composer]",
-    "想让 RAILWISE 完成什么？",
+    "heading\", { name: \"RAILWISE\"",
+    "选择项目",
     "项目驾驶舱",
     "告警 Feed",
     "多智能体协作中枢",

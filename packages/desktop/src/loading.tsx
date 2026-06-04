@@ -94,7 +94,7 @@ const Loading = (props: LoadingProps) => {
 
           <div class="loading-brand-copy">
             <div class="loading-kicker">RAILWISE Desktop</div>
-            <h1 class="loading-title">RAILWISE 智能协作平台</h1>
+            <h1 class="loading-title">工程智能协作</h1>
           </div>
         </div>
 

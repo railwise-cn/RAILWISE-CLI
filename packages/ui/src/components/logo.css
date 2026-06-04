@@ -2,3 +2,9 @@
   width: 24px;
   aspect-ratio: 1;
 }
+
+[data-component="logo-splash"],
+[data-component="logo-full"] {
+  display: block;
+  object-fit: contain;
+}

@@ -14,12 +14,18 @@ export function createTextFragment(content: string): DocumentFragment {
 
 export function getNodeLength(node: Node): number {
   if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === "BR") return 1
+  if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).dataset.content) {
+    return ((node as HTMLElement).dataset.content ?? "").replace(/\u200B/g, "").length
+  }
   return (node.textContent ?? "").replace(/\u200B/g, "").length
 }
 
 export function getTextLength(node: Node): number {
   if (node.nodeType === Node.TEXT_NODE) return (node.textContent ?? "").replace(/\u200B/g, "").length
   if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === "BR") return 1
+  if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).dataset.content) {
+    return ((node as HTMLElement).dataset.content ?? "").replace(/\u200B/g, "").length
+  }
   let length = 0
   for (const child of Array.from(node.childNodes)) {
     length += getTextLength(child)

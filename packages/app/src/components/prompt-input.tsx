@@ -608,8 +608,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
 
   const createPill = (part: FileAttachmentPart | AgentPart) => {
     const pill = document.createElement("span")
-    pill.textContent = part.content
+    pill.textContent = part.type === "agent" ? agentDisplayName(part.name) : part.content
     pill.setAttribute("data-type", part.type)
+    pill.setAttribute("data-content", part.content)
     if (part.type === "file") pill.setAttribute("data-path", part.path)
     if (part.type === "agent") pill.setAttribute("data-name", part.name)
     pill.setAttribute("contenteditable", "false")
@@ -729,7 +730,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     }
 
     const pushFile = (file: HTMLElement) => {
-      const content = file.textContent ?? ""
+      const content = file.dataset.content ?? file.textContent ?? ""
       parts.push({
         type: "file",
         path: file.dataset.path!,
@@ -741,7 +742,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     }
 
     const pushAgent = (agent: HTMLElement) => {
-      const content = agent.textContent ?? ""
+      const content = agent.dataset.content ?? agent.textContent ?? ""
       parts.push({
         type: "agent",
         name: agent.dataset.name!,

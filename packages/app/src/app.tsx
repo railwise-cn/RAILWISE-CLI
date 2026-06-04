@@ -214,6 +214,8 @@ export function AppInterface(props: {
               <Route path="/agents/:name" component={AgentDetailRoute} />
               <Route path="/marketplace" component={MarketplaceRoute} />
               <Route path="/harness" component={HarnessRoute} />
+              <Route path="/dashboard" component={HomeRoute} />
+              <Route path="/dashboard/*rest" component={HomeRoute} />
               {props.routes}
               {(props.workbenchRoutes ?? true) && (
                 <>

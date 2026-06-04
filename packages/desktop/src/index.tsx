@@ -12,7 +12,7 @@ import {
 } from "@railwise/app"
 import { Splash } from "@railwise/ui/logo"
 import type { AsyncStorage } from "@solid-primitives/storage"
-import { Navigate, Route } from "@solidjs/router"
+import { Route } from "@solidjs/router"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { readImage } from "@tauri-apps/plugin-clipboard-manager"
 import { getCurrent, onOpenUrl } from "@tauri-apps/plugin-deep-link"
@@ -55,9 +55,12 @@ const WorkspaceDiffRoute = () => (
     <WorkspaceDiff />
   </Suspense>
 )
-const HomeRedirect = () => <Navigate href="/home" />
-
 function ensureStandaloneLanding() {
+  if (location.pathname === "/dashboard" || location.pathname.startsWith("/dashboard/")) {
+    location.replace("/home")
+    return
+  }
+  if (location.pathname !== "/") return
   if (location.hash.startsWith("#/home")) return
   if (location.hash.startsWith("#/harness")) return
   if (location.hash.startsWith("#/marketplace")) return
@@ -651,16 +654,13 @@ render(() => {
                     defaultServer={defaultServer.latest ?? ServerConnection.key(server)}
                     routes={
                       <>
-                        <Route path="/dashboard" component={HomeRedirect} />
-                        <Route path="/dashboard/*rest" component={HomeRedirect} />
                         <Route path="/workspace" component={WorkspaceRoute} />
                         <Route path="/workspace/diff" component={WorkspaceDiffRoute} />
                         <Route path="/workspace/*rest" component={WorkspaceRoute} />
-                        <Route path="*rest" component={HomeRedirect} />
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/home", "/harness", "/workspace", "/marketplace", "/agents"]}
+                    standalonePaths={["/harness", "/workspace", "/marketplace", "/agents"]}
                     workbenchRoutes={true}
                   >
                     <Inner />

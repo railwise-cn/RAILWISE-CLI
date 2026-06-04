@@ -8,6 +8,22 @@ test("启动后 sidecar 在 15s 内就绪", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=home-workbench]")).toBeVisible()
 })
 
+test("普通浏览器预览不会因为缺少 Tauri internals 白屏", async ({ page }) => {
+  const errors: string[] = []
+  page.on("pageerror", (error) => errors.push(error.message))
+
+  await page.goto("/home")
+  await expect(page.locator("[data-testid=app-shell]")).toBeVisible({ timeout: 30_000 })
+  await expect(page.locator("[data-testid=home-workbench]")).toContainText("RAILWISE")
+  await expect(
+    page.evaluate(
+      () =>
+        (window as Window & { __RAILWISE__?: { browserHarness?: boolean } }).__RAILWISE__?.browserHarness === true,
+    ),
+  ).resolves.toBe(true)
+  expect(errors).toEqual([])
+})
+
 test("首页任务输入直接进入 chief_manager 协作会话", async ({ launchApp }) => {
   const worktree = "/tmp/railwise-e2e/worktree"
   const { page } = await launchApp("/home", {

@@ -91,4 +91,5 @@ test("文件工作区使用统一项目侧栏", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByRole("heading", { name: "版本对比" })).toBeVisible()
+  await expect(page.locator("[data-testid=workspace-diff-container]")).not.toContainText("/workspace/diff")
 })

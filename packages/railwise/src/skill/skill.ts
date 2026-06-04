@@ -71,6 +71,7 @@ export namespace Skill {
   export const state = Instance.state(async () => {
     const skills: Record<string, Info> = {}
     const dirs = new Set<string>()
+    const duplicates: Array<{ name: string; existing: string; duplicate: string }> = []
 
     const addSkill = async (match: string) => {
       const md = await ConfigMarkdown.parse(match).catch((err) => {
@@ -87,9 +88,8 @@ export namespace Skill {
       const parsed = Info.pick({ name: true, description: true }).safeParse(md.data)
       if (!parsed.success) return
 
-      // Warn on duplicate skill names
       if (skills[parsed.data.name]) {
-        log.warn("duplicate skill name", {
+        duplicates.push({
           name: parsed.data.name,
           existing: skills[parsed.data.name].location,
           duplicate: match,
@@ -194,6 +194,13 @@ export namespace Skill {
           await addSkill(match)
         }
       }
+    }
+
+    if (duplicates.length > 0) {
+      log.debug("duplicate skill names resolved by override", {
+        count: duplicates.length,
+        sample: duplicates.slice(0, 20),
+      })
     }
 
     return {

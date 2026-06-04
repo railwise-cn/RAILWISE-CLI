@@ -209,10 +209,23 @@ export namespace MCP {
     },
   )
 
+  function optional(error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    return message.includes("-32601") || message.includes("Method not found") || message.includes("not supported")
+  }
+
+  function message(error: unknown) {
+    return error instanceof Error ? error.message : String(error)
+  }
+
   // Helper function to fetch prompts for a specific client
   async function fetchPromptsForClient(clientName: string, client: Client) {
-    const prompts = await client.listPrompts().catch((e) => {
-      log.error("failed to get prompts", { clientName, error: e.message })
+    const prompts = await client.listPrompts().catch((error) => {
+      if (optional(error)) {
+        log.debug("mcp prompts not supported", { clientName, error: message(error) })
+        return undefined
+      }
+      log.warn("failed to get prompts", { clientName, error: message(error) })
       return undefined
     })
 
@@ -233,8 +246,12 @@ export namespace MCP {
   }
 
   async function fetchResourcesForClient(clientName: string, client: Client) {
-    const resources = await client.listResources().catch((e) => {
-      log.error("failed to get prompts", { clientName, error: e.message })
+    const resources = await client.listResources().catch((error) => {
+      if (optional(error)) {
+        log.debug("mcp resources not supported", { clientName, error: message(error) })
+        return undefined
+      }
+      log.warn("failed to get resources", { clientName, error: message(error) })
       return undefined
     })
 

@@ -12,7 +12,7 @@ import {
   untrack,
   type JSX,
 } from "solid-js"
-import { A, useNavigate, useParams } from "@solidjs/router"
+import { A, useLocation, useNavigate, useParams } from "@solidjs/router"
 import { useLayout, LocalProject } from "@/context/layout"
 import { useGlobalSync } from "@/context/global-sync"
 import { Persist, persisted } from "@/utils/persist"
@@ -106,6 +106,7 @@ export default function Layout(props: ParentProps) {
   const notification = useNotification()
   const permission = usePermission()
   const navigate = useNavigate()
+  const location = useLocation()
   const providers = useProviders()
   const dialog = useDialog()
   const command = useCommand()
@@ -121,6 +122,12 @@ export default function Layout(props: ParentProps) {
   }
   const colorSchemeLabel = (scheme: ColorScheme) => language.t(colorSchemeKey[scheme])
   const currentDir = createMemo(() => decode64(params.dir) ?? "")
+  const routePath = () => {
+    if (typeof window === "undefined") return location.pathname
+    const hash = window.location.hash.replace(/^#/, "")
+    if (hash.startsWith("/")) return hash
+    return window.location.pathname
+  }
 
   const [state, setState] = createStore({
     autoselect: !initialDirectory,
@@ -199,6 +206,7 @@ export default function Layout(props: ParentProps) {
   const autoselecting = createMemo(() => {
     if (params.dir) return false
     if (!state.autoselect) return false
+    if (routePath() !== "/") return false
     if (!pageReady()) return true
     if (!layoutReady()) return true
     const list = layout.projects.list()
@@ -208,6 +216,10 @@ export default function Layout(props: ParentProps) {
 
   createEffect(() => {
     if (!state.autoselect) return
+    if (routePath() !== "/") {
+      setState("autoselect", false)
+      return
+    }
     const dir = params.dir
     if (!dir) return
     const directory = decode64(dir)
@@ -459,9 +471,11 @@ export default function Layout(props: ParentProps) {
 
   const currentProject = createMemo(() => {
     const directory = currentDir()
-    if (!directory) return
-
     const projects = layout.projects.list()
+    if (!directory) {
+      const last = server.projects.last()
+      return projects.find((project) => project.worktree === last) ?? projects[0]
+    }
 
     const sandbox = projects.find((p) => p.sandboxes?.includes(directory))
     if (sandbox) return sandbox
@@ -503,6 +517,7 @@ export default function Layout(props: ParentProps) {
         if (!value.layoutReady) return
         if (!state.autoselect) return
         if (value.dir) return
+        if (routePath() !== "/") return
 
         const last = server.projects.last()
 

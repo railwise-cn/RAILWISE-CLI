@@ -113,11 +113,19 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
       const sidebar = value.sidebar
       const migratedSidebar = (() => {
         if (!isRecord(sidebar)) return sidebar
-        if (typeof sidebar.workspaces !== "boolean") return sidebar
+        const base =
+          typeof sidebar.workspaces === "boolean"
+            ? {
+                ...sidebar,
+                workspaces: {},
+                workspacesDefault: sidebar.workspaces,
+              }
+            : sidebar
+        if (base.projectEntryDefaulted === true) return base
         return {
-          ...sidebar,
-          workspaces: {},
-          workspacesDefault: sidebar.workspaces,
+          ...base,
+          opened: true,
+          projectEntryDefaulted: true,
         }
       })()
 
@@ -161,10 +169,11 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
       { ...target, migrate },
       createStore({
         sidebar: {
-          opened: false,
+          opened: true,
           width: DEFAULT_PANEL_WIDTH,
           workspaces: {} as Record<string, boolean>,
           workspacesDefault: false,
+          projectEntryDefaulted: true,
         },
         terminal: {
           height: DEFAULT_TERMINAL_HEIGHT,

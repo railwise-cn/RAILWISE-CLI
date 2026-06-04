@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For } from "solid-js"
+import { createEffect, createMemo, createSignal, For } from "solid-js"
 import { Button } from "@railwise/ui/button"
 import { Logo } from "@railwise/ui/logo"
 import { useLayout } from "@/context/layout"
@@ -61,6 +61,13 @@ export default function Home() {
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
     if (selectedDirectory()) return "本地工作区"
     return "先选择项目"
+  })
+
+  createEffect(() => {
+    const target = selectedDirectory()
+    if (!target) return
+    layout.projects.open(target)
+    server.projects.touch(target)
   })
 
   function projectName(value: string) {

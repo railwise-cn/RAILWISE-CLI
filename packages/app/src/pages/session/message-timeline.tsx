@@ -2,14 +2,14 @@ import { For, createEffect, createMemo, on, onCleanup, Show, type JSX } from "so
 import { createStore, produce } from "solid-js/store"
 import { useNavigate, useParams } from "@solidjs/router"
 import { Button } from "@railwise/ui/button"
-import { Icon } from "@railwise/ui/icon"
+import { Icon, type IconProps } from "@railwise/ui/icon"
 import { IconButton } from "@railwise/ui/icon-button"
 import { DropdownMenu } from "@railwise/ui/dropdown-menu"
 import { Dialog } from "@railwise/ui/dialog"
 import { InlineInput } from "@railwise/ui/inline-input"
 import { SessionTurn } from "@railwise/ui/session-turn"
 import type { UserMessage } from "@railwise/sdk/v2"
-import type { Part as SDKPart } from "@railwise/sdk/v2/client"
+import type { AssistantMessage, Part as SDKPart, ToolPart } from "@railwise/sdk/v2/client"
 import { showToast } from "@railwise/ui/toast"
 import { base64Encode } from "@railwise/util/encode"
 import { shouldMarkBoundaryGesture, normalizeWheelDelta } from "@/pages/session/message-gesture"
@@ -50,6 +50,16 @@ const markBoundaryGesture = (input: {
   ) {
     input.onMarkScrollGesture(input.root)
   }
+}
+
+function isToolPart(part: SDKPart): part is ToolPart {
+  return part.type === "tool"
+}
+
+function toolTitle(part: ToolPart) {
+  if (part.state.status === "completed") return part.state.title || part.tool
+  if (part.state.status === "running") return part.state.title || part.tool
+  return part.tool
 }
 
 export function MessageTimeline(props: {
@@ -350,6 +360,111 @@ export function MessageTimeline(props: {
     )
   }
 
+  function TurnExecutionSummary(props: { message: UserMessage }) {
+    const assistantMessages = createMemo(() => {
+      const id = sessionID()
+      if (!id) return []
+      return (sync.data.message[id] ?? []).filter(
+        (message): message is AssistantMessage =>
+          message.role === "assistant" && message.parentID === props.message.id,
+      )
+    })
+
+    const toolParts = createMemo(() =>
+      assistantMessages()
+        .flatMap((message) => sync.data.part[message.id] ?? [])
+        .filter(isToolPart),
+    )
+
+    const stats = createMemo(() => {
+      const tools = toolParts()
+      return {
+        total: tools.length,
+        running: tools.filter((part) => part.state.status === "pending" || part.state.status === "running").length,
+        done: tools.filter((part) => part.state.status === "completed").length,
+        error: tools.filter((part) => part.state.status === "error").length,
+      }
+    })
+
+    const agents = createMemo(() =>
+      Array.from(new Set([props.message.agent, ...assistantMessages().map((message) => message.agent)].filter(Boolean))),
+    )
+
+    const agentLabel = createMemo(() => {
+      const list = agents()
+      if (list.length === 0) return language.t("session.execution.agent.empty")
+      if (list.length <= 2) return list.join(" / ")
+      return language.t("session.execution.agent.more", { agents: list.slice(0, 2).join(" / "), count: list.length - 2 })
+    })
+
+    const modelLabel = createMemo(() => {
+      const assistant = assistantMessages().at(-1)
+      const providerID = assistant?.providerID ?? props.message.model.providerID
+      const modelID = assistant?.modelID ?? props.message.model.modelID
+      const provider = sync.data.provider.all.find((item) => item.id === providerID)
+      return provider?.models?.[modelID]?.name ?? modelID
+    })
+
+    const toolLabel = createMemo(() => {
+      const value = stats()
+      if (value.total === 0) return language.t("session.execution.tools.none")
+      if (value.running > 0)
+        return language.t("session.execution.tools.running", { count: value.running.toLocaleString(language.locale()) })
+      if (value.error > 0)
+        return language.t("session.execution.tools.error", { count: value.error.toLocaleString(language.locale()) })
+      return language.t("session.execution.tools.done", {
+        done: value.done.toLocaleString(language.locale()),
+        total: value.total.toLocaleString(language.locale()),
+      })
+    })
+
+    const latestTool = createMemo(() => toolParts().at(-1))
+    const icon = createMemo<IconProps["name"]>(() => {
+      const value = stats()
+      if (value.error > 0) return "warning"
+      if (value.running > 0) return "console"
+      if (value.total > 0) return "circle-check"
+      return "brain"
+    })
+
+    return (
+      <Show when={assistantMessages().length > 0 || toolParts().length > 0}>
+        <div data-testid="session-turn-execution" class="mb-3 px-4 md:px-5">
+          <div class="inline-flex max-w-full items-center gap-2 rounded-full border border-border-subtle bg-background-base px-2.5 py-1 text-11-medium text-text-weak shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <Icon name={icon()} size="small" class="shrink-0 text-icon-weak" />
+            <span data-testid="session-turn-execution-agent" class="truncate text-text-strong" title={agentLabel()}>
+              {agentLabel()}
+            </span>
+            <span class="h-3 w-px shrink-0 bg-border-subtle" />
+            <Icon name="models" size="small" class="shrink-0 text-icon-weak" />
+            <span data-testid="session-turn-execution-model" class="truncate" title={modelLabel()}>
+              {modelLabel()}
+            </span>
+            <span class="h-3 w-px shrink-0 bg-border-subtle" />
+            <Icon name="console" size="small" class="shrink-0 text-icon-weak" />
+            <span data-testid="session-turn-execution-tools" class="shrink-0">
+              {toolLabel()}
+            </span>
+            <Show when={latestTool()}>
+              {(part) => (
+                <>
+                  <span class="text-text-weak">·</span>
+                  <span
+                    data-testid="session-turn-execution-tool-name"
+                    class="max-w-56 truncate text-text-base"
+                    title={toolTitle(part())}
+                  >
+                    {toolTitle(part())}
+                  </span>
+                </>
+              )}
+            </Show>
+          </div>
+        </div>
+      </Show>
+    )
+  }
+
   function DialogDeleteSession(props: { sessionID: string }) {
     const name = createMemo(() => sync.session.get(props.sessionID)?.title ?? language.t("command.session.new"))
     const handleDelete = async () => {
@@ -609,6 +724,7 @@ export function MessageTimeline(props: {
                     "md:max-w-200 2xl:max-w-[1000px]": props.centered,
                   }}
                 >
+                  <TurnExecutionSummary message={message} />
                   <SessionTurn
                     sessionID={sessionID() ?? ""}
                     messageID={message.id}

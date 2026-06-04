@@ -539,6 +539,12 @@ export const dict = {
   "session.side.runtime.state.blocked": "Blocked",
   "session.side.runtime.state.retry": "Retry {{attempt}}",
   "session.side.runtime.state.idle": "Idle",
+  "session.execution.agent.empty": "No agent",
+  "session.execution.agent.more": "{{agents}} and {{count}} more",
+  "session.execution.tools.none": "No tool calls",
+  "session.execution.tools.running": "{{count}} running",
+  "session.execution.tools.error": "{{count}} errors",
+  "session.execution.tools.done": "{{done}}/{{total}} done",
 
   "session.files.selectToOpen": "Select a file to open",
   "session.files.all": "All files",

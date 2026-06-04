@@ -220,14 +220,14 @@ const capabilities = [
   {
     id: "railwise.agent.chief_manager",
     kind: "agent",
-    name: "RAILWISE 主控",
-    description: "理解任务、拆解计划，并调度专业智能体执行。",
+    name: "RAILWISE 协作入口",
+    description: "接收任务、拆解计划，并协调专业智能体执行。",
     version: "0.1.0",
     source: "builtin",
     enabled: true,
     installed: true,
     permissions: { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false },
-    tags: ["主控", "调度"],
+    tags: ["协作", "调度"],
   },
   {
     id: "railwise.tool.file_reader",

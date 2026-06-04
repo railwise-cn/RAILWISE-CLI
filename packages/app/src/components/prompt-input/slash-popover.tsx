@@ -67,9 +67,12 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                           class="flex size-5 shrink-0 items-center justify-center rounded-[6px] text-[11px] font-semibold text-white"
                           style={{ "background-color": item.color ?? "var(--rw-accent, rgba(117, 86, 32, 0.9))" }}
                         >
-                          {item.name[0]?.toUpperCase()}
+                          {item.display[0]?.toUpperCase()}
                         </span>
-                        <span class="text-14-regular text-text-strong whitespace-nowrap">@{item.name}</span>
+                        <span class="text-14-regular text-text-strong whitespace-nowrap">{item.display}</span>
+                        <Show when={item.display !== item.name}>
+                          <span class="text-12-regular text-text-weak whitespace-nowrap">@{item.name}</span>
+                        </Show>
                       </button>
                     )
                   }

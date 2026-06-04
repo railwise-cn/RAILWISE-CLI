@@ -53,6 +53,7 @@ import { PromptDragOverlay } from "./prompt-input/drag-overlay"
 import { promptPlaceholder } from "./prompt-input/placeholder"
 import { ImagePreview } from "@railwise/ui/image-preview"
 import { agentColor } from "@/utils/agent"
+import { agentDisplayName } from "@/utils/agent-display"
 
 interface PromptInputProps {
   class?: string
@@ -494,7 +495,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       .map((agent): AtOption => ({
         type: "agent",
         name: agent.name,
-        display: agent.name,
+        display: agentDisplayName(agent),
         color: agentColor(agent.name, agent.color),
       })),
   )

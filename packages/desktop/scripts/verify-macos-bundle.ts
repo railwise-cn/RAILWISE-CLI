@@ -22,6 +22,7 @@ const arg = (name: string, fallback?: string) => {
 const check = (name: string, passed: boolean, detail: string) => checks.push({ name, passed, detail })
 const appArg = arg("--app")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
+const strict = args.includes("--require-developer-id")
 if (!target && !appArg) throw new Error("Missing --app, --target or RUST_TARGET")
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS bundle verification is not available for ${target}`)
 
@@ -62,6 +63,15 @@ const optional = async (name: string) => {
   return result.stdout.toString().trim()
 }
 const filetype = async (file: string) => (await $`file ${file}`.text()).trim()
+const signature = async (file: string) => {
+  const result = await $`codesign -dv --verbose=4 ${file}`.quiet().nothrow()
+  const text = result.stdout.toString() + result.stderr.toString()
+  return {
+    developer: text.includes("Authority=Developer ID Application:"),
+    runtime: text.includes("Runtime Version=") || text.includes("flags=0x10000(runtime)"),
+    timestamp: text.includes("Timestamp="),
+  }
+}
 
 check("app bundle exists", (await stat(app).catch(() => undefined))?.isDirectory() === true, app)
 check("Info.plist exists", await exists(plist), plist)
@@ -92,6 +102,19 @@ try {
   check("codesign strict verification", true, "valid on disk and satisfies Designated Requirement")
 } catch (err) {
   check("codesign strict verification", false, err instanceof Error ? err.message : String(err))
+}
+
+if (strict) {
+  const appSig = await signature(app)
+  check("app Developer ID signature", appSig.developer, "Authority=Developer ID Application")
+  check("app secure timestamp", appSig.timestamp, "Timestamp must be present")
+  check("app hardened runtime", appSig.runtime, "Runtime Version must be present")
+  if (await exists(sidecar)) {
+    const sidecarSig = await signature(sidecar)
+    check("sidecar Developer ID signature", sidecarSig.developer, "Authority=Developer ID Application")
+    check("sidecar secure timestamp", sidecarSig.timestamp, "Timestamp must be present")
+    check("sidecar hardened runtime", sidecarSig.runtime, "Runtime Version must be present")
+  }
 }
 
 for (const item of checks) console.log(`${item.passed ? "[ok]" : "[fail]"} ${item.name}: ${item.detail}`)

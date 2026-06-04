@@ -15,6 +15,7 @@ const arg = (name: string, fallback?: string) => {
 
 const dmgArg = arg("--dmg")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
+const strict = args.includes("--require-developer-id")
 if (!target && !dmgArg) throw new Error("Missing --dmg, --target or RUST_TARGET")
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS DMG verification is not available for ${target}`)
 
@@ -58,7 +59,9 @@ try {
   if (apps.length !== 1) throw new Error(`Expected exactly one app in mounted DMG; found ${apps.length}`)
 
   const app = path.join(mount, apps[0]!)
-  if (target) await $`bun ./scripts/verify-macos-bundle.ts --target ${target} --app ${app}`
+  if (target && strict) await $`bun ./scripts/verify-macos-bundle.ts --target ${target} --app ${app} --require-developer-id`
+  else if (target) await $`bun ./scripts/verify-macos-bundle.ts --target ${target} --app ${app}`
+  else if (strict) await $`bun ./scripts/verify-macos-bundle.ts --app ${app} --require-developer-id`
   else await $`bun ./scripts/verify-macos-bundle.ts --app ${app}`
   console.log(`Verified macOS DMG ${image}`)
 } finally {

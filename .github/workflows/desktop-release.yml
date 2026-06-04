@@ -140,12 +140,12 @@ jobs:
       - name: Verify macOS app bundle
         shell: bash
         working-directory: packages/desktop
-        run: bun run verify:macos -- --target ${{ matrix.target }}
+        run: bun run verify:macos -- --target ${{ matrix.target }} --require-developer-id
 
       - name: Verify macOS DMG contents
         shell: bash
         working-directory: packages/desktop
-        run: bun run verify:dmg -- --target ${{ matrix.target }}
+        run: bun run verify:dmg -- --target ${{ matrix.target }} --require-developer-id
 
       - name: Stage bundle artifacts
         shell: bash

@@ -29,6 +29,7 @@ const timeout = Number(arg("--timeout", "15"))
 const readyTimeout = Number(arg("--ready-timeout", "60"))
 const skipLaunch = args.includes("--skip-launch")
 const skipReady = args.includes("--skip-ready")
+const sidecar = path.join(app, "Contents", "MacOS", "railwise-cli")
 
 const logDirs = () => {
   const home = Bun.env.HOME
@@ -61,6 +62,34 @@ const logFiles = async (since: number) => {
 
 const tail = (text: string) => text.split("\n").slice(-80).join("\n")
 
+const sidecars = async () =>
+  (await $`ps axww -o pid=,command=`.quiet()).stdout
+    .toString()
+    .trim()
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.includes(sidecar) && line.includes(" serve "))
+
+const sidecarUrls = async () =>
+  (await Promise.all(
+    (await sidecars()).map((line) => {
+      const hostname = line.match(/--hostname\s+(\S+)/)?.[1]
+      const port = line.match(/--port\s+(\d+)/)?.[1]
+      return hostname && port ? `http://${hostname}:${port}/global/health` : undefined
+    }),
+  )).filter((item): item is string => Boolean(item))
+
+const probeSidecar = async () => {
+  for (const url of await sidecarUrls()) {
+    const res = await fetch(url, { signal: AbortSignal.timeout(1_000) }).catch(() => undefined)
+    if (res && [200, 401, 403].includes(res.status)) {
+      console.log(`macOS app sidecar ready from ${url} (${res.status})`)
+      return true
+    }
+  }
+  return false
+}
+
 const waitForReady = async (since: number) => {
   const deadline = Date.now() + readyTimeout * 1_000
   let latest = ""
@@ -79,6 +108,8 @@ const waitForReady = async (since: number) => {
         throw new Error(`macOS app reported server startup failure in ${file}\n${tail(text)}`)
       }
     }
+
+    if (await probeSidecar()) return
 
     if ((await running()).length === 0) {
       throw new Error(`macOS app process exited before sidecar was ready.\n${tail(latest)}`)
@@ -114,6 +145,10 @@ const running = async () =>
 
 for (const pid of await running()) {
   await $`kill ${pid}`.quiet().nothrow()
+}
+for (const line of await sidecars()) {
+  const pid = line.match(/^(\d+)/)?.[1]
+  if (pid) await $`kill ${pid}`.quiet().nothrow()
 }
 
 const launched = Date.now()

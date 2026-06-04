@@ -34,3 +34,18 @@ test("智能体工作台不再使用旧管理页语言", async ({ launchApp }) =
   await expect(page.getByText("项目驾驶舱")).toHaveCount(0)
   await expect(page.getByText("多智能体协作中枢")).toHaveCount(0)
 })
+
+test("能力市场与执行层不再使用后台管理语言", async ({ launchApp }) => {
+  const { page } = await launchApp("/marketplace")
+
+  await visible(page.locator("[data-testid=marketplace-page]"))
+  await expect(page.getByText("进入高级管理")).toHaveCount(0)
+  await expect(page.getByText("项目工作区")).toHaveCount(0)
+
+  await page.goto("/harness")
+  await visible(page.locator("[data-testid=harness-page]"))
+  await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
+  await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
+  await expect(page.getByText("执行层状态")).toHaveCount(0)
+  await expect(page.getByText("项目工作区")).toHaveCount(0)
+})

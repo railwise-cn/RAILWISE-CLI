@@ -24,6 +24,7 @@ test("能力市场保持极简能力包入口", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=marketplace-state-providers]")).toContainText("待接入")
   await expect(page.locator("[data-testid=marketplace-permissions-providers]")).toContainText("DeepSeek")
   await expect(page.locator("[data-testid=marketplace-permissions-providers]")).toContainText("网络 / 密钥")
+  await expect(page.getByText("进入高级管理")).toHaveCount(0)
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toHaveCount(0)
   await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
 })
@@ -44,7 +45,7 @@ test("智能体工作台作为独立路由打开", async ({ launchApp }) => {
   await expect(page.getByText("智能体矩阵")).toHaveCount(0)
 })
 
-test("能力市场进入 chief_manager 高级配置并验证保存入口", async ({ launchApp }) => {
+test("能力市场进入 chief_manager 配置并验证保存入口", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace")
 
   await visible(page.locator("[data-testid=marketplace-page]"))
@@ -56,7 +57,7 @@ test("能力市场进入 chief_manager 高级配置并验证保存入口", async
   await expect(page.locator("[data-testid=save-agent-btn]")).toContainText(/已保存|保存/)
 })
 
-test("能力市场可以进入执行层状态", async ({ launchApp }) => {
+test("能力市场可以进入执行控制台", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace")
 
   await visible(page.locator("[data-testid=marketplace-page]"))
@@ -65,15 +66,18 @@ test("能力市场可以进入执行层状态", async ({ launchApp }) => {
 
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page).toHaveURL(/\/harness$/)
-  await expect(page.getByRole("heading", { name: "执行层状态" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
+  await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
 })
 
 test("执行层可以作为桌面独立路由打开", async ({ launchApp }) => {
   const { page } = await launchApp("/harness")
 
   await visible(page.locator("[data-testid=harness-page]"))
-  await expect(page.getByRole("heading", { name: "执行层状态" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
+  await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
   await expect(page.locator("[data-testid=harness-permissions]")).toContainText("当前没有等待审批的动作")
   await expect(page.locator("[data-testid=harness-timeline]")).toContainText("还没有会话执行记录")
   await expect(page.locator("[data-testid=harness-session-detail]")).toContainText("还没有可查看的会话")
+  await expect(page.getByText("执行层状态")).toHaveCount(0)
 })

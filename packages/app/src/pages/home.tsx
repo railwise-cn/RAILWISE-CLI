@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Show } from "solid-js"
+import { createMemo, createSignal, For } from "solid-js"
 import { Button } from "@railwise/ui/button"
 import { Logo } from "@railwise/ui/logo"
 import { useLayout } from "@/context/layout"
@@ -108,72 +108,7 @@ export default function Home() {
 
   return (
     <main class="min-h-full bg-surface-base" data-testid="home-workbench">
-      <div class="mx-auto flex min-h-screen max-w-7xl">
-        <aside class="hidden w-64 shrink-0 flex-col border-r border-border-weak-base px-4 py-5 lg:flex">
-          <button type="button" class="mb-7 flex items-center gap-3 rounded-md px-2 py-1 text-left" onClick={() => navigate("/home")}>
-            <Logo class="size-8 opacity-85" />
-            <div>
-              <div class="text-13-medium text-text-strong">RAILWISE</div>
-              <div class="text-12-regular text-text-weak">Desktop</div>
-            </div>
-          </button>
-
-          <div class="mb-3 flex items-center justify-between">
-            <div class="text-12-medium text-text-weak">{language.t("home.recentProjects")}</div>
-            <button
-              type="button"
-              class="inline-flex size-7 items-center justify-center rounded-md border border-border-weak-base text-text-weak hover:bg-surface-panel hover:text-text-strong"
-              onClick={chooseProject}
-              aria-label="添加项目"
-            >
-              <Icon name="plus-small" size="small" />
-            </button>
-          </div>
-
-          <nav class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto" aria-label="项目">
-            <Show when={recent().length} fallback={<div class="rounded-lg border border-dashed border-border-weak-base p-3 text-12-regular text-text-weak">选择文件夹后会出现在这里。</div>}>
-              <For each={recent()}>
-                {(project) => {
-                  const active = createMemo(() => project.worktree === selectedDirectory())
-                  return (
-                    <button
-                      type="button"
-                      class="group flex items-center gap-2 rounded-lg px-2 py-2 text-left hover:bg-surface-panel"
-                      classList={{
-                        "bg-surface-panel": active(),
-                      }}
-                      onClick={() => selectDirectory(project.worktree)}
-                    >
-                      <span class="flex size-7 shrink-0 items-center justify-center rounded-md border border-border-weak-base text-text-weak group-hover:text-text-strong">
-                        <Icon name="folder" size="small" />
-                      </span>
-                      <span class="min-w-0 flex-1">
-                        <span class="block truncate text-13-medium text-text-strong">{projectName(project.worktree)}</span>
-                        <span class="block truncate text-11-regular text-text-weak">
-                          {DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative()}
-                        </span>
-                      </span>
-                    </button>
-                  )
-                }}
-              </For>
-            </Show>
-          </nav>
-
-          <div class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3">
-            <div class="mb-2 flex items-center gap-2 text-12-medium text-text-strong">
-              <span
-                classList={{
-                  "size-2 rounded-full": true,
-                  [serverDotClass()]: true,
-                }}
-              />
-              {serverLabel()}
-            </div>
-            <div class="text-11-regular text-text-weak">{server.name}</div>
-          </div>
-        </aside>
-
+      <div class="mx-auto flex min-h-screen max-w-6xl">
         <section class="flex min-w-0 flex-1 flex-col px-5 py-5 lg:px-8">
           <header class="flex items-center justify-between gap-3">
             <button type="button" class="flex items-center gap-3 rounded-md px-2 py-1 text-left lg:hidden" onClick={() => navigate("/home")}>

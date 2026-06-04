@@ -129,7 +129,7 @@ export default function MarketplacePage() {
     {
       id: marketplaceIds[0],
       label: "智能体",
-      title: "智能体库",
+      title: "智能体",
       detail: `${summary().primary} 入口 / ${summary().collaborators} 专业智能体`,
       state: state(loading(), agentCount()),
       description: "选择 RAILWISE 协作入口、审校、平差、资料整理、报告生成等专业智能体。",
@@ -145,7 +145,7 @@ export default function MarketplacePage() {
     {
       id: marketplaceIds[1],
       label: "工具",
-      title: "工具链",
+      title: "工具",
       detail: `${toolCount()} 个工具`,
       state: state(loading(), toolCount()),
       description: "文件读取、规范检索、测绘生产、报告导出等工具由执行层调度。",
@@ -160,9 +160,9 @@ export default function MarketplacePage() {
     },
     {
       id: marketplaceIds[2],
-      label: "流程",
-      title: "专业流程",
-      detail: `${skillCount()} 个流程`,
+      label: "技能",
+      title: "技能",
+      detail: `${skillCount()} 个技能`,
       state: state(loading(), skillCount()),
       description: "沉淀工程测绘作业方法、审查规则、交付流程和工具使用规范。",
       preview: preview(
@@ -170,7 +170,7 @@ export default function MarketplacePage() {
         professionalSkills(skills(), 4).map((skill) => ({ title: skill.name, meta: skill.description })),
       ),
       href: "/agents#agent-skills",
-      action: "查看流程",
+      action: "查看技能",
     },
     {
       id: marketplaceIds[3],
@@ -261,7 +261,7 @@ export default function MarketplacePage() {
         <div class="marketplace-shell__copy">
           <span class="agent-kicker">RAILWISE 能力市场</span>
           <h1>能力市场</h1>
-          <p>像插件市场一样管理智能体、工具、专业流程、MCP 与模型；需要执行任务时回到工作台。</p>
+          <p>像插件市场一样管理智能体、工具、技能、MCP 与模型；需要执行任务时回到工作台。</p>
         </div>
         <div class="marketplace-shell__actions">
           <A href="/home" class="agent-button agent-button--ghost">

@@ -68,7 +68,7 @@ export default function AgentDetailPage() {
     <main class="agent-studio agent-detail" data-testid="agent-detail-page">
       <section class="agent-detail__bar" data-testid="agent-detail-shell">
         <button type="button" class="agent-button agent-button--ghost" onClick={() => navigate("/agents")}>
-          返回智能体库
+          返回智能体
         </button>
         <div>
           <span class="agent-kicker">智能体配置</span>

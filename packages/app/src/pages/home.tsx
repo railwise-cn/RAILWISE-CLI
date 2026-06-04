@@ -138,7 +138,7 @@ export default function Home() {
 
           <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-8">
             <div class="mb-5 text-center">
-              <h1 class="text-30-bold text-text-strong">想让 RAILWISE 完成什么？</h1>
+              <h1 class="text-30-bold text-text-strong">RAILWISE</h1>
             </div>
 
             <form
@@ -173,7 +173,7 @@ export default function Home() {
                 class="min-h-[210px] w-full resize-none bg-transparent p-4 text-15-regular text-text-strong outline-none"
                 value={prompt()}
                 onInput={(event) => setPrompt(event.currentTarget.value)}
-                placeholder="让 RAILWISE 检查资料、分析数据、调用专业能力，并生成下一步执行计划。"
+                placeholder="描述要推进的工程任务，例如：检查复测资料并生成下一步计划。"
               />
 
               <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border-weak-base pt-3">

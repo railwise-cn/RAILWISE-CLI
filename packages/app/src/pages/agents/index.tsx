@@ -195,7 +195,7 @@ export default function AgentsPage() {
     {
       id: "agents" as const,
       label: "智能体",
-      title: "智能体库",
+      title: "智能体",
       status: agentStatus(),
       description: "RAILWISE 负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
       target: "#agent-library",
@@ -204,7 +204,7 @@ export default function AgentsPage() {
     {
       id: "tools" as const,
       label: "工具",
-      title: "工具链",
+      title: "工具",
       status: toolStatus(),
       description: "工具会被执行层按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
       target: "#agent-tools",
@@ -212,12 +212,12 @@ export default function AgentsPage() {
     },
     {
       id: "skills" as const,
-      label: "流程",
-      title: "专业流程",
+      label: "技能",
+      title: "技能",
       status: skillStatus(),
-      description: "专业流程是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
+      description: "技能是可复用的作业方法，适合沉淀工程测绘流程、审查规则和交付规范。",
       target: "#agent-skills",
-      action: "查看流程",
+      action: "查看技能",
     },
     {
       id: "workflows" as const,
@@ -317,14 +317,14 @@ export default function AgentsPage() {
     if (platform.openDirectoryPickerDialog && server.isLocal()) {
       resolve(
         await platform.openDirectoryPickerDialog({
-          title: "选择工作区文件夹",
+          title: "选择项目",
           multiple: false,
         }),
       )
       return
     }
     dialog.show(
-      () => <DialogSelectDirectory title="选择工作区文件夹" onSelect={resolve} />,
+      () => <DialogSelectDirectory title="选择项目" onSelect={resolve} />,
       () => resolve(null),
     )
   }
@@ -469,7 +469,7 @@ export default function AgentsPage() {
             }}
           >
             <div class="agent-composer__title">
-              <h1>让 RAILWISE 组织哪项工作？</h1>
+              <h1>RAILWISE 协作</h1>
             </div>
             <div class="agent-composer__project">
               <span>
@@ -480,11 +480,11 @@ export default function AgentsPage() {
                 <small>{selectedMeta()}</small>
               </div>
               <button type="button" class="agent-button agent-button--ghost" onClick={chooseDirectory}>
-                选择文件夹
+                选择项目
               </button>
             </div>
             <div class="agent-composer__agent">
-              <label for="agent-collaboration-agent">协作角色</label>
+              <label for="agent-collaboration-agent">入口</label>
               <select
                 id="agent-collaboration-agent"
                 data-testid="agent-collaboration-agent"
@@ -501,13 +501,13 @@ export default function AgentsPage() {
                   </For>
                 </Show>
               </select>
-              <small>{activeAgent()?.description ?? "选择一个智能体作为本次任务入口。"}</small>
+              <small>{activeAgent()?.description ?? "选择本次任务的入口。"}</small>
             </div>
             <textarea
               data-testid="agent-collaboration-prompt"
               value={draft()}
               onInput={(event) => setDraft(event.currentTarget.value)}
-              placeholder="例如：检查当前线路复测资料，列出缺失文件，并生成下一步执行计划。"
+              placeholder="描述任务，例如：检查复测资料，列出缺失文件，并生成下一步计划。"
             />
             <div class="agent-composer__footer">
               <div class="agent-starters">
@@ -579,7 +579,7 @@ export default function AgentsPage() {
               <strong>{tools().length}</strong>
             </div>
             <div>
-              <span>流程</span>
+              <span>技能</span>
               <strong>{skills().length}</strong>
             </div>
           </section>
@@ -590,7 +590,7 @@ export default function AgentsPage() {
         <div class="agent-section__header">
           <div>
             <h2>模型接入与智能体路由</h2>
-            <p>默认建议 {recommendedModel}；RAILWISE、审校、平差等智能体可以分别绑定不同模型。</p>
+            <p>默认建议 {recommendedModel}；不同智能体可以绑定不同模型。</p>
           </div>
           <button type="button" class="agent-button" onClick={connectProvider}>
             接入模型
@@ -704,8 +704,8 @@ export default function AgentsPage() {
 
       <section class="agent-toolbar" id="agent-library">
         <div>
-          <h2>智能体库</h2>
-          <p>查看可用智能体并进入配置；真正协作从首页或上方对话框发起。</p>
+          <h2>智能体</h2>
+          <p>查看、搜索和配置可用智能体。</p>
         </div>
         <div class="agent-toolbar__controls">
           <input
@@ -738,8 +738,8 @@ export default function AgentsPage() {
         <div class="agent-inventory__column" id="agent-tools">
           <div class="agent-section__header">
             <div>
-              <h2>工具链</h2>
-              <p>这些工具会在智能体执行任务时被调度，不再藏在命令行里。</p>
+              <h2>工具</h2>
+              <p>执行任务时由 RAILWISE 调度。</p>
             </div>
           </div>
           <div class="agent-tool-groups">
@@ -767,8 +767,8 @@ export default function AgentsPage() {
         <div class="agent-inventory__column" id="agent-skills">
           <div class="agent-section__header">
             <div>
-              <h2>专业流程</h2>
-              <p>按任务加载作业流程、审核方法和工具使用规范。</p>
+              <h2>技能</h2>
+              <p>按任务加载作业流程和审核方法。</p>
             </div>
           </div>
           <div class="agent-skill-list">
@@ -781,7 +781,7 @@ export default function AgentsPage() {
               )}
             </For>
             <Show when={!skills().length && !loading()}>
-              <div class="agent-empty">当前未发现专业流程。</div>
+              <div class="agent-empty">当前未发现技能。</div>
             </Show>
           </div>
         </div>

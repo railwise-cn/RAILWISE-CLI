@@ -8,7 +8,7 @@ test("旧项目驾驶舱入口进入极简工作台与全局项目栏", async ({
   })
 
   await visible(page.locator("[data-testid=home-workbench]"))
-  await expect(page.getByRole("heading", { name: "想让 RAILWISE 完成什么？" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "RAILWISE" })).toBeVisible()
   await expect(page.locator("[data-testid=home-chat-composer]")).toBeVisible()
   await expect(page.getByRole("button", { name: "选择项目" })).toBeVisible()
   await expect(page.getByRole("button", { name: /^执行层$/ })).toHaveCount(0)
@@ -42,12 +42,12 @@ test("智能体工作台不再使用旧管理页语言", async ({ launchApp }) =
   })
 
   await visible(page.locator("[data-testid=agents-page]"))
-  await expect(page.getByRole("heading", { name: "让 RAILWISE 组织哪项工作？" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "RAILWISE 协作" })).toBeVisible()
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
   await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
-  await expect(page.locator("#agent-library").getByRole("heading", { name: "智能体库" })).toBeVisible()
+  await expect(page.locator("#agent-library").getByRole("heading", { name: "智能体" })).toBeVisible()
   await expect(page.locator(".agent-command-sidebar")).toHaveCount(0)
   await expect(page.locator("[data-testid=agent-project-directory]")).toHaveCount(0)
   await expect(page.getByText("选择文件夹后会出现在这里。")).toHaveCount(0)

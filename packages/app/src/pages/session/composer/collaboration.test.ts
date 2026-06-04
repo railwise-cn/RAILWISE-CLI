@@ -26,7 +26,7 @@ describe("capabilityPrompt", () => {
       "请调用工具「格式转换」处理当前任务。\n处理 CPIII 数据",
     )
     expect(capabilityPrompt({ kind: "skill", name: "survey-review" }, "")).toBe(
-      "请使用专业流程「survey-review」执行当前任务。",
+      "请使用技能「survey-review」执行当前任务。",
     )
   })
 })

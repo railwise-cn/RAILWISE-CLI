@@ -12,18 +12,18 @@
   font-family: var(--font-family, "PingFang SC", "Helvetica Neue", sans-serif);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
   height: 100%;
   overflow: auto;
-  padding: 28px;
+  padding: 20px;
   background: var(--agent-bg);
   color: var(--agent-text);
 }
 
 .agent-command-shell {
   display: grid;
-  grid-template-columns: minmax(420px, 1fr) 300px;
-  min-height: min(820px, calc(100vh - 56px));
+  grid-template-columns: minmax(420px, 1fr) 280px;
+  min-height: min(680px, calc(100vh - 44px));
   overflow: hidden;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
@@ -39,16 +39,16 @@
 .agent-command-inspector {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 18px;
+  gap: 12px;
+  padding: 14px;
 }
 
 .agent-command-main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 34px;
-  padding: 22px 28px 34px;
+  gap: 22px;
+  padding: 18px 24px 26px;
 }
 
 .agent-command-inspector {
@@ -166,14 +166,14 @@
 }
 
 .agent-composer__title {
-  padding: 0 16px 16px;
+  padding: 0 14px 12px;
   text-align: center;
 }
 
 .agent-composer__title h1 {
   margin: 0;
   color: var(--agent-text);
-  font-size: 24px;
+  font-size: 25px;
   font-weight: 720;
   letter-spacing: 0;
   line-height: 1.2;
@@ -257,9 +257,9 @@
 }
 
 .agent-composer textarea {
-  min-height: 230px;
+  min-height: 190px;
   resize: vertical;
-  padding: 16px;
+  padding: 14px;
   font-size: 15px;
   line-height: 1.6;
 }
@@ -295,11 +295,11 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
   border: 1px solid var(--agent-border);
   border-radius: var(--agent-radius);
   background: color-mix(in srgb, var(--agent-bg) 54%, var(--agent-surface));
-  padding: 13px;
+  padding: 12px;
 }
 
 .agent-inspector-card__bar,
@@ -377,7 +377,7 @@
 .agent-inspector-card--metrics strong {
   margin-top: 5px;
   color: var(--agent-text);
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
 }
 

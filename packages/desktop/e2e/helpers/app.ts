@@ -5,8 +5,18 @@ type WorkspaceFile = {
   kind: "csv" | "dxf" | "pptx"
 }
 
+type Project = {
+  id?: string
+  worktree: string
+  time: {
+    created: number
+    updated?: number
+  }
+}
+
 type LaunchOptions = {
   model?: "configured"
+  projects?: Project[]
   workspaceFiles?: WorkspaceFile[]
 }
 
@@ -282,13 +292,16 @@ async function setup(page: Page, opts: LaunchOptions) {
   )
   await page.route(`${server}/global/config`, (route) => json(route, {}))
   await page.route(`${server}/config`, (route) => json(route, {}))
-  await page.route(`${server}/project`, (route) => json(route, []))
+  await page.route(`${server}/project`, (route) => json(route, opts.projects ?? []))
   await page.route(`${server}/project/current`, (route) =>
-    json(route, {
-      id: "railwise-e2e",
-      worktree: "/tmp/railwise-e2e/worktree",
-      time: { created: Date.now(), updated: Date.now() },
-    }),
+    json(
+      route,
+      opts.projects?.[0] ?? {
+        id: "railwise-e2e",
+        worktree: "/tmp/railwise-e2e/worktree",
+        time: { created: Date.now(), updated: Date.now() },
+      },
+    ),
   )
   await page.route(`${server}/provider`, (route) =>
     json(route, opts.model === "configured" ? provider : { all: [], default: {}, connected: [] }),

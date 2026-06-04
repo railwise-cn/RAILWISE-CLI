@@ -8,8 +8,12 @@ describe("agentDisplayName", () => {
     expect(agentDisplayName("ppt_master")).toBe("汇报生成")
   })
 
-  test("lets configured displayName override builtin fallbacks", () => {
-    expect(agentDisplayName({ name: "chief_manager", displayName: "项目总控" })).toBe("项目总控")
+  test("keeps the chief manager product-facing as RAILWISE", () => {
+    expect(agentDisplayName({ name: "chief_manager", displayName: "旧入口名称" })).toBe("RAILWISE")
+  })
+
+  test("lets configured displayName override non-chief builtin fallbacks", () => {
+    expect(agentDisplayName({ name: "qa_inspector", displayName: "外业首检" })).toBe("外业首检")
   })
 
   test("keeps custom agent ids readable when no display name is configured", () => {

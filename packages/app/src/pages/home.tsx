@@ -150,7 +150,7 @@ export default function Home() {
               }}
             >
               <div class="flex flex-wrap items-center gap-3 border-b border-border-weak-base pb-3">
-                <div class="flex min-w-0 flex-1 items-center gap-3 rounded-lg bg-surface-element px-3 py-2">
+                <div class="flex min-w-0 flex-1 items-center gap-3 rounded-lg bg-surface-element px-3 py-2" data-testid="home-project-directory">
                   <span class="flex size-8 shrink-0 items-center justify-center rounded-md border border-border-weak-base text-text-weak">
                     <Icon name="folder" size="small" />
                   </span>

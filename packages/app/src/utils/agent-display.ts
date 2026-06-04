@@ -18,6 +18,7 @@ const builtins: Record<string, string> = {
 export function agentDisplayName(input?: AgentLike | string | null) {
   const name = typeof input === "string" ? input : input?.name
   const label = typeof input === "string" ? undefined : input?.displayName?.trim()
+  if (name === "chief_manager") return builtins.chief_manager
   if (label) return label
   if (!name) return ""
   return builtins[name] ?? name.replaceAll("_", " ")

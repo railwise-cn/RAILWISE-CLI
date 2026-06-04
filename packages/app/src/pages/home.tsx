@@ -26,7 +26,6 @@ export default function Home() {
   const language = useLanguage()
   const providers = useProviders()
   const [directory, setDirectory] = createSignal("")
-  const [typed, setTyped] = createSignal("")
   const [prompt, setPrompt] = createSignal("")
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
   const selectedDirectory = createMemo(() => directory() || recent()[0]?.worktree || "")
@@ -70,14 +69,8 @@ export default function Home() {
     return parts.at(-1) ?? "未选择项目"
   }
 
-  function updateDirectory(value: string) {
-    setTyped(value)
-    setDirectory(value)
-  }
-
   function selectDirectory(value: string) {
     setDirectory(value)
-    setTyped("")
   }
 
   async function chooseProject() {
@@ -227,18 +220,6 @@ export default function Home() {
                   选择文件夹
                 </Button>
               </div>
-
-              <label class="sr-only" for="home-directory">
-                工作区文件夹
-              </label>
-              <input
-                id="home-directory"
-                data-testid="home-project-directory"
-                class="mt-3 h-9 w-full rounded-md border border-border-weak-base bg-surface-base px-3 text-13-mono text-text-strong outline-none"
-                value={typed()}
-                onInput={(event) => updateDirectory(event.currentTarget.value)}
-                placeholder="输入或粘贴项目路径（可选）"
-              />
 
               <label class="sr-only" for="home-prompt">
                 对话

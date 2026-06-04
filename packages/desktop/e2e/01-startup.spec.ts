@@ -9,10 +9,13 @@ test("启动后 sidecar 在 15s 内就绪", async ({ launchApp }) => {
 })
 
 test("首页任务输入直接进入 chief_manager 协作会话", async ({ launchApp }) => {
-  const { page } = await launchApp()
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+  })
 
   await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
-  await page.locator("[data-testid=home-project-directory]").fill("/tmp/railwise-e2e/worktree")
+  await expect(page.getByText("worktree").first()).toBeVisible()
   await page.locator("[data-testid=home-task-input]").fill("检查当前线路复测资料，列出缺失文件并给出下一步计划。")
   await page.locator("[data-testid=home-start-session]").click()
 
@@ -26,10 +29,14 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
 })
 
 test("已配置模型时首页任务可以创建会话并发送给 chief_manager", async ({ launchApp }) => {
-  const { page } = await launchApp("/home", { model: "configured" })
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    model: "configured",
+    projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+  })
 
   await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
-  await page.locator("[data-testid=home-project-directory]").fill("/tmp/railwise-e2e/worktree")
+  await expect(page.getByText("worktree").first()).toBeVisible()
   await page.locator("[data-testid=home-task-input]").fill("用主控智能体检查复测资料，并调用专业智能体列出风险。")
   await page.locator("[data-testid=home-start-session]").click()
 

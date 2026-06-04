@@ -30,6 +30,9 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   ).toBe(true)
   await expect(page.locator("[data-testid=session-new-project-name]")).toHaveText("worktree")
   await expect(card).not.toContainText("/tmp/railwise-e2e")
+  await visible(page.locator("[data-testid=session-status-panel]"), 15000)
+  await expect(page.locator("[data-testid=session-status-project]")).toHaveText("worktree")
+  await expect(page.locator("[data-testid=session-status-agent]")).toHaveText("chief_manager")
   await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
   await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("chief_manager")
   await expect(page.locator("[data-testid=session-model-readiness]")).toContainText("发送前先接入模型")
@@ -52,6 +55,8 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
 
   await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
   await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("DeepSeek V4")
+  await visible(page.locator("[data-testid=session-status-panel]"), 15000)
+  await expect(page.locator("[data-testid=session-status-model]")).toContainText("DeepSeek V4")
   await expect(page.locator("[data-testid=session-model-readiness]")).toHaveCount(0)
 
   const request = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))

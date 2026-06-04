@@ -1,6 +1,7 @@
 import "./workspace.css"
 import { A } from "@solidjs/router"
 import { useGlobalSync, usePlatform, useServer } from "@railwise/app"
+import { Icon } from "@railwise/ui/icon"
 import { createEffect, createMemo, For, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { VList } from "virtua/solid"
@@ -119,21 +120,25 @@ export default function WorkspaceDiffPage() {
       <section class="workspace-main">
         <header class="workspace-head">
           <div>
-            <p>/workspace/diff</p>
+            <p>工程成果差异审查</p>
             <h1>版本对比</h1>
           </div>
           <div class="workspace-actions">
             <button type="button" onClick={() => choose("left")}>
+              <Icon name="archive" size="small" />
               选择旧版本
             </button>
             <button type="button" onClick={() => choose("right")}>
+              <Icon name="folder-add-left" size="small" />
               选择新版本
             </button>
             <button type="button" onClick={sendDiff} disabled={!state.left || !state.right || state.sending}>
-              {state.sending ? "发送中" : "发送到 Agent"}
+              <Icon name="speech-bubble" size="small" />
+              {state.sending ? "发送中" : "交给智能体"}
             </button>
             <A class="workspace-open-link" href="/workspace">
-              返回工作区
+              <Icon name="arrow-left" size="small" />
+              返回
             </A>
           </div>
         </header>
@@ -186,7 +191,7 @@ function FileBadge(props: { label: string; path?: string; tone: "added" | "remov
     <div class="workspace-diff-badge" data-tone={props.tone}>
       <span>{props.label}</span>
       <strong>{props.path ? name(props.path) : "未选择"}</strong>
-      <small>{props.path ?? "请选择文件"}</small>
+      <small>{props.path ? folder(props.path) : "请选择文件"}</small>
     </div>
   )
 }
@@ -281,4 +286,9 @@ function split(input: string) {
 
 function name(path: string) {
   return path.split(/[\\/]/).pop() || path
+}
+
+function folder(path: string) {
+  const parts = path.split(/[\\/]/).filter(Boolean)
+  return parts.at(-2) ?? "未归档"
 }

@@ -1,6 +1,7 @@
 import "./workspace.css"
 import { A } from "@solidjs/router"
 import { useGlobalSync, usePlatform, useServer } from "@railwise/app"
+import { Icon } from "@railwise/ui/icon"
 import { convertFileSrc } from "@tauri-apps/api/core"
 import { createEffect, createMemo, For, Match, onCleanup, onMount, Show, Switch } from "solid-js"
 import { createStore } from "solid-js/store"
@@ -181,27 +182,30 @@ export default function WorkspacePage() {
     <main class="rw-workspace" data-testid="workspace-container">
       <aside class="workspace-sidebar">
         <div>
-          <p class="workspace-muted">/workspace</p>
-          <h2>数据工作区</h2>
+          <p class="workspace-muted">工程文件</p>
+          <h2>文件</h2>
         </div>
         <div class="workspace-actions">
           <button type="button" data-testid="open-files-btn" onClick={openFiles}>
-            打开文件
+            <Icon name="folder-add-left" size="small" />
+            导入
           </button>
           <A class="workspace-open-link" href="/workspace/diff">
-            版本对比
+            <Icon name="branch" size="small" />
+            对比
           </A>
           <A class="workspace-open-link" href="/agents">
+            <Icon name="brain" size="small" />
             智能体
           </A>
         </div>
         <div class="workspace-search">
-          <label for="workspace-search">搜索最近文件</label>
+          <label for="workspace-search">搜索</label>
           <input
             id="workspace-search"
             value={state.query}
             onInput={(event) => setState("query", event.currentTarget.value)}
-            placeholder="文件名、路径或类型"
+            placeholder="文件名或类型"
           />
         </div>
         <div class="workspace-files" data-testid="workspace-file-list">
@@ -225,7 +229,7 @@ export default function WorkspacePage() {
                       >
                         <strong>{item.name}</strong>
                         <span class="workspace-chip">{labels[item.kind]}</span>
-                        <span>{item.path}</span>
+                        <span>{project(item.path)}</span>
                       </button>
                     )}
                   </For>
@@ -246,15 +250,17 @@ export default function WorkspacePage() {
       <section class="workspace-main">
         <header class="workspace-head">
           <div>
-            <p>工程文件预览、转换与 Agent 分发</p>
-            <h1>{selected()?.name ?? "Railwise Data Workspace"}</h1>
+            <p>文件预览</p>
+            <h1>{selected()?.name ?? "Railwise 工作区"}</h1>
           </div>
           <div class="workspace-actions">
             <button type="button" data-testid="open-native-btn" onClick={() => openNative()} disabled={!selected()}>
+              <Icon name="open-file" size="small" />
               系统打开
             </button>
             <button type="button" data-testid="send-to-agent-btn" onClick={() => sendToAgent()} disabled={!selected() || state.sending}>
-              {state.sending ? "发送中" : "发送到 Agent"}
+              <Icon name="speech-bubble" size="small" />
+              {state.sending ? "发送中" : "交给智能体"}
             </button>
           </div>
         </header>
@@ -265,16 +271,16 @@ export default function WorkspacePage() {
       <aside class="workspace-inspector">
         <section class="workspace-panel">
           <div class="workspace-panel__head">
-            <h2>文件属性</h2>
+            <h2>文件信息</h2>
             <span>{selected() ? labels[selected()!.kind] : "未选择"}</span>
           </div>
           <Inspector file={selected()} preview={state.preview} />
         </section>
         <section class="workspace-panel">
           <div class="workspace-panel__head">
-            <h2>操作状态</h2>
+            <h2>协作</h2>
           </div>
-          <p class="workspace-muted">{state.sendStatus ?? "可将当前文件交给 Agent 生成结构识别和处理建议。"}</p>
+          <p class="workspace-muted">{state.sendStatus ?? "可把当前文件交给智能体做结构识别和处理建议。"}</p>
         </section>
       </aside>
     </main>
@@ -384,15 +390,15 @@ function ContextMenu(props: {
             系统打开
           </button>
           <button type="button" onClick={() => props.onSend(file())}>
-            发送到数据分析 Agent
+            数据分析
           </button>
           <button type="button" onClick={() => props.onSend(file(), "review")}>
-            发送到成果审查 Agent
+            成果审查
           </button>
           <button type="button" onClick={() => props.onSend(file(), "cad")}>
-            发送到 CAD 图纸审查 Agent
+            图纸审查
           </button>
-          <A href="/workspace/diff">进入版本对比</A>
+          <A href="/workspace/diff">版本对比</A>
         </div>
       )}
     </Show>
@@ -685,8 +691,8 @@ function Inspector(props: { file?: WorkspaceFile; preview: Preview }) {
             <strong>{labels[file().kind]}</strong>
           </div>
           <div class="workspace-stat">
-            <span>路径</span>
-            <strong>{file().path}</strong>
+            <span>位置</span>
+            <strong>{project(file().path)}</strong>
           </div>
           <Show when={props.preview.table}>
             {(table) => (

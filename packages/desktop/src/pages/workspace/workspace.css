@@ -1,6 +1,6 @@
 .rw-workspace {
   display: grid;
-  grid-template-columns: 280px minmax(520px, 1fr) 300px;
+  grid-template-columns: 250px minmax(360px, 1fr) 240px;
   height: 100%;
   min-height: 100vh;
   overflow: hidden;
@@ -21,7 +21,7 @@
   flex-direction: column;
   gap: 14px;
   border-color: rgba(21, 23, 17, 0.1);
-  padding: 16px;
+  padding: 14px;
 }
 
 .workspace-sidebar {
@@ -66,7 +66,7 @@
 }
 
 .workspace-head h1 {
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.12;
 }
 
@@ -86,6 +86,16 @@
   justify-content: end;
 }
 
+.workspace-sidebar .workspace-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: stretch;
+}
+
+.workspace-sidebar .workspace-actions button:first-child {
+  grid-column: 1 / -1;
+}
+
 .workspace-actions button,
 .workspace-toolbar button,
 .workspace-tabs button,
@@ -102,9 +112,18 @@
 
 .workspace-actions button,
 .workspace-toolbar button,
-.workspace-tabs button,
 .workspace-doc-actions button,
 .workspace-open-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 11px;
+  white-space: nowrap;
+}
+
+.workspace-tabs button {
   min-height: 34px;
   padding: 0 11px;
 }
@@ -161,7 +180,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 4px 8px;
-  padding: 10px;
+  padding: 8px 9px;
   text-align: left;
 }
 
@@ -181,6 +200,7 @@
 .workspace-file span:not(.workspace-chip) {
   grid-column: 1 / -1;
   overflow: hidden;
+  color: #73786c;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -374,7 +394,7 @@
 
 .workspace-dxf-wrap {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: 160px minmax(0, 1fr);
 }
 
 .workspace-layers {

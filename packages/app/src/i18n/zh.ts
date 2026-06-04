@@ -820,7 +820,7 @@ export const dict = {
   "settings.permissions.tool.bash.title": "Bash",
   "settings.permissions.tool.bash.description": "运行 shell 命令",
   "settings.permissions.tool.task.title": "任务",
-  "settings.permissions.tool.task.description": "启动子智能体",
+  "settings.permissions.tool.task.description": "启动专业智能体",
   "settings.permissions.tool.skill.title": "技能",
   "settings.permissions.tool.skill.description": "按名称加载技能",
   "settings.permissions.tool.lsp.title": "LSP",

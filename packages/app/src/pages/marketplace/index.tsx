@@ -130,9 +130,9 @@ export default function MarketplacePage() {
       id: marketplaceIds[0],
       label: "智能体",
       title: "智能体库",
-      detail: `${summary().primary} 主控 / ${summary().collaborators} 专业智能体`,
+      detail: `${summary().primary} 入口 / ${summary().collaborators} 专业智能体`,
       state: state(loading(), agentCount()),
-      description: "选择主控、审校、平差、资料整理、报告生成等专业智能体。",
+      description: "选择 RAILWISE 协作入口、审校、平差、资料整理、报告生成等专业智能体。",
       preview: preview(
         "agents",
         visibleAgents()

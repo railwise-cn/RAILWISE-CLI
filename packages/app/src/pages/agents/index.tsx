@@ -38,7 +38,7 @@ import { agentDisplayName } from "@/utils/agent-display"
 
 const modes = [
   { value: "all", label: "全部" },
-  { value: "primary", label: "主控智能体" },
+  { value: "primary", label: "协作入口" },
   { value: "collaborator", label: "专业智能体" },
 ] as const
 type ModeFilter = (typeof modes)[number]["value"]
@@ -197,7 +197,7 @@ export default function AgentsPage() {
       label: "智能体",
       title: "智能体库",
       status: agentStatus(),
-      description: "主控智能体负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
+      description: "RAILWISE 负责拆解任务，专业智能体负责规范、平差、资料整理和报告产出。",
       target: "#agent-library",
       action: "查看智能体",
     },
@@ -590,7 +590,7 @@ export default function AgentsPage() {
         <div class="agent-section__header">
           <div>
             <h2>模型接入与智能体路由</h2>
-            <p>默认建议 {recommendedModel}；主控、审校、平差等智能体可以分别绑定不同模型。</p>
+            <p>默认建议 {recommendedModel}；RAILWISE、审校、平差等智能体可以分别绑定不同模型。</p>
           </div>
           <button type="button" class="agent-button" onClick={connectProvider}>
             接入模型
@@ -693,7 +693,7 @@ export default function AgentsPage() {
           <For each={featured()}>
             {(agent) => (
               <A href={`/agents/${agent.name}`} class="agent-rail__item">
-                <span>{agent.mode === "primary" ? "主控" : "协作"}</span>
+                <span>{agent.mode === "primary" ? "入口" : "协作"}</span>
                 <strong>{agentDisplayName(agent)}</strong>
                 <small>{agent.description ?? "参与多智能体生产链路"}</small>
               </A>

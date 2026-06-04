@@ -223,7 +223,7 @@ export default function HarnessPage() {
       icon: "brain",
       title: "模型路由",
       value: model(),
-      description: "主控、审校、平差等智能体可以按任务绑定不同模型。",
+      description: "RAILWISE、审校、平差等智能体可以按任务绑定不同模型。",
     },
     {
       icon: "circle-ban-sign",

@@ -184,7 +184,7 @@ check(
     !marketplace.includes("marketplace-card") &&
     !marketplace.includes("agent-collaboration-start") &&
     !marketplace.includes("agent-model-routing") &&
-    has(agentStudio, ['launchApp("/marketplace")', 'launchApp("/agents")', "toHaveCount(0)", "agent-collaboration-start"]),
+    has(agentStudio, ['launchApp("/marketplace"', 'launchApp("/agents"', "toHaveCount(0)", "agent-collaboration-start"]),
   "marketplace stays as one concise registry plus detail panel while /agents keeps advanced management",
 )
 check(
@@ -196,10 +196,13 @@ check(
     !agentCollaborationTest.includes("Agent Studio") &&
     !sessionCollaboration.includes("Skill「") &&
     sessionCollaboration.includes("请使用专业流程") &&
-    agentsPage.includes("RAILWISE 高级智能体管理") &&
-    agentsPage.includes("上下文文件夹") &&
+    agentsPage.includes("让 RAILWISE 组织哪项工作？") &&
+    agentsPage.includes("agent-collaboration-start") &&
+    agentsPage.includes("模型接入与智能体路由") &&
     agentsPage.includes("智能体库") &&
     agentsPage.includes("#agent-library") &&
+    !agentsPage.includes("RAILWISE 高级智能体管理") &&
+    !agentsPage.includes("上下文文件夹") &&
     !agentsPage.includes("RAILWISE 能力市场") &&
     !agentsPage.includes("项目工作区") &&
     !agentsPage.includes("智能体矩阵") &&
@@ -234,7 +237,7 @@ check(
       "流程",
     ]) &&
     has(marketplaceState, ["capabilitiesFor", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
-    has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek"]) &&
+    has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek", "RAILWISE 协作入口"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),
@@ -398,7 +401,7 @@ check(
     "没有大面积 `0` 计数器",
     "选择文件夹",
     "执行层显示工作区边界",
-    "项目总控",
+    "RAILWISE 协作入口",
     "本地文件读取",
     "复测资料检查",
     "DeepSeek",

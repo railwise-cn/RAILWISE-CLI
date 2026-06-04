@@ -14,8 +14,8 @@ test("设置中心：MCP、智能体、命令页展示真实数据", async ({ la
 
   await page.getByRole("tab", { name: /智能体|Agents/ }).click()
   const agents = page.getByRole("tabpanel", { name: /智能体|Agents/ })
-  await expect(agents.getByText(/chief_manager/)).toBeVisible()
-  await expect(agents.getByText(/qa_inspector/)).toBeVisible()
+  await expect(agents.getByText(/RAILWISE/)).toBeVisible()
+  await expect(agents.getByText(/数据质检/)).toBeVisible()
   await expect(agents.locator("[data-testid=settings-agents-panel]")).toContainText(/智能体能力配置|Agent capability configuration/)
   await expect(agents.getByRole("button", { name: /打开智能体工作台|Open Agent Studio/ })).toBeVisible()
   await expect(agents.getByRole("button", { name: /配置|Configure/ }).first()).toBeVisible()

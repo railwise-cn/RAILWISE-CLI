@@ -1,12 +1,12 @@
 # 内置多智能体
 
-RAILWISE-CLI 当前内置 12 个工程测绘业务智能体，默认由 `chief_manager` 作为项目总工统一调度。安装后无需手工复制 `.railwise/agent`，npm、curl、Homebrew 和 GitHub Release 包都会随 CLI 带上这些资源。
+RAILWISE-CLI 当前内置 12 个工程测绘业务智能体，默认由 `chief_manager` 作为 RAILWISE 协作入口统一调度。安装后无需手工复制 `.railwise/agent`，npm、curl、Homebrew 和 GitHub Release 包都会随 CLI 带上这些资源。
 
 ## 智能体清单
 
 | 智能体 | 角色 | 主要职责 |
 | --- | --- | --- |
-| `chief_manager` | 项目总工 | 拆解任务、安排协作顺序、控制质量闸门 |
+| `chief_manager` | RAILWISE 协作入口 | 拆解任务、安排协作顺序、控制质量闸门 |
 | `source_ingestor` | 资料入库专员 | 识别项目资料、整理输入清单、发现缺失文件 |
 | `knowledge_curator` | 知识库整理员 | 沉淀项目 FAQ、案例、复盘和 Wiki 页面 |
 | `solution_architect` | 方案设计师 | 监测方案、技术路线、测点布设和工作量估算 |
@@ -27,7 +27,7 @@ railwise --agent chief_manager
 railwise run --agent data_analyst "校核这批沉降数据"
 ```
 
-日常建议从 `chief_manager` 开始，让它根据任务自动调度；只有在明确知道要找哪个角色时，再直接指定子智能体。
+日常建议从 `chief_manager` 开始，让 RAILWISE 根据任务自动调度；只有在明确知道要找哪个角色时，再直接指定专业智能体。
 
 ## 项目级覆盖
 

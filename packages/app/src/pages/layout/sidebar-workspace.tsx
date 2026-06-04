@@ -69,10 +69,8 @@ export const WorkspaceDragOverlay = (props: {
     if (!directory) return
 
     const [workspaceStore] = globalSync.child(directory, { bootstrap: false })
-    const kind =
-      directory === project.worktree ? language.t("workspace.type.local") : language.t("workspace.type.sandbox")
-    const name = props.workspaceLabel(directory, workspaceStore.vcs?.branch, project.id)
-    return `${kind} : ${name}`
+    if (directory === project.worktree) return language.t("workspace.label.main")
+    return props.workspaceLabel(directory, workspaceStore.vcs?.branch, project.id)
   })
 
   return (
@@ -95,43 +93,62 @@ const WorkspaceHeader = (props: {
   renameWorkspace: WorkspaceSidebarContext["renameWorkspace"]
   setEditor: WorkspaceSidebarContext["setEditor"]
   projectId?: string
-}): JSX.Element => (
-  <div class="flex items-center gap-1 min-w-0 flex-1">
-    <div class="flex items-center justify-center shrink-0 size-6">
-      <Show when={props.busy()} fallback={<Icon name="branch" size="small" />}>
-        <Spinner class="size-[15px]" />
-      </Show>
+}): JSX.Element => {
+  const detail = createMemo(() => {
+    const branch = props.branch()
+    if (branch) return props.language.t("workspace.label.branch", { branch })
+    if (props.local()) return props.language.t("workspace.label.local")
+    return props.language.t("workspace.label.sandbox")
+  })
+
+  return (
+    <div class="flex items-center gap-2 min-w-0 flex-1">
+      <div class="flex items-center justify-center shrink-0 size-6">
+        <Show when={props.busy()} fallback={<Icon name="branch" size="small" />}>
+          <Spinner class="size-[15px]" />
+        </Show>
+      </div>
+      <div class="flex flex-col min-w-0 flex-1 text-left">
+        <Show
+          when={!props.local()}
+          fallback={
+            <span class="text-14-medium text-text-strong min-w-0 truncate">
+              {props.language.t("workspace.label.main")}
+            </span>
+          }
+        >
+          <props.InlineEditor
+            id={`workspace:${props.directory}`}
+            value={props.workspaceValue}
+            onSave={(next) => {
+              const trimmed = next.trim()
+              if (!trimmed) return
+              props.renameWorkspace(props.directory, trimmed, props.projectId, props.branch())
+              props.setEditor("value", props.workspaceValue())
+            }}
+            class="text-14-medium text-text-strong min-w-0 truncate"
+            displayClass="text-14-medium text-text-strong min-w-0 truncate"
+            editing={props.workspaceEditActive()}
+            stopPropagation={false}
+            openOnDblClick={false}
+          />
+        </Show>
+        <span class="text-11-regular text-text-weak min-w-0 truncate">{detail()}</span>
+      </div>
+      <div class="flex items-center justify-center shrink-0 overflow-hidden w-0 opacity-0 transition-all duration-200 group-hover/workspace:w-3.5 group-hover/workspace:opacity-100 group-focus-within/workspace:w-3.5 group-focus-within/workspace:opacity-100">
+        <Icon name={props.open() ? "chevron-down" : "chevron-right"} size="small" class="text-icon-base" />
+      </div>
     </div>
-    <span class="text-14-medium text-text-base shrink-0">
-      {props.local() ? props.language.t("workspace.type.local") : props.language.t("workspace.type.sandbox")} :
-    </span>
-    <Show
-      when={!props.local()}
-      fallback={
-        <span class="text-14-medium text-text-base min-w-0 truncate">
-          {props.branch() ?? getFilename(props.directory)}
-        </span>
-      }
-    >
-      <props.InlineEditor
-        id={`workspace:${props.directory}`}
-        value={props.workspaceValue}
-        onSave={(next) => {
-          const trimmed = next.trim()
-          if (!trimmed) return
-          props.renameWorkspace(props.directory, trimmed, props.projectId, props.branch())
-          props.setEditor("value", props.workspaceValue())
-        }}
-        class="text-14-medium text-text-base min-w-0 truncate"
-        displayClass="text-14-medium text-text-base min-w-0 truncate"
-        editing={props.workspaceEditActive()}
-        stopPropagation={false}
-        openOnDblClick={false}
-      />
-    </Show>
-    <div class="flex items-center justify-center shrink-0 overflow-hidden w-0 opacity-0 transition-all duration-200 group-hover/workspace:w-3.5 group-hover/workspace:opacity-100 group-focus-within/workspace:w-3.5 group-focus-within/workspace:opacity-100">
-      <Icon name={props.open() ? "chevron-down" : "chevron-right"} size="small" class="text-icon-base" />
+  )
+}
+
+const EmptySessions = (props: { language: ReturnType<typeof useLanguage> }): JSX.Element => (
+  <div class="mx-2 my-1 rounded-md border border-border-weak-base bg-background-base px-3 py-3">
+    <div class="flex items-center gap-2 text-12-medium text-text-strong">
+      <Icon name="new-session" size="small" class="text-icon-weak" />
+      <span>{props.language.t("sidebar.sessions.empty.title")}</span>
     </div>
+    <div class="mt-1 text-12-regular text-text-weak">{props.language.t("sidebar.sessions.empty.description")}</div>
   </div>
 )
 
@@ -262,6 +279,9 @@ const WorkspaceSessionList = (props: {
     <Show when={props.loading()}>
       <SessionSkeleton />
     </Show>
+    <Show when={!props.loading() && props.sessions().length === 0}>
+      <EmptySessions language={props.language} />
+    </Show>
     <For each={props.sessions()}>
       {(session) => (
         <SessionItem
@@ -327,11 +347,10 @@ export const SortableWorkspace = (props: {
   })
   const open = createMemo(() => props.ctx.workspaceExpanded(props.directory, local()))
   const boot = createMemo(() => open() || active())
-  const booted = createMemo((prev) => prev || workspaceStore.status === "complete", false)
   const hasMore = createMemo(() => workspaceStore.sessionTotal > sessions().length)
   const busy = createMemo(() => props.ctx.isBusy(props.directory))
   const wasBusy = createMemo((prev) => prev || busy(), false)
-  const loading = createMemo(() => open() && !booted() && sessions().length === 0 && !wasBusy())
+  const loading = createMemo(() => open() && workspaceStore.status === "loading" && sessions().length === 0 && !wasBusy())
   const touch = createMediaQuery("(hover: none)")
   const showNew = createMemo(() => !loading() && (touch() || sessions().length === 0 || (active() && !params.id)))
   const loadMore = async () => {
@@ -477,8 +496,7 @@ export const LocalWorkspace = (props: {
   const slug = createMemo(() => base64Encode(props.project.worktree))
   const sessions = createMemo(() => sortedRootSessions(workspace().store, props.sortNow()))
   const children = createMemo(() => childMapByParent(workspace().store.session))
-  const booted = createMemo((prev) => prev || workspace().store.status === "complete", false)
-  const loading = createMemo(() => !booted() && sessions().length === 0)
+  const loading = createMemo(() => workspace().store.status === "loading" && sessions().length === 0)
   const hasMore = createMemo(() => workspace().store.sessionTotal > sessions().length)
   const loadMore = async () => {
     workspace().setStore("limit", (limit) => (limit ?? 0) + 5)
@@ -493,6 +511,9 @@ export const LocalWorkspace = (props: {
       <nav class="flex flex-col gap-1 px-2">
         <Show when={loading()}>
           <SessionSkeleton />
+        </Show>
+        <Show when={!loading() && sessions().length === 0}>
+          <EmptySessions language={language} />
         </Show>
         <For each={sessions()}>
           {(session) => (

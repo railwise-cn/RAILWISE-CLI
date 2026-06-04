@@ -302,10 +302,8 @@ export const SortableProject = (props: {
 
   const label = (directory: string) => {
     const [data] = globalSync.child(directory, { bootstrap: false })
-    const kind =
-      directory === props.project.worktree ? language.t("workspace.type.local") : language.t("workspace.type.sandbox")
-    const name = props.ctx.workspaceLabel(directory, data.vcs?.branch, props.project.id)
-    return `${kind} : ${name}`
+    if (directory === props.project.worktree) return language.t("workspace.label.main")
+    return props.ctx.workspaceLabel(directory, data.vcs?.branch, props.project.id)
   }
 
   const projectStore = createMemo(() => globalSync.child(props.project.worktree, { bootstrap: false })[0])

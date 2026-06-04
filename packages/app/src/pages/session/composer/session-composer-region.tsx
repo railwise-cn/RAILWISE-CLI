@@ -18,6 +18,7 @@ import { getSessionHandoff, setSessionHandoff } from "@/pages/session/handoff"
 import { SessionPermissionDock } from "@/pages/session/composer/session-permission-dock"
 import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
 import type { SessionComposerState } from "@/pages/session/composer/session-composer-state"
+import { agentDisplayName } from "@/utils/agent-display"
 import {
   agentMentionPrompt,
   agentModelLabel,
@@ -93,7 +94,7 @@ export function SessionComposerRegion(props: {
       .join("")
       .trim()
 
-  const activeAgent = createMemo(() => local.agent.current()?.name ?? handoffAgent() ?? "未选择")
+  const activeAgent = createMemo(() => agentDisplayName(local.agent.current() ?? handoffAgent()) || "未选择")
   const agentPalette = createMemo(() => collaborationAgents(sync.data.agent).slice(0, 7))
   const workspaceName = createMemo(() => getFilename(sdk.directory) || sdk.directory)
   const visibleTools = createMemo(() => tools().slice(0, 6))
@@ -267,7 +268,7 @@ export function SessionComposerRegion(props: {
                   <div class="min-w-0">
                     <div class="text-[12px] font-semibold text-[rgb(17,94,89)]">协作</div>
                     <div class="truncate text-[12px] text-text-weak" title={sdk.directory}>
-                      {workspaceName()} · 主智能体 {activeAgent()}
+                      {workspaceName()} · {activeAgent()}
                     </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-2">
@@ -329,10 +330,10 @@ export function SessionComposerRegion(props: {
                         <button
                           type="button"
                           class="rounded-full border border-[rgba(15,118,110,0.2)] bg-[rgba(15,118,110,0.06)] px-2.5 py-1 text-[12px] text-text-base hover:border-[rgba(15,118,110,0.45)]"
-                          title={`模型：${agentModelLabel(agent)}`}
+                          title={`模型：${agentModelLabel(agent)} · ID：${agent.name}`}
                           onClick={() => applyAgent(agent.name)}
                         >
-                          @{agent.name}
+                          {agentDisplayName(agent)}
                         </button>
                       )}
                     </For>

@@ -20,6 +20,7 @@ import { usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { extractPromptFromParts } from "@/utils/prompt"
+import { agentDisplayName } from "@/utils/agent-display"
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
   const current = target instanceof Element ? target : undefined
@@ -391,7 +392,7 @@ export function MessageTimeline(props: {
     )
 
     const agentLabel = createMemo(() => {
-      const list = agents()
+      const list = agents().map(agentDisplayName)
       if (list.length === 0) return language.t("session.execution.agent.empty")
       if (list.length <= 2) return list.join(" / ")
       return language.t("session.execution.agent.more", { agents: list.slice(0, 2).join(" / "), count: list.length - 2 })

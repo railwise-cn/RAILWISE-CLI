@@ -1,5 +1,6 @@
 type Agent = {
   name: string
+  displayName?: string
   description?: string
   mode: "subagent" | "primary" | "all"
   hidden?: boolean

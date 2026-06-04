@@ -33,6 +33,7 @@ import { FileTabContent } from "@/pages/session/file-tabs"
 import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/helpers"
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
+import { agentDisplayName } from "@/utils/agent-display"
 
 /** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
 const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
@@ -170,7 +171,7 @@ export function SessionSidePanel(props: {
     const root = sync.project?.worktree ?? sdk.directory
     return sync.project?.name || getFilename(root) || language.t("session.side.project.empty")
   })
-  const agentName = createMemo(() => local.agent.current()?.name ?? language.t("session.side.agent.empty"))
+  const agentName = createMemo(() => agentDisplayName(local.agent.current()) || language.t("session.side.agent.empty"))
   const modelName = createMemo(() => {
     const model = local.model.current()
     if (!model) return language.t("session.side.model.empty")

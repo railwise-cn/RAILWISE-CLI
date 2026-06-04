@@ -1,3 +1,4 @@
+import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
 import { createMemo, createSignal, For, Show } from "solid-js"
 import type { Part, PermissionRequest, QuestionAnswer, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
@@ -46,10 +47,10 @@ function message(error: unknown) {
   return String(error)
 }
 
-function compact(value: string, home: string) {
-  if (home && value === home) return "~"
-  if (home && value.startsWith(home + "/")) return "~" + value.slice(home.length)
-  return value
+function projectName(value: string) {
+  const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
+  const parts = clean.split("/").filter(Boolean)
+  return parts.at(-1) ?? "未选择项目"
 }
 
 function metadata(request: PermissionRequest) {
@@ -213,7 +214,7 @@ export default function HarnessPage() {
     {
       icon: "folder",
       title: "工作区边界",
-      value: recent()[0]?.worktree ?? "等待选择文件夹",
+      value: recent()[0] ? projectName(recent()[0].worktree) : "等待选择文件夹",
       description: "所有文件读写都绑定在用户选择的项目目录内。",
     },
     {
@@ -393,44 +394,92 @@ export default function HarnessPage() {
   }
 
   return (
-    <main class="min-h-full px-6 py-5" data-testid="harness-page">
-      <div class="mx-auto flex max-w-6xl flex-col gap-4">
-        <section class="rounded-lg border border-border-subtle bg-surface-panel p-5">
-          <div class="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <div class="text-12-medium text-text-weak">RAILWISE 执行层</div>
-              <h1 class="mt-2 text-26-bold text-text-strong">执行层状态</h1>
-              <p class="mt-2 max-w-2xl text-13-regular text-text-weak">
-                执行层负责工作区边界、模型路由、工具权限和执行事件，让桌面端不是简单套壳，而是可控的本地 AI 工作台。
-              </p>
-            </div>
-            <div class="flex gap-2">
-              <A href="/home" class="rounded-md border border-border-subtle px-3 py-2 text-13-medium text-text-strong hover:bg-surface-element">
+    <main class="agent-studio harness-page" data-testid="harness-page">
+      <div class="harness-stack">
+        <section class="harness-command-shell" data-testid="harness-shell">
+          <aside class="harness-command-sidebar">
+            <A href="/home" class="agent-brand">
+              <span class="agent-brand__logo">
+                <Icon name="server" size="small" />
+              </span>
+              <span>
+                <strong>RAILWISE</strong>
+                <small>执行层</small>
+              </span>
+            </A>
+            <nav class="harness-nav" aria-label="执行层导航">
+              <A href="/home">
+                <Icon name="folder" size="small" />
                 工作台
               </A>
-              <A href="/marketplace" class="rounded-md border border-border-subtle px-3 py-2 text-13-medium text-text-strong hover:bg-surface-element">
+              <A href="/agents">
+                <Icon name="brain" size="small" />
+                智能体
+              </A>
+              <A href="/marketplace">
+                <Icon name="models" size="small" />
                 能力市场
               </A>
-            </div>
-          </div>
-        </section>
+            </nav>
+          </aside>
 
-        <section class="grid gap-3 md:grid-cols-3">
-          <div class="rounded-lg border border-border-subtle bg-surface-panel p-4">
-            <div class="text-12-medium text-text-weak">模式</div>
-            <div class="mt-2 text-18-medium text-text-strong">{mode()}</div>
-            <div class="mt-1 text-12-regular text-text-weak">{health()}</div>
-          </div>
-          <div class="rounded-lg border border-border-subtle bg-surface-panel p-4">
-            <div class="text-12-medium text-text-weak">模型</div>
-            <div class="mt-2 truncate text-18-medium text-text-strong">{model()}</div>
-            <div class="mt-1 text-12-regular text-text-weak">{connected().length ? "已接入 Provider" : "待接入 Provider"}</div>
-          </div>
-          <div class="rounded-lg border border-border-subtle bg-surface-panel p-4">
-            <div class="text-12-medium text-text-weak">能力集</div>
-            <div class="mt-2 text-18-medium text-text-strong">智能体 / 工具 / 专业流程</div>
-            <div class="mt-1 text-12-regular text-text-weak">由能力市场统一管理</div>
-          </div>
+          <section class="harness-command-main">
+            <header class="agent-command-topbar">
+              <A href="/home" class="agent-pill">
+                <Icon name="folder" size="small" />
+                工作台
+              </A>
+              <A href="/marketplace" class="agent-pill">
+                <Icon name="models" size="small" />
+                能力市场
+              </A>
+            </header>
+            <div class="harness-hero-card">
+              <span class="agent-kicker">RAILWISE 执行层</span>
+              <h1>执行控制台</h1>
+              <p>审批高风险动作、恢复失败工具调用、查看会话执行状态。这里负责让智能体真正安全地跑起来。</p>
+            </div>
+            <div class="harness-metrics">
+              <div>
+                <span>模式</span>
+                <strong>{mode()}</strong>
+                <small>{health()}</small>
+              </div>
+              <div>
+                <span>待处理</span>
+                <strong>{permissions().length + recoveries().length}</strong>
+                <small>{gate()}</small>
+              </div>
+              <div>
+                <span>会话</span>
+                <strong>{timeline().length}</strong>
+                <small>{timeline().length > 0 ? "最近执行记录" : "等待首次协作"}</small>
+              </div>
+            </div>
+          </section>
+
+          <aside class="harness-command-inspector">
+            <section class="agent-inspector-card">
+              <div class="agent-inspector-card__line">
+                <Icon name="models" size="small" />
+                <span>模型</span>
+              </div>
+              <strong>{model()}</strong>
+              <small>{connected().length ? "已接入 Provider" : "待接入 Provider"}</small>
+            </section>
+            <For each={steps()}>
+              {(item) => (
+                <section class="agent-inspector-card">
+                  <div class="agent-inspector-card__line">
+                    <Icon name={item.icon} size="small" />
+                    <span>{item.title}</span>
+                  </div>
+                  <strong>{item.value}</strong>
+                  <small>{item.description}</small>
+                </section>
+              )}
+            </For>
+          </aside>
         </section>
 
         <section class="rounded-lg border border-border-subtle bg-surface-panel p-4" data-testid="harness-permissions">
@@ -457,7 +506,7 @@ export default function HarnessPage() {
                           <span class="text-12-mono text-text-weak">{item.request.sessionID}</span>
                         </div>
                         <div class="mt-1 truncate text-12-mono text-text-weak" title={item.directory}>
-                          {compact(item.directory, sync.data.path.home)}
+                          {projectName(item.directory)}
                         </div>
                       </div>
                       <A
@@ -590,7 +639,7 @@ export default function HarnessPage() {
                             <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{statusLabel(item.status)}</span>
                           </div>
                           <div class="mt-1 truncate text-12-mono text-text-weak" title={item.directory}>
-                            {compact(item.directory, sync.data.path.home)}
+                            {projectName(item.directory)}
                           </div>
                         </div>
                         <div class="text-right text-12-regular text-text-weak">
@@ -655,7 +704,7 @@ export default function HarnessPage() {
                         <span class="rounded bg-surface-panel px-2 py-0.5 text-11-medium text-text-weak">{statusLabel(item().status)}</span>
                       </div>
                       <div class="mt-1 truncate text-12-mono text-text-weak" title={item().directory}>
-                        {compact(item().directory, sync.data.path.home)}
+                        {projectName(item().directory)}
                       </div>
                     </div>
                     <div class="text-right text-12-regular text-text-weak">
@@ -877,7 +926,7 @@ export default function HarnessPage() {
                 <For each={recent()}>
                   {(project) => (
                     <div class="rounded-md bg-surface-element px-3 py-2">
-                      <div class="truncate text-12-mono text-text-strong">{project.worktree}</div>
+                      <div class="truncate text-13-medium text-text-strong" title={project.worktree}>{projectName(project.worktree)}</div>
                     </div>
                   )}
                 </For>

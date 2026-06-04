@@ -131,7 +131,7 @@ export default function MarketplacePage() {
           .map((agent) => ({ title: agent.displayName ?? agent.name, meta: agentRoleLabel(agent) })),
       ),
       href: "/agents",
-      action: agentCount() > 0 ? "管理智能体" : "发现智能体",
+      action: agentCount() > 0 ? "打开智能体" : "发现智能体",
     },
     {
       id: marketplaceIds[1],
@@ -245,7 +245,7 @@ export default function MarketplacePage() {
         <div class="marketplace-shell__copy">
           <span class="agent-kicker">RAILWISE 能力市场</span>
           <h1>能力市场</h1>
-          <p>安装和接入智能体、工具、专业流程、MCP 与模型。日常任务从工作台开始，这里只保留能力配置。</p>
+          <p>像插件市场一样管理智能体、工具、专业流程、MCP 与模型；需要执行任务时回到工作台。</p>
         </div>
         <div class="marketplace-shell__actions">
           <A href="/home" class="agent-button agent-button--ghost">
@@ -300,7 +300,7 @@ export default function MarketplacePage() {
               <Show when={!loading() && selected().preview.length === 0}>
                 <span>
                   <strong>等待发现</strong>
-                  <small>进入高级管理查看配置</small>
+                  <small>打开配置</small>
                 </span>
               </Show>
             </div>

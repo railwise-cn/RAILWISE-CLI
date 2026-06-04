@@ -1713,8 +1713,6 @@ export default function Layout(props: ParentProps) {
       if (project.vcs !== "git") return false
       return layout.sidebar.workspaces(project.worktree)()
     })
-    const homedir = createMemo(() => globalSync.data.path.home)
-
     return (
       <div
         classList={{
@@ -1737,21 +1735,9 @@ export default function Layout(props: ParentProps) {
                       displayClass="text-14-medium text-text-strong truncate"
                       stopPropagation
                     />
-
-                    <Tooltip
-                      placement="bottom"
-                      gutter={2}
-                      value={p().worktree}
-                      class="shrink-0"
-                      contentStyle={{
-                        "max-width": "640px",
-                        transform: "translate3d(52px, 0, 0)",
-                      }}
-                    >
-                      <span class="text-12-regular text-text-base truncate select-text">
-                        {p().worktree.replace(homedir(), "~")}
-                      </span>
-                    </Tooltip>
+                    <span class="text-12-regular text-text-base truncate" data-testid="sidebar-project-meta">
+                      项目工作区
+                    </span>
                   </div>
 
                   <DropdownMenu modal={!sidebarHovering()}>

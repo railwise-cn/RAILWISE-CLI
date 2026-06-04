@@ -161,7 +161,7 @@ const labels: Record<string, string> = {
 type ToolGroup = z.infer<typeof ToolInventorySchema>["group"]
 
 const railwiseAgents = [
-  ["chief_manager", "RAILWISE 主控"],
+  ["chief_manager", "RAILWISE"],
   ["solution_architect", "技术方案架构师"],
   ["qa_inspector", "外业数据首检"],
   ["data_analyst", "测绘数据分析"],

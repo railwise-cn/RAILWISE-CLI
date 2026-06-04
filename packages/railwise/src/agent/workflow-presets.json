@@ -2,13 +2,13 @@
   {
     "id": "metro-monitoring-report",
     "name": "地铁月度监测报告流水线",
-    "description": "外业数据首检、监测数据分析、工程报告编制、技术复核，最后由 RAILWISE 主控汇总交付。",
+    "description": "外业数据首检、监测数据分析、工程报告编制、技术复核，最后由 RAILWISE 协作入口汇总交付。",
     "nodes": [
       { "id": "n1", "agent": "qa_inspector", "label": "外业数据首检", "color": "rgba(117,86,32,0.9)", "x": 60, "y": 180 },
       { "id": "n2", "agent": "data_analyst", "label": "监测数据分析", "color": "rgb(95,70,24)", "x": 240, "y": 180 },
       { "id": "n3", "agent": "technical_writer", "label": "工程报告编制", "color": "rgb(47,38,24)", "x": 420, "y": 180 },
       { "id": "n4", "agent": "qa_reviewer", "label": "技术复核", "color": "rgba(117,86,32,0.9)", "x": 600, "y": 180 },
-      { "id": "n5", "agent": "chief_manager", "label": "RAILWISE 主控", "color": "rgb(10,10,9)", "x": 780, "y": 180 }
+      { "id": "n5", "agent": "chief_manager", "label": "RAILWISE 协作入口", "color": "rgb(10,10,9)", "x": 780, "y": 180 }
     ],
     "edges": [
       { "from": "n1", "to": "n2", "kind": "serial", "label": "放行后的原始观测数据" },
@@ -65,7 +65,7 @@
       { "id": "n2", "agent": "norm_librarian", "label": "规范 Wiki 入库", "color": "rgb(95,70,24)", "x": 260, "y": 100 },
       { "id": "n3", "agent": "knowledge_curator", "label": "项目知识沉淀", "color": "rgb(95,70,24)", "x": 260, "y": 260 },
       { "id": "n4", "agent": "qa_reviewer", "label": "技术复核", "color": "rgb(47,38,24)", "x": 470, "y": 180 },
-      { "id": "n5", "agent": "chief_manager", "label": "RAILWISE 主控", "color": "rgb(10,10,9)", "x": 650, "y": 180 }
+      { "id": "n5", "agent": "chief_manager", "label": "RAILWISE 协作入口", "color": "rgb(10,10,9)", "x": 650, "y": 180 }
     ],
     "edges": [
       { "from": "n1", "to": "n2", "kind": "parallel", "label": "规范 PDF 与条文结构" },

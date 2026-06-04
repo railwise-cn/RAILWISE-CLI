@@ -44,7 +44,7 @@ describe("server.routes.agent-studio", () => {
         expect(response.status).toBe(200)
         expect(names).toContain("chief_manager")
         expect(names).toContain("qa_inspector")
-        expect(list.find((agent) => agent.name === "chief_manager")?.displayName).toBe("RAILWISE 主控")
+        expect(list.find((agent) => agent.name === "chief_manager")?.displayName).toBe("RAILWISE")
         expect(list.find((agent) => agent.name === "qa_inspector")?.displayName).toBe("外业数据首检")
         expect(names).not.toContain("build")
         expect(names).not.toContain("plan")

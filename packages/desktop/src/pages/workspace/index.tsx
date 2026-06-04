@@ -1,8 +1,8 @@
 import "./workspace.css"
 import { A } from "@solidjs/router"
-import { usePlatform, useServer } from "@railwise/app"
+import { useGlobalSync, usePlatform, useServer } from "@railwise/app"
 import { convertFileSrc } from "@tauri-apps/api/core"
-import { createMemo, For, Match, onCleanup, onMount, Show, Switch } from "solid-js"
+import { createEffect, createMemo, For, Match, onCleanup, onMount, Show, Switch } from "solid-js"
 import { createStore } from "solid-js/store"
 import { VList } from "virtua/solid"
 import { sendToAgent as send } from "../../actions/sendToAgent"
@@ -42,6 +42,7 @@ type State = {
 export default function WorkspacePage() {
   const platform = usePlatform()
   const server = useServer()
+  const sync = useGlobalSync()
   const recent = stored()
   const [state, setState] = createStore<State>({
     files: recent,
@@ -66,6 +67,17 @@ export default function WorkspacePage() {
     const map = new Map<string, WorkspaceFile[]>()
     filtered().forEach((file) => map.set(project(file.path), [...(map.get(project(file.path)) ?? []), file]))
     return Array.from(map.entries()).map(([name, files]) => ({ name, files }))
+  })
+
+  createEffect(() => {
+    const current =
+      server.projects.last() ??
+      sync.data.project
+        .slice()
+        .sort((a, b) => (b.time.updated ?? b.time.created) - (a.time.updated ?? a.time.created))[0]?.worktree
+    if (!current) return
+    server.projects.open(current)
+    if (server.projects.last() !== current) server.projects.touch(current)
   })
 
   async function openFiles() {

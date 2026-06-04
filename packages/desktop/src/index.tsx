@@ -660,7 +660,6 @@ render(() => {
                       </>
                     }
                     servers={[server]}
-                    standalonePaths={["/workspace"]}
                     workbenchRoutes={true}
                   >
                     <Inner />

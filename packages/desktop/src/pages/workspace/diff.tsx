@@ -1,7 +1,7 @@
 import "./workspace.css"
 import { A } from "@solidjs/router"
-import { usePlatform, useServer } from "@railwise/app"
-import { createMemo, For, Show } from "solid-js"
+import { useGlobalSync, usePlatform, useServer } from "@railwise/app"
+import { createEffect, createMemo, For, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { VList } from "virtua/solid"
 import { sendToAgent } from "../../actions/sendToAgent"
@@ -30,6 +30,7 @@ type State = {
 export default function WorkspaceDiffPage() {
   const platform = usePlatform()
   const server = useServer()
+  const sync = useGlobalSync()
   const [state, setState] = createStore<State>({
     loading: false,
     rows: [],
@@ -41,6 +42,17 @@ export default function WorkspaceDiffPage() {
     removed: state.rows.filter((row) => row.type === "removed").length,
     modified: state.rows.filter((row) => row.type === "modified").length,
   }))
+
+  createEffect(() => {
+    const current =
+      server.projects.last() ??
+      sync.data.project
+        .slice()
+        .sort((a, b) => (b.time.updated ?? b.time.created) - (a.time.updated ?? a.time.created))[0]?.worktree
+    if (!current) return
+    server.projects.open(current)
+    if (server.projects.last() !== current) server.projects.touch(current)
+  })
 
   async function choose(side: Side) {
     if (!platform.openFilePickerDialog) {

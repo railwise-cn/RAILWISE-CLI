@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { Button } from "@railwise/ui/button"
-import { Mark } from "@railwise/ui/logo"
+import { Logo, Mark } from "@railwise/ui/logo"
 import { useLayout } from "@/context/layout"
 import { useNavigate } from "@solidjs/router"
 import { Icon } from "@railwise/ui/icon"
@@ -93,7 +93,7 @@ export default function Home() {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
     if (selectedDirectory()) return "本地工作区"
-    return "选择项目后开始会话"
+    return "打开一个文件夹开始"
   })
   const runningLabel = createMemo(() => {
     const count = runningSessions()
@@ -124,7 +124,7 @@ export default function Home() {
   function projectName(value: string) {
     const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
     const parts = clean.split("/").filter(Boolean)
-    return parts.at(-1) ?? "选择项目"
+    return parts.at(-1) ?? "打开项目"
   }
 
   function projectParent(value: string) {
@@ -134,7 +134,7 @@ export default function Home() {
   }
 
   function projectDisplayName(value: string) {
-    if (!value) return "选择项目"
+    if (!value) return "打开项目"
     const name = projectName(value)
     const parent = projectParent(value)
     if (!duplicateNames().has(name) || !parent) return name
@@ -232,7 +232,9 @@ export default function Home() {
 
           <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-8">
             <div class="mb-5 text-center">
-              <h1 class="text-30-bold text-text-strong">RAILWISE</h1>
+              <h1 class="flex justify-center" aria-label="RAILWISE">
+                <Logo class="h-10 w-auto" />
+              </h1>
               <p class="mt-3 text-18-medium text-text-strong" data-testid="home-main-prompt">
                 想让 RAILWISE 完成什么？
               </p>
@@ -257,7 +259,7 @@ export default function Home() {
                   </div>
                 </div>
                 <Button type="button" size="normal" variant="secondary" icon="folder-add-left" onClick={chooseProject}>
-                  选择项目
+                  打开项目
                 </Button>
               </div>
 
@@ -530,7 +532,7 @@ export default function Home() {
                 onClick={() => navigate("/harness")}
               >
                 <Icon name="server" size="small" class="shrink-0 text-text-weak" />
-                <span class="truncate text-13-medium text-text-strong">控制台</span>
+                <span class="truncate text-13-medium text-text-strong">执行</span>
               </button>
               <button
                 type="button"

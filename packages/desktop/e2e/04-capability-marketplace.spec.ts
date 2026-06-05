@@ -105,7 +105,7 @@ test("能力市场进入 chief_manager 配置并验证保存入口", async ({ la
   await expect(page.getByText("高级")).toHaveCount(0)
 })
 
-test("能力市场可以进入执行控制台", async ({ launchApp }) => {
+test("能力市场可以进入执行中心", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace", { projects: project() })
 
   await visible(page.locator("[data-testid=marketplace-page]"))
@@ -117,7 +117,7 @@ test("能力市场可以进入执行控制台", async ({ launchApp }) => {
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
   await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
-  await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "执行中心" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
 })
 
@@ -128,7 +128,7 @@ test("执行层可以通过统一外壳打开", async ({ launchApp }) => {
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
   await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
-  await expect(page.getByRole("heading", { name: "执行控制台" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "执行中心" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
   await expect(page.locator("[data-testid=harness-permission-item]")).toBeVisible()
   await expect(page.locator("[data-testid=harness-permissions]")).toContainText("成果报告.md")

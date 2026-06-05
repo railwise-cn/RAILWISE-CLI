@@ -52,7 +52,7 @@ function message(error: unknown) {
 function projectName(value: string) {
   const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
   const parts = clean.split("/").filter(Boolean)
-  return parts.at(-1) ?? "选择项目"
+  return parts.at(-1) ?? "打开项目"
 }
 
 function metadata(request: PermissionRequest) {
@@ -473,8 +473,8 @@ export default function HarnessPage() {
             </header>
             <div class="harness-hero-card">
               <span class="agent-kicker">RAILWISE 执行层</span>
-              <h1>执行控制台</h1>
-              <p>审批高风险动作、恢复失败工具调用、查看会话执行状态。这里负责让智能体真正安全地跑起来。</p>
+              <h1>执行中心</h1>
+              <p>处理权限确认、失败恢复与会话执行状态。</p>
             </div>
             <div class="harness-metrics">
               <div>

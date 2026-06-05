@@ -6,10 +6,10 @@ test("启动页使用 RAILWISE 品牌启动体验", async ({ page }) => {
 
   await expect(page.locator(".loading-content")).toBeVisible({ timeout: 15_000 })
   await expect(page.locator(".railwise-logo img")).toHaveAttribute("src", "/railwise-logo.svg")
-  await expect(page.locator(".loading-kicker")).toHaveText("RAILWISE Desktop")
+  await expect(page.locator(".loading-kicker")).toHaveText("RAILWISE")
   await expect(page.locator(".loading-title")).toHaveText("工程智能协作")
   await expect(page.locator(".loading-state-label")).toHaveText("正在读取配置")
-  await expect(page.locator(".loading-state-note")).toContainText("项目协作工作台")
+  await expect(page.locator(".loading-state-note")).toHaveCount(0)
   await expect(page.getByText("RAILWISE 智测工作台")).toHaveCount(0)
 
   const color = await page.locator(".progress-fill").evaluate((node) => getComputedStyle(node).backgroundColor)

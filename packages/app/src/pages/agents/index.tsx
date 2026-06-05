@@ -159,7 +159,7 @@ export default function AgentsPage() {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
     if (directory()) return "本地工作区"
-    return "选择项目后开始会话"
+    return "打开一个文件夹开始"
   })
   const activeAgent = createMemo(() => collaborators().find((agent) => agent.name === selectedAgent()))
   const serverDotClass = createMemo(() => {
@@ -314,7 +314,7 @@ export default function AgentsPage() {
   function projectName(value: string) {
     const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
     const parts = clean.split("/").filter(Boolean)
-    return parts.at(-1) ?? "选择项目"
+    return parts.at(-1) ?? "打开项目"
   }
 
   const updateDirectory = (value: string) => {
@@ -331,14 +331,14 @@ export default function AgentsPage() {
     if (platform.openDirectoryPickerDialog && server.isLocal()) {
       resolve(
         await platform.openDirectoryPickerDialog({
-          title: "选择项目",
+          title: "打开项目",
           multiple: false,
         }),
       )
       return
     }
     dialog.show(
-      () => <DialogSelectDirectory title="选择项目" onSelect={resolve} />,
+      () => <DialogSelectDirectory title="打开项目" onSelect={resolve} />,
       () => resolve(null),
     )
   }
@@ -494,7 +494,7 @@ export default function AgentsPage() {
                 <small>{selectedMeta()}</small>
               </div>
               <button type="button" class="agent-button agent-button--ghost" onClick={chooseDirectory}>
-                选择项目
+                打开项目
               </button>
             </div>
             <div class="agent-composer__agent">

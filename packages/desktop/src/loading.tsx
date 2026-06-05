@@ -93,7 +93,7 @@ const Loading = (props: LoadingProps) => {
           </div>
 
           <div class="loading-brand-copy">
-            <div class="loading-kicker">RAILWISE Desktop</div>
+            <div class="loading-kicker">RAILWISE</div>
             <h1 class="loading-title">工程智能协作</h1>
           </div>
         </div>
@@ -103,7 +103,6 @@ const Loading = (props: LoadingProps) => {
             <span class="loading-state-dot" />
             <div>
               <div class="loading-state-label">{message()}</div>
-              <div class="loading-state-note">启动完成后会进入项目协作工作台</div>
             </div>
           </div>
 

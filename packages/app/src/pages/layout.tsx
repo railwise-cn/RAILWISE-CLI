@@ -1728,6 +1728,7 @@ export default function Layout(props: ParentProps) {
       if (project.vcs !== "git") return false
       return layout.sidebar.workspaces(project.worktree)()
     })
+    const recent = createMemo(() => layout.projects.list().slice(0, 4))
     return (
       <div
         classList={{
@@ -1736,7 +1737,68 @@ export default function Layout(props: ParentProps) {
         }}
         style={{ width: panelProps.mobile ? undefined : `${Math.max(layout.sidebar.width() - 64, 0)}px` }}
       >
-        <Show when={panelProps.project}>
+        <Show
+          when={panelProps.project}
+          fallback={
+            <div class="flex flex-1 min-h-0 flex-col px-3 py-4" data-testid="sidebar-empty-project">
+              <div class="rounded-lg border border-border-weak-base bg-background-base p-3">
+                <div class="flex items-start gap-3">
+                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md border border-border-weak-base text-icon-base">
+                    <Icon name="folder" size="small" />
+                  </span>
+                  <div class="min-w-0 flex-1">
+                    <div class="text-14-medium text-text-strong">打开项目开始协作</div>
+                    <div class="mt-1 text-12-regular text-text-weak">选择一个本地文件夹，RAILWISE 会把会话、文件和执行状态放在这里。</div>
+                  </div>
+                </div>
+                <Button size="large" icon="plus-small" class="mt-3 w-full" onClick={chooseProject}>
+                  {language.t("command.project.open")}
+                </Button>
+              </div>
+
+              <Show when={recent().length > 0}>
+                <div class="mt-4">
+                  <div class="px-1 text-12-medium text-text-weak">最近项目</div>
+                  <div class="mt-2 flex flex-col gap-1">
+                    <For each={recent()}>
+                      {(project) => (
+                        <button
+                          type="button"
+                          class="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left hover:bg-surface-raised-base-hover"
+                          onClick={() => navigateToProject(project.worktree)}
+                        >
+                          <span class="flex size-8 shrink-0 items-center justify-center rounded-md border border-border-weak-base text-icon-base">
+                            <Icon name="folder" size="small" />
+                          </span>
+                          <span class="min-w-0 flex-1 truncate text-14-regular text-text-strong">{displayName(project)}</span>
+                        </button>
+                      )}
+                    </For>
+                  </div>
+                </div>
+              </Show>
+
+              <div class="mt-auto rounded-lg border border-border-weak-base bg-background-base p-2">
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-13-medium text-text-strong hover:bg-surface-raised-base-hover"
+                  onClick={() => navigateWithSidebarReset("/marketplace")}
+                >
+                  <Icon name="providers" size="small" class="text-icon-base" />
+                  能力市场
+                </button>
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-13-medium text-text-strong hover:bg-surface-raised-base-hover"
+                  onClick={openSettings}
+                >
+                  <Icon name="settings-gear" size="small" class="text-icon-base" />
+                  设置
+                </button>
+              </div>
+            </div>
+          }
+        >
           {(p) => (
             <>
               <div class="shrink-0 px-2 py-1">

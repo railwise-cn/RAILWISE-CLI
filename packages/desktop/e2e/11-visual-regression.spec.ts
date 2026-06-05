@@ -103,6 +103,25 @@ test("首页右侧项目栏显示最近会话与执行状态", async ({ launchAp
   await expect(page.locator("[data-testid=home-project-rail]")).not.toContainText(worktree)
 })
 
+test("左侧空项目栏提供明确入口而不是空白面板", async ({ launchApp }) => {
+  const { page } = await launchApp("/home", {
+    emptySessions: true,
+    projects: [],
+  })
+
+  await visible(page.locator("[data-testid=home-workbench]"))
+  const sidebar = page.locator("[data-component=sidebar-nav-desktop]")
+  const empty = sidebar.locator("[data-testid=sidebar-empty-project]")
+  await expect(sidebar).toBeVisible()
+  await expect(empty).toBeVisible()
+  await expect(empty).toContainText("打开项目开始协作")
+  await expect(empty.getByRole("button", { name: "打开项目" })).toBeVisible()
+  await expect(empty).toContainText("能力市场")
+  await expect(empty).toContainText("设置")
+  await expect(sidebar).not.toContainText("/tmp/railwise-e2e")
+  await expect(sidebar).not.toContainText("选择文件夹后会出现在这里。")
+})
+
 test("智能体详情不再使用后台编辑语言", async ({ launchApp }) => {
   const { page } = await launchApp("/agents/chief_manager")
 

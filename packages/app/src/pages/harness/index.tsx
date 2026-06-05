@@ -1,7 +1,7 @@
 import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
-import type { Part, PermissionRequest, QuestionAnswer, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
+import type { Message, Part, PermissionRequest, QuestionAnswer, QuestionRequest, Session, SessionStatus, Todo, ToolPart } from "@railwise/sdk/v2/client"
 import { base64Encode } from "@railwise/util/encode"
 import { DateTime } from "luxon"
 import { Button } from "@railwise/ui/button"
@@ -32,6 +32,7 @@ type TimelineItem = {
   directory: string
   session: Session
   status: SessionStatus
+  messages: Message[]
   permissions: PermissionRequest[]
   questions: QuestionRequest[]
   todo: Todo[]
@@ -85,6 +86,32 @@ function timelineLabel(item: TimelineItem) {
 
 function key(item: TimelineItem) {
   return `${item.directory}:${item.session.id}`
+}
+
+function sessionHref(directory: string, sessionID: string, target?: string) {
+  const href = `/${base64Encode(directory)}/session/${sessionID}`
+  if (!target) return href
+  return `${href}#${target}`
+}
+
+function promptTarget() {
+  return "session-prompt-dock"
+}
+
+function toolTarget(item: TimelineItem, part: ToolPart) {
+  const message = item.messages.find((candidate) => candidate.id === part.messageID)
+  if (!message) return promptTarget()
+  if (message.role === "assistant") return `message-${message.parentID}`
+  return `message-${message.id}`
+}
+
+function sessionTarget(item: TimelineItem) {
+  if (item.permissions.length > 0 || item.questions.length > 0) return promptTarget()
+  const failed = item.parts.find((part) => part.state.status === "error")
+  if (failed) return toolTarget(item, failed)
+  const user = item.messages.filter((message) => message.role === "user").at(-1)
+  if (user) return `message-${user.id}`
+  return promptTarget()
 }
 
 function isToolPart(part: Part): part is ToolPart {
@@ -163,6 +190,7 @@ export default function HarnessPage() {
             directory: project.directory,
             session,
             status: project.store.session_status[session.id] ?? { type: "idle" as const },
+            messages: project.store.message[session.id] ?? [],
             permissions: project.store.permission[session.id] ?? [],
             questions: project.store.question[session.id] ?? [],
             todo: project.store.todo[session.id] ?? [],
@@ -519,10 +547,11 @@ export default function HarnessPage() {
                         </div>
                       </div>
                       <A
-                        href={`/${base64Encode(item.directory)}/session/${item.request.sessionID}`}
+                        href={sessionHref(item.directory, item.request.sessionID, promptTarget())}
+                        data-testid="harness-permission-open-session"
                         class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-panel"
                       >
-                        打开会话
+                        定位处理
                       </A>
                     </div>
 
@@ -599,10 +628,11 @@ export default function HarnessPage() {
                       </div>
                       <div class="flex shrink-0 gap-2">
                         <A
-                          href={`/${base64Encode(entry.item.directory)}/session/${entry.item.session.id}`}
+                          href={sessionHref(entry.item.directory, entry.item.session.id, toolTarget(entry.item, entry.part))}
+                          data-testid="harness-recovery-open-session"
                           class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-panel"
                         >
-                          打开会话
+                          定位消息
                         </A>
                         <Button variant="primary" size="small" disabled={repairingTool(entry.part)} onClick={() => repair(entry.item, entry.part)}>
                           {repairingTool(entry.part) ? "发送中" : "继续修复"}
@@ -668,10 +698,11 @@ export default function HarnessPage() {
                         </Show>
                       </div>
                       <A
-                        href={`/${base64Encode(item.directory)}/session/${item.session.id}`}
+                        href={sessionHref(item.directory, item.session.id, sessionTarget(item))}
+                        data-testid="harness-timeline-open-session"
                         class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-panel"
                       >
-                        打开会话
+                        定位会话
                       </A>
                     </div>
                   </div>
@@ -690,10 +721,11 @@ export default function HarnessPage() {
             <Show when={selected()}>
               {(item) => (
                 <A
-                  href={`/${base64Encode(item().directory)}/session/${item().session.id}`}
+                  href={sessionHref(item().directory, item().session.id, sessionTarget(item()))}
+                  data-testid="harness-detail-open-session"
                   class="rounded-md border border-border-subtle px-3 py-2 text-13-medium text-text-strong hover:bg-surface-element"
                 >
-                  进入对话
+                  定位会话
                 </A>
               )}
             </Show>
@@ -876,10 +908,11 @@ export default function HarnessPage() {
                               <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
                                 <span class="rounded bg-surface-element px-2 py-1 text-12-medium text-text-weak">{toolRecovery(part).label}</span>
                                 <A
-                                  href={`/${base64Encode(item().directory)}/session/${item().session.id}`}
+                                  href={sessionHref(item().directory, item().session.id, toolTarget(item(), part))}
+                                  data-testid="harness-tool-open-session"
                                   class="rounded-md border border-border-subtle px-2 py-1 text-12-medium text-text-strong hover:bg-surface-element"
                                 >
-                                  打开会话
+                                  定位消息
                                 </A>
                                 <Button variant="primary" size="small" disabled={repairingTool(part)} onClick={() => repair(item(), part)}>
                                   {repairingTool(part) ? "发送中" : "继续修复"}

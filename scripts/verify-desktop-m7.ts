@@ -83,6 +83,7 @@ const home = await read("packages/app/src/pages/home.tsx")
 const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
 const marketplaceState = await read("packages/app/src/pages/marketplace/marketplace-state.ts")
 const marketplaceStateTest = await read("packages/app/src/pages/marketplace/marketplace-state.test.ts")
+const harnessPage = await read("packages/app/src/pages/harness/index.tsx")
 const agentsPage = await read("packages/app/src/pages/agents/index.tsx")
 const agentDetail = await read("packages/app/src/pages/agents/[name].tsx")
 const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
@@ -325,6 +326,23 @@ check(
     ]) &&
     has(sdkTypes, ["export type HarnessStatus", "export type CapabilityManifest"]),
   "backend exposes Harness runtime and Marketplace capability contracts through server routes and SDK",
+)
+check(
+  "harness session deep links",
+  has(harnessPage, [
+    "function sessionHref",
+    "function sessionTarget",
+    "function toolTarget",
+    "session-prompt-dock",
+    "harness-permission-open-session",
+    "harness-timeline-open-session",
+    "harness-detail-open-session",
+    "harness-recovery-open-session",
+  ]) &&
+    has(sessionComposer, ['id="session-prompt-dock"', 'data-component="session-prompt-dock"']) &&
+    has(startup, ["session-runtime-chain-action-next"]) &&
+    has(agentStudio, ["harness-permission-open-session", "#session-prompt-dock", "queue-e2e#session-prompt-dock"]),
+  "execution layer links back into the exact session handling surface instead of opening a generic page",
 )
 check(
   "minimal home workbench source",

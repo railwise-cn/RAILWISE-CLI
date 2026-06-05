@@ -21,7 +21,7 @@ import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { extractPromptFromParts } from "@/utils/prompt"
 import { agentDisplayName } from "@/utils/agent-display"
-import { capabilitiesForAgents, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
+import { capabilitiesForAgents, capabilitiesFromRouting, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
   const current = target instanceof Element ? target : undefined
@@ -420,7 +420,11 @@ export function MessageTimeline(props: {
         ),
       ),
     )
-    const routed = createMemo(() => capabilitiesForAgents(capabilities(), agents().map((name) => ({ name }))).slice(0, 5))
+    const routed = createMemo(() => {
+      const scoped = capabilitiesFromRouting(capabilities(), sync.data.part[props.message.id] ?? [])
+      if (scoped.length > 0) return scoped.slice(0, 5)
+      return capabilitiesForAgents(capabilities(), agents().map((name) => ({ name }))).slice(0, 5)
+    })
 
     const agentLabel = createMemo(() => {
       const list = agents().map(agentDisplayName)

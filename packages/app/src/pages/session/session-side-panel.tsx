@@ -34,7 +34,7 @@ import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/he
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import { agentDisplayName } from "@/utils/agent-display"
-import { capabilitiesForAgents, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
+import { capabilitiesForAgents, capabilitiesFromRouting, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 
 /** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
 const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
@@ -333,9 +333,14 @@ export function SessionSidePanel(props: {
       ),
     ),
   )
-  const runtimeCapabilities = createMemo(() =>
-    capabilitiesForAgents(capabilities(), activeAgents().map((name) => ({ name }))).slice(0, 5),
+  const routedCapabilities = createMemo(() =>
+    capabilitiesFromRouting(capabilities(), userMessages().flatMap((message) => sync.data.part[message.id] ?? [])).slice(0, 5),
   )
+  const runtimeCapabilities = createMemo(() => {
+    const scoped = routedCapabilities()
+    if (scoped.length > 0) return scoped
+    return capabilitiesForAgents(capabilities(), activeAgents().map((name) => ({ name }))).slice(0, 5)
+  })
   const capabilityLabel = createMemo(() => {
     const total = runtimeCapabilities().length
     if (!params.id) return language.t("session.side.runtime.capabilities.ready")

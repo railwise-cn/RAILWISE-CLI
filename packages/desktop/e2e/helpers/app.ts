@@ -435,7 +435,21 @@ const queueMessages = [
       agent: "chief_manager",
       model: { providerID: "deepseek", modelID: "deepseek-v4" },
     },
-    parts: [{ id: "prt_1", sessionID: "queue-e2e", messageID: "msg_1", type: "text", text: "复核本周运营期监测预警" }],
+    parts: [
+      { id: "prt_1", sessionID: "queue-e2e", messageID: "msg_1", type: "text", text: "复核本周运营期监测预警" },
+      {
+        id: "prt_1_route",
+        sessionID: "queue-e2e",
+        messageID: "msg_1",
+        type: "text",
+        synthetic: true,
+        text: `<railwise_routing>
+推荐工具：
+- survey_calculator_leveling_closure: 水准闭合差检核 - 计算水准闭合差并判断限差。
+- resurvey_material_check: 复测资料检查 - 检查复测资料完整性。
+</railwise_routing>`,
+      },
+    ],
   },
   {
     info: {

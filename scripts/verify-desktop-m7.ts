@@ -198,7 +198,14 @@ check(
     has(sessionToolEvidence, ["toolEvidence", "artifacts", "pass", "missing", "alerts", "outputPath"]) &&
     has(sessionToolEvidenceTest, ["summarizes completed tool input, output, risk and artifacts", "成果报告.md", "需复核"]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
-    has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY", "isServerRoute", "/file/content"]) &&
+    has(e2eHelper, [
+      'model?: "configured"',
+      "deepseek-v4",
+      "DEEPSEEK_API_KEY",
+      "isServerRoute",
+      "/file/content",
+      "/session/queue-e2e/permissions/perm-e2e",
+    ]) &&
     has(startup, [
       "[data-testid=home-project-directory]",
       "[data-testid=home-task-input]",
@@ -232,6 +239,8 @@ check(
       "chief_manager",
       'model: "configured"',
       "/session/queue-e2e/prompt_async",
+      "权限处理后可以立即回到对话框继续协作",
+      "继续生成报告。",
       'payload.agent).toBe("chief_manager"',
       'providerID: "deepseek", modelID: "deepseek-v4"',
     ]),

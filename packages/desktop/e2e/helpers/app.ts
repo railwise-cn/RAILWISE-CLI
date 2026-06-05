@@ -759,6 +759,7 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/session/status`, (route) => json(route, { "queue-e2e": { type: "busy" } }))
   const permissions = opts.permission === "none" ? [] : [queuePermission]
   await page.route(`${server}/permission`, (route) => json(route, permissions))
+  await page.route(`${server}/session/queue-e2e/permissions/perm-e2e`, (route) => json(route, true))
   await page.route(`${server}/question`, (route) => json(route, []))
   await page.route(`${server}/session/queue-e2e`, (route) => json(route, queueSession))
   await page.route(`${server}/session/queue-e2e/message**`, (route) => json(route, sessionMessages(opts)))

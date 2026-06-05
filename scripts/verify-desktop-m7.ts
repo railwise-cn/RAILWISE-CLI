@@ -109,6 +109,8 @@ const harnessService = await read("packages/railwise/src/harness/service.ts")
 const marketplaceSchema = await read("packages/railwise/src/marketplace/schema.ts")
 const marketplaceService = await read("packages/railwise/src/marketplace/service.ts")
 const marketplaceBuiltin = await read("packages/railwise/src/marketplace/builtin.ts")
+const railwiseDomainTools = await read("packages/railwise/src/tool/railwise-domain.ts")
+const toolRegistry = await read("packages/railwise/src/tool/registry.ts")
 const chief = await read("packages/railwise/agent/chief_manager.md")
 const cpiii = await read("packages/railwise/agent/cpiii_specialist.md")
 const reviewer = await read("packages/railwise/agent/qa_reviewer.md")
@@ -199,6 +201,7 @@ check(
       "处理",
       "轨道交通监测方案",
       "规范条文速查",
+      "tool: survey_calculator_leveling_closure",
       "chief_manager",
       'model: "configured"',
       "/session/queue-e2e/prompt_async",
@@ -324,6 +327,30 @@ check(
       "export async function disable",
     ]) &&
     has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe", "survey_calculator_leveling_closure", "resurvey_material_check", "dxf_layer_inspector"]) &&
+    has(railwiseDomainTools, [
+      "FileReaderTool",
+      "StandardQueryTool",
+      "LevelingClosureTool",
+      "ResurveyMaterialCheckTool",
+      "MonitoringDataFirstCheckTool",
+      "DxfLayerInspectorTool",
+      "XlsxQualityCheckerTool",
+      "DocxReportFormatterTool",
+      "PptxBriefBuilderTool",
+      "PdfFormCheckerTool",
+    ]) &&
+    has(toolRegistry, [
+      "FileReaderTool",
+      "StandardQueryTool",
+      "LevelingClosureTool",
+      "ResurveyMaterialCheckTool",
+      "MonitoringDataFirstCheckTool",
+      "DxfLayerInspectorTool",
+      "XlsxQualityCheckerTool",
+      "DocxReportFormatterTool",
+      "PptxBriefBuilderTool",
+      "PdfFormCheckerTool",
+    ]) &&
     has(harnessRoute, ["/status", "/session/:sessionID/timeline", "/session/:sessionID/permission/:permissionID"]) &&
     has(marketplaceRoute, ["await Marketplace.list()", "Marketplace.enable", "Marketplace.disable", "/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&
     has(server, ['.route("/harness", HarnessRoutes())', '.route("/marketplace", MarketplaceRoutes())']) &&

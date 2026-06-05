@@ -93,6 +93,10 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("Chief_manager")
   await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("chief_manager")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
+  await page.locator("[data-testid=session-collaboration-panel]").getByRole("button", { name: "能力" }).click()
+  await page.locator("[data-testid=session-collaboration-panel]").getByRole("button", { name: "水准闭合差检核" }).click()
+  await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("tool: survey_calculator_leveling_closure")
+  await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
 
   await page.locator("[data-action=session-template-drawer]").click()
   const drawer = page.locator("[data-testid=template-drawer]")

@@ -22,8 +22,8 @@ describe("agentMentionPrompt", () => {
 
 describe("capabilityPrompt", () => {
   test("prepends tool and skill instructions without losing the draft", () => {
-    expect(capabilityPrompt({ kind: "tool", name: "格式转换" }, "处理 CPIII 数据")).toBe(
-      "请调用工具「格式转换」处理当前任务。\n处理 CPIII 数据",
+    expect(capabilityPrompt({ kind: "tool", name: "水准闭合差检核", id: "survey_calculator_leveling_closure" }, "处理 CPIII 数据")).toBe(
+      "请调用工具「水准闭合差检核」（tool: survey_calculator_leveling_closure）处理当前任务。\n处理 CPIII 数据",
     )
     expect(capabilityPrompt({ kind: "skill", name: "survey-review" }, "")).toBe(
       "请使用技能「survey-review」执行当前任务。",

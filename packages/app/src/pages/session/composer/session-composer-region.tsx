@@ -185,8 +185,8 @@ export function SessionComposerRegion(props: {
     requestAnimationFrame(() => editor?.focus())
   }
 
-  const applyCapability = (kind: "tool" | "skill", name: string) => {
-    const text = capabilityPrompt({ kind, name }, previewPrompt())
+  const applyCapability = (capability: { kind: "tool" | "skill"; name: string; id?: string }) => {
+    const text = capabilityPrompt(capability, previewPrompt())
     prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
     requestAnimationFrame(() => editor?.focus())
   }
@@ -362,7 +362,7 @@ export function SessionComposerRegion(props: {
                               type="button"
                               class="rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[11px] text-text-base"
                               title={tool.id}
-                              onClick={() => applyCapability("tool", tool.label)}
+                              onClick={() => applyCapability({ kind: "tool", name: tool.label, id: tool.id })}
                             >
                               {tool.label}
                             </button>
@@ -379,7 +379,7 @@ export function SessionComposerRegion(props: {
                               type="button"
                               class="max-w-full truncate rounded-md border border-border-weak-base bg-surface-raised-base px-2 py-1 text-[11px] text-text-base"
                               title={skill.description}
-                              onClick={() => applyCapability("skill", skill.name)}
+                              onClick={() => applyCapability({ kind: "skill", name: skill.name })}
                             >
                               {skill.name}
                             </button>

@@ -13,6 +13,7 @@ type Agent = {
 type Capability = {
   kind: "tool" | "skill"
   name: string
+  id?: string
 }
 
 export const recommendedModel = "DeepSeek V4"
@@ -35,7 +36,7 @@ export function capabilityPrompt(capability: Capability, prompt: string) {
   const draft = prompt.trim()
   const line =
     capability.kind === "tool"
-      ? `请调用工具「${capability.name}」处理当前任务。`
+      ? `请调用工具「${capability.name}」${capability.id ? `（tool: ${capability.id}）` : ""}处理当前任务。`
       : `请使用技能「${capability.name}」执行当前任务。`
   if (!draft) return line
   if (draft.startsWith(line)) return draft

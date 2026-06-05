@@ -1,4 +1,4 @@
-import { For, createEffect, createMemo, on, onCleanup, Show, type JSX } from "solid-js"
+import { For, createEffect, createMemo, createSignal, on, onCleanup, onMount, Show, type JSX } from "solid-js"
 import { createStore, produce } from "solid-js/store"
 import { useNavigate, useParams } from "@solidjs/router"
 import { Button } from "@railwise/ui/button"
@@ -9,7 +9,7 @@ import { Dialog } from "@railwise/ui/dialog"
 import { InlineInput } from "@railwise/ui/inline-input"
 import { SessionTurn } from "@railwise/ui/session-turn"
 import type { UserMessage } from "@railwise/sdk/v2"
-import type { AssistantMessage, Part as SDKPart, ToolPart } from "@railwise/sdk/v2/client"
+import type { AssistantMessage, CapabilityManifest, Part as SDKPart, ToolPart } from "@railwise/sdk/v2/client"
 import { showToast } from "@railwise/ui/toast"
 import { base64Encode } from "@railwise/util/encode"
 import { shouldMarkBoundaryGesture, normalizeWheelDelta } from "@/pages/session/message-gesture"
@@ -21,6 +21,7 @@ import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { extractPromptFromParts } from "@/utils/prompt"
 import { agentDisplayName } from "@/utils/agent-display"
+import { capabilitiesForAgents, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
   const current = target instanceof Element ? target : undefined
@@ -113,6 +114,7 @@ export function MessageTimeline(props: {
   const sync = useSync()
   const dialog = useDialog()
   const language = useLanguage()
+  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
   const sessionID = createMemo(() => params.id)
@@ -303,6 +305,13 @@ export function MessageTimeline(props: {
     navigate(`/${params.dir}/session/${id}`)
   }
 
+  onMount(() => {
+    void sdk.client.marketplace.capabilities
+      .list()
+      .then((result) => setCapabilities(normalizeCapabilities(result)))
+      .catch(() => setCapabilities([]))
+  })
+
   function MessageActions(props: { messageID: string; parts: SDKPart[] }) {
     const session = () => sessionID()
     const restored = () =>
@@ -403,8 +412,15 @@ export function MessageTimeline(props: {
     })
 
     const agents = createMemo(() =>
-      Array.from(new Set([props.message.agent, ...assistantMessages().map((message) => message.agent)].filter(Boolean))),
+      Array.from(
+        new Set(
+          [props.message.agent, ...assistantMessages().map((message) => message.agent)].filter(
+            (item): item is string => Boolean(item),
+          ),
+        ),
+      ),
     )
+    const routed = createMemo(() => capabilitiesForAgents(capabilities(), agents().map((name) => ({ name }))).slice(0, 5))
 
     const agentLabel = createMemo(() => {
       const list = agents().map(agentDisplayName)
@@ -504,6 +520,28 @@ export function MessageTimeline(props: {
                   </span>
                 </div>
               )}
+            </Show>
+            <Show when={routed().length > 0}>
+              <div
+                data-testid="session-turn-execution-capabilities"
+                class="mt-2 flex min-w-0 flex-wrap items-center gap-1.5 border-t border-border-subtle pt-2"
+              >
+                <span class="inline-flex items-center gap-1 text-11-medium text-text-weak">
+                  <Icon name="providers" size="small" />
+                  {language.t("session.execution.capabilities")}
+                </span>
+                <For each={routed()}>
+                  {(item) => (
+                    <span
+                      data-testid="session-turn-execution-capability-name"
+                      class="max-w-[10rem] truncate rounded-full border border-border-weak-base bg-surface-base px-2 py-0.5 text-11-medium text-text-base"
+                      title={item.description}
+                    >
+                      {item.name}
+                    </span>
+                  )}
+                </For>
+              </div>
             </Show>
           </div>
         </div>

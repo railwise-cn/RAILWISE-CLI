@@ -208,6 +208,17 @@ export function capabilitiesForAgent(list: CapabilityManifest[], agent?: AgentBi
     .sort((a, b) => capabilityRank(a) - capabilityRank(b) || a.name.localeCompare(b.name, "zh-Hans-CN"))
 }
 
+export function capabilitiesForAgents(list: CapabilityManifest[], agents: AgentBindingInput[]) {
+  const seen = new Set<string>()
+  return agents
+    .flatMap((agent) => capabilitiesForAgent(list, agent))
+    .filter((item) => {
+      if (seen.has(item.id)) return false
+      seen.add(item.id)
+      return true
+    })
+}
+
 export function permissionSummary(permission: CapabilityPermission) {
   const items = [
     permission.filesystem === "read" ? "文件读取" : undefined,

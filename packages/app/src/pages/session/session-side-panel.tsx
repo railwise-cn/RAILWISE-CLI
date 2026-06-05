@@ -1,8 +1,8 @@
-import { For, Match, Show, Switch, createEffect, createMemo, onCleanup, type JSX } from "solid-js"
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onCleanup, onMount, type JSX } from "solid-js"
 import { createStore } from "solid-js/store"
 import { createMediaQuery } from "@solid-primitives/media"
 import { useParams } from "@solidjs/router"
-import type { Part, ToolPart } from "@railwise/sdk/v2/client"
+import type { CapabilityManifest, Part, ToolPart } from "@railwise/sdk/v2/client"
 import { Tabs } from "@railwise/ui/tabs"
 import { Icon, type IconProps } from "@railwise/ui/icon"
 import { IconButton } from "@railwise/ui/icon-button"
@@ -34,6 +34,7 @@ import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/he
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import { agentDisplayName } from "@/utils/agent-display"
+import { capabilitiesForAgents, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 
 /** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
 const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
@@ -137,6 +138,7 @@ export function SessionSidePanel(props: {
   const language = useLanguage()
   const command = useCommand()
   const dialog = useDialog()
+  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
 
   const isDesktop = createMediaQuery("(min-width: 768px)")
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
@@ -240,6 +242,24 @@ export function SessionSidePanel(props: {
     })
   })
   const recentTools = createMemo(() => toolParts().slice(-3).reverse())
+  const activeAgents = createMemo(() =>
+    Array.from(
+      new Set(
+        [local.agent.current()?.name, ...messages().map((message) => message.agent)].filter((item): item is string =>
+          Boolean(item),
+        ),
+      ),
+    ),
+  )
+  const runtimeCapabilities = createMemo(() =>
+    capabilitiesForAgents(capabilities(), activeAgents().map((name) => ({ name }))).slice(0, 5),
+  )
+  const capabilityLabel = createMemo(() => {
+    const total = runtimeCapabilities().length
+    if (!params.id) return language.t("session.side.runtime.capabilities.ready")
+    if (total === 0) return language.t("session.side.runtime.capabilities.empty")
+    return language.t("session.side.runtime.capabilities.count", { count: total.toLocaleString(language.locale()) })
+  })
   const toolTitle = (part: ToolPart) => {
     if (part.state.status === "completed") return part.state.title || part.tool
     if (part.state.status === "running") return part.state.title || part.tool
@@ -360,7 +380,15 @@ export function SessionSidePanel(props: {
 
   const [store, setStore] = createStore({
     activeDraggable: undefined as string | undefined,
+    capabilitiesOpen: false,
     toolsOpen: false,
+  })
+
+  onMount(() => {
+    void sdk.client.marketplace.capabilities
+      .list()
+      .then((result) => setCapabilities(normalizeCapabilities(result)))
+      .catch(() => setCapabilities([]))
   })
 
   const focusPromptDock = () => {
@@ -378,6 +406,11 @@ export function SessionSidePanel(props: {
   const toggleTools = () => {
     if (toolStats().total === 0) return
     setStore("toolsOpen", (value) => !value)
+  }
+
+  const toggleCapabilities = () => {
+    if (runtimeCapabilities().length === 0) return
+    setStore("capabilitiesOpen", (value) => !value)
   }
 
   const handleDragStart = (event: unknown) => {
@@ -650,6 +683,16 @@ export function SessionSidePanel(props: {
                       onClick={focusPromptDock}
                     />
                     <StatusItem
+                      icon="providers"
+                      label={language.t("session.side.runtime.capabilities")}
+                      value={capabilityLabel()}
+                      testId="session-runtime-capabilities"
+                      rowTestId="session-runtime-capabilities-row"
+                      disabled={runtimeCapabilities().length === 0}
+                      expanded={store.capabilitiesOpen}
+                      onClick={toggleCapabilities}
+                    />
+                    <StatusItem
                       icon="console"
                       label={language.t("session.side.runtime.tools")}
                       value={toolLabel()}
@@ -660,6 +703,24 @@ export function SessionSidePanel(props: {
                       onClick={toggleTools}
                     />
                   </div>
+                  <Show when={store.capabilitiesOpen && runtimeCapabilities().length > 0}>
+                    <div data-testid="session-runtime-capability-list" class="mt-2 space-y-1">
+                      <For each={runtimeCapabilities()}>
+                        {(item) => (
+                          <div class="rounded-md border border-border-subtle bg-background-base px-2 py-1.5">
+                            <div
+                              data-testid="session-runtime-capability-name"
+                              class="truncate text-12-medium text-text-strong"
+                              title={item.description}
+                            >
+                              {item.name}
+                            </div>
+                            <div class="mt-0.5 truncate text-11-regular text-text-weak">{item.description}</div>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
                   <Show when={store.toolsOpen && recentTools().length > 0}>
                     <div data-testid="session-runtime-tool-list" class="mt-2 space-y-1">
                       <For each={recentTools()}>

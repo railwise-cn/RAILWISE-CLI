@@ -88,6 +88,8 @@ const agentDetail = await read("packages/app/src/pages/agents/[name].tsx")
 const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
 const agentDisplay = await read("packages/app/src/utils/agent-display.ts")
 const agentDisplayTest = await read("packages/app/src/utils/agent-display.test.ts")
+const messageTimeline = await read("packages/app/src/pages/session/message-timeline.tsx")
+const sessionSidePanel = await read("packages/app/src/pages/session/session-side-panel.tsx")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
 const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
@@ -155,6 +157,18 @@ check(
       'data-testid="session-model-readiness"',
       'data-testid="session-model-setup"',
     ]) &&
+    has(messageTimeline, [
+      "capabilitiesForAgents",
+      "session-turn-execution-capabilities",
+      "session-turn-execution-capability-name",
+      "session.execution.capabilities",
+    ]) &&
+    has(sessionSidePanel, [
+      "capabilitiesForAgents",
+      "session-runtime-capabilities",
+      "session-runtime-capability-list",
+      "session-runtime-capability-name",
+    ]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
     has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY"]) &&
     has(startup, [
@@ -165,6 +179,11 @@ check(
       "[data-testid=session-model-readiness]",
       "[data-testid=session-model-setup]",
       "[data-testid=session-prompt-input]",
+      "[data-testid=session-turn-execution-capabilities]",
+      "[data-testid=session-runtime-capabilities]",
+      "[data-testid=session-runtime-capability-list]",
+      "轨道交通监测方案",
+      "规范条文速查",
       "chief_manager",
       'model: "configured"',
       "/session/queue-e2e/prompt_async",

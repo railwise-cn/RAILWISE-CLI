@@ -5,6 +5,7 @@ import {
   capabilityBindings,
   capabilitiesFor,
   capabilitiesForAgent,
+  capabilitiesForAgents,
   capabilityCount,
   normalizeCapability,
   capabilityPreview,
@@ -105,6 +106,12 @@ describe("marketplace capability state", () => {
     expect(agentCapabilityLabels({ name: "qa_reviewer" })).toContain("质量审查专家")
     expect(capabilitiesForAgent(list, { name: "qa_reviewer" }).map((item) => item.name)).toEqual(["规范条文速查"])
     expect(capabilitiesForAgent(list, { name: "chief_manager" }).map((item) => item.name)).toEqual(["规范条文速查"])
+  })
+
+  test("deduplicates callable capabilities for a session agent set", () => {
+    expect(capabilitiesForAgents(list, [{ name: "chief_manager" }, { name: "qa_reviewer" }]).map((item) => item.name)).toEqual([
+      "规范条文速查",
+    ])
   })
 
   test("normalizes server and sdk capability response shapes", () => {

@@ -167,6 +167,9 @@ check(
     has(sessionSidePanel, [
       "capabilitiesForAgents",
       "ExecutionChainStep",
+      "InspectorItem",
+      "session-inspector-summary",
+      "session-runtime-metrics",
       "session-runtime-chain",
       "session-runtime-chain-action",
       "session-runtime-capabilities",
@@ -182,6 +185,8 @@ check(
       "[data-testid=home-task-input]",
       "[data-testid=home-start-session]",
       "[data-testid=session-collaboration-panel]",
+      "[data-testid=session-inspector-summary]",
+      "[data-testid=session-runtime-metrics]",
       "[data-testid=session-model-readiness]",
       "[data-testid=session-model-setup]",
       "[data-testid=session-prompt-input]",

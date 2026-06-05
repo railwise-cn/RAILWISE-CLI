@@ -108,6 +108,25 @@ function StatusItem(props: {
   )
 }
 
+function InspectorItem(props: {
+  icon: IconProps["name"]
+  label: string
+  value: string
+  testId?: string
+}) {
+  return (
+    <div class="min-w-0 rounded-md border border-border-subtle bg-background-base px-2 py-1.5">
+      <div class="flex min-w-0 items-center gap-1.5 text-11-medium text-text-weak">
+        <Icon name={props.icon} size="small" class="shrink-0 text-icon-weak" />
+        <span class="truncate">{props.label}</span>
+      </div>
+      <div data-testid={props.testId} class="mt-0.5 truncate text-12-medium text-text-strong" title={props.value}>
+        {props.value}
+      </div>
+    </div>
+  )
+}
+
 type ChainTone = "done" | "running" | "blocked" | "waiting" | "error"
 type ChainStepId = "model" | "agent" | "capabilities" | "tools" | "next"
 
@@ -131,7 +150,7 @@ function ExecutionChainStep(props: {
         />
       </div>
       <div class="min-w-0 flex-1">
-        <div class="flex min-w-0 items-center justify-between gap-2">
+        <div class="flex min-w-0 items-center justify-between gap-1.5">
           <span data-testid="session-runtime-chain-label" class="truncate text-11-medium text-text-weak">
             {props.label}
           </span>
@@ -766,7 +785,7 @@ export function SessionSidePanel(props: {
             >
               <div
                 data-testid="session-status-panel"
-                class="shrink-0 border-b border-border-subtle bg-background-stronger px-3 py-3"
+                class="shrink-0 border-b border-border-subtle bg-background-stronger px-3 py-2.5"
               >
                 <div class="mb-2 flex items-center justify-between gap-2">
                   <div class="text-12-medium text-text-strong">{language.t("session.side.title")}</div>
@@ -774,26 +793,26 @@ export function SessionSidePanel(props: {
                     {params.id ? language.t("session.side.status.active") : language.t("session.side.status.ready")}
                   </div>
                 </div>
-                <div class="space-y-1">
-                  <StatusItem
+                <div class="grid grid-cols-2 gap-1.5" data-testid="session-inspector-summary">
+                  <InspectorItem
                     icon="folder"
                     label={language.t("session.side.project")}
                     value={projectName()}
                     testId="session-status-project"
                   />
-                  <StatusItem
+                  <InspectorItem
                     icon="brain"
                     label={language.t("session.side.agent")}
                     value={agentName()}
                     testId="session-status-agent"
                   />
-                  <StatusItem
+                  <InspectorItem
                     icon="models"
                     label={language.t("session.side.model")}
                     value={modelName()}
                     testId="session-status-model"
                   />
-                  <StatusItem
+                  <InspectorItem
                     icon="checklist"
                     label={language.t("session.side.progress")}
                     value={progress()}
@@ -803,7 +822,7 @@ export function SessionSidePanel(props: {
                 <button
                   type="button"
                   data-testid="session-status-context"
-                  class="mt-2 flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-md border border-border-subtle bg-background-base px-2.5 text-left text-12-medium text-text-base hover:bg-background-hover disabled:cursor-default disabled:opacity-50 disabled:hover:bg-background-base"
+                  class="mt-2 flex h-7 w-full min-w-0 items-center justify-between gap-2 rounded-md border border-border-subtle bg-background-base px-2.5 text-left text-12-medium text-text-base hover:bg-background-hover disabled:cursor-default disabled:opacity-50 disabled:hover:bg-background-base"
                   disabled={!params.id}
                   onClick={openContext}
                 >
@@ -842,7 +861,7 @@ export function SessionSidePanel(props: {
                       )}
                     </For>
                   </div>
-                  <div class="space-y-1">
+                  <div class="grid grid-cols-2 gap-1" data-testid="session-runtime-metrics">
                     <StatusItem
                       icon="warning"
                       label={language.t("session.side.runtime.blockers")}

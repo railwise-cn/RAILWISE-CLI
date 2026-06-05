@@ -1,7 +1,7 @@
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onCleanup, onMount, type JSX } from "solid-js"
 import { createStore } from "solid-js/store"
 import { createMediaQuery } from "@solid-primitives/media"
-import { useParams } from "@solidjs/router"
+import { useNavigate, useParams } from "@solidjs/router"
 import type { CapabilityManifest, Part, ToolPart } from "@railwise/sdk/v2/client"
 import { Tabs } from "@railwise/ui/tabs"
 import { Icon, type IconProps } from "@railwise/ui/icon"
@@ -109,13 +109,16 @@ function StatusItem(props: {
 }
 
 type ChainTone = "done" | "running" | "blocked" | "waiting" | "error"
+type ChainStepId = "model" | "agent" | "capabilities" | "tools" | "next"
 
 function ExecutionChainStep(props: {
-  id: string
+  id: ChainStepId
   label: string
   status: string
   tone: ChainTone
   value: string
+  action?: string
+  onAction?: () => void
 }) {
   return (
     <div data-testid="session-runtime-chain-step" data-chain-step={props.id} class="flex min-w-0 items-start gap-2 py-1">
@@ -132,16 +135,31 @@ function ExecutionChainStep(props: {
           <span data-testid="session-runtime-chain-label" class="truncate text-11-medium text-text-weak">
             {props.label}
           </span>
-          <span
-            data-testid="session-runtime-chain-status"
-            class="shrink-0 rounded bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak"
-            classList={{
-              "text-text-strong": props.tone === "done" || props.tone === "running",
-              "text-text-danger-base": props.tone === "blocked" || props.tone === "error",
-            }}
-          >
-            {props.status}
-          </span>
+          <div class="flex shrink-0 items-center gap-1">
+            <span
+              data-testid="session-runtime-chain-status"
+              class="rounded bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak"
+              classList={{
+                "text-text-strong": props.tone === "done" || props.tone === "running",
+                "text-text-danger-base": props.tone === "blocked" || props.tone === "error",
+              }}
+            >
+              {props.status}
+            </span>
+            <Show when={props.action && props.onAction}>
+              <button
+                type="button"
+                data-testid={`session-runtime-chain-action-${props.id}`}
+                class="flex h-5 shrink-0 items-center gap-0.5 rounded border border-border-subtle bg-surface-panel px-1.5 text-10-medium text-text-weak hover:bg-background-hover hover:text-text-strong"
+                aria-label={props.action}
+                title={props.action}
+                onClick={props.onAction}
+              >
+                <span>{props.action}</span>
+                <Icon name="chevron-right" size="small" class="text-icon-weak" />
+              </button>
+            </Show>
+          </div>
         </div>
         <div data-testid="session-runtime-chain-value" class="mt-0.5 truncate text-12-medium text-text-strong" title={props.value}>
           {props.value}
@@ -172,6 +190,7 @@ export function SessionSidePanel(props: {
   focusReviewDiff: (path: string) => void
 }) {
   const params = useParams()
+  const navigate = useNavigate()
   const layout = useLayout()
   const sdk = useSDK()
   const sync = useSync()
@@ -350,41 +369,54 @@ export function SessionSidePanel(props: {
 
     return [
       {
-        id: "model",
+        id: "model" as const,
         label: language.t("session.side.runtime.chain.model"),
         status: language.t(currentModel() ? "session.side.runtime.chain.status.done" : "session.side.runtime.chain.status.blocked"),
         tone: currentModel() ? ("done" as const) : ("blocked" as const),
         value: modelName(),
+        action: language.t(
+          currentModel() ? "session.side.runtime.chain.action.switchModel" : "session.side.runtime.chain.action.connectModel",
+        ),
       },
       {
-        id: "agent",
+        id: "agent" as const,
         label: language.t("session.side.runtime.chain.agent"),
         status: language.t(activeAgents().length > 0 ? "session.side.runtime.chain.status.done" : "session.side.runtime.chain.status.waiting"),
         tone: activeAgents().length > 0 ? ("done" as const) : ("waiting" as const),
         value: activeAgents().map(agentDisplayName).join(" / ") || agentName(),
+        action: language.t("session.side.runtime.chain.action.configure"),
       },
       {
-        id: "capabilities",
+        id: "capabilities" as const,
         label: language.t("session.side.runtime.chain.capabilities"),
         status: language.t(
           runtimeCapabilities().length > 0 ? "session.side.runtime.chain.status.done" : "session.side.runtime.chain.status.waiting",
         ),
         tone: runtimeCapabilities().length > 0 ? ("done" as const) : ("waiting" as const),
         value: capabilityLabel(),
+        action: language.t("session.side.runtime.chain.action.view"),
       },
       {
-        id: "tools",
+        id: "tools" as const,
         label: language.t("session.side.runtime.chain.tools"),
         status: language.t(`session.side.runtime.chain.status.${toolTone}`),
         tone: toolTone,
         value: toolLabel(),
+        action: language.t(stats.error > 0 ? "session.side.runtime.chain.action.repair" : "session.side.runtime.chain.action.view"),
       },
       {
-        id: "next",
+        id: "next" as const,
         label: language.t("session.side.runtime.chain.next"),
         status: language.t(`session.side.runtime.chain.status.${nextTone}`),
         tone: nextTone,
         value: nextValue,
+        action: language.t(
+          blockers() > 0
+            ? "session.side.runtime.chain.action.handle"
+            : pendingTodos > 0
+              ? "session.side.runtime.chain.action.focus"
+              : "session.side.runtime.chain.action.input",
+        ),
       },
     ]
   })
@@ -511,6 +543,34 @@ export function SessionSidePanel(props: {
   const toggleCapabilities = () => {
     if (runtimeCapabilities().length === 0) return
     setStore("capabilitiesOpen", (value) => !value)
+  }
+
+  const runExecutionChainAction = (id: ChainStepId) => {
+    if (id === "model") {
+      navigate("/marketplace")
+      return
+    }
+    if (id === "agent") {
+      navigate("/agents")
+      return
+    }
+    if (id === "capabilities") {
+      if (runtimeCapabilities().length > 0) {
+        toggleCapabilities()
+        return
+      }
+      navigate("/marketplace")
+      return
+    }
+    if (id === "tools") {
+      if (toolStats().error > 0 || toolStats().total === 0) {
+        navigate("/harness")
+        return
+      }
+      toggleTools()
+      return
+    }
+    focusPromptDock()
   }
 
   const handleDragStart = (event: unknown) => {
@@ -776,6 +836,8 @@ export function SessionSidePanel(props: {
                           status={step.status}
                           tone={step.tone}
                           value={step.value}
+                          action={step.action}
+                          onAction={() => runExecutionChainAction(step.id)}
                         />
                       )}
                     </For>

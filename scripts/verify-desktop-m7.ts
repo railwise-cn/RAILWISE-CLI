@@ -241,6 +241,7 @@ check(
       "/session/queue-e2e/prompt_async",
       "权限处理后可以立即回到对话框继续协作",
       "继续生成报告。",
+      "const followup = page.waitForRequest",
       'payload.agent).toBe("chief_manager"',
       'providerID: "deepseek", modelID: "deepseek-v4"',
     ]),

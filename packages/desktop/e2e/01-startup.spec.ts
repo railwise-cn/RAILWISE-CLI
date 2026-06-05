@@ -242,4 +242,7 @@ test("权限处理后可以立即回到对话框继续协作", async ({ launchAp
   await visible(page.locator("[data-testid=session-prompt-input]"), 15000)
   await page.locator("[data-testid=session-prompt-input]").fill("继续生成报告。")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("继续生成报告。")
+  const followup = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
+  expect(JSON.stringify((await followup).postDataJSON())).toContain("继续生成报告")
 })

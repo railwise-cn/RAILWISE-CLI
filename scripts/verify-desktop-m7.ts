@@ -165,9 +165,12 @@ check(
     ]) &&
     has(sessionSidePanel, [
       "capabilitiesForAgents",
+      "ExecutionChainStep",
+      "session-runtime-chain",
       "session-runtime-capabilities",
       "session-runtime-capability-list",
       "session-runtime-capability-name",
+      "session.side.runtime.chain.title",
     ]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
     has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY"]) &&
@@ -180,8 +183,10 @@ check(
       "[data-testid=session-model-setup]",
       "[data-testid=session-prompt-input]",
       "[data-testid=session-turn-execution-capabilities]",
+      "[data-testid=session-runtime-chain]",
       "[data-testid=session-runtime-capabilities]",
       "[data-testid=session-runtime-capability-list]",
+      "执行链路",
       "轨道交通监测方案",
       "规范条文速查",
       "chief_manager",

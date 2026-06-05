@@ -108,6 +108,49 @@ function StatusItem(props: {
   )
 }
 
+type ChainTone = "done" | "running" | "blocked" | "waiting" | "error"
+
+function ExecutionChainStep(props: {
+  id: string
+  label: string
+  status: string
+  tone: ChainTone
+  value: string
+}) {
+  return (
+    <div data-testid="session-runtime-chain-step" data-chain-step={props.id} class="flex min-w-0 items-start gap-2 py-1">
+      <div class="mt-1.5 flex w-3 shrink-0 justify-center">
+        <span
+          class="size-2 rounded-full bg-icon-weak"
+          classList={{
+            "bg-icon-success-base": props.tone === "done",
+          }}
+        />
+      </div>
+      <div class="min-w-0 flex-1">
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <span data-testid="session-runtime-chain-label" class="truncate text-11-medium text-text-weak">
+            {props.label}
+          </span>
+          <span
+            data-testid="session-runtime-chain-status"
+            class="shrink-0 rounded bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak"
+            classList={{
+              "text-text-strong": props.tone === "done" || props.tone === "running",
+              "text-text-danger-base": props.tone === "blocked" || props.tone === "error",
+            }}
+          >
+            {props.status}
+          </span>
+        </div>
+        <div data-testid="session-runtime-chain-value" class="mt-0.5 truncate text-12-medium text-text-strong" title={props.value}>
+          {props.value}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function compact(value: string) {
   const text = value.replace(/\s+/g, " ").trim()
   if (text.length <= 120) return text
@@ -174,8 +217,9 @@ export function SessionSidePanel(props: {
     return sync.project?.name || getFilename(root) || language.t("session.side.project.empty")
   })
   const agentName = createMemo(() => agentDisplayName(local.agent.current()) || language.t("session.side.agent.empty"))
+  const currentModel = createMemo(() => local.model.current())
   const modelName = createMemo(() => {
-    const model = local.model.current()
+    const model = currentModel()
     if (!model) return language.t("session.side.model.empty")
     return `${model.provider.name} / ${model.name}`
   })
@@ -287,6 +331,62 @@ export function SessionSidePanel(props: {
     if (state.type === "retry")
       return language.t("session.side.runtime.state.retry", { attempt: state.attempt.toLocaleString(language.locale()) })
     return language.t("session.side.runtime.state.idle")
+  })
+  const executionChain = createMemo(() => {
+    const stats = toolStats()
+    const todoList = todos()
+    const pendingTodos = todoList.filter((todo) => todo.status !== "completed" && todo.status !== "cancelled").length
+    const toolTone: ChainTone =
+      stats.error > 0 ? "error" : stats.running > 0 ? "running" : stats.total > 0 ? "done" : "waiting"
+    const nextTone: ChainTone = blockers() > 0 ? "blocked" : pendingTodos > 0 ? "running" : params.id ? "waiting" : "done"
+    const nextValue =
+      blockers() > 0
+        ? blockerLabel()
+        : todoList.length > 0
+          ? todoLabel()
+          : params.id
+            ? language.t("session.side.runtime.chain.next.waiting")
+            : language.t("session.side.runtime.chain.next.ready")
+
+    return [
+      {
+        id: "model",
+        label: language.t("session.side.runtime.chain.model"),
+        status: language.t(currentModel() ? "session.side.runtime.chain.status.done" : "session.side.runtime.chain.status.blocked"),
+        tone: currentModel() ? ("done" as const) : ("blocked" as const),
+        value: modelName(),
+      },
+      {
+        id: "agent",
+        label: language.t("session.side.runtime.chain.agent"),
+        status: language.t(activeAgents().length > 0 ? "session.side.runtime.chain.status.done" : "session.side.runtime.chain.status.waiting"),
+        tone: activeAgents().length > 0 ? ("done" as const) : ("waiting" as const),
+        value: activeAgents().map(agentDisplayName).join(" / ") || agentName(),
+      },
+      {
+        id: "capabilities",
+        label: language.t("session.side.runtime.chain.capabilities"),
+        status: language.t(
+          runtimeCapabilities().length > 0 ? "session.side.runtime.chain.status.done" : "session.side.runtime.chain.status.waiting",
+        ),
+        tone: runtimeCapabilities().length > 0 ? ("done" as const) : ("waiting" as const),
+        value: capabilityLabel(),
+      },
+      {
+        id: "tools",
+        label: language.t("session.side.runtime.chain.tools"),
+        status: language.t(`session.side.runtime.chain.status.${toolTone}`),
+        tone: toolTone,
+        value: toolLabel(),
+      },
+      {
+        id: "next",
+        label: language.t("session.side.runtime.chain.next"),
+        status: language.t(`session.side.runtime.chain.status.${nextTone}`),
+        tone: nextTone,
+        value: nextValue,
+      },
+    ]
   })
   const kinds = createMemo(() => {
     const merge = (a: "add" | "del" | "mix" | undefined, b: "add" | "del" | "mix") => {
@@ -662,6 +762,23 @@ export function SessionSidePanel(props: {
                     >
                       {runtimeStateLabel()}
                     </div>
+                  </div>
+                  <div
+                    data-testid="session-runtime-chain"
+                    class="mb-2 rounded-md border border-border-subtle bg-background-base px-2 py-1.5"
+                  >
+                    <div class="mb-1 text-11-medium text-text-weak">{language.t("session.side.runtime.chain.title")}</div>
+                    <For each={executionChain()}>
+                      {(step) => (
+                        <ExecutionChainStep
+                          id={step.id}
+                          label={step.label}
+                          status={step.status}
+                          tone={step.tone}
+                          value={step.value}
+                        />
+                      )}
+                    </For>
                   </div>
                   <div class="space-y-1">
                     <StatusItem

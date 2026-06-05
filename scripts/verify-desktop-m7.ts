@@ -315,7 +315,14 @@ check(
 check(
   "backend harness marketplace contract",
   has(harnessSchema, ["HarnessStatus", "HarnessEventType", "tool.started", "permission.resolved"]) &&
-    has(harnessService, ["export namespace Harness", "await Marketplace.list()", "resolvePermission"]) &&
+    has(harnessService, [
+      "export namespace Harness",
+      "await Marketplace.list()",
+      "Session.messages",
+      "session.started",
+      "tool.completed",
+      "resolvePermission",
+    ]) &&
     has(marketplaceSchema, ["CapabilityManifest", "harness_profile", "CapabilityPermission"]) &&
     has(marketplaceService, [
       "export namespace Marketplace",

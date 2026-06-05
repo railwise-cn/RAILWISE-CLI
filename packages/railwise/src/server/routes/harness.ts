@@ -45,7 +45,7 @@ export function HarnessRoutes() {
         },
       }),
       validator("param", z.object({ sessionID: z.string() })),
-      (c) => c.json(Harness.timeline(c.req.valid("param").sessionID)),
+      async (c) => c.json(await Harness.timeline(c.req.valid("param").sessionID)),
     )
     .post(
       "/session/:sessionID/permission/:permissionID",

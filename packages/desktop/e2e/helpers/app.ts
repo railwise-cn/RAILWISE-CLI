@@ -2,7 +2,8 @@ import { expect, test as base, type BrowserContext, type Page, type Route } from
 
 type WorkspaceFile = {
   path: string
-  kind: "csv" | "dxf" | "pptx"
+  kind: "csv" | "dxf" | "pptx" | "md"
+  content?: string
 }
 
 type Project = {
@@ -645,6 +646,7 @@ export { expect }
 
 async function setup(page: Page, opts: LaunchOptions) {
   let market = capabilities.map((item) => ({ ...item }))
+  const isServerRoute = (url: URL, path: string) => url.origin === server && url.pathname === path
 
   if (process.env.RW_E2E_DEBUG === "1") {
     page.on("console", (msg) => console.log(`[browser:${msg.type()}] ${msg.text()}`))
@@ -692,7 +694,17 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/provider`, (route) =>
     json(route, opts.model === "configured" ? provider : { ...provider, connected: [] }),
   )
-  await page.route(`${server}/file?**`, (route) => {
+  await page.route((url) => isServerRoute(url, "/file/content"), (route) => {
+    const url = new URL(route.request().url())
+    const target = url.searchParams.get("path") ?? ""
+    const file = (opts.workspaceFiles ?? []).find((item) => {
+      const name = item.path.split(/[\\/]/).pop() ?? item.path
+      return item.path === target || name === target || item.path.endsWith(`/${target}`)
+    })
+    const content = file?.content ?? (file?.kind === "md" ? `# ${file.path.split(/[\\/]/).pop()}` : csv)
+    return json(route, { type: "text", content, mimeType: file?.kind === "md" ? "text/markdown" : "text/plain" })
+  })
+  await page.route((url) => isServerRoute(url, "/file"), (route) => {
     const url = new URL(route.request().url())
     const root = (opts.workspaceFiles ?? []).map((file) => ({
       name: file.path.split(/[\\/]/).pop() ?? file.path,

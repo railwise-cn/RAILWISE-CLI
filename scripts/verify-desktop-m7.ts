@@ -188,13 +188,17 @@ check(
       "session-runtime-tool-risk",
       "session-runtime-tool-input",
       "session-runtime-tool-artifact",
+      "session-runtime-tool-repair",
+      "openArtifact",
+      "file.tab(path)",
+      "repairInstruction",
       "session.side.runtime.chain.title",
       "session.side.runtime.chain.action.handle",
     ]) &&
     has(sessionToolEvidence, ["toolEvidence", "artifacts", "pass", "missing", "alerts", "outputPath"]) &&
     has(sessionToolEvidenceTest, ["summarizes completed tool input, output, risk and artifacts", "成果报告.md", "需复核"]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
-    has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY"]) &&
+    has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY", "isServerRoute", "/file/content"]) &&
     has(startup, [
       "[data-testid=home-project-directory]",
       "[data-testid=home-task-input]",
@@ -210,6 +214,8 @@ check(
       "[data-testid=session-runtime-chain-action-next]",
       "[data-testid=session-runtime-capabilities]",
       "[data-testid=session-runtime-capability-list]",
+      "[data-testid=session-runtime-tool-artifact]",
+      "[data-component=code]",
       "执行链路",
       "处理",
       "轨道交通监测方案",
@@ -221,6 +227,7 @@ check(
       "session-runtime-tool-risk",
       "成果报告.md",
       "闭合差复核.md",
+      "成果报告：运营期监测预警复核。",
       "tool: survey_calculator_leveling_closure",
       "chief_manager",
       'model: "configured"',

@@ -115,6 +115,10 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   const { page } = await launchApp("/home", {
     model: "configured",
     projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+    workspaceFiles: [
+      { path: `${worktree}/成果报告.md`, kind: "md", content: "# 成果报告\n\n成果报告：运营期监测预警复核。" },
+      { path: `${worktree}/闭合差复核.md`, kind: "md", content: "# 闭合差复核\n\n闭合差满足限差。" },
+    ],
   })
 
   await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
@@ -182,6 +186,8 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   await expect(page.locator("[data-testid=session-runtime-tool-summary]")).toContainText("闭合差满足限差")
   await expect(page.locator("[data-testid=session-runtime-tool-artifacts]")).toContainText("成果报告.md")
   await expect(page.locator("[data-testid=session-runtime-tool-artifacts]")).toContainText("闭合差复核.md")
+  await page.locator("[data-testid=session-runtime-tool-artifact]").filter({ hasText: "成果报告.md" }).click()
+  await expect(page.locator("[data-component=code]")).toContainText("成果报告：运营期监测预警复核。")
   expect(payload.agent).toBe("chief_manager")
   expect(payload.model).toEqual({ providerID: "deepseek", modelID: "deepseek-v4" })
   expect(JSON.stringify(payload.parts)).toContain("让 RAILWISE 检查复测资料")

@@ -282,8 +282,11 @@ check(
     contains(downloadRoute, [
       "railwise-desktop-darwin-aarch64.dmg",
       "railwise-desktop-darwin-x64.dmg",
-      "https://github.com/railwise-cn/RAILWISE-CLI/releases/latest/download/",
+      "https://api.github.com/repos/railwise-cn/RAILWISE-CLI/releases?per_page=30",
+      'item.tag_name.startsWith("desktop/v")',
+      "asset.browser_download_url",
     ]) &&
+    !downloadRoute.includes("releases/latest/download") &&
     !downloadRoute.includes("https://github.com/anomalyco/railwise/releases/latest/download/"),
   "Download UI, locale labels, and /download/:platform route expose the two public macOS DMGs from the RAILWISE repository",
 )

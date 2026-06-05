@@ -19,12 +19,17 @@ GET /desktop/{{target}}/{{current_version}}
     "darwin-aarch64": {
       "signature": "...",
       "url": "https://cdn.example.com/railwise-desktop-darwin-aarch64.app.tar.gz"
+    },
+    "darwin-x86_64": {
+      "signature": "...",
+      "url": "https://cdn.example.com/railwise-desktop-darwin-x64.app.tar.gz"
     }
   }
 }
 ```
 
 `url` 必须指向 Tauri updater 产物（macOS 为 `.app.tar.gz`），不要使用给用户手动安装的 `.dmg`。对应的 `.sig` 内容写入 `signature` 字段。
+平台键使用 Tauri updater 的 `{{target}}` 值，例如 Apple Silicon 为 `darwin-aarch64`，Intel 为 `darwin-x86_64`；公开文件名可以继续使用 `darwin-x64`。
 
 ## 灰度发布
 

@@ -18,6 +18,7 @@ type Manifest = {
 
 const checks: { name: string; passed: boolean; detail: string }[] = []
 const platform = "darwin-aarch64"
+const intel = "darwin-x86_64"
 const manifest: Manifest = {
   version: "1.3.1",
   notes: "GA 灰度验证",
@@ -27,6 +28,10 @@ const manifest: Manifest = {
     [platform]: {
       signature: "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZQ==",
       url: "https://cdn.railwise.cn/desktop/1.3.1/railwise-desktop-darwin-aarch64.app.tar.gz",
+    },
+    [intel]: {
+      signature: "dW50cnVzdGVkIGNvbW1lbnQ6IGludGVsIHNpZ25hdHVyZQ==",
+      url: "https://cdn.railwise.cn/desktop/1.3.1/railwise-desktop-darwin-x64.app.tar.gz",
     },
   },
 }
@@ -87,6 +92,16 @@ await check("older client receives update", async () => {
 await check("unsupported platform returns 404", async () => {
   const res = await worker.fetch(request("/desktop/windows-x86_64/1.3.0"), env(manifest))
   return { passed: res.status === 404, detail: `status ${res.status}` }
+})
+
+await check("intel client receives update", async () => {
+  const { res, body } = await json(`/desktop/${intel}/1.3.0`, "CN")
+  return {
+    passed:
+      res.status === 200 &&
+      body?.platforms[intel]?.url === "https://cdn.railwise.cn/desktop/1.3.1/railwise-desktop-darwin-x64.app.tar.gz",
+    detail: `status ${res.status}, url ${body?.platforms[intel]?.url ?? "none"}`,
+  }
 })
 
 await check("rollout zero suppresses update", async () => {

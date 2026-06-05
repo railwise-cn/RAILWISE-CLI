@@ -1,6 +1,22 @@
 import { APIEvent } from "@solidjs/start"
 import { DownloadPlatform } from "./types"
 
+type Release = {
+  tag_name: string
+  draft: boolean
+  assets: {
+    name: string
+    browser_download_url: string
+  }[]
+}
+
+type FetchInit = RequestInit & {
+  cf?: {
+    cacheTtl: number
+    cacheEverything: boolean
+  }
+}
+
 const assetNames: Record<string, string> = {
   "darwin-aarch64-dmg": "railwise-desktop-darwin-aarch64.dmg",
   "darwin-x64-dmg": "railwise-desktop-darwin-x64.dmg",
@@ -16,13 +32,31 @@ export async function GET({ params: { platform } }: APIEvent) {
   const assetName = assetNames[platform]
   if (!assetName) return new Response("Not Found", { status: 404 })
 
-  const resp = await fetch(`https://github.com/railwise-cn/RAILWISE-CLI/releases/latest/download/${assetName}`, {
+  const init = {
+    headers: {
+      Accept: "application/vnd.github.v3+json",
+      "User-Agent": "RAILWISE-Console",
+    },
     cf: {
       // in case gh releases has rate limits
       cacheTtl: 60 * 5,
       cacheEverything: true,
     },
-  } as any)
+  } satisfies FetchInit
+
+  const releases = await fetch("https://api.github.com/repos/railwise-cn/RAILWISE-CLI/releases?per_page=30", init)
+  if (!releases.ok) return new Response("Release lookup failed", { status: 502 })
+
+  const release = ((await releases.json()) as Release[]).find(
+    (item) =>
+      !item.draft &&
+      item.tag_name.startsWith("desktop/v") &&
+      item.assets.some((asset) => asset.name === assetName),
+  )
+  const asset = release?.assets.find((item) => item.name === assetName)
+  if (!asset) return new Response("Not Found", { status: 404 })
+
+  const resp = await fetch(asset.browser_download_url)
 
   const downloadName = downloadNames[platform]
 

@@ -56,6 +56,7 @@ const sseDuration =
     ? Number(sseSeconds) * 1_000
     : Number(value("--sse-minutes") ?? Bun.env.RAILWISE_VERIFY_SSE_MINUTES ?? "30") * 60_000) || 30 * 60_000
 const sseTimeout = Number(Bun.env.RAILWISE_SSE_HEARTBEAT_TIMEOUT_MS ?? "20000")
+const sseGrace = Math.min(1_000, Math.max(100, Math.floor(sseDuration * 0.005)))
 const serverUrl = new URL(Bun.env.RAILWISE_SERVER_URL ?? "http://127.0.0.1:4096")
 const sseUrl = new URL("/event", serverUrl)
 const hints = [
@@ -175,7 +176,9 @@ async function sse() {
     const reader = res.body.getReader()
     while (Date.now() - started < sseDuration && !failed) {
       const next = await reader.read().catch(() => ({ done: true, value: undefined }))
-      if (Date.now() - started >= sseDuration) break
+      const elapsed = Date.now() - started
+      if (elapsed >= sseDuration) break
+      if (next.done && elapsed >= sseDuration - sseGrace) break
       if (next.done) throw new Error("SSE stream ended before soak duration completed")
 
       chunk += decoder.decode(next.value, { stream: true }).replace(/\r\n/g, "\n").replace(/\r/g, "\n")

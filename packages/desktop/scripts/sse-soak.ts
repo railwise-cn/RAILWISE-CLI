@@ -19,6 +19,7 @@ const seconds = positive(arg("--seconds", Bun.env.RAILWISE_SSE_SECONDS))
 const minutes = positive(arg("--minutes", Bun.env.RAILWISE_SSE_MINUTES))
 const duration = seconds ? seconds * 1_000 : (minutes ?? 30) * 60_000
 const timeout = positive(arg("--heartbeat-timeout-ms", Bun.env.RAILWISE_SSE_HEARTBEAT_TIMEOUT_MS)) ?? 20_000
+const grace = Math.min(1_000, Math.max(100, Math.floor(duration * 0.005)))
 const base = arg("--url", Bun.env.RAILWISE_SERVER_URL ?? "http://127.0.0.1:4096") ?? "http://127.0.0.1:4096"
 const url = new URL("/event", base)
 const started = Date.now()
@@ -111,6 +112,7 @@ async function main() {
 
     if (complete || failed) break
     if (next.done) {
+      if (Date.now() - started >= duration - grace) break
       failed = "SSE stream ended before soak duration completed"
       break
     }

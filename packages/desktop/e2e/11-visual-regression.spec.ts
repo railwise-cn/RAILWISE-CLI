@@ -89,18 +89,26 @@ test("项目侧栏提供清晰会话入口并隐藏工作区后台标签", async
 
 test("首页右侧项目栏显示最近会话与执行状态", async ({ launchApp }) => {
   const worktree = "/tmp/railwise-e2e/worktree"
+  const sibling = "/tmp/other-client/worktree"
   const { page } = await launchApp("/home", {
     model: "configured",
-    projects: [{ id: "railwise-e2e", worktree, vcs: "git", time: { created: Date.now(), updated: Date.now() } }],
+    projects: [
+      { id: "railwise-e2e", worktree, vcs: "git", time: { created: Date.now(), updated: Date.now() } },
+      { id: "other-client", worktree: sibling, vcs: "git", time: { created: Date.now() - 10_000, updated: Date.now() - 10_000 } },
+    ],
   })
 
   await visible(page.locator("[data-testid=home-workbench]"))
-  await expect(page.locator("[data-testid=home-project-summary]")).toContainText("worktree")
+  await expect(page.locator("[data-testid=home-project-summary]")).toContainText("worktree (railwise-e2e)")
+  await expect(page.locator("[data-testid=home-recent-projects]")).toContainText("worktree (other-client)")
   await expect(page.locator("[data-testid=home-session-rail]")).toContainText("复测资料检查")
   await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("1 个任务运行中")
   await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("1 项待确认")
   await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("模型已接入")
+  await expect(page.locator("[data-testid=home-capability-rail]")).toContainText("智能体")
+  await expect(page.locator("[data-testid=home-capability-rail]")).toContainText("控制台")
   await expect(page.locator("[data-testid=home-project-rail]")).not.toContainText(worktree)
+  await expect(page.locator("[data-testid=home-project-rail]")).not.toContainText(sibling)
 })
 
 test("左侧空项目栏提供明确入口而不是空白面板", async ({ launchApp }) => {

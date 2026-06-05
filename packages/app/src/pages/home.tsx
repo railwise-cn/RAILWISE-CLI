@@ -30,8 +30,14 @@ export default function Home() {
   const [directory, setDirectory] = createSignal("")
   const [prompt, setPrompt] = createSignal("")
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
+  const duplicateNames = createMemo(() => {
+    const counts = new Map<string, number>()
+    recent().forEach((project) => counts.set(projectName(project.worktree), (counts.get(projectName(project.worktree)) ?? 0) + 1))
+    return new Set([...counts].filter((entry) => entry[1] > 1).map((entry) => entry[0]))
+  })
   const selectedDirectory = createMemo(() => directory() || recent()[0]?.worktree || "")
   const selectedProject = createMemo(() => recent().find((project) => project.worktree === selectedDirectory()))
+  const recentProjects = createMemo(() => recent().filter((project) => project.worktree !== selectedDirectory()).slice(0, 3))
   const projectStore = createMemo(() => {
     const target = selectedDirectory()
     if (!target) return
@@ -75,7 +81,7 @@ export default function Home() {
     if (healthy === false) return "待连接"
     return "检查中"
   })
-  const selectedName = createMemo(() => projectName(selectedDirectory()))
+  const selectedName = createMemo(() => projectDisplayName(selectedDirectory()))
   const selectedMeta = createMemo(() => {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
@@ -105,6 +111,24 @@ export default function Home() {
     const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
     const parts = clean.split("/").filter(Boolean)
     return parts.at(-1) ?? "选择项目"
+  }
+
+  function projectParent(value: string) {
+    const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
+    const parts = clean.split("/").filter(Boolean)
+    return parts.at(-2) ?? ""
+  }
+
+  function projectDisplayName(value: string) {
+    if (!value) return "选择项目"
+    const name = projectName(value)
+    const parent = projectParent(value)
+    if (!duplicateNames().has(name) || !parent) return name
+    return `${name} (${parent})`
+  }
+
+  function projectTime(project: NonNullable<ReturnType<typeof recent>[number]>) {
+    return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
   }
 
   function selectDirectory(value: string) {
@@ -294,6 +318,28 @@ export default function Home() {
                 <div class="mt-1 truncate text-12-regular text-text-weak">{selectedMeta()}</div>
               </div>
             </div>
+            <Show when={recentProjects().length > 0}>
+              <div class="mt-3 border-t border-border-weak-base pt-3" data-testid="home-recent-projects">
+                <div class="mb-2 text-12-medium text-text-weak">最近项目</div>
+                <div class="space-y-1">
+                  <For each={recentProjects()}>
+                    {(project) => (
+                      <button
+                        type="button"
+                        class="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left hover:bg-surface-element"
+                        onClick={() => selectDirectory(project.worktree)}
+                      >
+                        <Icon name="folder" size="small" class="shrink-0 text-text-weak" />
+                        <span class="min-w-0 flex-1">
+                          <span class="block truncate text-13-medium text-text-strong">{projectDisplayName(project.worktree)}</span>
+                          <span class="block truncate text-12-regular text-text-weak">{projectTime(project)}</span>
+                        </span>
+                      </button>
+                    )}
+                  </For>
+                </div>
+              </div>
+            </Show>
           </section>
 
           <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-session-rail">
@@ -382,6 +428,44 @@ export default function Home() {
                   能力市场
                 </span>
                 <span class="text-12-regular text-text-weak">打开</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-capability-rail">
+            <div class="mb-3 text-12-medium text-text-weak">能力</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                onClick={() => navigate("/agents")}
+              >
+                <Icon name="brain" size="small" class="shrink-0 text-text-weak" />
+                <span class="truncate text-13-medium text-text-strong">智能体</span>
+              </button>
+              <button
+                type="button"
+                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                onClick={() => navigate("/marketplace")}
+              >
+                <Icon name="providers" size="small" class="shrink-0 text-text-weak" />
+                <span class="truncate text-13-medium text-text-strong">市场</span>
+              </button>
+              <button
+                type="button"
+                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                onClick={() => navigate("/harness")}
+              >
+                <Icon name="server" size="small" class="shrink-0 text-text-weak" />
+                <span class="truncate text-13-medium text-text-strong">控制台</span>
+              </button>
+              <button
+                type="button"
+                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                onClick={() => navigate("/marketplace")}
+              >
+                <Icon name="models" size="small" class="shrink-0 text-text-weak" />
+                <span class="truncate text-13-medium text-text-strong">模型</span>
               </button>
             </div>
           </section>

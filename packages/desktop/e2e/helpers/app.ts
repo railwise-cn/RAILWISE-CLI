@@ -21,6 +21,8 @@ type LaunchOptions = {
   projects?: Project[]
   emptySessions?: boolean
   workspaceFiles?: WorkspaceFile[]
+  toolFailure?: boolean
+  permission?: "none"
 }
 
 type Fixtures = {
@@ -500,6 +502,42 @@ const queueMessages = [
   },
 ]
 
+const failedQueueMessage = {
+  info: {
+    id: "msg_3",
+    sessionID: "queue-e2e",
+    role: "assistant",
+    time: { created: Date.now() - 400, completed: Date.now() - 200 },
+    parentID: "msg_1",
+    modelID: "deepseek-v4",
+    providerID: "deepseek",
+    mode: "primary",
+    agent: "chief_manager",
+    path: { cwd: "/tmp/railwise-e2e/worktree", root: "/tmp/railwise-e2e/worktree" },
+    cost: 0.001,
+    tokens: { input: 900, output: 180, reasoning: 0, cache: { read: 0, write: 0 } },
+  },
+  parts: [
+    {
+      id: "prt_3",
+      sessionID: "queue-e2e",
+      messageID: "msg_3",
+      type: "tool",
+      callID: "call-e2e-failed",
+      tool: "resurvey_material_check",
+      state: {
+        status: "error",
+        input: { path: "控制点成果/CP001.xlsx" },
+        error: "ENOENT: no such file or directory, open '控制点成果/CP001.xlsx'",
+        title: "复测资料检查",
+        time: { start: Date.now() - 350, end: Date.now() - 250 },
+      },
+    },
+  ],
+}
+
+const sessionMessages = (opts: LaunchOptions) => (opts.toolFailure ? [...queueMessages, failedQueueMessage] : queueMessages)
+
 const mcp = {
   railwise_inspector: { status: "connected" },
   report_exporter: { status: "disabled" },
@@ -719,10 +757,11 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/agent`, (route) => json(route, agents))
   await page.route(`${server}/session?**`, (route) => json(route, opts.emptySessions ? [] : [queueSession]))
   await page.route(`${server}/session/status`, (route) => json(route, { "queue-e2e": { type: "busy" } }))
-  await page.route(`${server}/permission`, (route) => json(route, [queuePermission]))
+  const permissions = opts.permission === "none" ? [] : [queuePermission]
+  await page.route(`${server}/permission`, (route) => json(route, permissions))
   await page.route(`${server}/question`, (route) => json(route, []))
   await page.route(`${server}/session/queue-e2e`, (route) => json(route, queueSession))
-  await page.route(`${server}/session/queue-e2e/message**`, (route) => json(route, queueMessages))
+  await page.route(`${server}/session/queue-e2e/message**`, (route) => json(route, sessionMessages(opts)))
   await page.route(`${server}/session/queue-e2e/todo`, (route) => json(route, queueTodos))
   await page.route(`${server}/marketplace/capabilities`, (route) => json(route, { data: market }))
   await page.route(`${server}/marketplace/capabilities/**`, (route) => {

@@ -26,6 +26,7 @@ import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"
 import { useLayout } from "@/context/layout"
 import { useLocal } from "@/context/local"
+import { usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { createFileTabListSync } from "@/pages/session/file-tab-scroll"
@@ -206,6 +207,7 @@ export function SessionSidePanel(props: {
   const language = useLanguage()
   const command = useCommand()
   const dialog = useDialog()
+  const prompt = usePrompt()
   const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
 
   const isDesktop = createMediaQuery("(min-width: 768px)")
@@ -547,7 +549,9 @@ export function SessionSidePanel(props: {
 
   const repairTool = (part: ToolPart) => {
     if (part.state.status !== "error") return
-    setSessionHandoff(sessionKey(), { prompt: repairInstruction(part) })
+    const text = repairInstruction(part)
+    setSessionHandoff(sessionKey(), { prompt: text })
+    prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
     focusPromptDock()
   }
 

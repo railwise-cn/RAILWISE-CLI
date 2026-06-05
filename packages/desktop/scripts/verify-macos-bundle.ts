@@ -50,11 +50,26 @@ const app = appArg ?? (apps.length === 1 ? apps[0]! : (await first(fallback)) ??
 const contents = path.join(app, "Contents")
 const macos = path.join(contents, "MacOS")
 const plist = path.join(contents, "Info.plist")
+const dist = path.resolve("dist")
 const executable = config.mainBinaryName ?? "railwise"
 const bin = path.join(macos, executable)
 const sidecar = path.join(macos, "railwise-cli")
 const arch = target?.startsWith("aarch64-") ? "arm64" : target?.startsWith("x86_64-") ? "x86_64" : undefined
 const mac = (text: string) => (arch ? text.includes(`executable ${arch}`) : /Mach-O 64-bit executable (arm64|x86_64)/.test(text))
+const native = !arch || arch === process.arch || (arch === "x86_64" && process.arch === "x64")
+const tail = (value: string) => value.split("\n").slice(-24).join("\n")
+const files = async (dir: string): Promise<string[]> => {
+  const entries = await readdir(dir, { withFileTypes: true }).catch(() => [])
+  return (
+    await Promise.all(
+      entries.map((item) => {
+        const file = path.join(dir, item.name)
+        if (item.isDirectory()) return files(file)
+        return [file]
+      }),
+    )
+  ).flat()
+}
 
 const field = async (name: string) => (await $`/usr/libexec/PlistBuddy -c ${`Print :${name}`} ${plist}`.text()).trim()
 const optional = async (name: string) => {
@@ -63,6 +78,7 @@ const optional = async (name: string) => {
   return result.stdout.toString().trim()
 }
 const filetype = async (file: string) => (await $`file ${file}`.text()).trim()
+const binaryStrings = async (file: string) => (await $`strings ${file}`.text()).trim()
 const signature = async (file: string) => {
   const result = await $`codesign -dv --verbose=4 ${file}`.quiet().nothrow()
   const text = result.stdout.toString() + result.stderr.toString()
@@ -93,8 +109,55 @@ if (await exists(bin)) {
   check("main executable architecture", mac(await filetype(bin)), arch ?? "arm64 or x86_64")
 }
 
+if (await exists(bin)) {
+  const frontend = (await files(dist)).filter((file) => /\.(html|js|css)$/.test(file))
+  const source = (await Promise.all(frontend.map((file) => Bun.file(file).text()))).join("\n")
+  const home = frontend
+    .map((file) => path.relative(dist, file))
+    .find((file) => /^assets\/home-[\w-]+\.js$/.test(file))
+  const embedded = await binaryStrings(bin)
+  const legacy = ["项目驾驶舱", "多智能体协作中枢", "智能体矩阵", "睿威总控", "总工程师", "项目工作区", "Agent Studio"]
+
+  check(
+    "frontend dist current home workbench",
+    source.includes("想让 RAILWISE 完成什么？") &&
+      source.includes("home-workbench") &&
+      source.includes("home-empty-sessions") &&
+      source.includes("输入任务会创建第一条会话。") &&
+      source.includes("先打开项目，再开始协作。") &&
+      source.includes("DeepSeek V4") &&
+      source.includes("home-connect-model") &&
+      source.includes("接入 DeepSeek") &&
+      source.includes("能力市场") &&
+      source.includes("执行中心"),
+    "dist must contain the current minimal RAILWISE workbench",
+  )
+  check(
+    "frontend dist blocks legacy desktop UI",
+    legacy.every((item) => !source.includes(item)),
+    "dist must not contain legacy dashboard, map, or old management copy",
+  )
+  check(
+    "embedded frontend home chunk",
+    Boolean(home && embedded.includes(`/${home}`)),
+    home ? `embedded /${home}` : "missing dist/assets/home-*.js",
+  )
+}
+
 if (await exists(sidecar)) {
   check("sidecar architecture", mac(await filetype(sidecar)), arch ?? "arm64 or x86_64")
+  if (native) {
+    const result = await $`bun ./scripts/verify-sidecar-legacy-config.ts --bin ${sidecar}`.quiet().nothrow()
+    check(
+      "sidecar legacy config compatibility",
+      result.exitCode === 0,
+      result.exitCode === 0
+        ? result.stdout.toString().trim().split("\n").at(-1) ?? "passed"
+        : tail(`${result.stdout.toString()}\n${result.stderr.toString()}`),
+    )
+  } else {
+    check("sidecar legacy config compatibility", true, `skipped for non-native ${arch} sidecar on ${process.arch}`)
+  }
 }
 
 try {

@@ -11,9 +11,9 @@ Tauri 桌面壳
 SolidJS 前端
   ├─ /home 极简协作工作台
   ├─ /marketplace 能力市场
-  ├─ /harness 执行层状态
+  ├─ /harness 执行中心
   ├─ /workspace 数据与成果工作台
-  ├─ /agents 高级智能体管理
+  ├─ /agents 能力配置
   └─ 会话、模板、Prompt 队列、设置
 
 Railwise sidecar
@@ -26,10 +26,10 @@ Railwise sidecar
 ## 关键路径
 
 - 启动：Tauri 启动 sidecar，前端等待初始化完成后进入 `/home`；旧 `/dashboard` 入口重定向到极简工作台。
-- 能力市场：`/marketplace` 只展示智能体、工具、专业流程、MCP、模型 Provider 与执行层配置的安装和配置入口；高级矩阵、模型路由和工作流编排留在 `/agents`。
+- 能力市场：`/marketplace` 只展示智能体、工具、专业流程、MCP、模型 Provider 与执行中心配置的安装和配置入口；模型路由和工作流编排留在 `/agents` 的能力配置页。
 - 数据预览：桌面端命令解析本地文件，前端渲染表格、图层或文档预览。
 - 智能体任务：前端把上下文发送到 sidecar，sidecar 通过 SSE 推送状态和消息。
-- 高级智能体管理：工作流预设通过 `/agent-studio/workflow/run` 创建真实会话，并写入首条 chief_manager 调度消息；智能体 7 天调用统计来自本地 message 表。
+- 能力配置：工作流预设通过 `/agent-studio/workflow/run` 创建真实会话，并写入首条 chief_manager 调度消息；智能体 7 天调用统计来自本地 message 表。
 - 更新：Tauri updater 查询 `updates.railwise.cn` 或私有更新源，前端显示自定义更新弹窗。
 - 埋点：默认关闭；开启后先写入本地队列，批量上报前执行脱敏。
 

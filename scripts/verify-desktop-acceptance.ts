@@ -215,6 +215,11 @@ const steps: Step[] = [
     args: ["bun", "run", "script/verify-desktop-release.ts"],
   },
   {
+    name: "Windows 内测安装包验收",
+    cwd: root,
+    args: ["bun", "run", "script/verify-desktop-windows-internal.ts"],
+  },
+  {
     name: "M7 内测验收",
     cwd: root,
     args: ["bun", "run", "script/verify-desktop-m7.ts"],
@@ -250,6 +255,12 @@ const steps: Step[] = [
     run: sse,
     retry: 1,
     skip: has("--skip-sse") || !live,
+  },
+  {
+    name: "desktop E2E 监听预检",
+    cwd: path.join(root, "packages/desktop"),
+    args: ["bun", "run", "preflight:e2e", "--base-url", e2eBase],
+    skip: has("--skip-e2e") || !live || reachable,
   },
   {
     name: "desktop E2E",

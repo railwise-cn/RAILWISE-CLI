@@ -25,9 +25,10 @@ const name = config.productName ?? "睿威智测 RAILWISE"
 const identifier = config.identifier ?? "com.railwiseai.desktop"
 const executable = config.mainBinaryName ?? "railwise"
 const app = arg("--app", path.join("src-tauri", "target", "release", "bundle", "macos", `${name}.app`))!
+const appPath = path.resolve(app)
 const timeout = Number(arg("--timeout", "15"))
 const readyTimeout = Number(arg("--ready-timeout", "60"))
-const skipLaunch = args.includes("--skip-launch")
+const skipLaunch = args.includes("--skip-launch") || args.includes("--bundle-only")
 const skipReady = args.includes("--skip-ready")
 const skipProcessCheck = args.includes("--skip-process-check")
 const skipProcessCleanup = skipProcessCheck || args.includes("--skip-process-cleanup")
@@ -65,6 +66,32 @@ const logFiles = async (since: number) => {
 }
 
 const tail = (text: string) => text.split("\n").slice(-80).join("\n")
+const match = (value: string, words: string[]) => {
+  const lower = value.toLowerCase()
+  return words.some((word) => lower.includes(word))
+}
+const confpath = (value: string) => value.match(/(?:[A-Z]:\\|\/)[^\s"']*railwise\.jsonc?/i)?.[0]
+const diagnose = (value: string) => {
+  const file = confpath(value)
+  if (match(value, ["configinvaliderror", "configjsonerror", "configuration is invalid", "railwise.json", "invalid input"])) {
+    return [
+      "诊断：配置文件需要修复。",
+      file ? `配置文件：${file}` : "配置文件：未能从日志中解析路径，请打开 ~/.config/railwise 检查 railwise.json / railwise.jsonc。",
+      "下一步：检查模型、智能体和 tools 配置；旧版 tools 分类数组已兼容，仍失败时先临时移走配置文件再重启。",
+    ].join("\n")
+  }
+  if (match(value, ["address already in use", "eaddrinuse"])) {
+    return ["诊断：本地端口被占用。", "下一步：退出已有 RAILWISE/railwise serve 进程后重启应用。"].join("\n")
+  }
+  if (match(value, ["operation not permitted", "permission denied", "eacces", "eperm", "access denied"])) {
+    return ["诊断：系统权限阻止启动。", "下一步：确认应用位于可执行目录，并检查配置目录与项目目录读写权限。"].join("\n")
+  }
+  if (match(value, ["health check", "timed out", "failed to spawn", "failed to start server", "connection"])) {
+    return ["诊断：核心服务未能在预期时间内就绪。", "下一步：保留最新 railwise-desktop_*.log，并检查 sidecar 是否启动、配置是否可读。"].join("\n")
+  }
+  return "诊断：未分类启动失败。下一步：保留下方日志继续排查。"
+}
+const report = (summary: string, value: string) => [summary, diagnose(value), tail(value)].filter(Boolean).join("\n")
 
 const waitForReady = async (since: number) => {
   const deadline = Date.now() + readyTimeout * 1_000
@@ -81,12 +108,12 @@ const waitForReady = async (since: number) => {
         return
       }
       if (text.includes("Failed to spawn RAILWISE Server")) {
-        throw new Error(`macOS app reported server startup failure in ${file}\n${tail(text)}`)
+        throw new Error(report(`macOS app reported server startup failure in ${file}`, text))
       }
     }
 
     if (!skipProcessCheck && (await running()).length === 0) {
-      throw new Error(`macOS app process exited before sidecar was ready.\n${tail(latest)}`)
+      throw new Error(report("macOS app process exited before sidecar was ready.", latest))
     }
 
     await sleep(500)
@@ -96,17 +123,17 @@ const waitForReady = async (since: number) => {
     [
       `macOS app did not report sidecar readiness within ${readyTimeout}s.`,
       seen.length > 0 ? `Observed logs:\n${Array.from(new Set(seen)).join("\n")}` : `No railwise-desktop_*.log files found under ${logDirs().join(", ")}`,
-      tail(latest),
+      latest ? report("Latest startup diagnosis:", latest) : "",
     ].join("\n"),
   )
 }
 
-if ((await stat(app).catch(() => undefined))?.isDirectory() !== true) throw new Error(`App bundle not found: ${app}`)
+if ((await stat(appPath).catch(() => undefined))?.isDirectory() !== true) throw new Error(`App bundle not found: ${appPath}`)
 
-await $`bun ./scripts/verify-macos-bundle.ts --app ${app}`
+await $`bun ./scripts/verify-macos-bundle.ts --app ${appPath}`
 
 if (skipLaunch) {
-  console.log(`Skipped macOS launch smoke for ${app}`)
+  console.log(`Skipped macOS launch smoke for ${appPath}`)
   process.exit(0)
 }
 
@@ -124,14 +151,18 @@ if (!skipProcessCleanup) {
 }
 
 const launched = Date.now()
-const opened = await $`open -n ${app}`.quiet().nothrow()
+const opened = await $`open -n ${appPath}`.quiet().nothrow()
 if (opened.exitCode !== 0) {
   const message = `${opened.stderr}\n${opened.stdout}`.trim()
+  const launchServicesNote = message.includes("kLSNoExecutableErr")
+    ? "LaunchServices reported kLSNoExecutableErr after bundle verification. The app executable exists; this usually means the current shell cannot use macOS graphical launch services."
+    : "The app bundle was verified before launch."
   throw new Error(
     [
-      `Failed to launch macOS app with open -n: ${app}`,
+      `Failed to launch macOS app with open -n: ${appPath}`,
       message,
-      "If Safari.app also fails to open from this shell, rerun this smoke command from a normal macOS Terminal instead of a sandboxed agent shell.",
+      launchServicesNote,
+      "If Safari.app also fails to open from this shell, rerun this smoke command from a normal macOS Terminal or Finder instead of a sandboxed agent shell.",
     ].join("\n"),
   )
 }
@@ -154,11 +185,11 @@ if (!skipProcessCheck) {
   await sleep(3000)
 }
 
-const files = await readdir(path.join(app, "Contents", "MacOS"))
+const files = await readdir(path.join(appPath, "Contents", "MacOS"))
 if (!files.includes(executable) || !files.includes("railwise-cli")) {
   throw new Error(`macOS app bundle is missing expected executables: ${files.join(", ")}`)
 }
 
 if (!skipReady) await waitForReady(launched)
 
-console.log(`macOS app launch smoke passed for ${app}`)
+console.log(`macOS app launch smoke passed for ${appPath}`)

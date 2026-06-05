@@ -40,6 +40,7 @@ const devDocs = [
   "03-mcp-tools.md",
   "04-e2e-testing.md",
   "12-desktop-harness-marketplace-beta.md",
+  "13-desktop-beta-manual-check.md",
 ]
 const missingSpecs = (
   await Promise.all(
@@ -80,6 +81,7 @@ const visual = await read("packages/desktop/e2e/11-visual-regression.spec.ts")
 const ttfui = await read("packages/desktop/e2e/12-ttfui.spec.ts")
 const app = await read("packages/app/src/app.tsx")
 const home = await read("packages/app/src/pages/home.tsx")
+const layoutPage = await read("packages/app/src/pages/layout.tsx")
 const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
 const marketplaceState = await read("packages/app/src/pages/marketplace/marketplace-state.ts")
 const marketplaceStateTest = await read("packages/app/src/pages/marketplace/marketplace-state.test.ts")
@@ -91,13 +93,22 @@ const agentDisplay = await read("packages/app/src/utils/agent-display.ts")
 const agentDisplayTest = await read("packages/app/src/utils/agent-display.test.ts")
 const messageTimeline = await read("packages/app/src/pages/session/message-timeline.tsx")
 const sessionSidePanel = await read("packages/app/src/pages/session/session-side-panel.tsx")
+const sessionHelpers = await read("packages/app/src/pages/session/helpers.ts")
+const sessionHelpersTest = await read("packages/app/src/pages/session/helpers.test.ts")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
 const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
 const sessionToolEvidence = await read("packages/app/src/pages/session/tool-evidence.ts")
 const sessionToolEvidenceTest = await read("packages/app/src/pages/session/tool-evidence.test.ts")
+const fileTabs = await read("packages/app/src/pages/session/file-tabs.tsx")
+const fileTree = await read("packages/app/src/components/file-tree.tsx")
 const sessionPrompt = await read("packages/railwise/src/session/prompt.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
+const promptContextItems = await read("packages/app/src/components/prompt-input/context-items.tsx")
+const promptContextHelpers = await read("packages/app/src/components/prompt-input/context-item-helpers.ts")
+const promptContextHelpersTest = await read("packages/app/src/components/prompt-input/context-items.test.ts")
 const config = await read("packages/desktop/playwright.config.ts")
+const desktopPackage = await read("packages/desktop/package.json")
+const playwrightPreflight = await read("packages/desktop/scripts/preflight-playwright.ts")
 const acceptance = await read("scripts/verify-desktop-acceptance.ts")
 const consent = await read("packages/app/src/components/telemetry-consent.tsx")
 const settings = await read("packages/app/src/context/settings.tsx")
@@ -107,6 +118,10 @@ const telemetry = await read("packages/desktop/src/lib/telemetry/index.ts")
 const store = await read("packages/desktop/src/lib/telemetry/store.ts")
 const privacy = await read("packages/desktop/src/lib/telemetry/privacy.ts")
 const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
+const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
+const localBeta = await read("packages/desktop/scripts/verify-local-beta.ts")
+const localBetaTerminal = await read("packages/desktop/scripts/verify-local-beta-terminal.ts")
+const localBetaManual = await read("packages/desktop/scripts/record-local-beta-manual.ts")
 const harnessSchema = await read("packages/railwise/src/harness/schema.ts")
 const harnessService = await read("packages/railwise/src/harness/service.ts")
 const marketplaceSchema = await read("packages/railwise/src/marketplace/schema.ts")
@@ -124,7 +139,11 @@ const sdk = await read("packages/sdk/js/src/v2/gen/sdk.gen.ts")
 const sdkTypes = await read("packages/sdk/js/src/v2/gen/types.gen.ts")
 const docs = await read("docs/dev/06-m7-acceptance.md")
 const betaQa = await read("docs/dev/12-desktop-harness-marketplace-beta.md")
+const betaManual = await read("docs/dev/13-desktop-beta-manual-check.md")
 const docsUser = [await read("docs/user/03-agents.md"), await read("docs/user/07-skills.md")].join("\n")
+const builtinSkillIds = (await Array.fromAsync(new Bun.Glob("packages/railwise/skill/*/SKILL.md").scan({ cwd: root })))
+  .map((item) => path.basename(path.dirname(item)))
+  .sort()
 const desktopLanguageDocs = [
   await read("docs/dev/01-architecture.md"),
   await read("docs/dev/04-e2e-testing.md"),
@@ -150,6 +169,9 @@ check(
     'data-testid="home-start-session"',
     "multiple: false",
     "DialogSelectDirectory multiple={false}",
+    "connectedProviders().length === 0",
+    'connectPreferred("deepseek", launch)',
+    "onComplete",
     "collaborationTarget",
     "setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })",
   ]) &&
@@ -171,6 +193,10 @@ check(
       "session-turn-execution-tool-risk",
       "session-turn-execution-tool-input",
       "session-turn-execution-tool-artifact",
+      "session-turn-execution-tool-artifact-row",
+      "session-turn-execution-tool-artifact-reference",
+      "createOpenSessionFileTab",
+      "prompt.context.add",
       "session.execution.capabilities",
     ]) &&
     has(sessionSidePanel, [
@@ -210,11 +236,14 @@ check(
       "[data-testid=home-project-directory]",
       "[data-testid=home-task-input]",
       "[data-testid=home-start-session]",
+      "首页未配置模型时接入 DeepSeek 后继续启动原任务",
+      "await expect(page).toHaveURL(/\\/home$/)",
+      "[data-component=dialog]",
+      'input[name="apiKey"]',
+      "[data-testid=session-status-model]",
       "[data-testid=session-collaboration-panel]",
-      "[data-testid=session-inspector-summary]",
       "[data-testid=session-runtime-metrics]",
       "[data-testid=session-model-readiness]",
-      "[data-testid=session-model-setup]",
       "[data-testid=session-prompt-input]",
       "[data-testid=session-turn-execution-capabilities]",
       "[data-testid=session-runtime-chain]",
@@ -240,10 +269,18 @@ check(
       "session-file-reference",
       "session-runtime-tool-artifact-reference",
       "session-runtime-tool-artifact-row",
+      "session-turn-execution-tool-artifact-reference",
+      "session-turn-execution-tool-artifact-row",
+      "session-file-tree-tab-all",
+      "session-file-tree-reference",
       "prompt-context-item",
       "基于这个成果报告继续检查风险。",
       "直接基于这个成果继续生成审查意见。",
-      "tool: survey_calculator_leveling_closure",
+      "对话执行证据成果可以直接打开并引用到对话继续追问",
+      "从执行证据里的成果继续生成审查意见。",
+      "项目文件树可以直接引用文件到对话继续追问",
+      "基于项目文件树里的成果继续复核。",
+      '[data-testid=prompt-context-item]',
       "chief_manager",
       'model: "configured"',
       "/session/queue-e2e/prompt_async",
@@ -252,7 +289,18 @@ check(
       "const followup = page.waitForRequest",
       'payload.agent).toBe("chief_manager"',
       'providerID: "deepseek", modelID: "deepseek-v4"',
-    ]),
+    ]) &&
+    has(fileTree, ["onFileReference", "session-file-tree-reference", "referenceLabel", "stopPropagation"]) &&
+    has(promptInput, ["openContextFile", "tabs().setActive", "files.load(item.path)", "layout.fileTree.setTab(\"all\")"]) &&
+    has(sessionHelpers, [
+      '[data-testid="session-prompt-input"]',
+      '[data-component="prompt-input"][contenteditable="true"]',
+      "button:not([disabled])",
+    ]) &&
+    has(sessionHelpersTest, ["prefers the chat input over prompt action buttons", "session-prompt-input"]) &&
+    has(promptContextItems, ["role=\"button\"", "tabIndex={0}", "shouldOpenContextItemKey", "contextItemOpenLabel"]) &&
+    has(promptContextHelpers, ["shouldOpenContextItemKey", "contextItemOpenLabel"]) &&
+    has(promptContextHelpersTest, ["opens context items from expected keyboard shortcuts", "builds accessible open labels"]),
   "home creates a chief_manager handoff and can send the first prompt when a model is configured",
 )
 check(
@@ -281,13 +329,19 @@ check(
   "desktop product language",
   ["项目总控", "总控", "主控智能体", "主控、审校", "总工程师", "总工"].every(
     (item) =>
-      ![home, marketplace, agentsPage, settings, agentsSettings, chief, cpiii, reviewer, docsUser].join("\n").includes(item),
+      ![home, layoutPage, marketplace, agentsPage, settings, agentsSettings, e2eHelper, chief, cpiii, reviewer, docsUser]
+        .join("\n")
+        .includes(item),
   ) &&
     chief.includes("RAILWISE 默认协作") &&
     chief.includes("【协作汇总交付物】") &&
     !desktopLanguageDocs.includes("Agent Studio") &&
     !desktopLanguageDocs.includes("Harness Profile") &&
     !desktopLanguageDocs.includes("工具/Skills") &&
+    !agentsSettings.includes("智能体工作台") &&
+    !agentsSettings.includes("Agent Studio") &&
+    agentsSettings.includes("打开能力配置") &&
+    agentsSettings.includes("Open capability settings") &&
     !e2eHelper.includes("Skills 加载") &&
     !agentCollaborationTest.includes("Agent Studio") &&
     !sessionCollaboration.includes("Skill「") &&
@@ -306,7 +360,7 @@ check(
     !agentsPage.includes("RAILWISE 高级智能体管理") &&
     !agentsPage.includes("上下文文件夹") &&
     !agentsPage.includes("RAILWISE 能力市场") &&
-    !agentsPage.includes("项目工作区") &&
+    ![home, layoutPage, startup, agentStudio, visual].join("\n").includes("项目工作区") &&
     !agentsPage.includes("智能体矩阵") &&
     !(await exists("packages/desktop/e2e/04-agent-studio.spec.ts")),
   "Desktop docs, E2E fixtures, and advanced management page use concise collaboration, skill, and execution-layer language",
@@ -326,6 +380,11 @@ check(
       "DXF 图层检查",
       "monitoring-design",
     ]) &&
+    builtinSkillIds.every(
+      (id) =>
+        marketplaceBuiltin.includes(`id: "${id}"`) &&
+        marketplaceState.includes(`"${id}",`),
+    ) &&
     has(agentStudio, [
       "marketplace-row-state-agents",
       "marketplace-row-state-tools",
@@ -346,7 +405,7 @@ check(
       "规范引用复核",
       "agent-capability-routing",
       "网络 / 密钥",
-      "执行层",
+      "执行中心",
       "技能",
     ]) &&
     has(visual, ["agent-capability-routing", "可调用能力", "规范条文速查"]) &&
@@ -355,7 +414,7 @@ check(
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),
-  "marketplace asserts enabled inventory state for agents, tools, skills, and provider setup",
+  `marketplace asserts enabled inventory state for agents, tools, ${builtinSkillIds.length} CLI skills, and provider setup`,
 )
 check(
   "backend harness marketplace contract",
@@ -443,6 +502,23 @@ check(
   "execution layer links back into the exact session handling surface instead of opening a generic page",
 )
 check(
+  "session file reference action stays inline",
+  has(fileTabs, [
+    'data-testid="session-file-reference"',
+    'class="mb-2 flex min-w-0 justify-end px-4"',
+    "createReferenceSessionFile",
+  ]) &&
+    has(sessionSidePanel, [
+      'class="relative min-w-0 h-full overflow-hidden border-l border-border-weak-base flex"',
+      'class="flex min-w-0 h-full flex-1 overflow-hidden"',
+      'class="relative h-full shrink-0 overflow-hidden"',
+    ]) &&
+    fileTabs.includes("overflow-x-hidden") &&
+    !fileTabs.includes("sticky top-3") &&
+    !fileTabs.includes("pointer-events-none"),
+  "active file reference action is inline and clipped inside the session file panel instead of floating above tool evidence",
+)
+check(
   "minimal home workbench source",
   has(home, [
     'data-testid="home-workbench"',
@@ -452,29 +528,54 @@ check(
     'data-testid="home-start-session"',
     'data-testid="home-agent-capability-preview"',
     "想让 RAILWISE 完成什么？",
-    "RAILWISE 将调用",
+    "默认能力",
+    "快捷入口",
+    "fallbackCapabilities",
+    "latestSession",
+    "resumeSession",
+    'data-testid="home-resume-session"',
+    'data-testid="home-empty-sessions"',
+    "输入任务会创建第一条会话。",
+    "先打开项目，再开始协作。",
+    "资料检查",
     "capabilitiesForAgent",
+    "connectedProviders().length === 0",
+    'connectPreferred("deepseek", launch)',
     "开始协作",
     'navigate("/harness")',
     'navigate("/marketplace")',
   ]) &&
     !home.includes("DialogSelectDirectory multiple={true}") &&
+    !home.includes("能力市场启用后显示") &&
     ["项目驾驶舱", "告警 Feed", "多智能体协作中枢", "智能体矩阵", "dashboard-map"].every(
       (item) => !home.includes(item),
-    ),
-  "home source is a minimal chat workbench and does not carry legacy dashboard, map, or agent-hub copy",
+    ) &&
+    has(app, [
+      "const DashboardRedirect",
+      '<Navigate href="/home" />',
+      '<Route path="/dashboard" component={DashboardRedirect} />',
+      '<Route path="/dashboard/*rest" component={DashboardRedirect} />',
+    ]),
+  "home source is a minimal chat workbench; legacy dashboard URLs redirect to /home instead of rendering in place",
 )
 
 check(
   "visual regression E2E",
   has(visual, [
+    "toHaveURL(/\\/home$/)",
     "[data-testid=home-workbench]",
     "[data-testid=home-chat-composer]",
     "heading\", { name: \"RAILWISE\"",
     "想让 RAILWISE 完成什么？",
     "打开项目",
     "home-agent-capability-preview",
-    "RAILWISE 将调用",
+    "默认能力",
+    "快捷入口",
+    "home-resume-session",
+    "继续",
+    "home-empty-sessions",
+    "输入任务会创建第一条会话。",
+    "先打开项目，再开始协作。",
     "轨道交通监测方案",
     "项目驾驶舱",
     "告警 Feed",
@@ -498,8 +599,35 @@ check(
 check(
   "macOS launch smoke readiness",
   has(macSmoke, ["CLI health check OK", "--ready-timeout", "railwise-desktop_", "--skip-ready", "--skip-process-check"]) &&
+    has(localBeta, ["local-app-verify", "local-app-terminal", "Bundle-only verification app", "--dest", "open-local-macos-app.ts"]) &&
+    has(localBetaTerminal, [
+      "local-app-terminal",
+      "--dest",
+      "open-local-macos-app.ts",
+      "smoke-macos-app.ts",
+      "terminal-smoke-latest:start",
+      "terminal-smoke-latest:end",
+      "verify:local-beta:terminal",
+      "writeRecord",
+    ]) &&
+    has(localBetaManual, [
+      "beta_decision",
+      "finder_launch",
+      "manual_checklist",
+      "Cannot mark beta_decision=passed",
+    ]) &&
+    has(macVerify, [
+      "frontend dist current home workbench",
+      "frontend dist blocks legacy desktop UI",
+      "embedded frontend home chunk",
+      "home-empty-sessions",
+    ]) &&
+    has(desktopPackage, [
+      '"verify:local-beta:terminal": "bun ./scripts/verify-local-beta-terminal.ts"',
+      '"record:local-beta": "bun ./scripts/record-local-beta-manual.ts"',
+    ]) &&
     has(docs, ["macOS 启动烟测", "bun run smoke:macos -- --ready-timeout 90", "CLI health check OK"]),
-  "macOS app smoke covers bundle verification, process launch, and sidecar readiness in normal Terminal",
+  "macOS app smoke covers bundle verification, embedded frontend UI fingerprint, process launch, sidecar readiness, and Terminal result recording",
 )
 check(
   "Playwright artifacts",
@@ -523,9 +651,23 @@ check(
       "channel\n    ? undefined",
       "reachable ? \"1\" : undefined",
       "PLAYWRIGHT_SKIP_WEBSERVER",
+      "desktop E2E 监听预检",
+      "preflight:e2e",
+    ]) &&
+    has(desktopPackage, [
+      '"preflight:e2e": "bun ./scripts/preflight-playwright.ts"',
+      '"test:e2e": "bun run preflight:e2e && playwright test"',
+      '"test:e2e:ui": "bun run preflight:e2e && playwright test --ui"',
+    ]) &&
+    has(playwrightPreflight, [
+      "Bun.listen",
+      "EPERM",
+      "EADDRINUSE",
+      "PLAYWRIGHT_BASE_URL",
+      "PLAYWRIGHT_PORT",
     ]) &&
     !acceptance.includes("reachable || live ?"),
-  "HTML report, trace, screenshot, video artifacts, and the stable macOS Vite webServer command are configured",
+  "HTML report, trace, screenshot, video artifacts, stable macOS Vite webServer command, and local listener preflight are configured",
 )
 check(
   "telemetry default off",
@@ -595,7 +737,7 @@ check(
     "没有大面积 `0` 计数器",
     "打开项目",
     "本地文件夹",
-    "执行层显示工作区边界",
+    "执行中心显示工作区边界",
     "RAILWISE 默认协作",
     "本地文件读取",
     "规范条文查询",
@@ -603,10 +745,54 @@ check(
     "复测资料检查",
     "DXF 图层检查",
     "DeepSeek",
+    "bun run package:dmg:local",
+    ".app.zip",
+    ".app.zip.sha256",
+    "shasum -a 256 -c",
+    "bun run open:macos:local",
+    "bun run open:macos:local -- --skip-open",
+    "bun run verify:local-beta",
+    "bun run verify:local-beta:terminal",
+    "local-app-verify",
+    "local-app-terminal",
+    "bun run package:dmg:local -- --require-dmg",
+    "bun run preflight:e2e",
+    "EPERM",
     "browserType.launch",
     "不得发布 Beta",
   ]),
-  "manual beta QA covers platform scope, workbench, harness, marketplace manifests, browser failure triage, and blockers",
+  "manual beta QA covers platform scope, local install packages, workbench, harness, marketplace manifests, browser failure triage, and blockers",
+)
+check(
+  "desktop beta manual record",
+  has(betaManual, [
+    "Desktop Beta 人工验收记录",
+    "睿威智测 RAILWISE_1.3.0_local_aarch64.app.zip",
+    "SHA256",
+    "shasum -a 256 -c",
+    "bun run verify:local-beta",
+    "bun run verify:local-beta:terminal",
+    "bun run record:local-beta",
+    "--finder-launch passed",
+    "manual-acceptance-status:start",
+    "terminal_smoke=pending",
+    "manual_checklist=pending",
+    "beta_decision=pending",
+    "local-app-terminal",
+    "终端启动验收记录",
+    "terminal-smoke-latest:start",
+    "Codex shell 启动烟测：受限",
+    "bun run smoke:macos -- --app",
+    "NSOSStatusErrorDomain Code=-10827 kLSNoExecutableErr",
+    "kLSNoExecutableErr",
+    "LaunchServices",
+    "想让 RAILWISE 完成什么？",
+    "打开项目",
+    "能力市场",
+    "执行中心",
+    "结论：通过 / 不通过",
+  ]),
+  "manual record captures the exact local test package, checksum, Finder startup gate, and required beta UX checks",
 )
 
 for (const item of checks) console.log(`${item.passed ? "[ok]" : "[fail]"} ${item.name}: ${item.detail}`)

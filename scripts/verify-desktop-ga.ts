@@ -37,6 +37,7 @@ const changelog = await read("CHANGELOG.md")
 const cadence = await read("docs/dev/05-release-cadence.md")
 const update = await read("docs/admin/04-update-server.md")
 const betaQa = await read("docs/dev/12-desktop-harness-marketplace-beta.md")
+const betaManual = await read("docs/dev/13-desktop-beta-manual-check.md")
 const wrangler = await read("workers/update-server/wrangler.toml")
 const version = desktop.version ?? ""
 const tag = `desktop/v${version}`
@@ -47,6 +48,7 @@ const old = [
   ["anomaly", "-labs"].join(""),
 ]
 const oldHits = old.filter((item) => changelog.toLowerCase().includes(item))
+const status = (name: string) => betaManual.match(new RegExp(`- ${name}=([^\\n]+)`))?.[1]?.trim()
 const steps: Step[] = [
   {
     name: "desktop static acceptance",
@@ -70,7 +72,16 @@ check(
 )
 check(
   "release cadence",
-  has(cadence, [tag, "10%", "30%", "100%", "bun run desktop:verify", "cd workers/update-server && bun ./verify.ts", "12-desktop-harness-marketplace-beta.md"]),
+  has(cadence, [
+    tag,
+    "10%",
+    "30%",
+    "100%",
+    "bun run desktop:verify",
+    "Windows 内测安装包验收",
+    "cd workers/update-server && bun ./verify.ts",
+    "12-desktop-harness-marketplace-beta.md",
+  ]),
   `${tag} rollout and preflight commands`,
 )
 check(
@@ -101,9 +112,18 @@ check(
     "人工验收",
     "Beta 阻断条件",
     "Linux：不做 Desktop 安装包",
+    "script/verify-desktop-windows-internal.ts",
     "browserType.launch",
   ]),
   "beta QA checklist is present for release gating",
+)
+check(
+  "desktop manual launch acceptance",
+  status("terminal_smoke") === "passed" &&
+    status("finder_launch") === "passed" &&
+    status("manual_checklist") === "passed" &&
+    status("beta_decision") === "passed",
+  `terminal=${status("terminal_smoke") ?? "missing"}, finder=${status("finder_launch") ?? "missing"}, manual=${status("manual_checklist") ?? "missing"}, beta=${status("beta_decision") ?? "missing"}`,
 )
 check(
   "changelog brand residue",

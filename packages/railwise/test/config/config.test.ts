@@ -328,6 +328,40 @@ test("treats agent variant as model-scoped setting (not provider option)", async
   })
 })
 
+test("accepts legacy desktop config metadata and tool arrays", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await writeConfig(dir, {
+        $schema: "https://railwise.ai/config.json",
+        version: "1.3.0",
+        system: {
+          profile: "legacy-desktop",
+        },
+        tools: {
+          surveying: ["read", "write"],
+          monitoring: ["grep"],
+          analysis: true,
+        },
+      })
+    },
+  })
+
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      const config = await Config.get()
+      expect(config.version).toBe("1.3.0")
+      expect(config.system).toEqual({
+        profile: "legacy-desktop",
+      })
+      expect(config.permission?.read).toBe("allow")
+      expect(config.permission?.edit).toBe("allow")
+      expect(config.permission?.grep).toBe("allow")
+      expect(config.permission?.analysis).toBe("allow")
+    },
+  })
+})
+
 test("handles command configuration", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {

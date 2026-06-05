@@ -9,6 +9,8 @@ cd packages/desktop
 bun run test:e2e
 ```
 
+`test:e2e` 会先执行 `preflight:e2e`，确认当前 shell 可以监听本地 Vite 端口，或确认 `PLAYWRIGHT_BASE_URL` 指向的服务可访问。若预检返回 `EPERM`，说明当前沙箱或终端不允许新建本地监听端口，需要换到普通 macOS Terminal、CI，或先启动 dev server 后设置 `PLAYWRIGHT_BASE_URL`。
+
 桌面静态快检可从仓库根目录运行：
 
 ```bash
@@ -33,6 +35,13 @@ bun run desktop:verify -- --full
 PLAYWRIGHT_SKIP_WEBSERVER=1 \
 PLAYWRIGHT_BASE_URL=http://127.0.0.1:5185 \
 bun run test:e2e
+```
+
+单独排查端口和沙箱权限时可以运行：
+
+```bash
+cd packages/desktop
+bun run preflight:e2e
 ```
 
 ## 用例覆盖

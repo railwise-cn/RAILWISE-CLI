@@ -107,7 +107,9 @@ const macNotarize = await read("packages/desktop/scripts/notarize-macos-dmg.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
 const appZipVerify = await read("packages/desktop/scripts/verify-macos-appzip.ts")
+const sidecarLegacy = await read("packages/desktop/scripts/verify-sidecar-legacy-config.ts")
 const macSmoke = await read("packages/desktop/scripts/smoke-macos-app.ts")
+const macOpenLocal = await read("packages/desktop/scripts/open-local-macos-app.ts")
 const macStage = await read("packages/desktop/scripts/stage-macos-bundles.ts")
 const railwiseBuild = await read("packages/railwise/script/build.ts")
 const railwiseModels = await read("packages/railwise/script/models.ts")
@@ -445,6 +447,12 @@ check(
       "hdiutil create -ov -format UDZO",
       "--require-dmg",
       "--zip-output",
+      "await rm(output, { force: true })",
+      "await rm(zip, { force: true })",
+      "await rm(`${output}.sha256`, { force: true })",
+      "await rm(`${zip}.sha256`, { force: true })",
+      "shasum -a 256",
+      ".sha256",
       "ditto -c -k --sequesterRsrc --keepParent",
       "bun ./scripts/verify-macos-appzip.ts --zip",
       "bun ./scripts/sign-macos-app.ts --app",
@@ -492,11 +500,34 @@ check(
       "CFBundleIdentifier",
       "CFBundleExecutable",
       "railwise-cli",
+      "verify-sidecar-legacy-config.ts --bin",
+      "sidecar legacy config compatibility",
+      "frontend dist current home workbench",
+      "frontend dist blocks legacy desktop UI",
+      "embedded frontend home chunk",
+      "想让 RAILWISE 完成什么？",
+      "home-empty-sessions",
+      "输入任务会创建第一条会话。",
+      "先打开项目，再开始协作。",
+      "项目驾驶舱",
       "executable ${arch}",
       "codesign --verify --deep --strict --verbose=4",
       '"target", "release", "bundle", "macos"',
     ]),
-  "Local and CI macOS bundle verification checks plist, architecture, sidecar, and codesign",
+  "Local and CI macOS bundle verification checks plist, architecture, embedded frontend UI, sidecar config compatibility, and codesign",
+)
+check(
+  "sidecar legacy config smoke",
+  pkg.scripts?.["verify:sidecar-config"] === "bun ./scripts/verify-sidecar-legacy-config.ts" &&
+    contains(sidecarLegacy, [
+      "RAILWISE_CONFIG_CONTENT",
+      "RAILWISE_DISABLE_PROJECT_CONFIG",
+      "RAILWISE_TEST_HOME",
+      "desktop-sidecar-legacy-config",
+      "Legacy tools array did not grant edit permission",
+      "Sidecar legacy config compatibility passed",
+    ]),
+  "Packaged sidecar smoke verifies legacy version/system metadata and array-valued tools before release",
 )
 check(
   "macOS DMG verification script",
@@ -537,7 +568,13 @@ check(
       "CLI health check OK",
       "--ready-timeout",
       "railwise-desktop_",
+      "kLSNoExecutableErr",
+      "macOS graphical launch services",
       "If Safari.app also fails to open from this shell",
+      "诊断：配置文件需要修复",
+      "诊断：本地端口被占用",
+      "诊断：系统权限阻止启动",
+      "Latest startup diagnosis",
       "--skip-launch",
       "--skip-ready",
       "--skip-process-check",
@@ -545,6 +582,22 @@ check(
       "railwise-cli",
     ]),
   "Normal macOS Terminal can run an app launch smoke that waits for sidecar readiness while sandboxed shells can verify bundle-only mode",
+)
+check(
+  "local macOS app open script",
+  pkg.scripts?.["open:macos:local"] === "bun ./scripts/open-local-macos-app.ts" &&
+    contains(macOpenLocal, [
+      "shasum -a 256 -c",
+      "ditto -x -k",
+      "verify-macos-bundle.ts --app",
+      "open -n",
+      "--skip-open",
+      "kLSNoExecutableErr",
+      "macOS graphical launch services",
+      ".app.zip",
+      ".sha256",
+    ]),
+  "Local macOS zip handoff can verify checksum, extract the app, verify the bundle, and open it from a normal Terminal",
 )
 check(
   "macOS bundle staging script",

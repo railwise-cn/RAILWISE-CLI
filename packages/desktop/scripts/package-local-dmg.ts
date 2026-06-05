@@ -55,6 +55,13 @@ const sign = async () => {
   await $`bun ./scripts/sign-macos-app.ts --app ${app}`
 }
 
+const checksum = async (artifact: string) => {
+  const digest = (await $`shasum -a 256 ${artifact}`.text()).trim().split(/\s+/)[0]
+  const file = `${artifact}.sha256`
+  await Bun.write(file, `${digest}  ${path.basename(artifact)}\n`)
+  console.log(`Wrote checksum ${file}`)
+}
+
 try {
   await sign()
   if (strict && !(await signature()).developer) {
@@ -68,6 +75,10 @@ try {
   }
 
   await mkdir(path.dirname(output), { recursive: true })
+  await rm(output, { force: true })
+  await rm(zip, { force: true })
+  await rm(`${output}.sha256`, { force: true })
+  await rm(`${zip}.sha256`, { force: true })
   await $`ditto ${app} ${path.join(stage, path.basename(app))}`
   await $`ln -s /Applications ${path.join(stage, "Applications")}`
   let fallback = false
@@ -86,6 +97,7 @@ try {
     await $`ditto -c -k --sequesterRsrc --keepParent ${app} ${zip}`
     if ((await stat(zip).catch(() => undefined))?.isFile() !== true) throw new Error(`Fallback app zip not created: ${zip}`)
     if (!args.includes("--skip-verify")) await $`bun ./scripts/verify-macos-appzip.ts --zip ${zip}`
+    await checksum(zip)
     console.log(
       [
         `Packaged fallback macOS app zip ${zip}`,
@@ -109,6 +121,7 @@ try {
     }
 
     if (!args.includes("--skip-verify")) await $`bun ./scripts/verify-macos-dmg.ts --dmg ${output}`
+    await checksum(output)
 
     console.log(`Packaged local macOS DMG ${output}`)
   }

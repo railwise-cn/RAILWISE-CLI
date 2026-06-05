@@ -36,7 +36,7 @@ const Loading = (props: LoadingProps) => {
       case "app-init":
         return "正在初始化应用"
       case "sidecar-init":
-        return "正在启动本地执行层"
+        return "正在启动 RAILWISE 本地服务"
       case "server-connect":
       case "server_waiting":
         return "正在连接本地服务"

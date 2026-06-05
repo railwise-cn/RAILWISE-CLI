@@ -101,7 +101,7 @@ test("首页右侧项目栏显示最近会话与执行状态", async ({ launchAp
   await visible(page.locator("[data-testid=home-workbench]"))
   await expect(page.locator("[data-testid=home-project-summary]")).toContainText("worktree (railwise-e2e)")
   await expect(page.locator("[data-testid=home-recent-projects]")).toContainText("worktree (other-client)")
-  await expect(page.locator("[data-testid=home-session-rail]")).toContainText("复测资料检查")
+  await expect(page.locator("[data-testid=home-session-rail]")).toContainText("运营期监测预警复核")
   await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("1 个任务运行中")
   await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("1 项待确认")
   await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("模型已接入")

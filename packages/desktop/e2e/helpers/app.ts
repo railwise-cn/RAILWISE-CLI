@@ -68,23 +68,213 @@ const tools = [
   { id: "survey_calculator_leveling_closure", label: "水准闭合差检核", group: "survey" },
 ]
 
-const skills = [
+const read = { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false } as const
+const write = { filesystem: "write", network: false, shell: false, external_directory: false, secrets: false } as const
+
+const skillCatalog = [
   {
-    name: "monitoring-design",
+    id: "rail-monitoring-plan",
+    name: "轨道交通监测方案",
+    description: "编制轨道交通控制保护区、地保监测和专家评审方案。",
+    tags: ["轨道交通", "监测", "方案"],
+    permissions: read,
+  },
+  {
+    id: "monitoring-design",
+    name: "工程监测方案设计",
     description: "工程监测方案设计",
-    location: "/tmp/railwise-e2e/.railwise/skill/monitoring-design/SKILL.md",
+    tags: ["测绘", "监测", "方案"],
+    permissions: read,
   },
   {
-    name: "data-analysis",
+    id: "operational-monitoring",
+    name: "运营期监测",
+    description: "处理运营期沉降、水平位移、收敛和预警处置等监测资料。",
+    tags: ["运营期", "监测", "预警"],
+    permissions: write,
+  },
+  {
+    id: "data-analysis",
+    name: "测绘数据分析",
     description: "测绘数据平差与变形分析",
-    location: "/tmp/railwise-e2e/.railwise/skill/data-analysis/SKILL.md",
+    tags: ["数据分析", "平差", "复核"],
+    permissions: read,
   },
   {
-    name: "standard-reference",
+    id: "standard-reference",
+    name: "规范条文速查",
     description: "规范条文速查",
-    location: "/tmp/railwise-e2e/.railwise/skill/standard-reference/SKILL.md",
+    tags: ["规范", "条文", "依据"],
+    permissions: read,
+  },
+  {
+    id: "report-writing",
+    name: "成果报告写作",
+    description: "生成测绘、监测、复测和阶段汇报类成果报告初稿，并进行技术审校。",
+    tags: ["报告", "审校", "交付"],
+    permissions: write,
+  },
+  {
+    id: "excel-operations",
+    name: "表格数据处理",
+    description: "整理 Excel 数据表、计算检查项、生成统计结果和可交付表格。",
+    tags: ["Excel", "表格", "统计"],
+    permissions: write,
+  },
+  {
+    id: "docx-generation",
+    name: "Word 成果生成",
+    description: "生成 Word 成果文档、套用模板并整理报告结构。",
+    tags: ["Word", "报告", "模板"],
+    permissions: write,
+  },
+  {
+    id: "docx",
+    name: "DOCX 文件处理",
+    description: "读取、编辑和生成 Word 文档，支持目录、页眉页脚、表格和模板。",
+    tags: ["DOCX", "Word", "文件"],
+    permissions: write,
+  },
+  {
+    id: "pptx",
+    name: "PPT 汇报生成",
+    description: "根据项目阶段、数据结论和交付对象生成汇报幻灯片。",
+    tags: ["PPT", "汇报", "演示"],
+    permissions: write,
+  },
+  {
+    id: "pdf",
+    name: "PDF 表单与检查",
+    description: "检查 PDF 表单、提取结构信息并辅助生成带注释的 PDF 交付材料。",
+    tags: ["PDF", "表单", "检查"],
+    permissions: write,
+  },
+  {
+    id: "xlsx",
+    name: "XLSX 文件处理",
+    description: "读取、校验和生成 XLSX 工作簿，用于工程数据统计与交付。",
+    tags: ["XLSX", "表格", "交付"],
+    permissions: write,
+  },
+  {
+    id: "bidding-knowledge",
+    name: "投标资料知识库",
+    description: "整理招投标资料、资质响应、技术方案和商务材料检查清单。",
+    tags: ["投标", "资料", "知识库"],
+    permissions: read,
+  },
+  {
+    id: "frontend-design",
+    name: "工程前端设计",
+    description: "为监测平台、数据看板和内部管理系统生成工程行业 UI 方案。",
+    tags: ["前端", "设计", "看板"],
+    permissions: read,
+  },
+  {
+    id: "canvas-design",
+    name: "可视化设计",
+    description: "制作项目展示、成果图示、汇报版式和可视化素材。",
+    tags: ["设计", "可视化", "汇报"],
+    permissions: write,
+  },
+  {
+    id: "humanizer",
+    name: "文稿润色",
+    description: "优化技术报告、投标文本和汇报材料的表达，使其更自然、专业。",
+    tags: ["润色", "文稿", "审校"],
+    permissions: read,
+  },
+  {
+    id: "doc-coauthoring",
+    name: "文档协同审阅",
+    description: "围绕多人协作场景进行文档审阅、修改建议和版本意见整理。",
+    tags: ["协同", "审阅", "文档"],
+    permissions: write,
+  },
+  {
+    id: "internal-comms",
+    name: "内部沟通写作",
+    description: "编写项目进展、领导汇报、FAQ、事故说明和团队沟通材料。",
+    tags: ["沟通", "汇报", "文档"],
+    permissions: read,
+  },
+  {
+    id: "brand-guidelines",
+    name: "品牌规范参考",
+    description: "在文档、演示和页面中套用统一的品牌色、字体和视觉规范。",
+    tags: ["品牌", "视觉", "规范"],
+    permissions: read,
+  },
+  {
+    id: "theme-factory",
+    name: "主题样式工厂",
+    description: "为报告、网页、幻灯片和设计稿生成一致的配色与字体主题。",
+    tags: ["主题", "样式", "设计"],
+    permissions: read,
+  },
+  {
+    id: "web-artifacts-builder",
+    name: "Web Artifact 构建",
+    description: "构建复杂 HTML/React 交互原型、报告页面和可视化组件。",
+    tags: ["Web", "Artifact", "React"],
+    permissions: write,
+  },
+  {
+    id: "webapp-testing",
+    name: "Web 应用测试",
+    description: "使用 Playwright 调试本地 Web 应用、验证 UI 行为并采集截图。",
+    tags: ["测试", "Playwright", "前端"],
+    permissions: read,
+  },
+  {
+    id: "bun-file-io",
+    name: "Bun 文件读写",
+    description: "提供 Bun 文件读写、扫描和目录处理的工程实现规范。",
+    tags: ["Bun", "文件", "开发"],
+    permissions: read,
+  },
+  {
+    id: "mcp-builder",
+    name: "MCP 服务构建",
+    description: "设计和实现高质量 MCP Server，连接外部服务和企业能力。",
+    tags: ["MCP", "工具", "集成"],
+    permissions: write,
+  },
+  {
+    id: "skill-creator",
+    name: "Skill 创建器",
+    description: "创建、改进和评测新的 Skill，并优化触发描述与执行流程。",
+    tags: ["Skill", "创建", "评测"],
+    permissions: write,
+  },
+  {
+    id: "claude-api",
+    name: "Claude API 开发",
+    description: "构建、调试和优化 Claude API / Anthropic SDK 应用。",
+    tags: ["Claude", "API", "开发"],
+    permissions: read,
+  },
+  {
+    id: "algorithmic-art",
+    name: "算法艺术生成",
+    description: "使用 p5.js、随机种子和交互参数生成原创算法艺术。",
+    tags: ["艺术", "p5.js", "生成"],
+    permissions: write,
+  },
+  {
+    id: "slack-gif-creator",
+    name: "Slack GIF 生成",
+    description: "生成适合 Slack 使用的动画 GIF，并控制尺寸、帧率和文件大小。",
+    tags: ["GIF", "Slack", "动画"],
+    permissions: write,
   },
 ]
+
+const skills = skillCatalog.map((item) => ({
+  name: item.id,
+  description: item.name,
+  location: `/tmp/railwise-e2e/.railwise/skill/${item.id}/SKILL.md`,
+}))
 
 const workflow = {
   id: "monitor-pipeline",
@@ -122,14 +312,14 @@ const queueSession = {
   slug: "queue-e2e",
   projectID: "railwise-e2e",
   directory: "/tmp/railwise-e2e/worktree",
-  title: "复测资料检查",
+  title: "运营期监测预警复核",
   version: "e2e",
   time: { created: Date.now(), updated: Date.now() },
 }
 
 const queueTodos = [
-  { content: "检查复测资料目录", status: "completed", priority: "high" },
-  { content: "列出缺失文件", status: "in_progress", priority: "high" },
+  { content: "核查运营期监测数据", status: "completed", priority: "high" },
+  { content: "列出预警测点和处置建议", status: "in_progress", priority: "high" },
 ]
 
 const queuePermission = {
@@ -151,7 +341,7 @@ const queueMessages = [
       agent: "chief_manager",
       model: { providerID: "deepseek", modelID: "deepseek-v4" },
     },
-    parts: [{ id: "prt_1", sessionID: "queue-e2e", messageID: "msg_1", type: "text", text: "检查复测资料" }],
+    parts: [{ id: "prt_1", sessionID: "queue-e2e", messageID: "msg_1", type: "text", text: "复核本周运营期监测预警" }],
   },
   {
     info: {
@@ -178,7 +368,7 @@ const queueMessages = [
         tool: "survey_calculator_leveling_closure",
         state: {
           status: "completed",
-          input: { file: "复测资料.xlsx" },
+          input: { file: "运营期监测数据.xlsx" },
           output: "闭合差满足限差。",
           title: "水准闭合差检核",
           metadata: {},
@@ -241,18 +431,18 @@ const capabilities = [
     permissions: { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false },
     tags: ["文件", "本地"],
   },
-  {
-    id: "railwise.skill.survey_review",
+  ...skillCatalog.map((item) => ({
+    id: `railwise.skill.${item.id}`,
     kind: "skill",
-    name: "复测资料检查",
-    description: "检查线路复测资料完整性、缺失文件和交付风险。",
+    name: item.name,
+    description: item.description,
     version: "0.1.0",
     source: "builtin",
     enabled: true,
     installed: true,
-    permissions: { filesystem: "read", network: false, shell: false, external_directory: false, secrets: false },
-    tags: ["测绘", "资料检查"],
-  },
+    permissions: item.permissions,
+    tags: item.tags,
+  })),
   {
     id: "railwise.workflow.metro_monitoring_report",
     kind: "workflow",

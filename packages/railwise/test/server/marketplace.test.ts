@@ -13,6 +13,10 @@ describe("server.routes.marketplace", () => {
     expect(response.status).toBe(200)
     expect(body.data.length).toBeGreaterThan(0)
     expect(body.data.some((item: { kind: string }) => item.kind === "harness_profile")).toBe(true)
+    expect(body.data.filter((item: { kind: string }) => item.kind === "skill")).toHaveLength(28)
+    expect(body.data.some((item: { id: string }) => item.id === "railwise.skill.operational-monitoring")).toBe(true)
+    expect(body.data.some((item: { id: string }) => item.id === "railwise.skill.standard-reference")).toBe(true)
+    expect(body.data.some((item: { id: string }) => item.id === "railwise.skill.report-writing")).toBe(true)
   })
 
   test("server app mounts marketplace capabilities", async () => {

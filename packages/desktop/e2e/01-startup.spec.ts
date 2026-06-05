@@ -193,6 +193,41 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   expect(JSON.stringify(payload.parts)).toContain("让 RAILWISE 检查复测资料")
 })
 
+test("打开成果文件后可以引用到对话继续追问", async ({ launchApp }) => {
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    model: "configured",
+    permission: "none",
+    projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+    workspaceFiles: [
+      { path: `${worktree}/成果报告.md`, kind: "md", content: "# 成果报告\n\n成果报告：运营期监测预警复核。" },
+      { path: `${worktree}/闭合差复核.md`, kind: "md", content: "# 闭合差复核\n\n闭合差满足限差。" },
+    ],
+  })
+
+  await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
+  await page.locator("[data-testid=home-task-input]").fill("让 RAILWISE 检查复测资料，并调用专业智能体列出风险。")
+  await page.locator("[data-testid=home-start-session]").click()
+  await visible(page.locator("[data-testid=session-status-panel]"), 15000)
+  const request = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
+  await request
+  await expect(page).toHaveURL(/\/session\/queue-e2e$/)
+  await page.locator("[data-testid=session-runtime-tools-row]").click()
+  await page.locator("[data-testid=session-runtime-tool-artifact]").filter({ hasText: "成果报告.md" }).click()
+  await expect(page.locator("[data-component=code]")).toContainText("成果报告：运营期监测预警复核。")
+  await page.locator("[data-testid=session-file-reference]").click()
+  await expect(page.locator("[data-testid=prompt-context-item]").filter({ hasText: "成果报告.md" })).toBeVisible()
+  await page.locator("[data-testid=session-prompt-input]").fill("基于这个成果报告继续检查风险。")
+
+  const followup = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
+  const payload = JSON.stringify((await followup).postDataJSON())
+  expect(payload).toContain("基于这个成果报告")
+  expect(payload).toContain("成果报告.md")
+  expect(payload).toContain("file://")
+})
+
 test("失败工具可以把修复提示带回对话框", async ({ launchApp }) => {
   const worktree = "/tmp/railwise-e2e/worktree"
   const { page } = await launchApp("/home", {

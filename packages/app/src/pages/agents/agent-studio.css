@@ -808,6 +808,7 @@
 .marketplace-capability-card header strong,
 .marketplace-capability-card header small,
 .marketplace-capability-card p,
+.marketplace-capability-card__bindings,
 .marketplace-capability-card footer span {
   min-width: 0;
 }
@@ -849,6 +850,7 @@
 
 .marketplace-capability-card__meta,
 .marketplace-capability-card__tags,
+.marketplace-capability-card__bindings,
 .marketplace-capability-card footer {
   display: flex;
   min-width: 0;
@@ -857,7 +859,8 @@
 }
 
 .marketplace-capability-card__meta span,
-.marketplace-capability-card__tags span {
+.marketplace-capability-card__tags span,
+.marketplace-capability-card__bindings span {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -877,6 +880,25 @@
 .marketplace-capability-card__tags span {
   background: var(--agent-soft);
   color: var(--agent-accent-strong);
+}
+
+.marketplace-capability-card__bindings {
+  align-items: center;
+  border-top: 1px solid color-mix(in srgb, var(--agent-border) 72%, transparent);
+  padding-top: 8px;
+}
+
+.marketplace-capability-card__bindings span {
+  background: color-mix(in srgb, var(--agent-bg) 72%, var(--agent-surface));
+  color: var(--agent-text);
+}
+
+.marketplace-capability-card__bindings .marketplace-capability-card__binding-label {
+  border: 0;
+  background: transparent;
+  padding-left: 0;
+  color: var(--agent-muted);
+  font-weight: 680;
 }
 
 .marketplace-capability-card footer {

@@ -27,6 +27,7 @@ import { agentDisplayName } from "@/utils/agent-display"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 import {
+  capabilityBindings,
   capabilitiesFor,
   normalizeCapability,
   capabilityCount,
@@ -441,6 +442,7 @@ export default function MarketplacePage() {
                 {(item) => {
                   const status = capabilityState(item)
                   const href = capabilityLink(item)
+                  const links = capabilityBindings(item)
                   return (
                     <article class="marketplace-capability-card" data-testid="marketplace-capability-card" data-capability-id={item.id}>
                       <header>
@@ -464,6 +466,18 @@ export default function MarketplacePage() {
                       <div class="marketplace-capability-card__tags">
                         <For each={item.tags?.slice(0, 3) ?? []}>{(tag) => <span>{tag}</span>}</For>
                       </div>
+                      <Show when={links.agents.length + links.workflows.length > 0}>
+                        <div class="marketplace-capability-card__bindings" data-testid="marketplace-capability-bindings">
+                          <Show when={links.agents.length > 0}>
+                            <span class="marketplace-capability-card__binding-label">智能体</span>
+                            <For each={links.agents.slice(0, 3)}>{(agent) => <span>{agent}</span>}</For>
+                          </Show>
+                          <Show when={links.workflows.length > 0}>
+                            <span class="marketplace-capability-card__binding-label">流程</span>
+                            <For each={links.workflows.slice(0, 2)}>{(workflow) => <span>{workflow}</span>}</For>
+                          </Show>
+                        </div>
+                      </Show>
                       <footer>
                         <span>{item.enabled ? "执行层可调度" : item.installed ? "当前已停用" : "尚未安装"}</span>
                         <Show

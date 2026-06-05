@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 import {
+  capabilityBindings,
   capabilitiesFor,
   capabilityCount,
   normalizeCapability,
@@ -47,6 +48,24 @@ const list: CapabilityManifest[] = [
     },
     tags: ["模型"],
   },
+  {
+    id: "railwise.skill.standard-reference",
+    kind: "skill",
+    name: "规范条文速查",
+    description: "规范条文速查。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: {
+      filesystem: "read",
+      network: false,
+      shell: false,
+      external_directory: false,
+      secrets: false,
+    },
+    tags: ["规范"],
+  },
 ]
 
 describe("marketplace capability state", () => {
@@ -73,10 +92,17 @@ describe("marketplace capability state", () => {
     ])
   })
 
+  test("maps professional skills to visible agent and workflow bindings", () => {
+    expect(capabilityBindings(list[2])).toEqual({
+      agents: ["规范资料管理员", "质量审查专家", "CPIII 测量专家"],
+      workflows: ["规范引用复核"],
+    })
+  })
+
   test("normalizes server and sdk capability response shapes", () => {
-    expect(normalizeCapabilities(list)).toHaveLength(2)
-    expect(normalizeCapabilities({ data: list })).toHaveLength(2)
-    expect(normalizeCapabilities({ data: { data: list } })).toHaveLength(2)
+    expect(normalizeCapabilities(list)).toHaveLength(3)
+    expect(normalizeCapabilities({ data: list })).toHaveLength(3)
+    expect(normalizeCapabilities({ data: { data: list } })).toHaveLength(3)
     expect(normalizeCapabilities({ data: null })).toEqual([])
     expect(normalizeCapability(list[0])?.id).toBe("railwise.agent.chief_manager")
     expect(normalizeCapability({ data: list[1] })?.id).toBe("railwise.provider.deepseek")

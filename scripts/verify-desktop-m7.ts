@@ -243,12 +243,16 @@ check(
       "marketplace-permissions-tools",
       "marketplace-permissions-skills",
       "marketplace-permissions-providers",
+      "marketplace-capability-bindings",
+      "规范资料管理员",
+      "质量审查专家",
+      "规范引用复核",
       "网络 / 密钥",
       "执行层",
       "技能",
     ]) &&
-    has(marketplaceState, ["capabilitiesFor", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
-    has(marketplaceStateTest, ["groups manifests", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
+    has(marketplaceState, ["capabilityBindings", "规范资料管理员", "规范引用复核", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
+    has(marketplaceStateTest, ["maps professional skills", "规范资料管理员", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),

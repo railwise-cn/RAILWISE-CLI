@@ -48,6 +48,89 @@ export function capabilityCount(list: CapabilityManifest[], id: MarketplaceId) {
   return capabilitiesFor(list, id).length
 }
 
+const bindings: Record<string, { agents: string[]; workflows: string[] }> = {
+  "railwise.skill.rail-monitoring-plan": {
+    agents: ["方案架构师", "CPIII 测量专家", "规范资料管理员"],
+    workflows: ["监测方案编制"],
+  },
+  "railwise.skill.monitoring-design": {
+    agents: ["方案架构师", "质量审查专家"],
+    workflows: ["监测方案编制"],
+  },
+  "railwise.skill.operational-monitoring": {
+    agents: ["数据分析工程师", "报告编制员", "质量审查专家"],
+    workflows: ["运营监测分析"],
+  },
+  "railwise.skill.data-analysis": {
+    agents: ["数据分析工程师", "严密平差计算专家", "外业数据首检员"],
+    workflows: ["数据首检与趋势分析"],
+  },
+  "railwise.skill.standard-reference": {
+    agents: ["规范资料管理员", "质量审查专家", "CPIII 测量专家"],
+    workflows: ["规范引用复核"],
+  },
+  "railwise.skill.report-writing": {
+    agents: ["报告编制员", "质量审查专家"],
+    workflows: ["成果报告编制"],
+  },
+  "railwise.skill.excel-operations": {
+    agents: ["外业数据首检员", "数据分析工程师"],
+    workflows: ["数据表格整理"],
+  },
+  "railwise.skill.docx-generation": {
+    agents: ["报告编制员"],
+    workflows: ["Word 成果生成"],
+  },
+  "railwise.skill.docx": {
+    agents: ["报告编制员"],
+    workflows: ["Word 成果生成"],
+  },
+  "railwise.skill.pptx": {
+    agents: ["报告编制员", "方案架构师"],
+    workflows: ["阶段汇报生成"],
+  },
+  "railwise.skill.pdf": {
+    agents: ["资料入库专员", "报告编制员"],
+    workflows: ["PDF 资料检查"],
+  },
+  "railwise.skill.xlsx": {
+    agents: ["外业数据首检员", "数据分析工程师"],
+    workflows: ["XLSX 数据处理"],
+  },
+  "railwise.skill.bidding-knowledge": {
+    agents: ["商务及招投标专家", "报告编制员"],
+    workflows: ["投标文件响应"],
+  },
+  "railwise.skill.frontend-design": {
+    agents: ["方案架构师", "报告编制员"],
+    workflows: ["可视化交付"],
+  },
+  "railwise.skill.canvas-design": {
+    agents: ["方案架构师", "报告编制员"],
+    workflows: ["可视化交付"],
+  },
+  "railwise.skill.humanizer": {
+    agents: ["报告编制员", "质量审查专家"],
+    workflows: ["文稿润色审校"],
+  },
+  "railwise.skill.doc-coauthoring": {
+    agents: ["知识库整理员", "报告编制员"],
+    workflows: ["文档协同审阅"],
+  },
+  "railwise.skill.internal-comms": {
+    agents: ["知识库整理员", "报告编制员"],
+    workflows: ["文档协同审阅"],
+  },
+}
+
+export function capabilityBindings(item: CapabilityManifest) {
+  if (bindings[item.id]) return bindings[item.id]
+  if (item.kind === "tool") return { agents: ["RAILWISE 协作"], workflows: ["按任务调度"] }
+  if (item.kind === "workflow") return { agents: ["RAILWISE 协作"], workflows: ["工作流编排"] }
+  if (item.kind === "skill") return { agents: ["RAILWISE 协作"], workflows: ["扩展能力构建"] }
+  return { agents: [], workflows: [] }
+}
+
 export function permissionSummary(permission: CapabilityPermission) {
   const items = [
     permission.filesystem === "read" ? "文件读取" : undefined,

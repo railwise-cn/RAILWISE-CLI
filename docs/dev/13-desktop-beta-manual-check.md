@@ -112,6 +112,8 @@ bun run smoke:macos -- --app "src-tauri/target/release/local-app/睿威智测 RA
 
 同一 Codex shell 中执行 `open -n /Applications/Safari.app` 也返回 `NSOSStatusErrorDomain Code=-10827 kLSNoExecutableErr`，说明当前 shell 无法调用 macOS 图形启动服务。真实启动验收必须来自普通 macOS Terminal 或 Finder。
 
+同一环境中直接执行 `睿威智测 RAILWISE.app/Contents/MacOS/railwise` 会快速退出，退出码为 134，且不会写出桌面启动日志；Tauri GUI 应用不能用这种直接二进制执行方式替代 Finder 或 `open` 验收。
+
 ## 终端启动验收记录
 
 <!-- terminal-smoke-latest:start -->

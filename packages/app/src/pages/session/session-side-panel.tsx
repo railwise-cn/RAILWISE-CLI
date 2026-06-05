@@ -35,6 +35,7 @@ import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import { agentDisplayName } from "@/utils/agent-display"
 import { capabilitiesForAgents, capabilitiesFromRouting, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
+import { toolEvidence } from "@/pages/session/tool-evidence"
 
 /** Root-level entries hidden from the "All files" tree to avoid exposing config/internal files. */
 const HIDDEN_ROOT_ENTRIES: ReadonlySet<string> = new Set([
@@ -186,21 +187,6 @@ function ExecutionChainStep(props: {
       </div>
     </div>
   )
-}
-
-function compact(value: string) {
-  const text = value.replace(/\s+/g, " ").trim()
-  if (text.length <= 120) return text
-  return `${text.slice(0, 117)}...`
-}
-
-function stringify(value: unknown) {
-  if (typeof value === "string") return value
-  try {
-    return JSON.stringify(value)
-  } catch {
-    return String(value)
-  }
 }
 
 export function SessionSidePanel(props: {
@@ -357,12 +343,6 @@ export function SessionSidePanel(props: {
     if (part.state.status === "running") return language.t("session.side.runtime.tool.running")
     if (part.state.status === "completed") return language.t("session.side.runtime.tool.completed")
     return language.t("session.side.runtime.tool.error")
-  }
-  const toolSummary = (part: ToolPart) => {
-    if (part.state.status === "pending") return compact(part.state.raw || stringify(part.state.input))
-    if (part.state.status === "running") return language.t("session.side.runtime.tool.runningSummary")
-    if (part.state.status === "completed") return compact(part.state.output)
-    return compact(part.state.error)
   }
   const sessionState = createMemo(() => (params.id ? sync.data.session_status[params.id] : undefined))
   const runtimeStateLabel = createMemo(() => {
@@ -927,33 +907,76 @@ export function SessionSidePanel(props: {
                   <Show when={store.toolsOpen && recentTools().length > 0}>
                     <div data-testid="session-runtime-tool-list" class="mt-2 space-y-1">
                       <For each={recentTools()}>
-                        {(part) => (
-                          <div class="rounded-md border border-border-subtle bg-background-base px-2 py-1.5">
-                            <div class="flex min-w-0 items-center justify-between gap-2">
-                              <div
-                                data-testid="session-runtime-tool-name"
-                                class="min-w-0 truncate text-12-medium text-text-strong"
-                                title={toolTitle(part)}
-                              >
-                                {toolTitle(part)}
-                              </div>
-                              <div class="shrink-0 rounded bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak">
-                                {toolStateLabel(part)}
-                              </div>
-                            </div>
-                            <Show when={toolSummary(part)}>
-                              {(summary) => (
+                        {(part) => {
+                          const evidence = toolEvidence(part)
+                          return (
+                            <div class="rounded-md border border-border-subtle bg-background-base px-2 py-1.5">
+                              <div class="flex min-w-0 items-center justify-between gap-2">
                                 <div
-                                  data-testid="session-runtime-tool-summary"
-                                  class="mt-1 line-clamp-2 text-11-regular text-text-weak"
-                                  title={summary()}
+                                  data-testid="session-runtime-tool-name"
+                                  class="min-w-0 truncate text-12-medium text-text-strong"
+                                  title={toolTitle(part)}
                                 >
-                                  {summary()}
+                                  {toolTitle(part)}
                                 </div>
-                              )}
-                            </Show>
-                          </div>
-                        )}
+                                <div class="flex shrink-0 items-center gap-1">
+                                  <div
+                                    data-testid="session-runtime-tool-risk"
+                                    class="rounded px-1.5 py-0.5 text-10-medium"
+                                    classList={{
+                                      "bg-surface-success-base text-text-on-success-base": evidence.risk.tone === "success",
+                                      "bg-surface-warning-base text-text-on-warning-base": evidence.risk.tone === "warning",
+                                      "bg-surface-critical-base text-text-on-critical-base": evidence.risk.tone === "danger",
+                                      "bg-surface-base text-text-weak": evidence.risk.tone === "neutral",
+                                    }}
+                                  >
+                                    {evidence.risk.label}
+                                  </div>
+                                  <div class="rounded bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak">
+                                    {toolStateLabel(part)}
+                                  </div>
+                                </div>
+                              </div>
+                              <Show when={evidence.input}>
+                                {(input) => (
+                                  <div
+                                    data-testid="session-runtime-tool-input"
+                                    class="mt-1 line-clamp-1 text-11-regular text-text-weak"
+                                    title={input()}
+                                  >
+                                    输入：{input()}
+                                  </div>
+                                )}
+                              </Show>
+                              <Show when={evidence.output}>
+                                {(output) => (
+                                  <div
+                                    data-testid="session-runtime-tool-summary"
+                                    class="mt-1 line-clamp-2 text-11-regular text-text-weak"
+                                    title={output()}
+                                  >
+                                    输出：{output()}
+                                  </div>
+                                )}
+                              </Show>
+                              <Show when={evidence.artifacts.length > 0}>
+                                <div data-testid="session-runtime-tool-artifacts" class="mt-1.5 flex min-w-0 flex-wrap gap-1">
+                                  <For each={evidence.artifacts}>
+                                    {(artifact) => (
+                                      <div
+                                        data-testid="session-runtime-tool-artifact"
+                                        class="max-w-full truncate rounded-full border border-border-subtle bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak"
+                                        title={artifact.path}
+                                      >
+                                        {artifact.label}
+                                      </div>
+                                    )}
+                                  </For>
+                                </div>
+                              </Show>
+                            </div>
+                          )
+                        }}
                       </For>
                     </div>
                   </Show>

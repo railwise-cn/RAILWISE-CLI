@@ -22,6 +22,7 @@ import { useSync } from "@/context/sync"
 import { extractPromptFromParts } from "@/utils/prompt"
 import { agentDisplayName } from "@/utils/agent-display"
 import { capabilitiesForAgents, capabilitiesFromRouting, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
+import { toolEvidence } from "@/pages/session/tool-evidence"
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
   const current = target instanceof Element ? target : undefined
@@ -501,27 +502,65 @@ export function MessageTimeline(props: {
             </div>
             <Show when={latestTool()}>
               {(part) => (
-                <div class="mt-2 flex min-w-0 items-start gap-2 border-t border-border-subtle pt-2 text-12-regular">
-                  <span
-                    data-testid="session-turn-execution-tool-name"
-                    class="min-w-0 truncate text-text-base"
-                    title={toolTitle(part())}
-                  >
-                    {toolTitle(part())}
-                  </span>
-                  <span
-                    data-testid="session-turn-execution-tool-state"
-                    class="shrink-0 rounded-full bg-background-panel px-1.5 py-0.5 text-11-medium text-text-weak"
-                  >
-                    {toolStateLabel(part())}
-                  </span>
-                  <span
-                    data-testid="session-turn-execution-tool-summary"
-                    class="min-w-0 truncate text-text-weak"
-                    title={toolSummary(part())}
-                  >
-                    {toolSummary(part())}
-                  </span>
+                <div class="mt-2 border-t border-border-subtle pt-2 text-12-regular">
+                  <div class="flex min-w-0 items-start gap-2">
+                    <span
+                      data-testid="session-turn-execution-tool-name"
+                      class="min-w-0 truncate text-text-base"
+                      title={toolTitle(part())}
+                    >
+                      {toolTitle(part())}
+                    </span>
+                    <span
+                      data-testid="session-turn-execution-tool-state"
+                      class="shrink-0 rounded-full bg-background-panel px-1.5 py-0.5 text-11-medium text-text-weak"
+                    >
+                      {toolStateLabel(part())}
+                    </span>
+                    <span
+                      data-testid="session-turn-execution-tool-summary"
+                      class="min-w-0 truncate text-text-weak"
+                      title={toolSummary(part())}
+                    >
+                      {toolSummary(part())}
+                    </span>
+                  </div>
+                  <div data-testid="session-turn-execution-tool-evidence" class="mt-1.5 flex min-w-0 flex-wrap items-center gap-1.5">
+                    <span
+                      data-testid="session-turn-execution-tool-risk"
+                      class="rounded-full border border-border-subtle px-1.5 py-0.5 text-10-medium"
+                      classList={{
+                        "bg-surface-success-base text-text-on-success-base": toolEvidence(part()).risk.tone === "success",
+                        "bg-surface-warning-base text-text-on-warning-base": toolEvidence(part()).risk.tone === "warning",
+                        "bg-surface-critical-base text-text-on-critical-base": toolEvidence(part()).risk.tone === "danger",
+                        "bg-surface-base text-text-weak": toolEvidence(part()).risk.tone === "neutral",
+                      }}
+                    >
+                      {toolEvidence(part()).risk.label}
+                    </span>
+                    <Show when={toolEvidence(part()).input}>
+                      {(input) => (
+                        <span
+                          data-testid="session-turn-execution-tool-input"
+                          class="max-w-[14rem] truncate text-11-regular text-text-weak"
+                          title={input()}
+                        >
+                          输入：{input()}
+                        </span>
+                      )}
+                    </Show>
+                    <For each={toolEvidence(part()).artifacts}>
+                      {(artifact) => (
+                        <span
+                          data-testid="session-turn-execution-tool-artifact"
+                          class="max-w-[10rem] truncate rounded-full bg-background-panel px-1.5 py-0.5 text-10-medium text-text-weak"
+                          title={artifact.path}
+                        >
+                          {artifact.label}
+                        </span>
+                      )}
+                    </For>
+                  </div>
                 </div>
               )}
             </Show>

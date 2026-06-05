@@ -91,7 +91,7 @@ bun run verify:sidecar-config
 - `finder_launch=pending`：Finder 双击启动待人工确认。
 - `manual_checklist=pending`：下方人工验收项待逐项确认。
 - `beta_decision=pending`：未达到 Beta/GA 发版条件。
-- Codex shell 启动烟测：受限，`open -n` 返回 `kLSNoExecutableErr`；这不是可发布证据。
+- Codex shell 启动烟测：受限，`open -n` 返回 `kLSNoExecutableErr`；同一 shell 打开 `/Applications/Safari.app` 也返回相同错误，因此这不是可发布证据。
 
 验收通过后按实际结果更新以上状态。普通 Terminal 脚本只会自动更新 `terminal_smoke`；Finder 双击、人工验收项和是否进入 Beta/GA 必须由测试人确认后手动改为 `passed`。GA 门禁会读取这个状态块，不能只保留下面模板里的“结论：通过”。
 
@@ -109,6 +109,8 @@ bun run smoke:macos -- --app "src-tauri/target/release/local-app/睿威智测 RA
 ```
 
 结果：bundle 15 项验证通过，随后 `open -n` 返回 `NSOSStatusErrorDomain Code=-10827 kLSNoExecutableErr`。下一步必须在普通 macOS Terminal 或 Finder 里重跑启动，不把这条受限 shell 失败当作产品闪退结论。
+
+同一 Codex shell 中执行 `open -n /Applications/Safari.app` 也返回 `NSOSStatusErrorDomain Code=-10827 kLSNoExecutableErr`，说明当前 shell 无法调用 macOS 图形启动服务。真实启动验收必须来自普通 macOS Terminal 或 Finder。
 
 ## 终端启动验收记录
 

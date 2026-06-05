@@ -547,6 +547,11 @@ export function SessionSidePanel(props: {
     openTab(file.tab(path))
   }
 
+  const referenceArtifact = (path: string) => {
+    prompt.context.add({ type: "file", path })
+    focusPromptDock()
+  }
+
   const repairTool = (part: ToolPart) => {
     if (part.state.status !== "error") return
     const text = repairInstruction(part)
@@ -990,16 +995,32 @@ export function SessionSidePanel(props: {
                                 <div data-testid="session-runtime-tool-artifacts" class="mt-1.5 flex min-w-0 flex-wrap gap-1">
                                   <For each={evidence.artifacts}>
                                     {(artifact) => (
-                                      <button
-                                        type="button"
-                                        data-testid="session-runtime-tool-artifact"
-                                        class="max-w-full truncate rounded-full border border-border-subtle bg-surface-base px-1.5 py-0.5 text-left text-10-medium text-text-weak hover:border-border-base hover:bg-background-hover hover:text-text-strong"
-                                        aria-label={`打开 ${artifact.label}`}
+                                      <div
+                                        data-testid="session-runtime-tool-artifact-row"
+                                        class="flex max-w-full items-center overflow-hidden rounded-full border border-border-subtle bg-surface-base text-text-weak hover:border-border-base"
                                         title={artifact.path}
-                                        onClick={() => openArtifact(artifact.path)}
                                       >
-                                        {artifact.label}
-                                      </button>
+                                        <button
+                                          type="button"
+                                          data-testid="session-runtime-tool-artifact"
+                                          class="min-w-0 truncate px-1.5 py-0.5 text-left text-10-medium hover:bg-background-hover hover:text-text-strong"
+                                          aria-label={`打开 ${artifact.label}`}
+                                          onClick={() => openArtifact(artifact.path)}
+                                        >
+                                          {artifact.label}
+                                        </button>
+                                        <Tooltip value={language.t("prompt.context.includeActiveFile")} placement="top">
+                                          <button
+                                            type="button"
+                                            data-testid="session-runtime-tool-artifact-reference"
+                                            class="flex h-5 w-5 shrink-0 items-center justify-center border-l border-border-subtle hover:bg-background-hover hover:text-text-strong"
+                                            aria-label={`引用 ${artifact.label} 到对话`}
+                                            onClick={() => referenceArtifact(artifact.path)}
+                                          >
+                                            <Icon name="link" size="small" class="text-icon-weak" />
+                                          </button>
+                                        </Tooltip>
+                                      </div>
                                     )}
                                   </For>
                                 </div>

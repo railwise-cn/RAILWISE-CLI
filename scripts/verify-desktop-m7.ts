@@ -93,6 +93,8 @@ const messageTimeline = await read("packages/app/src/pages/session/message-timel
 const sessionSidePanel = await read("packages/app/src/pages/session/session-side-panel.tsx")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
 const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
+const sessionToolEvidence = await read("packages/app/src/pages/session/tool-evidence.ts")
+const sessionToolEvidenceTest = await read("packages/app/src/pages/session/tool-evidence.test.ts")
 const sessionPrompt = await read("packages/railwise/src/session/prompt.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
@@ -166,6 +168,9 @@ check(
       "capabilitiesFromRouting",
       "session-turn-execution-capabilities",
       "session-turn-execution-capability-name",
+      "session-turn-execution-tool-risk",
+      "session-turn-execution-tool-input",
+      "session-turn-execution-tool-artifact",
       "session.execution.capabilities",
     ]) &&
     has(sessionSidePanel, [
@@ -180,9 +185,14 @@ check(
       "session-runtime-capabilities",
       "session-runtime-capability-list",
       "session-runtime-capability-name",
+      "session-runtime-tool-risk",
+      "session-runtime-tool-input",
+      "session-runtime-tool-artifact",
       "session.side.runtime.chain.title",
       "session.side.runtime.chain.action.handle",
     ]) &&
+    has(sessionToolEvidence, ["toolEvidence", "artifacts", "pass", "missing", "alerts", "outputPath"]) &&
+    has(sessionToolEvidenceTest, ["summarizes completed tool input, output, risk and artifacts", "成果报告.md", "需复核"]) &&
     has(promptInput, ['data-testid="session-prompt-input"']) &&
     has(e2eHelper, ['model?: "configured"', "deepseek-v4", "DEEPSEEK_API_KEY"]) &&
     has(startup, [
@@ -207,6 +217,10 @@ check(
       "水准闭合差检核",
       "复测资料检查",
       "2 项能力",
+      "session-turn-execution-tool-risk",
+      "session-runtime-tool-risk",
+      "成果报告.md",
+      "闭合差复核.md",
       "tool: survey_calculator_leveling_closure",
       "chief_manager",
       'model: "configured"',

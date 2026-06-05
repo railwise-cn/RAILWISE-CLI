@@ -33,6 +33,7 @@ import { FileTabContent } from "@/pages/session/file-tabs"
 import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/helpers"
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
+import { repairInstruction } from "@/pages/harness/recovery"
 import { agentDisplayName } from "@/utils/agent-display"
 import { capabilitiesForAgents, capabilitiesFromRouting, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 import { toolEvidence } from "@/pages/session/tool-evidence"
@@ -539,6 +540,17 @@ export function SessionSidePanel(props: {
     })
   }
 
+  const openArtifact = (path: string) => {
+    showAllFiles()
+    openTab(file.tab(path))
+  }
+
+  const repairTool = (part: ToolPart) => {
+    if (part.state.status !== "error") return
+    setSessionHandoff(sessionKey(), { prompt: repairInstruction(part) })
+    focusPromptDock()
+  }
+
   const toggleTools = () => {
     if (toolStats().total === 0) return
     setStore("toolsOpen", (value) => !value)
@@ -959,17 +971,31 @@ export function SessionSidePanel(props: {
                                   </div>
                                 )}
                               </Show>
+                              <Show when={part.state.status === "error"}>
+                                <button
+                                  type="button"
+                                  data-testid="session-runtime-tool-repair"
+                                  class="mt-1 flex h-5 w-fit items-center gap-0.5 rounded border border-border-subtle bg-surface-panel px-1.5 text-10-medium text-text-weak hover:bg-background-hover hover:text-text-strong"
+                                  onClick={() => repairTool(part)}
+                                >
+                                  {language.t("session.side.runtime.chain.action.repair")}
+                                  <Icon name="chevron-right" size="small" class="text-icon-weak" />
+                                </button>
+                              </Show>
                               <Show when={evidence.artifacts.length > 0}>
                                 <div data-testid="session-runtime-tool-artifacts" class="mt-1.5 flex min-w-0 flex-wrap gap-1">
                                   <For each={evidence.artifacts}>
                                     {(artifact) => (
-                                      <div
+                                      <button
+                                        type="button"
                                         data-testid="session-runtime-tool-artifact"
-                                        class="max-w-full truncate rounded-full border border-border-subtle bg-surface-base px-1.5 py-0.5 text-10-medium text-text-weak"
+                                        class="max-w-full truncate rounded-full border border-border-subtle bg-surface-base px-1.5 py-0.5 text-left text-10-medium text-text-weak hover:border-border-base hover:bg-background-hover hover:text-text-strong"
+                                        aria-label={`打开 ${artifact.label}`}
                                         title={artifact.path}
+                                        onClick={() => openArtifact(artifact.path)}
                                       >
                                         {artifact.label}
-                                      </div>
+                                      </button>
                                     )}
                                   </For>
                                 </div>

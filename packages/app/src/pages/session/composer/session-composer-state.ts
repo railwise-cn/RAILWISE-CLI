@@ -66,6 +66,9 @@ export function createSessionComposerState() {
     setStore("responding", perm.id)
     sdk.client.permission
       .respond({ sessionID: perm.sessionID, permissionID: perm.id, response })
+      .then(() => {
+        sync.set("permission", perm.sessionID, (requests) => requests?.filter((item) => item.id !== perm.id) ?? [])
+      })
       .catch((err: unknown) => {
         const description = err instanceof Error ? err.message : String(err)
         showToast({ title: language.t("common.requestFailed"), description })

@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For } from "solid-js"
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
 import { Button } from "@railwise/ui/button"
 import { Mark } from "@railwise/ui/logo"
 import { useLayout } from "@/context/layout"
@@ -6,6 +6,7 @@ import { useNavigate } from "@solidjs/router"
 import { Icon } from "@railwise/ui/icon"
 import { usePlatform } from "@/context/platform"
 import { DateTime } from "luxon"
+import { base64Encode } from "@railwise/util/encode"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
 import { DialogSelectServer } from "@/components/dialog-select-server"
@@ -15,6 +16,7 @@ import { useLanguage } from "@/context/language"
 import { useProviders } from "@/hooks/use-providers"
 import { collaborationTarget, recentWorkspaces, recommendedModel } from "@/pages/agents/collaboration"
 import { setSessionHandoff } from "@/pages/session/handoff"
+import { sortedRootSessions } from "@/pages/layout/helpers"
 
 export default function Home() {
   const sync = useGlobalSync()
@@ -30,6 +32,24 @@ export default function Home() {
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
   const selectedDirectory = createMemo(() => directory() || recent()[0]?.worktree || "")
   const selectedProject = createMemo(() => recent().find((project) => project.worktree === selectedDirectory()))
+  const projectStore = createMemo(() => {
+    const target = selectedDirectory()
+    if (!target) return
+    return sync.child(target, { bootstrap: false })[0]
+  })
+  const projectSessions = createMemo(() => {
+    const store = projectStore()
+    if (!store) return []
+    return sortedRootSessions(store, Date.now()).slice(0, 4)
+  })
+  const runningSessions = createMemo(() =>
+    Object.values(projectStore()?.session_status ?? {}).filter((status) => status.type === "busy" || status.type === "retry").length,
+  )
+  const pendingActions = createMemo(
+    () =>
+      Object.values(projectStore()?.permission ?? {}).flat().length +
+      Object.values(projectStore()?.question ?? {}).flat().length,
+  )
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const canStart = createMemo(() => selectedDirectory().trim().length > 0 && prompt().trim().length > 0)
   const modelLabel = createMemo(() => {
@@ -62,6 +82,17 @@ export default function Home() {
     if (selectedDirectory()) return "本地工作区"
     return "选择项目后开始会话"
   })
+  const runningLabel = createMemo(() => {
+    const count = runningSessions()
+    if (count > 0) return `${count} 个任务运行中`
+    return "空闲"
+  })
+  const actionLabel = createMemo(() => {
+    const count = pendingActions()
+    if (count > 0) return `${count} 项待确认`
+    return "无需确认"
+  })
+  const modelStateLabel = createMemo(() => (connectedProviders().length > 0 ? "模型已接入" : "待接入模型"))
 
   createEffect(() => {
     const target = selectedDirectory()
@@ -111,6 +142,19 @@ export default function Home() {
     server.projects.touch(target.directory)
     setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })
     navigate(target.href)
+  }
+
+  function openSession(id: string, target = selectedDirectory()) {
+    if (!target) return
+    navigate(`/${base64Encode(target)}/session/${id}`)
+  }
+
+  function newSession(target = selectedDirectory()) {
+    if (!target) {
+      void chooseProject()
+      return
+    }
+    navigate(`/${base64Encode(target)}/session`)
   }
 
   return (
@@ -233,18 +277,67 @@ export default function Home() {
           </section>
         </section>
 
-        <aside class="hidden w-72 shrink-0 flex-col border-l border-border-weak-base px-4 py-5 xl:flex">
-          <div class="mb-5">
-            <div class="text-12-medium text-text-weak">当前项目</div>
-            <div class="mt-2 rounded-lg border border-border-weak-base bg-surface-panel p-3">
-              <div class="truncate text-14-medium text-text-strong">{selectedName()}</div>
-              <div class="mt-1 text-12-regular text-text-weak">{selectedMeta()}</div>
+        <aside class="hidden w-80 shrink-0 flex-col border-l border-border-weak-base bg-surface-base px-4 py-5 xl:flex" data-testid="home-project-rail">
+          <section class="rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-project-summary">
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <div class="text-12-medium text-text-weak">项目</div>
+              <button type="button" class="text-12-medium text-text-weak hover:text-text-strong" onClick={chooseProject}>
+                切换
+              </button>
             </div>
-          </div>
+            <div class="flex items-center gap-3">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-md border border-border-weak-base text-text-weak">
+                <Icon name="folder" size="small" />
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="truncate text-14-medium text-text-strong">{selectedName()}</div>
+                <div class="mt-1 truncate text-12-regular text-text-weak">{selectedMeta()}</div>
+              </div>
+            </div>
+          </section>
 
-          <div class="rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-harness-inspector">
+          <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-session-rail">
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <div class="text-12-medium text-text-weak">会话</div>
+              <button type="button" class="inline-flex items-center gap-1 text-12-medium text-text-weak hover:text-text-strong" onClick={() => newSession()}>
+                <Icon name="plus-small" size="small" />
+                新建
+              </button>
+            </div>
+            <div class="space-y-1">
+              <Show
+                when={projectSessions().length > 0}
+                fallback={
+                  <div class="rounded-md border border-dashed border-border-weak-base px-3 py-4">
+                    <div class="text-13-medium text-text-strong">还没有会话</div>
+                    <div class="mt-1 text-12-regular text-text-weak">输入任务后会自动创建。</div>
+                  </div>
+                }
+              >
+                <For each={projectSessions()}>
+                  {(session) => (
+                    <button
+                      type="button"
+                      class="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left hover:bg-surface-element"
+                      onClick={() => openSession(session.id, session.directory)}
+                    >
+                      <Icon name="new-session" size="small" class="shrink-0 text-text-weak" />
+                      <span class="min-w-0 flex-1">
+                        <span class="block truncate text-13-medium text-text-strong">{session.title}</span>
+                        <span class="block truncate text-12-regular text-text-weak">
+                          {DateTime.fromMillis(session.time.updated ?? session.time.created).toRelative() ?? "最近更新"}
+                        </span>
+                      </span>
+                    </button>
+                  )}
+                </For>
+              </Show>
+            </div>
+          </section>
+
+          <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-runtime-rail">
             <div class="mb-3 flex items-center justify-between">
-              <div class="text-12-medium text-text-weak">状态</div>
+              <div class="text-12-medium text-text-weak">执行</div>
               <button type="button" class="text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/harness")}>
                 查看
               </button>
@@ -253,36 +346,45 @@ export default function Home() {
               <div class="flex items-start gap-2">
                 <Icon name="server" size="small" class="mt-0.5 shrink-0 text-text-weak" />
                 <div class="min-w-0 flex-1">
-                  <div class="text-13-medium text-text-strong">连接</div>
-                  <div class="mt-1 flex items-center gap-2 text-12-regular text-text-weak">
+                  <div class="flex items-center gap-2 text-13-medium text-text-strong">
+                    服务
                     <span
                       classList={{
                         "size-2 rounded-full": true,
                         [serverDotClass()]: true,
                       }}
                     />
-                    {serverLabel()}
                   </div>
+                  <div class="mt-1 text-12-regular text-text-weak">{serverLabel()}</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <Icon name="checklist" size="small" class="mt-0.5 shrink-0 text-text-weak" />
+                <div class="min-w-0 flex-1">
+                  <div class="text-13-medium text-text-strong">任务</div>
+                  <div class="mt-1 truncate text-12-regular text-text-weak">{runningLabel()} · {actionLabel()}</div>
                 </div>
               </div>
               <div class="flex items-start gap-2">
                 <Icon name="models" size="small" class="mt-0.5 shrink-0 text-text-weak" />
                 <div class="min-w-0 flex-1">
                   <div class="text-13-medium text-text-strong">模型</div>
-                  <div class="mt-1 truncate text-12-regular text-text-weak">{modelLabel()}</div>
+                  <div class="mt-1 truncate text-12-regular text-text-weak">{modelStateLabel()}</div>
                 </div>
               </div>
-              <div class="flex items-start gap-2">
-                <Icon name="providers" size="small" class="mt-0.5 shrink-0 text-text-weak" />
-                <div class="min-w-0 flex-1">
-                  <div class="text-13-medium text-text-strong">能力市场</div>
-                  <button type="button" class="mt-1 text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/marketplace")}>
-                    打开能力市场
-                  </button>
-                </div>
-              </div>
+              <button
+                type="button"
+                class="flex w-full items-center justify-between rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                onClick={() => navigate("/marketplace")}
+              >
+                <span class="inline-flex min-w-0 items-center gap-2 text-13-medium text-text-strong">
+                  <Icon name="providers" size="small" class="shrink-0 text-text-weak" />
+                  能力市场
+                </span>
+                <span class="text-12-regular text-text-weak">打开</span>
+              </button>
             </div>
-          </div>
+          </section>
         </aside>
       </div>
     </main>

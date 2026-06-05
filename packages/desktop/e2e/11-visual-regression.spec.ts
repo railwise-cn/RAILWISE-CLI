@@ -18,9 +18,13 @@ test("旧项目驾驶舱入口进入极简工作台与全局项目栏", async ({
   await expect(page.locator("[data-testid=home-harness-panel]")).toContainText("模型：")
   await expect(page.locator("[data-testid=home-harness-panel]")).not.toContainText("执行环境：")
   await expect(page.locator("[data-testid=home-harness-panel]")).toContainText("能力市场")
-  await expect(page.locator("[data-testid=home-harness-inspector]")).toContainText("状态")
-  await expect(page.locator("[data-testid=home-harness-inspector]")).toContainText("连接")
-  await expect(page.locator("[data-testid=home-harness-inspector]")).not.toContainText("智能体、工具、流程统一安装。")
+  await expect(page.locator("[data-testid=home-project-rail]")).toBeVisible()
+  await expect(page.locator("[data-testid=home-project-summary]")).toContainText("项目")
+  await expect(page.locator("[data-testid=home-session-rail]")).toContainText("会话")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("执行")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("服务")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("任务")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).not.toContainText("智能体、工具、流程统一安装。")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
   await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
   await expect(page.getByText("选择文件夹后会出现在这里。")).toHaveCount(0)
@@ -81,6 +85,22 @@ test("项目侧栏提供清晰会话入口并隐藏工作区后台标签", async
   await expect(workspace).not.toContainText("本地 :")
   await expect(workspace).not.toContainText("沙盒 :")
   await expect(sidebar).not.toContainText(worktree)
+})
+
+test("首页右侧项目栏显示最近会话与执行状态", async ({ launchApp }) => {
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    model: "configured",
+    projects: [{ id: "railwise-e2e", worktree, vcs: "git", time: { created: Date.now(), updated: Date.now() } }],
+  })
+
+  await visible(page.locator("[data-testid=home-workbench]"))
+  await expect(page.locator("[data-testid=home-project-summary]")).toContainText("worktree")
+  await expect(page.locator("[data-testid=home-session-rail]")).toContainText("复测资料检查")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("1 个任务运行中")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("1 项待确认")
+  await expect(page.locator("[data-testid=home-runtime-rail]")).toContainText("模型已接入")
+  await expect(page.locator("[data-testid=home-project-rail]")).not.toContainText(worktree)
 })
 
 test("智能体详情不再使用后台编辑语言", async ({ launchApp }) => {

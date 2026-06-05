@@ -291,7 +291,7 @@ export default function MarketplacePage() {
   ])
   const selected = createMemo(() => catalog().find((item) => item.id === active()) ?? catalog()[0])
   const selectedCapabilities = createMemo(() => capabilitiesFor(capabilities(), selected().id))
-  const filteredCapabilities = createMemo(() => selectedCapabilities().filter((item) => matches(item, query().trim().toLowerCase())).slice(0, 8))
+  const filteredCapabilities = createMemo(() => selectedCapabilities().filter((item) => matches(item, query().trim().toLowerCase())).slice(0, 12))
 
   function connectProvider() {
     dialog.show(() => <DialogSelectProvider />)

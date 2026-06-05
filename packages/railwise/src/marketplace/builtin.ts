@@ -215,10 +215,112 @@ const skills = [
   },
 ]
 
+const tools = [
+  {
+    id: "task",
+    name: "智能体任务调度",
+    description: "把用户任务分派给主控和专业智能体，并汇总执行结果。",
+    tags: ["智能体", "调度", "协作"],
+    permissions: read,
+  },
+  {
+    id: "skill",
+    name: "Skill 加载器",
+    description: "按任务加载专业 Skill，让智能体获得对应作业流程和检查清单。",
+    tags: ["Skill", "加载", "流程"],
+    permissions: read,
+  },
+  {
+    id: "file_reader",
+    name: "本地文件读取",
+    description: "读取当前工作区内的工程文件。",
+    tags: ["文件", "本地", "工作区"],
+    permissions: read,
+  },
+  {
+    id: "standard_query_query_standard",
+    name: "规范条文查询",
+    description: "检索工程测绘、轨道交通监测和成果交付相关规范条文。",
+    tags: ["规范", "条文", "检索"],
+    permissions: read,
+  },
+  {
+    id: "survey_calculator_leveling_closure",
+    name: "水准闭合差检核",
+    description: "对水准路线闭合差、限差和观测成果进行快速复核。",
+    tags: ["水准", "闭合差", "复核"],
+    permissions: read,
+  },
+  {
+    id: "resurvey_material_check",
+    name: "复测资料检查",
+    description: "检查复测资料目录、控制点成果、观测记录和缺失文件。",
+    tags: ["复测", "资料", "缺失"],
+    permissions: read,
+  },
+  {
+    id: "monitoring_data_first_check",
+    name: "监测数据首检",
+    description: "对沉降、位移、收敛等监测数据进行异常点和预警状态初筛。",
+    tags: ["监测", "异常", "预警"],
+    permissions: read,
+  },
+  {
+    id: "dxf_layer_inspector",
+    name: "DXF 图层检查",
+    description: "检查 CAD/DXF 图层命名、关键构筑物线型和成果图交付完整性。",
+    tags: ["DXF", "CAD", "图层"],
+    permissions: read,
+  },
+  {
+    id: "xlsx_quality_checker",
+    name: "Excel 表格校验",
+    description: "检查 XLSX/CSV 表格字段、空值、单位、阈值和统计结果。",
+    tags: ["Excel", "CSV", "校验"],
+    permissions: read,
+  },
+  {
+    id: "docx_report_formatter",
+    name: "Word 成果排版",
+    description: "检查并整理 Word 成果报告结构、目录、表格和交付格式。",
+    tags: ["Word", "报告", "排版"],
+    permissions: write,
+  },
+  {
+    id: "pptx_brief_builder",
+    name: "PPT 汇报生成",
+    description: "基于项目阶段、数据结论和风险提示生成汇报幻灯片。",
+    tags: ["PPT", "汇报", "生成"],
+    permissions: write,
+  },
+  {
+    id: "pdf_form_checker",
+    name: "PDF 表单检查",
+    description: "提取并检查 PDF 表单、签章页和资料归档信息。",
+    tags: ["PDF", "表单", "归档"],
+    permissions: read,
+  },
+]
+
 function skill(item: (typeof skills)[number]): CapabilityManifest {
   return {
     id: `railwise.skill.${item.id}`,
     kind: "skill",
+    name: item.name,
+    description: item.description,
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: item.permissions,
+    tags: item.tags,
+  }
+}
+
+function tool(item: (typeof tools)[number]): CapabilityManifest {
+  return {
+    id: `railwise.tool.${item.id}`,
+    kind: "tool",
     name: item.name,
     description: item.description,
     version: "0.1.0",
@@ -267,24 +369,7 @@ export const builtins: CapabilityManifest[] = [
     },
     tags: ["协作", "调度"],
   },
-  {
-    id: "railwise.tool.file_reader",
-    kind: "tool",
-    name: "本地文件读取",
-    description: "读取当前工作区内的工程文件。",
-    version: "0.1.0",
-    source: "builtin",
-    enabled: true,
-    installed: true,
-    permissions: {
-      filesystem: "read",
-      network: false,
-      shell: false,
-      external_directory: false,
-      secrets: false,
-    },
-    tags: ["文件", "本地"],
-  },
+  ...tools.map(tool),
   ...skills.map(skill),
   {
     id: "railwise.workflow.metro_monitoring_report",

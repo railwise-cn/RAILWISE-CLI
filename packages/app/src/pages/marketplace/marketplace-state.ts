@@ -49,6 +49,54 @@ export function capabilityCount(list: CapabilityManifest[], id: MarketplaceId) {
 }
 
 const bindings: Record<string, { agents: string[]; workflows: string[] }> = {
+  "railwise.tool.task": {
+    agents: ["RAILWISE 协作"],
+    workflows: ["任务拆解与调度"],
+  },
+  "railwise.tool.skill": {
+    agents: ["RAILWISE 协作"],
+    workflows: ["按任务加载 Skill"],
+  },
+  "railwise.tool.file_reader": {
+    agents: ["RAILWISE 协作", "资料入库专员", "报告编制员"],
+    workflows: ["本地资料读取"],
+  },
+  "railwise.tool.standard_query_query_standard": {
+    agents: ["规范资料管理员", "质量审查专家", "CPIII 测量专家"],
+    workflows: ["规范引用复核"],
+  },
+  "railwise.tool.survey_calculator_leveling_closure": {
+    agents: ["外业数据首检员", "严密平差计算专家", "数据分析工程师"],
+    workflows: ["数据首检与趋势分析"],
+  },
+  "railwise.tool.resurvey_material_check": {
+    agents: ["外业数据首检员", "资料入库专员", "质量审查专家"],
+    workflows: ["复测资料检查"],
+  },
+  "railwise.tool.monitoring_data_first_check": {
+    agents: ["外业数据首检员", "数据分析工程师", "质量审查专家"],
+    workflows: ["运营监测分析"],
+  },
+  "railwise.tool.dxf_layer_inspector": {
+    agents: ["方案架构师", "资料入库专员", "质量审查专家"],
+    workflows: ["图纸资料检查"],
+  },
+  "railwise.tool.xlsx_quality_checker": {
+    agents: ["外业数据首检员", "数据分析工程师"],
+    workflows: ["数据表格整理"],
+  },
+  "railwise.tool.docx_report_formatter": {
+    agents: ["报告编制员", "质量审查专家"],
+    workflows: ["成果报告编制"],
+  },
+  "railwise.tool.pptx_brief_builder": {
+    agents: ["报告编制员", "方案架构师"],
+    workflows: ["阶段汇报生成"],
+  },
+  "railwise.tool.pdf_form_checker": {
+    agents: ["资料入库专员", "报告编制员"],
+    workflows: ["PDF 资料检查"],
+  },
   "railwise.skill.rail-monitoring-plan": {
     agents: ["方案架构师", "CPIII 测量专家", "规范资料管理员"],
     workflows: ["监测方案编制"],
@@ -121,6 +169,46 @@ const bindings: Record<string, { agents: string[]; workflows: string[] }> = {
     agents: ["知识库整理员", "报告编制员"],
     workflows: ["文档协同审阅"],
   },
+  "railwise.skill.brand-guidelines": {
+    agents: ["报告编制员", "方案架构师"],
+    workflows: ["品牌规范套用"],
+  },
+  "railwise.skill.theme-factory": {
+    agents: ["报告编制员", "方案架构师"],
+    workflows: ["可视化交付"],
+  },
+  "railwise.skill.web-artifacts-builder": {
+    agents: ["方案架构师"],
+    workflows: ["交互原型构建"],
+  },
+  "railwise.skill.webapp-testing": {
+    agents: ["质量审查专家", "方案架构师"],
+    workflows: ["Web 应用验收"],
+  },
+  "railwise.skill.bun-file-io": {
+    agents: ["知识库整理员", "资料入库专员"],
+    workflows: ["本地资料处理"],
+  },
+  "railwise.skill.mcp-builder": {
+    agents: ["知识库整理员", "方案架构师"],
+    workflows: ["MCP 工具接入"],
+  },
+  "railwise.skill.skill-creator": {
+    agents: ["知识库整理员", "质量审查专家"],
+    workflows: ["专业 Skill 创建"],
+  },
+  "railwise.skill.claude-api": {
+    agents: ["方案架构师"],
+    workflows: ["模型接口开发"],
+  },
+  "railwise.skill.algorithmic-art": {
+    agents: ["报告编制员"],
+    workflows: ["可视化素材生成"],
+  },
+  "railwise.skill.slack-gif-creator": {
+    agents: ["报告编制员"],
+    workflows: ["内部沟通素材"],
+  },
 }
 
 export function capabilityBindings(item: CapabilityManifest) {
@@ -171,6 +259,32 @@ const skillOrder = [
   "frontend-design",
   "canvas-design",
   "humanizer",
+  "doc-coauthoring",
+  "internal-comms",
+  "brand-guidelines",
+  "theme-factory",
+  "web-artifacts-builder",
+  "webapp-testing",
+  "bun-file-io",
+  "mcp-builder",
+  "skill-creator",
+  "claude-api",
+  "algorithmic-art",
+  "slack-gif-creator",
+]
+const toolOrder = [
+  "task",
+  "skill",
+  "file_reader",
+  "standard_query_query_standard",
+  "survey_calculator_leveling_closure",
+  "resurvey_material_check",
+  "monitoring_data_first_check",
+  "dxf_layer_inspector",
+  "xlsx_quality_checker",
+  "docx_report_formatter",
+  "pptx_brief_builder",
+  "pdf_form_checker",
 ]
 const kindOrder: Record<CapabilityManifest["kind"], number> = {
   skill: 0,
@@ -190,10 +304,17 @@ export function agentCapabilityLabels(agent?: AgentBindingInput | null) {
 }
 
 function capabilityRank(item: CapabilityManifest) {
-  if (item.kind !== "skill") return kindOrder[item.kind] * 1000
-  const id = item.id.replace("railwise.skill.", "")
-  const index = skillOrder.indexOf(id)
-  return index >= 0 ? index : skillOrder.length + 100
+  if (item.kind === "skill") {
+    const id = item.id.replace("railwise.skill.", "")
+    const index = skillOrder.indexOf(id)
+    return index >= 0 ? index : skillOrder.length + 100
+  }
+  if (item.kind === "tool") {
+    const id = item.id.replace("railwise.tool.", "")
+    const index = toolOrder.indexOf(id)
+    return kindOrder[item.kind] * 1000 + (index >= 0 ? index : toolOrder.length + 100)
+  }
+  return kindOrder[item.kind] * 1000
 }
 
 export function capabilitiesForAgent(list: CapabilityManifest[], agent?: AgentBindingInput | null) {

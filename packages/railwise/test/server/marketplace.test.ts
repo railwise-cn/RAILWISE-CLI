@@ -26,4 +26,25 @@ describe("server.routes.marketplace", () => {
     expect(response.status).toBe(200)
     expect(body.data.some((item: { id: string }) => item.id === "railwise.agent.chief_manager")).toBe(true)
   })
+
+  test("enable and disable persist capability state", async () => {
+    const id = "railwise.skill.standard-reference"
+    const disabled = await MarketplaceRoutes().request(`http://railwise.test/capabilities/${id}/disable`, { method: "POST" })
+    const disabledBody = await disabled.json()
+    const listDisabled = await MarketplaceRoutes().request("http://railwise.test/capabilities")
+    const listDisabledBody = await listDisabled.json()
+
+    expect(disabled.status).toBe(200)
+    expect(disabledBody.enabled).toBe(false)
+    expect(listDisabledBody.data.find((item: { id: string }) => item.id === id).enabled).toBe(false)
+
+    const enabled = await MarketplaceRoutes().request(`http://railwise.test/capabilities/${id}/enable`, { method: "POST" })
+    const enabledBody = await enabled.json()
+    const listEnabled = await MarketplaceRoutes().request("http://railwise.test/capabilities")
+    const listEnabledBody = await listEnabled.json()
+
+    expect(enabled.status).toBe(200)
+    expect(enabledBody.enabled).toBe(true)
+    expect(listEnabledBody.data.find((item: { id: string }) => item.id === id).enabled).toBe(true)
+  })
 })

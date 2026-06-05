@@ -28,6 +28,7 @@ import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/t
 import type { Workflow } from "@/types/workflow"
 import {
   capabilitiesFor,
+  normalizeCapability,
   capabilityCount,
   capabilityPreview,
   marketplaceIds,
@@ -92,23 +93,25 @@ function capabilityAction(item: CapabilityManifest) {
   if (item.kind === "provider") return "接入模型"
   if (item.kind === "mcp" || item.kind === "harness_profile") return "查看执行层"
   if (item.kind === "agent") return "打开智能体"
-  if (item.kind === "tool") return "查看工具"
-  if (item.kind === "skill") return "查看技能"
-  return "查看工作流"
+  if (item.kind === "tool" || item.kind === "skill" || item.kind === "workflow") return item.enabled ? "停用" : "启用"
+  return "查看"
 }
 
 function capabilityLink(item: CapabilityManifest) {
   if (item.kind === "provider") return
   if (item.kind === "mcp" || item.kind === "harness_profile") return "/harness"
   if (item.kind === "agent") return `/agents/${item.id.split(".").at(-1) ?? ""}`
-  if (item.kind === "tool") return "/agents#agent-tools"
-  if (item.kind === "skill") return "/agents#agent-skills"
-  return "/agents#agent-workflows"
+  if (item.kind === "tool" || item.kind === "skill" || item.kind === "workflow") return
+  return "/marketplace"
 }
 
 function matches(item: CapabilityManifest, query: string) {
   if (!query) return true
   return [item.name, item.description, item.id, item.kind, ...(item.tags ?? [])].some((value) => value.toLowerCase().includes(query))
+}
+
+function toggles(item: CapabilityManifest) {
+  return item.kind === "tool" || item.kind === "skill" || item.kind === "workflow"
 }
 
 export default function MarketplacePage() {
@@ -128,6 +131,7 @@ export default function MarketplacePage() {
   const [active, setActive] = createSignal<Id>("agents")
   const [query, setQuery] = createSignal("")
   const [loading, setLoading] = createSignal(true)
+  const [busy, setBusy] = createSignal("")
   const [error, setError] = createSignal("")
 
   function load() {
@@ -310,6 +314,30 @@ export default function MarketplacePage() {
     connectPreferred(provider.id)
   }
 
+  async function toggleCapability(item: CapabilityManifest) {
+    if (!toggles(item)) {
+      connectCapability(item)
+      return
+    }
+    setBusy(item.id)
+    setError("")
+    try {
+      const response = item.enabled
+        ? await sdk.client.postMarketplaceCapabilitiesIdDisable({ id: item.id })
+        : await sdk.client.postMarketplaceCapabilitiesIdEnable({ id: item.id })
+      const next = normalizeCapability(response)
+      if (!next) {
+        load()
+        return
+      }
+      setCapabilities((items) => items.map((candidate) => (candidate.id === next.id ? next : candidate)))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setBusy("")
+    }
+  }
+
   createEffect(() => {
     const current = server.projects.last() ?? recent()[0]?.worktree
     if (!current) return
@@ -437,13 +465,19 @@ export default function MarketplacePage() {
                         <For each={item.tags?.slice(0, 3) ?? []}>{(tag) => <span>{tag}</span>}</For>
                       </div>
                       <footer>
-                        <span>{item.enabled ? "执行层可调度" : item.installed ? "需要配置后启用" : "尚未安装"}</span>
+                        <span>{item.enabled ? "执行层可调度" : item.installed ? "当前已停用" : "尚未安装"}</span>
                         <Show
                           when={href}
                           keyed
                           fallback={
-                            <button type="button" class="agent-button agent-button--ghost" onClick={() => connectCapability(item)}>
-                              {capabilityAction(item)}
+                            <button
+                              type="button"
+                              class="agent-button agent-button--ghost"
+                              data-testid="marketplace-capability-action"
+                              disabled={busy() === item.id}
+                              onClick={() => toggleCapability(item)}
+                            >
+                              {busy() === item.id ? "处理中" : capabilityAction(item)}
                             </button>
                           }
                         >

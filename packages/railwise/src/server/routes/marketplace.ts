@@ -30,7 +30,7 @@ export function MarketplaceRoutes() {
           ...errors(400),
         },
       }),
-      (c) => c.json({ data: Marketplace.list() }),
+      async (c) => c.json({ data: await Marketplace.list() }),
     )
     .get(
       "/capabilities/:id",
@@ -51,20 +51,20 @@ export function MarketplaceRoutes() {
         },
       }),
       validator("param", z.object({ id: z.string() })),
-      (c) => {
-        const item = Marketplace.get(c.req.valid("param").id)
+      async (c) => {
+        const item = await Marketplace.get(c.req.valid("param").id)
         if (item) return c.json(item)
         return c.json({ name: "CapabilityNotFound", message: "Capability not found", data: { id: c.req.valid("param").id } }, { status: 404 })
       },
     )
-    .post("/capabilities/:id/enable", validator("param", z.object({ id: z.string() })), (c) => {
-      const item = Marketplace.get(c.req.valid("param").id)
-      if (item) return c.json({ ...item, enabled: true })
+    .post("/capabilities/:id/enable", validator("param", z.object({ id: z.string() })), async (c) => {
+      const item = await Marketplace.enable(c.req.valid("param").id)
+      if (item) return c.json(item)
       return c.json({ name: "CapabilityNotFound", message: "Capability not found", data: { id: c.req.valid("param").id } }, { status: 404 })
     })
-    .post("/capabilities/:id/disable", validator("param", z.object({ id: z.string() })), (c) => {
-      const item = Marketplace.get(c.req.valid("param").id)
-      if (item) return c.json({ ...item, enabled: false })
+    .post("/capabilities/:id/disable", validator("param", z.object({ id: z.string() })), async (c) => {
+      const item = await Marketplace.disable(c.req.valid("param").id)
+      if (item) return c.json(item)
       return c.json({ name: "CapabilityNotFound", message: "Capability not found", data: { id: c.req.valid("param").id } }, { status: 404 })
     })
 }

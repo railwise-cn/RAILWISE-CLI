@@ -24,7 +24,7 @@ export function HarnessRoutes() {
           ...errors(400),
         },
       }),
-      (c) => c.json(Harness.status()),
+      async (c) => c.json(await Harness.status()),
     )
     .get(
       "/session/:sessionID/timeline",

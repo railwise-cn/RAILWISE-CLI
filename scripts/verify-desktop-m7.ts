@@ -257,14 +257,29 @@ check(
 check(
   "backend harness marketplace contract",
   has(harnessSchema, ["HarnessStatus", "HarnessEventType", "tool.started", "permission.resolved"]) &&
-    has(harnessService, ["export namespace Harness", "Marketplace.list().filter", "resolvePermission"]) &&
+    has(harnessService, ["export namespace Harness", "await Marketplace.list()", "resolvePermission"]) &&
     has(marketplaceSchema, ["CapabilityManifest", "harness_profile", "CapabilityPermission"]) &&
-    has(marketplaceService, ["export namespace Marketplace", "CapabilityManifest.parse", "CapabilityGroup.parse"]) &&
+    has(marketplaceService, [
+      "export namespace Marketplace",
+      "Storage.read",
+      "Storage.write",
+      "CapabilityManifest.parse",
+      "CapabilityGroup.parse",
+      "export async function enable",
+      "export async function disable",
+    ]) &&
     has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe"]) &&
     has(harnessRoute, ["/status", "/session/:sessionID/timeline", "/session/:sessionID/permission/:permissionID"]) &&
-    has(marketplaceRoute, ["/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&
+    has(marketplaceRoute, ["await Marketplace.list()", "Marketplace.enable", "Marketplace.disable", "/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&
     has(server, ['.route("/harness", HarnessRoutes())', '.route("/marketplace", MarketplaceRoutes())']) &&
-    has(sdk, ["get harness()", "get marketplace()", 'url: "/harness/status"', 'url: "/marketplace/capabilities"']) &&
+    has(sdk, [
+      "get harness()",
+      "get marketplace()",
+      "postMarketplaceCapabilitiesIdEnable",
+      "postMarketplaceCapabilitiesIdDisable",
+      'url: "/harness/status"',
+      'url: "/marketplace/capabilities"',
+    ]) &&
     has(sdkTypes, ["export type HarnessStatus", "export type CapabilityManifest"]),
   "backend exposes Harness runtime and Marketplace capability contracts through server routes and SDK",
 )

@@ -1,13 +1,39 @@
 import { builtins as builtin } from "./builtin"
 import { CapabilityGroup, CapabilityManifest, type CapabilityKind } from "./schema"
+import { Storage } from "../storage/storage"
 
 export namespace Marketplace {
-  export function list() {
-    return builtin.map((item) => CapabilityManifest.parse(item))
+  type Override = {
+    enabled?: boolean
+    installed?: boolean
+    updated_at?: number
+  }
+
+  const key = ["marketplace", "capabilities"]
+
+  async function state() {
+    return Storage.read<Record<string, Override>>(key).catch((): Record<string, Override> => ({}))
+  }
+
+  async function save(next: Record<string, Override>) {
+    await Storage.write(key, next)
+  }
+
+  function apply(item: CapabilityManifest, override?: Override) {
+    return CapabilityManifest.parse({
+      ...item,
+      enabled: override?.enabled ?? item.enabled,
+      installed: override?.installed ?? item.installed,
+    })
+  }
+
+  export async function list() {
+    const current = await state()
+    return builtin.map((item) => apply(item, current[item.id]))
   }
 
   export function builtins() {
-    return list().filter((item) => item.source === "builtin")
+    return builtin.map((item) => CapabilityManifest.parse(item)).filter((item) => item.source === "builtin")
   }
 
   export function groups(list: CapabilityManifest[]) {
@@ -21,7 +47,35 @@ export namespace Marketplace {
       .map((group) => CapabilityGroup.parse(group))
   }
 
-  export function get(id: string) {
-    return list().find((item) => item.id === id)
+  export async function get(id: string) {
+    return (await list()).find((item) => item.id === id)
+  }
+
+  export async function enable(id: string) {
+    const item = builtin.find((item) => item.id === id)
+    if (!item) return
+    const current = await state()
+    current[id] = {
+      ...current[id],
+      enabled: true,
+      installed: true,
+      updated_at: Date.now(),
+    }
+    await save(current)
+    return apply(item, current[id])
+  }
+
+  export async function disable(id: string) {
+    const item = builtin.find((item) => item.id === id)
+    if (!item) return
+    const current = await state()
+    current[id] = {
+      ...current[id],
+      enabled: false,
+      installed: true,
+      updated_at: Date.now(),
+    }
+    await save(current)
+    return apply(item, current[id])
   }
 }

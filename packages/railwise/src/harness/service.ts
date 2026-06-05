@@ -2,13 +2,13 @@ import { Marketplace } from "../marketplace"
 import { HarnessEvent, HarnessPermissionDecision, HarnessPermissionResult, HarnessStatus } from "./schema"
 
 export namespace Harness {
-  export function status(input: Partial<HarnessStatus> = {}) {
+  export async function status(input: Partial<HarnessStatus> = {}) {
     return HarnessStatus.parse({
       mode: input.mode ?? "safe",
       workspace: input.workspace,
       model: input.model,
       activeAgent: input.activeAgent,
-      capabilityCount: input.capabilityCount ?? Marketplace.list().filter((item) => item.enabled).length,
+      capabilityCount: input.capabilityCount ?? (await Marketplace.list()).filter((item) => item.enabled).length,
       pendingPermissionCount: input.pendingPermissionCount ?? 0,
       runningToolCount: input.runningToolCount ?? 0,
     })

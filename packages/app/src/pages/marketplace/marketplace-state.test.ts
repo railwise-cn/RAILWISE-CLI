@@ -3,6 +3,7 @@ import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 import {
   capabilitiesFor,
   capabilityCount,
+  normalizeCapability,
   capabilityPreview,
   normalizeCapabilities,
   permissionSummary,
@@ -77,5 +78,8 @@ describe("marketplace capability state", () => {
     expect(normalizeCapabilities({ data: list })).toHaveLength(2)
     expect(normalizeCapabilities({ data: { data: list } })).toHaveLength(2)
     expect(normalizeCapabilities({ data: null })).toEqual([])
+    expect(normalizeCapability(list[0])?.id).toBe("railwise.agent.chief_manager")
+    expect(normalizeCapability({ data: list[1] })?.id).toBe("railwise.provider.deepseek")
+    expect(normalizeCapability({ data: { data: list[1] } })?.id).toBe("railwise.provider.deepseek")
   })
 })

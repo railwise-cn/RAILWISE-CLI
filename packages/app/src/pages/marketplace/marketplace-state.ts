@@ -36,6 +36,14 @@ export function normalizeCapabilities(value: unknown): CapabilityManifest[] {
   return []
 }
 
+export function normalizeCapability(value: unknown): CapabilityManifest | undefined {
+  if (!value || typeof value !== "object") return
+  if ("kind" in value && "id" in value) return value as CapabilityManifest
+  const body = data(value)
+  if (body && typeof body === "object" && "kind" in body && "id" in body) return body as CapabilityManifest
+  return normalizeCapability(body)
+}
+
 export function capabilityCount(list: CapabilityManifest[], id: MarketplaceId) {
   return capabilitiesFor(list, id).length
 }

@@ -524,6 +524,8 @@ export const test = base.extend<Fixtures>({
 export { expect }
 
 async function setup(page: Page, opts: LaunchOptions) {
+  let market = capabilities.map((item) => ({ ...item }))
+
   if (process.env.RW_E2E_DEBUG === "1") {
     page.on("console", (msg) => console.log(`[browser:${msg.type()}] ${msg.text()}`))
     page.on("pageerror", (err) => console.log(`[browser:pageerror] ${err.stack ?? err.message}`))
@@ -590,7 +592,18 @@ async function setup(page: Page, opts: LaunchOptions) {
   await page.route(`${server}/session/queue-e2e`, (route) => json(route, queueSession))
   await page.route(`${server}/session/queue-e2e/message**`, (route) => json(route, queueMessages))
   await page.route(`${server}/session/queue-e2e/todo`, (route) => json(route, queueTodos))
-  await page.route(`${server}/marketplace/capabilities`, (route) => json(route, { data: capabilities }))
+  await page.route(`${server}/marketplace/capabilities`, (route) => json(route, { data: market }))
+  await page.route(`${server}/marketplace/capabilities/**`, (route) => {
+    const url = new URL(route.request().url())
+    const parts = url.pathname.split("/")
+    const id = decodeURIComponent(parts.at(-2) ?? "")
+    const action = parts.at(-1)
+    const item = market.find((capability) => capability.id === id)
+    if (!item) return json(route, { name: "CapabilityNotFound", message: "Capability not found", data: { id } }, 404)
+    const next = { ...item, enabled: action === "enable", installed: true }
+    market = market.map((capability) => (capability.id === id ? next : capability))
+    return json(route, next)
+  })
   await page.route(`${server}/agent-studio/workflow/run`, (route) => json(route, { sessionId: "workflow-e2e" }))
   await page.route(`${server}/agent-studio/workflow/presets`, (route) => json(route, [workflow]))
   await page.route(`${server}/agent-studio/list`, (route) => json(route, agents))
@@ -767,8 +780,9 @@ async function setup(page: Page, opts: LaunchOptions) {
   )
 }
 
-function json(route: Route, body: unknown) {
+function json(route: Route, body: unknown, status = 200) {
   return route.fulfill({
+    status,
     contentType: "application/json",
     body: JSON.stringify(body),
   })

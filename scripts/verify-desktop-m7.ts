@@ -93,6 +93,7 @@ const messageTimeline = await read("packages/app/src/pages/session/message-timel
 const sessionSidePanel = await read("packages/app/src/pages/session/session-side-panel.tsx")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
 const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
+const sessionPrompt = await read("packages/railwise/src/session/prompt.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
 const config = await read("packages/desktop/playwright.config.ts")
 const acceptance = await read("scripts/verify-desktop-acceptance.ts")
@@ -357,6 +358,14 @@ check(
       "DocxReportFormatterTool",
       "PptxBriefBuilderTool",
       "PdfFormCheckerTool",
+    ]) &&
+    has(sessionPrompt, [
+      "<railwise_routing>",
+      "routingHint",
+      "builtins",
+      "Skill.all",
+      "推荐工具",
+      "推荐 Skill",
     ]) &&
     has(harnessRoute, ["/status", "/session/:sessionID/timeline", "/session/:sessionID/permission/:permissionID"]) &&
     has(marketplaceRoute, ["await Marketplace.list()", "Marketplace.enable", "Marketplace.disable", "/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&

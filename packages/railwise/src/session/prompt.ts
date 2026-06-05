@@ -28,6 +28,8 @@ import { ToolRegistry } from "../tool/registry"
 import { MCP } from "../mcp"
 import { LSP } from "../lsp"
 import { ReadTool } from "../tool/read"
+import { builtins } from "../marketplace/builtin"
+import { Skill } from "../skill"
 import { FileTime } from "../file/time"
 import { Flag } from "../flag/flag"
 import { ulid } from "ulid"
@@ -1291,6 +1293,18 @@ export namespace SessionPrompt {
       }),
     ).then((x) => x.flat().map(assign))
 
+    const routing = await routingHint(parts)
+    if (routing) {
+      parts.push({
+        id: Identifier.ascending("part"),
+        messageID: info.id,
+        sessionID: input.sessionID,
+        type: "text",
+        synthetic: true,
+        text: routing,
+      })
+    }
+
     await Plugin.trigger(
       "chat.message",
       {
@@ -1315,6 +1329,92 @@ export namespace SessionPrompt {
       info,
       parts,
     }
+  }
+
+  function score(text: string, values: string[]) {
+    const query = text.toLowerCase()
+    return values
+      .flatMap((value) =>
+        [
+          value,
+          ...value.split(/[^\p{L}\p{N}_-]+/u),
+          ...Array.from(value.matchAll(/[\u4e00-\u9fff]{2,}/g)).flatMap((match) =>
+            Array.from(match[0]).flatMap((_, index, list) => {
+              const pair = list.slice(index, index + 2).join("")
+              const triple = list.slice(index, index + 3).join("")
+              return [pair, triple]
+            }),
+          ),
+        ]
+          .map((item) => item.trim().toLowerCase())
+          .filter((item) => item.length >= 2),
+      )
+      .filter((item, index, list) => list.indexOf(item) === index)
+      .filter((item) => query.includes(item))
+      .length
+  }
+
+  async function routingHint(parts: MessageV2.Part[]) {
+    const text = parts
+      .flatMap((part) => {
+        if (part.type === "text" && !part.synthetic && !part.ignored) return [part.text]
+        if (part.type === "file") return [part.filename ?? "", part.source?.type === "file" ? part.source.path : ""]
+        if (part.type === "agent") return [part.name]
+        return []
+      })
+      .join("\n")
+      .trim()
+    if (!text) return undefined
+
+    const explicit = new Set(
+      Array.from(text.matchAll(/\btool:\s*([a-zA-Z0-9_.:-]+)/g)).map((match) =>
+        match[1].replace(/^railwise\.tool\./, "").replace(/[.,;:]+$/, ""),
+      ),
+    )
+    const tools = builtins
+      .filter((item) => item.kind === "tool")
+      .map((item) => {
+        const id = item.id.replace(/^railwise\.tool\./, "")
+        return {
+          item,
+          id,
+          score: explicit.has(id) ? 1000 : score(text, [id, item.id, item.name, item.description, ...item.tags]),
+        }
+      })
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
+      .slice(0, 5)
+
+    const skills = (await Skill.all().catch((): Skill.Info[] => []))
+      .map((item) => ({
+        item,
+        score: score(text, [item.name, item.description]),
+      }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
+      .slice(0, 5)
+
+    if (tools.length === 0 && skills.length === 0) return undefined
+
+    return [
+      "<railwise_routing>",
+      "本轮任务的能力路由建议如下。若匹配任务，请优先调用对应工具或加载 Skill，不要只在文字中提到它们。",
+      ...(tools.length
+        ? [
+            "",
+            "推荐工具：",
+            ...tools.map((tool) => `- ${tool.id}: ${tool.item.name} - ${tool.item.description}`),
+          ]
+        : []),
+      ...(skills.length
+        ? [
+            "",
+            "推荐 Skill：",
+            ...skills.map((skill) => `- call tool \"skill\" with name=\"${skill.item.name}\": ${skill.item.description}`),
+          ]
+        : []),
+      "</railwise_routing>",
+    ].join("\n")
   }
 
   async function insertReminders(input: { messages: MessageV2.WithParts[]; agent: Agent.Info; session: Session.Info }) {

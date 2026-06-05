@@ -6,13 +6,18 @@ type AgentLike = {
 const builtins: Record<string, string> = {
   chief_manager: "RAILWISE",
   qa_inspector: "数据质检",
+  qa_reviewer: "质量审查",
   cpiii_specialist: "CPIII 专家",
+  data_analyst: "数据分析",
   adjustment_computer: "平差计算",
   norm_librarian: "规范检索",
   knowledge_curator: "知识整理",
   source_ingestor: "资料导入",
+  technical_writer: "报告编制",
   writer: "报告编制",
   ppt_master: "汇报生成",
+  solution_architect: "方案架构",
+  commercial_specialist: "投标商务",
 }
 
 const descriptions: Record<string, string> = {

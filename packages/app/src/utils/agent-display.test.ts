@@ -5,6 +5,10 @@ describe("agentDisplayName", () => {
   test("uses product-facing names for builtin agents", () => {
     expect(agentDisplayName("chief_manager")).toBe("RAILWISE")
     expect(agentDisplayName("qa_inspector")).toBe("数据质检")
+    expect(agentDisplayName("qa_reviewer")).toBe("质量审查")
+    expect(agentDisplayName("technical_writer")).toBe("报告编制")
+    expect(agentDisplayName("solution_architect")).toBe("方案架构")
+    expect(agentDisplayName("commercial_specialist")).toBe("投标商务")
     expect(agentDisplayName("ppt_master")).toBe("汇报生成")
   })
 

@@ -84,7 +84,10 @@ const marketplace = await read("packages/app/src/pages/marketplace/index.tsx")
 const marketplaceState = await read("packages/app/src/pages/marketplace/marketplace-state.ts")
 const marketplaceStateTest = await read("packages/app/src/pages/marketplace/marketplace-state.test.ts")
 const agentsPage = await read("packages/app/src/pages/agents/index.tsx")
+const agentDetail = await read("packages/app/src/pages/agents/[name].tsx")
 const agentCollaborationTest = await read("packages/app/src/pages/agents/collaboration.test.ts")
+const agentDisplay = await read("packages/app/src/utils/agent-display.ts")
+const agentDisplayTest = await read("packages/app/src/utils/agent-display.test.ts")
 const sessionComposer = await read("packages/app/src/pages/session/composer/session-composer-region.tsx")
 const sessionCollaboration = await read("packages/app/src/pages/session/composer/collaboration.ts")
 const promptInput = await read("packages/app/src/components/prompt-input.tsx")
@@ -212,6 +215,12 @@ check(
     agentsPage.includes("模型接入与智能体路由") &&
     agentsPage.includes("<h2>智能体</h2>") &&
     agentsPage.includes("#agent-library") &&
+    agentDetail.includes('data-testid="agent-capability-routing"') &&
+    agentDetail.includes("可调用能力") &&
+    agentDetail.includes("capabilitiesForAgent") &&
+    agentDisplay.includes('qa_reviewer: "质量审查"') &&
+    agentDisplay.includes('technical_writer: "报告编制"') &&
+    agentDisplayTest.includes('agentDisplayName("solution_architect")') &&
     !agentsPage.includes("RAILWISE 高级智能体管理") &&
     !agentsPage.includes("上下文文件夹") &&
     !agentsPage.includes("RAILWISE 能力市场") &&
@@ -247,12 +256,14 @@ check(
       "规范资料管理员",
       "质量审查专家",
       "规范引用复核",
+      "agent-capability-routing",
       "网络 / 密钥",
       "执行层",
       "技能",
     ]) &&
-    has(marketplaceState, ["capabilityBindings", "规范资料管理员", "规范引用复核", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
-    has(marketplaceStateTest, ["maps professional skills", "规范资料管理员", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
+    has(visual, ["agent-capability-routing", "可调用能力", "规范条文速查"]) &&
+    has(marketplaceState, ["capabilitiesForAgent", "agentCapabilityLabels", "规范资料管理员", "规范引用复核", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
+    has(marketplaceStateTest, ["maps agents back to callable capabilities", "规范资料管理员", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),

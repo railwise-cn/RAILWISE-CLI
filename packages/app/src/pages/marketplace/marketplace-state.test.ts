@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test"
 import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 import {
+  agentCapabilityLabels,
   capabilityBindings,
   capabilitiesFor,
+  capabilitiesForAgent,
   capabilityCount,
   normalizeCapability,
   capabilityPreview,
@@ -97,6 +99,12 @@ describe("marketplace capability state", () => {
       agents: ["规范资料管理员", "质量审查专家", "CPIII 测量专家"],
       workflows: ["规范引用复核"],
     })
+  })
+
+  test("maps agents back to callable capabilities", () => {
+    expect(agentCapabilityLabels({ name: "qa_reviewer" })).toContain("质量审查专家")
+    expect(capabilitiesForAgent(list, { name: "qa_reviewer" }).map((item) => item.name)).toEqual(["规范条文速查"])
+    expect(capabilitiesForAgent(list, { name: "chief_manager" }).map((item) => item.name)).toEqual(["规范条文速查"])
   })
 
   test("normalizes server and sdk capability response shapes", () => {

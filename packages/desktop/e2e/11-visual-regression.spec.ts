@@ -137,6 +137,8 @@ test("智能体详情不再使用后台编辑语言", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=agent-detail-shell]")).toContainText("智能体配置")
   await expect(page.getByRole("heading", { name: "能力定义" })).toBeVisible()
   await expect(page.getByRole("heading", { name: "预览" })).toBeVisible()
+  await expect(page.locator("[data-testid=agent-capability-routing]")).toContainText("可调用能力")
+  await expect(page.locator("[data-testid=agent-capability-routing]")).toContainText("规范条文速查")
   await expect(page.getByText("Markdown 配置")).toHaveCount(0)
   await expect(page.getByText("高级管理")).toHaveCount(0)
   await expect(page.getByText("高级")).toHaveCount(0)

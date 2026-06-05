@@ -131,6 +131,83 @@ export function capabilityBindings(item: CapabilityManifest) {
   return { agents: [], workflows: [] }
 }
 
+type AgentBindingInput = {
+  name: string
+  displayName?: string
+}
+
+const agentLabels: Record<string, string[]> = {
+  chief_manager: ["RAILWISE", "RAILWISE 协作"],
+  cpiii_specialist: ["CPIII 测量专家", "CPIII 专家"],
+  data_analyst: ["数据分析工程师", "数据分析"],
+  qa_inspector: ["外业数据首检员", "数据质检"],
+  qa_reviewer: ["质量审查专家", "质量审查"],
+  norm_librarian: ["规范资料管理员", "规范检索"],
+  technical_writer: ["报告编制员", "报告编制"],
+  writer: ["报告编制员", "报告编制"],
+  solution_architect: ["方案架构师", "方案架构"],
+  commercial_specialist: ["商务及招投标专家", "投标商务"],
+  knowledge_curator: ["知识库整理员", "知识整理"],
+  source_ingestor: ["资料入库专员", "资料导入"],
+  adjustment_computer: ["严密平差计算专家", "平差计算"],
+  ppt_master: ["报告编制员", "汇报生成"],
+}
+
+const routedKinds = new Set<CapabilityManifest["kind"]>(["tool", "skill", "workflow"])
+const skillOrder = [
+  "rail-monitoring-plan",
+  "monitoring-design",
+  "operational-monitoring",
+  "data-analysis",
+  "standard-reference",
+  "report-writing",
+  "excel-operations",
+  "docx-generation",
+  "docx",
+  "pptx",
+  "pdf",
+  "xlsx",
+  "bidding-knowledge",
+  "frontend-design",
+  "canvas-design",
+  "humanizer",
+]
+const kindOrder: Record<CapabilityManifest["kind"], number> = {
+  skill: 0,
+  tool: 1,
+  workflow: 2,
+  agent: 3,
+  mcp: 4,
+  provider: 5,
+  harness_profile: 6,
+}
+
+export function agentCapabilityLabels(agent?: AgentBindingInput | null) {
+  if (!agent) return []
+  return Array.from(new Set([...(agentLabels[agent.name] ?? []), agent.displayName?.trim(), agent.name.replaceAll("_", " ")]).values()).filter(
+    (item): item is string => Boolean(item),
+  )
+}
+
+function capabilityRank(item: CapabilityManifest) {
+  if (item.kind !== "skill") return kindOrder[item.kind] * 1000
+  const id = item.id.replace("railwise.skill.", "")
+  const index = skillOrder.indexOf(id)
+  return index >= 0 ? index : skillOrder.length + 100
+}
+
+export function capabilitiesForAgent(list: CapabilityManifest[], agent?: AgentBindingInput | null) {
+  if (!agent) return []
+  const labels = new Set(agentCapabilityLabels(agent))
+  return list
+    .filter((item) => item.enabled && item.installed && routedKinds.has(item.kind))
+    .filter((item) => {
+      if (agent.name === "chief_manager") return capabilityBindings(item).agents.length > 0
+      return capabilityBindings(item).agents.some((label) => labels.has(label))
+    })
+    .sort((a, b) => capabilityRank(a) - capabilityRank(b) || a.name.localeCompare(b.name, "zh-Hans-CN"))
+}
+
 export function permissionSummary(permission: CapabilityPermission) {
   const items = [
     permission.filesystem === "read" ? "文件读取" : undefined,

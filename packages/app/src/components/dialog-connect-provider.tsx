@@ -20,7 +20,7 @@ import { usePlatform } from "@/context/platform"
 import { DialogSelectModel } from "./dialog-select-model"
 import { DialogSelectProvider } from "./dialog-select-provider"
 
-export function DialogConnectProvider(props: { provider: string }) {
+export function DialogConnectProvider(props: { provider: string; onComplete?: () => void | Promise<void> }) {
   const dialog = useDialog()
   const globalSync = useGlobalSync()
   const globalSDK = useGlobalSDK()
@@ -188,6 +188,7 @@ export function DialogConnectProvider(props: { provider: string }) {
       title: language.t("provider.connect.toast.connected.title", { provider: provider().name }),
       description: language.t("provider.connect.toast.connected.description", { provider: provider().name }),
     })
+    await props.onComplete?.()
   }
 
   function goBack() {

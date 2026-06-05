@@ -72,8 +72,8 @@ export const SettingsAgents: Component = () => {
             <h2 class="text-16-medium text-text-strong">{language.t("settings.agents.title")}</h2>
             <p class="text-14-regular text-text-weak">
               {text(
-                "按能力包查看 RAILWISE 默认协作、专业智能体和自定义智能体；模型与权限在智能体工作台中配置。",
-                "Review the RAILWISE default collaboration, specialist, and custom agents; configure models and permissions in Agent Studio.",
+                "按能力包查看 RAILWISE 默认协作、专业智能体和自定义智能体；模型与权限在能力配置中管理。",
+                "Review the RAILWISE default collaboration, specialist, and custom agents; configure models and permissions in capability settings.",
               )}
             </p>
           </div>
@@ -82,7 +82,7 @@ export const SettingsAgents: Component = () => {
               {loading() ? text("刷新中", "Refreshing") : text("刷新", "Refresh")}
             </Button>
             <Button size="large" variant="primary" icon="brain" onClick={() => open("/agents")}>
-              {text("打开智能体工作台", "Open Agent Studio")}
+              {text("打开能力配置", "Open capability settings")}
             </Button>
           </div>
         </div>

@@ -49,6 +49,8 @@ const HomeRoute = () => (
   </Suspense>
 )
 
+const DashboardRedirect = () => <Navigate href="/home" />
+
 const SessionRoute = () => (
   <SessionProviders>
     <Suspense fallback={<Loading />}>
@@ -214,8 +216,8 @@ export function AppInterface(props: {
               <Route path="/agents/:name" component={AgentDetailRoute} />
               <Route path="/marketplace" component={MarketplaceRoute} />
               <Route path="/harness" component={HarnessRoute} />
-              <Route path="/dashboard" component={HomeRoute} />
-              <Route path="/dashboard/*rest" component={HomeRoute} />
+              <Route path="/dashboard" component={DashboardRedirect} />
+              <Route path="/dashboard/*rest" component={DashboardRedirect} />
               {props.routes}
               {(props.workbenchRoutes ?? true) && (
                 <>

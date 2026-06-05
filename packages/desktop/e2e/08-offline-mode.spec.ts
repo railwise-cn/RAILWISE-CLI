@@ -7,7 +7,7 @@ test("离线模式：能力市场保持本地入口可用", async ({ launchApp }
   })
   await expect(page.locator("[data-testid=marketplace-page]")).toBeVisible()
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=marketplace-permissions-agents]")).toContainText("RAILWISE 默认协作")
 

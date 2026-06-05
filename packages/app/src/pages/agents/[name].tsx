@@ -28,7 +28,7 @@ const labels: Record<CapabilityManifest["kind"], string> = {
   workflow: "工作流",
   mcp: "MCP",
   provider: "模型",
-  harness_profile: "执行层",
+  harness_profile: "执行中心",
 }
 
 const icons: Record<CapabilityManifest["kind"], IconProps["name"]> = {

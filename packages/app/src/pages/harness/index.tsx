@@ -441,10 +441,10 @@ export default function HarnessPage() {
               </span>
               <span>
                 <strong>RAILWISE</strong>
-                <small>执行层</small>
+                <small>执行中心</small>
               </span>
             </A>
-            <nav class="harness-nav" aria-label="执行层导航">
+            <nav class="harness-nav" aria-label="执行中心导航">
               <A href="/home">
                 <Icon name="folder" size="small" />
                 工作台
@@ -472,7 +472,7 @@ export default function HarnessPage() {
               </A>
             </header>
             <div class="harness-hero-card">
-              <span class="agent-kicker">RAILWISE 执行层</span>
+              <span class="agent-kicker">RAILWISE 执行中心</span>
               <h1>执行中心</h1>
               <p>处理权限确认、失败恢复与会话执行状态。</p>
             </div>

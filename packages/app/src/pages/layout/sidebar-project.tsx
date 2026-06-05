@@ -32,6 +32,7 @@ export type ProjectSidebarContext = {
   workspacesEnabled: (project: LocalProject) => boolean
   workspaceIds: (project: LocalProject) => string[]
   workspaceLabel: (directory: string, branch?: string, projectId?: string) => string
+  projects: Accessor<LocalProject[]>
   sessionProps: Omit<SessionItemProps, "session" | "slug" | "children" | "mobile" | "dense" | "popover">
   setHoverSession: (id: string | undefined) => void
 }
@@ -72,8 +73,10 @@ const ProjectTile = (props: {
   setMenu: (value: boolean) => void
   setOpen: (value: boolean) => void
   language: ReturnType<typeof useLanguage>
+  projects: Accessor<LocalProject[]>
 }): JSX.Element => {
   const notification = useNotification()
+  const name = createMemo(() => displayName(props.project, props.projects()))
   const unseenCount = createMemo(() =>
     props.dirs().reduce((total, directory) => total + notification.project.unseenCount(directory), 0),
   )
@@ -95,7 +98,7 @@ const ProjectTile = (props: {
       <ContextMenu.Trigger
         as="button"
         type="button"
-        aria-label={displayName(props.project)}
+        aria-label={name()}
         data-action="project-switch"
         data-project={base64Encode(props.project.worktree)}
         classList={{
@@ -163,6 +166,7 @@ const ProjectTile = (props: {
 
 const ProjectPreviewPanel = (props: {
   project: LocalProject
+  projects: Accessor<LocalProject[]>
   mobile?: boolean
   selected: Accessor<boolean>
   workspaceEnabled: Accessor<boolean>
@@ -178,7 +182,7 @@ const ProjectPreviewPanel = (props: {
 }): JSX.Element => (
   <div class="-m-3 p-2 flex flex-col w-72">
     <div class="px-4 pt-2 pb-1 flex items-center gap-2">
-      <div class="text-14-medium text-text-strong truncate grow">{displayName(props.project)}</div>
+      <div class="text-14-medium text-text-strong truncate grow">{displayName(props.project, props.projects())}</div>
       <Tooltip value={props.language.t("common.close")} placement="top" gutter={6}>
         <IconButton
           icon="circle-x"
@@ -338,6 +342,7 @@ export const SortableProject = (props: {
       setMenu={setMenu}
       setOpen={setOpen}
       language={language}
+      projects={props.ctx.projects}
     />
   )
 
@@ -360,6 +365,7 @@ export const SortableProject = (props: {
         >
           <ProjectPreviewPanel
             project={props.project}
+            projects={props.ctx.projects}
             mobile={props.mobile}
             selected={selected}
             workspaceEnabled={workspaceEnabled}

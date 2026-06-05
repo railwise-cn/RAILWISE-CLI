@@ -4,6 +4,7 @@ import { IconButton } from "@railwise/ui/icon-button"
 import { Tooltip } from "@railwise/ui/tooltip"
 import { getDirectory, getFilename, getFilenameTruncated } from "@railwise/util/path"
 import type { ContextItem } from "@/context/prompt"
+import { contextItemOpenLabel, shouldOpenContextItemKey } from "./context-item-helpers"
 
 type PromptContextItem = ContextItem & { key: string }
 
@@ -25,6 +26,8 @@ export const PromptContextItems: Component<ContextItemsProps> = (props) => {
             const filename = getFilename(item.path)
             const label = getFilenameTruncated(item.path, 14)
             const selected = props.active(item)
+            const open = () => props.openComment(item)
+            const openLabel = () => contextItemOpenLabel(props.t("command.file.open"), filename)
 
             return (
               <Tooltip
@@ -41,13 +44,22 @@ export const PromptContextItems: Component<ContextItemsProps> = (props) => {
               >
                 <div
                   data-testid="prompt-context-item"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={openLabel()}
+                  title={openLabel()}
                   classList={{
-                    "group shrink-0 flex flex-col rounded-[6px] pl-2 pr-1 py-1 max-w-[200px] h-12 cursor-default transition-all transition-transform shadow-xs-border hover:shadow-xs-border-hover": true,
-                    "hover:bg-surface-interactive-weak": !!item.commentID && !selected,
+                    "group shrink-0 flex flex-col rounded-[6px] pl-2 pr-1 py-1 max-w-[200px] h-12 cursor-pointer transition-all transition-transform shadow-xs-border hover:shadow-xs-border-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-active": true,
+                    "hover:bg-surface-interactive-weak": !selected,
                     "bg-surface-interactive-hover hover:bg-surface-interactive-hover shadow-xs-border-hover": selected,
                     "bg-background-stronger": !selected,
                   }}
-                  onClick={() => props.openComment(item)}
+                  onClick={open}
+                  onKeyDown={(event) => {
+                    if (!shouldOpenContextItemKey(event.key)) return
+                    event.preventDefault()
+                    open()
+                  }}
                 >
                   <div class="flex items-center gap-1.5">
                     <FileIcon node={{ path: item.path, type: "file" }} class="shrink-0 size-3.5" />

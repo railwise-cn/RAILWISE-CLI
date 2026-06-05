@@ -16,6 +16,7 @@ import { useComments } from "@/context/comments"
 import { useLanguage } from "@/context/language"
 import { usePrompt } from "@/context/prompt"
 import { getSessionHandoff } from "@/pages/session/handoff"
+import { createReferenceSessionFile, focusSessionPromptDock } from "@/pages/session/helpers"
 
 const formatCommentLabel = (range: SelectedLineRange) => {
   const start = Math.min(range.start, range.end)
@@ -105,23 +106,14 @@ export function FileTabContent(props: { tab: string }) {
   })
   const canReferenceFile = createMemo(() => !!path() && state()?.loaded && !isBinary() && !isImage())
 
-  const focusPromptDock = () => {
-    const dock = document.querySelector('[data-component="session-prompt-dock"]')
-    if (!(dock instanceof HTMLElement)) return
-    dock.scrollIntoView({ block: "center", behavior: "smooth" })
-    requestAnimationFrame(() => {
-      const target = dock.querySelector(
-        'button:not([disabled]), textarea:not([disabled]), [contenteditable="true"]',
-      )
-      if (target instanceof HTMLElement) target.focus()
-    })
-  }
-
+  const referenceSessionFile = createReferenceSessionFile({
+    addFileContext: (path) => prompt.context.add({ type: "file", path }),
+    focusPromptDock: focusSessionPromptDock,
+  })
   const referenceFile = () => {
     const p = path()
     if (!p) return
-    prompt.context.add({ type: "file", path: p })
-    focusPromptDock()
+    referenceSessionFile(p)
   }
 
   const selectionPreview = (source: string, selection: FileSelection) => {
@@ -532,7 +524,7 @@ export function FileTabContent(props: { tab: string }) {
   return (
     <Tabs.Content
       value={props.tab}
-      class="mt-3 relative"
+      class="relative mt-3 min-w-0 overflow-x-hidden contain-strict"
       ref={(el: HTMLDivElement) => {
         scroll = el
         restoreScroll()
@@ -540,14 +532,14 @@ export function FileTabContent(props: { tab: string }) {
       onScroll={handleScroll}
     >
       <Show when={canReferenceFile()}>
-        <div class="sticky top-3 z-20 flex justify-end px-4 pointer-events-none">
+        <div class="mb-2 flex min-w-0 justify-end px-4">
           <Button
             type="button"
             data-testid="session-file-reference"
             variant="secondary"
             size="small"
             icon="link"
-            class="pointer-events-auto shadow-xs-border bg-background-stronger"
+            class="shadow-xs-border bg-background-stronger"
             onClick={referenceFile}
           >
             {language.t("prompt.context.includeActiveFile")}

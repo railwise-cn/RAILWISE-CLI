@@ -172,8 +172,26 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     return diffs.some((diff) => diff.file === path)
   }
 
-  const openComment = (item: { path: string; commentID?: string; commentOrigin?: "review" | "file" }) => {
-    if (!item.commentID) return
+  const openContextFile = (item: { path: string; selection?: { startLine: number; endLine: number } }) => {
+    if (!view().reviewPanel.opened()) view().reviewPanel.open()
+    layout.fileTree.setTab("all")
+    const tab = files.tab(item.path)
+    tabs().open(tab)
+    tabs().setActive(tab)
+    if (item.selection) files.setSelectedLines(item.path, { start: item.selection.startLine, end: item.selection.endLine })
+    files.load(item.path)
+  }
+
+  const openComment = (item: {
+    path: string
+    selection?: { startLine: number; endLine: number }
+    commentID?: string
+    commentOrigin?: "review" | "file"
+  }) => {
+    if (!item.commentID) {
+      openContextFile(item)
+      return
+    }
 
     const focus = { file: item.path, id: item.commentID }
     comments.setActive(focus)
@@ -187,11 +205,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       return
     }
 
-    if (!view().reviewPanel.opened()) view().reviewPanel.open()
-    layout.fileTree.setTab("all")
-    const tab = files.tab(item.path)
-    tabs().open(tab)
-    files.load(item.path)
+    openContextFile(item)
     requestAnimationFrame(() => comments.setFocus(focus))
   }
 

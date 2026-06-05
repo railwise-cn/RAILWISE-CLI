@@ -84,6 +84,19 @@ describe("layout workspace helpers", () => {
     expect(displayName({ worktree: "/tmp/app", name: "My App" })).toBe("My App")
   })
 
+  test("disambiguates duplicate project folder names with parent folder", () => {
+    const projects = [
+      { worktree: "/Users/me/CODE/app" },
+      { worktree: "/Users/me/Archive/app" },
+      { worktree: "/Users/me/CODE/other" },
+    ]
+
+    expect(displayName(projects[0], projects)).toBe("app (CODE)")
+    expect(displayName(projects[1], projects)).toBe("app (Archive)")
+    expect(displayName(projects[2], projects)).toBe("other")
+    expect(displayName({ worktree: "/Users/me/CODE/app", name: "Client Demo" }, projects)).toBe("Client Demo")
+  })
+
   test("extracts api error message and fallback", () => {
     expect(errorMessage({ data: { message: "boom" } }, "fallback")).toBe("boom")
     expect(errorMessage(new Error("broken"), "fallback")).toBe("broken")

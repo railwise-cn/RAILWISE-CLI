@@ -17,6 +17,7 @@ import { useAgentUpdates } from "@/hooks/use-agent-updates"
 import { useProviders } from "@/hooks/use-providers"
 import { Icon } from "@railwise/ui/icon"
 import { setSessionHandoff } from "@/pages/session/handoff"
+import { displayName } from "@/pages/layout/helpers"
 import type { AgentStudioItem, SkillInventoryItem, ToolInventoryItem } from "@/types/agent-studio"
 import type { Workflow } from "@/types/workflow"
 import { useAgentStudioApi } from "./api"
@@ -154,7 +155,13 @@ export default function AgentsPage() {
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const routeSummary = createMemo(() => modelRoutingSummary(items()))
   const selectedProject = createMemo(() => recent().find((project) => project.worktree === directory()))
-  const selectedName = createMemo(() => projectName(directory()))
+  const nameProjects = createMemo(() => {
+    const target = directory()
+    if (!target) return recent()
+    if (recent().some((project) => project.worktree === target)) return recent()
+    return [{ worktree: target }, ...recent()]
+  })
+  const selectedName = createMemo(() => displayName(selectedProject() ?? { worktree: directory() }, nameProjects()))
   const selectedMeta = createMemo(() => {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
@@ -212,7 +219,7 @@ export default function AgentsPage() {
       label: "工具",
       title: "工具",
       status: toolStatus(),
-      description: "工具会被执行层按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
+      description: "工具会按权限调度，包括文件读取、测绘生产、规范知识和基础执行。",
       target: "#agent-tools",
       action: "查看工具",
     },
@@ -253,12 +260,12 @@ export default function AgentsPage() {
     },
     {
       id: "harness" as const,
-      label: "执行层",
-      title: "执行层配置",
+      label: "执行中心",
+      title: "执行中心",
       status: "本地安全模式",
-      description: "执行层管理模型路由、工具权限、工作区边界和高风险动作确认，是桌面端实际运行核心。",
+      description: "管理模型路由、工具权限、工作区边界和高风险动作确认。",
       target: "/harness",
-      action: "查看执行层",
+      action: "查看执行中心",
     },
   ])
   const activePackage = createMemo(() => market().find((item) => item.id === activeMarket()) ?? market()[0])
@@ -310,12 +317,6 @@ export default function AgentsPage() {
       return visible && found
     })
   })
-
-  function projectName(value: string) {
-    const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
-    const parts = clean.split("/").filter(Boolean)
-    return parts.at(-1) ?? "打开项目"
-  }
 
   const updateDirectory = (value: string) => {
     setManualDirectory(true)
@@ -445,7 +446,7 @@ export default function AgentsPage() {
             </A>
             <A href="/harness" class="agent-pill">
               <Icon name="server" size="small" />
-              执行层
+              执行中心
             </A>
             <button type="button" class="agent-pill" onClick={connectProvider}>
               <Icon name="models" size="small" />
@@ -567,11 +568,11 @@ export default function AgentsPage() {
           <section class="agent-inspector-card">
             <div class="agent-inspector-card__line">
               <Icon name="server" size="small" />
-              <span>执行层</span>
+              <span>执行中心</span>
               <i class={`agent-status-dot ${serverDotClass()}`} />
             </div>
             <strong>{serverLabel()}</strong>
-            <small>工具权限、文件边界和高风险动作由执行层接管。</small>
+            <small>工具权限、文件边界和高风险动作在这里确认。</small>
           </section>
 
           <section class="agent-inspector-card">
@@ -681,7 +682,7 @@ export default function AgentsPage() {
                     </div>
                     <div class="agent-route-row__controls">
                       <select
-                        aria-label={`设置 ${agent.name} 模型`}
+                        aria-label={`设置 ${agentDisplayName(agent)} 模型`}
                         value={routeValue(agent)}
                         disabled={routeSaving()[agent.name] || (!modelOptions().length && !routeValue(agent))}
                         onInput={(event) => void saveRoute(agent, event.currentTarget.value)}

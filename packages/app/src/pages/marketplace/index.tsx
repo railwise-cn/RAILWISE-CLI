@@ -60,7 +60,7 @@ const labels: Record<CapabilityManifest["kind"], string> = {
   workflow: "工作流",
   mcp: "MCP",
   provider: "模型",
-  harness_profile: "执行层",
+  harness_profile: "执行中心",
 }
 
 const icons: Record<CapabilityManifest["kind"], IconProps["name"]> = {
@@ -92,7 +92,7 @@ function capabilityState(item: CapabilityManifest) {
 
 function capabilityAction(item: CapabilityManifest) {
   if (item.kind === "provider") return "接入模型"
-  if (item.kind === "mcp" || item.kind === "harness_profile") return "查看执行层"
+  if (item.kind === "mcp" || item.kind === "harness_profile") return "查看执行中心"
   if (item.kind === "agent") return "打开智能体"
   if (item.kind === "tool" || item.kind === "skill" || item.kind === "workflow") return item.enabled ? "停用" : "启用"
   return "查看"
@@ -204,7 +204,7 @@ export default function MarketplacePage() {
       title: "工具",
       detail: `${toolCount()} 个工具`,
       state: state(loading(), toolCount()),
-      description: "文件读取、规范检索、测绘生产、报告导出等工具由执行层调度。",
+      description: "文件读取、规范检索、测绘生产、报告导出等工具按权限调度。",
       preview: preview(
         "tools",
         tools()
@@ -248,14 +248,14 @@ export default function MarketplacePage() {
       title: "MCP 连接器",
       detail: mcpCount() > 0 ? `${mcpCount()} 个连接器` : "按项目启用",
       state: state(loading(), capabilitiesFor(capabilities(), "mcp").filter((item) => item.enabled).length, "待配置"),
-      description: "连接知识库、专业系统和外部工具；权限和审计由执行层统一接管。",
+      description: "连接知识库、专业系统和外部工具；权限和审计由执行中心统一处理。",
       preview: preview("mcp", [
         { title: "知识库连接", meta: "按项目授权" },
-        { title: "专业系统", meta: "由执行层审计" },
+        { title: "专业系统", meta: "执行中心审计" },
         { title: "外部工具", meta: "权限确认后执行" },
       ]),
       href: "/harness",
-      action: "查看执行层",
+      action: "查看执行中心",
     },
     {
       id: marketplaceIds[5],
@@ -275,8 +275,8 @@ export default function MarketplacePage() {
     },
     {
       id: marketplaceIds[6],
-      label: "执行层",
-      title: "执行层配置",
+      label: "执行中心",
+      title: "执行中心",
       detail: "工作区 / 权限 / 审计",
       state: loading() ? { label: "同步中", tone: "loading" as Tone } : { label: "已启用", tone: "enabled" as Tone },
       description: "管理本地执行边界、权限确认、工具事件、问题回答和失败恢复。",
@@ -286,7 +286,7 @@ export default function MarketplacePage() {
         { title: "工具审计", meta: "执行时间线" },
       ]),
       href: "/harness",
-      action: "查看执行层",
+      action: "查看执行中心",
     },
   ])
   const selected = createMemo(() => catalog().find((item) => item.id === active()) ?? catalog()[0])
@@ -479,7 +479,7 @@ export default function MarketplacePage() {
                         </div>
                       </Show>
                       <footer>
-                        <span>{item.enabled ? "执行层可调度" : item.installed ? "当前已停用" : "尚未安装"}</span>
+                        <span>{item.enabled ? "可调度" : item.installed ? "当前已停用" : "尚未安装"}</span>
                         <Show
                           when={href}
                           keyed
@@ -509,7 +509,7 @@ export default function MarketplacePage() {
               <Show when={!loading() && filteredCapabilities().length === 0}>
                 <div class="marketplace-capability-empty" data-testid="marketplace-capability-empty">
                   <strong>{query().trim() ? "没有匹配的能力" : "等待发现能力"}</strong>
-                  <span>{query().trim() ? "换个关键词，或切换左侧分类。" : "执行层同步后会显示可用插件、工具和技能。"}</span>
+                  <span>{query().trim() ? "换个关键词，或切换左侧分类。" : "同步后会显示可用插件、工具和技能。"}</span>
                 </div>
               </Show>
             </div>

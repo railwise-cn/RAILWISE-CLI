@@ -1694,6 +1694,7 @@ export default function Layout(props: ParentProps) {
     workspacesEnabled: (project) => project.vcs === "git" && layout.sidebar.workspaces(project.worktree)(),
     workspaceIds,
     workspaceLabel,
+    projects: () => layout.projects.list(),
     sessionProps: {
       sidebarExpanded,
       sidebarHovering,
@@ -1711,7 +1712,7 @@ export default function Layout(props: ParentProps) {
     const projectName = createMemo(() => {
       const project = panelProps.project
       if (!project) return ""
-      return project.name || getFilename(project.worktree)
+      return displayName(project, layout.projects.list())
     })
     const projectId = createMemo(() => panelProps.project?.id ?? "")
     const workspaces = createMemo(() => workspaceIds(panelProps.project))
@@ -1770,7 +1771,7 @@ export default function Layout(props: ParentProps) {
                           <span class="flex size-8 shrink-0 items-center justify-center rounded-md border border-border-weak-base text-icon-base">
                             <Icon name="folder" size="small" />
                           </span>
-                          <span class="min-w-0 flex-1 truncate text-14-regular text-text-strong">{displayName(project)}</span>
+                          <span class="min-w-0 flex-1 truncate text-14-regular text-text-strong">{displayName(project, layout.projects.list())}</span>
                         </button>
                       )}
                     </For>
@@ -1813,7 +1814,7 @@ export default function Layout(props: ParentProps) {
                       stopPropagation
                     />
                     <span class="text-12-regular text-text-base truncate" data-testid="sidebar-project-meta">
-                      项目工作区
+                      本地项目
                     </span>
                   </div>
 

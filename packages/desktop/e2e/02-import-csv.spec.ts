@@ -9,7 +9,7 @@ test("创建项目 → 导入 CSV → 数据预览", async ({ launchApp }) => {
   })
 
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=workspace-container]")).not.toContainText("/workspace")
   await page.locator("[data-testid=workspace-file-item]").first().click()

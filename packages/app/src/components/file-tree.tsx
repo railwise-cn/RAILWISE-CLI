@@ -258,6 +258,8 @@ export default function FileTree(props: {
   tooltip?: boolean
   hidden?: ReadonlySet<string>
   onFileClick?: (file: FileNode) => void
+  onFileReference?: (file: FileNode) => void
+  referenceLabel?: string
 
   _filter?: Filter
   _marks?: Set<string>
@@ -511,6 +513,8 @@ export default function FileTree(props: {
                         draggable={props.draggable}
                         tooltip={props.tooltip}
                         onFileClick={props.onFileClick}
+                        onFileReference={props.onFileReference}
+                        referenceLabel={props.referenceLabel}
                         _filter={filter()}
                         _marks={marks()}
                         _deeps={deeps()}
@@ -522,53 +526,75 @@ export default function FileTree(props: {
                 </Collapsible>
               </Match>
               <Match when={node.type === "file"}>
-                <FileTreeNodeTooltip enabled={tooltip()} node={node} kind={kind()}>
-                  <FileTreeNode
-                    node={node}
-                    level={level}
-                    active={props.active}
-                    nodeClass={props.nodeClass}
-                    draggable={draggable()}
-                    kinds={kinds()}
-                    marks={marks()}
-                    as="button"
-                    type="button"
-                    onClick={() => props.onFileClick?.(node)}
-                  >
-                    <div class="w-4 shrink-0" />
-                    <Switch>
-                      <Match when={node.ignored}>
-                        <FileIcon
-                          node={node}
-                          class="size-4 filetree-icon filetree-icon--mono"
-                          style="color: var(--icon-weak-base)"
-                          mono
-                        />
-                      </Match>
-                      <Match when={active()}>
-                        <FileIcon
-                          node={node}
-                          class="size-4 filetree-icon filetree-icon--mono"
-                          style={kindTextColor(kind()!)}
-                          mono
-                        />
-                      </Match>
-                      <Match when={!node.ignored}>
-                        <span class="filetree-iconpair size-4">
+                <div class="group/file-row flex min-w-0 items-center gap-1">
+                  <FileTreeNodeTooltip enabled={tooltip()} node={node} kind={kind()}>
+                    <FileTreeNode
+                      node={node}
+                      level={level}
+                      active={props.active}
+                      nodeClass={props.nodeClass}
+                      draggable={draggable()}
+                      kinds={kinds()}
+                      marks={marks()}
+                      as="button"
+                      type="button"
+                      class="flex-1"
+                      onClick={() => props.onFileClick?.(node)}
+                    >
+                      <div class="w-4 shrink-0" />
+                      <Switch>
+                        <Match when={node.ignored}>
                           <FileIcon
                             node={node}
-                            class="size-4 filetree-icon filetree-icon--color opacity-0 group-hover/filetree:opacity-100"
-                          />
-                          <FileIcon
-                            node={node}
-                            class="size-4 filetree-icon filetree-icon--mono group-hover/filetree:opacity-0"
+                            class="size-4 filetree-icon filetree-icon--mono"
+                            style="color: var(--icon-weak-base)"
                             mono
                           />
-                        </span>
-                      </Match>
-                    </Switch>
-                  </FileTreeNode>
-                </FileTreeNodeTooltip>
+                        </Match>
+                        <Match when={active()}>
+                          <FileIcon
+                            node={node}
+                            class="size-4 filetree-icon filetree-icon--mono"
+                            style={kindTextColor(kind()!)}
+                            mono
+                          />
+                        </Match>
+                        <Match when={!node.ignored}>
+                          <span class="filetree-iconpair size-4">
+                            <FileIcon
+                              node={node}
+                              class="size-4 filetree-icon filetree-icon--color opacity-0 group-hover/filetree:opacity-100"
+                            />
+                            <FileIcon
+                              node={node}
+                              class="size-4 filetree-icon filetree-icon--mono group-hover/filetree:opacity-0"
+                              mono
+                            />
+                          </span>
+                        </Match>
+                      </Switch>
+                    </FileTreeNode>
+                  </FileTreeNodeTooltip>
+                  <Show when={props.onFileReference}>
+                    {(onFileReference) => (
+                      <Tooltip value={props.referenceLabel ?? "Reference in chat"} placement="right">
+                        <button
+                          type="button"
+                          data-testid="session-file-tree-reference"
+                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-icon-weak opacity-0 transition-opacity hover:bg-background-hover hover:text-icon-strong focus-visible:opacity-100 group-hover/file-row:opacity-100"
+                          aria-label={`${props.referenceLabel ?? "Reference in chat"} ${node.name}`}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            onFileReference()(node)
+                          }}
+                        >
+                          <Icon name="link" size="small" />
+                          <span class="sr-only">{node.name}</span>
+                        </button>
+                      </Tooltip>
+                    )}
+                  </Show>
+                </div>
               </Match>
             </Switch>
           )

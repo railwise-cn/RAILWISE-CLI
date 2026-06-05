@@ -56,6 +56,34 @@ export const createOpenSessionFileTab = (input: {
   }
 }
 
+export const focusSessionPromptDock = () => {
+  const dock = document.querySelector('[data-component="session-prompt-dock"]')
+  if (!(dock instanceof HTMLElement)) return false
+  dock.scrollIntoView({ block: "center", behavior: "smooth" })
+  const target = [
+    '[data-testid="session-prompt-input"]',
+    '[data-component="prompt-input"][contenteditable="true"]',
+    'textarea:not([disabled])',
+    '[contenteditable="true"]',
+    'button:not([disabled])',
+  ]
+    .map((selector) => dock.querySelector(selector))
+    .find((item): item is HTMLElement => item instanceof HTMLElement)
+  if (!(target instanceof HTMLElement)) return false
+  target.focus()
+  return true
+}
+
+export const createReferenceSessionFile = (input: {
+  addFileContext: (path: string) => void
+  focusPromptDock: () => boolean
+}) => {
+  return (path: string) => {
+    input.addFileContext(path)
+    input.focusPromptDock()
+  }
+}
+
 export const getTabReorderIndex = (tabs: readonly string[], from: string, to: string) => {
   const fromIndex = tabs.indexOf(from)
   const toIndex = tabs.indexOf(to)

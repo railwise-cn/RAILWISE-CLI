@@ -343,7 +343,7 @@ export function SessionComposerRegion(props: {
                         <button
                           type="button"
                           class="rounded-full border border-border-subtle bg-background-stronger px-2.5 py-1 text-12-regular text-text-base hover:bg-background-hover"
-                          title={`模型：${agentModelLabel(agent)} · ID：${agent.name}`}
+                          title={`模型：${agentModelLabel(agent)} · ${agentDisplayName(agent)}`}
                           onClick={() => applyAgent(agent.name)}
                         >
                           {agentDisplayName(agent)}

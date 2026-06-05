@@ -8,6 +8,7 @@ import { DropdownMenu } from "@railwise/ui/dropdown-menu"
 import { Dialog } from "@railwise/ui/dialog"
 import { InlineInput } from "@railwise/ui/inline-input"
 import { SessionTurn } from "@railwise/ui/session-turn"
+import { Tooltip } from "@railwise/ui/tooltip"
 import type { UserMessage } from "@railwise/sdk/v2"
 import type { AssistantMessage, CapabilityManifest, Part as SDKPart, ToolPart } from "@railwise/sdk/v2/client"
 import { showToast } from "@railwise/ui/toast"
@@ -15,13 +16,16 @@ import { base64Encode } from "@railwise/util/encode"
 import { shouldMarkBoundaryGesture, normalizeWheelDelta } from "@/pages/session/message-gesture"
 import { SessionContextUsage } from "@/components/session-context-usage"
 import { useDialog } from "@railwise/ui/context/dialog"
+import { useFile } from "@/context/file"
 import { useLanguage } from "@/context/language"
+import { useLayout } from "@/context/layout"
 import { usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { extractPromptFromParts } from "@/utils/prompt"
 import { agentDisplayName } from "@/utils/agent-display"
 import { capabilitiesForAgents, capabilitiesFromRouting, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
+import { createOpenSessionFileTab, createReferenceSessionFile, focusSessionPromptDock } from "@/pages/session/helpers"
 import { toolEvidence } from "@/pages/session/tool-evidence"
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
@@ -111,6 +115,8 @@ export function MessageTimeline(props: {
   const params = useParams()
   const navigate = useNavigate()
   const sdk = useSDK()
+  const file = useFile()
+  const layout = useLayout()
   const prompt = usePrompt()
   const sync = useSync()
   const dialog = useDialog()
@@ -118,6 +124,8 @@ export function MessageTimeline(props: {
   const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
 
   const sessionKey = createMemo(() => `${params.dir}${params.id ? "/" + params.id : ""}`)
+  const tabs = createMemo(() => layout.tabs(sessionKey()))
+  const view = createMemo(() => layout.view(sessionKey()))
   const sessionID = createMemo(() => params.id)
   const info = createMemo(() => {
     const id = sessionID()
@@ -212,6 +220,34 @@ export function MessageTimeline(props: {
     }
     navigate(`/${params.dir}/session`)
   }
+
+  const normalizeTab = (tab: string) => {
+    if (!tab.startsWith("file://")) return tab
+    return file.tab(tab)
+  }
+
+  const openReviewPanel = () => {
+    if (!view().reviewPanel.opened()) view().reviewPanel.open()
+  }
+
+  const openTab = createOpenSessionFileTab({
+    normalizeTab,
+    openTab: tabs().open,
+    pathFromTab: file.pathFromTab,
+    loadFile: file.load,
+    openReviewPanel,
+    setActive: tabs().setActive,
+  })
+
+  const openArtifact = (path: string) => {
+    if (layout.fileTree.tab() !== "all") layout.fileTree.setTab("all")
+    openTab(file.tab(path))
+  }
+
+  const referenceArtifact = createReferenceSessionFile({
+    addFileContext: (path) => prompt.context.add({ type: "file", path }),
+    focusPromptDock: focusSessionPromptDock,
+  })
 
   const archiveSession = async (sessionID: string) => {
     const session = sync.session.get(sessionID)
@@ -552,11 +588,30 @@ export function MessageTimeline(props: {
                     <For each={toolEvidence(part()).artifacts}>
                       {(artifact) => (
                         <span
-                          data-testid="session-turn-execution-tool-artifact"
-                          class="max-w-[10rem] truncate rounded-full bg-background-panel px-1.5 py-0.5 text-10-medium text-text-weak"
+                          data-testid="session-turn-execution-tool-artifact-row"
+                          class="flex max-w-full items-center overflow-hidden rounded-full border border-border-subtle bg-background-panel text-text-weak hover:border-border-base"
                           title={artifact.path}
                         >
-                          {artifact.label}
+                          <button
+                            type="button"
+                            data-testid="session-turn-execution-tool-artifact"
+                            class="min-w-0 max-w-[10rem] truncate px-1.5 py-0.5 text-left text-10-medium hover:bg-background-hover hover:text-text-strong"
+                            aria-label={`打开 ${artifact.label}`}
+                            onClick={() => openArtifact(artifact.path)}
+                          >
+                            {artifact.label}
+                          </button>
+                          <Tooltip value={language.t("prompt.context.includeActiveFile")} placement="top">
+                            <button
+                              type="button"
+                              data-testid="session-turn-execution-tool-artifact-reference"
+                              class="flex h-5 w-5 shrink-0 items-center justify-center border-l border-border-subtle hover:bg-background-hover hover:text-text-strong"
+                              aria-label={`引用 ${artifact.label} 到对话`}
+                              onClick={() => referenceArtifact(artifact.path)}
+                            >
+                              <Icon name="link" size="small" class="text-icon-weak" />
+                            </button>
+                          </Tooltip>
                         </span>
                       )}
                     </For>

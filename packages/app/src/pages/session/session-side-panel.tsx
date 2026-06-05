@@ -31,7 +31,12 @@ import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
 import { createFileTabListSync } from "@/pages/session/file-tab-scroll"
 import { FileTabContent } from "@/pages/session/file-tabs"
-import { createOpenSessionFileTab, getTabReorderIndex } from "@/pages/session/helpers"
+import {
+  createOpenSessionFileTab,
+  createReferenceSessionFile,
+  focusSessionPromptDock,
+  getTabReorderIndex,
+} from "@/pages/session/helpers"
 import { StickyAddButton } from "@/pages/session/review-tab"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import { repairInstruction } from "@/pages/harness/recovery"
@@ -530,27 +535,17 @@ export function SessionSidePanel(props: {
       .catch(() => setCapabilities([]))
   })
 
-  const focusPromptDock = () => {
-    const dock = document.querySelector('[data-component="session-prompt-dock"]')
-    if (!(dock instanceof HTMLElement)) return
-    dock.scrollIntoView({ block: "center", behavior: "smooth" })
-    requestAnimationFrame(() => {
-      const target = dock.querySelector(
-        'button:not([disabled]), textarea:not([disabled]), [contenteditable="true"]',
-      )
-      if (target instanceof HTMLElement) target.focus()
-    })
-  }
+  const focusPromptDock = focusSessionPromptDock
 
   const openArtifact = (path: string) => {
     showAllFiles()
     openTab(file.tab(path))
   }
 
-  const referenceArtifact = (path: string) => {
-    prompt.context.add({ type: "file", path })
-    focusPromptDock()
-  }
+  const referenceArtifact = createReferenceSessionFile({
+    addFileContext: (path) => prompt.context.add({ type: "file", path }),
+    focusPromptDock,
+  })
 
   const repairTool = (part: ToolPart) => {
     if (part.state.status !== "error") return
@@ -644,7 +639,7 @@ export function SessionSidePanel(props: {
       <aside
         id="review-panel"
         aria-label={language.t("session.panel.reviewAndFiles")}
-        class="relative min-w-0 h-full border-l border-border-weak-base flex"
+        class="relative min-w-0 h-full overflow-hidden border-l border-border-weak-base flex"
         classList={{
           "flex-1": reviewOpen(),
           "shrink-0": !reviewOpen(),
@@ -652,7 +647,7 @@ export function SessionSidePanel(props: {
         style={{ width: reviewOpen() ? undefined : `${layout.fileTree.width()}px` }}
       >
         <Show when={reviewOpen()}>
-          <div class="flex-1 min-w-0 h-full">
+          <div class="flex min-w-0 h-full flex-1 overflow-hidden">
             <Show
               when={layout.fileTree.opened() && fileTreeTab() === "changes"}
               fallback={
@@ -664,7 +659,7 @@ export function SessionSidePanel(props: {
                 >
                   <DragDropSensors />
                   <ConstrainDragYAxis />
-                  <Tabs value={activeTab()} onChange={openTab}>
+                  <Tabs value={activeTab()} onChange={openTab} class="min-w-0 overflow-hidden">
                     <div class="sticky top-0 shrink-0 flex">
                       <Tabs.List
                         ref={(el: HTMLDivElement) => {
@@ -784,7 +779,7 @@ export function SessionSidePanel(props: {
         </Show>
 
         <Show when={layout.fileTree.opened()}>
-          <div id="file-tree-panel" class="relative shrink-0 h-full" style={{ width: `${layout.fileTree.width()}px` }}>
+          <div id="file-tree-panel" class="relative h-full shrink-0 overflow-hidden" style={{ width: `${layout.fileTree.width()}px` }}>
             <div
               class="h-full flex flex-col overflow-hidden group/filetree"
               classList={{ "border-l border-border-weak-base": reviewOpen() }}
@@ -1041,11 +1036,21 @@ export function SessionSidePanel(props: {
                 data-scope="filetree"
               >
                 <Tabs.List>
-                  <Tabs.Trigger value="changes" class="flex-1" classes={{ button: "w-full" }}>
+                  <Tabs.Trigger
+                    value="changes"
+                    class="flex-1"
+                    classes={{ button: "w-full" }}
+                    data-testid="session-file-tree-tab-changes"
+                  >
                     {reviewCount()}{" "}
                     {language.t(reviewCount() === 1 ? "session.review.change.one" : "session.review.change.other")}
                   </Tabs.Trigger>
-                  <Tabs.Trigger value="all" class="flex-1" classes={{ button: "w-full" }}>
+                  <Tabs.Trigger
+                    value="all"
+                    class="flex-1"
+                    classes={{ button: "w-full" }}
+                    data-testid="session-file-tree-tab-all"
+                  >
                     {language.t("session.files.all")}
                   </Tabs.Trigger>
                 </Tabs.List>
@@ -1085,6 +1090,8 @@ export function SessionSidePanel(props: {
                     kinds={kinds()}
                     hidden={HIDDEN_ROOT_ENTRIES}
                     onFileClick={(node) => openTab(file.tab(node.path))}
+                    onFileReference={(node) => referenceArtifact(node.path)}
+                    referenceLabel={language.t("prompt.context.includeActiveFile")}
                   />
                 </Tabs.Content>
               </Tabs>

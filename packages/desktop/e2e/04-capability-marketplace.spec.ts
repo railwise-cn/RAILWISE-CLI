@@ -9,7 +9,7 @@ test("能力市场保持极简能力包入口", async ({ launchApp }) => {
 
   await visible(page.locator("[data-testid=marketplace-page]"))
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=agent-marketplace]")).toBeVisible()
   await expect(page.getByRole("button", { name: "技能" })).toBeVisible()
@@ -77,13 +77,13 @@ test("能力市场保持极简能力包入口", async ({ launchApp }) => {
   await expect(page.locator("[data-testid=agent-model-routing]")).toHaveCount(0)
 })
 
-test("智能体工作台通过统一外壳打开", async ({ launchApp }) => {
+test("能力配置通过统一外壳打开", async ({ launchApp }) => {
   const { page } = await launchApp("/agents", { projects: project() })
 
   await visible(page.locator("[data-testid=agents-page]"))
   expect(new URL(page.url()).pathname).toBe("/agents")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.locator("[data-testid=agent-collaboration-start]")).toBeVisible()
   await expect(page.locator("[data-testid=agent-model-routing]")).toBeVisible()
@@ -119,24 +119,24 @@ test("能力市场可以进入执行中心", async ({ launchApp }) => {
   const { page } = await launchApp("/marketplace", { projects: project() })
 
   await visible(page.locator("[data-testid=marketplace-page]"))
-  await page.getByRole("button", { name: "执行层" }).click()
+  await page.getByRole("button", { name: "执行中心" }).click()
   await page.locator("[data-testid=marketplace-open-harness]").click()
 
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page).toHaveURL(/\/harness$/)
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByRole("heading", { name: "执行中心" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()
 })
 
-test("执行层可以通过统一外壳打开", async ({ launchApp }) => {
+test("执行中心可以通过统一外壳打开", async ({ launchApp }) => {
   const { page } = await launchApp("/harness", { projects: project() })
 
   await visible(page.locator("[data-testid=harness-page]"))
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await expect(page.getByRole("heading", { name: "执行中心" })).toBeVisible()
   await expect(page.locator("[data-testid=harness-shell]")).toBeVisible()

@@ -1,4 +1,3 @@
-import { getFilename } from "@railwise/util/path"
 import { type Session } from "@railwise/sdk/v2/client"
 
 export const workspaceKey = (directory: string) => {
@@ -50,8 +49,33 @@ export function getDraggableId(event: unknown): string | undefined {
   return typeof draggable.id === "string" ? draggable.id : undefined
 }
 
-export const displayName = (project: { name?: string; worktree: string }) =>
-  project.name || getFilename(project.worktree)
+export function projectName(value: string) {
+  const clean = workspaceKey(value).replaceAll("\\", "/")
+  const parts = clean.split("/").filter(Boolean)
+  return parts.at(-1) ?? "打开项目"
+}
+
+export function projectParent(value: string) {
+  const clean = workspaceKey(value).replaceAll("\\", "/")
+  const parts = clean.split("/").filter(Boolean)
+  return parts.at(-2) ?? ""
+}
+
+export const duplicateProjectNames = (projects: { worktree: string }[]) => {
+  const counts = new Map<string, number>()
+  projects.forEach((project) => counts.set(projectName(project.worktree), (counts.get(projectName(project.worktree)) ?? 0) + 1))
+  return new Set([...counts].filter((entry) => entry[1] > 1).map((entry) => entry[0]))
+}
+
+export function displayName(project: { name?: string; worktree: string }, projects?: { worktree: string }[]) {
+  const label = project.name?.trim()
+  if (label) return label
+
+  const name = projectName(project.worktree)
+  const parent = projectParent(project.worktree)
+  if (!projects || !duplicateProjectNames(projects).has(name) || !parent) return name
+  return `${name} (${parent})`
+}
 
 export const errorMessage = (err: unknown, fallback: string) => {
   if (err && typeof err === "object" && "data" in err) {

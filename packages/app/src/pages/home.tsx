@@ -19,7 +19,7 @@ import { useProviders } from "@/hooks/use-providers"
 import { collaborationTarget, recentWorkspaces, recommendedModel } from "@/pages/agents/collaboration"
 import { capabilitiesForAgent, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 import { setSessionHandoff } from "@/pages/session/handoff"
-import { sortedRootSessions } from "@/pages/layout/helpers"
+import { displayName, sortedRootSessions } from "@/pages/layout/helpers"
 import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 
 export default function Home() {
@@ -36,13 +36,14 @@ export default function Home() {
   const [prompt, setPrompt] = createSignal("")
   const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
-  const duplicateNames = createMemo(() => {
-    const counts = new Map<string, number>()
-    recent().forEach((project) => counts.set(projectName(project.worktree), (counts.get(projectName(project.worktree)) ?? 0) + 1))
-    return new Set([...counts].filter((entry) => entry[1] > 1).map((entry) => entry[0]))
-  })
   const selectedDirectory = createMemo(() => directory() || recent()[0]?.worktree || "")
   const selectedProject = createMemo(() => recent().find((project) => project.worktree === selectedDirectory()))
+  const nameProjects = createMemo(() => {
+    const target = selectedDirectory()
+    if (!target) return recent()
+    if (recent().some((project) => project.worktree === target)) return recent()
+    return [{ worktree: target }, ...recent()]
+  })
   const recentProjects = createMemo(() => recent().filter((project) => project.worktree !== selectedDirectory()).slice(0, 3))
   const projectStore = createMemo(() => {
     const target = selectedDirectory()
@@ -54,6 +55,7 @@ export default function Home() {
     if (!store) return []
     return sortedRootSessions(store, Date.now()).slice(0, 4)
   })
+  const latestSession = createMemo(() => projectSessions()[0])
   const runningSessions = createMemo(() =>
     Object.values(projectStore()?.session_status ?? {}).filter((status) => status.type === "busy" || status.type === "retry").length,
   )
@@ -64,6 +66,12 @@ export default function Home() {
   )
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
   const agentCapabilities = createMemo(() => capabilitiesForAgent(capabilities(), { name: "chief_manager" }).slice(0, 5))
+  const fallbackCapabilities = ["资料检查", "规范检索", "报告编制"]
+  const capabilityLabels = createMemo(() => {
+    const list = agentCapabilities().map((item) => item.name)
+    if (list.length > 0) return list
+    return fallbackCapabilities
+  })
   const canStart = createMemo(() => selectedDirectory().trim().length > 0 && prompt().trim().length > 0)
   const modelLabel = createMemo(() => {
     const provider = connectedProviders()[0]
@@ -88,7 +96,7 @@ export default function Home() {
     if (healthy === false) return "待连接"
     return "检查中"
   })
-  const selectedName = createMemo(() => projectDisplayName(selectedDirectory()))
+  const selectedName = createMemo(() => displayName(selectedProject() ?? { worktree: selectedDirectory() }, nameProjects()))
   const selectedMeta = createMemo(() => {
     const project = selectedProject()
     if (project) return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
@@ -121,26 +129,6 @@ export default function Home() {
       .catch(() => setCapabilities([]))
   })
 
-  function projectName(value: string) {
-    const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
-    const parts = clean.split("/").filter(Boolean)
-    return parts.at(-1) ?? "打开项目"
-  }
-
-  function projectParent(value: string) {
-    const clean = value.trim().replaceAll("\\", "/").replace(/\/+$/, "")
-    const parts = clean.split("/").filter(Boolean)
-    return parts.at(-2) ?? ""
-  }
-
-  function projectDisplayName(value: string) {
-    if (!value) return "打开项目"
-    const name = projectName(value)
-    const parent = projectParent(value)
-    if (!duplicateNames().has(name) || !parent) return name
-    return `${name} (${parent})`
-  }
-
   function projectTime(project: NonNullable<ReturnType<typeof recent>[number]>) {
     return DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative() ?? "最近使用"
   }
@@ -169,7 +157,7 @@ export default function Home() {
     }
   }
 
-  function start() {
+  function launch() {
     if (!canStart()) return
     const target = collaborationTarget({
       directory: selectedDirectory(),
@@ -180,6 +168,15 @@ export default function Home() {
     server.projects.touch(target.directory)
     setSessionHandoff(target.key, { agent: target.agent, prompt: target.prompt })
     navigate(target.href)
+  }
+
+  function start() {
+    if (!canStart()) return
+    if (connectedProviders().length === 0) {
+      connectPreferred("deepseek", launch)
+      return
+    }
+    launch()
   }
 
   function openSession(id: string, target = selectedDirectory()) {
@@ -195,16 +192,25 @@ export default function Home() {
     navigate(`/${base64Encode(target)}/session`)
   }
 
+  function resumeSession() {
+    const session = latestSession()
+    if (!session) {
+      newSession()
+      return
+    }
+    openSession(session.id, session.directory)
+  }
+
   function connectProvider() {
     dialog.show(() => <DialogSelectProvider />)
   }
 
-  function connectPreferred(id: string) {
+  function connectPreferred(id: string, onComplete?: () => void | Promise<void>) {
     if (!providers.all().some((provider) => provider.id === id)) {
       connectProvider()
       return
     }
-    dialog.show(() => <DialogConnectProvider provider={id} />)
+    dialog.show(() => <DialogConnectProvider provider={id} onComplete={onComplete} />)
   }
 
   return (
@@ -241,7 +247,7 @@ export default function Home() {
             </div>
 
             <form
-              class="rounded-xl border border-border-weak-base bg-surface-panel p-3 shadow-sm"
+              class="rounded-lg border border-border-weak-base bg-surface-panel p-3 shadow-sm"
               data-testid="home-chat-composer"
               onSubmit={(event) => {
                 event.preventDefault()
@@ -269,7 +275,7 @@ export default function Home() {
               <textarea
                 id="home-prompt"
                 data-testid="home-task-input"
-                class="min-h-[210px] w-full resize-none bg-transparent p-4 text-15-regular text-text-strong outline-none"
+                class="min-h-[190px] w-full resize-none bg-transparent p-4 text-15-regular text-text-strong outline-none"
                 value={prompt()}
                 onInput={(event) => setPrompt(event.currentTarget.value)}
                 placeholder="例如：检查复测资料并生成下一步计划。"
@@ -282,20 +288,15 @@ export default function Home() {
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="inline-flex items-center gap-1.5 text-12-medium text-text-weak">
                     <Icon name="brain" size="small" />
-                    RAILWISE 将调用
+                    默认能力
                   </span>
-                  <Show
-                    when={agentCapabilities().length > 0}
-                    fallback={<span class="text-12-regular text-text-weak">能力市场启用后显示</span>}
-                  >
-                    <For each={agentCapabilities()}>
-                      {(item) => (
-                        <span class="max-w-[9rem] truncate rounded-full border border-border-weak-base px-2 py-1 text-11-medium text-text-strong">
-                          {item.name}
-                        </span>
-                      )}
-                    </For>
-                  </Show>
+                  <For each={capabilityLabels()}>
+                    {(item) => (
+                      <span class="max-w-[9rem] truncate rounded-full border border-border-weak-base px-2 py-1 text-11-medium text-text-strong">
+                        {item}
+                      </span>
+                    )}
+                  </For>
                 </div>
               </section>
 
@@ -396,7 +397,7 @@ export default function Home() {
                       >
                         <Icon name="folder" size="small" class="shrink-0 text-text-weak" />
                         <span class="min-w-0 flex-1">
-                          <span class="block truncate text-13-medium text-text-strong">{projectDisplayName(project.worktree)}</span>
+                          <span class="block truncate text-13-medium text-text-strong">{displayName(project, recent())}</span>
                           <span class="block truncate text-12-regular text-text-weak">{projectTime(project)}</span>
                         </span>
                       </button>
@@ -410,18 +411,44 @@ export default function Home() {
           <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-session-rail">
             <div class="mb-3 flex items-center justify-between gap-3">
               <div class="text-12-medium text-text-weak">会话</div>
-              <button type="button" class="inline-flex items-center gap-1 text-12-medium text-text-weak hover:text-text-strong" onClick={() => newSession()}>
-                <Icon name="plus-small" size="small" />
-                新建
-              </button>
+              <div class="flex items-center gap-2">
+                <Show when={latestSession()}>
+                  <button
+                    type="button"
+                    data-testid="home-resume-session"
+                    class="inline-flex items-center gap-1 text-12-medium text-text-base hover:text-text-strong"
+                    onClick={resumeSession}
+                  >
+                    继续
+                    <Icon name="arrow-right" size="small" />
+                  </button>
+                </Show>
+                <button type="button" class="inline-flex items-center gap-1 text-12-medium text-text-weak hover:text-text-strong" onClick={() => newSession()}>
+                  <Icon name="plus-small" size="small" />
+                  新建
+                </button>
+              </div>
             </div>
             <div class="space-y-1">
               <Show
                 when={projectSessions().length > 0}
                 fallback={
-                  <div class="rounded-md border border-dashed border-border-weak-base px-3 py-4">
-                    <div class="text-13-medium text-text-strong">还没有会话</div>
-                    <div class="mt-1 text-12-regular text-text-weak">输入任务后会自动创建。</div>
+                  <div class="rounded-md border border-dashed border-border-weak-base px-3 py-4" data-testid="home-empty-sessions">
+                    <div class="flex items-center gap-2 text-13-medium text-text-strong">
+                      <Icon name="new-session" size="small" class="text-text-weak" />
+                      还没有会话
+                    </div>
+                    <div class="mt-1 text-12-regular text-text-weak">
+                      {selectedDirectory() ? "输入任务会创建第一条会话。" : "先打开项目，再开始协作。"}
+                    </div>
+                    <button
+                      type="button"
+                      class="mt-3 inline-flex items-center gap-1.5 rounded-md border border-border-weak-base px-2 py-1.5 text-12-medium text-text-base hover:bg-surface-element"
+                      onClick={() => (selectedDirectory() ? newSession() : void chooseProject())}
+                    >
+                      <Icon name={selectedDirectory() ? "plus-small" : "folder-add-left"} size="small" />
+                      {selectedDirectory() ? "新建会话" : "打开项目"}
+                    </button>
                   </div>
                 }
               >
@@ -498,49 +525,61 @@ export default function Home() {
           </section>
 
           <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-capability-rail">
-            <div class="mb-3 text-12-medium text-text-weak">能力</div>
-            <Show when={agentCapabilities().length > 0}>
-              <div class="mb-3 rounded-md border border-border-weak-base bg-surface-base/70 p-2">
-                <div class="mb-2 text-11-medium text-text-weak">RAILWISE 默认协作</div>
-                <div class="flex flex-wrap gap-1.5">
-                  <For each={agentCapabilities().slice(0, 4)}>
-                    {(item) => <span class="max-w-full truncate rounded-full bg-surface-element px-2 py-1 text-11-medium text-text-strong">{item.name}</span>}
-                  </For>
-                </div>
-              </div>
-            </Show>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <div class="text-12-medium text-text-weak">快捷入口</div>
+              <button type="button" class="text-12-medium text-text-weak hover:text-text-strong" onClick={() => navigate("/marketplace")}>
+                管理
+              </button>
+            </div>
+            <div class="mb-3 flex flex-wrap gap-1.5">
+              <For each={capabilityLabels().slice(0, 3)}>
+                {(item) => <span class="max-w-full truncate rounded-full bg-surface-element px-2 py-1 text-11-medium text-text-strong">{item}</span>}
+              </For>
+            </div>
+            <div class="space-y-1">
               <button
                 type="button"
-                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                class="flex w-full min-w-0 items-center justify-between gap-3 rounded-md px-2 py-2 text-left hover:bg-surface-element"
                 onClick={() => navigate("/agents")}
               >
-                <Icon name="brain" size="small" class="shrink-0 text-text-weak" />
-                <span class="truncate text-13-medium text-text-strong">智能体</span>
+                <span class="inline-flex min-w-0 items-center gap-2">
+                  <Icon name="brain" size="small" class="shrink-0 text-text-weak" />
+                  <span class="truncate text-13-medium text-text-strong">智能体</span>
+                </span>
+                <span class="text-12-regular text-text-weak">配置</span>
               </button>
               <button
                 type="button"
-                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                class="flex w-full min-w-0 items-center justify-between gap-3 rounded-md px-2 py-2 text-left hover:bg-surface-element"
                 onClick={() => navigate("/marketplace")}
               >
-                <Icon name="providers" size="small" class="shrink-0 text-text-weak" />
-                <span class="truncate text-13-medium text-text-strong">市场</span>
+                <span class="inline-flex min-w-0 items-center gap-2">
+                  <Icon name="providers" size="small" class="shrink-0 text-text-weak" />
+                  <span class="truncate text-13-medium text-text-strong">能力市场</span>
+                </span>
+                <span class="text-12-regular text-text-weak">安装</span>
               </button>
               <button
                 type="button"
-                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                class="flex w-full min-w-0 items-center justify-between gap-3 rounded-md px-2 py-2 text-left hover:bg-surface-element"
                 onClick={() => navigate("/harness")}
               >
-                <Icon name="server" size="small" class="shrink-0 text-text-weak" />
-                <span class="truncate text-13-medium text-text-strong">执行</span>
+                <span class="inline-flex min-w-0 items-center gap-2">
+                  <Icon name="server" size="small" class="shrink-0 text-text-weak" />
+                  <span class="truncate text-13-medium text-text-strong">执行中心</span>
+                </span>
+                <span class="text-12-regular text-text-weak">状态</span>
               </button>
               <button
                 type="button"
-                class="flex min-w-0 items-center gap-2 rounded-md border border-border-weak-base px-3 py-2 text-left hover:bg-surface-element"
+                class="flex w-full min-w-0 items-center justify-between gap-3 rounded-md px-2 py-2 text-left hover:bg-surface-element"
                 onClick={() => navigate("/marketplace")}
               >
-                <Icon name="models" size="small" class="shrink-0 text-text-weak" />
-                <span class="truncate text-13-medium text-text-strong">模型</span>
+                <span class="inline-flex min-w-0 items-center gap-2">
+                  <Icon name="models" size="small" class="shrink-0 text-text-weak" />
+                  <span class="truncate text-13-medium text-text-strong">模型</span>
+                </span>
+                <span class="text-12-regular text-text-weak">{connectedProviders().length > 0 ? "已接入" : "待接入"}</span>
               </button>
             </div>
           </section>

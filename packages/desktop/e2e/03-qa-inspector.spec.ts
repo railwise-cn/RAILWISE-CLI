@@ -8,7 +8,7 @@ test("qa_inspector 数据首检 → 生成报告", async ({ launchApp }) => {
   })
 
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).toBeVisible()
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
+  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("本地项目")
   await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText(worktree)
   await page.locator("[data-testid=workspace-file-item]").first().click()
   await page.locator("[data-testid=send-to-agent-btn]").click()

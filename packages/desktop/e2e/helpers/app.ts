@@ -71,7 +71,7 @@ const toolCatalog = [
   {
     id: "task",
     name: "智能体任务调度",
-    description: "把用户任务分派给主控和专业智能体，并汇总执行结果。",
+    description: "把用户任务分派给任务调度与专业智能体，并汇总执行结果。",
     group: "agent",
     tags: ["智能体", "调度", "协作"],
     permissions: read,
@@ -684,6 +684,7 @@ export { expect }
 
 async function setup(page: Page, opts: LaunchOptions) {
   let market = capabilities.map((item) => ({ ...item }))
+  let connected = opts.model === "configured" ? ["deepseek"] : []
   const isServerRoute = (url: URL, path: string) => url.origin === server && url.pathname === path
 
   if (process.env.RW_E2E_DEBUG === "1") {
@@ -717,6 +718,7 @@ async function setup(page: Page, opts: LaunchOptions) {
     }),
   )
   await page.route(`${server}/global/config`, (route) => json(route, {}))
+  await page.route(`${server}/global/dispose`, (route) => json(route, true))
   await page.route(`${server}/config`, (route) => json(route, {}))
   await page.route(`${server}/project`, (route) => json(route, opts.projects ?? []))
   await page.route(`${server}/project/current`, (route) =>
@@ -729,9 +731,13 @@ async function setup(page: Page, opts: LaunchOptions) {
       },
     ),
   )
-  await page.route(`${server}/provider`, (route) =>
-    json(route, opts.model === "configured" ? provider : { ...provider, connected: [] }),
-  )
+  await page.route(`${server}/provider`, (route) => json(route, { ...provider, connected }))
+  await page.route(`${server}/auth/**`, (route) => {
+    if (route.request().method() !== "PUT") return json(route, true)
+    const id = new URL(route.request().url()).pathname.split("/").pop()
+    if (id && !connected.includes(id)) connected = [...connected, id]
+    return json(route, true)
+  })
   await page.route((url) => isServerRoute(url, "/file/content"), (route) => {
     const url = new URL(route.request().url())
     const target = url.searchParams.get("path") ?? ""

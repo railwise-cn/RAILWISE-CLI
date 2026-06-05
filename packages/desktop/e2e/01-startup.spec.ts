@@ -42,7 +42,7 @@ test("首页未配置模型时可以直接打开模型接入入口", async ({ la
   await expect(dialog).toContainText(/API|密钥/)
 })
 
-test("首页任务输入直接进入 chief_manager 协作会话", async ({ launchApp }) => {
+test("首页未配置模型时接入 DeepSeek 后继续启动原任务", async ({ launchApp }) => {
   const worktree = "/tmp/railwise-e2e/worktree"
   const { page } = await launchApp("/home", {
     projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
@@ -51,63 +51,25 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
   await expect(page.getByText("worktree").first()).toBeVisible()
   await expect(page.locator("[data-testid=home-project-directory]")).toContainText("worktree")
-  await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("RAILWISE 将调用")
+  await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("默认能力")
   await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("轨道交通监测方案")
   await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("规范条文速查")
   await page.locator("[data-testid=home-task-input]").fill("检查当前线路复测资料，列出缺失文件并给出下一步计划。")
   await page.locator("[data-testid=home-start-session]").click()
+  await expect(page).toHaveURL(/\/home$/)
+
+  const dialog = page.locator("[data-component=dialog]")
+  await visible(dialog, 15000)
+  await expect(dialog).toContainText("DeepSeek")
+  await expect(dialog).toContainText(/API|密钥/)
+  await dialog.locator('input[name="apiKey"]').fill("sk-railwise-e2e")
+  await dialog.locator('button[type="submit"]').click()
 
   await expect(page).toHaveURL(/\/session$/)
-  const card = page.locator("[data-testid=session-new-project-card]")
-  await visible(card, 15000)
-  expect(
-    await card.evaluate((node) => {
-      const box = node.getBoundingClientRect()
-      return document.elementsFromPoint(box.x + 24, box.y + 24).some((item) => item === node || node.contains(item))
-    }),
-  ).toBe(true)
-  await expect(page.locator("[data-testid=session-new-project-name]")).toHaveText("worktree")
-  await expect(card).not.toContainText("/tmp/railwise-e2e")
   await visible(page.locator("[data-testid=session-status-panel]"), 15000)
-  await expect(page.locator("[data-testid=session-status-project]")).toHaveText("worktree")
   await expect(page.locator("[data-testid=session-status-agent]")).toHaveText("RAILWISE")
-  await expect(page.locator("[data-testid=session-inspector-summary]")).toBeVisible()
-  await visible(page.locator("[data-testid=session-collaboration-panel]"), 15000)
-  await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("RAILWISE")
-  await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("模型")
-  await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("模板")
-  await expect(page.locator("[data-testid=session-collaboration-panel]")).toContainText("能力")
-  await expect(page.locator("[data-testid=session-collaboration-panel]")).not.toContainText("业务模板")
-  await expect(page.locator("[data-testid=session-collaboration-panel]")).not.toContainText("默认建议")
-  await expect(page.locator("[data-testid=session-status-panel]")).toContainText("状态")
-  await expect(page.locator("[data-testid=session-runtime-panel]")).toContainText("执行")
-  await expect(page.locator("[data-testid=session-runtime-metrics]")).toBeVisible()
-  await expect(page.locator("[data-testid=session-status-panel]")).not.toContainText("环境")
-  await expect(page.locator("[data-testid=session-status-panel]")).not.toContainText("会话状态")
-  await expect(page.locator("[data-testid=sidebar-project-meta]").first()).toHaveText("项目工作区")
-  await expect(page.locator("[data-component=sidebar-nav-desktop]")).not.toContainText("/tmp/railwise-e2e")
-  await expect(page.locator("[data-testid=session-model-readiness]")).toContainText("发送前先接入模型")
-  await expect(page.locator("[data-testid=session-model-setup]")).toContainText("接入模型")
-  await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("RAILWISE")
-  await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("@chief_manager")
-  await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("Chief_manager")
-  await expect(page.locator("[data-testid=session-prompt-input]")).not.toContainText("chief_manager")
+  await expect(page.locator("[data-testid=session-status-model]")).toContainText("DeepSeek V4")
   await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
-  await page.locator("[data-testid=session-collaboration-panel]").getByRole("button", { name: "能力" }).click()
-  await page.locator("[data-testid=session-collaboration-panel]").getByRole("button", { name: "水准闭合差检核" }).click()
-  await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("tool: survey_calculator_leveling_closure")
-  await expect(page.locator("[data-testid=session-prompt-input]")).toContainText("检查当前线路复测资料")
-
-  await page.locator("[data-action=session-template-drawer]").click()
-  const drawer = page.locator("[data-testid=template-drawer]")
-  await visible(drawer, 15000)
-  await expect(drawer).toContainText("任务模板")
-  await expect(drawer).not.toContainText("业务模板")
-  await page.locator("[data-testid=category-tab-ppt]").click()
-  await page.locator("[data-testid=template-card-project-ppt]").click()
-  await expect(drawer).toContainText("汇报生成")
-  await expect(drawer).toContainText("填入对话")
-  await expect(drawer).not.toContainText("ppt_master")
 })
 
 test("已配置模型时首页任务可以创建会话并发送给 chief_manager", async ({ launchApp }) => {
@@ -134,6 +96,7 @@ test("已配置模型时首页任务可以创建会话并发送给 chief_manager
   await visible(page.locator("[data-testid=session-status-panel]"), 15000)
   await expect(page.locator("[data-testid=session-status-model]")).toContainText("DeepSeek V4")
   await expect(page.locator("[data-testid=session-model-readiness]")).toHaveCount(0)
+  await expect(page.locator("[data-testid=session-runtime-metrics]")).toBeVisible()
 
   const request = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
   await page.locator("[data-testid=session-prompt-input]").press("Enter")
@@ -252,12 +215,80 @@ test("运行面板成果可以直接引用到对话继续追问", async ({ launc
   const artifact = page.locator("[data-testid=session-runtime-tool-artifact-row]").filter({ hasText: "成果报告.md" })
   await artifact.locator("[data-testid=session-runtime-tool-artifact-reference]").click()
   await expect(page.locator("[data-testid=prompt-context-item]").filter({ hasText: "成果报告.md" })).toBeVisible()
+  await page.locator("[data-testid=prompt-context-item]").filter({ hasText: "成果报告.md" }).click()
+  await expect(page.locator("[data-component=code]")).toContainText("成果报告：运营期监测预警复核。")
   await page.locator("[data-testid=session-prompt-input]").fill("直接基于这个成果继续生成审查意见。")
 
   const followup = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
   await page.locator("[data-testid=session-prompt-input]").press("Enter")
   const payload = JSON.stringify((await followup).postDataJSON())
   expect(payload).toContain("直接基于这个成果")
+  expect(payload).toContain("成果报告.md")
+  expect(payload).toContain("file://")
+})
+
+test("对话执行证据成果可以直接打开并引用到对话继续追问", async ({ launchApp }) => {
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    model: "configured",
+    permission: "none",
+    projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+    workspaceFiles: [
+      { path: `${worktree}/成果报告.md`, kind: "md", content: "# 成果报告\n\n成果报告：运营期监测预警复核。" },
+      { path: `${worktree}/闭合差复核.md`, kind: "md", content: "# 闭合差复核\n\n闭合差满足限差。" },
+    ],
+  })
+
+  await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
+  await page.locator("[data-testid=home-task-input]").fill("让 RAILWISE 检查复测资料，并调用专业智能体列出风险。")
+  await page.locator("[data-testid=home-start-session]").click()
+  await visible(page.locator("[data-testid=session-status-panel]"), 15000)
+  const request = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
+  await request
+  await expect(page).toHaveURL(/\/session\/queue-e2e$/)
+  const artifact = page.locator("[data-testid=session-turn-execution-tool-artifact-row]").filter({ hasText: "成果报告.md" })
+  await artifact.locator("[data-testid=session-turn-execution-tool-artifact]").click()
+  await expect(page.locator("[data-component=code]")).toContainText("成果报告：运营期监测预警复核。")
+  await artifact.locator("[data-testid=session-turn-execution-tool-artifact-reference]").click()
+  await expect(page.locator("[data-testid=prompt-context-item]").filter({ hasText: "成果报告.md" })).toBeVisible()
+  await page.locator("[data-testid=session-prompt-input]").fill("从执行证据里的成果继续生成审查意见。")
+
+  const followup = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
+  const payload = JSON.stringify((await followup).postDataJSON())
+  expect(payload).toContain("从执行证据里的成果")
+  expect(payload).toContain("成果报告.md")
+  expect(payload).toContain("file://")
+})
+
+test("项目文件树可以直接引用文件到对话继续追问", async ({ launchApp }) => {
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    model: "configured",
+    permission: "none",
+    projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+    workspaceFiles: [
+      { path: `${worktree}/成果报告.md`, kind: "md", content: "# 成果报告\n\n成果报告：运营期监测预警复核。" },
+      { path: `${worktree}/闭合差复核.md`, kind: "md", content: "# 闭合差复核\n\n闭合差满足限差。" },
+    ],
+  })
+
+  await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
+  await page.locator("[data-testid=home-task-input]").fill("让 RAILWISE 检查复测资料，并调用专业智能体列出风险。")
+  await page.locator("[data-testid=home-start-session]").click()
+  await visible(page.locator("[data-testid=session-status-panel]"), 15000)
+  await page.locator("[data-testid=session-file-tree-tab-all]").click()
+  await page.locator('[data-testid=session-file-tree-reference][aria-label*="成果报告.md"]').click()
+  await expect(page.locator("[data-testid=prompt-context-item]").filter({ hasText: "成果报告.md" })).toBeVisible()
+  await page.locator("[data-testid=prompt-context-item]").filter({ hasText: "成果报告.md" }).click()
+  await expect(page.locator("[data-component=code]")).toContainText("成果报告：运营期监测预警复核。")
+  await page.locator("[data-testid=session-prompt-input]").fill("基于项目文件树里的成果继续复核。")
+
+  const followup = page.waitForRequest((item) => item.url().endsWith("/session/queue-e2e/prompt_async"))
+  await page.locator("[data-testid=session-prompt-input]").press("Enter")
+  const payload = JSON.stringify((await followup).postDataJSON())
+  expect(payload).toContain("基于项目文件树里的成果")
   expect(payload).toContain("成果报告.md")
   expect(payload).toContain("file://")
 })

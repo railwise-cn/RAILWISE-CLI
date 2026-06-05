@@ -1,5 +1,12 @@
 import { describe, expect, test } from "bun:test"
-import { createOpenReviewFile, createOpenSessionFileTab, focusTerminalById, getTabReorderIndex } from "./helpers"
+import {
+  createOpenReviewFile,
+  createOpenSessionFileTab,
+  createReferenceSessionFile,
+  focusSessionPromptDock,
+  focusTerminalById,
+  getTabReorderIndex,
+} from "./helpers"
 
 describe("createOpenReviewFile", () => {
   test("opens and loads selected review file", () => {
@@ -48,6 +55,48 @@ describe("createOpenSessionFileTab", () => {
       "review",
       "active:file://src/a.ts",
     ])
+  })
+})
+
+describe("focusSessionPromptDock", () => {
+  test("focuses the prompt input in the session dock", () => {
+    document.body.innerHTML = `<div data-component="session-prompt-dock"><textarea></textarea></div>`
+
+    const focused = focusSessionPromptDock()
+
+    expect(focused).toBe(true)
+    expect(document.activeElement?.tagName).toBe("TEXTAREA")
+  })
+
+  test("prefers the chat input over prompt action buttons", () => {
+    document.body.innerHTML = `
+      <div data-component="session-prompt-dock">
+        <button type="button">Attach</button>
+        <div data-testid="session-prompt-input" contenteditable="true"></div>
+      </div>
+    `
+
+    const focused = focusSessionPromptDock()
+
+    expect(focused).toBe(true)
+    expect(document.activeElement?.getAttribute("data-testid")).toBe("session-prompt-input")
+  })
+})
+
+describe("createReferenceSessionFile", () => {
+  test("adds file context and focuses the prompt dock", () => {
+    const calls: string[] = []
+    const reference = createReferenceSessionFile({
+      addFileContext: (path) => calls.push(`file:${path}`),
+      focusPromptDock: () => {
+        calls.push("focus")
+        return true
+      },
+    })
+
+    reference("/tmp/成果报告.md")
+
+    expect(calls).toEqual(["file:/tmp/成果报告.md", "focus"])
   })
 })
 

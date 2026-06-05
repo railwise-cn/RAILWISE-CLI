@@ -28,6 +28,18 @@ import { Truncate } from "./truncation"
 import { PlanExitTool, PlanEnterTool } from "./plan"
 import { ApplyPatchTool } from "./apply_patch"
 import { Glob } from "../util/glob"
+import {
+  DocxReportFormatterTool,
+  DxfLayerInspectorTool,
+  FileReaderTool,
+  LevelingClosureTool,
+  MonitoringDataFirstCheckTool,
+  PdfFormCheckerTool,
+  PptxBriefBuilderTool,
+  ResurveyMaterialCheckTool,
+  StandardQueryTool,
+  XlsxQualityCheckerTool,
+} from "./railwise-domain"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -120,6 +132,16 @@ export namespace ToolRegistry {
       WebSearchTool,
       CodeSearchTool,
       SkillTool,
+      FileReaderTool,
+      StandardQueryTool,
+      LevelingClosureTool,
+      ResurveyMaterialCheckTool,
+      MonitoringDataFirstCheckTool,
+      DxfLayerInspectorTool,
+      XlsxQualityCheckerTool,
+      DocxReportFormatterTool,
+      PptxBriefBuilderTool,
+      PdfFormCheckerTool,
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),

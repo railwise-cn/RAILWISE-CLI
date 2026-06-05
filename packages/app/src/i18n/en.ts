@@ -267,7 +267,7 @@ export const dict = {
   "prompt.slash.badge.skill": "skill",
   "prompt.slash.badge.mcp": "mcp",
   "prompt.context.active": "active",
-  "prompt.context.includeActiveFile": "Include active file",
+  "prompt.context.includeActiveFile": "Reference in chat",
   "prompt.context.removeActiveFile": "Remove active file from context",
   "prompt.context.removeFile": "Remove file from context",
   "prompt.action.attachFile": "Add file",

@@ -7,6 +7,7 @@ import { sampledChecksum } from "@railwise/util/encode"
 import { decode64 } from "@/utils/base64"
 import { showToast } from "@railwise/ui/toast"
 import { LineComment as LineCommentView, LineCommentEditor } from "@railwise/ui/line-comment"
+import { Button } from "@railwise/ui/button"
 import { Mark } from "@railwise/ui/logo"
 import { Tabs } from "@railwise/ui/tabs"
 import { useLayout } from "@/context/layout"
@@ -102,6 +103,26 @@ export function FileTabContent(props: { tab: string }) {
     if (file.ready()) return file.selectedLines(p) ?? null
     return getSessionHandoff(sessionKey())?.files[p] ?? null
   })
+  const canReferenceFile = createMemo(() => !!path() && state()?.loaded && !isBinary() && !isImage())
+
+  const focusPromptDock = () => {
+    const dock = document.querySelector('[data-component="session-prompt-dock"]')
+    if (!(dock instanceof HTMLElement)) return
+    dock.scrollIntoView({ block: "center", behavior: "smooth" })
+    requestAnimationFrame(() => {
+      const target = dock.querySelector(
+        'button:not([disabled]), textarea:not([disabled]), [contenteditable="true"]',
+      )
+      if (target instanceof HTMLElement) target.focus()
+    })
+  }
+
+  const referenceFile = () => {
+    const p = path()
+    if (!p) return
+    prompt.context.add({ type: "file", path: p })
+    focusPromptDock()
+  }
 
   const selectionPreview = (source: string, selection: FileSelection) => {
     const start = Math.max(1, Math.min(selection.startLine, selection.endLine))
@@ -518,6 +539,21 @@ export function FileTabContent(props: { tab: string }) {
       }}
       onScroll={handleScroll}
     >
+      <Show when={canReferenceFile()}>
+        <div class="sticky top-3 z-20 flex justify-end px-4 pointer-events-none">
+          <Button
+            type="button"
+            data-testid="session-file-reference"
+            variant="secondary"
+            size="small"
+            icon="link"
+            class="pointer-events-auto shadow-xs-border bg-background-stronger"
+            onClick={referenceFile}
+          >
+            {language.t("prompt.context.includeActiveFile")}
+          </Button>
+        </div>
+      </Show>
       <Switch>
         <Match when={state()?.loaded && isImage()}>
           <div class="px-6 py-4 pb-40">

@@ -378,7 +378,7 @@ async function setup(page: Page, opts: LaunchOptions) {
     ),
   )
   await page.route(`${server}/provider`, (route) =>
-    json(route, opts.model === "configured" ? provider : { all: [], default: {}, connected: [] }),
+    json(route, opts.model === "configured" ? provider : { ...provider, connected: [] }),
   )
   await page.route(`${server}/file?**`, (route) => {
     const url = new URL(route.request().url())

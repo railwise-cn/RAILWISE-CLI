@@ -9,7 +9,8 @@ import { DateTime } from "luxon"
 import { base64Encode } from "@railwise/util/encode"
 import { useDialog } from "@railwise/ui/context/dialog"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
-import { DialogSelectServer } from "@/components/dialog-select-server"
+import { DialogConnectProvider } from "@/components/dialog-connect-provider"
+import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { useServer } from "@/context/server"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"
@@ -181,6 +182,18 @@ export default function Home() {
     navigate(`/${base64Encode(target)}/session`)
   }
 
+  function connectProvider() {
+    dialog.show(() => <DialogSelectProvider />)
+  }
+
+  function connectPreferred(id: string) {
+    if (!providers.all().some((provider) => provider.id === id)) {
+      connectProvider()
+      return
+    }
+    dialog.show(() => <DialogConnectProvider provider={id} />)
+  }
+
   return (
     <main class="min-h-full bg-surface-base" data-testid="home-workbench">
       <div class="mx-auto flex min-h-screen max-w-6xl">
@@ -287,15 +300,28 @@ export default function Home() {
                     <span class="truncate">模型：{modelLabel()}</span>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  data-testid="home-open-marketplace"
-                  class="inline-flex items-center gap-1.5 text-12-medium text-text-weak hover:text-text-strong"
-                  onClick={() => navigate("/marketplace")}
-                >
-                  <Icon name="providers" size="small" />
-                  能力市场
-                </button>
+                <div class="flex flex-wrap items-center gap-3">
+                  <Show when={connectedProviders().length === 0}>
+                    <button
+                      type="button"
+                      data-testid="home-connect-model"
+                      class="inline-flex items-center gap-1.5 text-12-medium text-text-weak hover:text-text-strong"
+                      onClick={() => connectPreferred("deepseek")}
+                    >
+                      <Icon name="models" size="small" />
+                      接入 DeepSeek
+                    </button>
+                  </Show>
+                  <button
+                    type="button"
+                    data-testid="home-open-marketplace"
+                    class="inline-flex items-center gap-1.5 text-12-medium text-text-weak hover:text-text-strong"
+                    onClick={() => navigate("/marketplace")}
+                  >
+                    <Icon name="providers" size="small" />
+                    能力市场
+                  </button>
+                </div>
               </div>
             </section>
           </section>

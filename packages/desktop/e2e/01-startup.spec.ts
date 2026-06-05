@@ -25,6 +25,23 @@ test("普通浏览器预览不会因为缺少 Tauri internals 白屏", async ({ 
   expect(errors).toEqual([])
 })
 
+test("首页未配置模型时可以直接打开模型接入入口", async ({ launchApp }) => {
+  const worktree = "/tmp/railwise-e2e/worktree"
+  const { page } = await launchApp("/home", {
+    projects: [{ id: "railwise-e2e", worktree, time: { created: Date.now(), updated: Date.now() } }],
+  })
+
+  await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
+  await expect(page.locator("[data-testid=home-model-summary]")).toContainText("默认建议 DeepSeek V4")
+  await expect(page.locator("[data-testid=home-connect-model]")).toContainText("接入 DeepSeek")
+  await page.locator("[data-testid=home-connect-model]").click()
+
+  const dialog = page.locator("[data-component=dialog]")
+  await visible(dialog, 15000)
+  await expect(dialog).toContainText("DeepSeek")
+  await expect(dialog).toContainText(/API|密钥/)
+})
+
 test("首页任务输入直接进入 chief_manager 协作会话", async ({ launchApp }) => {
   const worktree = "/tmp/railwise-e2e/worktree"
   const { page } = await launchApp("/home", {

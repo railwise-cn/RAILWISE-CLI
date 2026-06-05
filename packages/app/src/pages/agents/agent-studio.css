@@ -737,6 +737,188 @@
   background: color-mix(in srgb, var(--agent-accent) 7%, var(--agent-surface));
 }
 
+.marketplace-search {
+  display: flex;
+  max-width: 420px;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  border: 1px solid var(--agent-border);
+  border-radius: 8px;
+  background: var(--agent-surface);
+  padding: 0 10px;
+  color: var(--agent-muted);
+}
+
+.marketplace-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--agent-text);
+  font-size: 13px;
+}
+
+.marketplace-search input::placeholder {
+  color: color-mix(in srgb, var(--agent-muted) 78%, transparent);
+}
+
+.marketplace-capability-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.marketplace-capability-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--agent-border);
+  border-radius: 8px;
+  background: var(--agent-surface);
+  padding: 12px;
+}
+
+.marketplace-capability-card header {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 32px minmax(0, 1fr) max-content;
+  gap: 8px;
+  align-items: start;
+}
+
+.marketplace-capability-card__icon {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--agent-accent) 24%, transparent);
+  border-radius: 8px;
+  background: var(--agent-soft);
+  color: var(--agent-accent-strong);
+}
+
+.marketplace-capability-card header div,
+.marketplace-capability-card header strong,
+.marketplace-capability-card header small,
+.marketplace-capability-card p,
+.marketplace-capability-card footer span {
+  min-width: 0;
+}
+
+.marketplace-capability-card header strong,
+.marketplace-capability-card header small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marketplace-capability-card header strong {
+  color: var(--agent-text);
+  font-size: 13px;
+  font-weight: 720;
+  line-height: 1.25;
+}
+
+.marketplace-capability-card header small {
+  margin-top: 3px;
+  color: var(--agent-muted);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.agent-market-panel .marketplace-capability-card p {
+  display: -webkit-box;
+  max-width: none;
+  min-height: 40px;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  color: var(--agent-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+}
+
+.marketplace-capability-card__meta,
+.marketplace-capability-card__tags,
+.marketplace-capability-card footer {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.marketplace-capability-card__meta span,
+.marketplace-capability-card__tags span {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  padding: 3px 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.marketplace-capability-card__meta span {
+  border: 1px solid color-mix(in srgb, var(--agent-border) 82%, transparent);
+  color: var(--agent-muted);
+}
+
+.marketplace-capability-card__tags span {
+  background: var(--agent-soft);
+  color: var(--agent-accent-strong);
+}
+
+.marketplace-capability-card footer {
+  margin-top: auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.marketplace-capability-card footer > span {
+  color: var(--agent-muted);
+  font-size: 11px;
+}
+
+.marketplace-capability-card .agent-button {
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.marketplace-capability-empty {
+  display: flex;
+  min-height: 130px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  border: 1px dashed var(--agent-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--agent-bg) 62%, var(--agent-surface));
+  padding: 14px;
+}
+
+.marketplace-capability-empty strong {
+  color: var(--agent-text);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.marketplace-capability-empty span {
+  color: var(--agent-muted);
+  font-size: 12px;
+}
+
 .marketplace-state {
   display: inline-flex;
   min-height: 22px;

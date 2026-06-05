@@ -2,6 +2,7 @@ import "@/pages/agents/agent-studio.css"
 import { A } from "@solidjs/router"
 import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { useDialog } from "@railwise/ui/context/dialog"
+import { Icon, type IconProps } from "@railwise/ui/icon"
 import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
@@ -50,6 +51,26 @@ const groups: Record<ToolInventoryItem["group"], string> = {
 
 type Preview = { title: string; meta: string }
 
+const labels: Record<CapabilityManifest["kind"], string> = {
+  agent: "智能体",
+  tool: "工具",
+  skill: "技能",
+  workflow: "工作流",
+  mcp: "MCP",
+  provider: "模型",
+  harness_profile: "执行层",
+}
+
+const icons: Record<CapabilityManifest["kind"], IconProps["name"]> = {
+  agent: "brain",
+  tool: "checklist",
+  skill: "bullet-list",
+  workflow: "branch",
+  mcp: "mcp",
+  provider: "providers",
+  harness_profile: "server",
+}
+
 function result<T>(value: PromiseSettledResult<T>, fallback: T) {
   if (value.status === "fulfilled") return value.value
   return fallback
@@ -59,6 +80,35 @@ function state(loading: boolean, count: number, empty = "待发现") {
   if (loading) return { label: "同步中", tone: "loading" as Tone }
   if (count > 0) return { label: "已启用", tone: "enabled" as Tone }
   return { label: empty, tone: "empty" as Tone }
+}
+
+function capabilityState(item: CapabilityManifest) {
+  if (!item.installed) return { label: "可安装", tone: "setup" as Tone }
+  if (item.enabled) return { label: "已启用", tone: "enabled" as Tone }
+  return { label: "待启用", tone: "setup" as Tone }
+}
+
+function capabilityAction(item: CapabilityManifest) {
+  if (item.kind === "provider") return "接入模型"
+  if (item.kind === "mcp" || item.kind === "harness_profile") return "查看执行层"
+  if (item.kind === "agent") return "打开智能体"
+  if (item.kind === "tool") return "查看工具"
+  if (item.kind === "skill") return "查看技能"
+  return "查看工作流"
+}
+
+function capabilityLink(item: CapabilityManifest) {
+  if (item.kind === "provider") return
+  if (item.kind === "mcp" || item.kind === "harness_profile") return "/harness"
+  if (item.kind === "agent") return `/agents/${item.id.split(".").at(-1) ?? ""}`
+  if (item.kind === "tool") return "/agents#agent-tools"
+  if (item.kind === "skill") return "/agents#agent-skills"
+  return "/agents#agent-workflows"
+}
+
+function matches(item: CapabilityManifest, query: string) {
+  if (!query) return true
+  return [item.name, item.description, item.id, item.kind, ...(item.tags ?? [])].some((value) => value.toLowerCase().includes(query))
 }
 
 export default function MarketplacePage() {
@@ -76,6 +126,7 @@ export default function MarketplacePage() {
   const [workflows, setWorkflows] = createSignal<Workflow[]>([])
   const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
   const [active, setActive] = createSignal<Id>("agents")
+  const [query, setQuery] = createSignal("")
   const [loading, setLoading] = createSignal(true)
   const [error, setError] = createSignal("")
 
@@ -235,6 +286,7 @@ export default function MarketplacePage() {
   ])
   const selected = createMemo(() => catalog().find((item) => item.id === active()) ?? catalog()[0])
   const selectedCapabilities = createMemo(() => capabilitiesFor(capabilities(), selected().id))
+  const filteredCapabilities = createMemo(() => selectedCapabilities().filter((item) => matches(item, query().trim().toLowerCase())).slice(0, 8))
 
   function connectProvider() {
     dialog.show(() => <DialogSelectProvider />)
@@ -248,11 +300,26 @@ export default function MarketplacePage() {
     dialog.show(() => <DialogConnectProvider provider={id} />)
   }
 
+  function connectCapability(item: CapabilityManifest) {
+    const key = item.name.toLowerCase()
+    const provider = recommendedProviders.find((candidate) => item.id.includes(candidate.id) || key.includes(candidate.label.toLowerCase()))
+    if (!provider) {
+      connectProvider()
+      return
+    }
+    connectPreferred(provider.id)
+  }
+
   createEffect(() => {
     const current = server.projects.last() ?? recent()[0]?.worktree
     if (!current) return
     layout.projects.open(current)
     if (server.projects.last() !== current) server.projects.touch(current)
+  })
+
+  createEffect(() => {
+    active()
+    setQuery("")
   })
 
   return (
@@ -300,7 +367,7 @@ export default function MarketplacePage() {
         </nav>
 
         <section class="agent-market-panel" data-testid="agent-market-panel">
-          <div>
+          <div class="agent-market-panel__main">
             <span>{selected().label}</span>
             <h2>{selected().title}</h2>
             <p>{selected().description}</p>
@@ -332,6 +399,72 @@ export default function MarketplacePage() {
                 </For>
               </div>
             </Show>
+            <label class="marketplace-search">
+              <Icon name="magnifying-glass" size="small" />
+              <input
+                data-testid="marketplace-search"
+                value={query()}
+                placeholder={`搜索${selected().label}能力`}
+                onInput={(event) => setQuery(event.currentTarget.value)}
+              />
+            </label>
+            <div class="marketplace-capability-grid" data-testid="marketplace-capability-grid">
+              <For each={filteredCapabilities()}>
+                {(item) => {
+                  const status = capabilityState(item)
+                  const href = capabilityLink(item)
+                  return (
+                    <article class="marketplace-capability-card" data-testid="marketplace-capability-card" data-capability-id={item.id}>
+                      <header>
+                        <span class="marketplace-capability-card__icon">
+                          <Icon name={icons[item.kind]} size="small" />
+                        </span>
+                        <div>
+                          <strong>{item.name}</strong>
+                          <small>
+                            {labels[item.kind]} · v{item.version}
+                          </small>
+                        </div>
+                        <span class={`marketplace-state marketplace-state--${status.tone}`}>{status.label}</span>
+                      </header>
+                      <p>{item.description}</p>
+                      <div class="marketplace-capability-card__meta">
+                        <span>{sourceLabel(item.source)}</span>
+                        <span>{riskLabel(item.permissions)}</span>
+                        <span>{permissionSummary(item.permissions)}</span>
+                      </div>
+                      <div class="marketplace-capability-card__tags">
+                        <For each={item.tags?.slice(0, 3) ?? []}>{(tag) => <span>{tag}</span>}</For>
+                      </div>
+                      <footer>
+                        <span>{item.enabled ? "执行层可调度" : item.installed ? "需要配置后启用" : "尚未安装"}</span>
+                        <Show
+                          when={href}
+                          keyed
+                          fallback={
+                            <button type="button" class="agent-button agent-button--ghost" onClick={() => connectCapability(item)}>
+                              {capabilityAction(item)}
+                            </button>
+                          }
+                        >
+                          {(link) => (
+                            <A href={link} class="agent-button agent-button--ghost">
+                              {capabilityAction(item)}
+                            </A>
+                          )}
+                        </Show>
+                      </footer>
+                    </article>
+                  )
+                }}
+              </For>
+              <Show when={!loading() && filteredCapabilities().length === 0}>
+                <div class="marketplace-capability-empty" data-testid="marketplace-capability-empty">
+                  <strong>{query().trim() ? "没有匹配的能力" : "等待发现能力"}</strong>
+                  <span>{query().trim() ? "换个关键词，或切换左侧分类。" : "执行层同步后会显示可用插件、工具和技能。"}</span>
+                </div>
+              </Show>
+            </div>
             <Show when={selected().id === "providers"}>
               <div class="agent-provider-actions" data-testid="marketplace-provider-actions">
                 <For each={recommendedProviders}>

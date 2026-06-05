@@ -562,6 +562,7 @@ check(
     "Expected exactly 4 macOS updater artifacts",
     '--repo "$GITHUB_REPOSITORY"',
     "--draft",
+    "--prerelease",
     'gh release delete "$TAG"',
     '--target "$GITHUB_SHA"',
     '"${dmgs[@]}"',

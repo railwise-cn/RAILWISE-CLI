@@ -206,6 +206,7 @@ jobs:
             --title "RAILWISE Desktop ${TAG#desktop/}" \
             --notes "查看 CHANGELOG.md 了解更新内容" \
             --draft \
+            --prerelease \
             --target "$GITHUB_SHA" \
             "${dmgs[@]}" \
             "${updates[@]}" \

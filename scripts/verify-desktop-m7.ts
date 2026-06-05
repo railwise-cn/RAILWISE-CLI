@@ -163,12 +163,14 @@ check(
     ]) &&
     has(messageTimeline, [
       "capabilitiesForAgents",
+      "capabilitiesFromRouting",
       "session-turn-execution-capabilities",
       "session-turn-execution-capability-name",
       "session.execution.capabilities",
     ]) &&
     has(sessionSidePanel, [
       "capabilitiesForAgents",
+      "capabilitiesFromRouting",
       "ExecutionChainStep",
       "InspectorItem",
       "session-inspector-summary",
@@ -202,6 +204,9 @@ check(
       "处理",
       "轨道交通监测方案",
       "规范条文速查",
+      "水准闭合差检核",
+      "复测资料检查",
+      "2 项能力",
       "tool: survey_calculator_leveling_closure",
       "chief_manager",
       'model: "configured"',
@@ -306,7 +311,7 @@ check(
       "技能",
     ]) &&
     has(visual, ["agent-capability-routing", "可调用能力", "规范条文速查"]) &&
-    has(marketplaceState, ["capabilitiesForAgent", "agentCapabilityLabels", "规范资料管理员", "规范引用复核", "survey_calculator_leveling_closure", "resurvey_material_check", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
+    has(marketplaceState, ["capabilitiesForAgent", "capabilitiesFromRouting", "<railwise_routing>", "agentCapabilityLabels", "规范资料管理员", "规范引用复核", "survey_calculator_leveling_closure", "resurvey_material_check", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
     has(marketplaceStateTest, ["maps agents back to callable capabilities", "规范条文查询", "规范资料管理员", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&

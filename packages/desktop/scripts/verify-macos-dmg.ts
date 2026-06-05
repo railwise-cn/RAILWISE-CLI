@@ -16,6 +16,7 @@ const arg = (name: string, fallback?: string) => {
 const dmgArg = arg("--dmg")
 const target = arg("--target", Bun.env.RUST_TARGET || Bun.env.TAURI_ENV_TARGET_TRIPLE)
 const strict = args.includes("--require-developer-id")
+const stapled = args.includes("--require-stapled-dmg")
 if (!target && !dmgArg) throw new Error("Missing --dmg, --target or RUST_TARGET")
 if (target && !target.includes("apple-darwin")) throw new Error(`macOS DMG verification is not available for ${target}`)
 
@@ -33,6 +34,8 @@ const dmgs = (
 const dmg = dmgArg ?? (dmgs.length === 1 ? dmgs[0]! : undefined)
 if (!dmg) throw new Error(`Expected exactly one DMG in ${dirs.join(", ")}; found ${dmgs.length}`)
 const image = path.resolve(dmg)
+
+if (stapled) await $`xcrun stapler validate ${image}`
 
 const mounted = async () => {
   const info = await $`hdiutil info`.quiet().text()

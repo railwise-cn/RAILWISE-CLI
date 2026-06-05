@@ -103,6 +103,7 @@ const prepare = await read("packages/desktop/scripts/prepare-tauri-config.ts")
 const localDmg = await read("packages/desktop/scripts/package-local-dmg.ts")
 const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
+const macNotarize = await read("packages/desktop/scripts/notarize-macos-dmg.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
 const appZipVerify = await read("packages/desktop/scripts/verify-macos-appzip.ts")
@@ -390,13 +391,16 @@ check(
   contains(workflow, [
     "Verify macOS app bundle",
     "bun run verify:macos -- --target",
+    "Notarize macOS DMG",
+    "bun run notarize:dmg -- --target",
     "Verify macOS DMG contents",
     "bun run verify:dmg -- --target",
+    "--require-stapled-dmg",
     "Stage bundle artifacts",
     "bun run stage:macos:bundles -- --target",
     "target/desktop-release/${{ matrix.target }}",
   ]),
-  "CI verifies the app bundle and DMG contents before uploading release artifacts",
+  "CI verifies the app bundle and notarized DMG contents before uploading release artifacts",
 )
 check(
   "desktop dev loopback host",
@@ -464,6 +468,22 @@ check(
   "Local macOS app bundles can be sealed with ad-hoc signing when Developer ID is unavailable",
 )
 check(
+  "macOS DMG notarization script",
+  pkg.scripts?.["notarize:dmg"] === "bun ./scripts/notarize-macos-dmg.ts" &&
+    contains(macNotarize, [
+      'const dmgArg = arg("--dmg")',
+      'const profile = arg("--keychain-profile")',
+      "xcrun notarytool submit",
+      "--wait",
+      "xcrun stapler staple",
+      "xcrun stapler validate",
+      "APPLE_ID",
+      "APPLE_PASSWORD",
+      "APPLE_TEAM_ID",
+    ]),
+  "CI can notarize and staple signed macOS DMGs before publishing",
+)
+check(
   "macOS bundle verification script",
   pkg.scripts?.["verify:macos"] === "bun ./scripts/verify-macos-bundle.ts" &&
     contains(macVerify, [
@@ -483,6 +503,8 @@ check(
   pkg.scripts?.["verify:dmg"] === "bun ./scripts/verify-macos-dmg.ts" &&
     contains(dmgVerify, [
       'const dmgArg = arg("--dmg")',
+      "--require-stapled-dmg",
+      "xcrun stapler validate",
       "if (!target && !dmgArg)",
       "hdiutil attach",
       "-mountpoint",

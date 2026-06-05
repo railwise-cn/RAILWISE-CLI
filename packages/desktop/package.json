@@ -13,6 +13,7 @@
     "package:dmg:local": "bun ./scripts/package-local-dmg.ts",
     "build:dmg:local": "bun run build:macos:local && bun run package:dmg:local",
     "sign:macos": "bun ./scripts/sign-macos-app.ts",
+    "notarize:dmg": "bun ./scripts/notarize-macos-dmg.ts",
     "verify:macos": "bun ./scripts/verify-macos-bundle.ts",
     "verify:dmg": "bun ./scripts/verify-macos-dmg.ts",
     "verify:appzip": "bun ./scripts/verify-macos-appzip.ts",

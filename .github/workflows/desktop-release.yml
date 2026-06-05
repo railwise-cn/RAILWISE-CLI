@@ -137,6 +137,16 @@ jobs:
         working-directory: packages/desktop
         run: bun run tauri -- build --target ${{ matrix.target }} --bundles ${{ matrix.bundles }} --config src-tauri/tauri.ci.conf.json
 
+      - name: Notarize macOS DMG
+        timeout-minutes: 30
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        shell: bash
+        working-directory: packages/desktop
+        run: bun run notarize:dmg -- --target ${{ matrix.target }}
+
       - name: Verify macOS app bundle
         shell: bash
         working-directory: packages/desktop
@@ -145,7 +155,7 @@ jobs:
       - name: Verify macOS DMG contents
         shell: bash
         working-directory: packages/desktop
-        run: bun run verify:dmg -- --target ${{ matrix.target }} --require-developer-id
+        run: bun run verify:dmg -- --target ${{ matrix.target }} --require-developer-id --require-stapled-dmg
 
       - name: Stage bundle artifacts
         shell: bash

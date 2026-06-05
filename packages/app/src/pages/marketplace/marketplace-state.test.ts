@@ -7,6 +7,7 @@ import {
   capabilitiesForAgent,
   capabilitiesForAgents,
   capabilityCount,
+  capabilitiesFromRouting,
   normalizeCapability,
   capabilityPreview,
   normalizeCapabilities,
@@ -135,6 +136,24 @@ describe("marketplace capability state", () => {
       "规范条文速查",
       "规范条文查询",
     ])
+  })
+
+  test("maps hidden routing hints back to task-scoped capabilities", () => {
+    expect(
+      capabilitiesFromRouting(list, [
+        {
+          type: "text",
+          synthetic: true,
+          text: `<railwise_routing>
+推荐工具：
+- standard_query_query_standard: 规范条文查询 - 检索规范条文。
+
+推荐 Skill：
+- call tool "skill" with name="规范条文速查": 规范条文速查。
+</railwise_routing>`,
+        },
+      ]).map((item) => item.name),
+    ).toEqual(["规范条文速查", "规范条文查询"])
   })
 
   test("normalizes server and sdk capability response shapes", () => {

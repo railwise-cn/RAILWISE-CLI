@@ -224,6 +224,12 @@ type AgentBindingInput = {
   displayName?: string
 }
 
+type RoutingPart = {
+  type: string
+  text?: string
+  synthetic?: boolean
+}
+
 const agentLabels: Record<string, string[]> = {
   chief_manager: ["RAILWISE", "RAILWISE 协作"],
   cpiii_specialist: ["CPIII 测量专家", "CPIII 专家"],
@@ -333,6 +339,35 @@ export function capabilitiesForAgents(list: CapabilityManifest[], agents: AgentB
   const seen = new Set<string>()
   return agents
     .flatMap((agent) => capabilitiesForAgent(list, agent))
+    .filter((item) => {
+      if (seen.has(item.id)) return false
+      seen.add(item.id)
+      return true
+    })
+}
+
+function routeID(id: string) {
+  return id
+    .trim()
+    .replace(/[.,;:]+$/, "")
+    .replace(/^railwise\.(tool|skill|workflow)\./, "")
+}
+
+export function capabilitiesFromRouting(list: CapabilityManifest[], parts: RoutingPart[]) {
+  const text = parts
+    .filter((part) => part.type === "text" && part.synthetic && part.text?.includes("<railwise_routing>"))
+    .map((part) => part.text)
+    .join("\n")
+  if (!text) return []
+
+  const ids = new Set(Array.from(text.matchAll(/^\s*-\s*([a-zA-Z0-9_.:-]+)\s*:/gm)).map((match) => routeID(match[1])))
+  const names = new Set(Array.from(text.matchAll(/name="([^"]+)"/g)).map((match) => match[1].trim()))
+  const seen = new Set<string>()
+
+  return list
+    .filter((item) => item.enabled && item.installed && routedKinds.has(item.kind))
+    .filter((item) => ids.has(routeID(item.id)) || names.has(item.name))
+    .sort((a, b) => capabilityRank(a) - capabilityRank(b) || a.name.localeCompare(b.name, "zh-Hans-CN"))
     .filter((item) => {
       if (seen.has(item.id)) return false
       seen.add(item.id)

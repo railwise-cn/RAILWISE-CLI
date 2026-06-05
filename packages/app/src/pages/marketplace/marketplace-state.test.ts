@@ -69,13 +69,31 @@ const list: CapabilityManifest[] = [
     },
     tags: ["规范"],
   },
+  {
+    id: "railwise.tool.standard_query_query_standard",
+    kind: "tool",
+    name: "规范条文查询",
+    description: "检索规范条文。",
+    version: "0.1.0",
+    source: "builtin",
+    enabled: true,
+    installed: true,
+    permissions: {
+      filesystem: "read",
+      network: false,
+      shell: false,
+      external_directory: false,
+      secrets: false,
+    },
+    tags: ["规范"],
+  },
 ]
 
 describe("marketplace capability state", () => {
   test("groups manifests by marketplace category", () => {
     expect(capabilityCount(list, "agents")).toBe(1)
     expect(capabilityCount(list, "providers")).toBe(1)
-    expect(capabilityCount(list, "tools")).toBe(0)
+    expect(capabilityCount(list, "tools")).toBe(1)
     expect(capabilitiesFor(list, "agents")[0]?.name).toBe("RAILWISE 默认协作")
   })
 
@@ -100,24 +118,29 @@ describe("marketplace capability state", () => {
       agents: ["规范资料管理员", "质量审查专家", "CPIII 测量专家"],
       workflows: ["规范引用复核"],
     })
+    expect(capabilityBindings(list[3])).toEqual({
+      agents: ["规范资料管理员", "质量审查专家", "CPIII 测量专家"],
+      workflows: ["规范引用复核"],
+    })
   })
 
   test("maps agents back to callable capabilities", () => {
     expect(agentCapabilityLabels({ name: "qa_reviewer" })).toContain("质量审查专家")
-    expect(capabilitiesForAgent(list, { name: "qa_reviewer" }).map((item) => item.name)).toEqual(["规范条文速查"])
-    expect(capabilitiesForAgent(list, { name: "chief_manager" }).map((item) => item.name)).toEqual(["规范条文速查"])
+    expect(capabilitiesForAgent(list, { name: "qa_reviewer" }).map((item) => item.name)).toEqual(["规范条文速查", "规范条文查询"])
+    expect(capabilitiesForAgent(list, { name: "chief_manager" }).map((item) => item.name)).toEqual(["规范条文速查", "规范条文查询"])
   })
 
   test("deduplicates callable capabilities for a session agent set", () => {
     expect(capabilitiesForAgents(list, [{ name: "chief_manager" }, { name: "qa_reviewer" }]).map((item) => item.name)).toEqual([
       "规范条文速查",
+      "规范条文查询",
     ])
   })
 
   test("normalizes server and sdk capability response shapes", () => {
-    expect(normalizeCapabilities(list)).toHaveLength(3)
-    expect(normalizeCapabilities({ data: list })).toHaveLength(3)
-    expect(normalizeCapabilities({ data: { data: list } })).toHaveLength(3)
+    expect(normalizeCapabilities(list)).toHaveLength(4)
+    expect(normalizeCapabilities({ data: list })).toHaveLength(4)
+    expect(normalizeCapabilities({ data: { data: list } })).toHaveLength(4)
     expect(normalizeCapabilities({ data: null })).toEqual([])
     expect(normalizeCapability(list[0])?.id).toBe("railwise.agent.chief_manager")
     expect(normalizeCapability({ data: list[1] })?.id).toBe("railwise.provider.deepseek")

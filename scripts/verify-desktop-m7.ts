@@ -273,6 +273,9 @@ check(
       "railwise.agent.chief_manager",
       "railwise.provider.deepseek",
       "规范条文查询",
+      "水准闭合差检核",
+      "复测资料检查",
+      "DXF 图层检查",
       "monitoring-design",
     ]) &&
     has(agentStudio, [
@@ -289,6 +292,9 @@ check(
       "marketplace-capability-bindings",
       "规范资料管理员",
       "质量审查专家",
+      "水准闭合差检核",
+      "复测资料检查",
+      "DXF 图层检查",
       "规范引用复核",
       "agent-capability-routing",
       "网络 / 密钥",
@@ -296,8 +302,8 @@ check(
       "技能",
     ]) &&
     has(visual, ["agent-capability-routing", "可调用能力", "规范条文速查"]) &&
-    has(marketplaceState, ["capabilitiesForAgent", "agentCapabilityLabels", "规范资料管理员", "规范引用复核", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
-    has(marketplaceStateTest, ["maps agents back to callable capabilities", "规范资料管理员", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
+    has(marketplaceState, ["capabilitiesForAgent", "agentCapabilityLabels", "规范资料管理员", "规范引用复核", "survey_calculator_leveling_closure", "resurvey_material_check", "permissionSummary", "riskLabel", "sourceLabel", "harness_profile"]) &&
+    has(marketplaceStateTest, ["maps agents back to callable capabilities", "规范条文查询", "规范资料管理员", "网络 / 密钥", "DeepSeek", "RAILWISE 默认协作"]) &&
     !marketplace.includes("label: \"Agents\"") &&
     !marketplace.includes("label: \"Tools\"") &&
     !marketplace.includes("label: \"Skills\""),
@@ -317,7 +323,7 @@ check(
       "export async function enable",
       "export async function disable",
     ]) &&
-    has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe"]) &&
+    has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe", "survey_calculator_leveling_closure", "resurvey_material_check", "dxf_layer_inspector"]) &&
     has(harnessRoute, ["/status", "/session/:sessionID/timeline", "/session/:sessionID/permission/:permissionID"]) &&
     has(marketplaceRoute, ["await Marketplace.list()", "Marketplace.enable", "Marketplace.disable", "/capabilities", "/capabilities/:id", "/capabilities/:id/enable", "/capabilities/:id/disable"]) &&
     has(server, ['.route("/harness", HarnessRoutes())', '.route("/marketplace", MarketplaceRoutes())']) &&
@@ -505,7 +511,10 @@ check(
     "执行层显示工作区边界",
     "RAILWISE 默认协作",
     "本地文件读取",
+    "规范条文查询",
+    "水准闭合差检核",
     "复测资料检查",
+    "DXF 图层检查",
     "DeepSeek",
     "browserType.launch",
     "不得发布 Beta",

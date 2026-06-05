@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { Button } from "@railwise/ui/button"
 import { Mark } from "@railwise/ui/logo"
 import { useLayout } from "@/context/layout"
@@ -13,11 +13,14 @@ import { DialogConnectProvider } from "@/components/dialog-connect-provider"
 import { DialogSelectProvider } from "@/components/dialog-select-provider"
 import { useServer } from "@/context/server"
 import { useGlobalSync } from "@/context/global-sync"
+import { useGlobalSDK } from "@/context/global-sdk"
 import { useLanguage } from "@/context/language"
 import { useProviders } from "@/hooks/use-providers"
 import { collaborationTarget, recentWorkspaces, recommendedModel } from "@/pages/agents/collaboration"
+import { capabilitiesForAgent, normalizeCapabilities } from "@/pages/marketplace/marketplace-state"
 import { setSessionHandoff } from "@/pages/session/handoff"
 import { sortedRootSessions } from "@/pages/layout/helpers"
+import type { CapabilityManifest } from "@railwise/sdk/v2/client"
 
 export default function Home() {
   const sync = useGlobalSync()
@@ -26,10 +29,12 @@ export default function Home() {
   const dialog = useDialog()
   const navigate = useNavigate()
   const server = useServer()
+  const sdk = useGlobalSDK()
   const language = useLanguage()
   const providers = useProviders()
   const [directory, setDirectory] = createSignal("")
   const [prompt, setPrompt] = createSignal("")
+  const [capabilities, setCapabilities] = createSignal<CapabilityManifest[]>([])
   const recent = createMemo(() => recentWorkspaces(sync.data.project, 5))
   const duplicateNames = createMemo(() => {
     const counts = new Map<string, number>()
@@ -58,6 +63,7 @@ export default function Home() {
       Object.values(projectStore()?.question ?? {}).flat().length,
   )
   const connectedProviders = createMemo(() => providers.connected().filter((provider) => provider.id !== "railwise"))
+  const agentCapabilities = createMemo(() => capabilitiesForAgent(capabilities(), { name: "chief_manager" }).slice(0, 5))
   const canStart = createMemo(() => selectedDirectory().trim().length > 0 && prompt().trim().length > 0)
   const modelLabel = createMemo(() => {
     const provider = connectedProviders()[0]
@@ -106,6 +112,13 @@ export default function Home() {
     if (!target) return
     layout.projects.open(target)
     server.projects.touch(target)
+  })
+
+  onMount(() => {
+    void sdk.client.marketplace.capabilities
+      .list()
+      .then((result) => setCapabilities(normalizeCapabilities(result)))
+      .catch(() => setCapabilities([]))
   })
 
   function projectName(value: string) {
@@ -259,6 +272,30 @@ export default function Home() {
                 onInput={(event) => setPrompt(event.currentTarget.value)}
                 placeholder="例如：检查复测资料并生成下一步计划。"
               />
+
+              <section
+                class="mx-1 mb-3 rounded-lg border border-border-weak-base bg-surface-base/70 px-3 py-2"
+                data-testid="home-agent-capability-preview"
+              >
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 text-12-medium text-text-weak">
+                    <Icon name="brain" size="small" />
+                    RAILWISE 将调用
+                  </span>
+                  <Show
+                    when={agentCapabilities().length > 0}
+                    fallback={<span class="text-12-regular text-text-weak">能力市场启用后显示</span>}
+                  >
+                    <For each={agentCapabilities()}>
+                      {(item) => (
+                        <span class="max-w-[9rem] truncate rounded-full border border-border-weak-base px-2 py-1 text-11-medium text-text-strong">
+                          {item.name}
+                        </span>
+                      )}
+                    </For>
+                  </Show>
+                </div>
+              </section>
 
               <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border-weak-base pt-3">
                 <div class="flex flex-wrap gap-2">
@@ -460,6 +497,16 @@ export default function Home() {
 
           <section class="mt-4 rounded-lg border border-border-weak-base bg-surface-panel p-3" data-testid="home-capability-rail">
             <div class="mb-3 text-12-medium text-text-weak">能力</div>
+            <Show when={agentCapabilities().length > 0}>
+              <div class="mb-3 rounded-md border border-border-weak-base bg-surface-base/70 p-2">
+                <div class="mb-2 text-11-medium text-text-weak">RAILWISE 默认协作</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <For each={agentCapabilities().slice(0, 4)}>
+                    {(item) => <span class="max-w-full truncate rounded-full bg-surface-element px-2 py-1 text-11-medium text-text-strong">{item.name}</span>}
+                  </For>
+                </div>
+              </div>
+            </Show>
             <div class="grid grid-cols-2 gap-2">
               <button
                 type="button"

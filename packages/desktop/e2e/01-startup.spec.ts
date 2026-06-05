@@ -51,6 +51,9 @@ test("首页任务输入直接进入 chief_manager 协作会话", async ({ launc
   await state(page.locator("[data-testid=sidecar-status]"), "ready", 15000)
   await expect(page.getByText("worktree").first()).toBeVisible()
   await expect(page.locator("[data-testid=home-project-directory]")).toContainText("worktree")
+  await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("RAILWISE 将调用")
+  await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("轨道交通监测方案")
+  await expect(page.locator("[data-testid=home-agent-capability-preview]")).toContainText("规范条文速查")
   await page.locator("[data-testid=home-task-input]").fill("检查当前线路复测资料，列出缺失文件并给出下一步计划。")
   await page.locator("[data-testid=home-start-session]").click()
 

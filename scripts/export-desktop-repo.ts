@@ -161,6 +161,10 @@ await vendor()
 await workflow()
 await cp("packages/desktop/.cli-version", path.join(out, ".cli-version"))
 
+await $`git add -A`.cwd(out)
+if ((await $`git status --porcelain`.cwd(out).text()).trim())
+  await $`git commit -m ${"chore: standalone repo rewrites (npm deps, workflow, tsconfig, .cli-version)"}`.cwd(out)
+
 console.log(`Exported desktop repo to ${out}`)
 console.log(`History mode: ${history ? "filter-repo" : "snapshot"}`)
 console.log(`CLI sidecar version: ${cli}`)

@@ -155,6 +155,27 @@ This runs `bun run --cwd packages/desktop build` automatically via Tauri’s `be
 
 Please try to follow the [style guide](./AGENTS.md)
 
+### Upstream Sync & Decoupled Releases
+
+Railwise tracks the OpenCode upstream and ships its agents, shared frontend packages, and desktop app as independent artifacts. The full procedure lives in [docs/dev/decoupled-release.md](./docs/dev/decoupled-release.md).
+
+Common commands:
+
+```bash
+# Generate a clean rebrand baseline from an upstream tag, then audit for residuals
+bun run sync:upstream -- --to v1.16.2 --dry-run
+bun run rebrand:audit
+
+# Extract .railwise assets into a publishable agent pack + universal installer
+bun run assets:extract -- --out ../railwise-agent-pack --force
+
+# Publish shared packages consumed by desktop (defaults to npm --dry-run; pass --publish to release)
+bun run publish:shared
+
+# Export a standalone desktop repo snapshot (pins the CLI via packages/desktop/.cli-version)
+bun run desktop:export -- --out ../railwise-desktop-app --force
+```
+
 ### Setting up a Debugger
 
 Bun debugging is currently rough around the edges. We hope this guide helps you get set up and avoid some pain points.

@@ -53,6 +53,15 @@ The script defaults to npm `--dry-run`. CI must pass `--publish` for a real publ
 
 Published package versions should match the CLI version that generated the SDK.
 
+### Publishing from CI (recommended)
+
+The `publish-shared` workflow (`.github/workflows/publish-shared.yml`) publishes the shared packages using the repository's `NPM_TOKEN` secret, so no local `npm login` is required. Trigger it from the Actions tab (`workflow_dispatch`):
+
+- `version` — the version to publish. Defaults to `packages/desktop/.cli-version` so the shared packages line up with the pinned CLI.
+- `dry_run` — defaults to `true` (runs `npm publish --dry-run`). Set it to `false` to perform a real publish.
+
+The workflow sets `RAILWISE_CHANNEL=latest`, so released packages are tagged `latest`. Run it once with `dry_run=true` to verify the staged tarballs, then re-run with `dry_run=false` to publish.
+
 ## Desktop Split
 
 Export a standalone Desktop repository snapshot:

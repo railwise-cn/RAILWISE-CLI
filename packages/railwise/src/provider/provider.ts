@@ -224,6 +224,7 @@ export namespace Provider {
       const profile = configProfile ?? envProfile
 
       const awsAccessKeyId = Env.get("AWS_ACCESS_KEY_ID")
+      const configApiKey = providerConfig?.options?.apiKey
 
       // TODO: Using process.env directly because Env.set only updates a process.env shallow copy,
       // until the scope of the Env API is clarified (test only or runtime?)
@@ -243,7 +244,14 @@ export namespace Provider {
         process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI || process.env.AWS_CONTAINER_CREDENTIALS_FULL_URI,
       )
 
-      if (!profile && !awsAccessKeyId && !awsBearerToken && !awsWebIdentityTokenFile && !containerCreds)
+      if (
+        !profile &&
+        !awsAccessKeyId &&
+        !awsBearerToken &&
+        !configApiKey &&
+        !awsWebIdentityTokenFile &&
+        !containerCreds
+      )
         return { autoload: false }
 
       const providerOptions: AmazonBedrockProviderSettings = {
@@ -252,7 +260,7 @@ export namespace Provider {
 
       // Only use credential chain if no bearer token exists
       // Bearer token takes precedence over credential chain (profiles, access keys, IAM roles, web identity tokens)
-      if (!awsBearerToken) {
+      if (!awsBearerToken && !configApiKey) {
         // Build credential provider options (only pass profile if specified)
         const credentialProviderOptions = profile ? { profile } : {}
 
@@ -622,7 +630,7 @@ export namespace Provider {
         interleaved: z.union([
           z.boolean(),
           z.object({
-            field: z.enum(["reasoning_content", "reasoning_details"]),
+            field: z.enum(["reasoning", "reasoning_content", "reasoning_details"]),
           }),
         ]),
       }),

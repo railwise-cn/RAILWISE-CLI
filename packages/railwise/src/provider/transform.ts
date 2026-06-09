@@ -32,6 +32,8 @@ export namespace ProviderTransform {
       case "@ai-sdk/openai":
       case "@ai-sdk/azure":
         return "openai"
+      case "@ai-sdk/amazon-bedrock/mantle":
+        return "openai"
       case "@ai-sdk/amazon-bedrock":
         return "bedrock"
       case "@ai-sdk/anthropic":
@@ -381,7 +383,6 @@ export namespace ProviderTransform {
     const adaptiveEfforts = ["low", "medium", "high", "max"]
     if (
       id.includes("deepseek") ||
-      id.includes("minimax") ||
       id.includes("glm") ||
       id.includes("mistral") ||
       id.includes("kimi") ||
@@ -389,6 +390,17 @@ export namespace ProviderTransform {
       id.includes("k2p5")
     )
       return {}
+
+    if (
+      model.api.id.toLowerCase().includes("minimax-m3") &&
+      ["@ai-sdk/anthropic", "@ai-sdk/openai-compatible"].includes(model.api.npm)
+    ) {
+      return {
+        none: { thinking: { type: "disabled" } },
+        thinking: { thinking: { type: "adaptive" } },
+      }
+    }
+    if (id.includes("minimax")) return {}
 
     // see: https://docs.x.ai/docs/guides/reasoning#control-how-hard-the-model-thinks
     if (id.includes("grok") && id.includes("grok-3-mini")) {
@@ -526,6 +538,7 @@ export namespace ProviderTransform {
           ]),
         )
       case "@ai-sdk/openai":
+      case "@ai-sdk/amazon-bedrock/mantle":
         // https://v5.ai-sdk.dev/providers/ai-sdk-providers/openai
         if (id === "gpt-5-pro") return {}
         const openaiEfforts = iife(() => {
@@ -731,7 +744,8 @@ export namespace ProviderTransform {
     if (
       input.model.providerID === "openai" ||
       input.model.api.npm === "@ai-sdk/openai" ||
-      input.model.api.npm === "@ai-sdk/github-copilot"
+      input.model.api.npm === "@ai-sdk/github-copilot" ||
+      input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
     ) {
       result["store"] = false
     }
@@ -774,6 +788,10 @@ export namespace ProviderTransform {
 
     // Enable thinking by default for kimi-k2.5/k2p5 models using anthropic SDK
     const modelId = input.model.api.id.toLowerCase()
+    if (modelId.includes("minimax-m3") && input.model.api.npm === "@ai-sdk/anthropic") {
+      result["thinking"] = { type: "adaptive" }
+    }
+
     if (
       (input.model.api.npm === "@ai-sdk/anthropic" || input.model.api.npm === "@ai-sdk/google-vertex/anthropic") &&
       (modelId.includes("k2p5") || modelId.includes("kimi-k2.5") || modelId.includes("kimi-k2p5"))
@@ -801,7 +819,17 @@ export namespace ProviderTransform {
     if (input.model.api.id.includes("gpt-5") && !input.model.api.id.includes("gpt-5-chat")) {
       if (!input.model.api.id.includes("gpt-5-pro")) {
         result["reasoningEffort"] = "medium"
-        result["reasoningSummary"] = "auto"
+        if (
+          input.model.api.npm === "@ai-sdk/openai" ||
+          input.model.api.npm === "@ai-sdk/azure" ||
+          input.model.api.npm === "@ai-sdk/github-copilot" ||
+          input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
+        ) {
+          result["reasoningSummary"] = "auto"
+        }
+        if (input.model.api.npm === "@ai-sdk/openai" || input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle") {
+          result["include"] = ["reasoning.encrypted_content"]
+        }
       }
 
       // Only set textVerbosity for non-chat gpt-5.x models

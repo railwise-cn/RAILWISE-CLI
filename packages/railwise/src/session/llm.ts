@@ -111,6 +111,13 @@ export namespace LLM {
       mergeDeep(input.agent.options),
       mergeDeep(variant),
     )
+    if (
+      input.model.api.npm === "@ai-sdk/azure" &&
+      (provider.options.useCompletionUrls || input.model.options.useCompletionUrls || options.useCompletionUrls)
+    ) {
+      delete options.reasoningSummary
+      delete options.include
+    }
     if (isCodex) {
       options.instructions = SystemPrompt.instructions()
     }

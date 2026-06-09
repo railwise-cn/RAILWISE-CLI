@@ -354,7 +354,22 @@ export namespace SessionProcessor {
             })
             const error = MessageV2.fromError(e, { providerID: input.model.providerID })
             if (MessageV2.ContextOverflowError.isInstance(error)) {
-              // TODO: Handle context overflow error
+              if ((await Config.get()).compaction?.auto === false && !input.assistantMessage.summary) {
+                input.assistantMessage.error = error
+                input.assistantMessage.finish = "error"
+                Bus.publish(Session.Event.Error, {
+                  sessionID: input.assistantMessage.sessionID,
+                  error: input.assistantMessage.error,
+                })
+                SessionStatus.set(input.sessionID, { type: "idle" })
+              } else {
+                needsCompaction = true
+                Bus.publish(Session.Event.Error, {
+                  sessionID: input.assistantMessage.sessionID,
+                  error,
+                })
+              }
+              break
             }
             const retry = SessionRetry.retryable(error)
             if (retry !== undefined) {

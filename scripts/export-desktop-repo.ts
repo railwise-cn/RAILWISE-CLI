@@ -103,6 +103,7 @@ async function workflow() {
   const source = await Bun.file(".github/workflows/desktop-release.yml").text()
   const text = source
     .replaceAll("uses: ./.github/actions/setup-bun", "uses: oven-sh/setup-bun@v2")
+    .replaceAll("bun --cwd packages/desktop run", "bun run")
     .replaceAll("working-directory: packages/desktop", "working-directory: .")
     .replaceAll("packages/desktop/", "")
     .replace("bun install --frozen-lockfile", "bun install")

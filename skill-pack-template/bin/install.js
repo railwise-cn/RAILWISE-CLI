@@ -31,22 +31,27 @@ function custom(target) {
   return target.startsWith(".") || target.startsWith("~") || target.includes("/")
 }
 
+function customCtx(root) {
+  return {
+    name: "custom",
+    root,
+    layout: {
+      agent: "agent",
+      skill: "skill",
+      command: "command",
+      tool: "tool",
+      template: "templates",
+      theme: "themes",
+    },
+  }
+}
+
 function target(name) {
   const value = name || "railwise"
-  if (custom(value)) {
-    return {
-      name: "custom",
-      root: home(value),
-      layout: {
-        agent: "agent",
-        skill: "skill",
-        command: "command",
-        tool: "tool",
-        template: "templates",
-        theme: "themes",
-      },
-    }
-  }
+  const dest = option("--dest")
+  if (dest) return customCtx(home(dest))
+  if (value === "custom") throw new Error("Target 'custom' requires --dest <path>")
+  if (custom(value)) return customCtx(home(value))
   if (value === "codex") {
     return {
       name: value,

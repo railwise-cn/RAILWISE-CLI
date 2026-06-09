@@ -113,13 +113,14 @@ export namespace Harness {
         ? matched.filter((entry) => entry.session?.directory === input.directory).map((entry) => entry.item)
         : list
     const pendingSession = matched.find((entry) => entry.item.id === pending[0]?.id)?.session
+    const capabilities = await Marketplace.list()
 
     return HarnessStatus.parse({
       mode: pending.length > 0 ? "ask" : "safe",
       workspace: session?.directory ?? pendingSession?.directory,
       model: assistant ? model(assistant) : undefined,
       activeAgent: assistant?.agent,
-      capabilityCount: Marketplace.list().filter((item) => item.enabled).length,
+      capabilityCount: capabilities.filter((item) => item.enabled).length,
       pendingPermissionCount: pending.length,
       pendingSessionID: pending[0]?.sessionID,
       runningToolCount: running,

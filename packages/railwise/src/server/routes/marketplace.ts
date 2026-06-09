@@ -11,10 +11,6 @@ const CapabilitiesResponse = z
   })
   .meta({ ref: "MarketplaceCapabilitiesResponse" })
 
-function get(id: string) {
-  return Marketplace.list().find((item) => item.id === id)
-}
-
 export const MarketplaceRoutes = lazy(() =>
   new Hono()
     .get(
@@ -35,7 +31,7 @@ export const MarketplaceRoutes = lazy(() =>
           ...errors(500),
         },
       }),
-      async (c) => c.json({ data: Marketplace.list() }),
+      async (c) => c.json({ data: await Marketplace.list() }),
     )
     .get(
       "/capabilities/:id",
@@ -56,7 +52,7 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", z.object({ id: z.string() })),
       async (c) => {
-        const item = get(c.req.valid("param").id)
+        const item = await Marketplace.get(c.req.valid("param").id)
         if (!item) return c.json({ error: "capability not found" }, 404)
         return c.json(item)
       },
@@ -80,9 +76,9 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", z.object({ id: z.string() })),
       async (c) => {
-        const item = get(c.req.valid("param").id)
+        const item = await Marketplace.enable(c.req.valid("param").id)
         if (!item) return c.json({ error: "capability not found" }, 404)
-        return c.json({ ...item, enabled: true })
+        return c.json(item)
       },
     )
     .post(
@@ -104,9 +100,9 @@ export const MarketplaceRoutes = lazy(() =>
       }),
       validator("param", z.object({ id: z.string() })),
       async (c) => {
-        const item = get(c.req.valid("param").id)
+        const item = await Marketplace.disable(c.req.valid("param").id)
         if (!item) return c.json({ error: "capability not found" }, 404)
-        return c.json({ ...item, enabled: false })
+        return c.json(item)
       },
     ),
 )

@@ -23,7 +23,7 @@ const dirs = ["packages/util", "packages/ui", "packages/app"]
 const rootpkg = await Bun.file("package.json").json()
 const catalog = (rootpkg.workspaces as { catalog?: Record<string, string> }).catalog ?? {}
 const { Script } = await import("@railwise/script")
-const version = Script.version
+const version = Script.version.replace(/[^0-9A-Za-z.-]/g, "-")
 process.env.RAILWISE_VERSION = version
 
 function file(name: string) {

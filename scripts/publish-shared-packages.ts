@@ -28,29 +28,31 @@ if (args.includes("--help")) {
 }
 
 const { Script } = await import("@railwise/script")
-process.env.RAILWISE_VERSION = Script.version
+const version = Script.version.replace(/[^0-9A-Za-z.-]/g, "-")
+const channel = Script.channel.replace(/[^0-9A-Za-z.-]/g, "-")
+process.env.RAILWISE_VERSION = version
 
-function dep(name: string, version: string) {
-  if (version === "workspace:*") return Script.version
-  if (version === "catalog:") {
-    const value = catalog[name]
-    if (!value) throw new Error(`Missing catalog version for ${name}`)
-    return value
+function dep(name: string, value: string) {
+  if (value === "workspace:*") return version
+  if (value === "catalog:") {
+    const found = catalog[name]
+    if (!found) throw new Error(`Missing catalog version for ${name}`)
+    return found
   }
-  return version
+  return value
 }
 
 function deps(value: unknown) {
   if (!value || typeof value !== "object") return undefined
   return Object.fromEntries(
-    Object.entries(value as Record<string, string>).map(([name, version]) => [name, dep(name, version)]),
+    Object.entries(value as Record<string, string>).map(([name, value]) => [name, dep(name, value)]),
   )
 }
 
 async function write(pkg: Json, dir: string) {
   const next = { ...pkg }
   delete next.private
-  next.version = Script.version
+  next.version = version
   next.dependencies = deps(next.dependencies)
   next.devDependencies = deps(next.devDependencies)
   next.peerDependencies = deps(next.peerDependencies)
@@ -78,8 +80,8 @@ await (dry ? $`bun ./packages/sdk/js/script/publish.ts --dry-run` : $`bun ./pack
 for (const dir of dirs) {
   await $`bun pm pack`.cwd(path.join(pack, dir))
   await (dry
-    ? $`npm publish *.tgz --access public --tag ${Script.channel} --dry-run`.cwd(path.join(pack, dir))
-    : $`npm publish *.tgz --access public --tag ${Script.channel}`.cwd(path.join(pack, dir)))
+    ? $`npm publish *.tgz --access public --tag ${channel} --dry-run`.cwd(path.join(pack, dir))
+    : $`npm publish *.tgz --access public --tag ${channel}`.cwd(path.join(pack, dir)))
 }
 
 console.log("shared package publish complete")

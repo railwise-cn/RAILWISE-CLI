@@ -29,6 +29,7 @@ import open from "open"
 export namespace MCP {
   const log = Log.create({ service: "mcp" })
   const DEFAULT_TIMEOUT = 30_000
+  const MAX_LIST_PAGES = 1_000
   const TolerantListToolsResultSchema = ListToolsResultSchema.extend({
     tools: ToolSchema.omit({ outputSchema: true }).array(),
   })
@@ -113,8 +114,17 @@ export namespace MCP {
     })
   export type Status = z.infer<typeof Status>
 
+  function capability(client: Client, name: "tools" | "prompts" | "resources") {
+    const caps = (
+      client as Client & { getServerCapabilities?: () => Record<string, unknown> | undefined }
+    ).getServerCapabilities?.()
+    if (caps === undefined) return true
+    return Boolean(caps[name])
+  }
+
   // Register notification handlers for MCP client
   function registerNotificationHandlers(client: MCPClient, serverName: string) {
+    if (!capability(client, "tools")) return
     client.setNotificationHandler(ToolListChangedNotificationSchema, async () => {
       log.info("tools list changed notification received", { server: serverName })
       Bus.publish(ToolsChanged, { server: serverName })
@@ -127,34 +137,58 @@ export namespace MCP {
     )
   }
 
+  async function paginate<T, R extends { nextCursor?: string }>(
+    list: (cursor?: string) => Promise<R>,
+    items: (result: R) => T[],
+  ) {
+    const result: T[] = []
+    const cursors = new Set<string>()
+    let cursor: string | undefined
+
+    for (let page = 0; page < MAX_LIST_PAGES; page++) {
+      const value = await list(cursor)
+      result.push(...items(value))
+      if (value.nextCursor === undefined) return result
+      if (cursors.has(value.nextCursor)) throw new Error(`MCP list returned duplicate cursor: ${value.nextCursor}`)
+      cursors.add(value.nextCursor)
+      cursor = value.nextCursor
+    }
+
+    throw new Error(`MCP list exceeded ${MAX_LIST_PAGES} pages`)
+  }
+
   async function listTools(key: string, client: MCPClient, timeout: number) {
-    const result = await withTimeout(client.listTools(), timeout).catch(async (err) => {
-      const error = err instanceof Error ? err : new Error(String(err))
-      if (!isOutputSchemaValidationError(error)) throw error
+    return withTimeout(
+      paginate(
+        async (cursor) => {
+          const params = cursor === undefined ? undefined : { cursor }
+          return client.listTools(params, { timeout }).catch((err) => {
+            const error = err instanceof Error ? err : new Error(String(err))
+            if (!isOutputSchemaValidationError(error)) throw error
 
-      log.warn("failed to validate MCP tool output schemas, retrying without output schema validation", {
-        key,
-        error,
-      })
+            log.warn("failed to validate MCP tool output schemas, retrying without output schema validation", {
+              key,
+              error,
+            })
 
-      const result = await withTimeout(
-        client.request({ method: "tools/list" }, TolerantListToolsResultSchema, {
-          timeout,
-        }),
-        timeout,
-      )
-
-      return {
-        ...result,
-        tools: result.tools.map((tool) => ({
-          name: tool.name,
-          description: tool.description,
-          inputSchema: tool.inputSchema,
-        })) as MCPToolDef[],
-      }
-    })
-
-    return result.tools
+            return client
+              .request({ method: "tools/list", params }, TolerantListToolsResultSchema, {
+                timeout,
+              })
+              .then((value) => ({
+                ...value,
+                tools: value.tools.map((tool) => ({
+                  name: tool.name,
+                  description: tool.description,
+                  inputSchema: tool.inputSchema,
+                })) as MCPToolDef[],
+              }))
+          })
+        },
+        (value) => value.tools,
+      ),
+      timeout,
+    )
   }
 
   // Convert MCP tool definition to AI SDK Tool type
@@ -172,7 +206,7 @@ export namespace MCP {
     return dynamicTool({
       description: mcpTool.description ?? "",
       inputSchema: jsonSchema(schema),
-      execute: async (args: unknown) => {
+      execute: async (args: unknown, options) => {
         return client.callTool(
           {
             name: mcpTool.name,
@@ -181,6 +215,7 @@ export namespace MCP {
           CallToolResultSchema,
           {
             resetTimeoutOnProgress: true,
+            signal: options.abortSignal,
             timeout,
           },
         )
@@ -252,8 +287,12 @@ export namespace MCP {
 
   // Helper function to fetch prompts for a specific client
   async function fetchPromptsForClient(clientName: string, client: Client) {
-    const prompts = await client.listPrompts().catch((e) => {
-      log.error("failed to get prompts", { clientName, error: e.message })
+    if (!capability(client, "prompts")) return
+    const prompts = await paginate(
+      (cursor) => client.listPrompts(cursor === undefined ? undefined : { cursor }),
+      (value) => value.prompts,
+    ).catch((e) => {
+      log.warn("failed to get prompts", { clientName, error: e.message })
       return undefined
     })
 
@@ -263,7 +302,7 @@ export namespace MCP {
 
     const commands: Record<string, PromptInfo & { client: string }> = {}
 
-    for (const prompt of prompts.prompts) {
+    for (const prompt of prompts) {
       const sanitizedClientName = clientName.replace(/[^a-zA-Z0-9_-]/g, "_")
       const sanitizedPromptName = prompt.name.replace(/[^a-zA-Z0-9_-]/g, "_")
       const key = sanitizedClientName + ":" + sanitizedPromptName
@@ -274,8 +313,12 @@ export namespace MCP {
   }
 
   async function fetchResourcesForClient(clientName: string, client: Client) {
-    const resources = await client.listResources().catch((e) => {
-      log.error("failed to get prompts", { clientName, error: e.message })
+    if (!capability(client, "resources")) return
+    const resources = await paginate(
+      (cursor) => client.listResources(cursor === undefined ? undefined : { cursor }),
+      (value) => value.resources,
+    ).catch((e) => {
+      log.warn("failed to get resources", { clientName, error: e.message })
       return undefined
     })
 
@@ -285,7 +328,7 @@ export namespace MCP {
 
     const commands: Record<string, ResourceInfo & { client: string }> = {}
 
-    for (const resource of resources.resources) {
+    for (const resource of resources) {
       const sanitizedClientName = clientName.replace(/[^a-zA-Z0-9_-]/g, "_")
       const sanitizedResourceName = resource.name.replace(/[^a-zA-Z0-9_-]/g, "_")
       const key = sanitizedClientName + ":" + sanitizedResourceName
@@ -504,10 +547,12 @@ export namespace MCP {
       }
     }
 
-    const result = await listTools(key, mcpClient, mcp.timeout ?? DEFAULT_TIMEOUT).catch((err) => {
-      log.error("failed to get tools from client", { key, error: err })
-      return undefined
-    })
+    const result = capability(mcpClient, "tools")
+      ? await listTools(key, mcpClient, mcp.timeout ?? DEFAULT_TIMEOUT).catch((err) => {
+          log.error("failed to get tools from client", { key, error: err })
+          return undefined
+        })
+      : []
     if (!result) {
       await mcpClient.close().catch((error) => {
         log.error("Failed to close MCP client", {
@@ -621,16 +666,18 @@ export namespace MCP {
         const mcpConfig = config[clientName]
         const entry = isMcpConfigured(mcpConfig) ? mcpConfig : undefined
         const timeout = entry?.timeout ?? defaultTimeout ?? DEFAULT_TIMEOUT
-        const toolsResult = await listTools(clientName, client, timeout).catch((e) => {
-          log.error("failed to get tools", { clientName, error: e.message })
-          const failedStatus = {
-            status: "failed" as const,
-            error: e instanceof Error ? e.message : String(e),
-          }
-          s.status[clientName] = failedStatus
-          delete s.clients[clientName]
-          return undefined
-        })
+        const toolsResult = capability(client, "tools")
+          ? await listTools(clientName, client, timeout).catch((e) => {
+              log.error("failed to get tools", { clientName, error: e.message })
+              const failedStatus = {
+                status: "failed" as const,
+                error: e instanceof Error ? e.message : String(e),
+              }
+              s.status[clientName] = failedStatus
+              delete s.clients[clientName]
+              return undefined
+            })
+          : []
         return { clientName, client, toolsResult, timeout }
       }),
     )
@@ -698,6 +745,7 @@ export namespace MCP {
       })
       return undefined
     }
+    if (!capability(client, "prompts")) return undefined
 
     const result = await client
       .getPrompt({
@@ -726,6 +774,7 @@ export namespace MCP {
       })
       return undefined
     }
+    if (!capability(client, "resources")) return undefined
 
     const result = await client
       .readResource({

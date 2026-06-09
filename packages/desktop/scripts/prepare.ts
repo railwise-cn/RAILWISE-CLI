@@ -25,7 +25,8 @@ console.log(`Updated package.json version to ${pkg.version}`)
 const sidecarConfig = getCurrentSidecar(target)
 const dir = "src-tauri/target/railwise-binaries"
 const version = (
-  Bun.env.RAILWISE_CLI_VERSION ?? ((await Bun.file(".cli-version").exists()) ? await Bun.file(".cli-version").text() : "")
+  Bun.env.RAILWISE_CLI_VERSION ??
+  ((await Bun.file(".cli-version").exists()) ? await Bun.file(".cli-version").text() : "")
 ).trim()
 const tag = Bun.env.RAILWISE_CLI_TAG ?? (version.startsWith("v") ? version : `v${version}`)
 const repo = Bun.env.RAILWISE_CLI_REPO ?? "railwise-cn/RAILWISE-CLI"

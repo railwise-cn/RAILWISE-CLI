@@ -26,7 +26,8 @@ const version = arg("--shared-version") ?? manifest ?? cli.replace(/^v/, "")
 const force = flag("--force")
 const history = flag("--history")
 const branch = (await $`git branch --show-current`.text()).trim()
-const catalog = ((await Bun.file("package.json").json()).workspaces as { catalog?: Record<string, string> }).catalog ?? {}
+const catalog =
+  ((await Bun.file("package.json").json()).workspaces as { catalog?: Record<string, string> }).catalog ?? {}
 const ignored = new Set([
   "node_modules",
   "dist",
@@ -64,14 +65,17 @@ function file(name: string) {
 
 function deps(value: unknown) {
   if (!value || typeof value !== "object") return undefined
-  return Object.fromEntries(Object.entries(value as Record<string, string>).map(([name, value]) => [name, dep(name, value)]))
+  return Object.fromEntries(
+    Object.entries(value as Record<string, string>).map(([name, value]) => [name, dep(name, value)]),
+  )
 }
 
 async function rewritePackage() {
   const pkgfile = path.join(out, "package.json")
   const pkg = (await Bun.file(pkgfile).json()) as Json
   const dependencies = deps(pkg.dependencies) ?? {}
-  if (source === "file") (dependencies as Record<string, string>)["@railwise/sdk"] = `file:vendor/shared/${file("@railwise/sdk")}`
+  if (source === "file")
+    (dependencies as Record<string, string>)["@railwise/sdk"] = `file:vendor/shared/${file("@railwise/sdk")}`
   pkg.dependencies = dependencies
   if (source === "file") {
     pkg.overrides = {
@@ -107,7 +111,10 @@ async function workflow() {
     .replaceAll("working-directory: packages/desktop", "working-directory: .")
     .replaceAll("packages/desktop/", "")
     .replace("bun install --frozen-lockfile", "bun install")
-    .replace("bun run predev -- --target ${{ matrix.target }}", "bun ./scripts/prepare.ts --target ${{ matrix.target }}")
+    .replace(
+      "bun run predev -- --target ${{ matrix.target }}",
+      "bun ./scripts/prepare.ts --target ${{ matrix.target }}",
+    )
   await mkdir(path.join(out, ".github/workflows"), { recursive: true })
   await writeFile(path.join(out, ".github/workflows/desktop-release.yml"), text)
 }

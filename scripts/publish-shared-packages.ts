@@ -42,7 +42,9 @@ function dep(name: string, version: string) {
 
 function deps(value: unknown) {
   if (!value || typeof value !== "object") return undefined
-  return Object.fromEntries(Object.entries(value as Record<string, string>).map(([name, version]) => [name, dep(name, version)]))
+  return Object.fromEntries(
+    Object.entries(value as Record<string, string>).map(([name, version]) => [name, dep(name, version)]),
+  )
 }
 
 async function write(pkg: Json, dir: string) {
@@ -71,9 +73,7 @@ await rm(pack, { recursive: true, force: true })
 await Promise.all(dirs.map(stage))
 
 await $`bun run --cwd packages/sdk/js build`
-await (dry
-  ? $`bun ./packages/sdk/js/script/publish.ts --dry-run`
-  : $`bun ./packages/sdk/js/script/publish.ts`)
+await (dry ? $`bun ./packages/sdk/js/script/publish.ts --dry-run` : $`bun ./packages/sdk/js/script/publish.ts`)
 
 for (const dir of dirs) {
   await $`bun pm pack`.cwd(path.join(pack, dir))

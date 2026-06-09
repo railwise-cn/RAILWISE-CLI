@@ -102,9 +102,7 @@ async function rebrand() {
     }),
   )
 
-  const paths = (await walk(root))
-    .filter((file) => !protectedPath(file))
-    .sort((a, b) => b.length - a.length)
+  const paths = (await walk(root)).filter((file) => !protectedPath(file)).sort((a, b) => b.length - a.length)
 
   for (const file of paths) {
     const name = path.basename(file)

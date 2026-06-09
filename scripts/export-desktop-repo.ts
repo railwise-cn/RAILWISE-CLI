@@ -106,7 +106,7 @@ async function workflow() {
     .replaceAll("working-directory: packages/desktop", "working-directory: .")
     .replaceAll("packages/desktop/", "")
     .replace("bun install --frozen-lockfile", "bun install")
-    .replace("bun run predev -- --target ${{ matrix.target }}", "bun ./scripts/prepare.ts")
+    .replace("bun run predev -- --target ${{ matrix.target }}", "bun ./scripts/prepare.ts --target ${{ matrix.target }}")
   await mkdir(path.join(out, ".github/workflows"), { recursive: true })
   await writeFile(path.join(out, ".github/workflows/desktop-release.yml"), text)
 }

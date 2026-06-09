@@ -11,6 +11,8 @@ bun run sync:upstream -- --to v1.16.2 --dry-run
 bun run sync:upstream -- --to v1.16.2
 ```
 
+Because the fork mirrors upstream version numbers, local release tags (e.g. `v1.2.8`) collide with upstream's identically named tags. The script fetches the requested ref into `refs/railwise-sync/<tag>` instead of `refs/tags/<tag>`, so it never clobbers a local tag and always checks out upstream's commit. Do **not** run `git fetch upstream --tags` manually — it will fail with "would clobber existing tag".
+
 Then rebase Railwise work onto that baseline:
 
 ```bash

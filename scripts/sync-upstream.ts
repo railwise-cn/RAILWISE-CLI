@@ -125,7 +125,7 @@ async function ensure() {
 if (dry) {
   console.log(
     [
-      `Would fetch ${config.upstream.remote} (${config.upstream.url})`,
+      `Would fetch tag ${tag} from ${config.upstream.remote} into refs/railwise-sync/${tag} (collision-safe)`,
       `Would create ${branch} from ${tag}`,
       `Would rename ${config.upstream.packagePath} -> ${config.upstream.rebrandedPackagePath}`,
       `Would apply ${config.textReplacements.length} text replacements and ${config.pathReplacements.length} path replacements`,
@@ -140,14 +140,29 @@ if (!dirty && (await $`git status --porcelain`.text()).trim()) {
 }
 
 await ensure()
-await $`git fetch ${config.upstream.remote} --tags`
+
+// The fork mirrors upstream version numbers, so local release tags (v1.2.8, ...)
+// collide with upstream's identically named tags. Fetch the requested ref into a
+// private namespace to avoid clobbering local tags and to guarantee we check out
+// upstream's commit rather than the fork's same-named tag.
+const upstreamRef = `refs/railwise-sync/${tag}`
+const fetchedTag = await $`git fetch --no-tags ${config.upstream.remote} +refs/tags/${tag}:${upstreamRef}`
+  .quiet()
+  .nothrow()
+if (fetchedTag.exitCode !== 0) {
+  const fetchedHead = await $`git fetch --no-tags ${config.upstream.remote} +refs/heads/${tag}:${upstreamRef}`
+    .quiet()
+    .nothrow()
+  if (fetchedHead.exitCode !== 0)
+    throw new Error(`Could not fetch ${tag} from ${config.upstream.remote} as a tag or branch:\n${fetchedTag.stderr}`)
+}
 
 const current = (await $`git branch --show-current`.text()).trim()
 const branchExists = (await $`git rev-parse --verify ${branch}`.quiet().nothrow()).exitCode === 0
 if (branchExists && !force) throw new Error(`${branch} already exists. Pass --force to replace it.`)
 if (branchExists) await $`git branch -D ${branch}`
 
-await $`git switch --detach ${tag}`
+await $`git switch --detach ${upstreamRef}`
 await $`git switch -c ${branch}`
 await rebrand()
 await $`git add -A`

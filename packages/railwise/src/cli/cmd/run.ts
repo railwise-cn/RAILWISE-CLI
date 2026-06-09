@@ -7,7 +7,7 @@ import { Flag } from "../../flag/flag"
 import { bootstrap } from "../bootstrap"
 import { EOL } from "os"
 import { Filesystem } from "../../util/filesystem"
-import { createRailwiseClient, type Message, type RailwiseClient, type ToolPart } from "@railwise/sdk/v2"
+import { createRailwiseClient, type Part, type RailwiseClient, type ToolPart } from "@railwise/sdk/v2"
 import { Server } from "../../server/server"
 import { Provider } from "../../provider/provider"
 import { Agent } from "../../agent/agent"
@@ -298,6 +298,16 @@ export const RunCommand = cmd({
         describe: "show thinking blocks",
         default: false,
       })
+      .option("replay", {
+        type: "boolean",
+        describe: "replay recent history when continuing a session",
+        default: false,
+      })
+      .option("replay-limit", {
+        type: "number",
+        describe: "maximum number of messages to replay",
+        default: 200,
+      })
   },
   handler: async (args) => {
     let message = [...args.message, ...(args["--"] || [])]
@@ -432,6 +442,85 @@ export const RunCommand = cmd({
           return true
         }
         return false
+      }
+
+      function render(part: Part) {
+        if (part.type === "tool" && (part.state.status === "completed" || part.state.status === "error")) {
+          if (emit("tool_use", { part, replay: true })) return
+          if (part.state.status === "completed") {
+            tool(part)
+            return
+          }
+          inline({
+            icon: "✗",
+            title: `${part.tool} failed`,
+          })
+          UI.error(part.state.error)
+          return
+        }
+
+        if (part.type === "step-start") {
+          emit("step_start", { part, replay: true })
+          return
+        }
+
+        if (part.type === "step-finish") {
+          emit("step_finish", { part, replay: true })
+          return
+        }
+
+        if (part.type === "text" && part.time?.end) {
+          if (emit("text", { part, replay: true })) return
+          const text = part.text.trim()
+          if (!text) return
+          if (!process.stdout.isTTY) {
+            process.stdout.write(text + EOL)
+            return
+          }
+          UI.empty()
+          UI.println(text)
+          UI.empty()
+          return
+        }
+
+        if (part.type === "reasoning" && part.time?.end && args.thinking) {
+          if (emit("reasoning", { part, replay: true })) return
+          const text = part.text.trim()
+          if (!text) return
+          const line = `Thinking: ${text}`
+          if (process.stdout.isTTY) {
+            UI.empty()
+            UI.println(`${UI.Style.TEXT_DIM}\u001b[3m${line}\u001b[0m${UI.Style.TEXT_NORMAL}`)
+            UI.empty()
+            return
+          }
+          process.stdout.write(line + EOL)
+        }
+      }
+
+      async function replay(id: string) {
+        const result = await sdk.session.messages({ sessionID: id, limit: args.replayLimit })
+        const list = result.data ?? []
+        for (const message of list) {
+          if (emit("message", { message: message.info, parts: message.parts, replay: true })) continue
+          if (message.info.role === "user") {
+            const text = message.parts
+              .filter((part) => part.type === "text")
+              .map((part) => part.text.trim())
+              .filter(Boolean)
+              .join(EOL)
+            if (!text) continue
+            UI.empty()
+            UI.println(UI.Style.TEXT_DIM + "> " + text + UI.Style.TEXT_NORMAL)
+            UI.empty()
+            continue
+          }
+
+          UI.empty()
+          UI.println(`> ${message.info.agent} · ${message.info.modelID}`)
+          UI.empty()
+          message.parts.forEach(render)
+        }
       }
 
       const events = await sdk.event.subscribe()
@@ -582,6 +671,8 @@ export const RunCommand = cmd({
         process.exit(1)
       }
       await share(sdk, sessionID)
+
+      if (args.replay && (args.continue || args.session)) await replay(sessionID)
 
       loop().catch((e) => {
         console.error(e)

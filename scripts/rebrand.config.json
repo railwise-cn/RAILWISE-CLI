@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json.schemastore.org/json",
+  "lastSyncedTag": "v1.2.8",
+  "upstream": {
+    "remote": "upstream",
+    "url": "https://github.com/sst/opencode.git",
+    "packagePath": "packages/opencode",
+    "rebrandedPackagePath": "packages/railwise"
+  },
+  "protectedPaths": [
+    ".git",
+    ".github",
+    ".railwise",
+    ".turbo",
+    ".worktrees",
+    "dist",
+    "node_modules",
+    "patches",
+    "playground",
+    "refs",
+    "scripts",
+    "skill-pack-template",
+    "target",
+    "tmp"
+  ],
+  "textReplacements": [
+    {
+      "from": "OPENCODE",
+      "to": "RAILWISE"
+    },
+    {
+      "from": "OpenCode",
+      "to": "RAILWISE"
+    },
+    {
+      "from": "opencode.ai",
+      "to": "railwise.ai"
+    },
+    {
+      "from": "opencode.com",
+      "to": "railwise.ai"
+    },
+    {
+      "from": ".opencode",
+      "to": ".railwise"
+    },
+    {
+      "from": "@opencode-ai",
+      "to": "@railwise"
+    },
+    {
+      "from": "opencode-ai",
+      "to": "railwise-ai"
+    },
+    {
+      "from": "opencode",
+      "to": "railwise"
+    }
+  ],
+  "pathReplacements": [
+    {
+      "from": "opencode",
+      "to": "railwise"
+    },
+    {
+      "from": "OpenCode",
+      "to": "RAILWISE"
+    },
+    {
+      "from": "OPENCODE",
+      "to": "RAILWISE"
+    }
+  ],
+  "binaryExtensions": [
+    ".bmp",
+    ".gif",
+    ".icns",
+    ".ico",
+    ".jpg",
+    ".jpeg",
+    ".lockb",
+    ".pdf",
+    ".png",
+    ".woff",
+    ".woff2",
+    ".zip"
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { $ } from "bun"
-import { mkdir, readdir, readFile, rename, stat, writeFile } from "node:fs/promises"
+import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises"
 import path from "node:path"
 
 type Config = {
@@ -53,6 +53,10 @@ async function exists(file: string) {
   return await Bun.file(file).exists()
 }
 
+async function tracked(file: string) {
+  return (await $`git ls-files -- ${file}`.text()).trim().length > 0
+}
+
 async function walk(dir: string): Promise<string[]> {
   if (protectedPath(dir) && dir !== root) return []
   const entries = await readdir(dir, { withFileTypes: true })
@@ -85,6 +89,16 @@ function renamed(name: string) {
 }
 
 async function rebrand() {
+  if (
+    (await exists(config.upstream.packagePath)) &&
+    (await exists(config.upstream.rebrandedPackagePath)) &&
+    !(await tracked(config.upstream.rebrandedPackagePath))
+  ) {
+    // Git can leave untracked build output at the target path when switching
+    // from a rebranded working tree to an upstream tag.
+    await rm(config.upstream.rebrandedPackagePath, { recursive: true, force: true })
+  }
+
   if ((await exists(config.upstream.packagePath)) && !(await exists(config.upstream.rebrandedPackagePath))) {
     await mkdir(path.dirname(config.upstream.rebrandedPackagePath), { recursive: true })
     await rename(config.upstream.packagePath, config.upstream.rebrandedPackagePath)

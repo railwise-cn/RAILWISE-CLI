@@ -44,6 +44,8 @@ jobs:
             target: darwin-arm64
           - os: macos-14
             target: darwin-x64
+          - os: macos-14
+            target: darwin-x64-baseline
           - os: windows-latest
             target: windows-x64
     runs-on: ${{ matrix.os }}
@@ -55,7 +57,7 @@ jobs:
       - uses: ./.github/actions/setup-bun
 
       - name: Build
-        run: bun run --cwd packages/railwise script/build.ts --single ${{ contains(matrix.target, 'baseline') && '--baseline' || '' }}
+        run: bun run --cwd packages/railwise script/build.ts --single --target ${{ matrix.target }}
         env:
           RAILWISE_VERSION: ${{ inputs.version || '' }}
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
@@ -85,7 +87,17 @@ jobs:
           path: packages/railwise/dist
           merge-multiple: true
 
-      - name: Publish to npm
+      - name: Publish shared packages to npm
+        run: bun ./scripts/publish-shared-packages.ts --publish
+        env:
+          RAILWISE_VERSION: ${{ inputs.version || '' }}
+          RAILWISE_BUMP: ${{ inputs.bump || '' }}
+          RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
+          RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: false
+
+      - name: Publish CLI to npm
         run: bun run --cwd packages/railwise script/publish.ts
         env:
           RAILWISE_VERSION: ${{ inputs.version || '' }}

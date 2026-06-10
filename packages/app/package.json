@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./vite": "./vite.js",
+    "./i18n/*": "./src/i18n/*.ts",
     "./index.css": "./src/index.css"
   },
   "scripts": {
@@ -56,6 +57,7 @@
     "@solidjs/meta": "catalog:",
     "@solidjs/router": "catalog:",
     "@thisbeyond/solid-dnd": "0.7.5",
+    "@types/luxon": "catalog:",
     "diff": "catalog:",
     "fuzzysort": "catalog:",
     "ghostty-web": "0.4.0",

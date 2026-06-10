@@ -1,15 +1,15 @@
 import { afterEach, describe, expect, test } from "bun:test"
-import { resource } from "@opencode-ai/core/effect/observability"
+import { resource } from "@railwise/core/effect/observability"
 
 const otelResourceAttributes = process.env.OTEL_RESOURCE_ATTRIBUTES
-const opencodeClient = process.env.OPENCODE_CLIENT
+const railwiseClient = process.env.RAILWISE_CLIENT
 
 afterEach(() => {
   if (otelResourceAttributes === undefined) delete process.env.OTEL_RESOURCE_ATTRIBUTES
   else process.env.OTEL_RESOURCE_ATTRIBUTES = otelResourceAttributes
 
-  if (opencodeClient === undefined) delete process.env.OPENCODE_CLIENT
-  else process.env.OPENCODE_CLIENT = opencodeClient
+  if (railwiseClient === undefined) delete process.env.RAILWISE_CLIENT
+  else process.env.RAILWISE_CLIENT = railwiseClient
 })
 
 describe("resource", () => {
@@ -29,16 +29,16 @@ describe("resource", () => {
     process.env.OTEL_RESOURCE_ATTRIBUTES = "service.namespace=anomalyco,broken"
 
     expect(resource().attributes["service.namespace"]).toBeUndefined()
-    expect(resource().attributes["opencode.client"]).toBeDefined()
+    expect(resource().attributes["railwise.client"]).toBeDefined()
   })
 
   test("keeps built-in attributes when env values conflict", () => {
-    process.env.OPENCODE_CLIENT = "cli"
+    process.env.RAILWISE_CLIENT = "cli"
     process.env.OTEL_RESOURCE_ATTRIBUTES =
-      "opencode.client=web,service.instance.id=override,service.namespace=anomalyco"
+      "railwise.client=web,service.instance.id=override,service.namespace=anomalyco"
 
     expect(resource().attributes).toMatchObject({
-      "opencode.client": "cli",
+      "railwise.client": "cli",
       "service.namespace": "anomalyco",
     })
     expect(resource().attributes["service.instance.id"]).not.toBe("override")

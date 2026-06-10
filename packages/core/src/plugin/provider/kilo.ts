@@ -8,8 +8,8 @@ export const KiloPlugin = PluginV2.define({
     return {
       "provider.update": Effect.fn(function* (evt) {
         if (evt.provider.id !== ProviderV2.ID.make("kilo")) return
-        evt.provider.options.headers["HTTP-Referer"] = "https://opencode.ai/"
-        evt.provider.options.headers["X-Title"] = "opencode"
+        evt.provider.options.headers["HTTP-Referer"] = "https://railwise.ai/"
+        evt.provider.options.headers["X-Title"] = "railwise"
       }),
     }
   }),

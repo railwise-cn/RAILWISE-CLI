@@ -5,7 +5,7 @@ import { NonNegativeInt, withStatics } from "./schema"
 import { Global } from "./global"
 import { AppFileSystem } from "./filesystem"
 
-export const OAUTH_DUMMY_KEY = "opencode-oauth-dummy-key"
+export const OAUTH_DUMMY_KEY = "railwise-oauth-dummy-key"
 
 const AccountID = Schema.String.pipe(
   Schema.brand("AccountID"),
@@ -98,7 +98,7 @@ export interface Interface {
   readonly forService: (serviceID: ServiceID) => Effect.Effect<Account[], AuthError>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Auth") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/Auth") {}
 
 export const layer = Layer.effect(
   Service,
@@ -118,12 +118,12 @@ export const layer = Layer.effect(
 
     const parseAuthContent = () => {
       try {
-        return JSON.parse(process.env.OPENCODE_AUTH_CONTENT ?? "")
+        return JSON.parse(process.env.RAILWISE_AUTH_CONTENT ?? "")
       } catch {}
     }
 
     const load: () => Effect.Effect<Writable, AuthError> = Effect.fnUntraced(function* () {
-      if (process.env.OPENCODE_AUTH_CONTENT) {
+      if (process.env.RAILWISE_AUTH_CONTENT) {
         const raw = parseAuthContent()
         if (raw && typeof raw === "object") {
           if ("version" in raw && raw.version === 2) return raw as Writable

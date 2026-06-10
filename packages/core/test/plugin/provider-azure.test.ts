@@ -1,9 +1,9 @@
 import { describe, expect } from "bun:test"
 import { Effect, Layer } from "effect"
-import { AuthV2 } from "@opencode-ai/core/auth"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { AuthPlugin } from "@opencode-ai/core/plugin/auth"
-import { AzurePlugin } from "@opencode-ai/core/plugin/provider/azure"
+import { AuthV2 } from "@railwise/core/auth"
+import { PluginV2 } from "@railwise/core/plugin"
+import { AuthPlugin } from "@railwise/core/plugin/auth"
+import { AzurePlugin } from "@railwise/core/plugin/provider/azure"
 import { testEffect } from "../lib/effect"
 import { fakeSelectorSdk, it, model, npmLayer, provider, withEnv } from "./provider-helper"
 

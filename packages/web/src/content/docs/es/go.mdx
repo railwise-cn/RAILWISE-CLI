@@ -7,15 +7,15 @@ import config from "../../../../config.mjs"
 export const console = config.console
 export const email = `mailto:${config.email}`
 
-OpenCode Go es una suscripción de bajo costo — **$5 por tu primer mes**, luego **$10/mes** — que te brinda acceso confiable a modelos abiertos de programación populares.
+RAILWISE Go es una suscripción de bajo costo — **$5 por tu primer mes**, luego **$10/mes** — que te brinda acceso confiable a modelos abiertos de programación populares.
 
 :::note
-OpenCode Go está actualmente en beta.
+RAILWISE Go está actualmente en beta.
 :::
 
-Go funciona como cualquier otro proveedor en OpenCode. Te suscribes a OpenCode Go y
+Go funciona como cualquier otro proveedor en RAILWISE. Te suscribes a RAILWISE Go y
 obtienes tu API key. Es **completamente opcional** y no necesitas usarlo para
-usar OpenCode.
+usar RAILWISE.
 
 Está diseñado principalmente para usuarios internacionales, con modelos alojados en EE. UU., la UE y Singapur para un acceso global estable.
 
@@ -31,7 +31,7 @@ Sin embargo, obtener un acceso confiable y de baja latencia a ellos puede ser di
 varían en calidad y disponibilidad.
 
 :::tip
-Probamos un grupo selecto de modelos y proveedores que funcionan bien con OpenCode.
+Probamos un grupo selecto de modelos y proveedores que funcionan bien con RAILWISE.
 :::
 
 Para solucionar esto, hicimos un par de cosas:
@@ -43,22 +43,22 @@ Para solucionar esto, hicimos un par de cosas:
 3. Finalmente, evaluamos el rendimiento de la combinación del modelo/proveedor y elaboramos
    una lista que nos sentimos seguros de recomendar.
 
-OpenCode Go te da acceso a estos modelos por **$5 por tu primer mes**, luego **$10/mes**.
+RAILWISE Go te da acceso a estos modelos por **$5 por tu primer mes**, luego **$10/mes**.
 
 ---
 
 ## Cómo funciona
 
-OpenCode Go funciona como cualquier otro proveedor en OpenCode.
+RAILWISE Go funciona como cualquier otro proveedor en RAILWISE.
 
-1. Inicias sesión en **<a href={console}>OpenCode Zen</a>**, te suscribes a Go y
+1. Inicias sesión en **<a href={console}>RAILWISE Zen</a>**, te suscribes a Go y
    copias tu API key.
-2. Ejecutas el comando `/connect` en la TUI, seleccionas `OpenCode Go` y pegas
+2. Ejecutas el comando `/connect` en la TUI, seleccionas `RAILWISE Go` y pegas
    tu API key.
 3. Ejecutas `/models` en la TUI para ver la lista de modelos disponibles a través de Go.
 
 :::note
-Solo un miembro por espacio de trabajo puede suscribirse a OpenCode Go.
+Solo un miembro por espacio de trabajo puede suscribirse a RAILWISE Go.
 :::
 
 La lista actual de modelos incluye:
@@ -82,7 +82,7 @@ La lista de modelos puede cambiar a medida que probamos y agregamos otros nuevos
 
 ## Límites de uso
 
-OpenCode Go incluye los siguientes límites:
+RAILWISE Go incluye los siguientes límites:
 
 - **Límite de 5 horas** — $12 de uso
 - **Límite semanal** — $30 de uso
@@ -143,22 +143,22 @@ También puedes acceder a los modelos de Go a través de los siguientes endpoint
 
 | Modelo            | ID del modelo     | Endpoint                                         | Paquete de AI SDK           |
 | ----------------- | ----------------- | ------------------------------------------------ | --------------------------- |
-| GLM-5.1           | glm-5.1           | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| GLM-5             | glm-5             | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| Kimi K2.5         | kimi-k2.5         | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| Kimi K2.6         | kimi-k2.6         | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| DeepSeek V4 Pro   | deepseek-v4-pro   | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| DeepSeek V4 Flash | deepseek-v4-flash | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| MiMo-V2.5         | mimo-v2.5         | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| MiMo-V2.5-Pro     | mimo-v2.5-pro     | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
-| MiniMax M2.7      | minimax-m2.7      | `https://opencode.ai/zen/go/v1/messages`         | `@ai-sdk/anthropic`         |
-| MiniMax M2.5      | minimax-m2.5      | `https://opencode.ai/zen/go/v1/messages`         | `@ai-sdk/anthropic`         |
-| Qwen3.6 Plus      | qwen3.6-plus      | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/alibaba`           |
-| Qwen3.5 Plus      | qwen3.5-plus      | `https://opencode.ai/zen/go/v1/chat/completions` | `@ai-sdk/alibaba`           |
+| GLM-5.1           | glm-5.1           | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| GLM-5             | glm-5             | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| Kimi K2.5         | kimi-k2.5         | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| Kimi K2.6         | kimi-k2.6         | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| DeepSeek V4 Pro   | deepseek-v4-pro   | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| DeepSeek V4 Flash | deepseek-v4-flash | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| MiMo-V2.5         | mimo-v2.5         | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| MiMo-V2.5-Pro     | mimo-v2.5-pro     | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/openai-compatible` |
+| MiniMax M2.7      | minimax-m2.7      | `https://railwise.ai/zen/go/v1/messages`         | `@ai-sdk/anthropic`         |
+| MiniMax M2.5      | minimax-m2.5      | `https://railwise.ai/zen/go/v1/messages`         | `@ai-sdk/anthropic`         |
+| Qwen3.6 Plus      | qwen3.6-plus      | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/alibaba`           |
+| Qwen3.5 Plus      | qwen3.5-plus      | `https://railwise.ai/zen/go/v1/chat/completions` | `@ai-sdk/alibaba`           |
 
-El [ID del modelo](/docs/config/#models) en tu configuración de OpenCode
-usa el formato `opencode-go/<model-id>`. Por ejemplo, para Kimi K2.6, usarías
-`opencode-go/kimi-k2.6` en tu configuración.
+El [ID del modelo](/docs/config/#models) en tu configuración de RAILWISE
+usa el formato `railwise-go/<model-id>`. Por ejemplo, para Kimi K2.6, usarías
+`railwise-go/kimi-k2.6` en tu configuración.
 
 ---
 
@@ -167,7 +167,7 @@ usa el formato `opencode-go/<model-id>`. Por ejemplo, para Kimi K2.6, usarías
 Puedes obtener la lista completa de modelos disponibles y sus metadatos desde:
 
 ```
-https://opencode.ai/zen/go/v1/models
+https://railwise.ai/zen/go/v1/models
 ```
 
 ---
@@ -180,9 +180,9 @@ El plan está diseñado principalmente para usuarios internacionales, con modelo
 
 ## Objetivos
 
-Creamos OpenCode Go para:
+Creamos RAILWISE Go para:
 
 1. Hacer que la programación con IA sea **accesible** para más personas con una suscripción de bajo costo.
 2. Proporcionar un acceso **confiable** a los mejores modelos abiertos de programación.
 3. Seleccionar modelos que estén **probados y evaluados** para su uso en agentes de programación.
-4. Evitar la **dependencia (lock-in)** al permitirte usar también cualquier otro proveedor con OpenCode.
+4. Evitar la **dependencia (lock-in)** al permitirte usar también cualquier otro proveedor con RAILWISE.

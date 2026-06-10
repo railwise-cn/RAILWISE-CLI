@@ -17009,13 +17009,13 @@ export const snapshot = {
       },
     },
   },
-  "opencode-go": {
-    id: "opencode-go",
-    env: ["OPENCODE_API_KEY"],
+  "railwise-go": {
+    id: "railwise-go",
+    env: ["RAILWISE_API_KEY"],
     npm: "@ai-sdk/openai-compatible",
-    api: "https://opencode.ai/zen/go/v1",
-    name: "OpenCode Go",
-    doc: "https://opencode.ai/docs/zen",
+    api: "https://railwise.ai/zen/go/v1",
+    name: "RAILWISE Go",
+    doc: "https://railwise.ai/docs/zen",
     models: {
       "minimax-m2.7": {
         id: "minimax-m2.7",
@@ -35152,13 +35152,13 @@ export const snapshot = {
       },
     },
   },
-  opencode: {
-    id: "opencode",
-    env: ["OPENCODE_API_KEY"],
+  railwise: {
+    id: "railwise",
+    env: ["RAILWISE_API_KEY"],
     npm: "@ai-sdk/openai-compatible",
-    api: "https://opencode.ai/zen/v1",
-    name: "OpenCode Zen",
-    doc: "https://opencode.ai/docs/zen",
+    api: "https://railwise.ai/zen/v1",
+    name: "RAILWISE Zen",
+    doc: "https://railwise.ai/docs/zen",
     models: {
       "minimax-m2.7": {
         id: "minimax-m2.7",

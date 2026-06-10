@@ -1,10 +1,10 @@
 import { describe, expect } from "bun:test"
 import { Effect, Layer } from "effect"
-import { AuthV2 } from "@opencode-ai/core/auth"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { AuthPlugin } from "@opencode-ai/core/plugin/auth"
-import { CloudflareWorkersAIPlugin } from "@opencode-ai/core/plugin/provider/cloudflare-workers-ai"
+import { AuthV2 } from "@railwise/core/auth"
+import { ModelV2 } from "@railwise/core/model"
+import { PluginV2 } from "@railwise/core/plugin"
+import { AuthPlugin } from "@railwise/core/plugin/auth"
+import { CloudflareWorkersAIPlugin } from "@railwise/core/plugin/provider/cloudflare-workers-ai"
 import { testEffect } from "../lib/effect"
 import { fakeSelectorSdk, it, model, npmLayer, provider, withEnv } from "./provider-helper"
 
@@ -190,7 +190,7 @@ describe("CloudflareWorkersAIPlugin", () => {
         const headers = yield* Effect.promise(() => Promise.resolve(cloudflareHeaders(result.sdk)))
         expect(headers.authorization).toBe("Bearer env-key")
         expect(headers.custom).toBe("header")
-        expect(headers["user-agent"]).toMatch(/^opencode\/.* cloudflare-workers-ai \(.+\) ai-sdk\/openai-compatible\//)
+        expect(headers["user-agent"]).toMatch(/^railwise\/.* cloudflare-workers-ai \(.+\) ai-sdk\/openai-compatible\//)
       }),
     ),
   )

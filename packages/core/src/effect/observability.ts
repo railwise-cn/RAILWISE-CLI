@@ -4,7 +4,7 @@ import { OtlpLogger, OtlpSerialization } from "effect/unstable/observability"
 import * as EffectLogger from "./logger"
 import { Flag } from "../flag/flag"
 import { InstallationChannel, InstallationVersion } from "../installation/version"
-import { ensureProcessMetadata } from "../util/opencode-process"
+import { ensureProcessMetadata } from "../util/railwise-process"
 
 const base = Flag.OTEL_EXPORTER_OTLP_ENDPOINT
 export const enabled = !!base
@@ -40,14 +40,14 @@ export function resource(): { serviceName: string; serviceVersion: string; attri
   })()
 
   return {
-    serviceName: "opencode",
+    serviceName: "railwise",
     serviceVersion: InstallationVersion,
     attributes: {
       ...attributes,
       "deployment.environment.name": InstallationChannel,
-      "opencode.client": Flag.OPENCODE_CLIENT,
-      "opencode.process_role": processMetadata.processRole,
-      "opencode.run_id": processMetadata.runID,
+      "railwise.client": Flag.RAILWISE_CLIENT,
+      "railwise.process_role": processMetadata.processRole,
+      "railwise.run_id": processMetadata.runID,
       "service.instance.id": processID,
     },
   }

@@ -1,8 +1,8 @@
 import { describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { GithubCopilotPlugin } from "@opencode-ai/core/plugin/provider/github-copilot"
+import { ModelV2 } from "@railwise/core/model"
+import { PluginV2 } from "@railwise/core/plugin"
+import { GithubCopilotPlugin } from "@railwise/core/plugin/provider/github-copilot"
 import { fakeSelectorSdk, it, model } from "./provider-helper"
 
 describe("GithubCopilotPlugin", () => {

@@ -1,8 +1,8 @@
 import { describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { ProviderPlugins } from "@opencode-ai/core/plugin/provider"
-import { ZenmuxPlugin } from "@opencode-ai/core/plugin/provider/zenmux"
+import { PluginV2 } from "@railwise/core/plugin"
+import { ProviderPlugins } from "@railwise/core/plugin/provider"
+import { ZenmuxPlugin } from "@railwise/core/plugin/provider/zenmux"
 import { expectPluginRegistered, it, provider } from "./provider-helper"
 
 describe("ZenmuxPlugin", () => {
@@ -20,7 +20,7 @@ describe("ZenmuxPlugin", () => {
       const plugin = yield* PluginV2.Service
       yield* plugin.add(ZenmuxPlugin)
       const result = yield* plugin.trigger("provider.update", {}, { provider: provider("zenmux"), cancel: false })
-      expect(result.provider.options.headers).toEqual({ "HTTP-Referer": "https://opencode.ai/", "X-Title": "opencode" })
+      expect(result.provider.options.headers).toEqual({ "HTTP-Referer": "https://railwise.ai/", "X-Title": "railwise" })
       expect(Object.keys(result.provider.options.headers).sort()).toEqual(["HTTP-Referer", "X-Title"])
       expect(result.cancel).toBe(false)
     }),
@@ -43,8 +43,8 @@ describe("ZenmuxPlugin", () => {
 
       expect(result.provider.options.headers).toEqual({
         Existing: "value",
-        "HTTP-Referer": "https://opencode.ai/",
-        "X-Title": "opencode",
+        "HTTP-Referer": "https://railwise.ai/",
+        "X-Title": "railwise",
       })
     }),
   )

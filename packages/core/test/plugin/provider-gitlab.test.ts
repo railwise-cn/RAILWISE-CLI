@@ -1,9 +1,9 @@
 import { describe, expect, mock } from "bun:test"
 import { Effect, Layer } from "effect"
-import { AuthV2 } from "@opencode-ai/core/auth"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { AuthPlugin } from "@opencode-ai/core/plugin/auth"
-import { GitLabPlugin } from "@opencode-ai/core/plugin/provider/gitlab"
+import { AuthV2 } from "@railwise/core/auth"
+import { PluginV2 } from "@railwise/core/plugin"
+import { AuthPlugin } from "@railwise/core/plugin/auth"
+import { GitLabPlugin } from "@railwise/core/plugin/provider/gitlab"
 import { testEffect } from "../lib/effect"
 import { it, model, npmLayer, provider, withEnv } from "./provider-helper"
 

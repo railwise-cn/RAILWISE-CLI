@@ -8,8 +8,8 @@ export const VercelPlugin = PluginV2.define({
     return {
       "provider.update": Effect.fn(function* (evt) {
         if (evt.provider.id !== ProviderV2.ID.make("vercel")) return
-        evt.provider.options.headers["http-referer"] = "https://opencode.ai/"
-        evt.provider.options.headers["x-title"] = "opencode"
+        evt.provider.options.headers["http-referer"] = "https://railwise.ai/"
+        evt.provider.options.headers["x-title"] = "railwise"
       }),
       "aisdk.sdk": Effect.fn(function* (evt) {
         if (evt.package !== "@ai-sdk/vercel") return

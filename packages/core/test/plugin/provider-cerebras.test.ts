@@ -1,7 +1,7 @@
 import { describe, expect, mock } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { CerebrasPlugin } from "@opencode-ai/core/plugin/provider/cerebras"
+import { PluginV2 } from "@railwise/core/plugin"
+import { CerebrasPlugin } from "@railwise/core/plugin/provider/cerebras"
 import { it, model, provider } from "./provider-helper"
 
 const cerebrasOptions: Record<string, unknown>[] = []
@@ -31,7 +31,7 @@ describe("CerebrasPlugin", () => {
           cancel: false,
         },
       )
-      expect(result.provider.options.headers).toEqual({ Existing: "1", "X-Cerebras-3rd-Party-Integration": "opencode" })
+      expect(result.provider.options.headers).toEqual({ Existing: "1", "X-Cerebras-3rd-Party-Integration": "railwise" })
     }),
   )
 

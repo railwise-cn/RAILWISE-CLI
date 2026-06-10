@@ -1,8 +1,8 @@
 import { describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { ProviderPlugins } from "@opencode-ai/core/plugin/provider"
-import { KiloPlugin } from "@opencode-ai/core/plugin/provider/kilo"
+import { PluginV2 } from "@railwise/core/plugin"
+import { ProviderPlugins } from "@railwise/core/plugin/provider"
+import { KiloPlugin } from "@railwise/core/plugin/provider/kilo"
 import { expectPluginRegistered, it, provider } from "./provider-helper"
 
 describe("KiloPlugin", () => {
@@ -32,8 +32,8 @@ describe("KiloPlugin", () => {
       const ignored = yield* plugin.trigger("provider.update", {}, { provider: provider("openrouter"), cancel: false })
       expect(result.provider.options.headers).toEqual({
         Existing: "value",
-        "HTTP-Referer": "https://opencode.ai/",
-        "X-Title": "opencode",
+        "HTTP-Referer": "https://railwise.ai/",
+        "X-Title": "railwise",
       })
       expect(ignored.provider.options.headers).toEqual({})
     }),
@@ -46,8 +46,8 @@ describe("KiloPlugin", () => {
       const result = yield* plugin.trigger("provider.update", {}, { provider: provider("kilo"), cancel: false })
 
       expect(result.provider.options.headers).toEqual({
-        "HTTP-Referer": "https://opencode.ai/",
-        "X-Title": "opencode",
+        "HTTP-Referer": "https://railwise.ai/",
+        "X-Title": "railwise",
       })
       expect(result.provider.options.headers).not.toHaveProperty("http-referer")
       expect(result.provider.options.headers).not.toHaveProperty("x-title")
@@ -81,8 +81,8 @@ describe("KiloPlugin", () => {
       )
 
       expect(matchingID.provider.options.headers).toEqual({
-        "HTTP-Referer": "https://opencode.ai/",
-        "X-Title": "opencode",
+        "HTTP-Referer": "https://railwise.ai/",
+        "X-Title": "railwise",
       })
       expect(matchingPackage.provider.options.headers).toEqual({})
     }),

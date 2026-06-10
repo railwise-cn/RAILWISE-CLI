@@ -1,5 +1,5 @@
-import { Database, eq, and, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { KeyRateLimitTable } from "@opencode-ai/console-core/schema/ip.sql.js"
+import { Database, eq, and, sql } from "@railwise/console-core/drizzle/index.js"
+import { KeyRateLimitTable } from "@railwise/console-core/schema/ip.sql.js"
 import { RateLimitError } from "./error"
 import { i18n } from "~/i18n"
 import { localeFromRequest } from "~/lib/language"

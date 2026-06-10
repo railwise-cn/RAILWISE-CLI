@@ -1,5 +1,5 @@
 /// <reference path="../env.d.ts" />
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@railwise/plugin"
 
 const TEAM = {
   tui: ["kommander", "simonklee"],
@@ -47,7 +47,7 @@ Provide the team that should own the issue. This tool picks a random assignee fr
   async execute(args) {
     const issue = getIssueNumber()
     const owner = "anomalyco"
-    const repo = "opencode"
+    const repo = "railwise"
     const assignee = pick(TEAM[args.team])
 
     await githubFetch(`/repos/${owner}/${repo}/issues/${issue}/assignees`, {

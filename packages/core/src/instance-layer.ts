@@ -3,7 +3,7 @@ import { Instance } from "./instance"
 import { Catalog } from "./catalog"
 import { PluginBoot } from "./plugin/boot"
 
-export class InstanceServiceMap extends LayerMap.Service<InstanceServiceMap>()("@opencode/example/InstanceServiceMap", {
+export class InstanceServiceMap extends LayerMap.Service<InstanceServiceMap>()("@railwise/example/InstanceServiceMap", {
   lookup: (ref: Instance.Ref) => {
     const instance = Layer.succeed(Instance.Service, Instance.Service.of(ref))
     return Layer.mergeAll(Catalog.defaultLayer, PluginBoot.defaultLayer).pipe(Layer.provide(instance))

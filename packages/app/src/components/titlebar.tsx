@@ -1,11 +1,11 @@
 import { createEffect, createMemo, Show, untrack } from "solid-js"
 import { createStore } from "solid-js/store"
 import { useLocation, useNavigate, useParams } from "@solidjs/router"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Button } from "@opencode-ai/ui/button"
-import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
-import { useTheme } from "@opencode-ai/ui/theme/context"
+import { IconButton } from "@railwise/ui/icon-button"
+import { Icon } from "@railwise/ui/icon"
+import { Button } from "@railwise/ui/button"
+import { Tooltip, TooltipKeybind } from "@railwise/ui/tooltip"
+import { useTheme } from "@railwise/ui/theme/context"
 
 import { useLayout } from "@/context/layout"
 import { usePlatform } from "@/context/platform"
@@ -90,7 +90,7 @@ export function Titlebar() {
   const canBack = createMemo(() => history.index > 0)
   const canForward = createMemo(() => history.index < history.stack.length - 1)
   const hasProjects = createMemo(() => layout.projects.list().length > 0)
-  const nav = createMemo(() => import.meta.env.VITE_OPENCODE_CHANNEL !== "beta" || settings.general.showNavigation())
+  const nav = createMemo(() => import.meta.env.VITE_RAILWISE_CHANNEL !== "beta" || settings.general.showNavigation())
 
   const back = () => {
     const next = backPath(history)
@@ -301,10 +301,10 @@ export function Titlebar() {
                     </Tooltip>
                   </div>
                 </Show>
-                <div id="opencode-titlebar-left" class="flex items-center gap-3 min-w-0 px-2" />
-                {["beta", "dev"].includes(import.meta.env.VITE_OPENCODE_CHANNEL) && (
+                <div id="railwise-titlebar-left" class="flex items-center gap-3 min-w-0 px-2" />
+                {["beta", "dev"].includes(import.meta.env.VITE_RAILWISE_CHANNEL) && (
                   <div class="bg-icon-interactive-base text-[#FFF] font-medium px-2 rounded-sm uppercase font-mono">
-                    {import.meta.env.VITE_OPENCODE_CHANNEL.toUpperCase()}
+                    {import.meta.env.VITE_RAILWISE_CHANNEL.toUpperCase()}
                   </div>
                 )}
               </div>
@@ -313,7 +313,7 @@ export function Titlebar() {
         </div>
 
         <div class="min-w-0 flex items-center justify-center pointer-events-none">
-          <div id="opencode-titlebar-center" class="pointer-events-auto min-w-0 flex justify-center w-fit max-w-full" />
+          <div id="railwise-titlebar-center" class="pointer-events-auto min-w-0 flex justify-center w-fit max-w-full" />
         </div>
 
         <div
@@ -324,7 +324,7 @@ export function Titlebar() {
           data-tauri-drag-region
           onMouseDown={drag}
         >
-          <div id="opencode-titlebar-right" class="flex items-center gap-1 shrink-0 justify-end" />
+          <div id="railwise-titlebar-right" class="flex items-center gap-1 shrink-0 justify-end" />
           <Show when={windows()}>
             {!tauriApi() && <div class="shrink-0" style={{ width: windowsControlsWidth() }} />}
             <div data-tauri-decorum-tb class="flex flex-row" />

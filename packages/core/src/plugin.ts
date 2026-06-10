@@ -77,7 +77,7 @@ export interface Interface {
   ) => Effect.Effect<HookInput<Name> & HookOutput<Name>>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Plugin") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/Plugin") {}
 
 export const layer = Layer.effect(
   Service,
@@ -142,5 +142,5 @@ export const layer = Layer.effect(
 
 export const defaultLayer = layer
 
-// opencode
+// railwise
 // sdcok

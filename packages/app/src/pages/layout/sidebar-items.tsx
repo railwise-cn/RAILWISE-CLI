@@ -1,10 +1,10 @@
-import type { Session } from "@opencode-ai/sdk/v2/client"
-import { Avatar } from "@opencode-ai/ui/avatar"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { getFilename } from "@opencode-ai/core/util/path"
+import type { Session } from "@railwise/sdk/v2/client"
+import { Avatar } from "@railwise/ui/avatar"
+import { Icon } from "@railwise/ui/icon"
+import { IconButton } from "@railwise/ui/icon-button"
+import { Spinner } from "@railwise/ui/spinner"
+import { Tooltip } from "@railwise/ui/tooltip"
+import { getFilename } from "@railwise/core/util/path"
 import { A, useParams } from "@solidjs/router"
 import { type Accessor, createMemo, For, type JSX, Match, Show, Switch } from "solid-js"
 import { useGlobalSync } from "@/context/global-sync"
@@ -17,10 +17,10 @@ import { sessionTitle } from "@/utils/session-title"
 import { sessionPermissionRequest } from "../session/composer/session-request-tree"
 import { childSessionOnPath, hasProjectPermissions } from "./helpers"
 
-const OPENCODE_PROJECT_ID = "4b0ea68d7af9a6031a7ffda7ad66e0cb83315750"
+const RAILWISE_PROJECT_ID = "4b0ea68d7af9a6031a7ffda7ad66e0cb83315750"
 
 export function getProjectAvatarSource(id?: string, icon?: { color?: string; url?: string; override?: string }) {
-  if (id === OPENCODE_PROJECT_ID) return "https://opencode.ai/favicon.svg"
+  if (id === RAILWISE_PROJECT_ID) return "https://railwise.ai/favicon.svg"
   if (icon?.override) return icon?.override
   if (icon?.color) return undefined
   return icon?.url

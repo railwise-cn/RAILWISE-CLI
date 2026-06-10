@@ -1,7 +1,7 @@
 import { describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { AmazonBedrockPlugin } from "@opencode-ai/core/plugin/provider/amazon-bedrock"
+import { PluginV2 } from "@railwise/core/plugin"
+import { AmazonBedrockPlugin } from "@railwise/core/plugin/provider/amazon-bedrock"
 import { fakeSelectorSdk, it, model, provider, withEnv } from "./provider-helper"
 
 function bedrockBaseURL(sdk: unknown, modelID = "anthropic.claude-sonnet-4-5") {

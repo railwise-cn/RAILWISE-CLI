@@ -8,9 +8,9 @@ export const NvidiaPlugin = PluginV2.define({
     return {
       "provider.update": Effect.fn(function* (evt) {
         if (evt.provider.id !== ProviderV2.ID.make("nvidia")) return
-        evt.provider.options.headers["HTTP-Referer"] = "https://opencode.ai/"
-        evt.provider.options.headers["X-Title"] = "opencode"
-        evt.provider.options.headers["X-BILLING-INVOKE-ORIGIN"] ??= "OpenCode"
+        evt.provider.options.headers["HTTP-Referer"] = "https://railwise.ai/"
+        evt.provider.options.headers["X-Title"] = "railwise"
+        evt.provider.options.headers["X-BILLING-INVOKE-ORIGIN"] ??= "RAILWISE"
       }),
     }
   }),

@@ -9,8 +9,8 @@ export const OpenRouterPlugin = PluginV2.define({
     return {
       "provider.update": Effect.fn(function* (evt) {
         if (evt.provider.id !== ProviderV2.ID.openrouter) return
-        evt.provider.options.headers["HTTP-Referer"] = "https://opencode.ai/"
-        evt.provider.options.headers["X-Title"] = "opencode"
+        evt.provider.options.headers["HTTP-Referer"] = "https://railwise.ai/"
+        evt.provider.options.headers["X-Title"] = "railwise"
       }),
       "aisdk.sdk": Effect.fn(function* (evt) {
         if (evt.package !== "@openrouter/ai-sdk-provider") return

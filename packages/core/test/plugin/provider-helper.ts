@@ -1,10 +1,10 @@
-import { Npm } from "@opencode-ai/core/npm"
+import { Npm } from "@railwise/core/npm"
 import type { LanguageModelV3 } from "@ai-sdk/provider"
 import { expect } from "bun:test"
 import { Effect, Layer, Option } from "effect"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+import { ModelV2 } from "@railwise/core/model"
+import { PluginV2 } from "@railwise/core/plugin"
+import { ProviderV2 } from "@railwise/core/provider"
 import { testEffect } from "../lib/effect"
 
 export const fixtureProvider = new URL("./fixtures/provider-factory.ts", import.meta.url).href

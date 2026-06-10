@@ -7,4 +7,4 @@ export type Ref = {
   readonly workspaceID?: string
 }
 
-export class Service extends Context.Service<Service, Ref>()("@opencode/Instance") {}
+export class Service extends Context.Service<Service, Ref>()("@railwise/Instance") {}

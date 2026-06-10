@@ -1,7 +1,7 @@
 import { describe, expect, mock } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { GoogleVertexPlugin } from "@opencode-ai/core/plugin/provider/google-vertex"
+import { PluginV2 } from "@railwise/core/plugin"
+import { GoogleVertexPlugin } from "@railwise/core/plugin/provider/google-vertex"
 import { fakeSelectorSdk, it, model, provider, withEnv } from "./provider-helper"
 
 const vertexOptions: Record<string, any>[] = []

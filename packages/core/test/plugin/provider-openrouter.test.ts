@@ -1,8 +1,8 @@
 import { describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { ProviderPlugins } from "@opencode-ai/core/plugin/provider"
-import { OpenRouterPlugin } from "@opencode-ai/core/plugin/provider/openrouter"
+import { PluginV2 } from "@railwise/core/plugin"
+import { ProviderPlugins } from "@railwise/core/plugin/provider"
+import { OpenRouterPlugin } from "@railwise/core/plugin/provider/openrouter"
 import { expectPluginRegistered, it, model, provider } from "./provider-helper"
 
 describe("OpenRouterPlugin", () => {
@@ -32,8 +32,8 @@ describe("OpenRouterPlugin", () => {
       const ignored = yield* plugin.trigger("provider.update", {}, { provider: provider("nvidia"), cancel: false })
       expect(result.provider.options.headers).toEqual({
         Existing: "value",
-        "HTTP-Referer": "https://opencode.ai/",
-        "X-Title": "opencode",
+        "HTTP-Referer": "https://railwise.ai/",
+        "X-Title": "railwise",
       })
       expect(ignored.provider.options.headers).toEqual({})
     }),

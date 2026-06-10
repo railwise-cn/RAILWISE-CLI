@@ -8,7 +8,7 @@ export const CerebrasPlugin = PluginV2.define({
     return {
       "provider.update": Effect.fn(function* (evt) {
         if (evt.provider.id !== ProviderV2.ID.make("cerebras")) return
-        evt.provider.options.headers["X-Cerebras-3rd-Party-Integration"] = "opencode"
+        evt.provider.options.headers["X-Cerebras-3rd-Party-Integration"] = "railwise"
       }),
       "aisdk.sdk": Effect.fn(function* (evt) {
         if (evt.package !== "@ai-sdk/cerebras") return

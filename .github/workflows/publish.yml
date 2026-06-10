@@ -119,6 +119,8 @@ jobs:
         run: echo "::warning::Shared package npm publish failed; continuing with GitHub Release tarballs."
 
       - name: Publish CLI to npm
+        id: cli-npm
+        continue-on-error: true
         run: bun run --cwd packages/railwise script/publish.ts
         env:
           RAILWISE_VERSION: ${{ inputs.version || '' }}
@@ -130,12 +132,17 @@ jobs:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           NPM_CONFIG_PROVENANCE: false
 
+      - name: Report CLI npm publish failure
+        if: steps.cli-npm.outcome == 'failure'
+        run: echo "::warning::CLI npm publish failed; continuing with GitHub Release assets."
+
       - name: Create GitHub Release
         if: inputs.bump || inputs.version
         run: |
           VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
           gh release create "v${VERSION}" --title "v${VERSION}" --generate-notes \
             packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip \
+            packages/railwise/dist/railwise/*.tgz \
             dist/shared-packages/*.tgz dist/shared-packages/manifest.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -15,6 +15,29 @@ for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" }
 console.log("binaries", binaries)
 const version = Object.values(binaries)[0]
 
+async function archive(name: string) {
+  if (name.includes("linux")) {
+    await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise`.nothrow()
+    return
+  }
+  if (name.includes("darwin")) {
+    await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise`.nothrow()
+    return
+  }
+  if (name.includes("windows")) {
+    await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe`.nothrow()
+  }
+}
+
+function message(value: unknown) {
+  if (value instanceof Error) return value.message
+  return String(value)
+}
+
+if (!Script.preview) {
+  await Promise.all(Object.keys(binaries).map(archive))
+}
+
 await $`mkdir -p ./dist/${pkg.name}`
 await $`cp -r ./bin ./dist/${pkg.name}/bin`
 await $`cp ./script/postinstall.mjs ./dist/${pkg.name}/postinstall.mjs`
@@ -46,7 +69,13 @@ const tasks = Object.entries(binaries).map(async ([name]) => {
   await $`bun pm pack`.cwd(`./dist/${name}`)
   await $`npm publish *.tgz --access public --tag ${Script.channel}`.cwd(`./dist/${name}`)
 })
-await Promise.all(tasks)
+const results = await Promise.allSettled(tasks)
+const failed = results.flatMap((result, index) =>
+  result.status === "rejected" ? [`${Object.keys(binaries)[index]}: ${message(result.reason)}`] : [],
+)
+if (failed.length) {
+  console.warn(["Binary npm package publish failed (continuing with release assets):", ...failed].join("\n"))
+}
 await $`cd ./dist/${pkg.name} && bun pm pack && npm publish *.tgz --access public --tag ${Script.channel}`
 
 console.log("npm publish complete")
@@ -54,16 +83,6 @@ console.log("npm publish complete")
 if (!Script.preview) {
   const github = Script.github.full
   const ver = Script.version
-
-  for (const name of Object.keys(binaries)) {
-    if (name.includes("linux")) {
-      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise`.nothrow()
-    } else if (name.includes("darwin")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise`.nothrow()
-    } else if (name.includes("windows")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe`.nothrow()
-    }
-  }
 
   const sha = async (file: string) => {
     try {

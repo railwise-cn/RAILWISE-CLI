@@ -6,7 +6,7 @@ import { EMAILOCTOPUS_API_KEY } from "./app"
 ////////////////
 
 const cluster = planetscale.getDatabaseOutput({
-  name: "opencode",
+  name: "railwise",
   organization: "anomalyco",
 })
 
@@ -101,7 +101,7 @@ export const stripeWebhook = new stripe.WebhookEndpoint("StripeWebhookEndpoint",
 })
 
 const zenLiteProduct = new stripe.Product("ZenLite", {
-  name: "OpenCode Go",
+  name: "RAILWISE Go",
 })
 const zenLiteCouponFirstMonth50 = new stripe.Coupon("ZenLiteCouponFirstMonth50", {
   name: "First month 50% off",
@@ -128,7 +128,7 @@ const ZEN_LITE_PRICE = new sst.Linkable("ZEN_LITE_PRICE", {
 })
 
 const zenBlackProduct = new stripe.Product("ZenBlack", {
-  name: "OpenCode Black",
+  name: "RAILWISE Black",
 })
 const zenBlackPriceProps = {
   product: zenBlackProduct.id,

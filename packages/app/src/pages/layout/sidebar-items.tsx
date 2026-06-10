@@ -1,13 +1,13 @@
-import type { Message, Session, TextPart, UserMessage } from "@opencode-ai/sdk/v2/client"
-import { Avatar } from "@opencode-ai/ui/avatar"
-import { HoverCard } from "@opencode-ai/ui/hover-card"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { MessageNav } from "@opencode-ai/ui/message-nav"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { base64Encode } from "@opencode-ai/util/encode"
-import { getFilename } from "@opencode-ai/util/path"
+import type { Message, Session, TextPart, UserMessage } from "@railwise/sdk/v2/client"
+import { Avatar } from "@railwise/ui/avatar"
+import { HoverCard } from "@railwise/ui/hover-card"
+import { Icon } from "@railwise/ui/icon"
+import { IconButton } from "@railwise/ui/icon-button"
+import { MessageNav } from "@railwise/ui/message-nav"
+import { Spinner } from "@railwise/ui/spinner"
+import { Tooltip } from "@railwise/ui/tooltip"
+import { base64Encode } from "@railwise/util/encode"
+import { getFilename } from "@railwise/util/path"
 import { A, useNavigate, useParams } from "@solidjs/router"
 import { type Accessor, createMemo, For, type JSX, Match, onCleanup, Show, Switch } from "solid-js"
 import { useGlobalSync } from "@/context/global-sync"
@@ -20,7 +20,7 @@ import { sessionTitle } from "@/utils/session-title"
 import { sessionPermissionRequest } from "../session/composer/session-request-tree"
 import { hasProjectPermissions } from "./helpers"
 
-const OPENCODE_PROJECT_ID = "4b0ea68d7af9a6031a7ffda7ad66e0cb83315750"
+const RAILWISE_PROJECT_ID = "4b0ea68d7af9a6031a7ffda7ad66e0cb83315750"
 
 export const ProjectIcon = (props: { project: LocalProject; class?: string; notify?: boolean }): JSX.Element => {
   const globalSync = useGlobalSync()
@@ -45,7 +45,7 @@ export const ProjectIcon = (props: { project: LocalProject; class?: string; noti
         <Avatar
           fallback={name()}
           src={
-            props.project.id === OPENCODE_PROJECT_ID ? "https://opencode.ai/favicon.svg" : props.project.icon?.override
+            props.project.id === RAILWISE_PROJECT_ID ? "https://railwise.ai/favicon.svg" : props.project.icon?.override
           }
           {...getAvatarColors(props.project.icon?.color)}
           class="size-full rounded"

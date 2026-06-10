@@ -41,13 +41,13 @@ const modelKey = (state: Probe | null) => (state?.model ? `${state.model.provide
 async function probe(page: Page): Promise<Probe | null> {
   return page.evaluate(() => {
     const win = window as Window & {
-      __opencode_e2e?: {
+      __railwise_e2e?: {
         model?: {
           current?: Probe
         }
       }
     }
-    return win.__opencode_e2e?.model?.current ?? null
+    return win.__railwise_e2e?.model?.current ?? null
   })
 }
 
@@ -64,13 +64,13 @@ async function waitControl(page: Page, key: "setAgent" | "setModel" | "setVarian
       () =>
         page.evaluate((key) => {
           const win = window as Window & {
-            __opencode_e2e?: {
+            __railwise_e2e?: {
               model?: {
                 controls?: Record<string, unknown>
               }
             }
           }
-          return !!win.__opencode_e2e?.model?.controls?.[key]
+          return !!win.__railwise_e2e?.model?.controls?.[key]
         }, key),
       { timeout: 30_000 },
     )
@@ -81,7 +81,7 @@ async function pickAgent(page: Page, value: string) {
   await waitControl(page, "setAgent")
   await page.evaluate((value) => {
     const win = window as Window & {
-      __opencode_e2e?: {
+      __railwise_e2e?: {
         model?: {
           controls?: {
             setAgent?: (value: string | undefined) => void
@@ -89,7 +89,7 @@ async function pickAgent(page: Page, value: string) {
         }
       }
     }
-    const fn = win.__opencode_e2e?.model?.controls?.setAgent
+    const fn = win.__railwise_e2e?.model?.controls?.setAgent
     if (!fn) throw new Error("Model e2e agent control is not enabled")
     fn(value)
   }, value)
@@ -99,7 +99,7 @@ async function pickModel(page: Page, value: { providerID: string; modelID: strin
   await waitControl(page, "setModel")
   await page.evaluate((value) => {
     const win = window as Window & {
-      __opencode_e2e?: {
+      __railwise_e2e?: {
         model?: {
           controls?: {
             setModel?: (value: { providerID: string; modelID: string } | undefined) => void
@@ -107,7 +107,7 @@ async function pickModel(page: Page, value: { providerID: string; modelID: strin
         }
       }
     }
-    const fn = win.__opencode_e2e?.model?.controls?.setModel
+    const fn = win.__railwise_e2e?.model?.controls?.setModel
     if (!fn) throw new Error("Model e2e model control is not enabled")
     fn(value)
   }, value)
@@ -117,7 +117,7 @@ async function pickVariant(page: Page, value: string) {
   await waitControl(page, "setVariant")
   await page.evaluate((value) => {
     const win = window as Window & {
-      __opencode_e2e?: {
+      __railwise_e2e?: {
         model?: {
           controls?: {
             setVariant?: (value: string | undefined) => void
@@ -125,7 +125,7 @@ async function pickVariant(page: Page, value: string) {
         }
       }
     }
-    const fn = win.__opencode_e2e?.model?.controls?.setVariant
+    const fn = win.__railwise_e2e?.model?.controls?.setVariant
     if (!fn) throw new Error("Model e2e variant control is not enabled")
     fn(value)
   }, value)

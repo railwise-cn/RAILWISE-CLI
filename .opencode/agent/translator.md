@@ -1,7 +1,7 @@
 ---
 description: Translate content for a specified locale while preserving technical terms
 mode: subagent
-model: opencode/gpt-5.4
+model: railwise/gpt-5.4
 ---
 
 You are a professional translator and localization specialist.
@@ -13,7 +13,7 @@ Requirements:
 - Preserve meaning, intent, tone, and formatting (including Markdown/MDX structure).
 - Preserve all technical terms and artifacts exactly: product/company names, API names, identifiers, code, commands/flags, file paths, URLs, versions, error messages, config keys/values, and anything inside inline code or code blocks.
 - Also preserve every term listed in the Do-Not-Translate glossary below.
-- Also apply locale-specific guidance from `.opencode/glossary/<locale>.md` when available (for example, `zh-cn.md`).
+- Also apply locale-specific guidance from `.railwise/glossary/<locale>.md` when available (for example, `zh-cn.md`).
 - Do not modify fenced code blocks.
 - Output ONLY the translation (no commentary).
 
@@ -35,7 +35,7 @@ Locale guidance does not override code/command preservation rules or the global 
 
 ---
 
-# Do-Not-Translate Terms (OpenCode Docs)
+# Do-Not-Translate Terms (RAILWISE Docs)
 
 Generated from: `packages/web/src/content/docs/*.mdx` (default English docs)
 Generated on: 2026-02-10
@@ -68,8 +68,8 @@ Neovim
 Node.js
 npm
 Obsidian
-opencode
-opencode-ai
+railwise
+railwise-ai
 Paru
 pnpm
 ripgrep
@@ -152,15 +152,15 @@ OAuth
 Ollama integration docs
 OpenAI's Data Policies
 OpenChamber
-OpenCode
-OpenCode config
-OpenCode Config
-OpenCode TUI with the opencode theme
-OpenCode Web - Active Session
-OpenCode Web - New Session
-OpenCode Web - See Servers
-OpenCode Zen
-OpenCode-Obsidian
+RAILWISE
+RAILWISE config
+RAILWISE Config
+RAILWISE TUI with the railwise theme
+RAILWISE Web - Active Session
+RAILWISE Web - New Session
+RAILWISE Web - See Servers
+RAILWISE Zen
+RAILWISE-Obsidian
 OpenRouter dashboard
 OpenWork
 OVHcloud panel
@@ -301,7 +301,7 @@ NoeFabris
 OpenAI
 OpenAPI
 OpenChamber
-OpenCode
+RAILWISE
 OpenRouter
 OpenTUI
 OpenWork
@@ -325,69 +325,69 @@ xAI
 ZenMux
 ```
 
-## OpenCode CLI commands (as shown in docs)
+## RAILWISE CLI commands (as shown in docs)
 
 ```text
-opencode
-opencode [project]
-opencode /path/to/project
-opencode acp
-opencode agent [command]
-opencode agent create
-opencode agent list
-opencode attach [url]
-opencode attach http://10.20.30.40:4096
-opencode attach http://localhost:4096
-opencode auth [command]
-opencode auth list
-opencode auth login
-opencode auth logout
-opencode auth ls
-opencode export [sessionID]
-opencode github [command]
-opencode github install
-opencode github run
-opencode import <file>
-opencode import https://opncd.ai/s/abc123
-opencode import session.json
-opencode mcp [command]
-opencode mcp add
-opencode mcp auth [name]
-opencode mcp auth list
-opencode mcp auth ls
-opencode mcp auth my-oauth-server
-opencode mcp auth sentry
-opencode mcp debug <name>
-opencode mcp debug my-oauth-server
-opencode mcp list
-opencode mcp logout [name]
-opencode mcp logout my-oauth-server
-opencode mcp ls
-opencode models --refresh
-opencode models [provider]
-opencode models anthropic
-opencode run [message..]
-opencode run Explain the use of context in Go
-opencode serve
-opencode serve --cors http://localhost:5173 --cors https://app.example.com
-opencode serve --hostname 0.0.0.0 --port 4096
-opencode serve [--port <number>] [--hostname <string>] [--cors <origin>]
-opencode session [command]
-opencode session list
-opencode session delete <sessionID>
-opencode stats
-opencode uninstall
-opencode upgrade
-opencode upgrade [target]
-opencode upgrade v0.1.48
-opencode web
-opencode web --cors https://example.com
-opencode web --hostname 0.0.0.0
-opencode web --mdns
-opencode web --mdns --mdns-domain myproject.local
-opencode web --port 4096
-opencode web --port 4096 --hostname 0.0.0.0
-opencode.server.close()
+railwise
+railwise [project]
+railwise /path/to/project
+railwise acp
+railwise agent [command]
+railwise agent create
+railwise agent list
+railwise attach [url]
+railwise attach http://10.20.30.40:4096
+railwise attach http://localhost:4096
+railwise auth [command]
+railwise auth list
+railwise auth login
+railwise auth logout
+railwise auth ls
+railwise export [sessionID]
+railwise github [command]
+railwise github install
+railwise github run
+railwise import <file>
+railwise import https://opncd.ai/s/abc123
+railwise import session.json
+railwise mcp [command]
+railwise mcp add
+railwise mcp auth [name]
+railwise mcp auth list
+railwise mcp auth ls
+railwise mcp auth my-oauth-server
+railwise mcp auth sentry
+railwise mcp debug <name>
+railwise mcp debug my-oauth-server
+railwise mcp list
+railwise mcp logout [name]
+railwise mcp logout my-oauth-server
+railwise mcp ls
+railwise models --refresh
+railwise models [provider]
+railwise models anthropic
+railwise run [message..]
+railwise run Explain the use of context in Go
+railwise serve
+railwise serve --cors http://localhost:5173 --cors https://app.example.com
+railwise serve --hostname 0.0.0.0 --port 4096
+railwise serve [--port <number>] [--hostname <string>] [--cors <origin>]
+railwise session [command]
+railwise session list
+railwise session delete <sessionID>
+railwise stats
+railwise uninstall
+railwise upgrade
+railwise upgrade [target]
+railwise upgrade v0.1.48
+railwise web
+railwise web --cors https://example.com
+railwise web --hostname 0.0.0.0
+railwise web --mdns
+railwise web --mdns --mdns-domain myproject.local
+railwise web --port 4096
+railwise web --port 4096 --hostname 0.0.0.0
+railwise.server.close()
 ```
 
 ## Slash commands and routes
@@ -428,7 +428,7 @@ opencode.server.close()
 /mnt/d/
 /models
 /oc
-/opencode
+/railwise
 /path
 /project
 /project/current
@@ -566,7 +566,7 @@ GITLAB_HOST
 GITLAB_INSTANCE_URL
 GITLAB_OAUTH_CLIENT_ID
 GITLAB_TOKEN
-GITLAB_TOKEN_OPENCODE
+GITLAB_TOKEN_RAILWISE
 GOOGLE_APPLICATION_CREDENTIALS
 GOOGLE_CLOUD_PROJECT
 HTTP_PROXY
@@ -581,48 +581,48 @@ NODE_ENV
 NODE_EXTRA_CA_CERTS
 NPM_AUTH_TOKEN
 OC_ALLOW_WAYLAND
-OPENCODE_API_KEY
-OPENCODE_AUTH_JSON
-OPENCODE_AUTO_SHARE
-OPENCODE_CLIENT
-OPENCODE_CONFIG
-OPENCODE_CONFIG_CONTENT
-OPENCODE_CONFIG_DIR
-OPENCODE_DISABLE_AUTOCOMPACT
-OPENCODE_DISABLE_AUTOUPDATE
-OPENCODE_DISABLE_CLAUDE_CODE
-OPENCODE_DISABLE_CLAUDE_CODE_PROMPT
-OPENCODE_DISABLE_CLAUDE_CODE_SKILLS
-OPENCODE_DISABLE_DEFAULT_PLUGINS
-OPENCODE_DISABLE_FILETIME_CHECK
-OPENCODE_DISABLE_LSP_DOWNLOAD
-OPENCODE_DISABLE_MODELS_FETCH
-OPENCODE_DISABLE_PRUNE
-OPENCODE_DISABLE_TERMINAL_TITLE
-OPENCODE_ENABLE_EXA
-OPENCODE_ENABLE_EXPERIMENTAL_MODELS
-OPENCODE_EXPERIMENTAL
-OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS
-OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT
-OPENCODE_EXPERIMENTAL_DISABLE_FILEWATCHER
-OPENCODE_EXPERIMENTAL_EXA
-OPENCODE_EXPERIMENTAL_FILEWATCHER
-OPENCODE_EXPERIMENTAL_ICON_DISCOVERY
-OPENCODE_EXPERIMENTAL_LSP_TOOL
-OPENCODE_EXPERIMENTAL_LSP_TY
-OPENCODE_EXPERIMENTAL_MARKDOWN
-OPENCODE_EXPERIMENTAL_OUTPUT_TOKEN_MAX
-OPENCODE_EXPERIMENTAL_OXFMT
-OPENCODE_EXPERIMENTAL_PLAN_MODE
-OPENCODE_ENABLE_QUESTION_TOOL
-OPENCODE_FAKE_VCS
-OPENCODE_GIT_BASH_PATH
-OPENCODE_MODEL
-OPENCODE_MODELS_URL
-OPENCODE_PERMISSION
-OPENCODE_PORT
-OPENCODE_SERVER_PASSWORD
-OPENCODE_SERVER_USERNAME
+RAILWISE_API_KEY
+RAILWISE_AUTH_JSON
+RAILWISE_AUTO_SHARE
+RAILWISE_CLIENT
+RAILWISE_CONFIG
+RAILWISE_CONFIG_CONTENT
+RAILWISE_CONFIG_DIR
+RAILWISE_DISABLE_AUTOCOMPACT
+RAILWISE_DISABLE_AUTOUPDATE
+RAILWISE_DISABLE_CLAUDE_CODE
+RAILWISE_DISABLE_CLAUDE_CODE_PROMPT
+RAILWISE_DISABLE_CLAUDE_CODE_SKILLS
+RAILWISE_DISABLE_DEFAULT_PLUGINS
+RAILWISE_DISABLE_FILETIME_CHECK
+RAILWISE_DISABLE_LSP_DOWNLOAD
+RAILWISE_DISABLE_MODELS_FETCH
+RAILWISE_DISABLE_PRUNE
+RAILWISE_DISABLE_TERMINAL_TITLE
+RAILWISE_ENABLE_EXA
+RAILWISE_ENABLE_EXPERIMENTAL_MODELS
+RAILWISE_EXPERIMENTAL
+RAILWISE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS
+RAILWISE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT
+RAILWISE_EXPERIMENTAL_DISABLE_FILEWATCHER
+RAILWISE_EXPERIMENTAL_EXA
+RAILWISE_EXPERIMENTAL_FILEWATCHER
+RAILWISE_EXPERIMENTAL_ICON_DISCOVERY
+RAILWISE_EXPERIMENTAL_LSP_TOOL
+RAILWISE_EXPERIMENTAL_LSP_TY
+RAILWISE_EXPERIMENTAL_MARKDOWN
+RAILWISE_EXPERIMENTAL_OUTPUT_TOKEN_MAX
+RAILWISE_EXPERIMENTAL_OXFMT
+RAILWISE_EXPERIMENTAL_PLAN_MODE
+RAILWISE_ENABLE_QUESTION_TOOL
+RAILWISE_FAKE_VCS
+RAILWISE_GIT_BASH_PATH
+RAILWISE_MODEL
+RAILWISE_MODELS_URL
+RAILWISE_PERMISSION
+RAILWISE_PORT
+RAILWISE_SERVER_PASSWORD
+RAILWISE_SERVER_USERNAME
 PROJECT_ROOT
 RESOURCE_NAME
 RUST_LOG
@@ -636,8 +636,8 @@ XDG_CONFIG_HOME
 ```text
 ../../../config.mjs
 @astrojs/starlight/components
-@opencode-ai/plugin
-@opencode-ai/sdk
+@railwise/plugin
+@railwise/sdk
 path
 shescape
 zod
@@ -650,77 +650,77 @@ zod
 @ai-sdk/openai-compatible
 @File#L37-42
 @modelcontextprotocol/server-everything
-@opencode
+@railwise
 ```
 
 ## GitHub owner/repo slugs referenced in docs
 
 ```text
-24601/opencode-zellij-namer
-angristan/opencode-wakatime
-anomalyco/opencode
-apps/opencode-agent
-athal7/opencode-devcontainers
-awesome-opencode/awesome-opencode
+24601/railwise-zellij-namer
+angristan/railwise-wakatime
+anomalyco/railwise
+apps/railwise-agent
+athal7/railwise-devcontainers
+awesome-railwise/awesome-railwise
 backnotprop/plannotator
-ben-vargas/ai-sdk-provider-opencode-sdk
+ben-vargas/ai-sdk-provider-railwise-sdk
 btriapitsyn/openchamber
 BurntSushi/ripgrep
 Cluster444/agentic
-code-yeongyu/oh-my-opencode
-darrenhinde/opencode-agents
-different-ai/opencode-scheduler
+code-yeongyu/oh-my-railwise
+darrenhinde/railwise-agents
+different-ai/railwise-scheduler
 different-ai/openwork
 features/copilot
 folke/tokyonight.nvim
-franlol/opencode-md-table-formatter
+franlol/railwise-md-table-formatter
 ggml-org/llama.cpp
-ghoulr/opencode-websearch-cited.git
-H2Shami/opencode-helicone-session
+ghoulr/railwise-websearch-cited.git
+H2Shami/railwise-helicone-session
 hosenur/portal
 jamesmurdza/daytona
-jenslys/opencode-gemini-auth
-JRedeker/opencode-morph-fast-apply
-JRedeker/opencode-shell-strategy
+jenslys/railwise-gemini-auth
+JRedeker/railwise-morph-fast-apply
+JRedeker/railwise-shell-strategy
 kdcokenny/ocx
-kdcokenny/opencode-background-agents
-kdcokenny/opencode-notify
-kdcokenny/opencode-workspace
-kdcokenny/opencode-worktree
+kdcokenny/railwise-background-agents
+kdcokenny/railwise-notify
+kdcokenny/railwise-workspace
+kdcokenny/railwise-worktree
 login/device
-mohak34/opencode-notifier
+mohak34/railwise-notifier
 morhetz/gruvbox
-mtymek/opencode-obsidian
+mtymek/railwise-obsidian
 NeuralNomadsAI/CodeNomad
-nick-vi/opencode-type-inject
-NickvanDyke/opencode.nvim
-NoeFabris/opencode-antigravity-auth
+nick-vi/railwise-type-inject
+NickvanDyke/railwise.nvim
+NoeFabris/railwise-antigravity-auth
 nordtheme/nord
-numman-ali/opencode-openai-codex-auth
+numman-ali/railwise-openai-codex-auth
 olimorris/codecompanion.nvim
-panta82/opencode-notificator
+panta82/railwise-notificator
 rebelot/kanagawa.nvim
 remorses/kimaki
 sainnhe/everforest
-shekohex/opencode-google-antigravity-auth
-shekohex/opencode-pty.git
+shekohex/railwise-google-antigravity-auth
+shekohex/railwise-pty.git
 spoons-and-mirrors/subtask2
-sudo-tee/opencode.nvim
-supermemoryai/opencode-supermemory
-Tarquinen/opencode-dynamic-context-pruning
+sudo-tee/railwise.nvim
+supermemoryai/railwise-supermemory
+Tarquinen/railwise-dynamic-context-pruning
 Th3Whit3Wolf/one-nvim
 upstash/context7
 vtemian/micode
 vtemian/octto
 yetone/avante.nvim
-zenobi-us/opencode-plugin-template
-zenobi-us/opencode-skillful
+zenobi-us/railwise-plugin-template
+zenobi-us/railwise-skillful
 ```
 
 ## Paths, filenames, globs, and URLs
 
 ```text
-./.opencode/themes/*.json
+./.railwise/themes/*.json
 ./<project-slug>/storage/
 ./config/#custom-directory
 ./global/storage/
@@ -732,68 +732,68 @@ zenobi-us/opencode-skillful
 .claude/skills/*/SKILL.md
 .claude/skills/<name>/SKILL.md
 .env
-.github/workflows/opencode.yml
+.github/workflows/railwise.yml
 .gitignore
 .gitlab-ci.yml
 .ignore
 .NET SDK
 .npmrc
 .ocamlformat
-.opencode
-.opencode/
-.opencode/agents/
-.opencode/commands/
-.opencode/commands/test.md
-.opencode/modes/
-.opencode/plans/*.md
-.opencode/plugins/
-.opencode/skills/<name>/SKILL.md
-.opencode/skills/git-release/SKILL.md
-.opencode/tools/
-.well-known/opencode
+.railwise
+.railwise/
+.railwise/agents/
+.railwise/commands/
+.railwise/commands/test.md
+.railwise/modes/
+.railwise/plans/*.md
+.railwise/plugins/
+.railwise/skills/<name>/SKILL.md
+.railwise/skills/git-release/SKILL.md
+.railwise/tools/
+.well-known/railwise
 { type: "raw" \| "patch", content: string }
 {file:path/to/file}
 **/*.js
 %USERPROFILE%/intelephense/license.txt
-%USERPROFILE%\.cache\opencode
-%USERPROFILE%\.config\opencode\opencode.jsonc
-%USERPROFILE%\.config\opencode\plugins
-%USERPROFILE%\.local\share\opencode
-%USERPROFILE%\.local\share\opencode\log
-<project-root>/.opencode/themes/*.json
+%USERPROFILE%\.cache\railwise
+%USERPROFILE%\.config\railwise\railwise.jsonc
+%USERPROFILE%\.config\railwise\plugins
+%USERPROFILE%\.local\share\railwise
+%USERPROFILE%\.local\share\railwise\log
+<project-root>/.railwise/themes/*.json
 <providerId>/<modelId>
-<your-project>/.opencode/plugins/
+<your-project>/.railwise/plugins/
 ~
 ~/...
 ~/.agents/skills/*/SKILL.md
 ~/.agents/skills/<name>/SKILL.md
 ~/.aws/credentials
 ~/.bashrc
-~/.cache/opencode
-~/.cache/opencode/node_modules/
+~/.cache/railwise
+~/.cache/railwise/node_modules/
 ~/.claude/CLAUDE.md
 ~/.claude/skills/
 ~/.claude/skills/*/SKILL.md
 ~/.claude/skills/<name>/SKILL.md
-~/.config/opencode
-~/.config/opencode/AGENTS.md
-~/.config/opencode/agents/
-~/.config/opencode/commands/
-~/.config/opencode/modes/
-~/.config/opencode/opencode.json
-~/.config/opencode/opencode.jsonc
-~/.config/opencode/plugins/
-~/.config/opencode/skills/*/SKILL.md
-~/.config/opencode/skills/<name>/SKILL.md
-~/.config/opencode/themes/*.json
-~/.config/opencode/tools/
+~/.config/railwise
+~/.config/railwise/AGENTS.md
+~/.config/railwise/agents/
+~/.config/railwise/commands/
+~/.config/railwise/modes/
+~/.config/railwise/railwise.json
+~/.config/railwise/railwise.jsonc
+~/.config/railwise/plugins/
+~/.config/railwise/skills/*/SKILL.md
+~/.config/railwise/skills/<name>/SKILL.md
+~/.config/railwise/themes/*.json
+~/.config/railwise/tools/
 ~/.config/zed/settings.json
 ~/.local/share
-~/.local/share/opencode/
-~/.local/share/opencode/auth.json
-~/.local/share/opencode/log/
-~/.local/share/opencode/mcp-auth.json
-~/.local/share/opencode/opencode.jsonc
+~/.local/share/railwise/
+~/.local/share/railwise/auth.json
+~/.local/share/railwise/log/
+~/.local/share/railwise/mcp-auth.json
+~/.local/share/railwise/railwise.jsonc
 ~/.npmrc
 ~/.zshrc
 ~/code/
@@ -803,7 +803,7 @@ zenobi-us/opencode-skillful
 ${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts
 $HOME/intelephense/license.txt
 $HOME/projects/*
-$XDG_CONFIG_HOME/opencode/themes/*.json
+$XDG_CONFIG_HOME/railwise/themes/*.json
 agent/
 agents/
 build/
@@ -816,11 +816,11 @@ http://localhost:4096
 http://localhost:4096/doc
 https://app.example.com
 https://AZURE_COGNITIVE_SERVICES_RESOURCE_NAME.cognitiveservices.azure.com/
-https://opencode.ai/zen/v1/chat/completions
-https://opencode.ai/zen/v1/messages
-https://opencode.ai/zen/v1/models/gemini-3-flash
-https://opencode.ai/zen/v1/models/gemini-3-pro
-https://opencode.ai/zen/v1/responses
+https://railwise.ai/zen/v1/chat/completions
+https://railwise.ai/zen/v1/messages
+https://railwise.ai/zen/v1/models/gemini-3-flash
+https://railwise.ai/zen/v1/models/gemini-3-pro
+https://railwise.ai/zen/v1/responses
 https://RESOURCE_NAME.openai.azure.com/
 laravel/pint
 log/
@@ -828,11 +828,11 @@ model: "anthropic/claude-sonnet-4-5"
 modes/
 node_modules/
 openai/gpt-4.1
-opencode.ai/config.json
-opencode/<model-id>
-opencode/gpt-5.1-codex
-opencode/gpt-5.2-codex
-opencode/kimi-k2
+railwise.ai/config.json
+railwise/<model-id>
+railwise/gpt-5.1-codex
+railwise/gpt-5.2-codex
+railwise/kimi-k2
 openrouter/google/gemini-2.5-flash
 opncd.ai/s/<share-id>
 packages/*/AGENTS.md
@@ -841,7 +841,7 @@ project/
 provider_id/model_id
 provider/model
 provider/model-id
-rm -rf ~/.cache/opencode
+rm -rf ~/.cache/railwise
 skills/
 skills/*/SKILL.md
 src/**/*.ts
@@ -883,7 +883,7 @@ WIN+R
 ## Model ID strings referenced
 
 ```text
-{env:OPENCODE_MODEL}
+{env:RAILWISE_MODEL}
 anthropic/claude-3-5-sonnet-20241022
 anthropic/claude-haiku-4-20250514
 anthropic/claude-haiku-4-5
@@ -893,8 +893,8 @@ gitlab/duo-chat-haiku-4-5
 lmstudio/google/gemma-3n-e4b
 openai/gpt-4.1
 openai/gpt-5
-opencode/gpt-5.1-codex
-opencode/gpt-5.2-codex
-opencode/kimi-k2
+railwise/gpt-5.1-codex
+railwise/gpt-5.2-codex
+railwise/kimi-k2
 openrouter/google/gemini-2.5-flash
 ```

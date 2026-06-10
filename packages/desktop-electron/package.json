@@ -1,13 +1,13 @@
 {
-  "name": "@opencode-ai/desktop-electron",
+  "name": "@railwise/desktop-electron",
   "private": true,
   "version": "1.3.17",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://opencode.ai",
+  "homepage": "https://railwise.ai",
   "author": {
-    "name": "OpenCode",
-    "email": "hello@opencode.ai"
+    "name": "RAILWISE",
+    "email": "hello@railwise.ai"
   },
   "scripts": {
     "typecheck": "tsgo -b",
@@ -24,8 +24,8 @@
   },
   "main": "./out/main/index.js",
   "dependencies": {
-    "@opencode-ai/app": "workspace:*",
-    "@opencode-ai/ui": "workspace:*",
+    "@railwise/app": "workspace:*",
+    "@railwise/ui": "workspace:*",
     "@solid-primitives/i18n": "2.2.1",
     "@solid-primitives/storage": "catalog:",
     "@solidjs/meta": "catalog:",

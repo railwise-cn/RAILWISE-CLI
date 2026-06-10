@@ -1,13 +1,13 @@
-import { Billing } from "@opencode-ai/console-core/billing.js"
+import { Billing } from "@railwise/console-core/billing.js"
 import type { APIEvent } from "@solidjs/start/server"
-import { and, Database, eq, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { BillingTable, LiteTable, PaymentTable } from "@opencode-ai/console-core/schema/billing.sql.js"
-import { Identifier } from "@opencode-ai/console-core/identifier.js"
-import { centsToMicroCents } from "@opencode-ai/console-core/util/price.js"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { Resource } from "@opencode-ai/console-resource"
-import { LiteData } from "@opencode-ai/console-core/lite.js"
-import { BlackData } from "@opencode-ai/console-core/black.js"
+import { and, Database, eq, sql } from "@railwise/console-core/drizzle/index.js"
+import { BillingTable, LiteTable, PaymentTable } from "@railwise/console-core/schema/billing.sql.js"
+import { Identifier } from "@railwise/console-core/identifier.js"
+import { centsToMicroCents } from "@railwise/console-core/util/price.js"
+import { Actor } from "@railwise/console-core/actor.js"
+import { Resource } from "@railwise/console-resource"
+import { LiteData } from "@railwise/console-core/lite.js"
+import { BlackData } from "@railwise/console-core/black.js"
 
 export async function POST(input: APIEvent) {
   const body = await Billing.stripe().webhooks.constructEventAsync(

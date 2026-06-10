@@ -1,4 +1,4 @@
-import { sampledChecksum } from "@opencode-ai/util/encode"
+import { sampledChecksum } from "@railwise/util/encode"
 import {
   DEFAULT_VIRTUAL_FILE_METRICS,
   type DiffLineAnnotation,

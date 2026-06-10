@@ -12,13 +12,13 @@ type Probe = {
 async function probe(page: Page): Promise<Probe | null> {
   return page.evaluate(() => {
     const win = window as Window & {
-      __opencode_e2e?: {
+      __railwise_e2e?: {
         model?: {
           current?: Probe
         }
       }
     }
-    return win.__opencode_e2e?.model?.current ?? null
+    return win.__railwise_e2e?.model?.current ?? null
   })
 }
 

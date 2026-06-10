@@ -74,6 +74,11 @@ async function clean(files: string[]) {
   )
 }
 
+async function cleanUntracked() {
+  if (dirty) return
+  await $`git clean -fd -- ${config.upstream.rebrandedPackagePath}`.quiet()
+}
+
 async function walk(dir: string): Promise<string[]> {
   if (protectedPath(dir) && dir !== root) return []
   const entries = await readdir(dir, { withFileTypes: true })
@@ -189,6 +194,7 @@ const generated = current ? await files() : []
 if (current) {
   await $`git switch ${current}`
   await clean(generated)
+  await cleanUntracked()
 }
 
 console.log(`${branch} is ready. Rebase with: git rebase --onto ${branch} sync/${config.lastSyncedTag} dev`)

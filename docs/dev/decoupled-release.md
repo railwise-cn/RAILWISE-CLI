@@ -7,15 +7,15 @@ This repository now keeps three release surfaces connected by artifacts instead 
 Generate a clean rebrand baseline from an upstream tag:
 
 ```bash
-bun run sync:upstream -- --to v1.16.2 --dry-run
-bun run sync:upstream -- --to v1.16.2
+bun run sync:upstream -- --to v1.17.0 --dry-run
+bun run sync:upstream -- --to v1.17.0
 ```
 
 Then rebase Railwise work onto that baseline:
 
 ```bash
 git switch dev
-git rebase --onto sync/v1.16.2 <previous-sync-base> dev
+git rebase --onto sync/v1.17.0 <previous-sync-base> dev
 bun run rebrand:audit
 ```
 
@@ -51,6 +51,7 @@ Generated and pushed baselines:
 - `sync/v1.14.51`
 - `sync/v1.15.13`
 - `sync/v1.16.2`
+- `sync/v1.17.0`
 
 ## Agent Pack
 

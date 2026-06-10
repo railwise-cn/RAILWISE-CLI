@@ -147,6 +147,7 @@ const desktopExport = await read("scripts/export-desktop-repo.ts")
 const sdkPublish = await read("packages/sdk/js/script/publish.ts")
 const scriptPackage = await read("packages/script/src/index.ts")
 const agentInstall = await read("skill-pack-template/bin/install.js")
+const uiFont = await read("packages/ui/src/components/font.tsx")
 const desktopI18n = await read("packages/desktop/src/i18n/index.ts")
 const desktopTsconfig = await read("packages/desktop/tsconfig.json")
 const infoPlist = await read("packages/desktop/src-tauri/Info.plist")
@@ -167,6 +168,12 @@ const adminDeploy = await read("docs/admin/01-deploy.md")
 const readme = await read("README.md")
 const userInstall = await read("docs/user/01-installation.md")
 const targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
+const tauriDeps = {
+  "@tauri-apps/api": "2.9.1",
+  "@tauri-apps/plugin-dialog": "2.4.2",
+  "@tauri-apps/plugin-sql": "2.3.1",
+  "@tauri-apps/plugin-updater": "2.9.0",
+}
 const secrets = [
   "TAURI_SIGNING_PRIVATE_KEY",
   "TAURI_SIGNING_PRIVATE_KEY_PASSWORD",
@@ -732,6 +739,8 @@ check(
     "workspace:*",
     "catalog:",
     "scripts.predev = \"bun ./scripts/prepare.ts\"",
+    "await cp(\"install\", path.join(out, \"install\"))",
+    "include_str!(\"../../install\")",
     "uses: oven-sh/setup-bun@v2",
     "working-directory: .",
     "\"@/*\": [\"./node_modules/@railwise/app/src/*\"]",
@@ -739,6 +748,35 @@ check(
     "snapshot(path.join(root, \"packages/desktop\"), out)",
   ]),
   "Desktop export rewrites monorepo dependencies, workflow paths, tsconfig aliases, and optional vendored shared tarballs",
+)
+check(
+  "Desktop standalone Vite plugin dependencies",
+  pkg.devDependencies?.["@tailwindcss/vite"] === "catalog:" && pkg.devDependencies?.["vite-plugin-solid"] === "catalog:",
+  "Desktop declares the Vite plugins imported by @railwise/app/vite so standalone exports can build from npm or vendored packages",
+)
+check(
+  "Desktop standalone Tauri dependencies",
+  Object.entries(tauriDeps).every(([name, version]) => pkg.dependencies?.[name] === version) &&
+    pkg.devDependencies?.["@tauri-apps/cli"] === "2.9.5",
+  "Desktop pins standalone Tauri JS packages to Cargo-compatible major/minor versions so fresh installs do not drift",
+)
+check(
+  "UI package font imports use packed filenames",
+  contains(uiFont, [
+    "BlexMonoNerdFontMono-Regular.woff2",
+    "CaskaydiaCoveNerdFontMono-Regular.woff2",
+    "FiraCodeNerdFontMono-Regular.woff2",
+    "JetBrainsMonoNerdFontMono-Regular.woff2",
+    "SauceCodeProNerdFontMono-Regular.woff2",
+  ]) &&
+    [
+      "ibm-plex-mono.woff2",
+      "cascadia-code-nerd-font.woff2",
+      "fira-code-nerd-font.woff2",
+      "jetbrains-mono-nerd-font.woff2",
+      "source-code-pro-nerd-font.woff2",
+    ].every((item) => !uiFont.includes(item)),
+  "UI imports real font asset filenames instead of symlink aliases that are not preserved in shared package tarballs",
 )
 check(
   "Desktop split consumes shared app package",

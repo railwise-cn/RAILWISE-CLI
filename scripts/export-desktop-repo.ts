@@ -128,6 +128,15 @@ async function tsconfig() {
   await writeFile(file, JSON.stringify(json, null, 2) + "\n")
 }
 
+async function installer() {
+  await cp("install", path.join(out, "install"))
+  const file = path.join(out, "src-tauri/src/cli.rs")
+  await writeFile(
+    file,
+    (await Bun.file(file).text()).replace('include_str!("../../../../install")', 'include_str!("../../install")'),
+  )
+}
+
 async function snapshot(source: string, dest: string) {
   await mkdir(dest, { recursive: true })
   for (const entry of await readdir(source, { withFileTypes: true })) {
@@ -157,6 +166,7 @@ if (history) {
 }
 await rewritePackage()
 await tsconfig()
+await installer()
 await vendor()
 await workflow()
 await cp("packages/desktop/.cli-version", path.join(out, ".cli-version"))

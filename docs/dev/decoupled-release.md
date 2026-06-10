@@ -15,11 +15,42 @@ Then rebase Railwise work onto that baseline:
 
 ```bash
 git switch dev
-git rebase --onto sync/v1.16.2 sync/v1.2.8 dev
+git rebase --onto sync/v1.16.2 <previous-sync-base> dev
 bun run rebrand:audit
 ```
 
 `scripts/rebrand.config.json` is the deterministic brand map. Keep custom Railwise code in new files or packages where possible so future rebases only conflict on real feature changes.
+
+### Current Sync Audit
+
+The current `origin/dev` history is rooted at the large import commit:
+
+```bash
+7fb66d861 feat: v1.3.0 - Parallel Agent + PPT Master (#1)
+```
+
+That root commit is not descended from `sync/v1.2.8`, so this command is not valid for the current branch shape:
+
+```bash
+git rebase --onto sync/v1.16.2 sync/v1.2.8 dev
+```
+
+It attempts to replay the full repository import and produces add/add conflicts across the tree. The safer first pass is to skip the import root and replay Railwise changes after it:
+
+```bash
+git switch -c codex/rebase-v1.3.17-dev origin/dev
+git rebase --onto sync/v1.3.17 7fb66d861
+```
+
+That trial currently stops on `980d8f390 feat(desktop): add GA release readiness` with 90 conflicted files, mostly in `packages/web`, `packages/app`, `packages/railwise`, and `packages/desktop`. Resolve that commit by topic before continuing to later sync baselines.
+
+Generated and pushed baselines:
+
+- `sync/v1.3.17`
+- `sync/v1.4.14`
+- `sync/v1.14.51`
+- `sync/v1.15.13`
+- `sync/v1.16.2`
 
 ## Agent Pack
 

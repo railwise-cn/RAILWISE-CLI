@@ -1,6 +1,16 @@
 // Global asset type declarations for RAILWISE Desktop
 // This file provides TypeScript module declarations for various asset types
 
+import "solid-js"
+
+declare module "solid-js" {
+  namespace JSX {
+    interface Directives {
+      sortable: boolean
+    }
+  }
+}
+
 // Font files
 declare module "*.woff" {
   const src: string

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "睿威智测 RAILWISE",
+  "identifier": "com.railwiseai.desktop",
+  "mainBinaryName": "railwise",
+  "version": "1.3.0",
+  "build": {
+    "beforeDevCommand": "bun run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "create": false
+      }
+    ],
+    "withGlobalTauri": true,
+    "security": {
+      "csp": "default-src 'self' tauri: https://tauri.localhost; script-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; style-src 'self' 'unsafe-inline' tauri: https://tauri.localhost; img-src 'self' data: blob: asset: tauri: https://tauri.localhost https: http://localhost:* http://127.0.0.1:*; font-src 'self' tauri: https://tauri.localhost; connect-src 'self' tauri: https://tauri.localhost https: ws://localhost:* http://localhost:* http://127.0.0.1:*; media-src 'self' tauri: https://tauri.localhost"
+    },
+    "macOSPrivateApi": false
+  },
+  "bundle": {
+    "createUpdaterArtifacts": false,
+    "targets": [
+      "dmg",
+      "nsis"
+    ],
+    "icon": [
+      "icons/railwise/32x32.png",
+      "icons/railwise/128x128.png",
+      "icons/railwise/128x128@2x.png",
+      "icons/railwise/icon.icns",
+      "icons/railwise/icon.ico"
+    ],
+    "active": true,
+    "publisher": "睿威科技",
+    "shortDescription": "RAILWISE 工程监测智能工作台",
+    "longDescription": "面向工程测绘、结构监测、地铁线路监测一线工程师的多智能体桌面工作台",
+    "externalBin": [
+      "sidecars/railwise-cli"
+    ],
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/railwise/icon.ico",
+        "headerImage": "assets/nsis-header-railwise.bmp",
+        "sidebarImage": "assets/nsis-sidebar-railwise.bmp",
+        "displayLanguageSelector": false,
+        "languages": [
+          "SimpChinese"
+        ],
+        "installMode": "currentUser",
+        "startMenuFolder": "RAILWISE"
+      }
+    },
+    "macOS": {
+      "entitlements": "./entitlements.plist",
+      "infoPlist": "./Info.plist",
+      "dmg": {
+        "background": "assets/dmg-background.png",
+        "windowSize": {
+          "width": 660,
+          "height": 440
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 220
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 220
+        }
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": [
+          "railwise"
+        ]
+      }
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYwMDM5Nzg5OUMzOUExMDQKUldRRW9UbWNpWmNEOENYT01CV0lhOXR1UFhpaXJsK1Z3aU9lZnNtNzE0TDROWVMwVW9XQnFOelkK",
+      "endpoints": [
+        "https://updates.railwise.cn/desktop/{{target}}/{{current_version}}"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

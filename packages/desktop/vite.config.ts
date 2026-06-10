@@ -1,12 +1,15 @@
 import { defineConfig } from "vite"
 import appPlugin from "@railwise/app/vite"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 
 const host = process.env.TAURI_DEV_HOST
+const app = path.dirname(fileURLToPath(import.meta.resolve("@railwise/app")))
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [appPlugin],
-  publicDir: "../app/public",
+  publicDir: path.join(app, "..", "public"),
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors

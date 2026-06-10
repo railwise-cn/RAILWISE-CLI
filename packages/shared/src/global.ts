@@ -4,7 +4,7 @@ import os from "os"
 import { Context, Effect, Layer } from "effect"
 
 export namespace Global {
-  export class Service extends Context.Service<Service, Interface>()("@opencode/Global") {}
+  export class Service extends Context.Service<Service, Interface>()("@railwise/Global") {}
 
   export interface Interface {
     readonly home: string
@@ -19,8 +19,8 @@ export namespace Global {
   export const layer = Layer.effect(
     Service,
     Effect.gen(function* () {
-      const app = "opencode"
-      const home = process.env.OPENCODE_TEST_HOME ?? os.homedir()
+      const app = "railwise"
+      const home = process.env.RAILWISE_TEST_HOME ?? os.homedir()
       const data = path.join(xdgData!, app)
       const cache = path.join(xdgCache!, app)
       const cfg = path.join(xdgConfig!, app)

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { Script } from "@opencode-ai/script"
+import { Script } from "@railwise/script"
 import { $ } from "bun"
 import { fileURLToPath } from "url"
 
@@ -73,7 +73,7 @@ if (Script.release && !Script.preview) {
 }
 
 console.log("\n=== cli ===\n")
-await import(`../packages/opencode/script/publish.ts`)
+await import(`../packages/railwise/script/publish.ts`)
 
 console.log("\n=== sdk ===\n")
 await import(`../packages/sdk/js/script/publish.ts`)

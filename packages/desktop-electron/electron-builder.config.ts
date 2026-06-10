@@ -21,13 +21,13 @@ async function signWindows(configuration: { path: string }) {
 }
 
 const channel = (() => {
-  const raw = process.env.OPENCODE_CHANNEL
+  const raw = process.env.RAILWISE_CHANNEL
   if (raw === "dev" || raw === "beta" || raw === "prod") return raw
   return "dev"
 })()
 
 const getBase = (): Configuration => ({
-  artifactName: "opencode-electron-${os}-${arch}.${ext}",
+  artifactName: "railwise-electron-${os}-${arch}.${ext}",
   directories: {
     output: "dist",
     buildResources: "resources",
@@ -54,8 +54,8 @@ const getBase = (): Configuration => ({
     sign: true,
   },
   protocols: {
-    name: "OpenCode",
-    schemes: ["opencode"],
+    name: "RAILWISE",
+    schemes: ["railwise"],
   },
   win: {
     icon: `resources/icons/icon.ico`,
@@ -84,29 +84,29 @@ function getConfig() {
     case "dev": {
       return {
         ...base,
-        appId: "ai.opencode.desktop.dev",
-        productName: "OpenCode Dev",
-        rpm: { packageName: "opencode-dev" },
+        appId: "ai.railwise.desktop.dev",
+        productName: "RAILWISE Dev",
+        rpm: { packageName: "railwise-dev" },
       }
     }
     case "beta": {
       return {
         ...base,
-        appId: "ai.opencode.desktop.beta",
-        productName: "OpenCode Beta",
-        protocols: { name: "OpenCode Beta", schemes: ["opencode"] },
-        publish: { provider: "github", owner: "anomalyco", repo: "opencode-beta", channel: "latest" },
-        rpm: { packageName: "opencode-beta" },
+        appId: "ai.railwise.desktop.beta",
+        productName: "RAILWISE Beta",
+        protocols: { name: "RAILWISE Beta", schemes: ["railwise"] },
+        publish: { provider: "github", owner: "anomalyco", repo: "railwise-beta", channel: "latest" },
+        rpm: { packageName: "railwise-beta" },
       }
     }
     case "prod": {
       return {
         ...base,
-        appId: "ai.opencode.desktop",
-        productName: "OpenCode",
-        protocols: { name: "OpenCode", schemes: ["opencode"] },
-        publish: { provider: "github", owner: "anomalyco", repo: "opencode", channel: "latest" },
-        rpm: { packageName: "opencode" },
+        appId: "ai.railwise.desktop",
+        productName: "RAILWISE",
+        protocols: { name: "RAILWISE", schemes: ["railwise"] },
+        publish: { provider: "github", owner: "anomalyco", repo: "railwise", channel: "latest" },
+        rpm: { packageName: "railwise" },
       }
     }
   }

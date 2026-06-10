@@ -17,11 +17,11 @@ import { parseArgs } from "node:util"
 const repo = process.env.GH_REPO
 if (!repo) throw new Error("GH_REPO is required")
 
-const releaseId = process.env.OPENCODE_RELEASE
-if (!releaseId) throw new Error("OPENCODE_RELEASE is required")
+const releaseId = process.env.RAILWISE_RELEASE
+if (!releaseId) throw new Error("RAILWISE_RELEASE is required")
 
-const version = process.env.OPENCODE_VERSION
-if (!version) throw new Error("OPENCODE_VERSION is required")
+const version = process.env.RAILWISE_VERSION
+if (!version) throw new Error("RAILWISE_VERSION is required")
 
 const token = process.env.GH_TOKEN ?? process.env.GITHUB_TOKEN
 if (!token) throw new Error("GH_TOKEN or GITHUB_TOKEN is required")
@@ -100,16 +100,16 @@ const add = (key: string, asset: Asset, signature: string) => {
 }
 
 const targets = [
-  { key: "linux-x86_64-deb", asset: "opencode-desktop-linux-amd64.deb" },
-  { key: "linux-x86_64-rpm", asset: "opencode-desktop-linux-x86_64.rpm" },
-  { key: "linux-aarch64-deb", asset: "opencode-desktop-linux-arm64.deb" },
-  { key: "linux-aarch64-rpm", asset: "opencode-desktop-linux-aarch64.rpm" },
-  { key: "windows-aarch64-nsis", asset: "opencode-desktop-windows-arm64.exe" },
-  { key: "windows-x86_64-nsis", asset: "opencode-desktop-windows-x64.exe" },
-  { key: "darwin-x86_64-app", asset: "opencode-desktop-darwin-x64.app.tar.gz" },
+  { key: "linux-x86_64-deb", asset: "railwise-desktop-linux-amd64.deb" },
+  { key: "linux-x86_64-rpm", asset: "railwise-desktop-linux-x86_64.rpm" },
+  { key: "linux-aarch64-deb", asset: "railwise-desktop-linux-arm64.deb" },
+  { key: "linux-aarch64-rpm", asset: "railwise-desktop-linux-aarch64.rpm" },
+  { key: "windows-aarch64-nsis", asset: "railwise-desktop-windows-arm64.exe" },
+  { key: "windows-x86_64-nsis", asset: "railwise-desktop-windows-x64.exe" },
+  { key: "darwin-x86_64-app", asset: "railwise-desktop-darwin-x64.app.tar.gz" },
   {
     key: "darwin-aarch64-app",
-    asset: "opencode-desktop-darwin-aarch64.app.tar.gz",
+    asset: "railwise-desktop-darwin-aarch64.app.tar.gz",
   },
 ]
 

@@ -10,7 +10,7 @@ This codebase uses Effect, a framework for writing typescript.
 ## How to Answer Effect Questions
 
 1. Clone the Effect repository: `https://github.com/Effect-TS/effect-smol` to
-   `.opencode/references/effect-smol` in this project NOT the skill folder.
+   `.railwise/references/effect-smol` in this project NOT the skill folder.
 2. Use the explore agent to search the codebase for answers about Effect patterns, APIs, and concepts
 3. Provide responses based on the actual Effect source code and documentation
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "OpenCode Dev",
-  "identifier": "ai.opencode.desktop.dev",
-  "mainBinaryName": "OpenCode",
+  "productName": "RAILWISE Dev",
+  "identifier": "ai.railwise.desktop.dev",
+  "mainBinaryName": "RAILWISE",
   "version": "../package.json",
   "build": {
     "beforeDevCommand": "bun run dev",
@@ -33,7 +33,7 @@
     ],
     "active": true,
     "targets": ["deb", "rpm", "dmg", "nsis", "app"],
-    "externalBin": ["sidecars/opencode-cli"],
+    "externalBin": ["sidecars/railwise-cli"],
     "linux": {
       "rpm": {
         "compression": {
@@ -59,7 +59,7 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["opencode"]
+        "schemes": ["railwise"]
       }
     }
   }

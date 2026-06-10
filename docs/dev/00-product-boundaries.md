@@ -3,7 +3,7 @@
 **文档版本**: v2.0
 **编写日期**: 2026-04-30
 **适用范围**: RAILWISE Core / RAILWISE CLI / RAILWISE Desktop
-**执行仓库**: `railwise-cn/RAILWISE-CLI`
+**执行仓库**: `railwise-cn/RAILWISE-CLI` + `railwise-cn/railwise-desktop-app`
 **当前原则**: 底层统一，产品分开
 
 ---
@@ -18,7 +18,7 @@ RAILWISE 不再被定义为“CLI 的图形化桌面端”。这是错误叙事�
 - **RAILWISE CLI**: 面向开发者、脚本、CI 和自动化的命令行产品。
 - **RAILWISE Desktop**: 面向工程测绘和监测业务用户的可视化桌面工作台。
 
-实现上继续保留 monorepo 和共享底层。产品上必须分开定位、分开发版、分开验收。
+实现上 Core、CLI、SDK 和共享 Web UI 留在 `RAILWISE-CLI`，Desktop 源码在 `railwise-desktop-app` 独立仓库。产品上必须分开定位、分开发版、分开验收。
 
 ---
 
@@ -137,17 +137,17 @@ Desktop 用户关心：
 
 **代码边界**:
 
-- 桌面壳: `packages/desktop`
-- 复用前端: `packages/app`
-- 本地能力: `packages/desktop/src-tauri`
-- 桌面专属页面、文案和发布配置必须放在 Desktop 边界内。
+- 桌面壳: `railwise-desktop-app`
+- 复用前端: 通过发布后的 `@railwise/app`、`@railwise/ui`、`@railwise/sdk`、`@railwise/util` 产物消费
+- 本地能力: `railwise-desktop-app/src-tauri`
+- 桌面专属页面、文案和发布配置必须放在 Desktop 独立仓库内。
 
 ---
 
 ## 4. 仓库分层
 
 ```text
-RAILWISE monorepo
+RAILWISE-CLI
   ├─ packages/railwise        Core + CLI
   │  ├─ src/agent             Core: 智能体和工作流
   │  ├─ src/norm              Core: 规范 Wiki
@@ -156,10 +156,14 @@ RAILWISE monorepo
   │  └─ src/cli               CLI 产品入口
   ├─ packages/sdk/js          Core 对外 SDK
   ├─ packages/app             共享 Web UI shell
-  ├─ packages/desktop         Desktop 产品入口
   ├─ docs/dev                 开发边界和架构文档
   ├─ docs/user                用户文档，按产品拆分
   └─ docs/admin               发布、部署、安全和运维文档
+
+railwise-desktop-app
+  ├─ src                       Desktop SolidJS shell
+  ├─ src-tauri                 Tauri 本地能力
+  └─ e2e                       Desktop E2E / release acceptance
 ```
 
 `packages/app` 是共享 UI 层，不是独立商业产品。它可以服务 Web 预览和 Desktop，但用户叙事必须由 CLI 或 Desktop 承接。
@@ -213,7 +217,7 @@ RAILWISE monorepo
 
 - `core`: 底层引擎、工具、API、SDK
 - `cli`: 命令行入口、命令文档、自动化场景
-- `desktop`: Tauri、安装器、桌面页面、桌面发布
+- `desktop`: 独立 Desktop 仓库消费的 shared contract 或 handoff
 - `app`: 共享 UI shell
 - `docs`: 产品边界、用户文档、发布说明
 
@@ -252,7 +256,7 @@ Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复
 - [x] 根 README 改成 Core / CLI / Desktop 三产品线叙事。
 - [x] `docs/dev/01-architecture.md` 改成三产品线架构。
 - [x] `docs/dev/05-release-cadence.md` 明确 CLI 和 Desktop 发版分离。
-- [x] `packages/desktop/README.md` 改成业务桌面工作台说明。
+- [x] 独立 Desktop 仓库 README 改成业务桌面工作台说明。
 - [x] `packages/app/README.md` 改成共享 UI shell 说明。
 - [x] `packages/railwise/README.md` 改成 Core + CLI 说明。
 
@@ -265,7 +269,7 @@ Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复
 
 ### P2: 代码边界硬化
 
-- [x] 检查 `packages/app` 中 Desktop-only 文案，迁移到 `packages/desktop` 或通过平台元数据注入。
+- [x] 检查 `packages/app` 中 Desktop-only 文案，迁移到独立 Desktop 仓库或通过平台元数据注入。
 - [x] 检查 CLI 命令是否依赖 Desktop 路径或桌面配置。
 - [x] 将 delivery package 的 Core API、Desktop UI、CLI export 分别归档。
 - [x] 为 PR 模板或提交规范增加产品线标签。
@@ -273,15 +277,14 @@ Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复
 ### P3: 发版流水线分离
 
 - [x] CLI 发布文档独立。
-- [x] Desktop release runbook 只描述桌面签名、公证、更新。
+- [x] Desktop release runbook 迁入独立 Desktop 仓库，只描述桌面签名、公证、更新。
 - [x] Core 兼容性检查进入两条产品线共同前置门禁。
 
 ---
 
 ## 8. 不做什么
 
-- 不立即拆仓库。
-- 不复制 Core 代码给 Desktop。
+- 不复制 Core 代码给 Desktop；Desktop 通过 CLI 二进制和 npm/shared package 产物连接。
 - 不让 Desktop 依赖用户手动启动 CLI。
 - 不把 Web 预览当成 Desktop 产品验收。
 - 不在一个 PR 里继续混写 CLI、Desktop、Core 的用户承诺。

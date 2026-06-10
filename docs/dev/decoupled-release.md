@@ -42,7 +42,7 @@ git switch -c codex/rebase-v1.3.17-dev origin/dev
 git rebase --onto sync/v1.3.17 7fb66d861
 ```
 
-That trial currently stops on `980d8f390 feat(desktop): add GA release readiness` with 90 conflicted files, mostly in `packages/web`, `packages/app`, `packages/railwise`, and `packages/desktop`. Resolve that commit by topic before continuing to later sync baselines.
+That trial currently stops on `980d8f390 feat(desktop): add GA release readiness` with 90 conflicted files, mostly in `packages/web`, `packages/app`, `packages/railwise`, and the historical `packages/desktop` tree. The current CLI branch has removed `packages/desktop`, so future sync work should treat Desktop history as a separate product line and replay only Core/CLI/shared-package changes into this repository.
 
 Generated and pushed baselines:
 
@@ -84,21 +84,15 @@ Published package versions should match the CLI version that generated the SDK.
 
 ## Desktop Split
 
-Export a standalone Desktop repository snapshot:
+Desktop has been moved to the standalone `railwise-desktop-app` repository. This CLI repository no longer owns `packages/desktop`, Tauri workflows, Desktop verification scripts, or Desktop release gates.
 
-```bash
-bun run desktop:export -- --out ../railwise-desktop-app --cli-version 1.2.8 --shared-version 1.2.8 --force
-```
+Desktop now consumes this repository through artifacts:
 
-The export rewrites `workspace:*` and `catalog:` dependencies into npm-compatible versions, adds a standalone Desktop release workflow, and uses `.cli-version` to download the CLI sidecar from the `railwise-cn/RAILWISE-CLI` GitHub release.
+- CLI binary release assets, pinned by Desktop `.cli-version`.
+- `@railwise/sdk`, generated from the CLI server API.
+- Shared frontend packages published or packed from this repository.
 
-For full history migration, retry with:
-
-```bash
-bun run desktop:export -- --out ../railwise-desktop-app --history --force
-```
-
-If `git-filter-repo` is killed on this large repo, use the snapshot export first and run history migration later on a machine or CI runner with more memory.
+The old snapshot export helper was a migration tool and was removed with the monorepo Desktop workspace. Future Desktop changes should land in `railwise-desktop-app`; this repository should only change when Core/API/shared package contracts need to move.
 
 ## Release Contract
 

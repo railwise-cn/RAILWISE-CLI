@@ -44,11 +44,13 @@ cd workers/update-server
 bun ./verify.ts
 ```
 
-总体验收也会串联该脚本：
+CLI 仓库侧可直接运行同一验收入口：
 
 ```bash
-bun run desktop:verify
+bun run script/verify-update-server
 ```
+
+Desktop 安装包、签名和 updater 端到端验收在独立 `railwise-desktop-app` 仓库执行。
 
 ## 回滚
 

@@ -1,5 +1,7 @@
 # RAILWISE Desktop M1 Foundation Completion Implementation Plan
 
+> Archived note: this plan predates the Desktop split. Historical `packages/desktop` paths now live in the standalone `railwise-desktop-app` repository.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Complete M1 foundation requirements: brand replacement, full Chinese i18n, startup optimization < 3s, and visual token compliance for RAILWISE Desktop v1.3.0

@@ -8,7 +8,7 @@
 
 - **CLI**（`packages/railwise`）— 终端命令行 / CI 脚本入口
 - **Web**（`packages/app`）— 浏览器 SPA
-- **Desktop**（`packages/desktop`）— Tauri 2 原生桌面端，支持 macOS / Windows；Linux 仅保留 CLI，不做桌面安装包
+- **Desktop**（`railwise-desktop-app` 独立仓库）— Tauri 2 原生桌面端，支持 macOS / Windows；Linux 仅保留 CLI，不做桌面安装包
 
 > **越用越懂你** — RAILWISE-CLI 内置[跨会话记忆系统](#跨会话记忆系统)，自动记住你的项目结构、编码习惯和工作偏好。用得越多，它就越了解你的项目，响应越精准，协作越默契——就像一个不断成长的工程搭档。
 
@@ -57,7 +57,7 @@ rw --version
 
 从 [Releases](https://github.com/railwise-cn/RAILWISE-CLI/releases) 下载对应平台的 CLI 二进制包：
 
-> 这些是 CLI 安装包，不包含 Desktop 安装包。桌面端只发布 macOS Apple Silicon 与 macOS Intel，Linux 不做桌面端。
+> 这些是 CLI 安装包，不包含 Desktop 安装包。桌面端在独立 `railwise-desktop-app` 仓库发布，Linux 不做桌面端。
 
 | 平台                | 文件                          |
 | ------------------- | ----------------------------- |

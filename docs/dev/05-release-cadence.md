@@ -1,48 +1,30 @@
 # 发版节奏
 
-RAILWISE Desktop 使用 `desktop/v{major}.{minor}.{patch}` 标签发布，版本号与桌面包、Tauri 配置和更新服务器 manifest 保持一致。
+RAILWISE 现在按产物连接三条发布面：
 
-## RC1
+- CLI/Core：本仓库发布 npm 包、SDK、共享前端包和 CLI 二进制。
+- Agent Pack：独立资产包发布 agent、skill、command 和 tool 资产。
+- Desktop：独立 `railwise-desktop-app` 仓库发布 Tauri 安装包，并通过 `.cli-version` 锁定 CLI sidecar 版本。
 
-RC1 进入 5 天内测，覆盖 10 名工程师或 PM 的真实项目样本，并完整运行 M7 的 12 条 E2E 用例。人工验收必须按 `docs/dev/12-desktop-harness-marketplace-beta.md` 逐项记录。
+## CLI/Core
 
-P0 包含崩溃、数据丢失、签名失败、公证失败和更新失败，必须当日修复。P1 包含功能缺失和严重 UI 异常，修复后并入 RC2。P2 体验优化进入下一迭代 backlog。
-
-## RC2
-
-RC2 在 P0/P1 清零后发布，验证期 3 天。回归范围必须包含崩溃恢复、自动更新、视觉回归、TTFUI、CSV 导入、高级智能体管理、工作流流水线和 PPT 生成。
-
-## GA
-
-GA 发布版本为 `desktop/v1.3.0` 起步。更新服务器按 10%、30%、100% 灰度推进，每阶段间隔 24 小时。GitHub Release 需要附 changelog，内网分发由管理员通过私有更新服务器推送。
-
-## 发布前检查
+CLI 发版前置检查：
 
 ```bash
-cd workers/update-server && bun ./verify.ts
-cd packages/app && bun run typecheck
-cd packages/ui && bun run typecheck
-cd packages/desktop && bun run build
-cd packages/desktop/src-tauri && cargo check
-cd packages/desktop && bun run test:e2e
+bun run rebrand:audit
+bun run typecheck
+cd packages/railwise && bun test
 ```
 
-发布前还必须执行品牌残留扫描，确保当前 UI、桌面壳和交付文档不再出现旧工作台命名。
-
-仓库根目录的总体验收入口会串联品牌残留扫描、M6 发布配置、M7 内测验收、更新分发服务验收和各 package typecheck：
+SDK 由 CLI API 生成；CLI 版本发布时同步生成并发布对应版本的 `@railwise/sdk`。共享前端包通过本仓库的 shared package 发布脚本输出给 Desktop 消费：
 
 ```bash
-bun run desktop:verify
+bun run pack:shared
+bun run publish:shared
 ```
 
-GA 前置检查会额外校验版本一致性、发版文档、更新服务配置和 changelog：
+## Desktop
 
-```bash
-bun run desktop:verify:ga
-```
+Desktop 不再从本仓库构建。Desktop 发版、签名、公证、安装器、Playwright E2E、macOS smoke、视觉回归和 updater live gate 均在 `railwise-desktop-app` 仓库执行。
 
-正式发版前执行完整 live gate，并确认 `docs/dev/12-desktop-harness-marketplace-beta.md` 中的人工验收记录已完成：
-
-```bash
-bun run desktop:verify:ga -- --full
-```
+升级 Desktop 所绑定的 CLI 版本时，更新 Desktop 仓库的 `.cli-version`，同步更新 `@railwise/sdk` / shared package 版本，并在 Desktop 仓库跑完整回归。

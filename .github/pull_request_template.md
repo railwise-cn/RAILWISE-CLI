@@ -13,7 +13,7 @@ Closes #
 
 - [ ] Core (`packages/railwise`, SDK contracts, server/API, tools, workflows)
 - [ ] CLI (`packages/railwise/src/cli`, command-line UX, scripting, CI/headless usage)
-- [ ] Desktop (`packages/desktop`, native shell, local files, installer, updater, desktop UX)
+- [ ] Desktop handoff / shared contract (changes consumed by standalone `railwise-desktop-app`)
 - [ ] App shell (`packages/app`, shared SolidJS UI used by browser preview and Desktop)
 - [ ] Docs only
 - [ ] CI / release infrastructure

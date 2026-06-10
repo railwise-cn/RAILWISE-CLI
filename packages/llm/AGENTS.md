@@ -23,12 +23,12 @@ This package is an Effect Schema-first LLM core. The Schema classes in `src/sche
 
 Primary in-repo integration point:
 
-- `packages/opencode/src/session/llm.ts` is the session-owned orchestration layer that decides whether a request uses AI SDK or this package's native route runtime.
-- `packages/opencode/src/session/llm/native-request.ts` is the lowering adapter from opencode's session/AI SDK-shaped data into this package's `LLMRequest` model.
-- `packages/opencode/src/session/llm/native-runtime.ts` is the execution adapter that calls `LLMClient.stream(...)` and bridges opencode tools into this package's tool runtime.
-- `packages/opencode/src/session/llm/ai-sdk.ts` keeps the default AI SDK path compatible by converting AI SDK stream parts into this package's shared `LLMEvent`s.
+- `packages/railwise/src/session/llm.ts` is the session-owned orchestration layer that decides whether a request uses AI SDK or this package's native route runtime.
+- `packages/railwise/src/session/llm/native-request.ts` is the lowering adapter from railwise's session/AI SDK-shaped data into this package's `LLMRequest` model.
+- `packages/railwise/src/session/llm/native-runtime.ts` is the execution adapter that calls `LLMClient.stream(...)` and bridges railwise tools into this package's tool runtime.
+- `packages/railwise/src/session/llm/ai-sdk.ts` keeps the default AI SDK path compatible by converting AI SDK stream parts into this package's shared `LLMEvent`s.
 
-Keep this package independent of session concerns. Session auth, permissions, plugins, telemetry headers, and runtime selection belong in `packages/opencode/src/session/llm.ts` and its local adapters.
+Keep this package independent of session concerns. Session auth, permissions, plugins, telemetry headers, and runtime selection belong in `packages/railwise/src/session/llm.ts` and its local adapters.
 
 ### Request Flow
 
@@ -126,7 +126,7 @@ packages/llm/src/
     index.ts                barrel
   llm.ts                    request constructors and convenience helpers
   route/
-    index.ts                @opencode-ai/llm/route advanced barrel
+    index.ts                @railwise/llm/route advanced barrel
     client.ts               Route.make + LLMClient.prepare/stream/generate
     executor.ts             RequestExecutor service + transport error mapping
     protocol.ts             Protocol type + Protocol.make
@@ -297,7 +297,7 @@ Pass `provider`, `protocol`, and optional `tags` to `recordedTests(...)` / `reco
 
 Filters apply in replay and record mode. Combine them with `RECORD=true` when refreshing only one provider or scenario.
 
-**Binary response bodies.** Most providers stream text (SSE, JSON). AWS Bedrock streams binary AWS event-stream frames whose CRC32 fields would be mangled by a UTF-8 round-trip — those bodies are stored as base64 with `bodyEncoding: "base64"` on the response snapshot. Detection is by `Content-Type` in `@opencode-ai/http-recorder` (currently `application/vnd.amazon.eventstream` and `application/octet-stream`); cassettes for SSE/JSON routes omit the field and decode as text.
+**Binary response bodies.** Most providers stream text (SSE, JSON). AWS Bedrock streams binary AWS event-stream frames whose CRC32 fields would be mangled by a UTF-8 round-trip — those bodies are stored as base64 with `bodyEncoding: "base64"` on the response snapshot. Detection is by `Content-Type` in `@railwise/http-recorder` (currently `application/vnd.amazon.eventstream` and `application/octet-stream`); cassettes for SSE/JSON routes omit the field and decode as text.
 
 **Matching strategy.** Replay walks the cassette in record order via an internal cursor: the Nth runtime request is served by the Nth recorded interaction, and each one is validated by comparing method, URL, allow-listed headers, and the canonical JSON body. This handles tool loops (each round's request differs as history grows) and retry/polling scenarios (successive byte-identical requests with different responses) uniformly. If a test reorders its requests, re-record the cassette. `scriptedResponses` (in `test/lib/http.ts`) is the deterministic counterpart for tests that don't need a live provider; it scripts response bodies in order without reading from disk.
 

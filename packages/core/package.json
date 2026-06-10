@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "version": "1.15.13",
-  "name": "@opencode-ai/core",
+  "name": "@railwise/core",
   "type": "module",
   "license": "MIT",
   "private": true,
@@ -11,7 +11,7 @@
     "typecheck": "tsgo --noEmit"
   },
   "bin": {
-    "opencode": "./bin/opencode"
+    "railwise": "./bin/railwise"
   },
   "exports": {
     "./*": "./src/*.ts"

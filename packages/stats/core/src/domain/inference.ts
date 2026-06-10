@@ -90,7 +90,7 @@ WITH normalized AS (
   WHERE event_type = 'completions'
     AND model IS NOT NULL
     AND model <> ''
-    AND (strpos(COALESCE(user_agent, ''), 'ai-sdk') > 0 OR strpos(COALESCE(user_agent, ''), 'opencode') > 0)
+    AND (strpos(COALESCE(user_agent, ''), 'ai-sdk') > 0 OR strpos(COALESCE(user_agent, ''), 'railwise') > 0)
     AND event_timestamp >= ${periodStartValue}
     AND event_timestamp < ${periodEndValue}
 ), filtered AS (

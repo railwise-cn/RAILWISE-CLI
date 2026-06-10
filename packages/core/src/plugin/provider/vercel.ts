@@ -10,8 +10,8 @@ export const VercelPlugin = PluginV2.define({
           if (item.provider.endpoint.type !== "aisdk") continue
           if (item.provider.endpoint.package !== "@ai-sdk/vercel") continue
           evt.provider.update(item.provider.id, (provider) => {
-            provider.options.headers["http-referer"] = "https://opencode.ai/"
-            provider.options.headers["x-title"] = "opencode"
+            provider.options.headers["http-referer"] = "https://railwise.ai/"
+            provider.options.headers["x-title"] = "railwise"
           })
         }
       }),

@@ -1,7 +1,7 @@
 import { describe, expect, mock } from "bun:test"
 import { Effect } from "effect"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { CloudflareAIGatewayPlugin } from "@opencode-ai/core/plugin/provider/cloudflare-ai-gateway"
+import { PluginV2 } from "@railwise/core/plugin"
+import { CloudflareAIGatewayPlugin } from "@railwise/core/plugin/provider/cloudflare-ai-gateway"
 import { it, model, withEnv } from "./provider-helper"
 
 const aiGatewayCalls: Record<string, unknown>[] = []
@@ -107,7 +107,7 @@ describe("CloudflareAIGatewayPlugin", () => {
             package: "ai-gateway-provider",
             options: {
               name: "cloudflare-ai-gateway",
-              metadata: { invoked_by: "test", project: "opencode" },
+              metadata: { invoked_by: "test", project: "railwise" },
               cacheTtl: 300,
               cacheKey: "cache-key",
               skipCache: true,
@@ -123,13 +123,13 @@ describe("CloudflareAIGatewayPlugin", () => {
           gateway: "env-gateway",
           apiKey: "env-token",
           options: {
-            metadata: { invoked_by: "test", project: "opencode" },
+            metadata: { invoked_by: "test", project: "railwise" },
             cacheTtl: 300,
             cacheKey: "cache-key",
             skipCache: true,
             collectLog: false,
             headers: {
-              "User-Agent": expect.stringContaining("opencode/"),
+              "User-Agent": expect.stringContaining("railwise/"),
             },
           },
         })
@@ -152,7 +152,7 @@ describe("CloudflareAIGatewayPlugin", () => {
             options: {
               name: "cloudflare-ai-gateway",
               headers: {
-                "cf-aig-metadata": JSON.stringify({ invoked_by: "header", project: "opencode" }),
+                "cf-aig-metadata": JSON.stringify({ invoked_by: "header", project: "railwise" }),
               },
             },
           },
@@ -160,7 +160,7 @@ describe("CloudflareAIGatewayPlugin", () => {
         )
 
         expect(aiGatewayCalls[0]?.options).toMatchObject({
-          metadata: { invoked_by: "header", project: "opencode" },
+          metadata: { invoked_by: "header", project: "railwise" },
         })
       }),
     ),

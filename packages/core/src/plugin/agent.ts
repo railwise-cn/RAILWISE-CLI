@@ -144,7 +144,7 @@ export const Plugin = PluginV2.define({
             { permission: "plan_exit", pattern: "*", action: "allow" },
             { permission: "external_directory", pattern: path.join(Global.Path.data, "plans", "*"), action: "allow" },
             { permission: "edit", pattern: "*", action: "deny" },
-            { permission: "edit", pattern: path.join(".opencode", "plans", "*.md"), action: "allow" },
+            { permission: "edit", pattern: path.join(".railwise", "plans", "*.md"), action: "allow" },
             {
               permission: "edit",
               pattern: path.relative(worktree, path.join(Global.Path.data, "plans", "*.md")),

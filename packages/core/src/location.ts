@@ -20,7 +20,7 @@ export interface Interface {
   readonly vcs?: Project.Vcs
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/Location") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/Location") {}
 
 export const layer = (ref: Ref) =>
   Layer.effect(

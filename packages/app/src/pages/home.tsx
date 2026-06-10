@@ -1,22 +1,22 @@
-import type { Session } from "@opencode-ai/sdk/v2/client"
+import type { Session } from "@railwise/sdk/v2/client"
 import { createMemo, createSignal, For, Match, Show, Switch } from "solid-js"
 import { createStore } from "solid-js/store"
 import { useQuery } from "@tanstack/solid-query"
-import { Button } from "@opencode-ai/ui/button"
-import { Logo } from "@opencode-ai/ui/logo"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { Avatar as AvatarV2 } from "@opencode-ai/ui/v2/components/avatar-v2.jsx"
-import { ButtonV2 } from "@opencode-ai/ui/v2/components/button-v2.jsx"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/components/icon.jsx"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/components/icon-button-v2.jsx"
-import { MenuV2 } from "@opencode-ai/ui/v2/components/menu-v2.jsx"
+import { Button } from "@railwise/ui/button"
+import { Logo } from "@railwise/ui/logo"
+import { Spinner } from "@railwise/ui/spinner"
+import { Avatar as AvatarV2 } from "@railwise/ui/v2/components/avatar-v2.jsx"
+import { ButtonV2 } from "@railwise/ui/v2/components/button-v2.jsx"
+import { Icon as IconV2 } from "@railwise/ui/v2/components/icon.jsx"
+import { IconButtonV2 } from "@railwise/ui/v2/components/icon-button-v2.jsx"
+import { MenuV2 } from "@railwise/ui/v2/components/menu-v2.jsx"
 import { getAvatarColors, useLayout, type LocalProject } from "@/context/layout"
 import { useNavigate } from "@solidjs/router"
-import { base64Encode } from "@opencode-ai/core/util/encode"
-import { Icon } from "@opencode-ai/ui/icon"
+import { base64Encode } from "@railwise/core/util/encode"
+import { Icon } from "@railwise/ui/icon"
 import { usePlatform } from "@/context/platform"
 import { DateTime } from "luxon"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
+import { useDialog } from "@railwise/ui/context/dialog"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
 import { DialogSelectServer } from "@/components/dialog-select-server"
 import { ServerConnection, useServer } from "@/context/server"
@@ -213,7 +213,7 @@ function HomeDesign() {
         clearNotifications={clearNotifications}
         unseenCount={unseenCount}
         openSettings={openSettings}
-        openHelp={() => platform.openLink("https://opencode.ai/desktop-feedback")}
+        openHelp={() => platform.openLink("https://railwise.ai/desktop-feedback")}
         language={language}
       />
 

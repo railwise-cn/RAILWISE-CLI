@@ -1,14 +1,14 @@
-import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@opencode-ai/sdk/v2/client"
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { List, type ListRef } from "@opencode-ai/ui/list"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { showToast } from "@opencode-ai/ui/toast"
+import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@railwise/sdk/v2/client"
+import { Button } from "@railwise/ui/button"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { Dialog } from "@railwise/ui/dialog"
+import { Icon } from "@railwise/ui/icon"
+import { IconButton } from "@railwise/ui/icon-button"
+import { List, type ListRef } from "@railwise/ui/list"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
+import { Spinner } from "@railwise/ui/spinner"
+import { TextField } from "@railwise/ui/text-field"
+import { showToast } from "@railwise/ui/toast"
 import { createEffect, createMemo, createResource, Match, onCleanup, onMount, Switch } from "solid-js"
 import { createStore, produce } from "solid-js/store"
 import { Link } from "@/components/link"
@@ -420,16 +420,16 @@ export function DialogConnectProvider(props: { provider: string }) {
     return (
       <div class="flex flex-col gap-6">
         <Switch>
-          <Match when={provider().id === "opencode"}>
+          <Match when={provider().id === "railwise"}>
             <div class="flex flex-col gap-4">
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.opencodeZen.line1")}</div>
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.opencodeZen.line2")}</div>
+              <div class="text-14-regular text-text-base">{language.t("provider.connect.railwiseZen.line1")}</div>
+              <div class="text-14-regular text-text-base">{language.t("provider.connect.railwiseZen.line2")}</div>
               <div class="text-14-regular text-text-base">
-                {language.t("provider.connect.opencodeZen.visit.prefix")}
-                <Link href="https://opencode.ai/zen" tabIndex={-1}>
-                  {language.t("provider.connect.opencodeZen.visit.link")}
+                {language.t("provider.connect.railwiseZen.visit.prefix")}
+                <Link href="https://railwise.ai/zen" tabIndex={-1}>
+                  {language.t("provider.connect.railwiseZen.visit.link")}
                 </Link>
-                {language.t("provider.connect.opencodeZen.visit.suffix")}
+                {language.t("provider.connect.railwiseZen.visit.suffix")}
               </div>
             </div>
           </Match>

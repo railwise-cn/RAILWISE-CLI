@@ -2,24 +2,24 @@
 
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime"
 import * as NodeServices from "@effect/platform-node/NodeServices"
-import { AccountV2 } from "@opencode-ai/core/account"
-import { AgentV2 } from "@opencode-ai/core/agent"
-import { Catalog } from "@opencode-ai/core/catalog"
-import { Config } from "@opencode-ai/core/config"
-import { EventV2 } from "@opencode-ai/core/event"
-import { Location } from "@opencode-ai/core/location"
-import { Npm } from "@opencode-ai/core/npm"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { PluginBoot } from "@opencode-ai/core/plugin/boot"
-import { Policy } from "@opencode-ai/core/policy"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+import { AccountV2 } from "@railwise/core/account"
+import { AgentV2 } from "@railwise/core/agent"
+import { Catalog } from "@railwise/core/catalog"
+import { Config } from "@railwise/core/config"
+import { EventV2 } from "@railwise/core/event"
+import { Location } from "@railwise/core/location"
+import { Npm } from "@railwise/core/npm"
+import { PluginV2 } from "@railwise/core/plugin"
+import { PluginBoot } from "@railwise/core/plugin/boot"
+import { Policy } from "@railwise/core/policy"
+import { AbsolutePath } from "@railwise/core/schema"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Command from "effect/unstable/cli/Command"
 import { DebugCommand } from "./debug"
 
-const cli = Command.make("opencode", {}, () => Effect.void).pipe(
-  Command.withDescription("OpenCode command line interface"),
+const cli = Command.make("railwise", {}, () => Effect.void).pipe(
+  Command.withDescription("RAILWISE command line interface"),
   Command.withSubcommands([DebugCommand]),
 )
 

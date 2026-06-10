@@ -1,5 +1,5 @@
 {
-  "name": "@opencode-ai/ui",
+  "name": "@railwise/ui",
   "version": "1.15.13",
   "type": "module",
   "license": "MIT",
@@ -47,8 +47,8 @@
   },
   "dependencies": {
     "@kobalte/core": "catalog:",
-    "@opencode-ai/sdk": "workspace:*",
-    "@opencode-ai/core": "workspace:*",
+    "@railwise/sdk": "workspace:*",
+    "@railwise/core": "workspace:*",
     "@pierre/diffs": "catalog:",
     "@shikijs/transformers": "3.9.2",
     "@solid-primitives/bounds": "0.1.3",

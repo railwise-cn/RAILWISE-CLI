@@ -1,4 +1,4 @@
-import { createSimpleContext } from "@opencode-ai/ui/context"
+import { createSimpleContext } from "@railwise/ui/context"
 import { useServer } from "./server"
 import { useServerHealth } from "@/utils/server-health"
 

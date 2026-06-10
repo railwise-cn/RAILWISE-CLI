@@ -1,11 +1,11 @@
 import "./index.css"
 import { Link, Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
 import ibmPlexMonoRegularLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Regular-Latin1.woff2?url"
 import ibmPlexMonoMediumLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Medium-Latin1.woff2?url"
 import ibmPlexMonoSemiBoldLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-SemiBold-Latin1.woff2?url"
 import ibmPlexMonoBoldLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Bold-Latin1.woff2?url"
-import opencodeWordmarkDark from "../asset/logo-ornate-dark.svg"
+import railwiseWordmarkDark from "../asset/logo-ornate-dark.svg"
 import statsUnfurlRankings from "../asset/unfurl-rankings.png?url"
 import {
   getStatsHomeData,
@@ -15,8 +15,8 @@ import {
   type SessionCostEntry,
   type TokenCostEntry,
   type UsagePoint,
-} from "@opencode-ai/stats-core/domain/home"
-import { runtime } from "@opencode-ai/stats-core/runtime"
+} from "@railwise/stats-core/domain/home"
+import { runtime } from "@railwise/stats-core/runtime"
 import { createAsync, query } from "@solidjs/router"
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, type JSX } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
@@ -31,10 +31,10 @@ const rangeLabels: Record<UsageRange, string> = {
   "1M": "1 Month",
   "2M": "2 Months",
 }
-const statsHomeTitle = "OpenCode Stats"
-const statsHomeDescription = "OpenCode usage, market share, token cost, and session cost stats."
-const statsHomeFallbackUrl = "https://stats.opencode.ai"
-const statsUnfurlAlt = "OpenCode Stats wordmark on a dark patterned background"
+const statsHomeTitle = "RAILWISE Stats"
+const statsHomeDescription = "RAILWISE usage, market share, token cost, and session cost stats."
+const statsHomeFallbackUrl = "https://stats.railwise.ai"
+const statsUnfurlAlt = "RAILWISE Stats wordmark on a dark patterned background"
 const headerLinks = [
   { href: "#top-models", label: "Top Models" },
   { href: "#leaderboard", label: "Leaderboard" },
@@ -43,11 +43,11 @@ const headerLinks = [
   { href: "#market-share", label: "Market Share" },
 ] as const
 const githubLink = {
-  href: "https://github.com/anomalyco/opencode",
-  apiHref: "https://api.github.com/repos/anomalyco/opencode",
+  href: "https://github.com/anomalyco/railwise",
+  apiHref: "https://api.github.com/repos/anomalyco/railwise",
   label: "GitHub",
   fallbackStars: "150K",
-  ariaLabel: "Star OpenCode on GitHub",
+  ariaLabel: "Star RAILWISE on GitHub",
 }
 const compactNumberFormatter = new Intl.NumberFormat("en", {
   notation: "compact",
@@ -73,7 +73,7 @@ const themePreferenceLabels = {
   light: "Light",
   system: "System",
 } as const
-const themeStorageKey = "opencode:stats-theme"
+const themeStorageKey = "railwise:stats-theme"
 
 type UsageProduct = (typeof products)[number]
 type TokenProduct = (typeof tokenProducts)[number]
@@ -134,7 +134,7 @@ export default function StatsHome() {
       <Meta name="description" content={statsHomeDescription} />
       <Link rel="canonical" href={statsHomeUrl} />
       <Meta property="og:type" content="website" />
-      <Meta property="og:site_name" content="OpenCode" />
+      <Meta property="og:site_name" content="RAILWISE" />
       <Meta property="og:title" content={statsHomeTitle} />
       <Meta property="og:description" content={statsHomeDescription} />
       <Meta property="og:url" content={statsHomeUrl} />
@@ -396,7 +396,7 @@ function TopModelsSection(props: { data: StatsHomeData["usage"]; leaderboard: St
   return (
     <section id="top-models" data-section="top-models">
       <h2 data-slot="top-models-title">
-        <strong>Top models.</strong> <span>Usage of models across OpenCode.</span>
+        <strong>Top models.</strong> <span>Usage of models across RAILWISE.</span>
       </h2>
       <Show
         when={data().some((item) => usageTotal(item) > 0)}
@@ -1478,8 +1478,8 @@ function Header(props: { githubStars: string }) {
             <strong>{githubLink.label}</strong>
             <span>[{props.githubStars}]</span>
           </a>
-          <a data-slot="header-button" data-variant="contrast" href="https://opencode.ai/">
-            <strong>Try OpenCode</strong>
+          <a data-slot="header-button" data-variant="contrast" href="https://railwise.ai/">
+            <strong>Try RAILWISE</strong>
           </a>
           <button
             data-slot="menu-button"
@@ -1560,9 +1560,9 @@ function StatsMark() {
   )
 }
 
-function OpenCodeMark() {
+function RAILWISEMark() {
   return (
-    <svg data-slot="opencode-mark" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <svg data-slot="railwise-mark" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
       <path d="M40 40H0V0H40V40Z" fill="var(--stats-logo-bg)" />
       <path d="M26 29H14V17H26V29Z" fill="var(--stats-logo-fill)" />
       <path d="M26 11H14V29H26V11ZM32 35H8V5H32V35Z" fill="var(--stats-logo-stroke)" />
@@ -1583,13 +1583,13 @@ function Footer(props: {
     { href: "#market-share", label: "Market Share" },
   ]
   const legal = [
-    { href: "https://opencode.ai/legal/terms-of-service", label: "Terms of service" },
-    { href: "https://opencode.ai/legal/privacy-policy", label: "Privacy policy" },
+    { href: "https://railwise.ai/legal/terms-of-service", label: "Terms of service" },
+    { href: "https://railwise.ai/legal/privacy-policy", label: "Privacy policy" },
   ]
   const connect = [
-    { href: "mailto:hello@opencode.ai", label: "Contact us" },
-    { href: "https://opencode.ai/discord", label: "Community" },
-    { href: "https://x.com/opencode", label: "X" },
+    { href: "mailto:hello@railwise.ai", label: "Contact us" },
+    { href: "https://railwise.ai/discord", label: "Community" },
+    { href: "https://x.com/railwise", label: "X" },
     githubLink,
     { href: "https://www.youtube.com/@anomaly-co", label: "YouTube" },
   ]
@@ -1598,8 +1598,8 @@ function Footer(props: {
     <footer data-component="footer">
       <SectionBridge label="MARKET SHARE" href="#market-share" />
       <div data-slot="footer-grid">
-        <a data-slot="footer-mark" href="https://opencode.ai" aria-label="OpenCode home">
-          <OpenCodeMark />
+        <a data-slot="footer-mark" href="https://railwise.ai" aria-label="RAILWISE home">
+          <RAILWISEMark />
         </a>
         <FooterColumn title="Model Stats" links={modelStats} />
         <FooterColumn title="Legal" links={legal} />
@@ -1739,7 +1739,7 @@ function SubscribeModal(props: { onClose: () => void }) {
       <div data-slot="modal-scrim" aria-hidden="true" onClick={props.onClose} />
       <div data-slot="modal-panel">
         <div data-slot="modal-brand">
-          <img data-slot="modal-logo" src={opencodeWordmarkDark} alt="OpenCode" />
+          <img data-slot="modal-logo" src={railwiseWordmarkDark} alt="RAILWISE" />
           <button data-slot="modal-close" type="button" aria-label="Close newsletter signup" onClick={props.onClose}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M4.44 4.44L11.56 11.56M11.56 4.44L4.44 11.56" stroke="currentColor" />
@@ -1748,7 +1748,7 @@ function SubscribeModal(props: { onClose: () => void }) {
         </div>
         <div data-slot="modal-body">
           <div data-slot="modal-intro">
-            <h2 id="subscribe-title">OpenCode Newsletter</h2>
+            <h2 id="subscribe-title">RAILWISE Newsletter</h2>
             <p>
               Be the first to know
               <br />

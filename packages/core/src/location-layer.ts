@@ -5,7 +5,7 @@ import { PluginBoot } from "./plugin/boot"
 import { Policy } from "./policy"
 import { Config } from "./config"
 
-export class LocationServiceMap extends LayerMap.Service<LocationServiceMap>()("@opencode/example/LocationServiceMap", {
+export class LocationServiceMap extends LayerMap.Service<LocationServiceMap>()("@railwise/example/LocationServiceMap", {
   lookup: (ref: Location.Ref) => {
     const result = Layer.mergeAll(Catalog.defaultLayer, PluginBoot.defaultLayer, Config.defaultLayer).pipe(
       Layer.provideMerge(Policy.defaultLayer),

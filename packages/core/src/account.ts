@@ -116,7 +116,7 @@ export interface Interface {
   readonly forService: (serviceID: ServiceID) => Effect.Effect<Info[], Error>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Account") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/Account") {}
 
 export const layer = Layer.effect(
   Service,
@@ -137,12 +137,12 @@ export const layer = Layer.effect(
 
     const parseAuthContent = () => {
       try {
-        return JSON.parse(process.env.OPENCODE_AUTH_CONTENT ?? "")
+        return JSON.parse(process.env.RAILWISE_AUTH_CONTENT ?? "")
       } catch {}
     }
 
     const load: () => Effect.Effect<Writable, Error> = Effect.fnUntraced(function* () {
-      if (process.env.OPENCODE_AUTH_CONTENT) {
+      if (process.env.RAILWISE_AUTH_CONTENT) {
         const raw = parseAuthContent()
         if (raw && typeof raw === "object") {
           if ("version" in raw && raw.version === 2) return raw as Writable

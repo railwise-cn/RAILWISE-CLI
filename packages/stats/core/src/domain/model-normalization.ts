@@ -1,4 +1,4 @@
-export const MODEL_AUTHOR_OVERRIDES = [{ model: "big-pickle", author: "opencode" }] as const
+export const MODEL_AUTHOR_OVERRIDES = [{ model: "big-pickle", author: "railwise" }] as const
 export const MODEL_AUTHOR_RULES = [
   { match: "claude", author: "anthropic" },
   { match: "gemini", author: "google" },

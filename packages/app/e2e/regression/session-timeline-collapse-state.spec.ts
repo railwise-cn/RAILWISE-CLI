@@ -1,7 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test"
-import { mockOpenCodeServer } from "../utils/mock-server"
+import { mockRAILWISEServer } from "../utils/mock-server"
 
-const directory = "C:/OpenCode/TimelineStateRegression"
+const directory = "C:/RAILWISE/TimelineStateRegression"
 const projectID = "proj_timeline_state_regression"
 const sessionID = "ses_timeline_state_regression"
 const userMessageID = "msg_user_regression"
@@ -9,7 +9,7 @@ const assistantMessageID = "msg_assistant_regression"
 const editPartID = "prt_0001_edit"
 const textPartID = "prt_9999_text"
 const title = "Timeline collapse state regression"
-const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" }
+const model = { providerID: "railwise", modelID: "claude-opus-4-6", variant: "max" }
 
 type EventPayload = {
   directory: string
@@ -300,7 +300,7 @@ function readExpanded(element: Element) {
 }
 
 async function mockServer(page: Page, events: EventPayload[]) {
-  await mockOpenCodeServer(page, {
+  await mockRAILWISEServer(page, {
     directory,
     project: project(),
     provider: provider(),
@@ -337,13 +337,13 @@ function provider() {
   return {
     all: [
       {
-        id: "opencode",
-        name: "OpenCode",
+        id: "railwise",
+        name: "RAILWISE",
         models: { "claude-opus-4-6": { id: "claude-opus-4-6", name: "Claude Opus 4.6", limit: { context: 200_000 } } },
       },
     ],
-    connected: ["opencode"],
-    default: { providerID: "opencode", modelID: "claude-opus-4-6" },
+    connected: ["railwise"],
+    default: { providerID: "railwise", modelID: "claude-opus-4-6" },
   }
 }
 

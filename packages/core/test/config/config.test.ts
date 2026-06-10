@@ -2,14 +2,14 @@ import path from "path"
 import fs from "fs/promises"
 import { describe, expect } from "bun:test"
 import { Effect, Layer } from "effect"
-import { Config } from "@opencode-ai/core/config"
-import { ConfigProvider } from "@opencode-ai/core/config/provider"
-import { AppFileSystem } from "@opencode-ai/core/filesystem"
-import { Global } from "@opencode-ai/core/global"
-import { Location } from "@opencode-ai/core/location"
-import { Policy } from "@opencode-ai/core/policy"
-import { Project } from "@opencode-ai/core/project"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+import { Config } from "@railwise/core/config"
+import { ConfigProvider } from "@railwise/core/config/provider"
+import { AppFileSystem } from "@railwise/core/filesystem"
+import { Global } from "@railwise/core/global"
+import { Location } from "@railwise/core/location"
+import { Policy } from "@railwise/core/policy"
+import { Project } from "@railwise/core/project"
+import { AbsolutePath } from "@railwise/core/schema"
 import { location } from "../fixture/location"
 import { tmpdir } from "../fixture/tmpdir"
 import { testEffect } from "../lib/effect"
@@ -84,11 +84,11 @@ describe("Config", () => {
                 JSON.stringify({ $schema: "base", providers: { base: provider } }),
               ),
               fs.writeFile(
-                path.join(tmp.path, "opencode.json"),
+                path.join(tmp.path, "railwise.json"),
                 JSON.stringify({ $schema: "middle", providers: { middle: provider } }),
               ),
               fs.writeFile(
-                path.join(tmp.path, "opencode.jsonc"),
+                path.join(tmp.path, "railwise.jsonc"),
                 `{
                   // Later global files override scalar fields while retaining providers.
                   "$schema": "last",
@@ -111,7 +111,7 @@ describe("Config", () => {
             expect(documents[2]?.info.providers?.last).toBeInstanceOf(ConfigProvider.Info)
 
             yield* Effect.promise(() =>
-              fs.writeFile(path.join(tmp.path, "opencode.jsonc"), JSON.stringify({ $schema: "changed" })),
+              fs.writeFile(path.join(tmp.path, "railwise.jsonc"), JSON.stringify({ $schema: "changed" })),
             )
             expect((yield* config.get()).map((document) => document.info.$schema)).toEqual(["base", "middle", "last"])
           }).pipe(Effect.provide(testLayer(tmp.path)))
@@ -127,7 +127,7 @@ describe("Config", () => {
     ).pipe(
       Effect.flatMap((tmp) =>
         Effect.gen(function* () {
-          const file = path.join(tmp.path, "opencode.json")
+          const file = path.join(tmp.path, "railwise.json")
           const contents = JSON.stringify({
             shell: "/bin/zsh",
             experimental: { policies: [{ effect: "deny", action: "provider.use", resource: "openai" }] },
@@ -162,7 +162,7 @@ describe("Config", () => {
         Effect.gen(function* () {
           yield* Effect.promise(() =>
             fs.writeFile(
-              path.join(tmp.path, "opencode.json"),
+              path.join(tmp.path, "railwise.json"),
               JSON.stringify({
                 shell: "/bin/bash",
                 model: "anthropic/claude",
@@ -236,7 +236,7 @@ describe("Config", () => {
                   shorthand: "github.com/example/docs",
                 },
                 plugins: [
-                  "opencode-helicone-session",
+                  "railwise-helicone-session",
                   { package: "@my-org/audit-plugin", options: { endpoint: "https://audit.example.com" } },
                 ],
               }),
@@ -329,7 +329,7 @@ describe("Config", () => {
               shorthand: "github.com/example/docs",
             })
             expect(documents[0]?.info.plugins).toEqual([
-              "opencode-helicone-session",
+              "railwise-helicone-session",
               { package: "@my-org/audit-plugin", options: { endpoint: "https://audit.example.com" } },
             ])
           }).pipe(Effect.provide(testLayer(tmp.path)))
@@ -348,8 +348,8 @@ describe("Config", () => {
           yield* Effect.promise(() =>
             Promise.all([
               fs.writeFile(path.join(tmp.path, "config.json"), JSON.stringify({ $schema: "base" })),
-              fs.writeFile(path.join(tmp.path, "opencode.json"), "{ invalid"),
-              fs.writeFile(path.join(tmp.path, "opencode.jsonc"), JSON.stringify({ providers: { invalid: true } })),
+              fs.writeFile(path.join(tmp.path, "railwise.json"), "{ invalid"),
+              fs.writeFile(path.join(tmp.path, "railwise.jsonc"), JSON.stringify({ providers: { invalid: true } })),
             ]),
           )
           return yield* Effect.gen(function* () {
@@ -374,13 +374,13 @@ describe("Config", () => {
           yield* Effect.promise(async () => {
             await fs.mkdir(global, { recursive: true })
             await fs.writeFile(
-              path.join(global, "opencode.json"),
+              path.join(global, "railwise.json"),
               JSON.stringify({
                 experimental: { policies: [{ effect: "deny", action: "provider.use", resource: "openai" }] },
               }),
             )
             await fs.writeFile(
-              path.join(tmp.path, "opencode.json"),
+              path.join(tmp.path, "railwise.json"),
               JSON.stringify({
                 experimental: { policies: [{ effect: "allow", action: "provider.use", resource: "openai" }] },
               }),
@@ -397,7 +397,7 @@ describe("Config", () => {
     ),
   )
 
-  it.live("loads global, ancestor, and .opencode configuration up to the project boundary", () =>
+  it.live("loads global, ancestor, and .railwise configuration up to the project boundary", () =>
     Effect.acquireRelease(
       Effect.promise(() => tmpdir()),
       (tmp) => Effect.promise(() => tmp[Symbol.asyncDispose]()),
@@ -411,17 +411,17 @@ describe("Config", () => {
           yield* Effect.promise(async () => {
             await fs.mkdir(global, { recursive: true })
             await fs.mkdir(directory, { recursive: true })
-            await fs.mkdir(path.join(root, ".opencode"), { recursive: true })
-            await fs.mkdir(path.join(directory, ".opencode"), { recursive: true })
+            await fs.mkdir(path.join(root, ".railwise"), { recursive: true })
+            await fs.mkdir(path.join(directory, ".railwise"), { recursive: true })
             await Promise.all([
-              fs.writeFile(path.join(tmp.path, "opencode.json"), JSON.stringify({ $schema: "outside" })),
-              fs.writeFile(path.join(global, "opencode.json"), JSON.stringify({ $schema: "global" })),
-              fs.writeFile(path.join(root, "opencode.json"), JSON.stringify({ $schema: "root" })),
-              fs.writeFile(path.join(parent, "opencode.jsonc"), JSON.stringify({ $schema: "parent" })),
+              fs.writeFile(path.join(tmp.path, "railwise.json"), JSON.stringify({ $schema: "outside" })),
+              fs.writeFile(path.join(global, "railwise.json"), JSON.stringify({ $schema: "global" })),
+              fs.writeFile(path.join(root, "railwise.json"), JSON.stringify({ $schema: "root" })),
+              fs.writeFile(path.join(parent, "railwise.jsonc"), JSON.stringify({ $schema: "parent" })),
               fs.writeFile(path.join(directory, "config.json"), JSON.stringify({ $schema: "directory" })),
-              fs.writeFile(path.join(root, ".opencode", "opencode.json"), JSON.stringify({ $schema: "root-dot" })),
+              fs.writeFile(path.join(root, ".railwise", "railwise.json"), JSON.stringify({ $schema: "root-dot" })),
               fs.writeFile(
-                path.join(directory, ".opencode", "opencode.jsonc"),
+                path.join(directory, ".railwise", "railwise.jsonc"),
                 JSON.stringify({ $schema: "directory-dot" }),
               ),
             ])
@@ -434,8 +434,8 @@ describe("Config", () => {
 
             expect(directories).toEqual([
               AbsolutePath.make(global),
-              AbsolutePath.make(path.join(root, ".opencode")),
-              AbsolutePath.make(path.join(directory, ".opencode")),
+              AbsolutePath.make(path.join(root, ".railwise")),
+              AbsolutePath.make(path.join(directory, ".railwise")),
             ])
             expect(documents.map((document) => document.info.$schema)).toEqual([
               "global",

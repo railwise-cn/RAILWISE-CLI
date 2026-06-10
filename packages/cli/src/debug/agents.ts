@@ -1,6 +1,6 @@
 import { EOL } from "os"
-import { AgentV2 } from "@opencode-ai/core/agent"
-import { PluginBoot } from "@opencode-ai/core/plugin/boot"
+import { AgentV2 } from "@railwise/core/agent"
+import { PluginBoot } from "@railwise/core/plugin/boot"
 import * as Effect from "effect/Effect"
 import * as Command from "effect/unstable/cli/Command"
 

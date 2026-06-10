@@ -18,7 +18,7 @@ export interface Interface {
   readonly evaluate: (action: string, resource: string, fallback: Effect) => EffectRuntime.Effect<Effect>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Policy") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/Policy") {}
 
 export const layer = Layer.effect(
   Service,

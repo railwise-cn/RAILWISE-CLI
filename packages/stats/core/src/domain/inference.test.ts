@@ -12,7 +12,7 @@ describe("inference stat normalization", () => {
   })
 
   test("maps normalized model ids to public authors", () => {
-    expect(modelAuthor("big-pickle")).toBe("opencode")
+    expect(modelAuthor("big-pickle")).toBe("railwise")
     expect(modelAuthor("claude-sonnet-4-5")).toBe("anthropic")
     expect(modelAuthor("deepseek-v4-pro")).toBe("deepseek")
     expect(modelAuthor("gemini-3.5-flash")).toBe("google")

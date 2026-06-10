@@ -11,7 +11,7 @@ test("能力市场展示可安装能力并保持配置入口独立", async ({ la
   await expect(page.getByRole("button", { name: "智能体" })).toBeVisible()
   await expect(page.getByRole("button", { name: "工具" })).toBeVisible()
   await expect(page.getByRole("button", { name: "模型" })).toBeVisible()
-  await expect(page.getByText("项目总控")).toBeVisible()
+  await expect(page.getByText("RAILWISE 默认协作")).toBeVisible()
   await expect(page.getByText("本地文件读取")).toBeVisible()
   await expect(page.getByText("复测资料检查")).toBeVisible()
   await expect(page.getByText("DeepSeek")).toBeVisible()

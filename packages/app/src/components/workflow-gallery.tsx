@@ -238,7 +238,7 @@ export function WorkflowGallery() {
       <div class="agent-section__header">
         <div>
           <h2>工作流预设</h2>
-          <p>按行业模板串联项目总控、外业首检、平差计算、报告编制和总工复核。</p>
+          <p>按行业模板串联 RAILWISE、外业首检、平差计算、报告编制和技术质量审查。</p>
         </div>
         <button type="button" class="agent-button" data-testid="workflow-run-btn" disabled={busy()} onClick={run}>
           导入预设

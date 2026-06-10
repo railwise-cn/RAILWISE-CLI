@@ -134,7 +134,7 @@ check(
   ]) &&
     has(marketplaceSpec, [
       "能力市场",
-      "项目总控",
+      "RAILWISE 默认协作",
       "本地文件读取",
       "复测资料检查",
       "DeepSeek",
@@ -160,7 +160,12 @@ check(
   "backend marketplace contract",
   has(marketplaceSchema, ["CapabilityManifest", "CapabilityPermission", "harness_profile"]) &&
     has(marketplaceState, ["permissionLabels", "capabilityRisk", "filterCapabilities", "groupCapabilities"]) &&
-    has(marketplaceBuiltin, ["railwise.agent.chief_manager", "railwise.provider.deepseek", "railwise.harness.safe"]) &&
+    has(marketplaceBuiltin, [
+      'id: "chief_manager"',
+      'manifest("agent", item)',
+      "railwise.provider.deepseek",
+      "railwise.harness.safe",
+    ]) &&
     has(marketplaceRoute, [
       "/capabilities",
       "/capabilities/:id",

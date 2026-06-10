@@ -94,7 +94,17 @@ jobs:
           path: packages/railwise/dist
           merge-multiple: true
 
+      - name: Pack shared packages
+        run: bun ./scripts/pack-shared-packages.ts
+        env:
+          RAILWISE_VERSION: ${{ inputs.version || '' }}
+          RAILWISE_BUMP: ${{ inputs.bump || '' }}
+          RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
+          RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
+
       - name: Publish shared packages to npm
+        id: shared-npm
+        continue-on-error: true
         run: bun ./scripts/publish-shared-packages.ts --publish
         env:
           RAILWISE_VERSION: ${{ inputs.version || '' }}
@@ -103,6 +113,10 @@ jobs:
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: false
+
+      - name: Report shared package npm publish failure
+        if: steps.shared-npm.outcome == 'failure'
+        run: echo "::warning::Shared package npm publish failed; continuing with GitHub Release tarballs."
 
       - name: Publish CLI to npm
         run: bun run --cwd packages/railwise script/publish.ts
@@ -121,6 +135,7 @@ jobs:
         run: |
           VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
           gh release create "v${VERSION}" --title "v${VERSION}" --generate-notes \
-            packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip
+            packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip \
+            dist/shared-packages/*.tgz dist/shared-packages/manifest.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

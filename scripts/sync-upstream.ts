@@ -50,7 +50,9 @@ function protectedPath(file: string) {
 }
 
 async function exists(file: string) {
-  return await Bun.file(file).exists()
+  return await stat(file)
+    .then(() => true)
+    .catch(() => false)
 }
 
 async function tracked(file: string) {

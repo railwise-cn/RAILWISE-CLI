@@ -35,19 +35,26 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            target: linux-x64
+            target: railwise-linux-x64
+            artifact: linux-x64
           - os: ubuntu-latest
-            target: linux-x64-baseline
+            target: railwise-linux-x64-baseline
+            artifact: linux-x64-baseline
           - os: ubuntu-24.04-arm
-            target: linux-arm64
+            target: railwise-linux-arm64
+            artifact: linux-arm64
           - os: macos-latest
-            target: darwin-arm64
+            target: railwise-darwin-arm64
+            artifact: darwin-arm64
           - os: macos-14
-            target: darwin-x64
+            target: railwise-darwin-x64
+            artifact: darwin-x64
           - os: macos-14
-            target: darwin-x64-baseline
+            target: railwise-darwin-x64-baseline
+            artifact: darwin-x64-baseline
           - os: windows-latest
-            target: windows-x64
+            target: railwise-windows-x64
+            artifact: windows-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -65,7 +72,7 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: railwise-${{ matrix.target }}
+          name: railwise-${{ matrix.artifact }}
           path: packages/railwise/dist
 
   publish:

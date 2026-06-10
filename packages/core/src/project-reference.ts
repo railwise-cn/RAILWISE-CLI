@@ -50,7 +50,7 @@ export interface Interface {
   readonly containsManagedPath: (target?: string) => Effect.Effect<boolean>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/ProjectReference") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/ProjectReference") {}
 
 type Materializer = {
   readonly name: string
@@ -62,7 +62,7 @@ type Materializer = {
 export const layer = Layer.effect(
   Service,
   Effect.gen(function* () {
-    if (!Flag.OPENCODE_EXPERIMENTAL_REFERENCES) return Service.of(inert)
+    if (!Flag.RAILWISE_EXPERIMENTAL_REFERENCES) return Service.of(inert)
 
     const config = yield* Config.Service
     const fs = yield* FSUtil.Service

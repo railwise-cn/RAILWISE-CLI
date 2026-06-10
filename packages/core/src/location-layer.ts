@@ -36,15 +36,15 @@ import { Ripgrep } from "./ripgrep"
 import { SessionStore } from "./session/store"
 import { SessionTodo } from "./session/todo"
 import { QuestionV2 } from "./question"
-import { LLMClient } from "@opencode-ai/llm"
-import { RequestExecutor } from "@opencode-ai/llm/route"
+import { LLMClient } from "@railwise/llm"
+import { RequestExecutor } from "@railwise/llm/route"
 import * as SessionRunnerLLM from "./session/runner/llm"
 import { SessionRunnerModel } from "./session/runner/model"
 import { SessionRunCoordinator } from "./session/run-coordinator"
 import { SystemContextBuiltIns } from "./system-context/builtins"
 import { FetchHttpClient } from "effect/unstable/http"
 
-export class LocationServiceMap extends LayerMap.Service<LocationServiceMap>()("@opencode/example/LocationServiceMap", {
+export class LocationServiceMap extends LayerMap.Service<LocationServiceMap>()("@railwise/example/LocationServiceMap", {
   lookup: (ref: Location.Ref) => {
     const location = Location.layer(ref)
     const permissionsAndTools = ToolRegistry.layer.pipe(Layer.provideMerge(PermissionV2.locationLayer))

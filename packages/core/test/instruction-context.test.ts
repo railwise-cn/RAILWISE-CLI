@@ -2,13 +2,13 @@ import { describe, expect } from "bun:test"
 import { Effect, Layer } from "effect"
 import fs from "fs/promises"
 import path from "path"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { Global } from "@opencode-ai/core/global"
-import { InstructionContext } from "@opencode-ai/core/instruction-context"
-import { Location } from "@opencode-ai/core/location"
-import { AbsolutePath } from "@opencode-ai/core/schema"
-import { SystemContext } from "@opencode-ai/core/system-context"
-import { SystemContextRegistry } from "@opencode-ai/core/system-context/registry"
+import { FSUtil } from "@railwise/core/fs-util"
+import { Global } from "@railwise/core/global"
+import { InstructionContext } from "@railwise/core/instruction-context"
+import { Location } from "@railwise/core/location"
+import { AbsolutePath } from "@railwise/core/schema"
+import { SystemContext } from "@railwise/core/system-context"
+import { SystemContextRegistry } from "@railwise/core/system-context/registry"
 import { location } from "./fixture/location"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
@@ -235,9 +235,9 @@ describe("InstructionContext", () => {
 
   it.effect("honors the project instruction opt-out", () =>
     Effect.gen(function* () {
-      const previous = process.env.OPENCODE_DISABLE_PROJECT_CONFIG
+      const previous = process.env.RAILWISE_DISABLE_PROJECT_CONFIG
       let scanned = false
-      process.env.OPENCODE_DISABLE_PROJECT_CONFIG = "1"
+      process.env.RAILWISE_DISABLE_PROJECT_CONFIG = "1"
 
       yield* SystemContextRegistry.Service.pipe(
         Effect.flatMap((service) => service.load()),
@@ -256,8 +256,8 @@ describe("InstructionContext", () => {
         ),
         Effect.ensuring(
           Effect.sync(() => {
-            if (previous === undefined) delete process.env.OPENCODE_DISABLE_PROJECT_CONFIG
-            else process.env.OPENCODE_DISABLE_PROJECT_CONFIG = previous
+            if (previous === undefined) delete process.env.RAILWISE_DISABLE_PROJECT_CONFIG
+            else process.env.RAILWISE_DISABLE_PROJECT_CONFIG = previous
           }),
         ),
       )

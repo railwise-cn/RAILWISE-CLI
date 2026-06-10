@@ -18,7 +18,7 @@ export interface Interface {
   readonly entries: () => ReadonlyMap<string, NativeTool.Any>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/ApplicationTools") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/ApplicationTools") {}
 
 enableMapSet()
 

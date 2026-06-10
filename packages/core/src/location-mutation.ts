@@ -115,7 +115,7 @@ export interface Interface {
   readonly revalidate: (plan: Plan) => Effect.Effect<Target, RevalidationError | FSUtil.Error>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/LocationMutation") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/LocationMutation") {}
 
 interface ResolvedPath {
   readonly canonical: string

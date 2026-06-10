@@ -1,6 +1,6 @@
 export * as WebFetchTool from "./webfetch"
 
-import { Tool, ToolFailure, toolText } from "@opencode-ai/llm"
+import { Tool, ToolFailure, toolText } from "@railwise/llm"
 import { Cause, Duration, Effect, Layer, Schema, Stream } from "effect"
 import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/unstable/http"
 import { Parser } from "htmlparser2"
@@ -151,7 +151,7 @@ export const layer = Layer.effectDiscard(
             const { body, contentType } = yield* Effect.gen(function* () {
               const response = yield* execute(http, parameters.url, parameters.format).pipe(
                 Effect.catchIf(isCloudflareChallenge, () =>
-                  execute(http, parameters.url, parameters.format, "opencode"),
+                  execute(http, parameters.url, parameters.format, "railwise"),
                 ),
               )
               const contentType = response.headers["content-type"] || ""

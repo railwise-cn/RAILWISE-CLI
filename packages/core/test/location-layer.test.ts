@@ -2,12 +2,12 @@ import fs from "fs/promises"
 import path from "path"
 import { describe, expect } from "bun:test"
 import { Effect, Layer, Schema } from "effect"
-import { Tool } from "@opencode-ai/core/public"
-import { Catalog } from "@opencode-ai/core/catalog"
-import { LocationServiceMap } from "@opencode-ai/core/location-layer"
-import { PluginBoot } from "@opencode-ai/core/plugin/boot"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+import { Tool } from "@railwise/core/public"
+import { Catalog } from "@railwise/core/catalog"
+import { LocationServiceMap } from "@railwise/core/location-layer"
+import { PluginBoot } from "@railwise/core/plugin/boot"
+import { ProviderV2 } from "@railwise/core/provider"
+import { AbsolutePath } from "@railwise/core/schema"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
 import { FSUtil } from "../src/fs-util"
@@ -60,7 +60,7 @@ describe("LocationServiceMap", () => {
           })
           yield* Effect.promise(() =>
             fs.writeFile(
-              path.join(blocked.path, "opencode.json"),
+              path.join(blocked.path, "railwise.json"),
               JSON.stringify({
                 experimental: { policies: [{ effect: "deny", action: "provider.use", resource: "test" }] },
               }),

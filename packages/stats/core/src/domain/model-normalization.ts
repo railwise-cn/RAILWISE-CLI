@@ -14,7 +14,7 @@ export const MODEL_AUTHOR_RULES = [
 ] as const
 export const EXCLUDED_MODELS = new Set(["alpha-gpt-next"])
 export const RETIRED_STAT_MODELS = ["big-pickle"]
-export const RETIRED_STAT_PROVIDERS = ["opencode"]
+export const RETIRED_STAT_PROVIDERS = ["railwise"]
 
 export function normalizeInferenceModel(value: string | undefined) {
   return (value || "unknown").replace(/(-free|:global)+$/, "") || "unknown"

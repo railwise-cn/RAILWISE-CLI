@@ -1,16 +1,16 @@
-import { Catalog } from "@opencode-ai/core/catalog"
-import { AgentV2 } from "@opencode-ai/core/agent"
-import { CommandV2 } from "@opencode-ai/core/command"
-import { Location } from "@opencode-ai/core/location"
-import { LocationServiceMap } from "@opencode-ai/core/location-layer"
-import { FileSystem } from "@opencode-ai/core/filesystem"
-import { PermissionV2 } from "@opencode-ai/core/permission"
-import { ProjectReference } from "@opencode-ai/core/project-reference"
-import { SkillV2 } from "@opencode-ai/core/skill"
-import { AbsolutePath } from "@opencode-ai/core/schema"
-import { PluginBoot } from "@opencode-ai/core/plugin/boot"
-import { WorkspaceV2 } from "@opencode-ai/core/workspace"
-import { QuestionV2 } from "@opencode-ai/core/question"
+import { Catalog } from "@railwise/core/catalog"
+import { AgentV2 } from "@railwise/core/agent"
+import { CommandV2 } from "@railwise/core/command"
+import { Location } from "@railwise/core/location"
+import { LocationServiceMap } from "@railwise/core/location-layer"
+import { FileSystem } from "@railwise/core/filesystem"
+import { PermissionV2 } from "@railwise/core/permission"
+import { ProjectReference } from "@railwise/core/project-reference"
+import { SkillV2 } from "@railwise/core/skill"
+import { AbsolutePath } from "@railwise/core/schema"
+import { PluginBoot } from "@railwise/core/plugin/boot"
+import { WorkspaceV2 } from "@railwise/core/workspace"
+import { QuestionV2 } from "@railwise/core/question"
 import { Effect, Layer, Schema } from "effect"
 import { HttpServerRequest } from "effect/unstable/http"
 import { HttpApiMiddleware, OpenApi } from "effect/unstable/httpapi"
@@ -68,14 +68,14 @@ export class V2LocationMiddleware extends HttpApiMiddleware.Service<
       | SkillV2.Service
       | QuestionV2.Service
   }
->()("@opencode/ExperimentalHttpApiV2Location") {}
+>()("@railwise/ExperimentalHttpApiV2Location") {}
 
 function ref(request: HttpServerRequest.HttpServerRequest): Location.Ref {
   const query = new URL(request.url, "http://localhost").searchParams
-  const workspaceID = query.get("location[workspace]") || request.headers["x-opencode-workspace"]
+  const workspaceID = query.get("location[workspace]") || request.headers["x-railwise-workspace"]
   return {
     directory: AbsolutePath.make(
-      query.get("location[directory]") || request.headers["x-opencode-directory"] || process.cwd(),
+      query.get("location[directory]") || request.headers["x-railwise-directory"] || process.cwd(),
     ),
     workspaceID: workspaceID ? WorkspaceV2.ID.make(workspaceID) : undefined,
   }

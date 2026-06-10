@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test"
 import { Effect, Layer, Schema } from "effect"
 import { HttpClient, HttpClientResponse } from "effect/unstable/http"
-import { PermissionV2 } from "@opencode-ai/core/permission"
-import { SessionV2 } from "@opencode-ai/core/session"
-import { ToolRegistry } from "@opencode-ai/core/tool/registry"
-import { WebSearchTool } from "@opencode-ai/core/tool/websearch"
-import { ToolOutputStore } from "@opencode-ai/core/tool-output-store"
+import { PermissionV2 } from "@railwise/core/permission"
+import { SessionV2 } from "@railwise/core/session"
+import { ToolRegistry } from "@railwise/core/tool/registry"
+import { WebSearchTool } from "@railwise/core/tool/websearch"
+import { ToolOutputStore } from "@railwise/core/tool-output-store"
 import { testEffect } from "./lib/effect"
 
 const sessionID = SessionV2.ID.make("ses_websearch_test")

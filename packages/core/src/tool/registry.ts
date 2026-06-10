@@ -10,7 +10,7 @@ import {
   type ToolResultValue,
   type ToolSchema,
   type ToolSettlement,
-} from "@opencode-ai/llm"
+} from "@railwise/llm"
 import { Context, Effect, Layer, Schema, Scope } from "effect"
 import { castDraft, enableMapSet } from "immer"
 import { PermissionV2 } from "../permission"
@@ -81,7 +81,7 @@ export interface Interface {
   readonly settle: (input: ExecuteInput) => Effect.Effect<ToolSettlement>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/ToolRegistry") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/ToolRegistry") {}
 
 enableMapSet()
 

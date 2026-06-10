@@ -21,7 +21,7 @@ Public Tool.make      NativeTool value      ApplicationTools      Location built
 
 There are three relevant representations:
 
-- `native.ts` defines the plain Core-native executable value exposed publicly as `Tool.make(...)`. It combines an `@opencode-ai/llm` model-facing definition with a Session-aware handler.
+- `native.ts` defines the plain Core-native executable value exposed publicly as `Tool.make(...)`. It combines an `@railwise/llm` model-facing definition with a Session-aware handler.
 - `application-tools.ts` stores process-scoped application contributions. It owns availability and scoped attachment, but it does not execute tools.
 - `registry.ts` is the single execution registry. Each Location owns one registry, its built-in contributions, effective precedence, input/output validation, permissions, and settlement.
 
@@ -32,14 +32,14 @@ There are three relevant representations:
 - `ApplicationTools.Service` is process-scoped and must be shared by current and future Locations.
 - `ToolRegistry.Service` is Location-scoped because built-in handlers close over Location services such as filesystem, permissions, and tool-output storage.
 - `LocationServiceMap` constructs fresh Location services while receiving the shared `ApplicationTools.Service` as a dependency.
-- `OpenCode.layer` exposes the same shared application-tool service through `opencode.tools.attach(...)`.
+- `RAILWISE.layer` exposes the same shared application-tool service through `railwise.tools.attach(...)`.
 - `ToolRegistry.defaultLayer` creates isolated application-tool state. It is suitable for self-contained consumers and tests, but not when attachments must be shared with a separately constructed `LocationServiceMap`.
 
 Do not make `ToolRegistry` process-global. Do not move Location resources into `ApplicationTools`. Do not construct independent `ApplicationTools.layer` instances when the caller expects one attachment to appear across Locations.
 
 ## Contribution And Precedence
 
-Built-in Location tools contribute through `ToolRegistry.contribute(...)`. Application tools attach through `ApplicationTools.attach(...)`, exposed publicly as `opencode.tools.attach(...)`.
+Built-in Location tools contribute through `ToolRegistry.contribute(...)`. Application tools attach through `ApplicationTools.attach(...)`, exposed publicly as `railwise.tools.attach(...)`.
 
 Both contribution mechanisms use `State` scoped transforms:
 
@@ -97,7 +97,7 @@ tool/
   read.ts, bash.ts, ... individual Location-scoped built-in contributions
 ```
 
-Keep model/provider-neutral tool schemas and output projection in `@opencode-ai/llm`. Keep Session identity, permissions, Location precedence, and settlement in Core.
+Keep model/provider-neutral tool schemas and output projection in `@railwise/llm`. Keep Session identity, permissions, Location precedence, and settlement in Core.
 
 ## Future Directions
 

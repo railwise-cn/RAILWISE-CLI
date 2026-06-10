@@ -11,7 +11,7 @@ import { CrossSpawnSpawner } from "../cross-spawn-spawner"
 import { Global } from "../global"
 import { NonNegativeInt } from "../schema"
 import * as Log from "../util/log"
-import { sanitizedProcessEnv } from "../util/opencode-process"
+import { sanitizedProcessEnv } from "../util/railwise-process"
 import { which } from "../util/which"
 
 const log = Log.create({ service: "ripgrep" })
@@ -141,7 +141,7 @@ export interface Interface {
   readonly search: (input: SearchInput) => Effect.Effect<SearchResult, PlatformError | Error>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/Ripgrep") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/Ripgrep") {}
 
 export const use = serviceUse(Service)
 
@@ -440,7 +440,7 @@ export const layer: Layer.Layer<Service, never, FSUtil.Service | ChildProcessSpa
 
         const root: Node = { name: "", children: new Map() }
         for (const file of list) {
-          if (file.includes(".opencode")) continue
+          if (file.includes(".railwise")) continue
           const parts = file.split(path.sep)
           if (parts.length < 2) continue
           let node = root

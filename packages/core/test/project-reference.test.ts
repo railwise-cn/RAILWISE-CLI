@@ -2,16 +2,16 @@ import { describe, expect } from "bun:test"
 import fs from "fs/promises"
 import path from "path"
 import { Deferred, Effect, Layer, Schema } from "effect"
-import { Config } from "@opencode-ai/core/config"
-import { ConfigReference } from "@opencode-ai/core/config/reference"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { Global } from "@opencode-ai/core/global"
-import { Location } from "@opencode-ai/core/location"
-import { ProjectReference } from "@opencode-ai/core/project-reference"
-import { Repository } from "@opencode-ai/core/repository"
-import { RepositoryCache } from "@opencode-ai/core/repository-cache"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+import { Config } from "@railwise/core/config"
+import { ConfigReference } from "@railwise/core/config/reference"
+import { FSUtil } from "@railwise/core/fs-util"
+import { Flag } from "@railwise/core/flag/flag"
+import { Global } from "@railwise/core/global"
+import { Location } from "@railwise/core/location"
+import { ProjectReference } from "@railwise/core/project-reference"
+import { Repository } from "@railwise/core/repository"
+import { RepositoryCache } from "@railwise/core/repository-cache"
+import { AbsolutePath } from "@railwise/core/schema"
 import { location } from "./fixture/location"
 import { tmpdir } from "./fixture/tmpdir"
 import { it } from "./lib/effect"
@@ -19,16 +19,16 @@ import { it } from "./lib/effect"
 describe("ProjectReference", () => {
   it.live("uses the broad experimental flag unless references are explicitly configured", () =>
     withEnv(
-      { OPENCODE_EXPERIMENTAL: "true", OPENCODE_EXPERIMENTAL_REFERENCES: undefined },
+      { RAILWISE_EXPERIMENTAL: "true", RAILWISE_EXPERIMENTAL_REFERENCES: undefined },
       Effect.sync(() => {
-        expect(Flag.OPENCODE_EXPERIMENTAL_REFERENCES).toBe(true)
+        expect(Flag.RAILWISE_EXPERIMENTAL_REFERENCES).toBe(true)
       }),
     ).pipe(
       Effect.flatMap(() =>
         withEnv(
-          { OPENCODE_EXPERIMENTAL: "true", OPENCODE_EXPERIMENTAL_REFERENCES: "false" },
+          { RAILWISE_EXPERIMENTAL: "true", RAILWISE_EXPERIMENTAL_REFERENCES: "false" },
           Effect.sync(() => {
-            expect(Flag.OPENCODE_EXPERIMENTAL_REFERENCES).toBe(false)
+            expect(Flag.RAILWISE_EXPERIMENTAL_REFERENCES).toBe(false)
           }),
         ),
       ),
@@ -270,11 +270,11 @@ function withTmp<A, E, R>(body: (tmp: Awaited<ReturnType<typeof tmpdir>>) => Eff
 }
 
 function withReferences<A, E, R>(body: Effect.Effect<A, E, R>) {
-  return withEnv({ OPENCODE_EXPERIMENTAL_REFERENCES: "true" }, body)
+  return withEnv({ RAILWISE_EXPERIMENTAL_REFERENCES: "true" }, body)
 }
 
 function withoutReferences<A, E, R>(body: Effect.Effect<A, E, R>) {
-  return withEnv({ OPENCODE_EXPERIMENTAL: undefined, OPENCODE_EXPERIMENTAL_REFERENCES: undefined }, body)
+  return withEnv({ RAILWISE_EXPERIMENTAL: undefined, RAILWISE_EXPERIMENTAL_REFERENCES: undefined }, body)
 }
 
 function withEnv<A, E, R>(env: Record<string, string | undefined>, body: Effect.Effect<A, E, R>) {

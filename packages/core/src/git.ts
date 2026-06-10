@@ -68,7 +68,7 @@ export interface Interface {
   readonly worktreeList: (repo: Repo) => Effect.Effect<AbsolutePath[], WorktreeError>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/GitV2") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/GitV2") {}
 
 export const layer = Layer.effect(
   Service,

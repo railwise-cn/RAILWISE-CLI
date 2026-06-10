@@ -1,8 +1,8 @@
-import { Database } from "@opencode-ai/core/database/database"
-import { EventV2 } from "@opencode-ai/core/event"
-import { LocationServiceMap } from "@opencode-ai/core/location-layer"
-import { PermissionSaved } from "@opencode-ai/core/permission/saved"
-import { SessionV2 } from "@opencode-ai/core/session"
+import { Database } from "@railwise/core/database/database"
+import { EventV2 } from "@railwise/core/event"
+import { LocationServiceMap } from "@railwise/core/location-layer"
+import { PermissionSaved } from "@railwise/core/permission/saved"
+import { SessionV2 } from "@railwise/core/session"
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
 import { Layer, Option } from "effect"
@@ -19,7 +19,7 @@ export function createRoutes(password?: string) {
     Layer.provide(schemaErrorLayer),
     Layer.provide(
       password
-        ? ServerAuth.Config.layer({ username: "opencode", password: Option.some(password) })
+        ? ServerAuth.Config.layer({ username: "railwise", password: Option.some(password) })
         : ServerAuth.Config.defaultLayer,
     ),
     Layer.provide(LocationServiceMap.layer),

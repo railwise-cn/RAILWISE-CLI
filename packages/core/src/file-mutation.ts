@@ -71,7 +71,7 @@ export interface Interface {
   ) => Effect.Effect<RemoveResult, LocationMutation.RevalidationError | FSUtil.Error>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/FileMutation") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/FileMutation") {}
 
 /**
  * Commit planned file changes.

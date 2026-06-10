@@ -1,4 +1,4 @@
-import { LLM, LLMClient, LLMError, LLMEvent, SystemPart } from "@opencode-ai/llm"
+import { LLM, LLMClient, LLMError, LLMEvent, SystemPart } from "@railwise/llm"
 import { Cause, DateTime, Effect, FiberSet, Layer, Schema, Semaphore, Stream } from "effect"
 import { AgentV2 } from "../../agent"
 import { Database } from "../../database/database"
@@ -39,7 +39,7 @@ import { toLLMMessages } from "./to-llm-message"
  *
  * - One provider turn
  *   - [x] Translate every projected V2 Session message variant into canonical
- *     `@opencode-ai/llm` messages.
+ *     `@railwise/llm` messages.
  *   - [ ] Resolve policy-filtered built-in, MCP, plugin, and structured-output tool definitions.
  *   - [x] Stream exactly one `llm.stream(request)` provider turn.
  *   - [x] Persist assistant text and usage events incrementally as they arrive.

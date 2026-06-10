@@ -2,7 +2,7 @@
 
 import { rm } from "fs/promises"
 import path from "path"
-import { Script } from "@opencode-ai/script"
+import { Script } from "@railwise/script"
 import { modelsData } from "./generate"
 
 const dir = path.resolve(import.meta.dirname, "..")
@@ -74,11 +74,11 @@ for (const item of targets) {
       windows: {},
     },
     define: {
-      OPENCODE_VERSION: `'${Script.version}'`,
-      OPENCODE_CLI_NAME: `'${binary}'`,
-      OPENCODE_MODELS_DEV: modelsData,
-      OPENCODE_CHANNEL: `'${Script.channel}'`,
-      OPENCODE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "undefined",
+      RAILWISE_VERSION: `'${Script.version}'`,
+      RAILWISE_CLI_NAME: `'${binary}'`,
+      RAILWISE_MODELS_DEV: modelsData,
+      RAILWISE_CHANNEL: `'${Script.channel}'`,
+      RAILWISE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "undefined",
     },
   })
 
@@ -91,10 +91,10 @@ for (const item of targets) {
     `./dist/${name}/package.json`,
     JSON.stringify(
       {
-        name: `@opencode-ai/${name}`,
+        name: `@railwise/${name}`,
         version: Script.version,
         license: "MIT",
-        repository: { type: "git", url: "git+https://github.com/anomalyco/opencode.git" },
+        repository: { type: "git", url: "git+https://github.com/anomalyco/railwise.git" },
         os: [item.os],
         cpu: [item.arch],
       },

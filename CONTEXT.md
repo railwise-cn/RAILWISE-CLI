@@ -1,6 +1,6 @@
-# OpenCode Session Runtime
+# RAILWISE Session Runtime
 
-OpenCode sessions preserve durable conversational history while assembling the runtime context an agent needs to act correctly in its current environment.
+RAILWISE sessions preserve durable conversational history while assembling the runtime context an agent needs to act correctly in its current environment.
 
 ## Language
 
@@ -86,7 +86,7 @@ The point immediately before a provider call, after durable input promotion and 
 - A model/provider switch always starts a new **Context Epoch** while preserving chronological conversation history.
 - A **Mid-Conversation System Message** lowers to the provider's native chronological instruction role when supported and to a wrapped chronological fallback otherwise.
 - When the effective aggregate instruction set changes, its **Mid-Conversation System Message** includes the complete current ordered set and supersedes the prior aggregate value; when no ambient instructions remain, the message states that previously loaded instructions no longer apply.
-- Ambient project instruction discovery honors `OPENCODE_DISABLE_PROJECT_CONFIG`; global instructions remain eligible.
+- Ambient project instruction discovery honors `RAILWISE_DISABLE_PROJECT_CONFIG`; global instructions remain eligible.
 
 ## Example dialogue
 

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://railwise.ai/tui.json",
   "plugin": [
     [
       "./plugins/tui-smoke.tsx",

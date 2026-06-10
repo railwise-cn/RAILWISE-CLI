@@ -1,5 +1,5 @@
-import { SkillV2 } from "@opencode-ai/core/skill"
-import { Location } from "@opencode-ai/core/location"
+import { SkillV2 } from "@railwise/core/skill"
+import { Location } from "@railwise/core/location"
 import { Schema } from "effect"
 import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
 import { V2Authorization } from "../../middleware/authorization"

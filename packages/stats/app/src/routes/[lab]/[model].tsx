@@ -1,6 +1,6 @@
 import "../index.css"
 import { Link, Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
+import { ProviderIcon } from "@railwise/ui/provider-icon"
 import { geoEquirectangular, geoPath } from "d3-geo"
 import { scaleSqrt } from "d3-scale"
 import countryCodesSource from "i18n-iso-countries/codes.json?raw"
@@ -13,8 +13,8 @@ import {
   type ModelUsagePoint,
   type StatsModelData,
   type UsageRange,
-} from "@opencode-ai/stats-core/domain/home"
-import { runtime } from "@opencode-ai/stats-core/runtime"
+} from "@railwise/stats-core/domain/home"
+import { runtime } from "@railwise/stats-core/runtime"
 import { createAsync, query, useParams } from "@solidjs/router"
 import { createMemo, createSignal, For, onMount, Show, type JSX } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
@@ -32,7 +32,7 @@ import {
   type ThemePreference,
 } from "../stats-shell"
 
-const statsModelFallbackUrl = "https://stats.opencode.ai"
+const statsModelFallbackUrl = "https://stats.railwise.ai"
 const modelHeaderLinks: readonly HeaderLink[] = [
   { href: "#overview", label: "Overview" },
   { href: "#usage", label: "Usage" },
@@ -113,8 +113,8 @@ export default function StatsModel() {
   const modelTitle = createMemo(() => `${modelName()} Stats`)
   const modelDescription = createMemo(() =>
     stats()
-      ? `${modelName()} usage, rank, token mix, cost, geo breakdown, and peer stats across OpenCode.`
-      : `${modelName()} model facts, limits, and OpenCode usage availability.`,
+      ? `${modelName()} usage, rank, token mix, cost, geo breakdown, and peer stats across RAILWISE.`
+      : `${modelName()} model facts, limits, and RAILWISE usage availability.`,
   )
   const modelUrl = createMemo(() =>
     new URL(
@@ -143,7 +143,7 @@ export default function StatsModel() {
       <Meta name="description" content={modelDescription()} />
       <Link rel="canonical" href={modelUrl()} />
       <Meta property="og:type" content="website" />
-      <Meta property="og:site_name" content="OpenCode" />
+      <Meta property="og:site_name" content="RAILWISE" />
       <Meta property="og:title" content={modelTitle()} />
       <Meta property="og:description" content={modelDescription()} />
       <Meta property="og:url" content={modelUrl()} />
@@ -240,12 +240,12 @@ function ModelHero(props: { data: StatsModelData | null; catalog: ModelCatalogEn
           <Show
             when={props.data}
             fallback={
-              <p>Model facts from the shared model index. OpenCode usage appears once this model has activity.</p>
+              <p>Model facts from the shared model index. RAILWISE usage appears once this model has activity.</p>
             }
           >
             {(data) => (
               <p>
-                Ranked #{data().rank} across recent OpenCode token usage with {formatPercent(data().tokenShare)} of
+                Ranked #{data().rank} across recent RAILWISE token usage with {formatPercent(data().tokenShare)} of
                 observed volume.
               </p>
             )}
@@ -279,7 +279,7 @@ function ModelCatalogCallout(props: { catalog: ModelCatalogEntry | null }) {
     <div data-component="model-rank-panel">
       <span>Model Profile</span>
       <strong>{props.catalog?.releaseDate ? formatCatalogDate(props.catalog.releaseDate) : "Listed"}</strong>
-      <p>No OpenCode usage in the current stats window.</p>
+      <p>No RAILWISE usage in the current stats window.</p>
     </div>
   )
 }
@@ -313,7 +313,7 @@ function ModelOverview(props: { data: StatsModelData | null }) {
       <SectionTitle title="Overview" description="Recent tokens, sessions, and market position." />
       <Show
         when={props.data}
-        fallback={<ModelEmptyState title="No usage summary" description="This model has no OpenCode usage rows yet." />}
+        fallback={<ModelEmptyState title="No usage summary" description="This model has no RAILWISE usage rows yet." />}
       >
         {(data) => (
           <div data-component="model-metric-grid">

@@ -1,6 +1,6 @@
-# OpenCode Desktop
+# RAILWISE Desktop
 
-The OpenCode Desktop app, built with Electron.
+The RAILWISE Desktop app, built with Electron.
 
 ## Development
 

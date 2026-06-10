@@ -1,10 +1,10 @@
 import { describe, expect } from "bun:test"
 import { Effect, Exit, Fiber, Layer } from "effect"
-import { PermissionV2 } from "@opencode-ai/core/permission"
-import { QuestionV2 } from "@opencode-ai/core/question"
-import { SessionV2 } from "@opencode-ai/core/session"
-import { ToolRegistry } from "@opencode-ai/core/tool/registry"
-import { QuestionTool } from "@opencode-ai/core/tool/question"
+import { PermissionV2 } from "@railwise/core/permission"
+import { QuestionV2 } from "@railwise/core/question"
+import { SessionV2 } from "@railwise/core/session"
+import { ToolRegistry } from "@railwise/core/tool/registry"
+import { QuestionTool } from "@railwise/core/tool/question"
 import { testEffect } from "./lib/effect"
 
 const sessionID = SessionV2.ID.make("ses_question_tool_test")

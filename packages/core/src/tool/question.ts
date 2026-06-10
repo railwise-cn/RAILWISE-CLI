@@ -1,6 +1,6 @@
 export * as QuestionTool from "./question"
 
-import { Tool, toolText } from "@opencode-ai/llm"
+import { Tool, toolText } from "@railwise/llm"
 import { Effect, Layer, Schema } from "effect"
 import { QuestionV2 } from "../question"
 import { ToolRegistry } from "./registry"

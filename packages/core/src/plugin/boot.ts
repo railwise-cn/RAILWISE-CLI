@@ -49,7 +49,7 @@ export interface Interface {
   readonly wait: () => Effect.Effect<void>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/PluginBoot") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/PluginBoot") {}
 
 export const layer = Layer.effect(
   Service,

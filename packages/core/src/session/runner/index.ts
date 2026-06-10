@@ -1,6 +1,6 @@
 export * as SessionRunner from "./index"
 
-import type { LLMError } from "@opencode-ai/llm"
+import type { LLMError } from "@railwise/llm"
 import { Context, Effect, Schema } from "effect"
 import { SessionSchema } from "../schema"
 import type { ContextSnapshotDecodeError, MessageDecodeError } from "../error"
@@ -34,4 +34,4 @@ export interface Interface {
   }) => Effect.Effect<void, RunError>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/SessionRunner") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/SessionRunner") {}

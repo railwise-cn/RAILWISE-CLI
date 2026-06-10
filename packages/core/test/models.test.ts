@@ -1,29 +1,29 @@
 import { describe, expect, beforeAll, beforeEach, afterAll } from "bun:test"
 import { Effect, Layer, Ref } from "effect"
 import { HttpClient, HttpClientResponse } from "effect/unstable/http"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { Global } from "@opencode-ai/core/global"
-import { ModelsDev } from "@opencode-ai/core/models-dev"
-import { EventV2 } from "@opencode-ai/core/event"
+import { FSUtil } from "@railwise/core/fs-util"
+import { Flag } from "@railwise/core/flag/flag"
+import { Global } from "@railwise/core/global"
+import { ModelsDev } from "@railwise/core/models-dev"
+import { EventV2 } from "@railwise/core/event"
 import { it } from "./lib/effect"
 import { readFile, rm, writeFile, utimes, mkdir } from "fs/promises"
 import path from "path"
 
-// test/preload.ts pins OPENCODE_MODELS_PATH to a fixture so other tests can
+// test/preload.ts pins RAILWISE_MODELS_PATH to a fixture so other tests can
 // resolve providers without network. These tests need to drive the on-disk
 // cache themselves and silence the eager refresh fork. Save/restore around
 // the suite — never leak the mutation to subsequent test files in the same
 // bun process.
-const ORIGINAL_MODELS_PATH = Flag.OPENCODE_MODELS_PATH
-const ORIGINAL_DISABLE_FETCH = Flag.OPENCODE_DISABLE_MODELS_FETCH
+const ORIGINAL_MODELS_PATH = Flag.RAILWISE_MODELS_PATH
+const ORIGINAL_DISABLE_FETCH = Flag.RAILWISE_DISABLE_MODELS_FETCH
 beforeAll(() => {
-  Flag.OPENCODE_MODELS_PATH = undefined
-  Flag.OPENCODE_DISABLE_MODELS_FETCH = true
+  Flag.RAILWISE_MODELS_PATH = undefined
+  Flag.RAILWISE_DISABLE_MODELS_FETCH = true
 })
 afterAll(() => {
-  Flag.OPENCODE_MODELS_PATH = ORIGINAL_MODELS_PATH
-  Flag.OPENCODE_DISABLE_MODELS_FETCH = ORIGINAL_DISABLE_FETCH
+  Flag.RAILWISE_MODELS_PATH = ORIGINAL_MODELS_PATH
+  Flag.RAILWISE_DISABLE_MODELS_FETCH = ORIGINAL_DISABLE_FETCH
 })
 
 const cacheFile = path.join(Global.Path.cache, "models.json")
@@ -159,7 +159,7 @@ describe("ModelsDev Service", () => {
       const state = yield* Ref.make({ ...initialState, body: JSON.stringify(fixture2) })
       const result = yield* Effect.acquireUseRelease(
         Effect.sync(() => {
-          Flag.OPENCODE_DISABLE_MODELS_FETCH = false
+          Flag.RAILWISE_DISABLE_MODELS_FETCH = false
         }),
         () =>
           provided(
@@ -168,7 +168,7 @@ describe("ModelsDev Service", () => {
           ),
         () =>
           Effect.sync(() => {
-            Flag.OPENCODE_DISABLE_MODELS_FETCH = true
+            Flag.RAILWISE_DISABLE_MODELS_FETCH = true
           }),
       )
       expect(result).toEqual(fixture2)

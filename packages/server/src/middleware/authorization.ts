@@ -8,7 +8,7 @@ const AUTH_TOKEN_QUERY = "auth_token"
 const WWW_AUTHENTICATE = 'Basic realm="Secure Area"'
 
 export class V2Authorization extends HttpApiMiddleware.Service<V2Authorization>()(
-  "@opencode/ExperimentalHttpApiV2Authorization",
+  "@railwise/ExperimentalHttpApiV2Authorization",
   {
     error: UnauthorizedError,
   },

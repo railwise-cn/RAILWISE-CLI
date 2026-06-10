@@ -100,7 +100,7 @@ export interface Interface {
   readonly cleanup: () => Effect.Effect<void>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/ToolOutputStore") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/ToolOutputStore") {}
 
 const uri = (id: string) => URI_PREFIX + id
 

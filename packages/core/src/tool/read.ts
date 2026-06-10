@@ -1,6 +1,6 @@
 export * as ReadTool from "./read"
 
-import { Tool, ToolFailure } from "@opencode-ai/llm"
+import { Tool, ToolFailure } from "@railwise/llm"
 import { Cause, Effect, Layer, Schema } from "effect"
 import { FileSystem } from "../filesystem"
 import { NonNegativeInt, PositiveInt } from "../schema"

@@ -59,6 +59,21 @@ async function tracked(file: string) {
   return (await $`git ls-files -- ${file}`.text()).trim().length > 0
 }
 
+async function files() {
+  return (await $`git ls-tree -r --name-only HEAD`.text()).trim().split("\n").filter(Boolean)
+}
+
+async function clean(files: string[]) {
+  const current = new Set((await $`git ls-files`.text()).trim().split("\n").filter(Boolean))
+  await Promise.all(
+    files
+      .filter((file) => !current.has(file))
+      .map(async (file) => {
+        if (await exists(file)) await rm(file, { force: true })
+      }),
+  )
+}
+
 async function walk(dir: string): Promise<string[]> {
   if (protectedPath(dir) && dir !== root) return []
   const entries = await readdir(dir, { withFileTypes: true })
@@ -170,6 +185,10 @@ await $`git add -A`
 
 const changed = (await $`git status --porcelain`.text()).trim()
 if (changed) await $`git commit -m ${`chore(sync): rebrand upstream ${tag}`}`
-if (current) await $`git switch ${current}`
+const generated = current ? await files() : []
+if (current) {
+  await $`git switch ${current}`
+  await clean(generated)
+}
 
 console.log(`${branch} is ready. Rebase with: git rebase --onto ${branch} sync/${config.lastSyncedTag} dev`)

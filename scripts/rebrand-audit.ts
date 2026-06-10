@@ -1,5 +1,5 @@
 // scripts/rebrand-audit.ts
-// 扫描桌面端发版面中的旧品牌命名，打印位置。
+// 扫描 CLI 仓库发版面中的旧品牌命名，打印位置。
 // 用法：
 //   bun scripts/rebrand-audit.ts          (退出码 0=干净, 1=有残留 — CI 友好)
 
@@ -19,9 +19,6 @@ const TARGETS = [
   "packages/app/package.json",
   "packages/app/src",
   "packages/ui/src",
-  "packages/desktop/package.json",
-  "packages/desktop/src",
-  "packages/desktop/src-tauri/src",
   "packages/railwise/package.json",
   "packages/railwise/src/index.ts",
   "packages/railwise/src/installation",

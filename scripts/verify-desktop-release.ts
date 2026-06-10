@@ -78,6 +78,16 @@ type Config = {
     }
   }
 }
+type Package = {
+  private?: boolean
+  scripts?: Record<string, string>
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+  exports?: Record<string, unknown>
+  workspaces?: {
+    catalog?: Record<string, string>
+  }
+}
 
 const root = path.resolve(import.meta.dir, "..")
 const checks: { name: string; passed: boolean; detail: string }[] = []
@@ -100,9 +110,13 @@ const devConfig = (await Bun.file(file(devConfigPath)).json()) as Config
 const vite = await read("packages/desktop/vite.config.ts")
 const predev = await read("packages/desktop/scripts/predev.ts")
 const prepare = await read("packages/desktop/scripts/prepare-tauri-config.ts")
+const sidecarPrepare = await read("packages/desktop/scripts/prepare.ts")
 const localDmg = await read("packages/desktop/scripts/package-local-dmg.ts")
 const localInstall = await read("packages/desktop/scripts/install-macos-local.ts")
-const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as { scripts?: Record<string, string> }
+const rootPkg = (await Bun.file(file("package.json")).json()) as Package
+const appPkg = (await Bun.file(file("packages/app/package.json")).json()) as Package
+const utilPkg = (await Bun.file(file("packages/util/package.json")).json()) as Package
+const pkg = (await Bun.file(file("packages/desktop/package.json")).json()) as Package
 const macSign = await read("packages/desktop/scripts/sign-macos-app.ts")
 const macVerify = await read("packages/desktop/scripts/verify-macos-bundle.ts")
 const dmgVerify = await read("packages/desktop/scripts/verify-macos-dmg.ts")
@@ -123,6 +137,18 @@ const icons = await read("packages/desktop/src-tauri/icons/railwise/README.md")
 const containers = await read("packages/containers/script/build.ts")
 const containersReadme = await read("packages/containers/README.md")
 const dialog = await read("packages/desktop/src/components/update-dialog.tsx")
+const decoupled = await read("docs/dev/decoupled-release.md")
+const configBrand = await read("scripts/rebrand.config.json")
+const upstreamSync = await read("scripts/sync-upstream.ts")
+const assetExtract = await read("scripts/extract-assets.ts")
+const sharedPack = await read("scripts/pack-shared-packages.ts")
+const sharedPublish = await read("scripts/publish-shared-packages.ts")
+const desktopExport = await read("scripts/export-desktop-repo.ts")
+const sdkPublish = await read("packages/sdk/js/script/publish.ts")
+const scriptPackage = await read("packages/script/src/index.ts")
+const agentInstall = await read("skill-pack-template/bin/install.js")
+const desktopI18n = await read("packages/desktop/src/i18n/index.ts")
+const desktopTsconfig = await read("packages/desktop/tsconfig.json")
 const infoPlist = await read("packages/desktop/src-tauri/Info.plist")
 const platform = await read("packages/app/src/context/platform.tsx")
 const settings = await read("packages/app/src/components/settings-general.tsx")
@@ -589,6 +615,169 @@ check(
       "RAILWISE_MODELS_PATH",
     ]),
   "CLI build can seed a models snapshot and runtime can reuse it when models.dev is temporarily unreachable",
+)
+check(
+  "decoupled release SOP",
+  contains(decoupled, [
+    "# RAILWISE Decoupled Release SOP",
+    "bun run sync:upstream -- --to v1.16.2 --dry-run",
+    "bun run assets:extract -- --out ../railwise-agent-pack --name @railwise/agent-pack --force",
+    "bun run publish:shared",
+    "bun run desktop:export -- --out ../railwise-desktop-app --cli-version 1.2.8 --shared-version 1.2.8 --force",
+    "CLI owns OpenAPI generation",
+    "Desktop owns Tauri packaging and pins CLI with `.cli-version`",
+  ]),
+  "CLI, Agent Pack, shared packages, and Desktop split release surfaces are documented in one SOP",
+)
+check(
+  "decoupled release script entrypoints",
+  rootPkg.scripts?.["sync:upstream"] === "bun ./scripts/sync-upstream.ts" &&
+    rootPkg.scripts?.["assets:extract"] === "bun ./scripts/extract-assets.ts" &&
+    rootPkg.scripts?.["desktop:export"] === "bun ./scripts/export-desktop-repo.ts" &&
+    rootPkg.scripts?.["pack:shared"] === "bun ./scripts/pack-shared-packages.ts" &&
+    rootPkg.scripts?.["publish:shared"] === "bun ./scripts/publish-shared-packages.ts",
+  "root package exposes deterministic upstream sync, asset extraction, shared package, and Desktop export commands",
+)
+check(
+  "upstream sync rebrand baseline",
+  contains(configBrand, [
+    '"lastSyncedTag": "v1.2.8"',
+    '"url": "https://github.com/sst/opencode.git"',
+    '"packagePath": "packages/opencode"',
+    '"rebrandedPackagePath": "packages/railwise"',
+    '".opencode"',
+    '".railwise"',
+  ]) &&
+    contains(upstreamSync, [
+      'const tag = arg("--to")',
+      'const dry = flag("--dry-run")',
+      'const dirty = flag("--allow-dirty")',
+      "protectedPath(file)",
+      "await ensure()",
+      "git fetch",
+      "git switch --detach",
+      "git commit -m",
+    ]),
+  "upstream tag sync creates a rebranded baseline while protecting Railwise-owned paths",
+)
+check(
+  "Agent Pack extraction and installer",
+  contains(assetExtract, [
+    "skill-pack-template/bin/install.js",
+    "file.includes(\".test.\")",
+    "fileAssets(\"agent\", \".railwise/agent\", \".md\")",
+    "dirAssets(\"skill\", \".railwise/skill\")",
+    "groupedAssets(\"tool\", \".railwise/tool\")",
+    '"railwise-agent-pack": "./bin/install.js"',
+    "agentAssets: assets.sort",
+  ]) &&
+    contains(agentInstall, [
+      'value === "codex"',
+      'value === "claude"',
+      'value === "opencode"',
+      'value === "railwise"',
+      'target.startsWith(".") || target.startsWith("~") || target.includes("/")',
+      'flag("--dry-run")',
+      "fs.cpSync(source, dest, { recursive: true })",
+    ]),
+  "Agent assets can be packaged once and installed into Railwise, Codex, Claude, opencode, or custom layouts",
+)
+check(
+  "shared package release staging",
+  appPkg.exports?.["./i18n/*"] === "./src/i18n/*.ts" &&
+    utilPkg.private === undefined &&
+    contains(scriptPackage, [
+      "replace(/[^0-9a-z-]+/g, \"-\")",
+      "replace(/-+/g, \"-\") || \"preview\"",
+      'raw === "latest" ? "latest" : prerelease(raw)',
+    ]) &&
+    contains(sharedPack, [
+      "const dirs = [\"packages/util\", \"packages/ui\", \"packages/app\"]",
+      "process.env.RAILWISE_VERSION = version",
+      "bun run --cwd packages/sdk/js build",
+      "publish.ts --pack-only --out",
+      "manifest.json",
+    ]) &&
+    contains(sharedPublish, [
+      "Default mode stages packages and uses npm publish --dry-run.",
+      "const dry = !publish",
+      "process.env.RAILWISE_VERSION = Script.version",
+      "workspace:*",
+      "catalog:",
+      "npm publish *.tgz --access public --tag",
+    ]),
+  "shared frontend packages normalize preview versions, rewrite workspace/catalog deps, and dry-run by default",
+)
+check(
+  "SDK publish supports pack-only shared artifacts",
+  contains(sdkPublish, [
+    "const dry = args.includes(\"--dry-run\")",
+    "const pack = args.includes(\"--pack-only\")",
+    "pkg.version = Script.version",
+    "replace(\"./src/\", \"./dist/src/\")",
+    "await Bun.write(\"package.json\", JSON.stringify(pkg, null, 2) + \"\\n\")",
+    "await $`bun pm pack`",
+    "await rename(tar, path.join(out, tar))",
+    "npm publish ${tar} --tag ${Script.channel} --access public --dry-run",
+    "await Bun.write(\"package.json\", JSON.stringify(original, null, 2) + \"\\n\")",
+  ]),
+  "JavaScript SDK publish script can emit a tarball for shared package vendoring without publishing",
+)
+check(
+  "Desktop standalone export contract",
+  contains(desktopExport, [
+    "packages/desktop/.cli-version",
+    "source === \"file\"",
+    "file:vendor/shared",
+    "workspace:*",
+    "catalog:",
+    "scripts.predev = \"bun ./scripts/prepare.ts\"",
+    "uses: oven-sh/setup-bun@v2",
+    "working-directory: .",
+    "\"@/*\": [\"./node_modules/@railwise/app/src/*\"]",
+    "git filter-repo",
+    "snapshot(path.join(root, \"packages/desktop\"), out)",
+  ]),
+  "Desktop export rewrites monorepo dependencies, workflow paths, tsconfig aliases, and optional vendored shared tarballs",
+)
+check(
+  "Desktop split consumes shared app package",
+  appPkg.exports?.["./vite"] === "./vite.js" &&
+    appPkg.exports?.["./index.css"] === "./src/index.css" &&
+    contains(desktopI18n, [
+      'from "@railwise/app/i18n/en"',
+      'from "@railwise/app/i18n/zh"',
+      'from "@railwise/app/i18n/bs"',
+    ]) &&
+    contains(vite, [
+      'import appPlugin from "@railwise/app/vite"',
+      'import.meta.resolve("@railwise/app")',
+      'path.join(app, "..", "public")',
+    ]) &&
+    desktopTsconfig.includes('"@/*": ["../app/src/*"]') &&
+    !desktopTsconfig.includes('"references"'),
+  "Desktop no longer imports App locale files through relative source paths and can be exported without TS project references",
+)
+check(
+  "Desktop sidecar release pin",
+  (await exists("packages/desktop/.cli-version")) &&
+    contains(sidecarPrepare, [
+      "RAILWISE_CLI_VERSION",
+      "Bun.file(\".cli-version\")",
+      "RAILWISE_CLI_TAG",
+      "RAILWISE_CLI_REPO",
+      "RAILWISE_CLI_SOURCE",
+      "gh run download",
+      "gh release download",
+      "unzip -oq",
+      "copyBinaryToSidecarFolder",
+    ]) &&
+    contains(prepare, [
+      "RAILWISE_DESKTOP_VERSION",
+      "GITHUB_REF_NAME",
+      "config.version",
+    ]),
+  "standalone Desktop builds pin a CLI release sidecar while Tauri config can take the desktop version from env or tag",
 )
 check(
   "release public installer coverage",

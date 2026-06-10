@@ -140,7 +140,7 @@ if (!dirty && (await $`git status --porcelain`.text()).trim()) {
 }
 
 await ensure()
-await $`git fetch ${config.upstream.remote} --tags`
+await $`git fetch --force ${config.upstream.remote} ${`refs/tags/${tag}:refs/tags/${tag}`}`
 
 const current = (await $`git branch --show-current`.text()).trim()
 const branchExists = (await $`git rev-parse --verify ${branch}`.quiet().nothrow()).exitCode === 0

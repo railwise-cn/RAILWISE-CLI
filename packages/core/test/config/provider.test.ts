@@ -1,11 +1,11 @@
 import { describe, expect } from "bun:test"
 import { Effect, Option, Schema } from "effect"
-import { Catalog } from "@opencode-ai/core/catalog"
-import { Config } from "@opencode-ai/core/config"
-import { ConfigProviderPlugin } from "@opencode-ai/core/config/plugin/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+import { Catalog } from "@railwise/core/catalog"
+import { Config } from "@railwise/core/config"
+import { ConfigProviderPlugin } from "@railwise/core/config/plugin/provider"
+import { ModelV2 } from "@railwise/core/model"
+import { PluginV2 } from "@railwise/core/plugin"
+import { ProviderV2 } from "@railwise/core/provider"
 import { it } from "../plugin/provider-helper"
 
 function request(headers: Record<string, string>, variant?: string) {
@@ -22,7 +22,7 @@ describe("ConfigProviderPlugin.Plugin", () => {
     Effect.gen(function* () {
       const catalog = yield* Catalog.Service
       const plugin = yield* PluginV2.Service
-      const providerID = ProviderV2.ID.opencode
+      const providerID = ProviderV2.ID.railwise
       const modelID = ModelV2.ID.make("alpha-gpt-next")
       const config = Config.Service.of({
         entries: () =>
@@ -31,8 +31,8 @@ describe("ConfigProviderPlugin.Plugin", () => {
               type: "document",
               info: decode({
                 providers: {
-                  opencode: {
-                    api: { type: "aisdk", package: "@ai-sdk/openai", url: "https://opencode.test/v1" },
+                  railwise: {
+                    api: { type: "aisdk", package: "@ai-sdk/openai", url: "https://railwise.test/v1" },
                     models: {
                       "alpha-gpt-next": {
                         variants: [
@@ -81,7 +81,7 @@ describe("ConfigProviderPlugin.Plugin", () => {
     Effect.gen(function* () {
       const catalog = yield* Catalog.Service
       const plugin = yield* PluginV2.Service
-      const providerID = ProviderV2.ID.opencode
+      const providerID = ProviderV2.ID.railwise
       const modelID = ModelV2.ID.make("alpha-gpt-next")
       const config = Config.Service.of({
         entries: () =>
@@ -90,8 +90,8 @@ describe("ConfigProviderPlugin.Plugin", () => {
               type: "document",
               info: decode({
                 providers: {
-                  opencode: {
-                    api: { type: "aisdk", package: "@ai-sdk/openai", url: "https://opencode.test/v1" },
+                  railwise: {
+                    api: { type: "aisdk", package: "@ai-sdk/openai", url: "https://railwise.test/v1" },
                   },
                 },
               }),
@@ -100,7 +100,7 @@ describe("ConfigProviderPlugin.Plugin", () => {
               type: "document",
               info: decode({
                 providers: {
-                  opencode: {
+                  railwise: {
                     models: {
                       "alpha-gpt-next": {
                         variants: [{ id: "high", body: { reasoningEffort: "high" } }],

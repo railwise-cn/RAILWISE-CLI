@@ -6,14 +6,14 @@ export const wslRuntimeRetryable = (runtime: WslServerRuntime) =>
 export async function enterWslOpencodeStep(
   distro: string,
   probe: (distro: string) => Promise<unknown>,
-  select: (step: "opencode") => void,
+  select: (step: "railwise") => void,
 ) {
   await probe(distro)
-  select("opencode")
+  select("railwise")
 }
 
 export function wslOpencodeAction(check?: WslOpencodeCheck) {
   if (!check) return
-  if (!check.resolvedPath) return "Install OpenCode"
-  if (check.matchesDesktop === false) return "Update OpenCode"
+  if (!check.resolvedPath) return "Install RAILWISE"
+  if (check.matchesDesktop === false) return "Update RAILWISE"
 }

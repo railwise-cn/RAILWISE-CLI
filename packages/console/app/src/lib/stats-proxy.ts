@@ -1,5 +1,5 @@
 import type { APIEvent } from "@solidjs/start/server"
-import { Resource } from "@opencode-ai/console-resource"
+import { Resource } from "@railwise/console-resource"
 
 const dataPath = "/data"
 
@@ -7,7 +7,7 @@ export async function statsProxy(evt: APIEvent) {
   const req = evt.request.clone()
   const targetUrl = new URL(req.url)
   targetUrl.protocol = "https:"
-  targetUrl.hostname = Resource.App.stage === "production" ? "stats.opencode.ai" : "stats.dev.opencode.ai"
+  targetUrl.hostname = Resource.App.stage === "production" ? "stats.railwise.ai" : "stats.dev.railwise.ai"
   targetUrl.port = ""
 
   if (targetUrl.pathname.startsWith(`${dataPath}/_build/`) || targetUrl.pathname === `${dataPath}/banner.jpg`) {

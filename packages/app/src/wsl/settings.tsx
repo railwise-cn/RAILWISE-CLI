@@ -1,10 +1,10 @@
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Tag } from "@opencode-ai/ui/v2/badge-v2"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { Dialog } from "@opencode-ai/ui/v2/dialog-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
+import { useDialog } from "@railwise/ui/context/dialog"
+import { Tag } from "@railwise/ui/v2/badge-v2"
+import { ButtonV2 } from "@railwise/ui/v2/button-v2"
+import { Dialog } from "@railwise/ui/v2/dialog-v2"
+import { Icon as IconV2 } from "@railwise/ui/v2/icon"
+import { IconButtonV2 } from "@railwise/ui/v2/icon-button-v2"
+import { MenuV2 } from "@railwise/ui/v2/menu-v2"
 import { useMutation } from "@tanstack/solid-query"
 import fuzzysort from "fuzzysort"
 import { type Accessor, For, Show, createMemo } from "solid-js"
@@ -84,9 +84,9 @@ export function WslServerSettings(props: {
       <For each={props.servers()}>
         {(item) => {
           const key = ServerConnection.Key.make(item.config.id)
-          const check = () => wsl.data?.opencodeChecks[item.config.distro]
-          const opencodeAction = () => wslOpencodeAction(check())
-          const busy = () => wsl.data?.job?.kind === "install-opencode" && wsl.data.job.distro === item.config.distro
+          const check = () => wsl.data?.railwiseChecks[item.config.distro]
+          const railwiseAction = () => wslOpencodeAction(check())
+          const busy = () => wsl.data?.job?.kind === "install-railwise" && wsl.data.job.distro === item.config.distro
           return (
             <div class="settings-v2-servers-row">
               <div class="settings-v2-servers-lead">
@@ -107,7 +107,7 @@ export function WslServerSettings(props: {
                 <Show when={props.controller.canDefault() && props.controller.defaultKey() === key}>
                   <Tag>{language.t("dialog.server.status.default")}</Tag>
                 </Show>
-                <Show when={opencodeAction()}>
+                <Show when={railwiseAction()}>
                   {(label) => (
                     <ButtonV2
                       size="small"

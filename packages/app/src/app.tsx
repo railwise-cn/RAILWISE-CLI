@@ -1,13 +1,13 @@
 import "@/index.css"
 import * as Sentry from "@sentry/solid"
-import { I18nProvider } from "@opencode-ai/ui/context"
-import { DialogProvider } from "@opencode-ai/ui/context/dialog"
-import { FileComponentProvider } from "@opencode-ai/ui/context/file"
-import { MarkedProvider } from "@opencode-ai/ui/context/marked"
-import { File } from "@opencode-ai/ui/file"
-import { Font } from "@opencode-ai/ui/font"
-import { Splash } from "@opencode-ai/ui/logo"
-import { ThemeProvider } from "@opencode-ai/ui/theme/context"
+import { I18nProvider } from "@railwise/ui/context"
+import { DialogProvider } from "@railwise/ui/context/dialog"
+import { FileComponentProvider } from "@railwise/ui/context/file"
+import { MarkedProvider } from "@railwise/ui/context/marked"
+import { File } from "@railwise/ui/file"
+import { Font } from "@railwise/ui/font"
+import { Splash } from "@railwise/ui/logo"
+import { ThemeProvider } from "@railwise/ui/theme/context"
 import { MetaProvider } from "@solidjs/meta"
 import { type BaseRouterProps, Navigate, Route, Router } from "@solidjs/router"
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
@@ -69,7 +69,7 @@ function UiI18nBridge(props: ParentProps) {
 
 declare global {
   interface Window {
-    __OPENCODE__?: {
+    __RAILWISE__?: {
       deepLinks?: string[]
     }
     api?: {

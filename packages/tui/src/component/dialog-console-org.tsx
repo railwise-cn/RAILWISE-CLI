@@ -4,7 +4,7 @@ import { useSDK } from "../context/sdk"
 import { useDialog } from "../ui/dialog"
 import { useToast } from "../ui/toast"
 import { useTheme } from "../context/theme"
-import type { ExperimentalConsoleListOrgsResponse } from "@opencode-ai/sdk/v2"
+import type { ExperimentalConsoleListOrgsResponse } from "@railwise/sdk/v2"
 
 type OrgOption = ExperimentalConsoleListOrgsResponse["orgs"][number]
 

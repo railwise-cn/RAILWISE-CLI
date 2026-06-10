@@ -4,14 +4,14 @@ import fs from "fs/promises"
 import path from "path"
 import { eq } from "drizzle-orm"
 import { Effect, Fiber, Layer, Stream } from "effect"
-import { AbsolutePath } from "@opencode-ai/core/schema"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { Git } from "@opencode-ai/core/git"
-import { Database } from "@opencode-ai/core/database/database"
-import { EventV2 } from "@opencode-ai/core/event"
-import { Project } from "@opencode-ai/core/project"
-import { ProjectDirectoryTable, ProjectTable } from "@opencode-ai/core/project/sql"
-import { ProjectCopy } from "@opencode-ai/core/project/copy"
+import { AbsolutePath } from "@railwise/core/schema"
+import { FSUtil } from "@railwise/core/fs-util"
+import { Git } from "@railwise/core/git"
+import { Database } from "@railwise/core/database/database"
+import { EventV2 } from "@railwise/core/event"
+import { Project } from "@railwise/core/project"
+import { ProjectDirectoryTable, ProjectTable } from "@railwise/core/project/sql"
+import { ProjectCopy } from "@railwise/core/project/copy"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
 
@@ -33,7 +33,7 @@ async function initRepo(directory: string) {
   await $`git init`.cwd(directory).quiet()
   await $`git config core.fsmonitor false`.cwd(directory).quiet()
   await $`git config commit.gpgsign false`.cwd(directory).quiet()
-  await $`git config user.email test@opencode.test`.cwd(directory).quiet()
+  await $`git config user.email test@railwise.test`.cwd(directory).quiet()
   await $`git config user.name Test`.cwd(directory).quiet()
   await $`git commit --allow-empty -m root`.cwd(directory).quiet()
 }

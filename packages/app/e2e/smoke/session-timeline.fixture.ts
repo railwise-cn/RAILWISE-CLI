@@ -23,9 +23,9 @@ const words = [
 
 const sourceID = "ses_smoke_source"
 const targetID = "ses_smoke_target"
-const directory = "C:/OpenCode/SmokeProject"
+const directory = "C:/RAILWISE/SmokeProject"
 const projectID = "proj_smoke_timeline"
-const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" }
+const model = { providerID: "railwise", modelID: "claude-opus-4-6", variant: "max" }
 
 type MessageInfo = Record<string, unknown> & { id: string; role: "user" | "assistant" }
 type MessagePart = Record<string, unknown> & { id: string; type: string; text?: string; tool?: string }
@@ -253,13 +253,13 @@ export const fixture = {
   provider: {
     all: [
       {
-        id: "opencode",
-        name: "OpenCode",
+        id: "railwise",
+        name: "RAILWISE",
         models: { "claude-opus-4-6": { id: "claude-opus-4-6", name: "Claude Opus 4.6", limit: { context: 200_000 } } },
       },
     ],
-    connected: ["opencode"],
-    default: { providerID: "opencode", modelID: "claude-opus-4-6" },
+    connected: ["railwise"],
+    default: { providerID: "railwise", modelID: "claude-opus-4-6" },
   },
   sessions: [
     {

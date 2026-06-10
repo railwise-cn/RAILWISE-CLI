@@ -44,7 +44,7 @@ for (const name of sqlMigrations) {
 await Bun.write(registry, renderRegistry(sqlMigrations))
 
 async function check() {
-  const temporary = await fs.mkdtemp(path.join(os.tmpdir(), "opencode-core-migration-check-"))
+  const temporary = await fs.mkdtemp(path.join(os.tmpdir(), "railwise-core-migration-check-"))
   const output = path.join(temporary, "migration")
   try {
     await fs.cp(sqlDir, output, { recursive: true })

@@ -48,7 +48,7 @@ export interface Interface {
   readonly list: () => Effect.Effect<Info[]>
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Reference") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/Reference") {}
 
 export const layer = Layer.effect(
   Service,

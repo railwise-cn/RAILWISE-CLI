@@ -1,4 +1,4 @@
-import type { TuiPlugin, TuiPluginApi } from "@opencode-ai/plugin/tui"
+import type { TuiPlugin, TuiPluginApi } from "@railwise/plugin/tui"
 import type { BuiltinTuiPlugin } from "../builtins"
 import { useSyncV2 } from "../../context/sync-v2"
 import { SplitBorder } from "../../ui/border"
@@ -28,7 +28,7 @@ import type {
   SessionMessageUser,
   ToolFileContent,
   ToolTextContent,
-} from "@opencode-ai/sdk/v2"
+} from "@railwise/sdk/v2"
 import { createEffect, createMemo, createSignal, For, Match, Show, Switch } from "solid-js"
 import { collapseToolOutput } from "../../util/collapse-tool-output"
 import { setPreLayoutSiblingMargin } from "../../util/layout"

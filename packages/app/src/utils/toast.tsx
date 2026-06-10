@@ -1,6 +1,6 @@
-import { Icon, type IconProps } from "@opencode-ai/ui/icon"
-import { Toast, showToast as showLegacyToast, type ToastOptions, type ToastVariant } from "@opencode-ai/ui/toast"
-import { ToastV2, showToastV2 } from "@opencode-ai/ui/v2/toast-v2"
+import { Icon, type IconProps } from "@railwise/ui/icon"
+import { Toast, showToast as showLegacyToast, type ToastOptions, type ToastVariant } from "@railwise/ui/toast"
+import { ToastV2, showToastV2 } from "@railwise/ui/v2/toast-v2"
 
 let v2 = false
 

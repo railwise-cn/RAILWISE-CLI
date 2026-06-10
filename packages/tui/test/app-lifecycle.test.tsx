@@ -1,7 +1,7 @@
 import { expect, mock, test } from "bun:test"
 import { createTestRenderer } from "@opentui/core/testing"
 import { Effect } from "effect"
-import { Global } from "@opencode-ai/core/global"
+import { Global } from "@railwise/core/global"
 import { createTuiResolvedConfig } from "./fixture/tui-runtime"
 import { createEventSource, createFetch, directory } from "./fixture/tui-sdk"
 

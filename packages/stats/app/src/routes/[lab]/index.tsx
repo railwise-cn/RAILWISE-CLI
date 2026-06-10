@@ -5,8 +5,8 @@ import {
   type LabUsageModelEntry,
   type ModelUsagePoint,
   type StatsLabData,
-} from "@opencode-ai/stats-core/domain/home"
-import { runtime } from "@opencode-ai/stats-core/runtime"
+} from "@railwise/stats-core/domain/home"
+import { runtime } from "@railwise/stats-core/runtime"
 import { createAsync, query, useParams } from "@solidjs/router"
 import { createMemo, createSignal, For, onMount, Show, type JSX } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
@@ -28,7 +28,7 @@ import {
   type ThemePreference,
 } from "../stats-shell"
 
-const statsLabFallbackUrl = "https://stats.opencode.ai"
+const statsLabFallbackUrl = "https://stats.railwise.ai"
 const labHeaderLinks: readonly HeaderLink[] = [
   { href: "#overview", label: "Overview" },
   { href: "#usage", label: "Usage" },
@@ -69,7 +69,7 @@ export default function StatsLab() {
   const labTitle = createMemo(() => `${labName()} Models`)
   const labDescription = createMemo(
     () =>
-      `Explore ${labName()} models used in OpenCode, with recent token usage, context windows, release dates, and model-specific data.`,
+      `Explore ${labName()} models used in RAILWISE, with recent token usage, context windows, release dates, and model-specific data.`,
   )
   const labUrl = createMemo(() =>
     new URL(
@@ -98,7 +98,7 @@ export default function StatsLab() {
       <Meta name="description" content={labDescription()} />
       <Link rel="canonical" href={labUrl()} />
       <Meta property="og:type" content="website" />
-      <Meta property="og:site_name" content="OpenCode" />
+      <Meta property="og:site_name" content="RAILWISE" />
       <Meta property="og:title" content={labTitle()} />
       <Meta property="og:description" content={labDescription()} />
       <Meta property="og:url" content={labUrl()} />
@@ -139,7 +139,7 @@ function LabLoading() {
             Data
           </a>
           <h1>Model Lab</h1>
-          <p>Reading model availability and recent OpenCode usage.</p>
+          <p>Reading model availability and recent RAILWISE usage.</p>
         </div>
       </div>
     </section>
@@ -182,7 +182,7 @@ function LabHero(props: { lab: ModelCatalogLab; stats: StatsLabData | null }) {
           <h1>{props.lab.name}</h1>
           <div data-slot="model-hero-pattern" aria-hidden="true" />
           <p>
-            Explore {props.lab.models.length} {props.lab.name} models used in OpenCode
+            Explore {props.lab.models.length} {props.lab.name} models used in RAILWISE
             <Show when={featuredModels().length > 0}> including {formatList(featuredModels())}</Show>. Compare recent
             token usage, context windows, release dates, and model-specific data.
           </p>
@@ -192,7 +192,7 @@ function LabHero(props: { lab: ModelCatalogLab; stats: StatsLabData | null }) {
           <strong>{props.stats ? formatTokens(props.stats.totals.tokens) : "Pending"}</strong>
           <p>
             {props.stats
-              ? `${formatPercent(props.stats.tokenShare)} of recent OpenCode usage`
+              ? `${formatPercent(props.stats.tokenShare)} of recent RAILWISE usage`
               : latest()
                 ? `Latest release ${formatCatalogDate(latest())}`
                 : "Usage appears after model activity lands"}
@@ -217,7 +217,7 @@ function LabUsageSection(props: { lab: ModelCatalogLab; data: StatsLabData | nul
     <section id="usage" data-section="model-panel">
       <p data-slot="section-title">
         <strong>{props.lab.name} token usage.</strong>{" "}
-        <span>Daily OpenCode token volume over the last two months.</span>
+        <span>Daily RAILWISE token volume over the last two months.</span>
       </p>
       <Show
         when={usage().some((item) => item.tokens > 0)}

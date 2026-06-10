@@ -1,9 +1,9 @@
 import { describe, expect, mock } from "bun:test"
 import { Effect } from "effect"
-import { Catalog } from "@opencode-ai/core/catalog"
-import { PluginV2 } from "@opencode-ai/core/plugin"
-import { GoogleVertexPlugin } from "@opencode-ai/core/plugin/provider/google-vertex"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+import { Catalog } from "@railwise/core/catalog"
+import { PluginV2 } from "@railwise/core/plugin"
+import { GoogleVertexPlugin } from "@railwise/core/plugin/provider/google-vertex"
+import { ProviderV2 } from "@railwise/core/provider"
 import { fakeSelectorSdk, it, model, withEnv } from "./provider-helper"
 
 const vertexOptions: Record<string, any>[] = []
@@ -42,16 +42,16 @@ describe("GoogleVertexPlugin", () => {
       yield* plugin.add(GoogleVertexPlugin)
       const transform = yield* catalog.transform()
       yield* transform((catalog) =>
-        catalog.provider.update(ProviderV2.ID.opencode, (provider) => {
+        catalog.provider.update(ProviderV2.ID.railwise, (provider) => {
           provider.api = {
             type: "aisdk",
             package: "@ai-sdk/openai-compatible",
-            url: "https://opencode.ai/zen/v1",
+            url: "https://railwise.ai/zen/v1",
           }
         }),
       )
 
-      const provider = yield* catalog.provider.get(ProviderV2.ID.opencode)
+      const provider = yield* catalog.provider.get(ProviderV2.ID.railwise)
       expect(provider.request.body).toEqual({})
     }),
   )

@@ -114,7 +114,7 @@ export interface Interface {
   >
 }
 
-export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Pty") {}
+export class Service extends Context.Service<Service, Interface>()("@railwise/v2/Pty") {}
 
 export const layer = Layer.effect(
   Service,

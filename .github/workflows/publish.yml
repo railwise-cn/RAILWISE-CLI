@@ -170,8 +170,9 @@ jobs:
             dist/shared-packages/*.tgz dist/shared-packages/manifest.json
           )
           if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/v${VERSION}" -f sha="$GITHUB_SHA" -F force=true
             gh release upload "v${VERSION}" --clobber "${ASSETS[@]}"
-            gh release edit "v${VERSION}" --latest
+            gh release edit "v${VERSION}" --target "$GITHUB_SHA" --latest
             exit 0
           fi
           gh release create "v${VERSION}" --title "v${VERSION}" --target "$GITHUB_SHA" --generate-notes "${ASSETS[@]}"

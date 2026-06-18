@@ -9,8 +9,10 @@ node_modules
 *~
 playground
 tmp
+railwise-agent-pack
 dist
 ts-dist
+*.tgz
 .turbo
 **/.serena
 .serena/

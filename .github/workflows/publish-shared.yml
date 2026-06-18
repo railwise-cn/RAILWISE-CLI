@@ -1,0 +1,56 @@
+name: publish-shared
+run-name: "publish-shared ${{ inputs.version || 'auto-version' }} ${{ inputs.dry_run && '(dry-run)' || '(publish)' }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish. Omit to use the normal CLI release version rules."
+        required: false
+        type: string
+      dry_run:
+        description: "Dry run only (no real npm publish)"
+        required: false
+        default: true
+        type: boolean
+
+concurrency: ${{ github.workflow }}
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: github.repository == 'railwise-cn/RAILWISE-CLI'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-bun
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Resolve version
+        if: inputs.version != ''
+        run: |
+          VERSION="${{ inputs.version }}"
+          echo "RAILWISE_VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Publishing shared packages at version $VERSION (dry_run=${{ inputs.dry_run }})"
+
+      - name: Resolve automatic version
+        if: inputs.version == ''
+        run: echo "Publishing shared packages with @railwise/script automatic versioning (dry_run=${{ inputs.dry_run }})"
+
+      - name: Publish shared packages
+        run: bun run publish:shared ${{ !inputs.dry_run && '-- --publish' || '' }}
+        env:
+          RAILWISE_CHANNEL: latest
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: false

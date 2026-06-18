@@ -10,6 +10,7 @@
     "dev:web": "bun --cwd packages/app dev",
     "typecheck": "bun turbo typecheck",
     "sync:upstream": "bun ./scripts/sync-upstream.ts",
+    "sync:audit": "bun ./scripts/upstream-sync-audit.ts",
     "rebrand:audit": "bun ./scripts/rebrand-audit.ts",
     "assets:extract": "bun ./scripts/extract-assets.ts",
     "pack:shared": "bun ./scripts/pack-shared-packages.ts",

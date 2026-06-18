@@ -1,6 +1,6 @@
 # RAILWISE Decoupled Release SOP
 
-This repository now keeps three release surfaces connected by artifacts instead of source coupling.
+This repository keeps Core, CLI, SDK, shared App Shell packages, and Agent Pack connected by artifacts instead of Desktop source coupling.
 
 ## CLI Upstream Sync
 
@@ -10,6 +10,8 @@ Generate a clean rebrand baseline from an upstream tag:
 bun run sync:upstream -- --to v1.17.0 --dry-run
 bun run sync:upstream -- --to v1.17.0
 ```
+
+Because the fork mirrors upstream version numbers, local release tags such as `v1.2.8` collide with upstream's identically named tags. The sync script fetches the requested ref into `refs/railwise-sync/<tag>` instead of `refs/tags/<tag>`, so it never clobbers a local tag and always checks out upstream's commit. Do not run `git fetch upstream --tags` manually; it can fail with "would clobber existing tag".
 
 Then rebase Railwise work onto that baseline:
 
@@ -79,21 +81,29 @@ CLI releases publish the shared frontend packages that Desktop consumes:
 bun run publish:shared
 ```
 
-The script defaults to npm `--dry-run`. CI must pass `--publish` for a real publish. Versions come from `@railwise/script`, and preview channels are normalized for npm-safe semver and dist-tags.
+The script defaults to npm `--dry-run`. CI must pass `--publish` for a real publish. Versions come from `@railwise/script`, and preview channels are normalized for npm-safe semver and dist-tags. Published package versions should match the CLI version that generated the SDK.
 
-Published package versions should match the CLI version that generated the SDK.
+### Publishing from CI
+
+The `publish-shared` workflow (`.github/workflows/publish-shared.yml`) publishes the shared packages using the repository's `NPM_TOKEN` secret, so no local `npm login` is required. Trigger it from the Actions tab with `workflow_dispatch`:
+
+- `version`: optional explicit version. When omitted, `@railwise/script` computes the version from the normal CLI release rules.
+- `dry_run`: defaults to `true`; set it to `false` to perform a real publish.
+
+The workflow sets `RAILWISE_CHANNEL=latest`, so released packages are tagged `latest`. Run it once with `dry_run=true` to verify the staged tarballs, then re-run with `dry_run=false` to publish.
 
 ## Desktop Split
 
 Desktop has been moved to the standalone `railwise-desktop-app` repository. This CLI repository no longer owns `packages/desktop`, Tauri workflows, Desktop verification scripts, or Desktop release gates.
 
-Desktop now consumes this repository through artifacts:
+Desktop consumes this repository through artifacts:
 
 - CLI binary release assets, pinned by Desktop `.cli-version`.
 - `@railwise/sdk`, generated from the CLI server API.
 - Shared frontend packages published or packed from this repository.
+- Agent Pack assets exported from `.railwise`.
 
-The old snapshot export helper was a migration tool and was removed with the monorepo Desktop workspace. Future Desktop changes should land in `railwise-desktop-app`; this repository should only change when Core/API/shared package contracts need to move.
+The old snapshot export helper was a migration tool and was removed with the monorepo Desktop workspace. Future Desktop changes should land in `railwise-desktop-app`; this repository should only change when Core/API/shared package contracts or Agent Pack assets need to move.
 
 ## Release Contract
 

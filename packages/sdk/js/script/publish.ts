@@ -2,19 +2,22 @@
 
 import { Script } from "@railwise/script"
 import { $ } from "bun"
-import { mkdir, rename, rm } from "node:fs/promises"
+import { copyFile, mkdir, rm } from "node:fs/promises"
 import path from "node:path"
 
-const dir = new URL("..", import.meta.url).pathname
-process.chdir(dir)
 const args = Bun.argv.slice(2)
-const dry = args.includes("--dry-run")
-const pack = args.includes("--pack-only")
+const flag = (name: string) => args.includes(name)
 const arg = (name: string) => {
   const index = args.indexOf(name)
   if (index === -1) return undefined
   return args[index + 1]
 }
+const dry = flag("--dry-run")
+const pack = flag("--pack-only")
+const out = arg("--out")
+
+const dir = new URL("..", import.meta.url).pathname
+process.chdir(dir)
 
 const pkg = (await import("../package.json").then((m) => m.default)) as {
   name: string
@@ -22,12 +25,15 @@ const pkg = (await import("../package.json").then((m) => m.default)) as {
   exports: Record<string, string | object>
 }
 const original = JSON.parse(JSON.stringify(pkg))
-pkg.version = Script.version
-const tar = `${pkg.name.replace(/^@/, "").replace("/", "-")}-${pkg.version}.tgz`
+const version = (process.env.RAILWISE_VERSION || Script.version).replace(/[^0-9A-Za-z.-]/g, "-")
+const channel = Script.channel.replace(/[^0-9A-Za-z.-]/g, "-")
+const tar = `${pkg.name.replace(/^@/, "").replace("/", "-")}-${version}.tgz`
+
 function output(file: string) {
   return file.replace("./src/", "./dist/src/").replace(".ts", "")
 }
-function transformExports(exports: Record<string, string | object>) {
+
+function transform(exports: Record<string, string | object>) {
   for (const [key, value] of Object.entries(exports)) {
     if (typeof value === "object" && value !== null) {
       const item = value as Record<string, string | object>
@@ -40,32 +46,34 @@ function transformExports(exports: Record<string, string | object>) {
         }
         continue
       }
-      transformExports(item)
-    } else if (typeof value === "string") {
-      const file = output(value)
-      exports[key] = {
-        import: file + ".js",
-        types: file + ".d.ts",
-      }
+      transform(item)
+      continue
+    }
+    if (typeof value !== "string") continue
+    const file = output(value)
+    exports[key] = {
+      import: file + ".js",
+      types: file + ".d.ts",
     }
   }
 }
-transformExports(pkg.exports)
+
+transform(pkg.exports)
+pkg.version = version
+
 try {
   await Bun.write("package.json", JSON.stringify(pkg, null, 2) + "\n")
   await $`bun pm pack`
-  if (pack) {
-    const out = arg("--out")
-    if (out) {
-      await mkdir(out, { recursive: true })
-      await rename(tar, path.join(out, tar))
-    }
-  } else {
+  if (pack && out) {
+    await mkdir(out, { recursive: true })
+    await copyFile(tar, path.join(out, tar))
+  }
+  if (!pack) {
     await (dry
-      ? $`npm publish ${tar} --tag ${Script.channel} --access public --dry-run`
-      : $`npm publish ${tar} --tag ${Script.channel} --access public`)
+      ? $`npm publish ${tar} --tag ${channel} --access public --dry-run`
+      : $`npm publish ${tar} --tag ${channel} --access public`)
   }
 } finally {
   await Bun.write("package.json", JSON.stringify(original, null, 2) + "\n")
-  if (!pack) await rm(tar, { force: true })
+  if (!pack || out) await rm(tar, { force: true })
 }

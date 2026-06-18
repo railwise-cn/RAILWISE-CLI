@@ -23,7 +23,7 @@ const dirs = ["packages/util", "packages/ui", "packages/app"]
 const rootpkg = await Bun.file("package.json").json()
 const catalog = (rootpkg.workspaces as { catalog?: Record<string, string> }).catalog ?? {}
 const { Script } = await import("@railwise/script")
-const version = Script.version
+const version = Script.version.replace(/[^0-9A-Za-z.-]/g, "-")
 process.env.RAILWISE_VERSION = version
 
 function file(name: string) {
@@ -42,7 +42,9 @@ function dep(name: string, value: string) {
 
 function deps(value: unknown) {
   if (!value || typeof value !== "object") return undefined
-  return Object.fromEntries(Object.entries(value as Record<string, string>).map(([name, value]) => [name, dep(name, value)]))
+  return Object.fromEntries(
+    Object.entries(value as Record<string, string>).map(([name, value]) => [name, dep(name, value)]),
+  )
 }
 
 async function write(pkg: Json, dir: string) {
@@ -65,7 +67,9 @@ async function stage(dir: string) {
   if (dir.endsWith("/app") && (await Bun.file(path.join(root, dir, "public")).exists()))
     await cp(path.join(root, dir, "public"), path.join(dest, "public"), { recursive: true })
   if (dir.endsWith("/app")) await cp(path.join(root, dir, "vite.js"), path.join(dest, "vite.js"))
-  const pkg = (await write((await Bun.file(path.join(root, dir, "package.json")).json()) as Json, dir)) as { name: string }
+  const pkg = (await write((await Bun.file(path.join(root, dir, "package.json")).json()) as Json, dir)) as {
+    name: string
+  }
   await $`bun pm pack`.cwd(dest)
   await cp(path.join(dest, file(pkg.name)), path.join(out, file(pkg.name)))
   return { name: pkg.name, file: file(pkg.name) }

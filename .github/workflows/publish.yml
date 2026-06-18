@@ -40,6 +40,9 @@ jobs:
           - os: ubuntu-latest
             target: railwise-linux-x64-baseline
             artifact: linux-x64-baseline
+          - os: ubuntu-latest
+            target: railwise-linux-x64-baseline-musl
+            artifact: linux-x64-baseline-musl
           - os: ubuntu-24.04-arm
             target: railwise-linux-arm64
             artifact: linux-arm64
@@ -87,7 +90,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
-          registry-url: "https://registry.npmjs.org"
+
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
 
       - uses: actions/download-artifact@v8
         with:
@@ -109,8 +116,25 @@ jobs:
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
 
+      - name: Check shared packages on npm
+        id: shared-npm-ready
+        run: |
+          MISSING=()
+          for package in @railwise/sdk @railwise/util @railwise/ui @railwise/app; do
+            if ! npm view "$package" version >/dev/null 2>&1; then
+              MISSING+=("$package")
+            fi
+          done
+          if ((${#MISSING[@]})); then
+            printf 'Shared npm publish skipped; bootstrap first: %s\n' "${MISSING[*]}"
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "publish=true" >> "$GITHUB_OUTPUT"
+
       - name: Publish shared packages to npm
         id: shared-npm
+        if: steps.shared-npm-ready.outputs.publish == 'true'
         continue-on-error: true
         run: bun ./scripts/publish-shared-packages.ts --publish
         env:
@@ -119,6 +143,8 @@ jobs:
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
           NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ""
+          NPM_CONFIG_USERCONFIG: ""
 
       - name: Report shared package npm publish failure
         if: steps.shared-npm.outcome == 'failure'
@@ -130,13 +156,26 @@ jobs:
           cd dist/agent-pack/railwise-agent-pack
           bun pm pack
 
+      - name: Check Agent Pack on npm
+        id: agent-pack-npm-ready
+        run: |
+          if npm view @railwise/agent-pack version >/dev/null 2>&1; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Agent Pack npm publish skipped; bootstrap @railwise/agent-pack first."
+          echo "publish=false" >> "$GITHUB_OUTPUT"
+
       - name: Publish Agent Pack to npm
         id: agent-pack-npm
+        if: steps.agent-pack-npm-ready.outputs.publish == 'true'
         continue-on-error: true
-        run: npm publish *.tgz --access public --tag ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
+        run: env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish *.tgz --access public --tag ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }} --provenance
         working-directory: dist/agent-pack/railwise-agent-pack
         env:
           NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ""
+          NPM_CONFIG_USERCONFIG: ""
 
       - name: Report Agent Pack npm publish failure
         if: steps.agent-pack-npm.outcome == 'failure'
@@ -154,6 +193,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ""
+          NPM_CONFIG_USERCONFIG: ""
 
       - name: Report CLI npm publish failure
         if: steps.cli-npm.outcome == 'failure'

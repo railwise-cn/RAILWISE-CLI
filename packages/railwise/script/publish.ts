@@ -8,8 +8,17 @@ const dir = fileURLToPath(new URL("..", import.meta.url))
 process.chdir(dir)
 const repository = {
   type: "git",
-  url: "https://github.com/railwise-cn/RAILWISE-CLI",
+  url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
 }
+const npm = new Set([
+  "railwise-darwin-arm64",
+  "railwise-darwin-x64",
+  "railwise-linux-arm64",
+  "railwise-linux-x64",
+  "railwise-linux-x64-baseline",
+  "railwise-linux-x64-baseline-musl",
+  "railwise-windows-x64",
+])
 
 const binaries: Record<string, string> = {}
 for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" })) {
@@ -18,6 +27,9 @@ for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" }
 }
 console.log("binaries", binaries)
 const version = Object.values(binaries)[0]
+const publish = Object.fromEntries(Object.entries(binaries).filter(([name]) => npm.has(name)))
+const skipped = Object.keys(binaries).filter((name) => !npm.has(name))
+if (skipped.length) console.warn(`Skipping npm publish for unbootstrapped binary packages: ${skipped.join(", ")}`)
 
 async function archive(name: string) {
   if (name.includes("linux")) {
@@ -60,28 +72,30 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
       version: version,
       license: pkg.license,
       repository,
-      optionalDependencies: binaries,
+      optionalDependencies: publish,
     },
     null,
     2,
   ),
 )
 
-const tasks = Object.entries(binaries).map(async ([name]) => {
+const tasks = Object.entries(publish).map(async ([name]) => {
   if (process.platform !== "win32") {
     await $`chmod -R 755 .`.cwd(`./dist/${name}`)
   }
   await $`bun pm pack`.cwd(`./dist/${name}`)
-  await $`npm publish *.tgz --access public --tag ${Script.channel}`.cwd(`./dist/${name}`)
+  await $`env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish *.tgz --access public --tag ${Script.channel} --provenance`.cwd(
+    `./dist/${name}`,
+  )
 })
 const results = await Promise.allSettled(tasks)
 const failed = results.flatMap((result, index) =>
-  result.status === "rejected" ? [`${Object.keys(binaries)[index]}: ${message(result.reason)}`] : [],
+  result.status === "rejected" ? [`${Object.keys(publish)[index]}: ${message(result.reason)}`] : [],
 )
 if (failed.length) {
   console.warn(["Binary npm package publish failed (continuing with release assets):", ...failed].join("\n"))
 }
-await $`cd ./dist/${pkg.name} && bun pm pack && npm publish *.tgz --access public --tag ${Script.channel}`
+await $`cd ./dist/${pkg.name} && bun pm pack && env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish *.tgz --access public --tag ${Script.channel} --provenance`
 
 console.log("npm publish complete")
 

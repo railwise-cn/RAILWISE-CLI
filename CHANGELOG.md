@@ -4,6 +4,16 @@
 
 ---
 
+## v1.2.31 — GitHub Latest Release 对齐
+
+_发布日期: 2026-06-10_
+
+- 以 GitHub `railwise-cn/RAILWISE-CLI` 的 Latest release `v1.2.31` 为当前 CLI/Core/SDK/Agent Pack 文档锁版来源。
+- Workspace package metadata 从 `1.2.8` 对齐到 `1.2.31`，发布脚本仍可通过 `RAILWISE_VERSION` 在 CI 中显式覆盖构建版本。
+- 继续保持产品边界：本仓库维护 Core、CLI、SDK、共享 App Shell 和 Agent Pack；Desktop 源码、Tauri 配置、安装包、签名、公证和 updater 仍归独立 `railwise-desktop-app` 仓库。
+
+---
+
 ## v1.3.0 — Desktop 中文化首版
 
 _发布日期: 待发布_

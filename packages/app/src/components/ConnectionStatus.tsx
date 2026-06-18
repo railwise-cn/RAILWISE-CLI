@@ -25,9 +25,9 @@ const STYLES = {
  * appears during reconnect / disconnect — minimizing visual noise but
  * preserving the user's ability to spot a stalled UI immediately.
  *
- * Style intentionally aligns with §2.8 design tokens (奶白 / 暖棕),
- * sourced from packages/desktop/src/styles.css `--shadow-sm` /
- * `--text-secondary` / `--font-family` when those are available.
+ * Style intentionally aligns with the shared app shell tokens, falling back to
+ * local values when `--shadow-sm`, `--text-secondary`, or `--font-family` are
+ * not available.
  */
 export function ConnectionStatus() {
   const sdk = useGlobalSDK()

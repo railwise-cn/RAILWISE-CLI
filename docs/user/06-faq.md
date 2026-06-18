@@ -34,10 +34,10 @@ railwise upgrade
 npm install -g railwise-ai@latest
 ```
 
-如果需要锁定当前已验证版本：
+如果需要锁定当前 GitHub Latest 版本：
 
 ```bash
-npm install -g railwise-ai@1.2.30
+npm install -g railwise-ai@1.2.31
 ```
 
 ## 文件会上传吗？

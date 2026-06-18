@@ -29,7 +29,7 @@ rw --version
 railwise agent list
 ```
 
-当前已验证发布版本：**v1.2.30**（2026-05-30）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.30`。
+当前 GitHub Latest 发布版本：**v1.2.31**（2026-06-10）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.31`。
 
 **curl 安装脚本（macOS / Linux）**
 
@@ -42,7 +42,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.30
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.31
 ```
 
 **Homebrew（macOS / Linux）**
@@ -87,7 +87,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.30
+railwise upgrade 1.2.31
 railwise upgrade --method npm
 ```
 
@@ -464,22 +464,30 @@ railwise feishu
 
 ```
 RAILWISE-CLI/
-├── .railwise/                  # 自定义配置（智能体、工具、命令）
+├── .railwise/                  # RAILWISE Agent Pack（智能体、技能、工具、命令）
 │   ├── agent/                  # 智能体 prompt 定义
-│   ├── tool/                   # TypeScript 自定义工具
 │   ├── command/                # SOP 命令模板
+│   ├── skill/                  # 业务技能包
+│   ├── tool/                   # TypeScript 自定义工具
+│   ├── lib/                    # Agent Pack 工具共享代码
+│   ├── templates/              # 报告、方案、PPT 等模板定义
+│   ├── themes/                 # TUI / Web 主题
 │   └── railwise.json           # 运行时配置（API 密钥，需自行创建）
 ├── packages/
-│   ├── railwise/               # CLI 核心引擎
+│   ├── railwise/               # Core + CLI 核心引擎
 │   │   ├── agent/              # 内置 RAILWISE 业务智能体
 │   │   ├── command/            # 内置 SOP 命令模板
 │   │   └── skill/              # 内置技能包
 │   ├── nb-railwise/            # 插件 SDK（工具开发 API）
-│   ├── app/                    # TUI 前端
-│   ├── desktop/                # 桌面端（开发中）
+│   ├── sdk/js/                 # Core HTTP/SSE SDK
+│   ├── app/                    # 共享 Web UI shell / 浏览器 SPA
+│   ├── ui/                     # 共享 UI 组件与设计令牌
+│   ├── web/                    # 文档站
 │   └── ...
 └── package.json                # Bun monorepo
 ```
+
+Desktop 源码、Tauri 配置、安装包、签名、公证和自动更新流程不在本仓库；桌面端在独立 `railwise-desktop-app` 仓库维护，并消费本仓库发布后的 CLI sidecar、SDK 和共享包。
 
 ## 插件开发
 

@@ -166,7 +166,7 @@ jobs:
         if: inputs.bump || inputs.version
         run: |
           VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
-          gh release create "v${VERSION}" --title "v${VERSION}" --generate-notes \
+          gh release create "v${VERSION}" --title "v${VERSION}" --target "$GITHUB_SHA" --generate-notes \
             packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip \
             packages/railwise/dist/railwise/*.tgz \
             dist/agent-pack/railwise-agent-pack/*.tgz \

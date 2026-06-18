@@ -24,6 +24,10 @@ const version = arg("--version") ?? "0.1.0"
 const force = flag("--force")
 const tests = flag("--include-tests")
 const assets: Asset[] = []
+const repository = {
+  type: "git",
+  url: "https://github.com/railwise-cn/RAILWISE-CLI",
+}
 
 async function exists(file: string) {
   return await stat(file).then(
@@ -97,6 +101,7 @@ await writeFile(
       version,
       type: "commonjs",
       license: "MIT",
+      repository,
       bin: {
         "railwise-skill": "./bin/install.js",
         "railwise-agent-pack": "./bin/install.js",

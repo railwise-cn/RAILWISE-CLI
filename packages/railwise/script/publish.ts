@@ -6,6 +6,10 @@ import { fileURLToPath } from "url"
 
 const dir = fileURLToPath(new URL("..", import.meta.url))
 process.chdir(dir)
+const repository = {
+  type: "git",
+  url: "https://github.com/railwise-cn/RAILWISE-CLI",
+}
 
 const binaries: Record<string, string> = {}
 for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" })) {
@@ -55,6 +59,7 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
       },
       version: version,
       license: pkg.license,
+      repository,
       optionalDependencies: binaries,
     },
     null,

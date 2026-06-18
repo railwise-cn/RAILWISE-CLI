@@ -3,6 +3,10 @@
   "version": "1.2.32",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/railwise-cn/RAILWISE-CLI"
+  },
   "exports": {
     "./*": "./src/*.ts"
   },

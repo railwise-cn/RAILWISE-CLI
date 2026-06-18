@@ -177,3 +177,21 @@ jobs:
           gh release create "v${VERSION}" --title "v${VERSION}" --target "$GITHUB_SHA" --generate-notes "${ASSETS[@]}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify npm publish
+        if: inputs.bump || inputs.version
+        run: |
+          FAILED=()
+          if [[ "${{ steps.shared-npm.outcome }}" == "failure" ]]; then
+            FAILED+=("shared packages")
+          fi
+          if [[ "${{ steps.agent-pack-npm.outcome }}" == "failure" ]]; then
+            FAILED+=("agent pack")
+          fi
+          if [[ "${{ steps.cli-npm.outcome }}" == "failure" ]]; then
+            FAILED+=("CLI")
+          fi
+          if ((${#FAILED[@]})); then
+            printf 'npm publish failed for: %s\n' "${FAILED[*]}"
+            exit 1
+          fi

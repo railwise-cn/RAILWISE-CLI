@@ -15,6 +15,10 @@ process.chdir(dir)
 
 import pkg from "../package.json"
 import { Script } from "@railwise/script"
+const repository = {
+  type: "git",
+  url: "https://github.com/railwise-cn/RAILWISE-CLI",
+}
 // Fetch and generate models.dev snapshot
 const data = await models(dir)
 if (data) {
@@ -217,6 +221,7 @@ for (const item of targets) {
       {
         name: itemName,
         version: Script.version,
+        repository,
         preferUnplugged: true,
         os: [item.os],
         cpu: [item.arch],

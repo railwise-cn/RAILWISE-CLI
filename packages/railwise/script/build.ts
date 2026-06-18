@@ -17,7 +17,7 @@ import pkg from "../package.json"
 import { Script } from "@railwise/script"
 const repository = {
   type: "git",
-  url: "https://github.com/railwise-cn/RAILWISE-CLI",
+  url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
 }
 // Fetch and generate models.dev snapshot
 const data = await models(dir)

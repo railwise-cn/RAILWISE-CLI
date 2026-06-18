@@ -26,7 +26,7 @@ const tests = flag("--include-tests")
 const assets: Asset[] = []
 const repository = {
   type: "git",
-  url: "https://github.com/railwise-cn/RAILWISE-CLI",
+  url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
 }
 
 async function exists(file: string) {

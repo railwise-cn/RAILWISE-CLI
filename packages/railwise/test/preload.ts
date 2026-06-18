@@ -29,6 +29,14 @@ process.env["RAILWISE_TEST_HOME"] = testHome
 const testManagedConfigDir = path.join(dir, "managed")
 process.env["RAILWISE_TEST_MANAGED_CONFIG_DIR"] = testManagedConfigDir
 
+// Keep local Bun.serve fixtures off developer HTTP proxies.
+const loopback = ["localhost", "127.0.0.1", "::1"]
+;(["NO_PROXY", "no_proxy"] as const).forEach((key) => {
+  process.env[key] = [
+    ...new Set([...(process.env[key]?.split(",").map((item) => item.trim()).filter(Boolean) ?? []), ...loopback]),
+  ].join(",")
+})
+
 // Write the cache version file to prevent global/index.ts from clearing the cache
 const cacheDir = path.join(dir, "cache", "railwise")
 await fs.mkdir(cacheDir, { recursive: true })

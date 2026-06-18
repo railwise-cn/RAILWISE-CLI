@@ -26,35 +26,45 @@ const getHeapMB = () => {
 
 describe("memory: abort controller leak", () => {
   test("webfetch does not leak memory over many invocations", async () => {
-    await Instance.provide({
-      directory: projectRoot,
-      fn: async () => {
-        const tool = await WebFetchTool.init()
-
-        // Warm up
-        await tool.execute({ url: "https://example.com", format: "text" }, ctx).catch(() => {})
-
-        Bun.gc(true)
-        const baseline = getHeapMB()
-
-        // Run many fetches
-        for (let i = 0; i < ITERATIONS; i++) {
-          await tool.execute({ url: "https://example.com", format: "text" }, ctx).catch(() => {})
-        }
-
-        Bun.gc(true)
-        const after = getHeapMB()
-        const growth = after - baseline
-
-        console.log(`Baseline: ${baseline.toFixed(2)} MB`)
-        console.log(`After ${ITERATIONS} fetches: ${after.toFixed(2)} MB`)
-        console.log(`Growth: ${growth.toFixed(2)} MB`)
-
-        // Memory growth should be minimal - less than 1MB per 10 requests
-        // With the old closure pattern, this would grow ~0.5MB per request
-        expect(growth).toBeLessThan(ITERATIONS / 10)
-      },
+    const server = Bun.serve({
+      port: 0,
+      fetch: () => new Response("ok", { headers: { "content-type": "text/plain" } }),
     })
+
+    try {
+      await Instance.provide({
+        directory: projectRoot,
+        fn: async () => {
+          const tool = await WebFetchTool.init()
+          const url = server.url.href
+
+          // Warm up
+          await tool.execute({ url, format: "text" }, ctx)
+
+          Bun.gc(true)
+          const baseline = getHeapMB()
+
+          // Run many fetches
+          for (let i = 0; i < ITERATIONS; i++) {
+            await tool.execute({ url, format: "text" }, ctx)
+          }
+
+          Bun.gc(true)
+          const after = getHeapMB()
+          const growth = after - baseline
+
+          console.log(`Baseline: ${baseline.toFixed(2)} MB`)
+          console.log(`After ${ITERATIONS} fetches: ${after.toFixed(2)} MB`)
+          console.log(`Growth: ${growth.toFixed(2)} MB`)
+
+          // Memory growth should be minimal - less than 1MB per 10 requests
+          // With the old closure pattern, this would grow ~0.5MB per request
+          expect(growth).toBeLessThan(ITERATIONS / 10)
+        },
+      })
+    } finally {
+      server.stop(true)
+    }
   }, 60000)
 
   test("compare closure vs bind pattern directly", async () => {

@@ -118,8 +118,7 @@ jobs:
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: false
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Report shared package npm publish failure
         if: steps.shared-npm.outcome == 'failure'
@@ -137,8 +136,7 @@ jobs:
         run: npm publish *.tgz --access public --tag ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
         working-directory: dist/agent-pack/railwise-agent-pack
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: false
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Report Agent Pack npm publish failure
         if: steps.agent-pack-npm.outcome == 'failure'
@@ -153,10 +151,9 @@ jobs:
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          NPM_CONFIG_PROVENANCE: false
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Report CLI npm publish failure
         if: steps.cli-npm.outcome == 'failure'
@@ -166,10 +163,17 @@ jobs:
         if: inputs.bump || inputs.version
         run: |
           VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
-          gh release create "v${VERSION}" --title "v${VERSION}" --target "$GITHUB_SHA" --generate-notes \
+          ASSETS=(
             packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip \
             packages/railwise/dist/railwise/*.tgz \
             dist/agent-pack/railwise-agent-pack/*.tgz \
             dist/shared-packages/*.tgz dist/shared-packages/manifest.json
+          )
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            gh release upload "v${VERSION}" --clobber "${ASSETS[@]}"
+            gh release edit "v${VERSION}" --latest
+            exit 0
+          fi
+          gh release create "v${VERSION}" --title "v${VERSION}" --target "$GITHUB_SHA" --generate-notes "${ASSETS[@]}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

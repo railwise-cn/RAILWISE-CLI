@@ -71,7 +71,7 @@ try {
   if (!pack) {
     await (dry
       ? $`npm publish ${tar} --tag ${channel} --access public --dry-run`
-      : $`npm publish ${tar} --tag ${channel} --access public`)
+      : $`env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish ${tar} --tag ${channel} --access public --provenance`)
   }
 } finally {
   await Bun.write("package.json", JSON.stringify(original, null, 2) + "\n")

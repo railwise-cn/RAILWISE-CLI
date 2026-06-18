@@ -81,7 +81,9 @@ for (const dir of dirs) {
   await $`bun pm pack`.cwd(path.join(pack, dir))
   await (dry
     ? $`npm publish *.tgz --access public --tag ${channel} --dry-run`.cwd(path.join(pack, dir))
-    : $`npm publish *.tgz --access public --tag ${channel}`.cwd(path.join(pack, dir)))
+    : $`env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish *.tgz --access public --tag ${channel} --provenance`.cwd(
+        path.join(pack, dir),
+      ))
 }
 
 console.log("shared package publish complete")

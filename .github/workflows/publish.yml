@@ -94,6 +94,13 @@ jobs:
           path: packages/railwise/dist
           merge-multiple: true
 
+      - name: Resolve release version
+        id: release-version
+        run: |
+          VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved release version ${VERSION}"
+
       - name: Pack shared packages
         run: bun ./scripts/pack-shared-packages.ts
         env:
@@ -117,6 +124,25 @@ jobs:
       - name: Report shared package npm publish failure
         if: steps.shared-npm.outcome == 'failure'
         run: echo "::warning::Shared package npm publish failed; continuing with GitHub Release tarballs."
+
+      - name: Pack Agent Pack
+        run: |
+          bun run assets:extract -- --out dist/agent-pack/railwise-agent-pack --name @railwise/agent-pack --version "${{ steps.release-version.outputs.version }}" --force
+          cd dist/agent-pack/railwise-agent-pack
+          bun pm pack
+
+      - name: Publish Agent Pack to npm
+        id: agent-pack-npm
+        continue-on-error: true
+        run: npm publish *.tgz --access public --tag ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
+        working-directory: dist/agent-pack/railwise-agent-pack
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: false
+
+      - name: Report Agent Pack npm publish failure
+        if: steps.agent-pack-npm.outcome == 'failure'
+        run: echo "::warning::Agent Pack npm publish failed; continuing with GitHub Release tarball."
 
       - name: Publish CLI to npm
         id: cli-npm
@@ -143,6 +169,7 @@ jobs:
           gh release create "v${VERSION}" --title "v${VERSION}" --generate-notes \
             packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip \
             packages/railwise/dist/railwise/*.tgz \
+            dist/agent-pack/railwise-agent-pack/*.tgz \
             dist/shared-packages/*.tgz dist/shared-packages/manifest.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

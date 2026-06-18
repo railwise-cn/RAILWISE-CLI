@@ -4,6 +4,17 @@
 
 ---
 
+## v1.2.32 — CLI + Agent Pack 同版发布
+
+_发布日期: 2026-06-19_
+
+- 接续 GitHub Latest `v1.2.31` 发布 CLI/Core/SDK，显式使用 `v1.2.32` 避免 npm latest 落后导致的 patch 版本回撞。
+- CLI 发布 workflow 增加 `@railwise/agent-pack` 抽取、打包、npm 发布和 GitHub Release 附件上传，保持 Agent Pack 随 CLI 同版交付。
+- Agent Pack 安装模板支持 `lib` 资产，并按原文件名安装 agent、command、tool、template、theme 和 lib 文件，确保 OS tools 的 `../lib/os_api` 依赖随包发布。
+- 保持产品边界：本仓库只发布 CLI、SDK、shared packages 和 Agent Pack；Desktop 仍由独立 `railwise-desktop-app` 仓库发布。
+
+---
+
 ## v1.2.31 — GitHub Latest Release 对齐
 
 _发布日期: 2026-06-10_

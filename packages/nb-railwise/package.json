@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "nb-railwise",
-  "version": "1.2.31",
+  "version": "1.2.32",
   "type": "module",
   "license": "MIT",
   "scripts": {

@@ -40,6 +40,7 @@ function customCtx(root) {
       skill: "skill",
       command: "command",
       tool: "tool",
+      lib: "lib",
       template: "templates",
       theme: "themes",
     },
@@ -61,6 +62,7 @@ function target(name) {
         skill: "skills",
         command: "prompts",
         tool: "tools",
+        lib: "lib",
         template: "templates",
         theme: "themes",
       },
@@ -75,6 +77,7 @@ function target(name) {
         skill: "skills",
         command: "commands",
         tool: "tools",
+        lib: "lib",
         template: "templates",
         theme: "themes",
       },
@@ -89,6 +92,7 @@ function target(name) {
         skill: "skill",
         command: "command",
         tool: "tool",
+        lib: "lib",
         template: "templates",
         theme: "themes",
       },
@@ -103,6 +107,7 @@ function target(name) {
         skill: "skill",
         command: "command",
         tool: "tool",
+        lib: "lib",
         template: "templates",
         theme: "themes",
       },
@@ -118,7 +123,7 @@ function assets() {
 function destination(ctx, asset) {
   const dir = ctx.layout[asset.kind]
   if (!dir) throw new Error(`Target ${ctx.name} does not support ${asset.kind}`)
-  return path.join(ctx.root, dir, asset.name)
+  return path.join(ctx.root, dir, asset.target || asset.name)
 }
 
 function install(ctx, asset) {

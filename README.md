@@ -29,7 +29,7 @@ rw --version
 railwise agent list
 ```
 
-当前 GitHub Latest 发布版本：**v1.2.31**（2026-06-10）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.31`。
+当前 GitHub Latest 发布版本：**v1.2.32**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.32`。
 
 **curl 安装脚本（macOS / Linux）**
 
@@ -42,7 +42,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.31
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.32
 ```
 
 **Homebrew（macOS / Linux）**
@@ -87,7 +87,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.31
+railwise upgrade 1.2.32
 railwise upgrade --method npm
 ```
 

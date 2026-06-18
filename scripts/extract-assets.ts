@@ -7,6 +7,7 @@ type Asset = {
   kind: string
   name: string
   dir: string
+  target?: string
 }
 
 const args = Bun.argv.slice(2)
@@ -59,25 +60,9 @@ async function fileAssets(kind: string, source: string, ext?: string) {
   for (const file of await files(source)) {
     if (!tests && file.includes(".test.")) continue
     if (ext && path.extname(file) !== ext) continue
-    const asset = base(file)
-    const dir = `assets/${kind}/${asset}`
-    await copy(path.join(source, file), path.join(out, dir, path.basename(file)))
-    assets.push({ kind, name: asset, dir })
-  }
-}
-
-async function groupedAssets(kind: string, source: string) {
-  if (!(await exists(source))) return
-  const groups = new Map<string, string[]>()
-  for (const file of await files(source)) {
-    if (!tests && file.includes(".test.")) continue
-    const asset = base(file)
-    groups.set(asset, [...(groups.get(asset) ?? []), file])
-  }
-  for (const [asset, group] of groups) {
-    const dir = `assets/${kind}/${asset}`
-    await Promise.all(group.map((file) => copy(path.join(source, file), path.join(out, dir, path.basename(file)))))
-    assets.push({ kind, name: asset, dir })
+    const dir = `assets/${kind}/${file.replaceAll("\\", "/")}`
+    await copy(path.join(source, file), path.join(out, dir))
+    assets.push({ kind, name: ext ? base(file) : file, dir, target: file.replaceAll("\\", "/") })
   }
 }
 
@@ -99,7 +84,8 @@ await copy("skill-pack-template/bin/install.js", path.join(out, "bin/install.js"
 await fileAssets("agent", ".railwise/agent", ".md")
 await dirAssets("skill", ".railwise/skill")
 await fileAssets("command", ".railwise/command", ".md")
-await groupedAssets("tool", ".railwise/tool")
+await fileAssets("tool", ".railwise/tool")
+await fileAssets("lib", ".railwise/lib")
 await fileAssets("template", ".railwise/templates", ".json")
 await fileAssets("theme", ".railwise/themes", ".json")
 

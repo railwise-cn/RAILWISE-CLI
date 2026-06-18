@@ -85,12 +85,21 @@ The script defaults to npm `--dry-run`. CI must pass `--publish` for a real publ
 
 ### Publishing from CI
 
-The `publish-shared` workflow (`.github/workflows/publish-shared.yml`) publishes the shared packages using the repository's `NPM_TOKEN` secret, so no local `npm login` is required. Trigger it from the Actions tab with `workflow_dispatch`:
+The `publish-shared` workflow (`.github/workflows/publish-shared.yml`) publishes the shared packages with npm Trusted Publishing/OIDC, so it should not use a long-lived `NPM_TOKEN`. Trigger it from the Actions tab with `workflow_dispatch`:
 
 - `version`: optional explicit version. When omitted, `@railwise/script` computes the version from the normal CLI release rules.
 - `dry_run`: defaults to `true`; set it to `false` to perform a real publish.
 
 The workflow sets `RAILWISE_CHANNEL=latest`, so released packages are tagged `latest`. Run it once with `dry_run=true` to verify the staged tarballs, then re-run with `dry_run=false` to publish.
+
+npm Trusted Publishing cannot create the first version of a brand-new package. Bootstrap new packages once with a maintainer token or local `npm publish --access public`, then add the package's Trusted Publisher on npm:
+
+- Owner/user: `railwise-cn`
+- Repository: `RAILWISE-CLI`
+- Workflow filename: `publish.yml`
+- Allowed actions: `npm publish`
+
+Until the `@railwise/*` packages are bootstrapped under an owned npm scope, the main release workflow packs them into the GitHub Release and skips their npm publish step.
 
 ## Desktop Split
 

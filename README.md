@@ -10,6 +10,13 @@
 - **Web**（`packages/app`）— 浏览器 SPA
 - **Desktop**（`packages/desktop`）— Tauri 2 原生桌面端，支持 Windows / macOS / Linux 离线安装
 
+## 当前 CLI 发布
+
+- 最新 CLI 版本：[`railwise-ai@1.2.34`](https://www.npmjs.com/package/railwise-ai)，对应 GitHub Release [`v1.2.34`](https://github.com/railwise-cn/RAILWISE-CLI/releases/tag/v1.2.34)。
+- `npm install -g railwise-ai` 会安装完整 RAILWISE-CLI，并在 postinstall 阶段自动安装默认 business Agent Pack 到 `~/.railwise`。
+- Agent Pack 仍保持独立维护边界：GitHub Release 同步提供 `railwise-agent-pack-1.2.34.tgz`，可单独安装到 Railwise、Codex、Claude、OpenCode 或自定义目录。
+- CLI 主体已审阅上游 opencode `v1.17.8`，并同步可安全移植的 Copilot headers、MCP schema、RunCommand auth、OpenAI/Azure schema 清洗和命令附件去重修复。
+
 > **越用越懂你** — RAILWISE-CLI 内置[跨会话记忆系统](#跨会话记忆系统)，自动记住你的项目结构、编码习惯和工作偏好。用得越多，它就越了解你的项目，响应越精准，协作越默契——就像一个不断成长的工程搭档。
 
 ---
@@ -23,6 +30,8 @@
 ```bash
 npm install -g railwise-ai
 ```
+
+`railwise-ai` 是面向用户的单一 npm 全局安装入口；安装完成后会同时具备 CLI 二进制和默认业务 Agent Pack。
 
 **curl（Linux / macOS）**
 

@@ -946,6 +946,89 @@ export namespace ProviderTransform {
     return Math.min(model.limit.output, OUTPUT_TOKEN_MAX) || OUTPUT_TOKEN_MAX
   }
 
+  type JsonRecord = Record<string, unknown>
+
+  function isPlainObject(value: unknown): value is JsonRecord {
+    return typeof value === "object" && value !== null && !Array.isArray(value)
+  }
+
+  function sanitizeOpenAISchema(value: unknown): unknown {
+    const types = ["string", "number", "boolean", "integer", "object", "array", "null"]
+    const composition = ["anyOf", "oneOf", "allOf"]
+
+    if (typeof value === "boolean") return { type: "string" }
+    if (Array.isArray(value)) return value.map(sanitizeOpenAISchema)
+    if (!isPlainObject(value)) return value
+
+    const result: JsonRecord = {}
+
+    if (typeof value.$ref === "string") result.$ref = value.$ref
+    if (typeof value.description === "string") result.description = value.description
+    if ("const" in value) result.enum = [value.const]
+    else if (Array.isArray(value.enum)) result.enum = value.enum
+
+    if (isPlainObject(value.properties)) {
+      result.properties = Object.fromEntries(
+        Object.entries(value.properties).map(([key, item]) => [key, sanitizeOpenAISchema(item)]),
+      )
+    }
+
+    if (Array.isArray(value.required)) result.required = value.required.filter((item) => typeof item === "string")
+    if ("items" in value) result.items = sanitizeOpenAISchema(value.items)
+
+    if ("additionalProperties" in value) {
+      result.additionalProperties =
+        typeof value.additionalProperties === "boolean"
+          ? value.additionalProperties
+          : sanitizeOpenAISchema(value.additionalProperties)
+    }
+
+    for (const key of composition) {
+      if (Array.isArray(value[key])) result[key] = value[key].map(sanitizeOpenAISchema)
+    }
+
+    for (const key of ["$defs", "definitions"]) {
+      if (isPlainObject(value[key])) {
+        result[key] = Object.fromEntries(
+          Object.entries(value[key]).map(([name, item]) => [name, sanitizeOpenAISchema(item)]),
+        )
+      }
+    }
+
+    const schemaTypes =
+      typeof value.type === "string"
+        ? types.includes(value.type)
+          ? [value.type]
+          : []
+        : Array.isArray(value.type)
+          ? value.type.filter((item) => typeof item === "string" && types.includes(item))
+          : []
+
+    if (schemaTypes.length === 0 && (typeof result.$ref === "string" || composition.some((key) => key in result))) {
+      return result
+    }
+
+    const inferred =
+      schemaTypes.length > 0
+        ? schemaTypes
+        : ["properties", "required", "additionalProperties"].some((key) => key in value)
+          ? ["object"]
+          : ["items", "prefixItems"].some((key) => key in value)
+            ? ["array"]
+            : "enum" in result || "format" in value
+              ? ["string"]
+              : ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"].some((key) => key in value)
+                ? ["number"]
+                : []
+
+    if (inferred.length === 0) return {}
+
+    result.type = inferred.length === 1 ? inferred[0] : inferred
+    if (inferred.includes("object") && !("properties" in result)) result.properties = {}
+    if (inferred.includes("array") && !("items" in result)) result.items = { type: "string" }
+    return result
+  }
+
   export function schema(model: Provider.Model, schema: JSONSchema.BaseSchema | JSONSchema7): JSONSchema7 {
     /*
     if (["openai", "azure"].includes(providerID)) {
@@ -964,6 +1047,10 @@ export namespace ProviderTransform {
       }
     }
     */
+
+    if (model.api.npm === "@ai-sdk/openai" || model.api.npm === "@ai-sdk/azure") {
+      schema = sanitizeOpenAISchema(schema) as JSONSchema.BaseSchema
+    }
 
     // Convert integer enums to string enums for Google/Gemini
     if (model.providerID === "google" || model.api.id.includes("gemini")) {

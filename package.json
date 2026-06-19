@@ -14,6 +14,7 @@
     "rebrand:audit": "bun ./scripts/rebrand-audit.ts",
     "assets:extract": "bun ./scripts/extract-assets.ts",
     "assets:validate": "bun ./scripts/validate-agent-pack.ts",
+    "assets:validate:npm": "bun ./scripts/validate-npm-agent-pack.ts",
     "pack:shared": "bun ./scripts/pack-shared-packages.ts",
     "script/rebrand-audit.ts": "bun ./scripts/rebrand-audit.ts",
     "script/verify-update-server": "bun --cwd workers/update-server ./verify.ts",

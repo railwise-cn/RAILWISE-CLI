@@ -24,3 +24,51 @@
 - Agent Pack 只放业务资源和工具共享代码，不放 Desktop shell、Tauri、安装器或 updater 逻辑。
 - Desktop 在独立 `railwise-desktop-app` 仓库维护产品 UX、原生能力、安装包、签名、公证和自动更新。
 - Linux 只交付 CLI，不在本仓库承诺 Desktop 安装包。
+
+## Install Profiles
+
+Agent Pack 随 CLI GitHub Release 交付，默认安装 `business` profile。这个 profile 只包含工程测绘、地保监测、方案、投标、结算、OS 工具和交付模板。
+
+```bash
+node bin/install.js install --target railwise --profile business --force
+node bin/install.js list --profile business
+```
+
+开发维护资产保留在 `dev` profile，不进入默认业务安装：
+
+```bash
+node bin/install.js install --target railwise --profile dev --force
+node bin/install.js list --profile dev
+```
+
+当前 dev profile 包含 `triage`、`duplicate-pr`、`ai-deps`、`commit`、`issues`、`learn`、`rmslop`、`spellcheck`、`bun-file-io`、`frontend-design` 和 GitHub triage/search 工具。发布前运行：
+
+```bash
+bun run assets:validate
+```
+
+## Business Loops
+
+本包的默认业务闭环：
+
+| 业务线 | 入口 |
+|---|---|
+| 地保日报 | `daily-report` + `report-dibao` |
+| 地保周报 | `weekly-report` + `report-dibao` |
+| 地保月报 | `monthly-report` + `di-bao-monitoring` |
+| 监测方案 | `plan-draft` + `monitoring-design` |
+| 内审/专家评审 | `review-response` + `qa_reviewer` |
+| 投标情报 | `bid-intel` + `bidding-knowledge` |
+| 投标文件 | `bid-prepare` |
+| 结算收款 | `payment-reminder` |
+
+## Model Tiers
+
+统一使用 `railwise/` 模型前缀，便于分院按预算切换供应商或本地端点。
+
+| 档位 | 默认模型 | 用途 |
+|---|---|---|
+| 强审查 | `railwise/claude-opus-4-6` | 方案、专家评审、安全合规、应急响应 |
+| 标准生产 | `railwise/claude-sonnet-4-20250514` | 日报、周报、数据首检、投标情报、结算对账 |
+| 行业写作 | `railwise/kimi-k2.5` | 总控、方案草案、商务、报告润色 |
+| 经济计算 | `railwise/deepseek-chat` | 数据分析、外业首检、结构化核查 |

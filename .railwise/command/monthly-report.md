@@ -1,6 +1,6 @@
 ---
 description: 生成监测月报，汇总当月所有监测数据并输出正式报告（含趋势图和Word导出）
-model: anthropic/claude-opus-4-6
+model: railwise/claude-opus-4-6
 ---
 
 你是睿威智测（Railwise）的月报编制助手。根据用户提供的本月监测数据，协调多个 Agent 完成月报全流程编制。

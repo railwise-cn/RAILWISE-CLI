@@ -8,6 +8,7 @@ type Asset = {
   name: string
   dir: string
   target?: string
+  profile: "business" | "dev"
 }
 
 const args = Bun.argv.slice(2)
@@ -28,6 +29,22 @@ const repository = {
   type: "git",
   url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
 }
+const dev = new Set([
+  "agent:duplicate-pr",
+  "agent:triage",
+  "command:ai-deps",
+  "command:commit",
+  "command:issues",
+  "command:learn",
+  "command:rmslop",
+  "command:spellcheck",
+  "skill:bun-file-io",
+  "skill:frontend-design",
+  "tool:github-pr-search.ts",
+  "tool:github-pr-search.txt",
+  "tool:github-triage.ts",
+  "tool:github-triage.txt",
+])
 
 async function exists(file: string) {
   return await stat(file).then(
@@ -59,14 +76,22 @@ function base(file: string) {
   return path.basename(file, path.extname(file))
 }
 
+function profile(kind: string, name: string, target?: string): Asset["profile"] {
+  if (dev.has(`${kind}:${target ?? name}`) || dev.has(`${kind}:${name}`)) return "dev"
+  return "business"
+}
+
 async function fileAssets(kind: string, source: string, ext?: string) {
   if (!(await exists(source))) return
   for (const file of await files(source)) {
+    if (file.startsWith("__test_tmp__/") || path.basename(file).startsWith(".")) continue
     if (!tests && file.includes(".test.")) continue
     if (ext && path.extname(file) !== ext) continue
     const dir = `assets/${kind}/${file.replaceAll("\\", "/")}`
+    const target = file.replaceAll("\\", "/")
+    const name = ext ? base(file) : file
     await copy(path.join(source, file), path.join(out, dir))
-    assets.push({ kind, name: ext ? base(file) : file, dir, target: file.replaceAll("\\", "/") })
+    assets.push({ kind, name, dir, target, profile: profile(kind, name, target) })
   }
 }
 
@@ -76,7 +101,7 @@ async function dirAssets(kind: string, source: string) {
     const asset = file.split("/")[0]
     const dir = `assets/${kind}/${asset}`
     await copy(path.join(source, asset), path.join(out, dir))
-    assets.push({ kind, name: asset, dir })
+    assets.push({ kind, name: asset, dir, profile: profile(kind, asset) })
   }
 }
 
@@ -119,13 +144,18 @@ await writeFile(
   [
     "# Railwise Agent Pack",
     "",
-    "Install Railwise agents, skills, commands, tools, templates, and themes into supported coding agents.",
+    "Install Railwise business agents, skills, commands, tools, templates, and themes into supported coding agents.",
     "",
     "```bash",
     "tar -xzf railwise-agent-pack-<version>.tgz",
     "cd package",
+    "# business profile is the default",
     "node bin/install.js install --target railwise --force",
     "node bin/install.js install --target codex",
+    "node bin/install.js list --profile business",
+    "",
+    "# maintainers can install development helpers explicitly",
+    "node bin/install.js install --target railwise --profile dev --force",
     "node bin/install.js list",
     "```",
     "",

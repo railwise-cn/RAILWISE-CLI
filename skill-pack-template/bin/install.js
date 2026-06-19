@@ -6,7 +6,20 @@ const path = require("node:path")
 
 const pkg = require(path.join(__dirname, "..", "package.json"))
 const args = process.argv.slice(2)
-const command = args.find((item) => !item.startsWith("-")) || "install"
+const options = new Set(["--dest", "--profile", "--target"])
+const positional = []
+
+for (let i = 0; i < args.length; i++) {
+  const item = args[i]
+  if (options.has(item)) {
+    i++
+    continue
+  }
+  if (item.startsWith("-")) continue
+  positional.push(item)
+}
+
+const command = positional[0] || "install"
 
 function option(name) {
   const index = args.indexOf(name)
@@ -16,6 +29,12 @@ function option(name) {
 
 function flag(name) {
   return args.includes(name)
+}
+
+function profile() {
+  const value = option("--profile") || "business"
+  if (value === "business" || value === "dev" || value === "all") return value
+  throw new Error(`Unknown profile: ${value}. Use business, dev, or all.`)
 }
 
 function home(file) {
@@ -117,7 +136,10 @@ function target(name) {
 }
 
 function assets() {
-  return Array.isArray(pkg.agentAssets) ? pkg.agentAssets : []
+  const value = profile()
+  const all = Array.isArray(pkg.agentAssets) ? pkg.agentAssets : []
+  if (value === "all") return all
+  return all.filter((asset) => (asset.profile || "business") === value)
 }
 
 function destination(ctx, asset) {
@@ -144,7 +166,7 @@ function install(ctx, asset) {
 }
 
 if (command === "list") {
-  for (const asset of assets()) console.log(`${asset.kind}/${asset.name}`)
+  for (const asset of assets()) console.log(`${asset.kind}/${asset.name} [${asset.profile || "business"}]`)
   process.exit(0)
 }
 

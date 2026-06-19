@@ -11,8 +11,5 @@
     "assets",
     "bin"
   ],
-  "agentAssets": [],
-  "publishConfig": {
-    "access": "public"
-  }
+  "agentAssets": []
 }

@@ -14,7 +14,6 @@
     "rebrand:audit": "bun ./scripts/rebrand-audit.ts",
     "assets:extract": "bun ./scripts/extract-assets.ts",
     "pack:shared": "bun ./scripts/pack-shared-packages.ts",
-    "publish:shared": "bun ./scripts/publish-shared-packages.ts",
     "script/rebrand-audit.ts": "bun ./scripts/rebrand-audit.ts",
     "script/verify-update-server": "bun --cwd workers/update-server ./verify.ts",
     "prepare": "husky",

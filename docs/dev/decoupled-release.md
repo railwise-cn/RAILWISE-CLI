@@ -79,7 +79,7 @@ node ../railwise-agent-pack/bin/install.js install --target ~/.railwise --dry-ru
 
 Default extraction excludes `*.test.*` tool files from the install manifest and includes templates/themes. Use `--include-tests` only when preparing a developer fixture package.
 
-Agent Pack is not part of the npm install surface. The CLI release workflow uploads the packed `railwise-agent-pack-<version>.tgz` to the GitHub Release so the CLI, Desktop, or operators can consume the exact asset bundle pinned to that CLI version.
+Agent Pack is not a standalone npm package. The CLI release workflow embeds the default business Agent Pack inside `railwise-ai` so `npm install -g railwise-ai` installs a complete CLI + Agent Pack experience, and also uploads `railwise-agent-pack-<version>.tgz` to the GitHub Release for Codex, Claude, OpenCode, Desktop, or operators that need the exact pinned asset bundle.
 
 ## Shared Packages
 
@@ -95,7 +95,7 @@ The npm install surface is intentionally narrow:
 
 - `railwise-ai` is the single user-facing CLI package.
 - `railwise-*` platform packages are internal optional dependencies selected by npm during CLI install.
-- Agent Pack and shared packages are versioned GitHub Release assets.
+- Agent Pack is embedded in the npm CLI package and also published as a versioned GitHub Release asset.
 
 Only introduce a separate npm publish path for `@railwise/*` if there is a concrete external SDK/library distribution requirement.
 
@@ -115,5 +115,5 @@ The old snapshot export helper was a migration tool and was removed with the mon
 ## Release Contract
 
 - CLI owns OpenAPI generation, SDK/shared package release tarballs, CLI npm packages, and CLI binary release assets.
-- Agent assets live in the GitHub Release Agent Pack tarball and install into Railwise, upstream-compatible layouts, Codex, Claude, or a custom path.
+- Agent assets live inside the npm CLI package for the default Railwise install and in the GitHub Release Agent Pack tarball for Railwise, upstream-compatible layouts, Codex, Claude, or a custom path.
 - Desktop owns Tauri packaging and pins CLI with `.cli-version`; upgrading CLI is a version-file change plus Desktop regression tests.

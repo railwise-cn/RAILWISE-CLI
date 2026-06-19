@@ -22,7 +22,7 @@ SDK 由 CLI API 生成；CLI 版本发布时同步打包对应版本的 SDK tarb
 bun run pack:shared
 ```
 
-普通用户的 npm 安装入口只有 `railwise-ai`。`railwise-*` 平台包是 `railwise-ai` 的内部 optional dependencies；SDK、shared packages 和 Agent Pack 作为 GitHub Release 资产分发，不在常规 CLI 发布中单独 npm publish。
+普通用户的 npm 安装入口只有 `railwise-ai`。`railwise-*` 平台包是 `railwise-ai` 的内部 optional dependencies；默认业务 Agent Pack 内置在 `railwise-ai` 并由 postinstall 自动安装。SDK、shared packages 和可独立安装的 Agent Pack tarball 作为 GitHub Release 资产分发，不在常规 CLI 发布中单独 npm publish。
 
 ## Desktop
 

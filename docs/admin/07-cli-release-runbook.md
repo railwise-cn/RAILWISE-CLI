@@ -84,9 +84,9 @@ npm install -g railwise-ai@latest
 railwise --version
 ```
 
-GitHub Release 必须包含 Linux、macOS 和 Windows CLI 二进制归档、Agent Pack tarball、SDK/shared package tarballs 和 `manifest.json`。npm 包必须能安装并解析到 `railwise` 命令。
+GitHub Release 必须包含 Linux、macOS 和 Windows CLI 二进制归档、Agent Pack tarball、SDK/shared package tarballs 和 `manifest.json`。npm 包必须能安装并解析到 `railwise` 命令，并由 `railwise-ai` postinstall 自动安装默认业务 Agent Pack。
 
-普通用户的 npm 安装入口只有 `railwise-ai`。`railwise-*` 平台包是 `railwise-ai` 的 optional dependencies，SDK/shared packages 和 Agent Pack 不在常规 CLI 发布中单独 npm publish。
+普通用户的 npm 安装入口只有 `railwise-ai`。`railwise-*` 平台包是 `railwise-ai` 的 optional dependencies；Agent Pack 内置在 `railwise-ai`，同时作为 Release tarball 支持独立安装到其他工具；SDK/shared packages 和 Agent Pack 不在常规 CLI 发布中单独 npm publish。
 
 ## 回滚
 

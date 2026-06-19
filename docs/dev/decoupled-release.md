@@ -7,8 +7,8 @@ This repository keeps Core, CLI, SDK, shared App Shell packages, and Agent Pack 
 Generate a clean rebrand baseline from an upstream tag:
 
 ```bash
-bun run sync:upstream -- --to v1.17.0 --dry-run
-bun run sync:upstream -- --to v1.17.0
+bun run sync:upstream -- --to v1.17.8 --dry-run
+bun run sync:upstream -- --to v1.17.8
 ```
 
 Because the fork mirrors upstream version numbers, local release tags such as `v1.2.8` collide with upstream's identically named tags. The sync script fetches the requested ref into `refs/railwise-sync/<tag>` instead of `refs/tags/<tag>`, so it never clobbers a local tag and always checks out upstream's commit. Do not run `git fetch upstream --tags` manually; it can fail with "would clobber existing tag".
@@ -17,7 +17,7 @@ Then rebase Railwise work onto that baseline:
 
 ```bash
 git switch dev
-git rebase --onto sync/v1.17.0 <previous-sync-base> dev
+git rebase --onto sync/v1.17.8 <previous-sync-base> dev
 bun run rebrand:audit
 ```
 
@@ -54,6 +54,10 @@ Generated and pushed baselines:
 - `sync/v1.15.13`
 - `sync/v1.16.2`
 - `sync/v1.17.0`
+
+Latest scoped audit:
+
+- `docs/dev/12-opencode-v1.17.8-sync-audit.md`
 
 ## Agent Pack
 

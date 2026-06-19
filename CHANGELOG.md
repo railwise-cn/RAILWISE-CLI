@@ -4,6 +4,17 @@
 
 ---
 
+## v1.2.34 — npm 完整安装 Agent Pack
+
+_发布日期: 2026-06-19_
+
+- `railwise-ai` npm 包现在内置默认业务 Agent Pack，`npm install -g railwise-ai` 会自动安装 CLI、平台二进制和 `business` profile 的 Agent、Command、Skill、Tool、模板到 `~/.railwise`。
+- Agent Pack 仍随 GitHub Release 输出 `railwise-agent-pack-<version>.tgz`，可独立安装到 Codex、Claude、OpenCode、Desktop 或自定义目录；不新增独立 npm 安装入口。
+- `postinstall` 支持 `RAILWISE_SKIP_AGENT_PACK`、`RAILWISE_AGENT_PACK_TARGET`、`RAILWISE_AGENT_PACK_DEST`、`RAILWISE_AGENT_PACK_PROFILE`，便于 CI、内网镜像和高级用户控制自动安装行为。
+- 新增 npm Agent Pack postinstall 校验脚本，防止后续发布遗漏内置 Agent Pack。
+
+---
+
 ## v1.2.33 — Agent Pack 业务闭环升级
 
 _发布日期: 2026-06-19_
@@ -22,7 +33,7 @@ _发布日期: 2026-06-19_
 _发布日期: 2026-06-19_
 
 - 接续 GitHub Latest `v1.2.31` 发布 CLI/Core/SDK，显式使用 `v1.2.32` 避免 npm latest 落后导致的 patch 版本回撞。
-- CLI 发布 workflow 增加 `@railwise/agent-pack` 抽取、打包、npm 发布和 GitHub Release 附件上传，保持 Agent Pack 随 CLI 同版交付。
+- CLI 发布 workflow 增加 Agent Pack 抽取、打包和 GitHub Release 附件上传，保持 Agent Pack 随 CLI 同版交付。
 - Agent Pack 安装模板支持 `lib` 资产，并按原文件名安装 agent、command、tool、template、theme 和 lib 文件，确保 OS tools 的 `../lib/os_api` 依赖随包发布。
 - 保持产品边界：本仓库只发布 CLI、SDK、shared packages 和 Agent Pack；Desktop 仍由独立 `railwise-desktop-app` 仓库发布。
 

@@ -29,7 +29,7 @@ rw --version
 railwise agent list
 ```
 
-当前 GitHub Latest 发布版本：**v1.2.33**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.33`。
+当前 GitHub Latest 发布版本：**v1.2.34**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.34`。
 
 **curl 安装脚本（macOS / Linux）**
 
@@ -42,7 +42,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.33
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.34
 ```
 
 **Homebrew（macOS / Linux）**
@@ -87,7 +87,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.33
+railwise upgrade 1.2.34
 railwise upgrade --method npm
 ```
 
@@ -219,12 +219,12 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 
 ## Agent Pack
 
-`railwise-ai` 是唯一面向命令行用户的 npm 安装入口。平台包 `railwise-*` 由 npm optional dependencies 自动选择；Agent Pack、SDK/shared tarball 随 GitHub Release 发布，不单独作为 npm 入口。
+`railwise-ai` 是唯一面向命令行用户的 npm 安装入口。平台包 `railwise-*` 由 npm optional dependencies 自动选择；Agent Pack 会内置在 `railwise-ai` npm 包中，并在 `npm install -g railwise-ai` 的 postinstall 阶段自动安装默认 `business` profile 到 `~/.railwise`。
 
-下载 Release 里的 `railwise-agent-pack-1.2.33.tgz` 后：
+Agent Pack 仍然可以独立维护、独立下载，并安装到 Codex、Claude、OpenCode 或自定义目录。下载 Release 里的 `railwise-agent-pack-1.2.34.tgz` 后：
 
 ```bash
-tar -xzf railwise-agent-pack-1.2.33.tgz
+tar -xzf railwise-agent-pack-1.2.34.tgz
 cd package
 node bin/install.js install --target railwise --profile business --force
 node bin/install.js list --profile business
@@ -237,8 +237,11 @@ node bin/install.js install --target railwise --profile dev --force
 node bin/install.js list --profile dev
 ```
 
-### v1.2.33 Agent Pack 升级
+CI 或内网镜像场景如果只想安装 CLI 二进制，可设置 `RAILWISE_SKIP_AGENT_PACK=1`。高级用户也可以用 `RAILWISE_AGENT_PACK_TARGET`、`RAILWISE_AGENT_PACK_DEST`、`RAILWISE_AGENT_PACK_PROFILE` 控制自动安装目标。
 
+### v1.2.34 Agent Pack 升级
+
+- `npm install -g railwise-ai` 现在会自动安装内置 Agent Pack，CLI 安装即得到业务 Agent、Command、Skill、Tool 和模板。
 - 默认业务包剔除 GitHub triage、duplicate-pr、commit、spellcheck、bun-file-io 等开发残留。
 - 新增 `report-dibao` skill，固化日报多子表、点号、正负号、自动化/人工对比和预警判定。
 - 新增 `/weekly-report`、`/plan-draft`、`/review-response`、`/bid-intel` 四个业务命令。

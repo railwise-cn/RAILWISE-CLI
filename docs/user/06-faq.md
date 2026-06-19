@@ -37,7 +37,7 @@ npm install -g railwise-ai@latest
 如果需要锁定当前 GitHub Latest 版本：
 
 ```bash
-npm install -g railwise-ai@1.2.33
+npm install -g railwise-ai@1.2.34
 ```
 
 ## 文件会上传吗？
@@ -46,15 +46,17 @@ RAILWISE-CLI 默认在本地读取文件，模型调用时只会发送完成任�
 
 ## 内置 Skill 放在哪里？能改吗？
 
-内置资源位于安装包内，对应仓库路径是：
+`npm install -g railwise-ai` 会自动把默认 `business` Agent Pack 安装到用户目录：
 
 ```text
-packages/railwise/agent/
-packages/railwise/command/
-packages/railwise/skill/
+~/.railwise/agent/
+~/.railwise/command/
+~/.railwise/skill/
+~/.railwise/tool/
+~/.railwise/templates/
 ```
 
-不要直接改安装目录。需要项目定制时，在项目目录放 `.railwise/agent/`、`.railwise/command/` 或 `.railwise/skill/` 的同名文件覆盖。
+需要项目定制时，在项目目录放 `.railwise/agent/`、`.railwise/command/` 或 `.railwise/skill/` 的同名文件覆盖。开发维护资产默认不安装，可从 Release Agent Pack 使用 `--profile dev` 单独安装。
 
 ## 能识读和输出办公文档吗？
 

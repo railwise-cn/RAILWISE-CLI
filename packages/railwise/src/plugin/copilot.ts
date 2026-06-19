@@ -120,6 +120,7 @@ export async function CopilotAuthPlugin(input: PluginInput): Promise<Hooks> {
 
             const headers: Record<string, string> = {
               "x-initiator": isAgent ? "agent" : "user",
+              ...(provider.options?.headers as Record<string, string> | undefined),
               ...(init?.headers as Record<string, string>),
               "User-Agent": `railwise/${Installation.VERSION}`,
               Authorization: `Bearer ${info.refresh}`,

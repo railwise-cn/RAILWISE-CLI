@@ -9,6 +9,7 @@ import { EOL } from "os"
 import { Filesystem } from "../../util/filesystem"
 import { createRailwiseClient, type Part, type RailwiseClient, type ToolPart } from "@railwise/sdk/v2"
 import { Server } from "../../server/server"
+import { ServerAuth } from "../../server/auth"
 import { Provider } from "../../provider/provider"
 import { Agent } from "../../agent/agent"
 import { PermissionNext } from "../../permission/next"
@@ -710,7 +711,10 @@ export const RunCommand = cmd({
     await bootstrap(process.cwd(), async () => {
       const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => {
         const request = new Request(input, init)
-        return Server.App().fetch(request)
+        const headers = new Headers(request.headers)
+        const auth = ServerAuth.headers()?.Authorization
+        if (auth) headers.set("Authorization", auth)
+        return Server.App().fetch(new Request(request, { headers }))
       }) as typeof globalThis.fetch
       const sdk = createRailwiseClient({ baseUrl: "http://railwise.internal", fetch: fetchFn })
       await execute(sdk)

@@ -184,33 +184,64 @@ async function download(name) {
   return found
 }
 
-async function main() {
-  const items = names()
-  const installed = items.flatMap((name) => {
-    try {
-      return [optional(name)]
-    } catch {
-      return []
-    }
-  })[0]
-  if (installed) {
-    console.log(`Platform binary verified at: ${installed}`)
+function skip(name) {
+  return ["1", "true", "yes"].includes(String(process.env[name] || "").toLowerCase())
+}
+
+function installAgentPack() {
+  if (skip("RAILWISE_SKIP_AGENT_PACK")) {
+    console.log("Skipping Railwise Agent Pack install because RAILWISE_SKIP_AGENT_PACK is set")
     return
   }
 
-  const found = await items.reduce(async (prev, name) => {
-    const value = await prev
-    if (value) return value
-    try {
-      return await download(name)
-    } catch (error) {
-      console.warn(`Could not install fallback binary ${name}: ${error instanceof Error ? error.message : String(error)}`)
-      return undefined
-    }
-  }, Promise.resolve(undefined))
+  const script = path.join(__dirname, "agent-pack", "bin", "install.js")
+  if (!fs.existsSync(script)) throw new Error(`Bundled Agent Pack installer not found at ${script}`)
 
-  if (!found) throw new Error(`Could not install a RAILWISE binary for ${system}/${cpu}`)
-  console.log(`Platform binary downloaded to: ${found}`)
+  const profile = process.env.RAILWISE_AGENT_PACK_PROFILE || "business"
+  const target = process.env.RAILWISE_AGENT_PACK_TARGET || "railwise"
+  const dest = process.env.RAILWISE_AGENT_PACK_DEST
+  const args = [script, "install", "--profile", profile, "--force"]
+  if (dest) args.push("--dest", dest)
+  else args.push("--target", target)
+
+  run(process.execPath, args)
+  console.log(`Railwise Agent Pack installed: profile=${profile}, target=${dest ? dest : target}`)
+}
+
+async function main() {
+  if (!skip("RAILWISE_SKIP_BINARY_SETUP")) {
+    const items = names()
+    const installed = items.flatMap((name) => {
+      try {
+        return [optional(name)]
+      } catch {
+        return []
+      }
+    })[0]
+    if (installed) {
+      console.log(`Platform binary verified at: ${installed}`)
+      installAgentPack()
+      return
+    }
+
+    const found = await items.reduce(async (prev, name) => {
+      const value = await prev
+      if (value) return value
+      try {
+        return await download(name)
+      } catch (error) {
+        console.warn(`Could not install fallback binary ${name}: ${error instanceof Error ? error.message : String(error)}`)
+        return undefined
+      }
+    }, Promise.resolve(undefined))
+
+    if (!found) throw new Error(`Could not install a RAILWISE binary for ${system}/${cpu}`)
+    console.log(`Platform binary downloaded to: ${found}`)
+  } else {
+    console.log("Skipping railwise binary setup because RAILWISE_SKIP_BINARY_SETUP is set")
+  }
+
+  installAgentPack()
 }
 
 main().catch((error) => {

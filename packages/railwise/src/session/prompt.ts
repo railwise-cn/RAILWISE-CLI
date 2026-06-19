@@ -837,7 +837,8 @@ export namespace SessionPrompt {
       const execute = item.execute
       if (!execute) continue
 
-      const transformed = ProviderTransform.schema(input.model, asSchema(item.inputSchema).jsonSchema)
+      const schema = asSchema(item.inputSchema).jsonSchema
+      const transformed = ProviderTransform.schema(input.model, { ...schema, properties: schema.properties ?? {} })
       item.inputSchema = jsonSchema(transformed)
       // Wrap execute to add plugin hooks and format output
       item.execute = async (args, opts) => {
@@ -1834,6 +1835,14 @@ NOTE: At any point in time through this workflow you should feel free to ask the
     }
 
     const templateParts = await resolvePromptParts(template)
+    const inputFiles = new Set(
+      input.parts
+        ?.filter((part) => part.type === "file" && new URL(part.url).protocol === "file:")
+        .map((part) => fileURLToPath(part.url)),
+    )
+    const uniqueTemplateParts = templateParts.filter(
+      (part) => part.type !== "file" || !inputFiles.has(fileURLToPath(part.url)),
+    )
     const isSubtask = (agent.mode === "subagent" && command.subtask !== false) || command.subtask === true
     const parts = isSubtask
       ? [
@@ -1850,7 +1859,7 @@ NOTE: At any point in time through this workflow you should feel free to ask the
             prompt: templateParts.find((y) => y.type === "text")?.text ?? "",
           },
         ]
-      : [...templateParts, ...(input.parts ?? [])]
+      : [...uniqueTemplateParts, ...(input.parts ?? [])]
 
     const userAgent = isSubtask ? (input.agent ?? (await Agent.defaultAgent())) : agentName
     const userModel = isSubtask

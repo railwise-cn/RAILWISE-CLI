@@ -25,8 +25,7 @@
 执行人需要具备：
 
 - GitHub 仓库 `Actions: write` 与 `Contents: write`。
-- npm `railwise-ai` 包发布权限。
-- GitHub Actions secret `NPM_TOKEN` 可用。
+- npm `railwise-ai` 与 `railwise-*` 平台包 Trusted Publishing 权限。
 - 如需更新 Homebrew tap，配置 `HOMEBREW_TAP_TOKEN`。
 
 ## 发布前检查
@@ -69,9 +68,10 @@ workflow 会执行：
 
 1. 按平台运行 `packages/railwise/script/build.ts --single` 构建二进制。
 2. 下载所有平台产物。
-3. 运行 `packages/railwise/script/publish.ts` 发布 npm 包。
-4. 对正式版本创建 `vX.Y.Z` GitHub Release。
-5. 在 token 存在时更新 Homebrew tap。
+3. 打包 SDK/shared package tarballs 和 Agent Pack tarball 到 GitHub Release 资产。
+4. 运行 `packages/railwise/script/publish.ts` 发布 `railwise-ai` 与 `railwise-*` 平台 npm 包。
+5. 对正式版本创建 `vX.Y.Z` GitHub Release。
+6. 在 token 存在时更新 Homebrew tap。
 
 ## 验收发布
 
@@ -84,7 +84,9 @@ npm install -g railwise-ai@latest
 railwise --version
 ```
 
-GitHub Release 必须包含 Linux、macOS 和 Windows CLI 二进制归档。npm 包必须能安装并解析到 `railwise` 命令。
+GitHub Release 必须包含 Linux、macOS 和 Windows CLI 二进制归档、Agent Pack tarball、SDK/shared package tarballs 和 `manifest.json`。npm 包必须能安装并解析到 `railwise` 命令。
+
+普通用户的 npm 安装入口只有 `railwise-ai`。`railwise-*` 平台包是 `railwise-ai` 的 optional dependencies，SDK/shared packages 和 Agent Pack 不在常规 CLI 发布中单独 npm publish。
 
 ## 回滚
 
@@ -104,5 +106,5 @@ CLI 回滚不触碰 Desktop release、Desktop updater 或 `desktop/v*` 标签。
 - `packages/railwise` typecheck 或 CLI 测试失败。
 - SDK typecheck 失败。
 - Core compatibility gate 判定存在破坏性变更且未给出迁移方案。
-- `publish` workflow 缺少 `NPM_TOKEN` 或 npm provenance/package 权限失败。
+- `publish` workflow 的 npm Trusted Publishing 或 CLI package 权限失败。
 - 平台二进制产物缺失。

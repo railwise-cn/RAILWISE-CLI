@@ -57,10 +57,12 @@ Generated and pushed baselines:
 
 ## Agent Pack
 
-Extract `.railwise` assets into a publishable package:
+Extract `.railwise` assets into a GitHub Release package:
 
 ```bash
 bun run assets:extract -- --out ../railwise-agent-pack --name @railwise/agent-pack --force
+cd ../railwise-agent-pack
+bun pm pack
 ```
 
 Validate the generated installer:
@@ -73,33 +75,25 @@ node ../railwise-agent-pack/bin/install.js install --target ~/.railwise --dry-ru
 
 Default extraction excludes `*.test.*` tool files from the install manifest and includes templates/themes. Use `--include-tests` only when preparing a developer fixture package.
 
+Agent Pack is not part of the npm install surface. The CLI release workflow uploads the packed `railwise-agent-pack-<version>.tgz` to the GitHub Release so the CLI, Desktop, or operators can consume the exact asset bundle pinned to that CLI version.
+
 ## Shared Packages
 
-CLI releases publish the shared frontend packages that Desktop consumes:
+CLI releases pack the generated SDK and shared frontend packages that Desktop consumes:
 
 ```bash
-bun run publish:shared
+bun run pack:shared
 ```
 
-The script defaults to npm `--dry-run`. CI must pass `--publish` for a real publish. Versions come from `@railwise/script`, and preview channels are normalized for npm-safe semver and dist-tags. Published package versions should match the CLI version that generated the SDK.
+`pack:shared` writes tarballs and `manifest.json` under `dist/shared-packages`. The main `publish` workflow uploads those files to the GitHub Release. Do not publish `@railwise/sdk`, `@railwise/ui`, `@railwise/util`, or `@railwise/app` to npm as part of the normal CLI release.
 
-### Publishing from CI
+The npm install surface is intentionally narrow:
 
-The `publish-shared` workflow (`.github/workflows/publish-shared.yml`) publishes the shared packages with npm Trusted Publishing/OIDC, so it should not use a long-lived `NPM_TOKEN`. Trigger it from the Actions tab with `workflow_dispatch`:
+- `railwise-ai` is the single user-facing CLI package.
+- `railwise-*` platform packages are internal optional dependencies selected by npm during CLI install.
+- Agent Pack and shared packages are versioned GitHub Release assets.
 
-- `version`: optional explicit version. When omitted, `@railwise/script` computes the version from the normal CLI release rules.
-- `dry_run`: defaults to `true`; set it to `false` to perform a real publish.
-
-The workflow sets `RAILWISE_CHANNEL=latest`, so released packages are tagged `latest`. Run it once with `dry_run=true` to verify the staged tarballs, then re-run with `dry_run=false` to publish.
-
-npm Trusted Publishing cannot create the first version of a brand-new package. Bootstrap new packages once with a maintainer token or local `npm publish --access public`, then add the package's Trusted Publisher on npm:
-
-- Owner/user: `railwise-cn`
-- Repository: `RAILWISE-CLI`
-- Workflow filename: `publish.yml`
-- Allowed actions: `npm publish`
-
-Until the `@railwise/*` packages are bootstrapped under an owned npm scope, the main release workflow packs them into the GitHub Release and skips their npm publish step.
+Only introduce a separate npm publish path for `@railwise/*` if there is a concrete external SDK/library distribution requirement.
 
 ## Desktop Split
 
@@ -108,14 +102,14 @@ Desktop has been moved to the standalone `railwise-desktop-app` repository. This
 Desktop consumes this repository through artifacts:
 
 - CLI binary release assets, pinned by Desktop `.cli-version`.
-- `@railwise/sdk`, generated from the CLI server API.
-- Shared frontend packages published or packed from this repository.
-- Agent Pack assets exported from `.railwise`.
+- SDK tarball, generated from the CLI server API and uploaded to the CLI GitHub Release.
+- Shared frontend package tarballs uploaded to the CLI GitHub Release.
+- Agent Pack tarball exported from `.railwise` and uploaded to the CLI GitHub Release.
 
 The old snapshot export helper was a migration tool and was removed with the monorepo Desktop workspace. Future Desktop changes should land in `railwise-desktop-app`; this repository should only change when Core/API/shared package contracts or Agent Pack assets need to move.
 
 ## Release Contract
 
-- CLI owns OpenAPI generation, `@railwise/sdk`, shared packages, and CLI binary release assets.
-- Agent assets live in `@railwise/agent-pack` and install into Railwise, upstream-compatible layouts, Codex, Claude, or a custom path.
+- CLI owns OpenAPI generation, SDK/shared package release tarballs, CLI npm packages, and CLI binary release assets.
+- Agent assets live in the GitHub Release Agent Pack tarball and install into Railwise, upstream-compatible layouts, Codex, Claude, or a custom path.
 - Desktop owns Tauri packaging and pins CLI with `.cli-version`; upgrading CLI is a version-file change plus Desktop regression tests.

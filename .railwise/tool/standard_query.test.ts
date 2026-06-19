@@ -106,9 +106,9 @@ describe("query_standard", () => {
 })
 
 describe("list_standards", () => {
-  test("lists all 4 standards", async () => {
+  test("lists expanded standards", async () => {
     const r = parse(await list_standards.execute({} as any, ctx))
-    expect(r.standards).toHaveLength(4)
+    expect(r.standards).toHaveLength(9)
     expect(r.total_clauses).toBeGreaterThan(20)
   })
 

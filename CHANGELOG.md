@@ -4,6 +4,19 @@
 
 ---
 
+## v1.2.33 — Agent Pack 业务闭环升级
+
+_发布日期: 2026-06-19_
+
+- Agent Pack 默认安装收敛为 `business` profile，开发维护资产移入 `dev` profile，避免业务环境装入 GitHub triage、PR 查重、commit、spellcheck、bun-file-io 等残留工具。
+- 新增 `report-dibao` skill，固化地保日报多子表、测点编号、正负号约定、自动化/人工对比、预警报警判定和可追溯出报规则。
+- 新增 `/weekly-report`、`/plan-draft`、`/review-response`、`/bid-intel` 命令，并升级 `/daily-report`、`/bid-prepare`、`/payment-reminder`，覆盖日报、周报、方案内审/专家评审、投标情报和结算对账。
+- 新增日报、周报、监测方案和评审回复模板；`chief_manager` 改为带 `通过/条件通过/驳回返工` 三态的 DAG 调度；`qa_reviewer` 增加模拟专家评审和地方规程/TB 系核查。
+- CLI 主体同步 opencode `v1.17.8` 中可安全移植的核心修复：Copilot provider headers、RunCommand 内部授权头、MCP tool schema 缺省 properties、OpenAI/Azure schema 清洗和命令附件去重。
+- README、安装文档和上游同步审计已更新；Agent Pack 继续随 CLI GitHub Release 同版发布，不作为单独 npm 安装入口。
+
+---
+
 ## v1.2.32 — CLI + Agent Pack 同版发布
 
 _发布日期: 2026-06-19_

@@ -29,7 +29,7 @@ rw --version
 railwise agent list
 ```
 
-当前 GitHub Latest 发布版本：**v1.2.32**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.32`。
+当前 GitHub Latest 发布版本：**v1.2.33**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.33`。
 
 **curl 安装脚本（macOS / Linux）**
 
@@ -42,7 +42,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.32
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.33
 ```
 
 **Homebrew（macOS / Linux）**
@@ -87,7 +87,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.32
+railwise upgrade 1.2.33
 railwise upgrade --method npm
 ```
 
@@ -214,6 +214,38 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 ```
 
 完整配置示例见 [`.railwise/railwise.json.example`](.railwise/railwise.json.example)。
+
+---
+
+## Agent Pack
+
+`railwise-ai` 是唯一面向命令行用户的 npm 安装入口。平台包 `railwise-*` 由 npm optional dependencies 自动选择；Agent Pack、SDK/shared tarball 随 GitHub Release 发布，不单独作为 npm 入口。
+
+下载 Release 里的 `railwise-agent-pack-1.2.33.tgz` 后：
+
+```bash
+tar -xzf railwise-agent-pack-1.2.33.tgz
+cd package
+node bin/install.js install --target railwise --profile business --force
+node bin/install.js list --profile business
+```
+
+默认 `business` profile 只安装工程测绘生产资产：地保日报、周报、月报、方案、专家评审、投标情报、结算对账、监测工具和报告模板。仓库维护类资产放在 `dev` profile：
+
+```bash
+node bin/install.js install --target railwise --profile dev --force
+node bin/install.js list --profile dev
+```
+
+### v1.2.33 Agent Pack 升级
+
+- 默认业务包剔除 GitHub triage、duplicate-pr、commit、spellcheck、bun-file-io 等开发残留。
+- 新增 `report-dibao` skill，固化日报多子表、点号、正负号、自动化/人工对比和预警判定。
+- 新增 `/weekly-report`、`/plan-draft`、`/review-response`、`/bid-intel` 四个业务命令。
+- 新增日报、周报、监测方案、评审回复四类顶层模板。
+- `chief_manager` 升级为带 `通过/条件通过/驳回返工` 三态的 DAG 调度。
+- `qa_reviewer` 增加模拟专家评审和地方规程/TB 系核查。
+- CLI 主体同步 opencode v1.17.8 中可安全移植的 Copilot headers、MCP schema、RunCommand auth 和命令附件去重修复。
 
 ---
 
@@ -394,7 +426,7 @@ npm install -g railwise-ai@latest
 | `report_export`   | Markdown 转 DOCX 报告导出             |
 | `standard_query`  | 工程规范/标准条文智能查询             |
 
-### 领域技能包（28 个）
+### 领域技能包
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
@@ -403,13 +435,13 @@ npm install -g railwise-ai@latest
 | `report-writing`                           | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照    |
 | `data-analysis`                            | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级     |
 | `bidding-knowledge`                        | 投标文件编制：评分办法、资质响应、报价策略                 |
-| `standard-reference`                       | 工程规范速查：GB 50911/GB 50026/JGJ 8 条文索引             |
-| `monitoring-design`                        | 监测方案设计：测点布设、仪器选型、频率与报警值             |
-| `bun-file-io`                              | 文件操作：Bun 运行时文件读写最佳实践                       |
+| `standard-reference`                       | 工程规范速查：GB 50911/GB 50497/JGJ 8/GB 50026/GB 55017/TB 系索引 |
+| `monitoring-design`                        | 监测方案设计：16 章结构、四阶段、测点布设、频率与报警值    |
+| `report-dibao`                             | 地保日报/周报/月报规则：子表、点号、正负号、自动化人工对比 |
+| `di-bao-monitoring`                        | 地保监测全链路：方案、初始值、日报周报月报、预警消警、评审回复 |
 | `docx-generation`                          | Word 导出：Markdown→DOCX 映射、报告模板、命名规范          |
 | `excel-operations`                         | Excel 导出：Sheet 结构、标准列格式、多期对比表             |
 | `humanizer`                                | 报告润色：消除 AI 痕迹、注入工程判断、句式变化             |
-| `frontend-design`                          | 前端 UI：监测平台界面规范、预警四色体系、看板布局          |
 | `canvas-design`                            | 图表设计：趋势图配色、坐标轴规范、剖面图构造               |
 | `rail-monitoring-plan`                     | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
 | `operational-monitoring`                   | 运营监测：长期变形监测作业、期报/年报、预警处置与归档      |
@@ -427,14 +459,20 @@ npm install -g railwise-ai@latest
 
 | 命令                  | 用途                       |
 | --------------------- | -------------------------- |
-| `/daily-report`       | 监测日报生成               |
+| `/daily-report`       | 地保监测日报，多子表和预警判定 |
+| `/weekly-report`      | 地保监测周报四件套         |
 | `/monthly-report`     | 监测月报 / 阶段报告        |
+| `/plan-draft`         | 16 章监测方案初稿          |
+| `/review-response`    | 内审/专家评审意见逐条闭合  |
 | `/data-check`         | 外业数据质检               |
 | `/trend-analysis`     | 沉降、位移、收敛等趋势分析 |
 | `/emergency-response` | 预警、报警和应急处置快报   |
+| `/bid-intel`          | 投标情报采集和机会预审     |
 | `/bid-prepare`        | 投标文件编制               |
 | `/safety-check`       | 安全巡检记录               |
-| `/payment-reminder`   | 计量支付催款               |
+| `/payment-reminder`   | 结算对账、说明函和催款函   |
+
+开发维护命令（`/commit`、`/issues`、`/learn`、`/rmslop`、`/spellcheck`、`/ai-deps`）只在 Agent Pack `dev` profile 中安装。
 
 ---
 

@@ -5,6 +5,7 @@ import { Script } from "@railwise/script"
 import { fileURLToPath } from "url"
 
 const dir = fileURLToPath(new URL("..", import.meta.url))
+const root = fileURLToPath(new URL("../../..", import.meta.url))
 process.chdir(dir)
 const repository = {
   type: "git",
@@ -57,6 +58,9 @@ if (!Script.preview) {
 await $`mkdir -p ./dist/${pkg.name}`
 await $`cp -r ./bin ./dist/${pkg.name}/bin`
 await $`cp ./script/postinstall.mjs ./dist/${pkg.name}/postinstall.mjs`
+await $`bun ./scripts/extract-assets.ts --out ${fileURLToPath(new URL(`../dist/${pkg.name}/agent-pack`, import.meta.url))} --name @railwise/agent-pack --version ${version} --force`.cwd(
+  root,
+)
 await Bun.file(`./dist/${pkg.name}/LICENSE`).write(await Bun.file("../../LICENSE").text())
 
 await Bun.file(`./dist/${pkg.name}/package.json`).write(
@@ -72,6 +76,7 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
       version: version,
       license: pkg.license,
       repository,
+      files: ["agent-pack", "bin", "LICENSE", "postinstall.mjs"],
       optionalDependencies: publish,
     },
     null,

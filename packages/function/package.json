@@ -1,6 +1,6 @@
 {
   "name": "@railwise/function",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "$schema": "https://json.schemastore.org/package.json",
   "private": true,
   "type": "module",

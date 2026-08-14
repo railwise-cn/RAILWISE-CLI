@@ -26,10 +26,11 @@ export namespace ModelsDev {
     tool_call: z.boolean(),
     interleaved: z
       .union([
-        z.literal(true),
+        z.boolean(),
+        z.string(),
         z
           .object({
-            field: z.enum(["reasoning_content", "reasoning_details"]),
+            field: z.string(),
           })
           .strict(),
       ])

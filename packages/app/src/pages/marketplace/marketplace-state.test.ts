@@ -27,7 +27,7 @@ describe("marketplace state", () => {
   test("groups capabilities by product-facing category order", () => {
     const groups = groupCapabilities([
       { ...base, id: "provider", kind: "provider", name: "DeepSeek", permissions: { network: true } },
-      { ...base, id: "agent", kind: "agent", name: "主控智能体" },
+      { ...base, id: "agent", kind: "agent", name: "RAILWISE 默认协作" },
     ])
 
     expect(groups.map((group) => group.kind)).toEqual(["agent", "provider"])

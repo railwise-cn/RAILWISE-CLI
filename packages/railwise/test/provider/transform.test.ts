@@ -173,6 +173,22 @@ describe("ProviderTransform.options - gpt-5 textVerbosity", () => {
     const result = ProviderTransform.options({ model, sessionID, providerOptions: {} })
     expect(result.textVerbosity).toBeUndefined()
   })
+
+  test("Azure GPT-5.5+ completion requests omit reasoningEffort", () => {
+    const model = createGpt5Model("gpt-5.5")
+    model.providerID = "azure"
+    model.api.npm = "@ai-sdk/azure"
+    const result = ProviderTransform.options({ model, sessionID, providerOptions: { useCompletionUrls: true } })
+    expect(result.reasoningEffort).toBeUndefined()
+  })
+
+  test("Azure GPT-5.4 completion requests retain reasoningEffort", () => {
+    const model = createGpt5Model("gpt-5.4")
+    model.providerID = "azure"
+    model.api.npm = "@ai-sdk/azure"
+    const result = ProviderTransform.options({ model, sessionID, providerOptions: { useCompletionUrls: true } })
+    expect(result.reasoningEffort).toBe("medium")
+  })
 })
 
 describe("ProviderTransform.options - gateway", () => {
@@ -596,11 +612,12 @@ describe("ProviderTransform.schema - gemini non-object properties removal", () =
     expect(result.properties.data.required).toEqual(["name"])
   })
 
-  test("does not affect non-gemini providers", () => {
-    const openaiModel = {
-      providerID: "openai",
+  test("does not affect non-gemini non-openai providers", () => {
+    const anthropicModel = {
+      providerID: "anthropic",
       api: {
-        id: "gpt-4",
+        id: "claude-sonnet-4",
+        npm: "@ai-sdk/anthropic",
       },
     } as any
 
@@ -614,9 +631,42 @@ describe("ProviderTransform.schema - gemini non-object properties removal", () =
       },
     } as any
 
-    const result = ProviderTransform.schema(openaiModel, schema) as any
+    const result = ProviderTransform.schema(anthropicModel, schema) as any
 
     expect(result.properties.data.properties).toBeDefined()
+  })
+})
+
+describe("ProviderTransform.schema - openai compatibility", () => {
+  const openaiModel = {
+    providerID: "openai",
+    api: {
+      id: "gpt-5.2",
+      npm: "@ai-sdk/openai",
+    },
+  } as any
+
+  test("converts boolean JSON schema to string schema", () => {
+    const result = ProviderTransform.schema(openaiModel, true as any) as any
+    expect(result).toEqual({ type: "string" })
+  })
+
+  test("infers object type when MCP schema omits type but has properties", () => {
+    const result = ProviderTransform.schema(openaiModel, {
+      properties: {
+        query: { const: "status" },
+      },
+      required: ["query", 1],
+    } as any) as any
+
+    expect(result.type).toBe("object")
+    expect(result.properties.query.enum).toEqual(["status"])
+    expect(result.required).toEqual(["query"])
+  })
+
+  test("adds default object properties for empty object schemas", () => {
+    const result = ProviderTransform.schema(openaiModel, { type: "object" } as any) as any
+    expect(result.properties).toEqual({})
   })
 })
 

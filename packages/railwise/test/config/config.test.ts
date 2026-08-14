@@ -213,7 +213,7 @@ test("handles file inclusion with replacement tokens", async () => {
   })
 })
 
-test("validates config schema and throws on invalid fields", async () => {
+test("ignores unknown top-level config fields", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
       await writeConfig(dir, {
@@ -225,7 +225,24 @@ test("validates config schema and throws on invalid fields", async () => {
   await Instance.provide({
     directory: tmp.path,
     fn: async () => {
-      // Strict schema should throw an error for invalid fields
+      const config = await Config.get()
+      expect(config).not.toHaveProperty("invalid_field")
+    },
+  })
+})
+
+test("validates known top-level config values", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await writeConfig(dir, {
+        $schema: "https://railwise.ai/config.json",
+        model: 42,
+      })
+    },
+  })
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
       await expect(Config.get()).rejects.toThrow()
     },
   })

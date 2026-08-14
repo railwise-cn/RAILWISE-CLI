@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json.schemastore.org/json",
+  "upstream": {
+    "remote": "upstream",
+    "url": "https://github.com/anomalyco/opencode.git"
+  },
+  "reviewed": {
+    "tag": "v1.18.18",
+    "commit": "31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d",
+    "date": "2026-08-14"
+  },
+  "target": {
+    "tag": "v1.18.18",
+    "commit": "31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d",
+    "status": "reviewed"
+  },
+  "history": [
+    {
+      "tag": "v1.17.8",
+      "commit": "11e47f91496005aab4d7c5a2d0a7da5d2651b4ac",
+      "date": "2026-06-19",
+      "report": "docs/dev/12-opencode-v1.17.8-sync-audit.md"
+    },
+    {
+      "tag": "v1.18.18",
+      "commit": "31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d",
+      "date": "2026-08-14",
+      "report": "docs/dev/opencode-v1.18.18-sync-audit.md"
+    }
+  ],
+  "ports": [
+    {
+      "upstream": "fba5a79c45716989dc0f70d8960324d2a6455b1b",
+      "railwise": "a9ff157455ed57236cd6b8e1d05d07fd551b53c8",
+      "status": "ported",
+      "summary": "Preserve configured headers when Copilot models are fetched outside the TUI."
+    },
+    {
+      "upstream": "632f94fa6897cfb5d810deba5a216e1bccb1ae04",
+      "railwise": "a9ff157455ed57236cd6b8e1d05d07fd551b53c8",
+      "status": "ported",
+      "summary": "Attach authorization headers to RunCommand requests."
+    },
+    {
+      "upstream": "25cb2be61938e1d64377cc0908084356c7210638",
+      "railwise": "a9ff157455ed57236cd6b8e1d05d07fd551b53c8",
+      "status": "ported",
+      "summary": "Default missing MCP object schema properties."
+    },
+    {
+      "upstream": "213ff3f2d77fabfcfe3148bc21d7aa607e633737",
+      "railwise": "dd1184f226d2f58fcf27739af86d44cd950300db",
+      "status": "ported",
+      "summary": "Sanitize OpenAI-compatible MCP tool schemas."
+    },
+    {
+      "upstream": "a9c810cbbc8b3f27b37f9bf0b8963d29edd976e3",
+      "railwise": "70a459cc5ebf2402aeb624815cf2795fb41a84cf",
+      "status": "ported",
+      "summary": "Avoid duplicate command file attachments when templates use $ARGUMENTS."
+    },
+    {
+      "upstream": "c78986831c8c951369c087a89be6a9c3333e2ebc",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Cap session retries at five and add jitter to exponential backoff."
+    },
+    {
+      "upstream": "38e10eb1408feb700021b8e8766fb0ab41bf84e2",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Ignore unknown top-level configuration fields while preserving known-field validation."
+    },
+    {
+      "upstream": "a1ab489e6175cabbb3b46a15c2efac78d49d5083",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Support provider-defined interleaved reasoning fields."
+    },
+    {
+      "upstream": "c1ee3c6e344c1822814a1a18e99bc14cd1ea36f3",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Stop MCP SSE reconnection after a JSON-RPC error response."
+    },
+    {
+      "upstream": "87481f2bb69701b10ef784dfabedf5a6e897302e",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Remove incompatible reasoning effort options from Azure GPT-5.5+ completion requests."
+    },
+    {
+      "upstream": "db581e47a3a6f4900a6289ad7fddec60fec44e1c",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Use chronological message order for revert behavior."
+    },
+    {
+      "upstream": "a54a693af242108b0b5c9db6ae498c10b2d8843b",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Use chronological message order for fork and session exit behavior."
+    },
+    {
+      "upstream": "d4682019522fbfb2e00b3d7c17a53895bd61620d",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Clean truncated output files by modification time."
+    },
+    {
+      "upstream": "502310f4dfc9e9940a3ab71235f44234dc56d676",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Pass xhigh reasoning effort through the xAI SDK."
+    },
+    {
+      "upstream": "6fea419feb4fc5db6a88c4c091fb78c439262bef",
+      "railwise": "053d70ac9fd01632442646ffecd0d70de35428e2",
+      "status": "ported",
+      "summary": "Pass provider-defined reasoning effort through the Groq SDK."
+    }
+  ]
+}

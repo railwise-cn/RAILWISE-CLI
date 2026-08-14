@@ -51,7 +51,7 @@ const skills = [
 ]
 
 export function agentRoleLabel(agent: Agent) {
-  if (agent.mode === "primary") return "主控"
+  if (agent.mode === "primary") return "默认协作"
   return "专业智能体"
 }
 

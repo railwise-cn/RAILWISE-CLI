@@ -1,7 +1,7 @@
 # App Shell 产品边界审查
 
 **日期**: 2026-04-30
-**范围**: `packages/app` / `packages/desktop`
+**范围**: `packages/app` / standalone `railwise-desktop-app`
 **状态**: A1 completed
 
 ---
@@ -20,7 +20,7 @@
 - `appName`: 宿主产品显示名。
 - `supportUrl`: 宿主产品支持入口。
 
-Desktop 在 `packages/desktop` 注入自己的产品名和支持入口。浏览器预览注入 App Shell 自己的名称和文档入口。
+Desktop 在独立 `railwise-desktop-app` 仓库注入自己的产品名和支持入口。浏览器预览注入 App Shell 自己的名称和文档入口。
 
 ---
 
@@ -35,7 +35,7 @@ App Shell 可以保留以下平台能力抽象：
 
 这些能力必须通过 `Platform` 接口暴露。App Shell 不能直接承诺某个商业产品的安装、签名、公证、更新或支持渠道。
 
-Desktop-only 的产品文案、支持 URL、安装器、签名、公证和发版配置必须留在 `packages/desktop` 或 Desktop 发布文档中。
+Desktop-only 的产品文案、支持 URL、安装器、签名、公证和发版配置必须留在独立 Desktop 仓库或 Desktop 发布文档中。
 
 ---
 

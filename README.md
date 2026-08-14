@@ -8,7 +8,14 @@
 
 - **CLI**（`packages/railwise`）— 终端命令行 / CI 脚本入口
 - **Web**（`packages/app`）— 浏览器 SPA
-- **Desktop**（`packages/desktop`）— Tauri 2 原生桌面端，支持 macOS / Windows；Linux 仅保留 CLI，不做桌面安装包
+- **Desktop**（`railwise-desktop-app` 独立仓库）— Tauri 2 原生桌面端，支持 macOS / Windows；Linux 仅保留 CLI，不做桌面安装包
+
+## 当前 CLI 发布
+
+- 最新 CLI 版本：[`railwise-ai@1.2.34`](https://www.npmjs.com/package/railwise-ai)，对应 GitHub Release [`v1.2.34`](https://github.com/railwise-cn/RAILWISE-CLI/releases/tag/v1.2.34)。
+- `npm install -g railwise-ai` 会安装完整 RAILWISE-CLI，并在 postinstall 阶段自动安装默认 business Agent Pack 到 `~/.railwise`。
+- Agent Pack 仍保持独立维护边界：GitHub Release 同步提供 `railwise-agent-pack-1.2.34.tgz`，可单独安装到 Railwise、Codex、Claude、OpenCode 或自定义目录。
+- CLI 主体已审阅上游 opencode `v1.17.8`，并同步可安全移植的 Copilot headers、MCP schema、RunCommand auth、OpenAI/Azure schema 清洗和命令附件去重修复。
 
 > **越用越懂你** — RAILWISE-CLI 内置[跨会话记忆系统](#跨会话记忆系统)，自动记住你的项目结构、编码习惯和工作偏好。用得越多，它就越了解你的项目，响应越精准，协作越默契——就像一个不断成长的工程搭档。
 
@@ -29,7 +36,9 @@ rw --version
 railwise agent list
 ```
 
-当前已验证发布版本：**v1.2.30**（2026-05-30）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.30`。
+当前 GitHub Latest 发布版本：**v1.2.34**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.34`。
+
+`railwise-ai` 是面向用户的单一 npm 全局安装入口；安装完成后会同时具备 CLI 二进制和默认业务 Agent Pack。
 
 **curl 安装脚本（macOS / Linux）**
 
@@ -42,7 +51,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.30
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.34
 ```
 
 **Homebrew（macOS / Linux）**
@@ -57,7 +66,7 @@ rw --version
 
 从 [Releases](https://github.com/railwise-cn/RAILWISE-CLI/releases) 下载对应平台的 CLI 二进制包：
 
-> 这些是 CLI 安装包，不包含 Desktop 安装包。桌面端只发布 macOS Apple Silicon 与 macOS Intel，Linux 不做桌面端。
+> 这些是 CLI 安装包，不包含 Desktop 安装包。桌面端在独立 `railwise-desktop-app` 仓库发布，Linux 不做桌面端。
 
 | 平台                | 文件                          |
 | ------------------- | ----------------------------- |
@@ -87,7 +96,7 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.30
+railwise upgrade 1.2.34
 railwise upgrade --method npm
 ```
 
@@ -214,6 +223,41 @@ RAILWISE-CLI 支持多种模型接入方式，**包含多个国产免费模型**
 ```
 
 完整配置示例见 [`.railwise/railwise.json.example`](.railwise/railwise.json.example)。
+
+---
+
+## Agent Pack
+
+`railwise-ai` 是唯一面向命令行用户的 npm 安装入口。平台包 `railwise-*` 由 npm optional dependencies 自动选择；Agent Pack 会内置在 `railwise-ai` npm 包中，并在 `npm install -g railwise-ai` 的 postinstall 阶段自动安装默认 `business` profile 到 `~/.railwise`。
+
+Agent Pack 仍然可以独立维护、独立下载，并安装到 Codex、Claude、OpenCode 或自定义目录。下载 Release 里的 `railwise-agent-pack-1.2.34.tgz` 后：
+
+```bash
+tar -xzf railwise-agent-pack-1.2.34.tgz
+cd package
+node bin/install.js install --target railwise --profile business --force
+node bin/install.js list --profile business
+```
+
+默认 `business` profile 只安装工程测绘生产资产：地保日报、周报、月报、方案、专家评审、投标情报、结算对账、监测工具和报告模板。仓库维护类资产放在 `dev` profile：
+
+```bash
+node bin/install.js install --target railwise --profile dev --force
+node bin/install.js list --profile dev
+```
+
+CI 或内网镜像场景如果只想安装 CLI 二进制，可设置 `RAILWISE_SKIP_AGENT_PACK=1`。高级用户也可以用 `RAILWISE_AGENT_PACK_TARGET`、`RAILWISE_AGENT_PACK_DEST`、`RAILWISE_AGENT_PACK_PROFILE` 控制自动安装目标。
+
+### v1.2.34 Agent Pack 升级
+
+- `npm install -g railwise-ai` 现在会自动安装内置 Agent Pack，CLI 安装即得到业务 Agent、Command、Skill、Tool 和模板。
+- 默认业务包剔除 GitHub triage、duplicate-pr、commit、spellcheck、bun-file-io 等开发残留。
+- 新增 `report-dibao` skill，固化日报多子表、点号、正负号、自动化/人工对比和预警判定。
+- 新增 `/weekly-report`、`/plan-draft`、`/review-response`、`/bid-intel` 四个业务命令。
+- 新增日报、周报、监测方案、评审回复四类顶层模板。
+- `chief_manager` 升级为带 `通过/条件通过/驳回返工` 三态的 DAG 调度。
+- `qa_reviewer` 增加模拟专家评审和地方规程/TB 系核查。
+- CLI 主体同步 opencode v1.17.8 中可安全移植的 Copilot headers、MCP schema、RunCommand auth 和命令附件去重修复。
 
 ---
 
@@ -394,7 +438,7 @@ npm install -g railwise-ai@latest
 | `report_export`   | Markdown 转 DOCX 报告导出             |
 | `standard_query`  | 工程规范/标准条文智能查询             |
 
-### 领域技能包（28 个）
+### 领域技能包
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
@@ -403,13 +447,13 @@ npm install -g railwise-ai@latest
 | `report-writing`                           | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照    |
 | `data-analysis`                            | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级     |
 | `bidding-knowledge`                        | 投标文件编制：评分办法、资质响应、报价策略                 |
-| `standard-reference`                       | 工程规范速查：GB 50911/GB 50026/JGJ 8 条文索引             |
-| `monitoring-design`                        | 监测方案设计：测点布设、仪器选型、频率与报警值             |
-| `bun-file-io`                              | 文件操作：Bun 运行时文件读写最佳实践                       |
+| `standard-reference`                       | 工程规范速查：GB 50911/GB 50497/JGJ 8/GB 50026/GB 55017/TB 系索引 |
+| `monitoring-design`                        | 监测方案设计：16 章结构、四阶段、测点布设、频率与报警值    |
+| `report-dibao`                             | 地保日报/周报/月报规则：子表、点号、正负号、自动化人工对比 |
+| `di-bao-monitoring`                        | 地保监测全链路：方案、初始值、日报周报月报、预警消警、评审回复 |
 | `docx-generation`                          | Word 导出：Markdown→DOCX 映射、报告模板、命名规范          |
 | `excel-operations`                         | Excel 导出：Sheet 结构、标准列格式、多期对比表             |
 | `humanizer`                                | 报告润色：消除 AI 痕迹、注入工程判断、句式变化             |
-| `frontend-design`                          | 前端 UI：监测平台界面规范、预警四色体系、看板布局          |
 | `canvas-design`                            | 图表设计：趋势图配色、坐标轴规范、剖面图构造               |
 | `rail-monitoring-plan`                     | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
 | `operational-monitoring`                   | 运营监测：长期变形监测作业、期报/年报、预警处置与归档      |
@@ -427,14 +471,20 @@ npm install -g railwise-ai@latest
 
 | 命令                  | 用途                       |
 | --------------------- | -------------------------- |
-| `/daily-report`       | 监测日报生成               |
+| `/daily-report`       | 地保监测日报，多子表和预警判定 |
+| `/weekly-report`      | 地保监测周报四件套         |
 | `/monthly-report`     | 监测月报 / 阶段报告        |
+| `/plan-draft`         | 16 章监测方案初稿          |
+| `/review-response`    | 内审/专家评审意见逐条闭合  |
 | `/data-check`         | 外业数据质检               |
 | `/trend-analysis`     | 沉降、位移、收敛等趋势分析 |
 | `/emergency-response` | 预警、报警和应急处置快报   |
+| `/bid-intel`          | 投标情报采集和机会预审     |
 | `/bid-prepare`        | 投标文件编制               |
 | `/safety-check`       | 安全巡检记录               |
-| `/payment-reminder`   | 计量支付催款               |
+| `/payment-reminder`   | 结算对账、说明函和催款函   |
+
+开发维护命令（`/commit`、`/issues`、`/learn`、`/rmslop`、`/spellcheck`、`/ai-deps`）只在 Agent Pack `dev` profile 中安装。
 
 ---
 
@@ -464,22 +514,30 @@ railwise feishu
 
 ```
 RAILWISE-CLI/
-├── .railwise/                  # 自定义配置（智能体、工具、命令）
+├── .railwise/                  # RAILWISE Agent Pack（智能体、技能、工具、命令）
 │   ├── agent/                  # 智能体 prompt 定义
-│   ├── tool/                   # TypeScript 自定义工具
 │   ├── command/                # SOP 命令模板
+│   ├── skill/                  # 业务技能包
+│   ├── tool/                   # TypeScript 自定义工具
+│   ├── lib/                    # Agent Pack 工具共享代码
+│   ├── templates/              # 报告、方案、PPT 等模板定义
+│   ├── themes/                 # TUI / Web 主题
 │   └── railwise.json           # 运行时配置（API 密钥，需自行创建）
 ├── packages/
-│   ├── railwise/               # CLI 核心引擎
+│   ├── railwise/               # Core + CLI 核心引擎
 │   │   ├── agent/              # 内置 RAILWISE 业务智能体
 │   │   ├── command/            # 内置 SOP 命令模板
 │   │   └── skill/              # 内置技能包
 │   ├── nb-railwise/            # 插件 SDK（工具开发 API）
-│   ├── app/                    # TUI 前端
-│   ├── desktop/                # 桌面端（开发中）
+│   ├── sdk/js/                 # Core HTTP/SSE SDK
+│   ├── app/                    # 共享 Web UI shell / 浏览器 SPA
+│   ├── ui/                     # 共享 UI 组件与设计令牌
+│   ├── web/                    # 文档站
 │   └── ...
 └── package.json                # Bun monorepo
 ```
+
+Desktop 源码、Tauri 配置、安装包、签名、公证和自动更新流程不在本仓库；桌面端在独立 `railwise-desktop-app` 仓库维护，并消费本仓库发布后的 CLI sidecar、SDK 和共享包。
 
 ## 插件开发
 

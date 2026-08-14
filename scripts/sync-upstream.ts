@@ -1,25 +1,34 @@
 #!/usr/bin/env bun
 
 import { $ } from "bun"
-import { mkdir, readdir, readFile, rename, stat, writeFile } from "node:fs/promises"
+import os from "node:os"
 import path from "node:path"
 
-type Config = {
-  lastSyncedTag: string
+type State = {
   upstream: {
     remote: string
     url: string
-    packagePath: string
-    rebrandedPackagePath: string
   }
-  protectedPaths: string[]
-  textReplacements: Array<{ from: string; to: string }>
-  pathReplacements: Array<{ from: string; to: string }>
-  binaryExtensions: string[]
+  reviewed: {
+    tag: string
+    commit: string
+    date: string
+  }
+  target: {
+    tag: string
+    commit: string
+    status: "pending" | "in_progress" | "reviewed"
+  }
+  history: Array<{
+    tag: string
+    commit: string
+    date: string
+    report: string
+  }>
 }
 
-const root = process.cwd()
-const config = (await Bun.file("scripts/rebrand.config.json").json()) as Config
+const file = "scripts/upstream-state.json"
+const state = (await Bun.file(file).json()) as State
 const args = Bun.argv.slice(2)
 const arg = (name: string) => {
   const index = args.indexOf(name)
@@ -27,146 +36,112 @@ const arg = (name: string) => {
   return args[index + 1]
 }
 const flag = (name: string) => args.includes(name)
-
-const tag = arg("--to")
-const branch = arg("--branch") ?? (tag ? `sync/${tag}` : undefined)
+const base = arg("--from") ?? state.reviewed.tag
+const target = arg("--to") ?? state.target.tag
+const write = flag("--write")
+const record = flag("--record")
 const dry = flag("--dry-run")
-const force = flag("--force")
-const dirty = flag("--allow-dirty")
+const api = flag("--api")
+const output = arg("--out") ?? `docs/dev/opencode-${target.replace(/^v/, "v")}-sync-audit.md`
 
-if (!tag) throw new Error("Missing --to <upstream-tag>")
-if (!branch) throw new Error("Missing sync branch name")
-
-const protectedRoots = new Set(config.protectedPaths.map((item) => path.normalize(item)))
-const binaries = new Set(config.binaryExtensions)
-
-function rel(file: string) {
-  return path.relative(root, file)
-}
-
-function protectedPath(file: string) {
-  const value = rel(file)
-  return [...protectedRoots].some((item) => value === item || value.startsWith(`${item}${path.sep}`))
-}
-
-async function exists(file: string) {
-  return await Bun.file(file).exists()
-}
-
-async function walk(dir: string): Promise<string[]> {
-  if (protectedPath(dir) && dir !== root) return []
-  const entries = await readdir(dir, { withFileTypes: true })
-  return (
-    await Promise.all(
-      entries.flatMap(async (entry) => {
-        const file = path.join(dir, entry.name)
-        if (protectedPath(file)) return []
-        if (entry.isDirectory()) return [file, ...(await walk(file))]
-        if (entry.isFile()) return [file]
-        return []
-      }),
-    )
-  ).flat()
-}
-
-async function text(file: string) {
-  if (binaries.has(path.extname(file).toLowerCase())) return false
-  const content = await readFile(file)
-  if (content.includes(0)) return false
-  return true
-}
-
-function replace(content: string) {
-  return config.textReplacements.reduce((next, item) => next.split(item.from).join(item.to), content)
-}
-
-function renamed(name: string) {
-  return config.pathReplacements.reduce((next, item) => next.split(item.from).join(item.to), name)
-}
-
-async function rebrand() {
-  if ((await exists(config.upstream.packagePath)) && !(await exists(config.upstream.rebrandedPackagePath))) {
-    await mkdir(path.dirname(config.upstream.rebrandedPackagePath), { recursive: true })
-    await rename(config.upstream.packagePath, config.upstream.rebrandedPackagePath)
-  }
-
-  const files = await walk(root)
-  const writable = files.filter((file) => !protectedPath(file))
-  await Promise.all(
-    writable.map(async (file) => {
-      if ((await stat(file)).isDirectory()) return
-      if (!(await text(file))) return
-      const old = await readFile(file, "utf8")
-      const next = replace(old)
-      if (next !== old) await writeFile(file, next)
-    }),
-  )
-
-  const paths = (await walk(root)).filter((file) => !protectedPath(file)).sort((a, b) => b.length - a.length)
-
-  for (const file of paths) {
-    const name = path.basename(file)
-    const next = renamed(name)
-    if (next === name) continue
-    const target = path.join(path.dirname(file), next)
-    if (await exists(target)) continue
-    await rename(file, target)
-  }
-}
+if (record && !write)
+  throw new Error("--record requires --write so the reviewed report is committed with the state change")
 
 async function ensure() {
-  const remote = await $`git remote get-url ${config.upstream.remote}`.quiet().nothrow()
-  if (remote.exitCode === 0) return
-  await $`git remote add ${config.upstream.remote} ${config.upstream.url}`
+  const remote = await $`git remote get-url ${state.upstream.remote}`.quiet().nothrow()
+  if (remote.exitCode !== 0) {
+    await $`git remote add ${state.upstream.remote} ${state.upstream.url}`
+    return
+  }
+  if (remote.stdout.toString().trim() === state.upstream.url) return
+  await $`git remote set-url ${state.upstream.remote} ${state.upstream.url}`
+}
+
+const repo = new URL(state.upstream.url).pathname.replace(/^\//, "").replace(/\.git$/, "")
+
+async function tree(commit: string) {
+  const file = path.join(os.tmpdir(), `railwise-opencode-${commit}.json`)
+  if (await Bun.file(file).exists()) return file
+  const result = await $`gh api --method GET ${`repos/${repo}/git/trees/${commit}`} -f recursive=1`.quiet().nothrow()
+  if (result.exitCode !== 0)
+    throw new Error(`Could not fetch upstream tree ${commit} through GitHub API:\n${result.stderr}`)
+  await Bun.write(file, result.stdout)
+  return file
+}
+
+async function resolve(tag: string) {
+  const known = [state.reviewed, state.target, ...state.history].find((item) => item.tag === tag)
+  if (known) return known.commit
+  const result = await $`gh api ${`repos/${repo}/git/ref/tags/${tag}`}`.quiet().nothrow()
+  if (result.exitCode !== 0)
+    throw new Error(`Could not resolve upstream tag ${tag} through GitHub API:\n${result.stderr}`)
+  const ref = JSON.parse(result.stdout.toString()) as { object: { sha: string; type: "commit" | "tag" } }
+  if (ref.object.type === "commit") return ref.object.sha
+  const annotated = await $`gh api ${`repos/${repo}/git/tags/${ref.object.sha}`}`.quiet().nothrow()
+  if (annotated.exitCode !== 0) throw new Error(`Could not resolve annotated upstream tag ${tag}:\n${annotated.stderr}`)
+  return (JSON.parse(annotated.stdout.toString()) as { object: { sha: string } }).object.sha
+}
+
+async function fetch(tag: string) {
+  const ref = `refs/railwise-sync/${tag}`
+  const local = await $`git rev-parse --verify ${ref}`.quiet().nothrow()
+  if (local.exitCode === 0) return { ref, commit: local.stdout.toString().trim() }
+  if (!api) {
+    const result =
+      await $`git fetch --no-tags --depth=1 --filter=blob:none ${state.upstream.remote} +refs/tags/${tag}:${ref}`
+        .quiet()
+        .nothrow()
+    if (result.exitCode === 0) return { ref, commit: (await $`git rev-parse ${ref}`.text()).trim() }
+    console.warn(`Git fetch failed for ${tag}; falling back to GitHub API tree audit.`)
+  }
+  const commit = await resolve(tag)
+  return { ref: tag, commit, tree: await tree(commit) }
 }
 
 if (dry) {
   console.log(
     [
-      `Would fetch tag ${tag} from ${config.upstream.remote} into refs/railwise-sync/${tag} (collision-safe)`,
-      `Would create ${branch} from ${tag}`,
-      `Would rename ${config.upstream.packagePath} -> ${config.upstream.rebrandedPackagePath}`,
-      `Would apply ${config.textReplacements.length} text replacements and ${config.pathReplacements.length} path replacements`,
-      `Last recorded sync base: ${config.lastSyncedTag}`,
+      `Would audit ${base}..${target} from ${state.upstream.url}`,
+      api
+        ? "Would use GitHub API trees without switching branches"
+        : "Would fetch tags into refs/railwise-sync without switching branches, with an API fallback",
+      write ? `Would write ${output}` : "Would print the report without changing tracked files",
+      record ? `Would record ${target} as reviewed` : "Would leave reviewed state unchanged",
     ].join("\n"),
   )
   process.exit(0)
 }
 
-if (!dirty && (await $`git status --porcelain`.text()).trim()) {
-  throw new Error("Working tree is dirty. Commit/stash changes or pass --allow-dirty.")
-}
-
 await ensure()
+const from = await fetch(base)
+const to = await fetch(target)
+const report =
+  from.tree || to.tree
+    ? await $`bun scripts/opencode-sync-audit.ts ${base} ${target} --base-tree ${from.tree ?? (await tree(from.commit))} --target-tree ${to.tree ?? (await tree(to.commit))}`.text()
+    : await $`bun scripts/opencode-sync-audit.ts ${from.ref} ${to.ref} --base-label ${base} --target-label ${target}`.text()
 
-// The fork mirrors upstream version numbers, so local release tags (v1.2.8, ...)
-// collide with upstream's identically named tags. Fetch the requested ref into a
-// private namespace to avoid clobbering local tags and to guarantee we check out
-// upstream's commit rather than the fork's same-named tag.
-const upstreamRef = `refs/railwise-sync/${tag}`
-const fetchedTag = await $`git fetch --no-tags ${config.upstream.remote} +refs/tags/${tag}:${upstreamRef}`
-  .quiet()
-  .nothrow()
-if (fetchedTag.exitCode !== 0) {
-  const fetchedHead = await $`git fetch --no-tags ${config.upstream.remote} +refs/heads/${tag}:${upstreamRef}`
-    .quiet()
-    .nothrow()
-  if (fetchedHead.exitCode !== 0)
-    throw new Error(`Could not fetch ${tag} from ${config.upstream.remote} as a tag or branch:\n${fetchedTag.stderr}`)
+if (!write) {
+  console.log(report)
+  process.exit(0)
 }
 
-const current = (await $`git branch --show-current`.text()).trim()
-const branchExists = (await $`git rev-parse --verify ${branch}`.quiet().nothrow()).exitCode === 0
-if (branchExists && !force) throw new Error(`${branch} already exists. Pass --force to replace it.`)
-if (branchExists) await $`git branch -D ${branch}`
+await Bun.write(output, report)
+const format = await $`bun x prettier --write ${output}`.quiet().nothrow()
+if (format.exitCode !== 0) console.warn(`Could not format ${output}:\n${format.stderr}`)
+console.log(`Wrote ${output}`)
 
-await $`git switch --detach ${upstreamRef}`
-await $`git switch -c ${branch}`
-await rebrand()
-await $`git add -A`
+if (!record) process.exit(0)
 
-const changed = (await $`git status --porcelain`.text()).trim()
-if (changed) await $`git commit -m ${`chore(sync): rebrand upstream ${tag}`}`
-if (current) await $`git switch ${current}`
-
-console.log(`${branch} is ready. Rebase with: git rebase --onto ${branch} sync/${config.lastSyncedTag} dev`)
+const commit = to.commit
+const date = new Date().toISOString().slice(0, 10)
+const next = {
+  ...state,
+  reviewed: { tag: target, commit, date },
+  target: { tag: target, commit, status: "reviewed" as const },
+  history: [
+    ...state.history.filter((item) => item.tag !== target),
+    { tag: target, commit, date, report: path.relative(process.cwd(), output) },
+  ],
+}
+await Bun.write(file, `${JSON.stringify(next, null, 2)}\n`)
+console.log(`Recorded ${target} (${commit}) as reviewed in ${file}`)

@@ -17,7 +17,9 @@ rw --version
 railwise agent list
 ```
 
-当前已验证发布版本：**v1.2.30**（2026-05-30）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.30`。
+当前 GitHub Latest 发布版本：**v1.2.34**（2026-06-19）。日常安装建议使用 `@latest`，企业内网锁版可使用 `railwise-ai@1.2.34`。
+
+`railwise-ai` npm 包会同时安装 CLI 和默认 `business` Agent Pack。安装完成后，业务 Agent、Command、Skill、Tool 和模板会自动落到 `~/.railwise`。如 CI 环境只需要二进制，可设置 `RAILWISE_SKIP_AGENT_PACK=1`。
 
 国内网络较慢时可指定镜像：
 
@@ -38,7 +40,7 @@ rw --version
 指定版本：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.30
+curl -fsSL https://raw.githubusercontent.com/railwise-cn/RAILWISE-CLI/dev/install.sh | sh -s 1.2.34
 ```
 
 自定义安装目录：
@@ -105,12 +107,12 @@ bun run dev
 
 ```bash
 railwise upgrade
-railwise upgrade 1.2.30
+railwise upgrade 1.2.34
 railwise upgrade --method npm
 railwise upgrade --method brew
 ```
 
-`railwise upgrade` 会尝试识别当前安装方式。识别失败时可用 `--method` 指定：`npm`、`pnpm`、`bun`、`brew`、`curl`、`choco`、`scoop`。新版安装包会同时带上内置 Agent、Command 和 Skill。
+`railwise upgrade` 会尝试识别当前安装方式。识别失败时可用 `--method` 指定：`npm`、`pnpm`、`bun`、`brew`、`curl`、`choco`、`scoop`。新版 npm 安装包会同时带上内置 Agent Pack。
 
 ### 包管理器更新
 

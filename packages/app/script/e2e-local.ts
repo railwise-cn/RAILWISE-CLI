@@ -281,6 +281,9 @@ const extraArgs = (() => {
   if (args[0] === "--") return args.slice(1)
   return args
 })()
+const args = extraArgs.some((arg) => arg === "--workers" || arg.startsWith("--workers="))
+  ? extraArgs
+  : ["--workers=1", ...extraArgs]
 
 const [serverPort, webPort, modelPort] = await Promise.all([freePort(), freePort(), freePort()])
 const modelUrl = `http://127.0.0.1:${modelPort}/v1`
@@ -290,7 +293,10 @@ const catalog = await fs
 const modelOverrides = Object.fromEntries(
   Object.keys(catalog.railwise?.models ?? {}).map((model) => [
     model,
-    { provider: { npm: "@ai-sdk/openai-compatible" } },
+    {
+      provider: { npm: "@ai-sdk/openai-compatible" },
+      ...(["big-pickle", "gpt-5-nano"].includes(model) ? { release_date: new Date().toISOString().slice(0, 10) } : {}),
+    },
   ]),
 )
 
@@ -417,7 +423,7 @@ try {
     console.log(`railwise server listening on http://127.0.0.1:${serverPort}`)
 
     await waitForHealth(`http://127.0.0.1:${serverPort}/global/health`)
-    runner = Bun.spawn(["bun", "test:e2e", ...extraArgs], {
+    runner = Bun.spawn(["bun", "test:e2e", ...args], {
       cwd: appDir,
       env: runnerEnv,
       stdout: "inherit",

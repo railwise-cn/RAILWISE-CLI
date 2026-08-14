@@ -23,6 +23,12 @@ export const CapabilityManifest = z.object({
   tags: z.string().array().default([]),
 })
 
+export const CapabilityGroup = z.object({
+  kind: CapabilityKind,
+  items: CapabilityManifest.array(),
+})
+
 export type CapabilityKind = z.infer<typeof CapabilityKind>
 export type CapabilityPermission = z.infer<typeof CapabilityPermission>
 export type CapabilityManifest = z.infer<typeof CapabilityManifest>
+export type CapabilityGroup = z.infer<typeof CapabilityGroup>

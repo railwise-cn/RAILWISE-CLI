@@ -7,6 +7,8 @@ type Asset = {
   kind: string
   name: string
   dir: string
+  target?: string
+  profile: "business" | "dev"
 }
 
 const args = Bun.argv.slice(2)
@@ -23,6 +25,26 @@ const version = arg("--version") ?? "0.1.0"
 const force = flag("--force")
 const tests = flag("--include-tests")
 const assets: Asset[] = []
+const repository = {
+  type: "git",
+  url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
+}
+const dev = new Set([
+  "agent:duplicate-pr",
+  "agent:triage",
+  "command:ai-deps",
+  "command:commit",
+  "command:issues",
+  "command:learn",
+  "command:rmslop",
+  "command:spellcheck",
+  "skill:bun-file-io",
+  "skill:frontend-design",
+  "tool:github-pr-search.ts",
+  "tool:github-pr-search.txt",
+  "tool:github-triage.ts",
+  "tool:github-triage.txt",
+])
 
 async function exists(file: string) {
   return await stat(file).then(
@@ -54,30 +76,22 @@ function base(file: string) {
   return path.basename(file, path.extname(file))
 }
 
+function profile(kind: string, name: string, target?: string): Asset["profile"] {
+  if (dev.has(`${kind}:${target ?? name}`) || dev.has(`${kind}:${name}`)) return "dev"
+  return "business"
+}
+
 async function fileAssets(kind: string, source: string, ext?: string) {
   if (!(await exists(source))) return
   for (const file of await files(source)) {
+    if (file.startsWith("__test_tmp__/") || path.basename(file).startsWith(".")) continue
     if (!tests && file.includes(".test.")) continue
     if (ext && path.extname(file) !== ext) continue
-    const asset = base(file)
-    const dir = `assets/${kind}/${asset}`
-    await copy(path.join(source, file), path.join(out, dir, path.basename(file)))
-    assets.push({ kind, name: asset, dir })
-  }
-}
-
-async function groupedAssets(kind: string, source: string) {
-  if (!(await exists(source))) return
-  const groups = new Map<string, string[]>()
-  for (const file of await files(source)) {
-    if (!tests && file.includes(".test.")) continue
-    const asset = base(file)
-    groups.set(asset, [...(groups.get(asset) ?? []), file])
-  }
-  for (const [asset, group] of groups) {
-    const dir = `assets/${kind}/${asset}`
-    await Promise.all(group.map((file) => copy(path.join(source, file), path.join(out, dir, path.basename(file)))))
-    assets.push({ kind, name: asset, dir })
+    const dir = `assets/${kind}/${file.replaceAll("\\", "/")}`
+    const target = file.replaceAll("\\", "/")
+    const name = ext ? base(file) : file
+    await copy(path.join(source, file), path.join(out, dir))
+    assets.push({ kind, name, dir, target, profile: profile(kind, name, target) })
   }
 }
 
@@ -87,7 +101,7 @@ async function dirAssets(kind: string, source: string) {
     const asset = file.split("/")[0]
     const dir = `assets/${kind}/${asset}`
     await copy(path.join(source, asset), path.join(out, dir))
-    assets.push({ kind, name: asset, dir })
+    assets.push({ kind, name: asset, dir, profile: profile(kind, asset) })
   }
 }
 
@@ -99,7 +113,8 @@ await copy("skill-pack-template/bin/install.js", path.join(out, "bin/install.js"
 await fileAssets("agent", ".railwise/agent", ".md")
 await dirAssets("skill", ".railwise/skill")
 await fileAssets("command", ".railwise/command", ".md")
-await groupedAssets("tool", ".railwise/tool")
+await fileAssets("tool", ".railwise/tool")
+await fileAssets("lib", ".railwise/lib")
 await fileAssets("template", ".railwise/templates", ".json")
 await fileAssets("theme", ".railwise/themes", ".json")
 
@@ -111,15 +126,13 @@ await writeFile(
       version,
       type: "commonjs",
       license: "MIT",
+      repository,
       bin: {
         "railwise-skill": "./bin/install.js",
         "railwise-agent-pack": "./bin/install.js",
       },
       files: ["assets", "bin"],
       agentAssets: assets.sort((a, b) => a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name)),
-      publishConfig: {
-        access: "public",
-      },
     },
     null,
     2,
@@ -131,12 +144,19 @@ await writeFile(
   [
     "# Railwise Agent Pack",
     "",
-    "Install Railwise agents, skills, commands, tools, templates, and themes into supported coding agents.",
+    "Install Railwise business agents, skills, commands, tools, templates, and themes into supported coding agents.",
     "",
     "```bash",
-    "npx @railwise/agent-pack install --target railwise --force",
-    "npx @railwise/agent-pack install --target codex",
-    "npx @railwise/agent-pack list",
+    "tar -xzf railwise-agent-pack-<version>.tgz",
+    "cd package",
+    "# business profile is the default",
+    "node bin/install.js install --target railwise --force",
+    "node bin/install.js install --target codex",
+    "node bin/install.js list --profile business",
+    "",
+    "# maintainers can install development helpers explicitly",
+    "node bin/install.js install --target railwise --profile dev --force",
+    "node bin/install.js list",
     "```",
     "",
   ].join("\n"),

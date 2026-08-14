@@ -1,8 +1,12 @@
 {
   "name": "@railwise/ui",
-  "version": "1.2.8",
+  "version": "1.2.34",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/railwise-cn/RAILWISE-CLI.git"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/components/*.tsx",

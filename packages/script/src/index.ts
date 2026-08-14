@@ -27,12 +27,19 @@ const env = {
   RAILWISE_VERSION: process.env["RAILWISE_VERSION"],
   RAILWISE_RELEASE: process.env["RAILWISE_RELEASE"],
 }
-const CHANNEL = await (async () => {
+const prerelease = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^0-9a-z-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-") || "preview"
+const raw = await (async () => {
   if (env.RAILWISE_CHANNEL) return env.RAILWISE_CHANNEL
   if (env.RAILWISE_BUMP) return "latest"
   if (env.RAILWISE_VERSION && !env.RAILWISE_VERSION.startsWith("0.0.0-")) return "latest"
   return await $`git branch --show-current`.text().then((x) => x.trim())
 })()
+const CHANNEL = raw === "latest" ? "latest" : prerelease(raw)
 const IS_PREVIEW = CHANNEL !== "latest"
 
 const VERSION = await (async () => {

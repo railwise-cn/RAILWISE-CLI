@@ -61,7 +61,7 @@ describe("model routing helpers", () => {
   })
 
   test("uses product-facing role labels instead of coding agent terms", () => {
-    expect(agentRoleLabel({ name: "chief_manager", mode: "primary" })).toBe("主控")
+    expect(agentRoleLabel({ name: "chief_manager", mode: "primary" })).toBe("默认协作")
     expect(agentRoleLabel({ name: "solution_architect", mode: "all" })).toBe("专业智能体")
     expect(agentRoleLabel({ name: "ppt_master", mode: "subagent" })).toBe("专业智能体")
   })

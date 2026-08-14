@@ -6,7 +6,7 @@ Core owns agents, workflows, norm wiki, survey tools, sessions, server routes, a
 
 CLI owns terminal commands, scripting, CI usage, provider setup, debug commands, and headless automation.
 
-Desktop uses this package as a local sidecar, but Desktop product UX belongs in `packages/desktop`.
+Desktop uses this package as a local sidecar, but Desktop product UX, Tauri code, installers, signing, notarization, updater, and release gates belong in the standalone `railwise-desktop-app` repository.
 
 See [docs/dev/00-product-boundaries.md](../../docs/dev/00-product-boundaries.md).
 

@@ -32,6 +32,8 @@ export namespace ProviderTransform {
       case "@ai-sdk/openai":
       case "@ai-sdk/azure":
         return "openai"
+      case "@ai-sdk/amazon-bedrock/mantle":
+        return "openai"
       case "@ai-sdk/amazon-bedrock":
         return "bedrock"
       case "@ai-sdk/anthropic":
@@ -381,7 +383,6 @@ export namespace ProviderTransform {
     const adaptiveEfforts = ["low", "medium", "high", "max"]
     if (
       id.includes("deepseek") ||
-      id.includes("minimax") ||
       id.includes("glm") ||
       id.includes("mistral") ||
       id.includes("kimi") ||
@@ -389,6 +390,17 @@ export namespace ProviderTransform {
       id.includes("k2p5")
     )
       return {}
+
+    if (
+      model.api.id.toLowerCase().includes("minimax-m3") &&
+      ["@ai-sdk/anthropic", "@ai-sdk/openai-compatible"].includes(model.api.npm)
+    ) {
+      return {
+        none: { thinking: { type: "disabled" } },
+        thinking: { thinking: { type: "adaptive" } },
+      }
+    }
+    if (id.includes("minimax")) return {}
 
     // see: https://docs.x.ai/docs/guides/reasoning#control-how-hard-the-model-thinks
     if (id.includes("grok") && id.includes("grok-3-mini")) {
@@ -526,6 +538,7 @@ export namespace ProviderTransform {
           ]),
         )
       case "@ai-sdk/openai":
+      case "@ai-sdk/amazon-bedrock/mantle":
         // https://v5.ai-sdk.dev/providers/ai-sdk-providers/openai
         if (id === "gpt-5-pro") return {}
         const openaiEfforts = iife(() => {
@@ -731,7 +744,8 @@ export namespace ProviderTransform {
     if (
       input.model.providerID === "openai" ||
       input.model.api.npm === "@ai-sdk/openai" ||
-      input.model.api.npm === "@ai-sdk/github-copilot"
+      input.model.api.npm === "@ai-sdk/github-copilot" ||
+      input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
     ) {
       result["store"] = false
     }
@@ -774,6 +788,10 @@ export namespace ProviderTransform {
 
     // Enable thinking by default for kimi-k2.5/k2p5 models using anthropic SDK
     const modelId = input.model.api.id.toLowerCase()
+    if (modelId.includes("minimax-m3") && input.model.api.npm === "@ai-sdk/anthropic") {
+      result["thinking"] = { type: "adaptive" }
+    }
+
     if (
       (input.model.api.npm === "@ai-sdk/anthropic" || input.model.api.npm === "@ai-sdk/google-vertex/anthropic") &&
       (modelId.includes("k2p5") || modelId.includes("kimi-k2.5") || modelId.includes("kimi-k2p5"))
@@ -801,7 +819,17 @@ export namespace ProviderTransform {
     if (input.model.api.id.includes("gpt-5") && !input.model.api.id.includes("gpt-5-chat")) {
       if (!input.model.api.id.includes("gpt-5-pro")) {
         result["reasoningEffort"] = "medium"
-        result["reasoningSummary"] = "auto"
+        if (
+          input.model.api.npm === "@ai-sdk/openai" ||
+          input.model.api.npm === "@ai-sdk/azure" ||
+          input.model.api.npm === "@ai-sdk/github-copilot" ||
+          input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
+        ) {
+          result["reasoningSummary"] = "auto"
+        }
+        if (input.model.api.npm === "@ai-sdk/openai" || input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle") {
+          result["include"] = ["reasoning.encrypted_content"]
+        }
       }
 
       // Only set textVerbosity for non-chat gpt-5.x models
@@ -820,6 +848,15 @@ export namespace ProviderTransform {
         result["include"] = ["reasoning.encrypted_content"]
         result["reasoningSummary"] = "auto"
       }
+    }
+
+    const [, major, minor] = input.model.api.id.match(/gpt-(\d+)\.(\d+)/) ?? []
+    if (
+      input.model.api.npm === "@ai-sdk/azure" &&
+      input.providerOptions?.useCompletionUrls &&
+      (Number(major) > 5 || (Number(major) === 5 && Number(minor) >= 5))
+    ) {
+      delete result.reasoningEffort
     }
 
     if (input.model.providerID === "venice") {
@@ -918,6 +955,89 @@ export namespace ProviderTransform {
     return Math.min(model.limit.output, OUTPUT_TOKEN_MAX) || OUTPUT_TOKEN_MAX
   }
 
+  type JsonRecord = Record<string, unknown>
+
+  function isPlainObject(value: unknown): value is JsonRecord {
+    return typeof value === "object" && value !== null && !Array.isArray(value)
+  }
+
+  function sanitizeOpenAISchema(value: unknown): unknown {
+    const types = ["string", "number", "boolean", "integer", "object", "array", "null"]
+    const composition = ["anyOf", "oneOf", "allOf"]
+
+    if (typeof value === "boolean") return { type: "string" }
+    if (Array.isArray(value)) return value.map(sanitizeOpenAISchema)
+    if (!isPlainObject(value)) return value
+
+    const result: JsonRecord = {}
+
+    if (typeof value.$ref === "string") result.$ref = value.$ref
+    if (typeof value.description === "string") result.description = value.description
+    if ("const" in value) result.enum = [value.const]
+    else if (Array.isArray(value.enum)) result.enum = value.enum
+
+    if (isPlainObject(value.properties)) {
+      result.properties = Object.fromEntries(
+        Object.entries(value.properties).map(([key, item]) => [key, sanitizeOpenAISchema(item)]),
+      )
+    }
+
+    if (Array.isArray(value.required)) result.required = value.required.filter((item) => typeof item === "string")
+    if ("items" in value) result.items = sanitizeOpenAISchema(value.items)
+
+    if ("additionalProperties" in value) {
+      result.additionalProperties =
+        typeof value.additionalProperties === "boolean"
+          ? value.additionalProperties
+          : sanitizeOpenAISchema(value.additionalProperties)
+    }
+
+    for (const key of composition) {
+      if (Array.isArray(value[key])) result[key] = value[key].map(sanitizeOpenAISchema)
+    }
+
+    for (const key of ["$defs", "definitions"]) {
+      if (isPlainObject(value[key])) {
+        result[key] = Object.fromEntries(
+          Object.entries(value[key]).map(([name, item]) => [name, sanitizeOpenAISchema(item)]),
+        )
+      }
+    }
+
+    const schemaTypes =
+      typeof value.type === "string"
+        ? types.includes(value.type)
+          ? [value.type]
+          : []
+        : Array.isArray(value.type)
+          ? value.type.filter((item) => typeof item === "string" && types.includes(item))
+          : []
+
+    if (schemaTypes.length === 0 && (typeof result.$ref === "string" || composition.some((key) => key in result))) {
+      return result
+    }
+
+    const inferred =
+      schemaTypes.length > 0
+        ? schemaTypes
+        : ["properties", "required", "additionalProperties"].some((key) => key in value)
+          ? ["object"]
+          : ["items", "prefixItems"].some((key) => key in value)
+            ? ["array"]
+            : "enum" in result || "format" in value
+              ? ["string"]
+              : ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"].some((key) => key in value)
+                ? ["number"]
+                : []
+
+    if (inferred.length === 0) return {}
+
+    result.type = inferred.length === 1 ? inferred[0] : inferred
+    if (inferred.includes("object") && !("properties" in result)) result.properties = {}
+    if (inferred.includes("array") && !("items" in result)) result.items = { type: "string" }
+    return result
+  }
+
   export function schema(model: Provider.Model, schema: JSONSchema.BaseSchema | JSONSchema7): JSONSchema7 {
     /*
     if (["openai", "azure"].includes(providerID)) {
@@ -936,6 +1056,10 @@ export namespace ProviderTransform {
       }
     }
     */
+
+    if (model.api.npm === "@ai-sdk/openai" || model.api.npm === "@ai-sdk/azure") {
+      schema = sanitizeOpenAISchema(schema) as JSONSchema.BaseSchema
+    }
 
     // Convert integer enums to string enums for Google/Gemini
     if (model.providerID === "google" || model.api.id.includes("gemini")) {

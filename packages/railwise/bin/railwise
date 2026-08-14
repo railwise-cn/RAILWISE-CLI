@@ -160,7 +160,15 @@ function findBinary(startDir) {
   }
 }
 
-const resolved = findBinary(scriptDir)
+function findVendor() {
+  const root = path.resolve(scriptDir, "..")
+  for (const name of names) {
+    const candidate = path.join(root, "vendor", name, "bin", binary)
+    if (fs.existsSync(candidate)) return candidate
+  }
+}
+
+const resolved = findBinary(scriptDir) || findVendor()
 if (!resolved) {
   // Fallback: run from source via bun for local development
   const srcEntry = path.resolve(scriptDir, "..", "src", "index.ts")

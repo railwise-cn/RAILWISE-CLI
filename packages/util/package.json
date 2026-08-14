@@ -1,9 +1,12 @@
 {
   "name": "@railwise/util",
-  "version": "1.2.8",
-  "private": true,
+  "version": "1.2.34",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/railwise-cn/RAILWISE-CLI.git"
+  },
   "exports": {
     "./*": "./src/*.ts"
   },

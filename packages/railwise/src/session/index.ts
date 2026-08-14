@@ -222,9 +222,9 @@ export namespace Session {
       })
       const msgs = await messages({ sessionID: input.sessionID })
       const idMap = new Map<string, string>()
+      const target = input.messageID ? msgs.findIndex((msg) => msg.info.id === input.messageID) : msgs.length
 
-      for (const msg of msgs) {
-        if (input.messageID && msg.info.id >= input.messageID) break
+      for (const msg of msgs.slice(0, target < 0 ? msgs.length : target)) {
         const newID = Identifier.ascending("message")
         idMap.set(msg.info.id, newID)
 

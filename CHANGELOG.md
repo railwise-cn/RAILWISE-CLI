@@ -4,6 +4,51 @@
 
 ---
 
+## v1.2.34 — npm 完整安装 Agent Pack
+
+_发布日期: 2026-06-19_
+
+- `railwise-ai` npm 包现在内置默认业务 Agent Pack，`npm install -g railwise-ai` 会自动安装 CLI、平台二进制和 `business` profile 的 Agent、Command、Skill、Tool、模板到 `~/.railwise`。
+- Agent Pack 仍随 GitHub Release 输出 `railwise-agent-pack-<version>.tgz`，可独立安装到 Codex、Claude、OpenCode、Desktop 或自定义目录；不新增独立 npm 安装入口。
+- `postinstall` 支持 `RAILWISE_SKIP_AGENT_PACK`、`RAILWISE_AGENT_PACK_TARGET`、`RAILWISE_AGENT_PACK_DEST`、`RAILWISE_AGENT_PACK_PROFILE`，便于 CI、内网镜像和高级用户控制自动安装行为。
+- 新增 npm Agent Pack postinstall 校验脚本，防止后续发布遗漏内置 Agent Pack。
+
+---
+
+## v1.2.33 — Agent Pack 业务闭环升级
+
+_发布日期: 2026-06-19_
+
+- Agent Pack 默认安装收敛为 `business` profile，开发维护资产移入 `dev` profile，避免业务环境装入 GitHub triage、PR 查重、commit、spellcheck、bun-file-io 等残留工具。
+- 新增 `report-dibao` skill，固化地保日报多子表、测点编号、正负号约定、自动化/人工对比、预警报警判定和可追溯出报规则。
+- 新增 `/weekly-report`、`/plan-draft`、`/review-response`、`/bid-intel` 命令，并升级 `/daily-report`、`/bid-prepare`、`/payment-reminder`，覆盖日报、周报、方案内审/专家评审、投标情报和结算对账。
+- 新增日报、周报、监测方案和评审回复模板；`chief_manager` 改为带 `通过/条件通过/驳回返工` 三态的 DAG 调度；`qa_reviewer` 增加模拟专家评审和地方规程/TB 系核查。
+- CLI 主体同步 opencode `v1.17.8` 中可安全移植的核心修复：Copilot provider headers、RunCommand 内部授权头、MCP tool schema 缺省 properties、OpenAI/Azure schema 清洗和命令附件去重。
+- README、安装文档和上游同步审计已更新；Agent Pack 继续随 CLI GitHub Release 同版发布，不作为单独 npm 安装入口。
+
+---
+
+## v1.2.32 — CLI + Agent Pack 同版发布
+
+_发布日期: 2026-06-19_
+
+- 接续 GitHub Latest `v1.2.31` 发布 CLI/Core/SDK，显式使用 `v1.2.32` 避免 npm latest 落后导致的 patch 版本回撞。
+- CLI 发布 workflow 增加 Agent Pack 抽取、打包和 GitHub Release 附件上传，保持 Agent Pack 随 CLI 同版交付。
+- Agent Pack 安装模板支持 `lib` 资产，并按原文件名安装 agent、command、tool、template、theme 和 lib 文件，确保 OS tools 的 `../lib/os_api` 依赖随包发布。
+- 保持产品边界：本仓库只发布 CLI、SDK、shared packages 和 Agent Pack；Desktop 仍由独立 `railwise-desktop-app` 仓库发布。
+
+---
+
+## v1.2.31 — GitHub Latest Release 对齐
+
+_发布日期: 2026-06-10_
+
+- 以 GitHub `railwise-cn/RAILWISE-CLI` 的 Latest release `v1.2.31` 为当前 CLI/Core/SDK/Agent Pack 文档锁版来源。
+- Workspace package metadata 从 `1.2.8` 对齐到 `1.2.31`，发布脚本仍可通过 `RAILWISE_VERSION` 在 CI 中显式覆盖构建版本。
+- 继续保持产品边界：本仓库维护 Core、CLI、SDK、共享 App Shell 和 Agent Pack；Desktop 源码、Tauri 配置、安装包、签名、公证和 updater 仍归独立 `railwise-desktop-app` 仓库。
+
+---
+
 ## v1.3.0 — Desktop 中文化首版
 
 _发布日期: 待发布_

@@ -1,5 +1,7 @@
 # RAILWISE Desktop Codex-Style Harness + Marketplace Redesign Implementation Plan
 
+> Archived note: this plan predates the Desktop split. Historical `packages/desktop` paths now live in the standalone `railwise-desktop-app` repository.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Rebuild RAILWISE Desktop into a Codex-style local AI workbench with a clear Harness runtime, marketplace extensibility, and a simple chat-first workspace experience.

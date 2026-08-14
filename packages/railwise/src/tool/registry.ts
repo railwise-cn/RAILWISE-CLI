@@ -47,6 +47,18 @@ import {
   VarianceComponentTool,
 } from "./adjustment"
 import { FormatConverterTool } from "./format"
+import {
+  DocxReportFormatterTool,
+  DxfLayerInspectorTool,
+  FileReaderTool,
+  LevelingClosureTool,
+  MonitoringDataFirstCheckTool,
+  PdfFormCheckerTool,
+  PptxBriefBuilderTool,
+  ResurveyMaterialCheckTool,
+  StandardQueryTool,
+  XlsxQualityCheckerTool,
+} from "./office"
 
 export namespace ToolRegistry {
   const log = Log.create({ service: "tool.registry" })
@@ -119,6 +131,40 @@ export namespace ToolRegistry {
     custom.push(tool)
   }
 
+  function fallback() {
+    return [
+      QuestionTool,
+      BashTool,
+      ReadTool,
+      GlobTool,
+      GrepTool,
+      EditTool,
+      WriteTool,
+      TaskTool,
+      WebFetchTool,
+      TodoWriteTool,
+      WebSearchTool,
+      CodeSearchTool,
+      SkillTool,
+      MineruParseTool,
+      WikiQueryTool,
+      WikiIngestTool,
+      WikiIndexTool,
+      WikiLintTool,
+      NormSearchTool,
+      NormDiffTool,
+      NormCiteTool,
+      FormatConverterTool,
+      AdjustmentIndirectTool,
+      AdjustmentFreeNetworkTool,
+      AdjustmentRobustTool,
+      VarianceComponentTool,
+      AdjustmentConditionTool,
+      GrossErrorDetectionTool,
+      ApplyPatchTool,
+    ]
+  }
+
   async function all(): Promise<Tool.Info[]> {
     const custom = await state().then((x) => x.custom)
     const config = await Config.get()
@@ -155,6 +201,16 @@ export namespace ToolRegistry {
       VarianceComponentTool,
       AdjustmentConditionTool,
       GrossErrorDetectionTool,
+      FileReaderTool,
+      StandardQueryTool,
+      LevelingClosureTool,
+      ResurveyMaterialCheckTool,
+      MonitoringDataFirstCheckTool,
+      DxfLayerInspectorTool,
+      XlsxQualityCheckerTool,
+      DocxReportFormatterTool,
+      PptxBriefBuilderTool,
+      PdfFormCheckerTool,
       ApplyPatchTool,
       ...(Flag.RAILWISE_EXPERIMENTAL_LSP_TOOL ? [LspTool] : []),
       ...(config.experimental?.batch_tool === true ? [BatchTool] : []),
@@ -164,7 +220,13 @@ export namespace ToolRegistry {
   }
 
   export async function ids() {
-    return all().then((x) => x.map((t) => t.id))
+    return all()
+      .then((x) => x.map((t) => t.id))
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : String(err)
+        if (!message.includes("No context found for instance")) throw err
+        return fallback().map((tool) => tool.id)
+      })
   }
 
   export async function tools(

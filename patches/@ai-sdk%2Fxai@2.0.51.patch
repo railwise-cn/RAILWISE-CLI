@@ -1,0 +1,50 @@
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -8,4 +8 @@
+-    reasoningEffort: z.ZodOptional<z.ZodEnum<{
+-        low: "low";
+-        high: "high";
+-    }>>;
++    reasoningEffort: z.ZodOptional<z.ZodString>;
+@@ -64,5 +61 @@
+-    reasoningEffort: z.ZodOptional<z.ZodEnum<{
+-        low: "low";
+-        high: "high";
+-        medium: "medium";
+-    }>>;
++    reasoningEffort: z.ZodOptional<z.ZodString>;
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -8,4 +8 @@
+-    reasoningEffort: z.ZodOptional<z.ZodEnum<{
+-        low: "low";
+-        high: "high";
+-    }>>;
++    reasoningEffort: z.ZodOptional<z.ZodString>;
+@@ -64,5 +61 @@
+-    reasoningEffort: z.ZodOptional<z.ZodEnum<{
+-        low: "low";
+-        high: "high";
+-        medium: "medium";
+-    }>>;
++    reasoningEffort: z.ZodOptional<z.ZodString>;
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -220 +220 @@
+-  reasoningEffort: import_v4.z.enum(["low", "high"]).optional(),
++  reasoningEffort: import_v4.z.string().optional(),
+@@ -1179 +1179 @@
+-  reasoningEffort: import_v45.z.enum(["low", "medium", "high"]).optional(),
++  reasoningEffort: import_v45.z.string().optional(),
+diff --git a/dist/index.mjs b/dist/index.mjs
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -207 +207 @@
+-  reasoningEffort: z.enum(["low", "high"]).optional(),
++  reasoningEffort: z.string().optional(),
+@@ -1174 +1174 @@
+-  reasoningEffort: z5.enum(["low", "medium", "high"]).optional(),
++  reasoningEffort: z5.string().optional(),

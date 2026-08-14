@@ -34,11 +34,13 @@ export namespace Truncate {
   }
 
   export async function cleanup() {
-    const cutoff = Identifier.timestamp(Identifier.create("tool", false, Date.now() - RETENTION_MS))
+    const cutoff = Date.now() - RETENTION_MS
     const entries = await Glob.scan("tool_*", { cwd: DIR, include: "file" }).catch(() => [] as string[])
     for (const entry of entries) {
-      if (Identifier.timestamp(entry) >= cutoff) continue
-      await fs.unlink(path.join(DIR, entry)).catch(() => {})
+      const file = path.join(DIR, entry)
+      const stat = await fs.stat(file).catch(() => undefined)
+      if (!stat || stat.mtimeMs >= cutoff) continue
+      await fs.unlink(file).catch(() => {})
     }
   }
 

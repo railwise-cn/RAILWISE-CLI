@@ -5,8 +5,10 @@ import { iife } from "@/util/iife"
 export namespace SessionRetry {
   export const RETRY_INITIAL_DELAY = 2000
   export const RETRY_BACKOFF_FACTOR = 2
+  export const RETRY_JITTER_FACTOR = 0.25
   export const RETRY_MAX_DELAY_NO_HEADERS = 30_000 // 30 seconds
   export const RETRY_MAX_DELAY = 2_147_483_647 // max 32-bit signed integer for setTimeout
+  export const RETRY_MAX_RETRIES = 5
 
   function cap(ms: number) {
     return Math.min(ms, RETRY_MAX_DELAY)
@@ -29,7 +31,7 @@ export namespace SessionRetry {
     })
   }
 
-  export function delay(attempt: number, error?: MessageV2.APIError) {
+  export function delay(attempt: number, error?: MessageV2.APIError, random = Math.random()) {
     if (error) {
       const headers = error.data.responseHeaders
       if (headers) {
@@ -55,14 +57,20 @@ export namespace SessionRetry {
           }
         }
 
-        return cap(RETRY_INITIAL_DELAY * Math.pow(RETRY_BACKOFF_FACTOR, attempt - 1))
+        return cap(exponential(attempt, random))
       }
     }
 
-    return cap(Math.min(RETRY_INITIAL_DELAY * Math.pow(RETRY_BACKOFF_FACTOR, attempt - 1), RETRY_MAX_DELAY_NO_HEADERS))
+    return cap(Math.min(exponential(attempt, random), RETRY_MAX_DELAY_NO_HEADERS))
   }
 
-  export function retryable(error: ReturnType<NamedError["toObject"]>) {
+  function exponential(attempt: number, random: number) {
+    const base = RETRY_INITIAL_DELAY * Math.pow(RETRY_BACKOFF_FACTOR, attempt - 1)
+    return Math.ceil(base + base * RETRY_JITTER_FACTOR * random)
+  }
+
+  export function retryable(error: ReturnType<NamedError["toObject"]>, attempt = 0) {
+    if (attempt >= RETRY_MAX_RETRIES) return undefined
     // context overflow errors should not be retried
     if (MessageV2.ContextOverflowError.isInstance(error)) return undefined
     if (MessageV2.APIError.isInstance(error)) {

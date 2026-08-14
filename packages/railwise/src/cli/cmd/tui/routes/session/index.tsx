@@ -858,7 +858,7 @@ export function Session() {
 
           if (options.openWithoutSaving) {
             // Just open in editor without saving
-            await Editor.open({ value: transcript, renderer })
+            await Editor.open({ value: transcript, renderer, cwd: sessionData.directory })
           } else {
             const exportDir = process.cwd()
             const filename = options.filename.trim()
@@ -867,7 +867,7 @@ export function Session() {
             await Bun.write(filepath, transcript)
 
             // Open with EDITOR if available
-            const result = await Editor.open({ value: transcript, renderer })
+            const result = await Editor.open({ value: transcript, renderer, cwd: sessionData.directory })
             if (result !== undefined) {
               await Bun.write(filepath, result)
             }
@@ -1112,7 +1112,10 @@ export function Session() {
             </scrollbox>
             <box flexShrink={0}>
               <Show when={permissions().length > 0}>
-                <PermissionPrompt request={permissions()[0]} />
+                <PermissionPrompt
+                  request={permissions()[0]}
+                  directory={sync.session.get(permissions()[0].sessionID)?.directory}
+                />
               </Show>
               <Show when={permissions().length === 0 && questions().length > 0}>
                 <QuestionPrompt request={questions()[0]} />

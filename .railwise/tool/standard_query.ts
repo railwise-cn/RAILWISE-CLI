@@ -221,6 +221,71 @@ const STANDARDS: Clause[] = [
     keywords: ["地形测量", "高程注记", "点位中误差"],
     mandatory: false,
   },
+
+  // GB 55017 — 工程勘察通用规范
+  {
+    code: "GB 55017",
+    title: "工程勘察通用规范",
+    section: "2.0.1",
+    content: "工程勘察应查明场地工程地质和水文地质条件，评价工程建设适宜性，并为设计、施工和运营提供可靠依据。",
+    keywords: ["工程勘察", "水文地质", "地质条件", "可靠依据"],
+    mandatory: true,
+  },
+  {
+    code: "GB 55017",
+    title: "工程勘察通用规范",
+    section: "5.1.1",
+    content: "涉及工程安全的勘察成果、参数取值和风险评价应有充分依据，不能满足要求时应补充勘察或专项论证。",
+    keywords: ["风险评价", "补充勘察", "专项论证", "工程安全"],
+    mandatory: true,
+  },
+
+  // GB 50007 — 建筑地基基础设计规范
+  {
+    code: "GB 50007",
+    title: "建筑地基基础设计规范",
+    section: "5.3",
+    content: "地基变形计算和控制应结合建筑物安全等级、地基土性质、基础形式和相邻工程影响综合确定。",
+    keywords: ["地基变形", "相邻工程", "基础", "沉降"],
+    mandatory: false,
+  },
+  {
+    code: "GB 50007",
+    title: "建筑地基基础设计规范",
+    section: "8.5",
+    content: "基坑、边坡和邻近建筑影响分析应关注支护结构、地下水、周边荷载和变形控制要求。",
+    keywords: ["基坑", "边坡", "地下水", "周边荷载", "变形控制"],
+    mandatory: false,
+  },
+
+  // TB 10101 / TB 10601 — 铁路工程测量和高速铁路工程测量
+  {
+    code: "TB 10101",
+    title: "铁路工程测量规范",
+    section: "CPIII",
+    content: "铁路精密工程测量应按相应等级建立平面和高程控制网，CPIII 控制网成果应满足轨道精调和运营维护的精度要求。",
+    keywords: ["铁路", "CPIII", "精测网", "平面控制", "高程控制"],
+    mandatory: false,
+  },
+  {
+    code: "TB 10601",
+    title: "高速铁路工程测量规范",
+    section: "精密控制网",
+    content: "高速铁路工程测量应建立分级精密控制网，控制测量、复测和成果使用应保证轨道工程对平顺性和稳定性的要求。",
+    keywords: ["高速铁路", "精密控制网", "复测", "平顺性", "稳定性"],
+    mandatory: false,
+  },
+
+  // 地方规程核查项 — 不替代正式条文
+  {
+    code: "LOCAL-RAIL-PROTECTION",
+    title: "地方轨道交通保护区监测技术规程（项目适用版）",
+    section: "核查项",
+    content:
+      "地方轨道交通保护区项目应核验所在地运营单位或主管部门发布的最新版保护区监测技术规程；监测项目、频率、报警值和报审格式以项目适用版为准。",
+    keywords: ["地方规程", "保护区", "运营单位", "宁波", "浙江", "最新版"],
+    mandatory: true,
+  },
 ]
 
 function score(clause: Clause, keywords: string[]) {
@@ -237,14 +302,25 @@ function score(clause: Clause, keywords: string[]) {
 
 export const query_standard = tool({
   description:
-    "查询工程监测相关规范条文。内置 GB 50911（轨道交通监测）、GB 50497（基坑监测）、JGJ 8（变形测量）、GB 50026（工程测量）的核心条文。qa_reviewer 在审查技术方案时必须调用此工具获取准确条文依据，严禁凭记忆引用。",
+    "查询工程监测相关规范条文。内置 GB 50911、GB 50497、JGJ 8、GB 50026、GB 55017、GB 50007、TB 10101、TB 10601，并提供地方轨道交通保护区规程核查项。qa_reviewer 在审查技术方案时必须调用此工具获取准确依据，严禁凭记忆引用。",
   args: {
     keywords: tool.schema
       .array(tool.schema.string())
       .min(1)
       .describe('查询关键词列表，如 ["报警值", "基坑"] 或 ["水准", "闭合差"]'),
     standardCode: tool.schema
-      .enum(["GB 50911", "GB 50497", "JGJ 8", "GB 50026", "all"])
+      .enum([
+        "GB 50911",
+        "GB 50497",
+        "JGJ 8",
+        "GB 50026",
+        "GB 55017",
+        "GB 50007",
+        "TB 10101",
+        "TB 10601",
+        "LOCAL-RAIL-PROTECTION",
+        "all",
+      ])
       .default("all")
       .describe("限定查询的规范编号，默认搜索全部"),
     mandatoryOnly: tool.schema.boolean().default(false).describe("是否只返回强制性条文"),

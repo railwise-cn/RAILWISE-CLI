@@ -1,8 +1,6 @@
 name: docs-update
 
 on:
-  schedule:
-    - cron: "0 */12 * * *"
   workflow_dispatch:
 
 env:
@@ -10,7 +8,7 @@ env:
 
 jobs:
   update-docs:
-    if: github.repository == 'sst/railwise'
+    if: github.repository == 'railwise-cn/RAILWISE-CLI' && vars.RAILWISE_DOCS_AUTOMATION == 'true'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -43,7 +41,7 @@ jobs:
 
       - name: Run railwise
         if: steps.commits.outputs.has_commits == 'true'
-        uses: sst/railwise/github@latest
+        uses: railwise-cn/RAILWISE-CLI/github@dev
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
         with:

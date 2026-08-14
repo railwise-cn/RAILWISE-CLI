@@ -2,9 +2,6 @@ name: publish
 run-name: "${{ format('release {0}', inputs.bump || 'snapshot') }}"
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       bump:
@@ -35,17 +32,29 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            target: linux-x64
+            target: railwise-linux-x64
+            artifact: linux-x64
           - os: ubuntu-latest
-            target: linux-x64-baseline
+            target: railwise-linux-x64-baseline
+            artifact: linux-x64-baseline
+          - os: ubuntu-latest
+            target: railwise-linux-x64-baseline-musl
+            artifact: linux-x64-baseline-musl
           - os: ubuntu-24.04-arm
-            target: linux-arm64
+            target: railwise-linux-arm64
+            artifact: linux-arm64
           - os: macos-latest
-            target: darwin-arm64
+            target: railwise-darwin-arm64
+            artifact: darwin-arm64
           - os: macos-14
-            target: darwin-x64
+            target: railwise-darwin-x64
+            artifact: darwin-x64
+          - os: macos-14
+            target: railwise-darwin-x64-baseline
+            artifact: darwin-x64-baseline
           - os: windows-latest
-            target: windows-x64
+            target: railwise-windows-x64
+            artifact: windows-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -55,7 +64,7 @@ jobs:
       - uses: ./.github/actions/setup-bun
 
       - name: Build
-        run: bun run --cwd packages/railwise script/build.ts --single ${{ contains(matrix.target, 'baseline') && '--baseline' || '' }}
+        run: bun run --cwd packages/railwise script/build.ts --single --target ${{ matrix.target }}
         env:
           RAILWISE_VERSION: ${{ inputs.version || '' }}
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
@@ -63,7 +72,7 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: railwise-${{ matrix.target }}
+          name: railwise-${{ matrix.artifact }}
           path: packages/railwise/dist
 
   publish:
@@ -78,30 +87,85 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
-          registry-url: "https://registry.npmjs.org"
+
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
 
       - uses: actions/download-artifact@v8
         with:
           path: packages/railwise/dist
           merge-multiple: true
 
-      - name: Publish to npm
+      - name: Resolve release version
+        id: release-version
+        run: |
+          VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved release version ${VERSION}"
+
+      - name: Pack shared packages
+        run: bun ./scripts/pack-shared-packages.ts
+        env:
+          RAILWISE_VERSION: ${{ inputs.version || '' }}
+          RAILWISE_BUMP: ${{ inputs.bump || '' }}
+          RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
+          RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
+
+      - name: Pack Agent Pack
+        run: |
+          bun run assets:extract -- --out dist/agent-pack/railwise-agent-pack --name @railwise/agent-pack --version "${{ steps.release-version.outputs.version }}" --force
+          cd dist/agent-pack/railwise-agent-pack
+          bun pm pack
+
+      - name: Publish CLI to npm
+        id: cli-npm
+        continue-on-error: true
         run: bun run --cwd packages/railwise script/publish.ts
         env:
           RAILWISE_VERSION: ${{ inputs.version || '' }}
           RAILWISE_BUMP: ${{ inputs.bump || '' }}
           RAILWISE_CHANNEL: ${{ (inputs.bump || inputs.version) && 'latest' || github.ref_name }}
           RAILWISE_RELEASE: ${{ (inputs.bump || inputs.version) && 'true' || '' }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          NPM_CONFIG_PROVENANCE: false
+          NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ""
+          NPM_CONFIG_USERCONFIG: ""
+
+      - name: Report CLI npm publish failure
+        if: steps.cli-npm.outcome == 'failure'
+        run: echo "::warning::CLI npm publish failed; continuing with GitHub Release assets."
 
       - name: Create GitHub Release
         if: inputs.bump || inputs.version
         run: |
           VERSION=$(ls packages/railwise/dist/*/package.json | head -1 | xargs cat | bun -e "console.log(JSON.parse(await Bun.stdin.text()).version)")
-          gh release create "v${VERSION}" --title "v${VERSION}" --generate-notes \
-            packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip
+          ASSETS=(
+            packages/railwise/dist/*.tar.gz packages/railwise/dist/*.zip \
+            packages/railwise/dist/railwise/*.tgz \
+            dist/agent-pack/railwise-agent-pack/*.tgz \
+            dist/shared-packages/*.tgz dist/shared-packages/manifest.json
+          )
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/v${VERSION}" -f sha="$GITHUB_SHA" -F force=true
+            gh release upload "v${VERSION}" --clobber "${ASSETS[@]}"
+            gh release edit "v${VERSION}" --target "$GITHUB_SHA" --latest
+            exit 0
+          fi
+          gh release create "v${VERSION}" --title "v${VERSION}" --target "$GITHUB_SHA" --generate-notes "${ASSETS[@]}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify npm publish
+        if: inputs.bump || inputs.version
+        run: |
+          FAILED=()
+          if [[ "${{ steps.cli-npm.outcome }}" == "failure" ]]; then
+            FAILED+=("CLI")
+          fi
+          if ((${#FAILED[@]})); then
+            printf 'npm publish failed for: %s\n' "${FAILED[*]}"
+            exit 1
+          fi

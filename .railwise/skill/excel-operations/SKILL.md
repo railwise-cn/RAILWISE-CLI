@@ -22,16 +22,16 @@ description: Excel 报表生成技能。当需要导出监测数据表、统计�
 
 参数说明：
 
-| 参数                    | 类型       | 说明                                   |
-| ----------------------- | ---------- | -------------------------------------- |
-| `sheets`                | 数组       | 工作表列表，每个包含 name/headers/rows |
-| `sheets[].name`         | 字符串     | Sheet 名称，如"沉降监测"、"轴力统计"   |
-| `sheets[].headers`      | 字符串数组 | 列标题                                 |
-| `sheets[].rows`         | 二维数组   | 数据行，元素可为字符串/数字/布尔/null  |
-| `sheets[].columnWidths` | 数字数组   | 可选，各列宽度（字符数）               |
-| `sheets[].freezeRow`    | 数字       | 冻结前N行，默认1（冻结表头）           |
-| `title`                 | 字符串     | 文件名（不含扩展名）                   |
-| `outputPath`            | 字符串     | 可选，输出路径                         |
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| `sheets` | 数组 | 工作表列表，每个包含 name/headers/rows |
+| `sheets[].name` | 字符串 | Sheet 名称，如"沉降监测"、"轴力统计" |
+| `sheets[].headers` | 字符串数组 | 列标题 |
+| `sheets[].rows` | 二维数组 | 数据行，元素可为字符串/数字/布尔/null |
+| `sheets[].columnWidths` | 数字数组 | 可选，各列宽度（字符数） |
+| `sheets[].freezeRow` | 数字 | 冻结前N行，默认1（冻结表头） |
+| `title` | 字符串 | 文件名（不含扩展名） |
+| `outputPath` | 字符串 | 可选，输出路径 |
 
 ### `monitoring_table_export`（监测数据快捷导出）
 
@@ -39,28 +39,28 @@ description: Excel 报表生成技能。当需要导出监测数据表、统计�
 
 参数说明：
 
-| 参数             | 类型   | 说明                                                                     |
-| ---------------- | ------ | ------------------------------------------------------------------------ |
-| `projectName`    | 字符串 | 项目名称                                                                 |
-| `monitoringType` | 枚举   | settlement/displacement/axial_force/water_level/inclinometer/convergence |
-| `date`           | 字符串 | 报表日期 YYYY-MM-DD                                                      |
-| `points`         | 数组   | 测点数据列表                                                             |
-| `warningValue`   | 数字   | 可选，预警值                                                             |
-| `alarmValue`     | 数字   | 可选，报警值                                                             |
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| `projectName` | 字符串 | 项目名称 |
+| `monitoringType` | 枚举 | settlement/displacement/axial_force/water_level/inclinometer/convergence |
+| `date` | 字符串 | 报表日期 YYYY-MM-DD |
+| `points` | 数组 | 测点数据列表 |
+| `warningValue` | 数字 | 可选，预警值 |
+| `alarmValue` | 数字 | 可选，报警值 |
 
 ## 数据组织规范
 
 ### Sheet 命名
 
-| 场景     | 推荐名称         |
-| -------- | ---------------- |
+| 场景 | 推荐名称 |
+|------|---------|
 | 地表沉降 | 地表沉降监测数据 |
 | 桩顶位移 | 桩顶水平位移数据 |
-| 深层位移 | 测斜仪深层位移   |
+| 深层位移 | 测斜仪深层位移 |
 | 支撑轴力 | 支撑轴力监测数据 |
 | 地下水位 | 地下水位观测记录 |
 | 管片收敛 | 隧道收敛量测数据 |
-| 数据汇总 | 监测数据汇总表   |
+| 数据汇总 | 监测数据汇总表 |
 
 ### 表头规范
 
@@ -71,7 +71,6 @@ description: Excel 报表生成技能。当需要导出监测数据表、统计�
 ```
 
 关键要求：
-
 - 数值列必须注明单位（mm、kN、m 等）
 - 变化量保留小数点后1位
 - 速率保留小数点后2位

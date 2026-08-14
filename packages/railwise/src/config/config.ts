@@ -1241,7 +1241,6 @@ export namespace Config {
         })
         .optional(),
     })
-    .strict()
     .meta({
       ref: "Config",
     })

@@ -23,7 +23,7 @@
 
 目标：消灭那页“10分钟 Windows 零基础安装指南”，实现双击即用的工程软件体验。
 
-1. 完善 packages/desktop (基于 Tauri/Electron)
+1. 完善独立 `railwise-desktop-app` 桌面仓库（基于 Tauri）
    - 将当前的命令行交互封装为类似 ChatGPT 的原生对话框，但右侧提供丰富的工程数据看板（实时预览折线图、地图坐标、平差网形）。
 2. 本地绿色打包 (Zero-config)
    - 打包所有 Node/Bun 运行时，用户只需下载一个 RAILWISE-Setup.exe，无需配环境变量，无需懂 npm。

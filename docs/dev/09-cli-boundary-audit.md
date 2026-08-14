@@ -19,7 +19,7 @@ CLI 命令保持在自己的产品边界内：
 - `run`: 通过 Core server、SDK、工具和权限系统执行无头任务。
 - `workflow`: 通过 Core workflow routes 启动预置工作流、检查验收、按 session id 导出 delivery package JSON。
 
-`packages/railwise` 可以被 Desktop 作为 sidecar 复用，但 CLI 命令不能反向引用 `packages/desktop`、Desktop 配置或 Desktop 发布流程。
+`packages/railwise` 可以被 Desktop 作为 sidecar 复用，但 CLI 命令不能反向引用独立 Desktop 仓库、Desktop 配置或 Desktop 发布流程。
 
 ---
 
@@ -68,8 +68,8 @@ rg -n "RAILWISE_CLIENT|RAILWISE_DESKTOP|TAURI|DESKTOP|desktop" packages/railwise
 
 禁止 CLI 使用：
 
-- `packages/desktop` 代码路径。
-- `packages/desktop/src-tauri` 配置。
+- legacy `packages/desktop` 代码路径或独立 `railwise-desktop-app` 源码路径。
+- Desktop `src-tauri` 配置。
 - Tauri updater、签名、公证、安装包流程。
 - Desktop workspace / Agent Studio 的产品承诺。
 - 只能在 Desktop 原生壳中成立的本地文件、窗口、菜单或更新体验。

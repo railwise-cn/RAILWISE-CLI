@@ -28,7 +28,7 @@ import {
 } from "./workbench-state"
 
 const agents = [
-  { value: "chief_manager", label: "睿威主控", note: "拆解任务、调度专业能力" },
+  { value: "chief_manager", label: "RAILWISE", note: "拆解任务、调度专业能力" },
   { value: "cpiii_specialist", label: "线路复测专家", note: "CPⅢ、控制网与复测资料" },
   { value: "adjustment_computer", label: "平差计算专家", note: "观测数据、平差与成果检查" },
   { value: "norm_librarian", label: "规范资料员", note: "规范条文、交付清单与引用" },
@@ -346,7 +346,7 @@ export default function WorkbenchPage() {
           <h2>能力集</h2>
           <p>{capability()}</p>
           <div class="workbench-capabilities">
-            <span>主控智能体</span>
+            <span>RAILWISE 协作</span>
             <span>测绘资料检查</span>
             <span>规范引用</span>
             <span>文件读取</span>

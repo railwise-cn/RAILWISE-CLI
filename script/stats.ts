@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-async function sendToPostHog(event: string, properties: Record<string, any>) {
+async function sendToPostHog(event: string, properties: Record<string, unknown>) {
   const key = process.env["POSTHOG_KEY"]
 
   if (!key) {
@@ -73,9 +73,16 @@ async function fetchReleases(): Promise<Release[]> {
   const per = 100
 
   while (true) {
-    const url = `https://api.github.com/repos/anomalyco/railwise/releases?page=${page}&per_page=${per}`
+    const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY ?? "railwise-cn/RAILWISE-CLI"}/releases?page=${page}&per_page=${per}`
 
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      headers: process.env.GITHUB_TOKEN
+        ? {
+            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+            Accept: "application/vnd.github+json",
+          }
+        : undefined,
+    })
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status} ${response.statusText}`)
     }
@@ -188,7 +195,7 @@ async function save(githubTotal: number, npmDownloads: number) {
   )
 }
 
-console.log("Fetching GitHub releases for anomalyco/railwise...\n")
+console.log(`Fetching GitHub releases for ${process.env.GITHUB_REPOSITORY ?? "railwise-cn/RAILWISE-CLI"}...\n`)
 
 const releases = await fetchReleases()
 console.log(`\nFetched ${releases.length} releases total\n`)

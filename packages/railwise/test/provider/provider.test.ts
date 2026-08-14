@@ -4,7 +4,35 @@ import path from "path"
 import { tmpdir } from "../fixture/fixture"
 import { Instance } from "../../src/project/instance"
 import { Provider } from "../../src/provider/provider"
+import { ModelsDev } from "../../src/provider/models"
 import { Env } from "../../src/env"
+
+test("normalizes custom interleaved reasoning fields from models.dev", () => {
+  const provider = Provider.fromModelsDevProvider(
+    ModelsDev.Provider.parse({
+      id: "custom",
+      name: "Custom",
+      api: "https://example.com/v1",
+      env: [],
+      models: {
+        reasoning: {
+          id: "reasoning",
+          name: "Reasoning",
+          release_date: "2026-01-01",
+          attachment: false,
+          reasoning: true,
+          temperature: true,
+          tool_call: true,
+          interleaved: "vendor_reasoning",
+          options: {},
+          limit: { context: 128000, output: 8192 },
+        },
+      },
+    }),
+  )
+
+  expect(provider.models.reasoning.capabilities.interleaved).toEqual({ field: "vendor_reasoning" })
+})
 
 test("provider loaded from env variable", async () => {
   await using tmp = await tmpdir({

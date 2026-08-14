@@ -15,6 +15,10 @@ process.chdir(dir)
 
 import pkg from "../package.json"
 import { Script } from "@railwise/script"
+const repository = {
+  type: "git",
+  url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
+}
 // Fetch and generate models.dev snapshot
 const data = await models(dir)
 if (data) {
@@ -50,9 +54,6 @@ console.log(`Loaded ${migrations.length} migrations`)
 
 const singleFlag = process.argv.includes("--single")
 const baselineFlag = process.argv.includes("--baseline")
-// Single-target desktop sidecar builds already run after a frozen workspace install.
-// Reinstalling all OS/CPU native packages can hang CI on hosted Intel macOS runners.
-const skipInstall = process.argv.includes("--skip-install") || singleFlag
 const sourcemapsFlag = process.argv.includes("--sourcemaps")
 const arg = (key: string) => {
   const index = process.argv.indexOf(key)
@@ -146,6 +147,13 @@ const targets = singleFlag
 
 if (only && targets.length === 0) throw new Error(`Unknown target: ${only}`)
 
+const native = targets.every(
+  (item) => item.os === process.platform && item.arch === process.arch && item.abi === undefined,
+)
+// Single-target native builds already run after a frozen workspace install.
+// Cross-target builds still need the optional native packages for the target.
+const skipInstall = process.argv.includes("--skip-install") || (singleFlag && native)
+
 await $`rm -rf dist`
 
 const binaries: Record<string, string> = {}
@@ -213,6 +221,7 @@ for (const item of targets) {
       {
         name: itemName,
         version: Script.version,
+        repository,
         preferUnplugged: true,
         os: [item.os],
         cpu: [item.arch],

@@ -22,6 +22,7 @@ const pack = path.join(root, "tmp", "npm-shared")
 const dirs = ["packages/util", "packages/ui", "packages/app"]
 const rootpkg = await Bun.file("package.json").json()
 const catalog = (rootpkg.workspaces as { catalog?: Record<string, string> }).catalog ?? {}
+const repository = rootpkg.repository
 const { Script } = await import("@railwise/script")
 const version = Script.version.replace(/[^0-9A-Za-z.-]/g, "-")
 process.env.RAILWISE_VERSION = version
@@ -54,6 +55,7 @@ async function write(pkg: Json, dir: string) {
   next.dependencies = deps(next.dependencies)
   next.devDependencies = deps(next.devDependencies)
   next.peerDependencies = deps(next.peerDependencies)
+  next.repository = repository
   next.publishConfig = { access: "public" }
   next.files = dir.endsWith("/app") ? ["src", "public", "vite.js"] : ["src"]
   await writeFile(path.join(pack, dir, "package.json"), JSON.stringify(next, null, 2) + "\n")

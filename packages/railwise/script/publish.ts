@@ -5,7 +5,21 @@ import { Script } from "@railwise/script"
 import { fileURLToPath } from "url"
 
 const dir = fileURLToPath(new URL("..", import.meta.url))
+const root = fileURLToPath(new URL("../../..", import.meta.url))
 process.chdir(dir)
+const repository = {
+  type: "git",
+  url: "git+https://github.com/railwise-cn/RAILWISE-CLI.git",
+}
+const npm = new Set([
+  "railwise-darwin-arm64",
+  "railwise-darwin-x64",
+  "railwise-linux-arm64",
+  "railwise-linux-x64",
+  "railwise-linux-x64-baseline",
+  "railwise-linux-x64-baseline-musl",
+  "railwise-windows-x64",
+])
 
 const binaries: Record<string, string> = {}
 for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" })) {
@@ -14,10 +28,39 @@ for (const filepath of new Bun.Glob("*/package.json").scanSync({ cwd: "./dist" }
 }
 console.log("binaries", binaries)
 const version = Object.values(binaries)[0]
+const publish = Object.fromEntries(Object.entries(binaries).filter(([name]) => npm.has(name)))
+const skipped = Object.keys(binaries).filter((name) => !npm.has(name))
+if (skipped.length) console.warn(`Skipping npm publish for unbootstrapped binary packages: ${skipped.join(", ")}`)
+
+async function archive(name: string) {
+  if (name.includes("linux")) {
+    await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise`.nothrow()
+    return
+  }
+  if (name.includes("darwin")) {
+    await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise`.nothrow()
+    return
+  }
+  if (name.includes("windows")) {
+    await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe`.nothrow()
+  }
+}
+
+function message(value: unknown) {
+  if (value instanceof Error) return value.message
+  return String(value)
+}
+
+if (!Script.preview) {
+  await Promise.all(Object.keys(binaries).map(archive))
+}
 
 await $`mkdir -p ./dist/${pkg.name}`
 await $`cp -r ./bin ./dist/${pkg.name}/bin`
 await $`cp ./script/postinstall.mjs ./dist/${pkg.name}/postinstall.mjs`
+await $`bun ./scripts/extract-assets.ts --out ${fileURLToPath(new URL(`../dist/${pkg.name}/agent-pack`, import.meta.url))} --name @railwise/agent-pack --version ${version} --force`.cwd(
+  root,
+)
 await Bun.file(`./dist/${pkg.name}/LICENSE`).write(await Bun.file("../../LICENSE").text())
 
 await Bun.file(`./dist/${pkg.name}/package.json`).write(
@@ -32,38 +75,38 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
       },
       version: version,
       license: pkg.license,
-      optionalDependencies: binaries,
+      repository,
+      files: ["agent-pack", "bin", "LICENSE", "postinstall.mjs"],
+      optionalDependencies: publish,
     },
     null,
     2,
   ),
 )
 
-const tasks = Object.entries(binaries).map(async ([name]) => {
+const tasks = Object.entries(publish).map(async ([name]) => {
   if (process.platform !== "win32") {
     await $`chmod -R 755 .`.cwd(`./dist/${name}`)
   }
   await $`bun pm pack`.cwd(`./dist/${name}`)
-  await $`npm publish *.tgz --access public --tag ${Script.channel}`.cwd(`./dist/${name}`)
+  await $`env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish *.tgz --access public --tag ${Script.channel} --provenance`.cwd(
+    `./dist/${name}`,
+  )
 })
-await Promise.all(tasks)
-await $`cd ./dist/${pkg.name} && bun pm pack && npm publish *.tgz --access public --tag ${Script.channel}`
+const results = await Promise.allSettled(tasks)
+const failed = results.flatMap((result, index) =>
+  result.status === "rejected" ? [`${Object.keys(publish)[index]}: ${message(result.reason)}`] : [],
+)
+if (failed.length) {
+  console.warn(["Binary npm package publish failed (continuing with release assets):", ...failed].join("\n"))
+}
+await $`cd ./dist/${pkg.name} && bun pm pack && env -u NODE_AUTH_TOKEN -u NPM_CONFIG_USERCONFIG npm publish *.tgz --access public --tag ${Script.channel} --provenance`
 
 console.log("npm publish complete")
 
 if (!Script.preview) {
   const github = Script.github.full
   const ver = Script.version
-
-  for (const name of Object.keys(binaries)) {
-    if (name.includes("linux")) {
-      await $`tar -czf ./dist/${name}.tar.gz -C ./dist/${name}/bin railwise`.nothrow()
-    } else if (name.includes("darwin")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise`.nothrow()
-    } else if (name.includes("windows")) {
-      await $`cd ./dist/${name}/bin && zip -q ../../${name}.zip railwise.exe`.nothrow()
-    }
-  }
 
   const sha = async (file: string) => {
     try {

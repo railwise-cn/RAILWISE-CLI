@@ -6,6 +6,8 @@ type: implementation-spec
 
 # RAILWISE Desktop M1 Foundation Completion Design
 
+> Archived note: this spec predates the Desktop split. Historical `packages/desktop` paths now live in the standalone `railwise-desktop-app` repository.
+
 **Date**: 2026-04-22
 **Target**: RAILWISE Desktop v1.3.0 Milestone 1
 **Repository**: RAILWISE-CLI monorepo

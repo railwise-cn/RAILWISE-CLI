@@ -2,9 +2,6 @@ name: publish
 run-name: "${{ format('release {0}', inputs.bump || 'snapshot') }}"
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       bump:

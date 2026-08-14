@@ -1,9 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/json",
-  "lastSyncedTag": "v1.2.8",
   "upstream": {
     "remote": "upstream",
-    "url": "https://github.com/sst/opencode.git",
+    "url": "https://github.com/anomalyco/opencode.git",
     "packagePath": "packages/opencode",
     "rebrandedPackagePath": "packages/railwise"
   },

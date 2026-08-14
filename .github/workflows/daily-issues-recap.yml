@@ -1,10 +1,7 @@
 name: daily-issues-recap
 
 on:
-  schedule:
-    # Run at 6 PM EST (23:00 UTC, or 22:00 UTC during daylight saving)
-    - cron: "0 23 * * *"
-  workflow_dispatch: # Allow manual trigger for testing
+  workflow_dispatch:
 
 jobs:
   daily-recap:
@@ -21,7 +18,7 @@ jobs:
       - uses: ./.github/actions/setup-bun
 
       - name: Install railwise
-        run: curl -fsSL https://railwise.ai/install | bash
+        run: npm install --global railwise-ai@1.2.34
 
       - name: Generate daily issues recap
         id: recap

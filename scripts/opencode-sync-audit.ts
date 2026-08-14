@@ -3,8 +3,30 @@
 import { $ } from "bun"
 import { readdir } from "node:fs/promises"
 
-const base = process.argv[2] ?? "v1.4.5"
-const target = process.argv[3] ?? "v1.15.3"
+type Tree = {
+  truncated?: boolean
+  tree: Array<{
+    path: string
+    type: "blob" | "tree"
+    sha: string
+  }>
+}
+
+const args = process.argv.slice(2)
+const arg = (name: string) => {
+  const index = args.indexOf(name)
+  if (index === -1) return undefined
+  return args[index + 1]
+}
+const base = args[0] ?? "v1.4.5"
+const target = args[1] ?? "v1.15.3"
+const baseTree = arg("--base-tree")
+const targetTree = arg("--target-tree")
+const baseLabel = arg("--base-label") ?? base
+const targetLabel = arg("--target-label") ?? target
+const prefixes = ["packages/opencode/", "packages/core/", "packages/app/", "packages/ui/", "packages/sdk/js/"]
+const scoped = (file: string) =>
+  file === "package.json" || file === "bun.lock" || prefixes.some((item) => file.startsWith(item))
 
 const bump = (map: Record<string, number>, key: string) => {
   map[key] = (map[key] ?? 0) + 1
@@ -16,37 +38,59 @@ const table = (map: Record<string, number>) =>
     .map(([key, count]) => `| ${key} | ${count} |`)
     .join("\n")
 
-const diff =
-  await $`git diff --name-status ${base}..${target} -- package.json bun.lock packages/opencode packages/app packages/ui packages/sdk/js`.text()
-const rows = diff
-  .trim()
-  .split("\n")
-  .filter(Boolean)
-  .map((line) => {
-    const parts = line.split(/\s+/)
-    return {
-      status: parts[0],
-      file: parts[parts.length - 1],
-    }
-  })
+const trees =
+  baseTree && targetTree
+    ? await Promise.all([baseTree, targetTree].map(async (file) => (await Bun.file(file).json()) as Tree))
+    : undefined
+if (trees?.some((tree) => tree.truncated)) throw new Error("GitHub API returned a truncated tree; audit cannot continue")
+const rows = trees
+  ? (() => {
+      const maps = trees.map(
+        (tree) =>
+          new Map(
+            tree.tree.filter((item) => item.type === "blob" && scoped(item.path)).map((item) => [item.path, item.sha]),
+          ),
+      )
+      return [...new Set([...maps[0].keys(), ...maps[1].keys()])].sort().flatMap((file) => {
+        if (!maps[0].has(file)) return [{ status: "A", file }]
+        if (!maps[1].has(file)) return [{ status: "D", file }]
+        if (maps[0].get(file) !== maps[1].get(file)) return [{ status: "M", file }]
+        return []
+      })
+    })()
+  : (
+      await $`git diff --name-status ${base}..${target} -- package.json bun.lock packages/opencode packages/core packages/app packages/ui packages/sdk/js`.text()
+    )
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const parts = line.split(/\s+/)
+        return {
+          status: parts[0],
+          file: parts[parts.length - 1],
+        }
+      })
 
 const scopes: Record<string, number> = {}
 const statuses: Record<string, number> = {}
 const backend: Record<string, number> = {}
+const core: Record<string, number> = {}
 const app: Record<string, number> = {}
 
 for (const row of rows) {
   bump(statuses, row.status[0])
   bump(scopes, row.file.startsWith("packages/") ? row.file.split("/").slice(0, 2).join("/") : row.file)
   if (row.file.startsWith("packages/opencode/src/")) bump(backend, row.file.split("/")[3] ?? "(root)")
+  if (row.file.startsWith("packages/core/src/")) bump(core, row.file.split("/")[3] ?? "(root)")
   if (row.file.startsWith("packages/app/src/")) bump(app, row.file.split("/")[3] ?? "(root)")
 }
 
 const mapped = await Promise.all(
   rows
-    .filter((row) => row.file.startsWith("packages/opencode/"))
+    .filter((row) => row.file.startsWith("packages/opencode/") || row.file.startsWith("packages/core/"))
     .map(async (row) => {
-      const file = row.file.replace("packages/opencode/", "packages/railwise/")
+      const file = row.file.replace(/^packages\/(opencode|core)\//, "packages/railwise/")
       return {
         upstream: row.file,
         railwise: file,
@@ -56,7 +100,22 @@ const mapped = await Promise.all(
 )
 
 const upstream = new Set(
-  (await $`git ls-tree -d --name-only ${`${target}:packages/opencode/src`}`.text()).trim().split("\n").filter(Boolean),
+  trees
+    ? trees[1].tree.flatMap((item) => {
+        if (item.type !== "tree") return []
+        const prefix = ["packages/opencode/src/", "packages/core/src/"].find((value) => item.path.startsWith(value))
+        if (!prefix) return []
+        return item.path.slice(prefix.length).split("/")[0] || []
+      })
+    : (
+        await Promise.all(
+          ["packages/opencode/src", "packages/core/src"].map((dir) =>
+            $`git ls-tree -d --name-only ${`${target}:${dir}`}`.quiet().nothrow(),
+          ),
+        )
+      )
+        .flatMap((result) => result.stdout.toString().trim().split("\n"))
+        .filter(Boolean),
 )
 const current = new Set(
   (await readdir("packages/railwise/src", { withFileTypes: true }))
@@ -68,9 +127,9 @@ const missing = [...upstream].filter((name) => !current.has(name)).sort()
 const railwiseOnly = [...current].filter((name) => !upstream.has(name)).sort()
 const exists = mapped.filter((row) => row.exists).length
 const report = [
-  `# opencode ${target} Sync Audit`,
+  `# opencode ${targetLabel} Sync Audit`,
   "",
-  `Generated from ${base}..${target}.`,
+  `Generated from ${baseLabel}..${targetLabel}.`,
   "",
   "## Summary",
   "",
@@ -97,6 +156,12 @@ const report = [
   "| --- | ---: |",
   table(backend),
   "",
+  "## Core Modules Changed",
+  "",
+  "| packages/core/src module | Files |",
+  "| --- | ---: |",
+  table(core),
+  "",
   "## App Areas Changed",
   "",
   "| packages/app/src area | Files |",
@@ -105,7 +170,7 @@ const report = [
   "",
   "## Railwise Mapping Coverage",
   "",
-  `- Upstream packages/opencode changes: ${mapped.length}`,
+  `- Upstream packages/opencode and packages/core changes: ${mapped.length}`,
   `- Existing mapped Railwise files: ${exists}`,
   `- Missing mapped Railwise files: ${mapped.length - exists}`,
   "",

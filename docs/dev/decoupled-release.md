@@ -4,47 +4,28 @@ This repository keeps Core, CLI, SDK, shared App Shell packages, and Agent Pack 
 
 ## CLI Upstream Sync
 
-Generate a clean rebrand baseline from an upstream tag:
+Audit a stable upstream tag without changing branches or tracked source files:
 
 ```bash
-bun run sync:upstream -- --to v1.17.8 --dry-run
-bun run sync:upstream -- --to v1.17.8
+bun run sync:upstream -- --to v1.18.18 --dry-run
+bun run sync:upstream -- --to v1.18.18
+bun run sync:upstream -- --to v1.18.18 --write
+bun run sync:upstream -- --to v1.18.18 --write --api
 ```
 
-Because the fork mirrors upstream version numbers, local release tags such as `v1.2.8` collide with upstream's identically named tags. The sync script fetches the requested ref into `refs/railwise-sync/<tag>` instead of `refs/tags/<tag>`, so it never clobbers a local tag and always checks out upstream's commit. Do not run `git fetch upstream --tags` manually; it can fail with "would clobber existing tag".
+The script fetches the reviewed and target tags into `refs/railwise-sync/<tag>`, runs the scoped Core/App/SDK audit, and prints or writes the report. If Git transport is unavailable, it falls back to GitHub API trees; pass `--api` to select that mode directly. It never checks out an upstream tree, creates a rebrand branch, deletes files, or rebases Railwise history. Local Railwise release tags therefore cannot collide with upstream tags.
 
-Then rebase Railwise work onto that baseline:
+After the report has been reviewed and every release item is classified in the porting ledger, explicitly record the reviewed tag:
 
 ```bash
-git switch dev
-git rebase --onto sync/v1.17.8 <previous-sync-base> dev
-bun run rebrand:audit
+bun run sync:upstream -- --to v1.18.18 --write --record
 ```
 
-`scripts/rebrand.config.json` is the deterministic brand map. Keep custom Railwise code in new files or packages where possible so future rebases only conflict on real feature changes.
+`scripts/upstream-state.json` separately records the latest reviewed tag and exact upstream-to-Railwise commit mappings. A reviewed tag does not imply that every upstream change was ported.
 
 ### Current Sync Audit
 
-The current `origin/dev` history is rooted at the large import commit:
-
-```bash
-7fb66d861 feat: v1.3.0 - Parallel Agent + PPT Master (#1)
-```
-
-That root commit is not descended from `sync/v1.2.8`, so this command is not valid for the current branch shape:
-
-```bash
-git rebase --onto sync/v1.16.2 sync/v1.2.8 dev
-```
-
-It attempts to replay the full repository import and produces add/add conflicts across the tree. The safer first pass is to skip the import root and replay Railwise changes after it:
-
-```bash
-git switch -c codex/rebase-v1.3.17-dev origin/dev
-git rebase --onto sync/v1.3.17 7fb66d861
-```
-
-That trial currently stops on `980d8f390 feat(desktop): add GA release readiness` with 90 conflicted files, mostly in `packages/web`, `packages/app`, `packages/railwise`, and the historical `packages/desktop` tree. The current CLI branch has removed `packages/desktop`, so future sync work should treat Desktop history as a separate product line and replay only Core/CLI/shared-package changes into this repository.
+Railwise history is rooted at a product import and has no usable merge base with the generated `sync/*` snapshots. Previous rebase trials produced repository-wide add/add conflicts. Upstream changes must therefore be ported as reviewed, focused commits onto `dev`; generated snapshots remain audit inputs only.
 
 Generated and pushed baselines:
 
@@ -58,6 +39,8 @@ Generated and pushed baselines:
 Latest scoped audit:
 
 - `docs/dev/12-opencode-v1.17.8-sync-audit.md`
+- `docs/dev/opencode-v1.18.18-sync-audit.md`
+- `docs/dev/opencode-v1.18.18-porting-ledger.md`
 
 ## Agent Pack
 

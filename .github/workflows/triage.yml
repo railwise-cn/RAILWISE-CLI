@@ -16,13 +16,24 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Check prerequisites
+        id: prerequisites
+        env:
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
+        run: |
+          if [ -z "$RAILWISE_API_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping issue triage because RAILWISE_API_KEY is not configured"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+
       - name: Setup Bun
+        if: steps.prerequisites.outputs.enabled == 'true'
         uses: ./.github/actions/setup-bun
 
-      - name: Install railwise
-        run: curl -fsSL https://railwise.ai/install | bash
-
       - name: Triage issue
+        if: steps.prerequisites.outputs.enabled == 'true'
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +41,7 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          railwise run --agent triage "The following issue was just opened, triage it:
+          bun --conditions=browser packages/railwise/src/index.ts run --agent triage "The following issue was just opened, triage it:
 
           Title: $ISSUE_TITLE
 

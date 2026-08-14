@@ -29,12 +29,24 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: ./.github/actions/setup-bun
+      - name: Check prerequisites
+        id: prerequisites
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping review because ANTHROPIC_API_KEY is not configured"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
 
-      - name: Install railwise
-        run: curl -fsSL https://railwise.ai/install | bash
+      - name: Setup Bun
+        if: steps.prerequisites.outputs.enabled == 'true'
+        uses: ./.github/actions/setup-bun
 
       - name: Get PR details
+        if: steps.prerequisites.outputs.enabled == 'true'
         id: pr-details
         run: |
           gh api /repos/${{ github.repository }}/pulls/${{ steps.pr-number.outputs.number }} > pr_data.json
@@ -44,6 +56,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check PR guidelines compliance
+        if: steps.prerequisites.outputs.enabled == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +64,7 @@ jobs:
           PR_TITLE: ${{ steps.pr-details.outputs.title }}
         run: |
           PR_BODY=$(jq -r .body pr_data.json)
-          railwise run -m anthropic/claude-opus-4-5 "A new pull request has been created: '${PR_TITLE}'
+          bun --conditions=browser packages/railwise/src/index.ts run -m anthropic/claude-opus-4-5 "A new pull request has been created: '${PR_TITLE}'
 
           <pr-number>
           ${{ steps.pr-number.outputs.number }}

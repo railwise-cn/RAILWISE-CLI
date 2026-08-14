@@ -49,18 +49,8 @@ jobs:
         if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
         run: bun install
 
-      - name: Install railwise
-        id: install-railwise
-        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          curl -fsSL https://railwise.ai/install | bash
-          echo "$HOME/.railwise/bin" >> "$GITHUB_PATH"
-          command -v railwise
-
       - name: Build prompt
-        if: steps.team-check.outputs.is_team != 'true' && steps.install-railwise.outcome == 'success'
+        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -77,7 +67,7 @@ jobs:
           } > pr_info.txt
 
       - name: Check for duplicate PRs
-        if: steps.team-check.outputs.is_team != 'true' && steps.install-railwise.outcome == 'success'
+        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true'
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,10 +80,6 @@ jobs:
 
           $COMMENT"
           fi
-
-      - name: Report duplicate check skip
-        if: steps.team-check.outputs.is_team != 'true' && steps.duplicate-prerequisites.outputs.enabled == 'true' && steps.install-railwise.outcome != 'success'
-        run: echo "::notice::Skipping duplicate PR check because railwise failed to install"
 
   add-contributor-label:
     runs-on: ubuntu-latest

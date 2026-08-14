@@ -17,12 +17,24 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: ./.github/actions/setup-bun
+      - name: Check prerequisites
+        id: prerequisites
+        env:
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
+        run: |
+          if [ -z "$RAILWISE_API_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping duplicate issue check because RAILWISE_API_KEY is not configured"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
 
-      - name: Install railwise
-        run: curl -fsSL https://railwise.ai/install | bash
+      - name: Setup Bun
+        if: steps.prerequisites.outputs.enabled == 'true'
+        uses: ./.github/actions/setup-bun
 
       - name: Check duplicates and compliance
+        if: steps.prerequisites.outputs.enabled == 'true'
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,7 +47,7 @@ jobs:
               "webfetch": "deny"
             }
         run: |
-          railwise run -m railwise/claude-sonnet-4-6 "A new issue has been created:
+          bun --conditions=browser packages/railwise/src/index.ts run -m railwise/claude-sonnet-4-6 "A new issue has been created:
 
           Issue number: ${{ github.event.issue.number }}
 
@@ -129,12 +141,24 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: ./.github/actions/setup-bun
+      - name: Check prerequisites
+        id: prerequisites
+        env:
+          RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
+        run: |
+          if [ -z "$RAILWISE_API_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping issue compliance recheck because RAILWISE_API_KEY is not configured"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
 
-      - name: Install railwise
-        run: curl -fsSL https://railwise.ai/install | bash
+      - name: Setup Bun
+        if: steps.prerequisites.outputs.enabled == 'true'
+        uses: ./.github/actions/setup-bun
 
       - name: Recheck compliance
+        if: steps.prerequisites.outputs.enabled == 'true'
         env:
           RAILWISE_API_KEY: ${{ secrets.RAILWISE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -147,7 +171,7 @@ jobs:
               "webfetch": "deny"
             }
         run: |
-          railwise run -m railwise/claude-sonnet-4-6 "Issue #${{ github.event.issue.number }} was previously flagged as non-compliant and has been edited.
+          bun --conditions=browser packages/railwise/src/index.ts run -m railwise/claude-sonnet-4-6 "Issue #${{ github.event.issue.number }} was previously flagged as non-compliant and has been edited.
 
           Lookup this issue with gh issue view ${{ github.event.issue.number }}.
 

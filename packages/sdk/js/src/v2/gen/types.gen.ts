@@ -1539,9 +1539,10 @@ export type ProviderConfig = {
       temperature?: boolean
       tool_call?: boolean
       interleaved?:
-        | true
+        | boolean
+        | string
         | {
-            field: "reasoning" | "reasoning_content" | "reasoning_details"
+            field: string
           }
       cost?: {
         input: number
@@ -1991,7 +1992,7 @@ export type Model = {
     interleaved:
       | boolean
       | {
-          field: "reasoning" | "reasoning_content" | "reasoning_details"
+          field: string
         }
   }
   cost: {
@@ -4420,9 +4421,10 @@ export type ProviderListResponses = {
           temperature: boolean
           tool_call: boolean
           interleaved?:
-            | true
+            | boolean
+            | string
             | {
-                field: "reasoning" | "reasoning_content" | "reasoning_details"
+                field: string
               }
           cost?: {
             input: number

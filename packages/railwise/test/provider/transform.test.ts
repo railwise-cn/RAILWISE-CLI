@@ -173,6 +173,22 @@ describe("ProviderTransform.options - gpt-5 textVerbosity", () => {
     const result = ProviderTransform.options({ model, sessionID, providerOptions: {} })
     expect(result.textVerbosity).toBeUndefined()
   })
+
+  test("Azure GPT-5.5+ completion requests omit reasoningEffort", () => {
+    const model = createGpt5Model("gpt-5.5")
+    model.providerID = "azure"
+    model.api.npm = "@ai-sdk/azure"
+    const result = ProviderTransform.options({ model, sessionID, providerOptions: { useCompletionUrls: true } })
+    expect(result.reasoningEffort).toBeUndefined()
+  })
+
+  test("Azure GPT-5.4 completion requests retain reasoningEffort", () => {
+    const model = createGpt5Model("gpt-5.4")
+    model.providerID = "azure"
+    model.api.npm = "@ai-sdk/azure"
+    const result = ProviderTransform.options({ model, sessionID, providerOptions: { useCompletionUrls: true } })
+    expect(result.reasoningEffort).toBe("medium")
+  })
 })
 
 describe("ProviderTransform.options - gateway", () => {

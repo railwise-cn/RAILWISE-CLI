@@ -117,6 +117,8 @@ export namespace LLM {
     ) {
       delete options.reasoningSummary
       delete options.include
+      const [, major, minor] = input.model.api.id.match(/gpt-(\d+)\.(\d+)/) ?? []
+      if (Number(major) > 5 || (Number(major) === 5 && Number(minor) >= 5)) delete options.reasoningEffort
     }
     if (isCodex) {
       options.instructions = SystemPrompt.instructions()

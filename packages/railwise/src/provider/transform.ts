@@ -850,6 +850,15 @@ export namespace ProviderTransform {
       }
     }
 
+    const [, major, minor] = input.model.api.id.match(/gpt-(\d+)\.(\d+)/) ?? []
+    if (
+      input.model.api.npm === "@ai-sdk/azure" &&
+      input.providerOptions?.useCompletionUrls &&
+      (Number(major) > 5 || (Number(major) === 5 && Number(minor) >= 5))
+    ) {
+      delete result.reasoningEffort
+    }
+
     if (input.model.providerID === "venice") {
       result["promptCacheKey"] = input.sessionID
     }

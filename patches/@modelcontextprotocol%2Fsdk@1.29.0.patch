@@ -1,0 +1,33 @@
+diff --git a/dist/cjs/client/streamableHttp.js b/dist/cjs/client/streamableHttp.js
+index a29a7d3..0d4990a 100644
+--- a/dist/cjs/client/streamableHttp.js
++++ b/dist/cjs/client/streamableHttp.js
+@@ -204,7 +204,7 @@ class StreamableHTTPClientTransport {
+                     if (!event.event || event.event === 'message') {
+                         try {
+                             const message = types_js_1.JSONRPCMessageSchema.parse(JSON.parse(event.data));
+-                            if ((0, types_js_1.isJSONRPCResultResponse)(message)) {
++                            if ((0, types_js_1.isJSONRPCResultResponse)(message) || (0, types_js_1.isJSONRPCErrorResponse)(message)) {
+                                 // Mark that we received a response - no need to reconnect for this request
+                                 receivedResponse = true;
+                                 if (replayMessageId !== undefined) {
+diff --git a/dist/esm/client/streamableHttp.js b/dist/esm/client/streamableHttp.js
+index 624172a..095f1e1 100644
+--- a/dist/esm/client/streamableHttp.js
++++ b/dist/esm/client/streamableHttp.js
+@@ -1,5 +1,5 @@
+ import { createFetchWithInit, normalizeHeaders } from '../shared/transport.js';
+-import { isInitializedNotification, isJSONRPCRequest, isJSONRPCResultResponse, JSONRPCMessageSchema } from '../types.js';
++import { isInitializedNotification, isJSONRPCErrorResponse, isJSONRPCRequest, isJSONRPCResultResponse, JSONRPCMessageSchema } from '../types.js';
+ import { auth, extractWWWAuthenticateParams, UnauthorizedError } from './auth.js';
+ import { EventSourceParserStream } from 'eventsource-parser/stream';
+ // Default reconnection options for StreamableHTTP connections
+@@ -200,7 +200,7 @@ export class StreamableHTTPClientTransport {
+                     if (!event.event || event.event === 'message') {
+                         try {
+                             const message = JSONRPCMessageSchema.parse(JSON.parse(event.data));
+-                            if (isJSONRPCResultResponse(message)) {
++                            if (isJSONRPCResultResponse(message) || isJSONRPCErrorResponse(message)) {
+                                 // Mark that we received a response - no need to reconnect for this request
+                                 receivedResponse = true;
+                                 if (replayMessageId !== undefined) {

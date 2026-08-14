@@ -630,7 +630,7 @@ export namespace Provider {
         interleaved: z.union([
           z.boolean(),
           z.object({
-            field: z.enum(["reasoning", "reasoning_content", "reasoning_details"]),
+            field: z.string(),
           }),
         ]),
       }),
@@ -739,7 +739,8 @@ export namespace Provider {
           video: model.modalities?.output?.includes("video") ?? false,
           pdf: model.modalities?.output?.includes("pdf") ?? false,
         },
-        interleaved: model.interleaved ?? false,
+        interleaved:
+          typeof model.interleaved === "string" ? { field: model.interleaved } : (model.interleaved ?? false),
       },
       release_date: model.release_date,
       variants: {},
@@ -877,7 +878,10 @@ export namespace Provider {
               video: model.modalities?.output?.includes("video") ?? existingModel?.capabilities.output.video ?? false,
               pdf: model.modalities?.output?.includes("pdf") ?? existingModel?.capabilities.output.pdf ?? false,
             },
-            interleaved: model.interleaved ?? false,
+            interleaved:
+              (typeof model.interleaved === "string" ? { field: model.interleaved } : model.interleaved) ??
+              existingModel?.capabilities.interleaved ??
+              false,
           },
           cost: {
             input: model?.cost?.input ?? existingModel?.cost?.input ?? 0,

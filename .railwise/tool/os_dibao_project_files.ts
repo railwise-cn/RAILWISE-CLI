@@ -29,10 +29,14 @@ function compactProject(project: Obj) {
 }
 
 export default tool({
-  description: "List dibao project files so agents can preview or reference project materials, including Yongfeng Bridge.",
+  description:
+    "List dibao project files so agents can preview or reference project materials, including Yongfeng Bridge.",
   args: {
     projectId: tool.schema.string().optional().describe("Dibao project id."),
-    projectName: tool.schema.string().optional().describe("Project name keyword, for example Yongfeng Bridge / 永丰桥."),
+    projectName: tool.schema
+      .string()
+      .optional()
+      .describe("Project name keyword, for example Yongfeng Bridge / 永丰桥."),
     groupName: tool.schema.string().optional().describe("Optional archive group filter."),
     limit: tool.schema.number().int().min(1).max(80).optional().describe("Maximum file count."),
   },

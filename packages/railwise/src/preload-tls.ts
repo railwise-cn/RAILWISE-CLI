@@ -73,10 +73,13 @@ function response(raw: Buffer) {
   headers.delete("transfer-encoding")
   headers.delete("content-length")
 
-  return new Response(body.body.buffer.slice(body.body.byteOffset, body.body.byteOffset + body.body.byteLength) as ArrayBuffer, {
-    status,
-    headers,
-  })
+  return new Response(
+    body.body.buffer.slice(body.body.byteOffset, body.body.byteOffset + body.body.byteLength) as ArrayBuffer,
+    {
+      status,
+      headers,
+    },
+  )
 }
 
 async function local(input: RequestInfo | URL, init?: RequestInit) {

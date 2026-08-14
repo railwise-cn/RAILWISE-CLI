@@ -17,23 +17,23 @@
 
 优先使用 `assets/data-input-template.csv`。字段说明如下：
 
-| 字段 | 含义 |
-|---|---|
-| `report_date` | 报告日期或观测日期 |
-| `period_label` | 日报/周报/月报期号 |
-| `monitoring_item` | 监测项目名称 |
-| `monitoring_method` | 自动化、人工、巡视、控制网 |
-| `structure_zone` | 上行线、下行线、桥面、桥墩、车站、区间等 |
-| `point_id` | 测点编号 |
-| `current_change_mm` | 本次或本期变化量 |
-| `rate_mm_per_d` | 变化速率 |
-| `cumulative_mm` | 累计变化量 |
-| `warning_threshold_mm` | 预警值；可为空 |
-| `alarm_threshold_mm` | 报警值；可为空 |
-| `control_threshold_mm` | 控制值；可为空 |
-| `same_direction_count` | 连续同向次数；可为空 |
-| `mean_rate_3_times_mm_per_d` | 连续三次平均速率；可为空 |
-| `note` | 来源或备注 |
+| 字段                         | 含义                                     |
+| ---------------------------- | ---------------------------------------- |
+| `report_date`                | 报告日期或观测日期                       |
+| `period_label`               | 日报/周报/月报期号                       |
+| `monitoring_item`            | 监测项目名称                             |
+| `monitoring_method`          | 自动化、人工、巡视、控制网               |
+| `structure_zone`             | 上行线、下行线、桥面、桥墩、车站、区间等 |
+| `point_id`                   | 测点编号                                 |
+| `current_change_mm`          | 本次或本期变化量                         |
+| `rate_mm_per_d`              | 变化速率                                 |
+| `cumulative_mm`              | 累计变化量                               |
+| `warning_threshold_mm`       | 预警值；可为空                           |
+| `alarm_threshold_mm`         | 报警值；可为空                           |
+| `control_threshold_mm`       | 控制值；可为空                           |
+| `same_direction_count`       | 连续同向次数；可为空                     |
+| `mean_rate_3_times_mm_per_d` | 连续三次平均速率；可为空                 |
+| `note`                       | 来源或备注                               |
 
 若某行提供了预警值、报警值、控制值，脚本必须优先使用该行阈值。
 
@@ -41,18 +41,18 @@
 
 穿越工况自动化全站仪快报优先使用 `assets/crossing-total-station-input-template.csv`。该模板保留通用字段，并增加高频出报字段：
 
-| 字段 | 含义 |
-|---|---|
-| `project_name` | 项目全称 |
-| `report_cadence` | 15min、2h、4h 或项目指定间隔 |
-| `report_start`、`report_end` | 本次报告统计时段 |
-| `initial_time` | 初始采集时间 |
-| `previous_time` | 上次监测时间 |
-| `current_time` | 本次监测时间 |
-| `ring_no` | 盾构/顶管环号、里程或施工位置 |
-| `position_label` | 点位或结构位置说明 |
-| `influence_zone` | 是否在正投影/重点影响区，如 `正投影区`、`延伸范围`、`非重点区` |
-| `validity` | `有效`、`缺测`、`遮挡`、`离线`、`复核中` 等 |
+| 字段                         | 含义                                                           |
+| ---------------------------- | -------------------------------------------------------------- |
+| `project_name`               | 项目全称                                                       |
+| `report_cadence`             | 15min、2h、4h 或项目指定间隔                                   |
+| `report_start`、`report_end` | 本次报告统计时段                                               |
+| `initial_time`               | 初始采集时间                                                   |
+| `previous_time`              | 上次监测时间                                                   |
+| `current_time`               | 本次监测时间                                                   |
+| `ring_no`                    | 盾构/顶管环号、里程或施工位置                                  |
+| `position_label`             | 点位或结构位置说明                                             |
+| `influence_zone`             | 是否在正投影/重点影响区，如 `正投影区`、`延伸范围`、`非重点区` |
+| `validity`                   | `有效`、`缺测`、`遮挡`、`离线`、`复核中` 等                    |
 
 整理原则：
 
@@ -66,21 +66,21 @@
 
 穿越工况上海华桓静力水准沉降快报优先使用 `assets/crossing-static-level-input-template.csv`。该模板保留通用字段，并增加接口追溯字段：
 
-| 字段 | 含义 |
-|---|---|
-| `project_name` | 项目全称 |
-| `report_cadence` | 15min、2h、4h 或项目指定间隔 |
-| `previous_time`、`current_time` | 华桓接口参考时间、本期时间 |
-| `monitoring_item` | `结构沉降`、`道床沉降`、`沉降` 等，不写水平位移或倾斜 |
-| `monitoring_method` | `上海华桓静力水准自动化监测平台` |
-| `point_id` | 报表点号，默认取接口 `name`，映射后写确认后的报表点号 |
-| `sensor_sn` | 传感器编号，取接口 `sn` |
-| `current_change_mm` | 本次变化，取接口 `curOffset` |
-| `cumulative_mm` | 累计变化，取接口 `totalOffset` |
-| `current_value`、`previous_value` | 本期测值 `curValue`、参考测值 `refValue` |
-| `current_original_value`、`previous_original_value` | 本期/参考原始值 |
-| `shhh_project_id`、`shhh_point_id` | 华桓项目和测点追溯 ID |
-| `sample_minutes` | `findSZByIdAndDate` 的 `sampMinutes`，单位分钟 |
+| 字段                                                | 含义                                                  |
+| --------------------------------------------------- | ----------------------------------------------------- |
+| `project_name`                                      | 项目全称                                              |
+| `report_cadence`                                    | 15min、2h、4h 或项目指定间隔                          |
+| `previous_time`、`current_time`                     | 华桓接口参考时间、本期时间                            |
+| `monitoring_item`                                   | `结构沉降`、`道床沉降`、`沉降` 等，不写水平位移或倾斜 |
+| `monitoring_method`                                 | `上海华桓静力水准自动化监测平台`                      |
+| `point_id`                                          | 报表点号，默认取接口 `name`，映射后写确认后的报表点号 |
+| `sensor_sn`                                         | 传感器编号，取接口 `sn`                               |
+| `current_change_mm`                                 | 本次变化，取接口 `curOffset`                          |
+| `cumulative_mm`                                     | 累计变化，取接口 `totalOffset`                        |
+| `current_value`、`previous_value`                   | 本期测值 `curValue`、参考测值 `refValue`              |
+| `current_original_value`、`previous_original_value` | 本期/参考原始值                                       |
+| `shhh_project_id`、`shhh_point_id`                  | 华桓项目和测点追溯 ID                                 |
+| `sample_minutes`                                    | `findSZByIdAndDate` 的 `sampMinutes`，单位分钟        |
 
 整理原则：
 

@@ -28,6 +28,8 @@ describe("Marketplace service", () => {
     expect(list.some((item) => item.id === "railwise.tool.bash")).toBe(true)
     expect(list.some((item) => item.id === "railwise.tool.read")).toBe(true)
     expect(list.some((item) => item.id === "railwise.tool.survey_calculator_leveling_closure")).toBe(true)
-    expect(list.filter((item) => item.kind === "tool").length).toBeGreaterThan(Marketplace.builtins().filter((item) => item.kind === "tool").length)
+    expect(list.filter((item) => item.kind === "tool").length).toBeGreaterThan(
+      Marketplace.builtins().filter((item) => item.kind === "tool").length,
+    )
   })
 })

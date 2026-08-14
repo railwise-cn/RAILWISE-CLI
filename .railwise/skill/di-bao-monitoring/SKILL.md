@@ -30,42 +30,42 @@ description: "用于轨道交通控制保护区/地铁保护区第三方监测�
 
 先整理下列字段。字段不全时用占位符，不要套用样例。
 
-| 字段 | 说明 |
-|---|---|
-| `项目全称` | 当前项目完整名称，用于封面、页眉、报审表 |
-| `工程简称` | 周报、曲线图、文件名可用简称 |
-| `委托/建设单位` | 用户提供或从资料提取 |
-| `轨道交通运营/管理单位` | 如运营分公司、集团、建设分公司等 |
-| `监测单位` | 出具报告的单位 |
-| `施工单位/总包单位` | 预警、周报、协调材料可能需要 |
-| `合同编号` | 没有就保留占位符 |
-| `涉及线路及结构` | 线路、车站、区间、高架段、桥墩、桥面等 |
-| `外部施工类型` | 基坑、盾构、顶管、道路、桥梁、桩基、邻近建筑等 |
-| `风险/监测等级` | 来自安评、审查意见或方案 |
-| `当前阶段` | 资料收集、方案起草、内审、专家评审、日报、周报、月报、预警、消警、总结 |
-| `统计期/报告期` | 日报日期、周报区间、月报区间、事件日期 |
-| `高频出报间隔` | 穿越工况下的 15 分钟、2 小时、4 小时或项目要求的其他间隔 |
-| `施工工况` | 当前保护区内/邻近施工进展 |
-| `预警状态` | 无、预警、报警、红色预警、消警中 |
+| 字段                    | 说明                                                                   |
+| ----------------------- | ---------------------------------------------------------------------- |
+| `项目全称`              | 当前项目完整名称，用于封面、页眉、报审表                               |
+| `工程简称`              | 周报、曲线图、文件名可用简称                                           |
+| `委托/建设单位`         | 用户提供或从资料提取                                                   |
+| `轨道交通运营/管理单位` | 如运营分公司、集团、建设分公司等                                       |
+| `监测单位`              | 出具报告的单位                                                         |
+| `施工单位/总包单位`     | 预警、周报、协调材料可能需要                                           |
+| `合同编号`              | 没有就保留占位符                                                       |
+| `涉及线路及结构`        | 线路、车站、区间、高架段、桥墩、桥面等                                 |
+| `外部施工类型`          | 基坑、盾构、顶管、道路、桥梁、桩基、邻近建筑等                         |
+| `风险/监测等级`         | 来自安评、审查意见或方案                                               |
+| `当前阶段`              | 资料收集、方案起草、内审、专家评审、日报、周报、月报、预警、消警、总结 |
+| `统计期/报告期`         | 日报日期、周报区间、月报区间、事件日期                                 |
+| `高频出报间隔`          | 穿越工况下的 15 分钟、2 小时、4 小时或项目要求的其他间隔               |
+| `施工工况`              | 当前保护区内/邻近施工进展                                              |
+| `预警状态`              | 无、预警、报警、红色预警、消警中                                       |
 
 可直接使用 `assets/project-brief-template.md` 作为资料卡。
 
 ## 任务路由
 
-| 用户需求 | 先读资料 | 主要输出 |
-|---|---|---|
-| 新接项目、资料清单、报价、工作量估算 | `references/phase0-intake.md`、`references/scoping-and-pricing.md` | 资料清单、立项判断、初步工作量、报价口径 |
-| 从零写监测方案 | `references/phase1-drafting.md`、`references/technical-standards.md`、`references/key-difficulties.md` | 监测方案初稿、重难点、监测范围、频率、报警值 |
-| 高架、桥梁、桥墩、桥面项目 | 以上资料 + `references/elevated-line.md` | 高架专项方案、桥墩/桥面监测项、专项重难点 |
-| 内审准备、内审纪要 | `references/phase2-internal-review.md`、`references/review-checklist.md` | 内审自查、会议议程、内审意见回复 |
-| 专家评审意见回复 | `references/review-checklist.md`、`references/review-response-template.md` | 专家意见逐条回复表、修改说明 |
-| 测点埋设、测点验收、初始值报告 | `references/initial-and-summary-workflow.md`、`references/monitoring-catalog.md` | 测点埋设记录、验收记录、初始值审批表、控制网第 1 期联测 |
-| 日报、周报、月报、监护记录 | `references/report-workflow.md`、`references/monitoring-catalog.md`、`references/data-processing.md` | 周期报告、数据汇总、趋势分析 |
-| 穿越工况 15 分钟、2 小时、4 小时自动化全站仪快报 | `references/crossing-total-station-report.md`、`references/data-processing.md` | 高频监测快报、全站仪数据汇总、施工工况、报警状态、结论与评价 |
-| 穿越工况上海华桓静力水准沉降快报 | `references/crossing-static-level-report.md`、`references/data-processing.md` | 静力水准沉降数据抓取、单次/累计沉降统计、沉降快报 |
-| 预警、报警、红色预警、消警 | `references/warning-workflow.md`、`references/monitoring-catalog.md` | 预警单、报警单、消警申请、专题说明 |
-| 项目结束、停测、总结报告 | `references/initial-and-summary-workflow.md`、`references/report-workflow.md`、`references/data-processing.md` | 项目总结报告、停测依据、成果分析、结论建议 |
-| 解释这个 Skill 的来源或继续优化 | `references/source-analysis.md` | 来源分析、优化建议 |
+| 用户需求                                         | 先读资料                                                                                                       | 主要输出                                                     |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 新接项目、资料清单、报价、工作量估算             | `references/phase0-intake.md`、`references/scoping-and-pricing.md`                                             | 资料清单、立项判断、初步工作量、报价口径                     |
+| 从零写监测方案                                   | `references/phase1-drafting.md`、`references/technical-standards.md`、`references/key-difficulties.md`         | 监测方案初稿、重难点、监测范围、频率、报警值                 |
+| 高架、桥梁、桥墩、桥面项目                       | 以上资料 + `references/elevated-line.md`                                                                       | 高架专项方案、桥墩/桥面监测项、专项重难点                    |
+| 内审准备、内审纪要                               | `references/phase2-internal-review.md`、`references/review-checklist.md`                                       | 内审自查、会议议程、内审意见回复                             |
+| 专家评审意见回复                                 | `references/review-checklist.md`、`references/review-response-template.md`                                     | 专家意见逐条回复表、修改说明                                 |
+| 测点埋设、测点验收、初始值报告                   | `references/initial-and-summary-workflow.md`、`references/monitoring-catalog.md`                               | 测点埋设记录、验收记录、初始值审批表、控制网第 1 期联测      |
+| 日报、周报、月报、监护记录                       | `references/report-workflow.md`、`references/monitoring-catalog.md`、`references/data-processing.md`           | 周期报告、数据汇总、趋势分析                                 |
+| 穿越工况 15 分钟、2 小时、4 小时自动化全站仪快报 | `references/crossing-total-station-report.md`、`references/data-processing.md`                                 | 高频监测快报、全站仪数据汇总、施工工况、报警状态、结论与评价 |
+| 穿越工况上海华桓静力水准沉降快报                 | `references/crossing-static-level-report.md`、`references/data-processing.md`                                  | 静力水准沉降数据抓取、单次/累计沉降统计、沉降快报            |
+| 预警、报警、红色预警、消警                       | `references/warning-workflow.md`、`references/monitoring-catalog.md`                                           | 预警单、报警单、消警申请、专题说明                           |
+| 项目结束、停测、总结报告                         | `references/initial-and-summary-workflow.md`、`references/report-workflow.md`、`references/data-processing.md` | 项目总结报告、停测依据、成果分析、结论建议                   |
+| 解释这个 Skill 的来源或继续优化                  | `references/source-analysis.md`                                                                                | 来源分析、优化建议                                           |
 
 ## 一、资料收集与立项阶段
 

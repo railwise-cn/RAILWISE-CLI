@@ -7,9 +7,15 @@ export default tool({
   args: {
     content: tool.schema.string().describe("Structured PPT outline or markdown content."),
     title: tool.schema.string().optional().describe("PPT title."),
-    template: tool.schema.string().optional().describe("Template id, for example railwise_standard or railwise_monitoring."),
+    template: tool.schema
+      .string()
+      .optional()
+      .describe("Template id, for example railwise_standard or railwise_monitoring."),
     format: tool.schema.enum(["PPT", "Social", "Poster"]).optional().describe("Output format."),
-    style: tool.schema.string().optional().describe("Visual style, for example consulting, analytical or professional."),
+    style: tool.schema
+      .string()
+      .optional()
+      .describe("Visual style, for example consulting, analytical or professional."),
   },
   async execute(args) {
     const data = await callOsApi("/ppt/custom/generate", {
@@ -22,11 +28,12 @@ export default tool({
       },
       timeoutMs: 120_000,
     })
-    const statusUrl = typeof data?.statusUrl === "string"
-      ? data.statusUrl.replace(/^\/api\/ppt\//, "/api/v1/ppt/")
-      : data?.taskId
-        ? `/api/v1/ppt/tasks/${encodeURIComponent(data.taskId)}/status`
-        : ""
+    const statusUrl =
+      typeof data?.statusUrl === "string"
+        ? data.statusUrl.replace(/^\/api\/ppt\//, "/api/v1/ppt/")
+        : data?.taskId
+          ? `/api/v1/ppt/tasks/${encodeURIComponent(data.taskId)}/status`
+          : ""
     return prettyJson({
       ...data,
       statusUrl,

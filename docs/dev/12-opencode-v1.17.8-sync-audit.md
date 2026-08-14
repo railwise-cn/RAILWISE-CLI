@@ -13,42 +13,42 @@ Generated from `v1.17.0..v1.17.8` on 2026-06-19.
 ## Change Statuses
 
 | Status | Files |
-| --- | ---: |
-| M | 201 |
-| A | 33 |
-| D | 9 |
-| R | 2 |
+| ------ | ----: |
+| M      |   201 |
+| A      |    33 |
+| D      |     9 |
+| R      |     2 |
 
 ## Changed Scopes
 
-| Scope | Files |
-| --- | ---: |
-| `packages/app` | 115 |
-| `packages/opencode` | 90 |
-| `packages/ui` | 34 |
-| `packages/sdk` | 4 |
-| `bun.lock` | 1 |
-| `package.json` | 1 |
+| Scope               | Files |
+| ------------------- | ----: |
+| `packages/app`      |   115 |
+| `packages/opencode` |    90 |
+| `packages/ui`       |    34 |
+| `packages/sdk`      |     4 |
+| `bun.lock`          |     1 |
+| `package.json`      |     1 |
 
 ## Backend Modules Changed
 
 | `packages/opencode/src` module | Files |
-| --- | ---: |
-| `cli` | 16 |
-| `server` | 7 |
-| `plugin` | 5 |
-| `mcp` | 3 |
-| `session` | 3 |
-| `acp` | 2 |
-| `agent` | 2 |
-| `provider` | 2 |
-| `tool` | 2 |
-| `config` | 1 |
-| `project` | 1 |
-| `pty-preparation.ts` | 1 |
-| `shell` | 1 |
-| `snapshot` | 1 |
-| `util` | 1 |
+| ------------------------------ | ----: |
+| `cli`                          |    16 |
+| `server`                       |     7 |
+| `plugin`                       |     5 |
+| `mcp`                          |     3 |
+| `session`                      |     3 |
+| `acp`                          |     2 |
+| `agent`                        |     2 |
+| `provider`                     |     2 |
+| `tool`                         |     2 |
+| `config`                       |     1 |
+| `project`                      |     1 |
+| `pty-preparation.ts`           |     1 |
+| `shell`                        |     1 |
+| `snapshot`                     |     1 |
+| `util`                         |     1 |
 
 ## Mapping Coverage
 

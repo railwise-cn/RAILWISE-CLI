@@ -23,7 +23,8 @@ try {
   await $`bun pm pack`.cwd(path.join(tmp, "package")).quiet()
   const packed = await $`tar -tzf railwise-ai-0.0.0.tgz`.cwd(path.join(tmp, "package")).text()
   if (!packed.includes("package/agent-pack/bin/install.js")) fail("npm tarball does not contain Agent Pack installer")
-  if (!packed.includes("package/agent-pack/assets/command/daily-report.md")) fail("npm tarball does not contain business assets")
+  if (!packed.includes("package/agent-pack/assets/command/daily-report.md"))
+    fail("npm tarball does not contain business assets")
 
   const dest = path.join(tmp, "installed")
   await $`node postinstall.mjs`

@@ -51,24 +51,24 @@ bun run assets:validate
 
 本包的默认业务闭环：
 
-| 业务线 | 入口 |
-|---|---|
-| 地保日报 | `daily-report` + `report-dibao` |
-| 地保周报 | `weekly-report` + `report-dibao` |
-| 地保月报 | `monthly-report` + `di-bao-monitoring` |
-| 监测方案 | `plan-draft` + `monitoring-design` |
-| 内审/专家评审 | `review-response` + `qa_reviewer` |
-| 投标情报 | `bid-intel` + `bidding-knowledge` |
-| 投标文件 | `bid-prepare` |
-| 结算收款 | `payment-reminder` |
+| 业务线        | 入口                                   |
+| ------------- | -------------------------------------- |
+| 地保日报      | `daily-report` + `report-dibao`        |
+| 地保周报      | `weekly-report` + `report-dibao`       |
+| 地保月报      | `monthly-report` + `di-bao-monitoring` |
+| 监测方案      | `plan-draft` + `monitoring-design`     |
+| 内审/专家评审 | `review-response` + `qa_reviewer`      |
+| 投标情报      | `bid-intel` + `bidding-knowledge`      |
+| 投标文件      | `bid-prepare`                          |
+| 结算收款      | `payment-reminder`                     |
 
 ## Model Tiers
 
 统一使用 `railwise/` 模型前缀，便于分院按预算切换供应商或本地端点。
 
-| 档位 | 默认模型 | 用途 |
-|---|---|---|
-| 强审查 | `railwise/claude-opus-4-6` | 方案、专家评审、安全合规、应急响应 |
+| 档位     | 默认模型                            | 用途                                     |
+| -------- | ----------------------------------- | ---------------------------------------- |
+| 强审查   | `railwise/claude-opus-4-6`          | 方案、专家评审、安全合规、应急响应       |
 | 标准生产 | `railwise/claude-sonnet-4-20250514` | 日报、周报、数据首检、投标情报、结算对账 |
-| 行业写作 | `railwise/kimi-k2.5` | 总控、方案草案、商务、报告润色 |
-| 经济计算 | `railwise/deepseek-chat` | 数据分析、外业首检、结构化核查 |
+| 行业写作 | `railwise/kimi-k2.5`                | 总控、方案草案、商务、报告润色           |
+| 经济计算 | `railwise/deepseek-chat`            | 数据分析、外业首检、结构化核查           |

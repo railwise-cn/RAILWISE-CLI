@@ -7,7 +7,10 @@ export default tool({
   args: {
     fileId: tool.schema.string().describe("OS file id."),
     versionId: tool.schema.string().optional().describe("Optional version id. Defaults to the latest version."),
-    dibaoProjectId: tool.schema.string().optional().describe("Dibao project id when creating a dibao project file download reference."),
+    dibaoProjectId: tool.schema
+      .string()
+      .optional()
+      .describe("Dibao project id when creating a dibao project file download reference."),
   },
   async execute(args) {
     if (args.dibaoProjectId) {

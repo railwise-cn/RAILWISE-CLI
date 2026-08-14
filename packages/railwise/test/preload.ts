@@ -33,7 +33,13 @@ process.env["RAILWISE_TEST_MANAGED_CONFIG_DIR"] = testManagedConfigDir
 const loopback = ["localhost", "127.0.0.1", "::1"]
 ;(["NO_PROXY", "no_proxy"] as const).forEach((key) => {
   process.env[key] = [
-    ...new Set([...(process.env[key]?.split(",").map((item) => item.trim()).filter(Boolean) ?? []), ...loopback]),
+    ...new Set([
+      ...(process.env[key]
+        ?.split(",")
+        .map((item) => item.trim())
+        .filter(Boolean) ?? []),
+      ...loopback,
+    ]),
   ].join(",")
 })
 

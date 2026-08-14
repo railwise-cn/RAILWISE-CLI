@@ -85,19 +85,23 @@ export namespace Marketplace {
 
   async function registry() {
     const tools = await toolInventory().catch((): ToolItem[] => [])
-    const generated = tools.map((item): CapabilityManifest => ({
-      id: `railwise.tool.${item.id}`,
-      kind: "tool",
-      name: item.label,
-      description: toolDescription(item),
-      version: "0.1.0",
-      source: "builtin",
-      enabled: true,
-      installed: true,
-      permissions: toolPermission(item.id),
-      tags: [toolTag(item)],
-    }))
-    return Array.from(new Map([...generated, ...builtin].map((item) => [item.id, CapabilityManifest.parse(item)])).values())
+    const generated = tools.map(
+      (item): CapabilityManifest => ({
+        id: `railwise.tool.${item.id}`,
+        kind: "tool",
+        name: item.label,
+        description: toolDescription(item),
+        version: "0.1.0",
+        source: "builtin",
+        enabled: true,
+        installed: true,
+        permissions: toolPermission(item.id),
+        tags: [toolTag(item)],
+      }),
+    )
+    return Array.from(
+      new Map([...generated, ...builtin].map((item) => [item.id, CapabilityManifest.parse(item)])).values(),
+    )
   }
 
   export async function list() {

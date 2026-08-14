@@ -42,7 +42,8 @@ const trees =
   baseTree && targetTree
     ? await Promise.all([baseTree, targetTree].map(async (file) => (await Bun.file(file).json()) as Tree))
     : undefined
-if (trees?.some((tree) => tree.truncated)) throw new Error("GitHub API returned a truncated tree; audit cannot continue")
+if (trees?.some((tree) => tree.truncated))
+  throw new Error("GitHub API returned a truncated tree; audit cannot continue")
 const rows = trees
   ? (() => {
       const maps = trees.map(

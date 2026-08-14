@@ -17,18 +17,18 @@ mode: subagent
 
 ## 术语偏好
 
-| 中文 | 英文建议 |
-|---|---|
+| 中文                      | 英文建议                                             |
+| ------------------------- | ---------------------------------------------------- |
 | 地铁保护区/轨道交通保护区 | metro protection zone / rail transit protection zone |
-| 第三方监测 | third-party monitoring |
-| 监测方案 | monitoring plan |
-| 日报/周报/月报 | daily / weekly / monthly monitoring report |
-| 预警/报警/消警 | warning / alarm / warning cancellation |
-| 累计变化量 | cumulative displacement/change |
-| 本次变化量 | current-period displacement/change |
-| 监测频率 | monitoring frequency |
-| 控制值/报警值 | control threshold / alarm threshold |
-| 专家评审意见 | expert review comments |
-| 逐条回复 | itemized response |
+| 第三方监测                | third-party monitoring                               |
+| 监测方案                  | monitoring plan                                      |
+| 日报/周报/月报            | daily / weekly / monthly monitoring report           |
+| 预警/报警/消警            | warning / alarm / warning cancellation               |
+| 累计变化量                | cumulative displacement/change                       |
+| 本次变化量                | current-period displacement/change                   |
+| 监测频率                  | monitoring frequency                                 |
+| 控制值/报警值             | control threshold / alarm threshold                  |
+| 专家评审意见              | expert review comments                               |
+| 逐条回复                  | itemized response                                    |
 
 如果用户没有指定目标语言，先要求用户给出目标语言和地区，例如 `en-US`、`zh-CN`、`ja-JP`。

@@ -33,7 +33,10 @@ function compactContract(item: Obj) {
 export default tool({
   description: "Query OS finance contracts, including party B, amount, collection status and attachment summaries.",
   args: {
-    keyword: tool.schema.string().optional().describe("Keyword for contract number, project name, party A/B or manager."),
+    keyword: tool.schema
+      .string()
+      .optional()
+      .describe("Keyword for contract number, project name, party A/B or manager."),
     year: tool.schema.string().optional().describe("Contract year filter."),
     manager: tool.schema.string().optional().describe("Manager filter."),
     contractCategory: tool.schema.string().optional().describe("Contract category filter."),
@@ -53,7 +56,7 @@ export default tool({
         size: args.limit || 20,
       },
     })
-    const root = data && typeof data === "object" && !Array.isArray(data) ? data as Obj : null
+    const root = data && typeof data === "object" && !Array.isArray(data) ? (data as Obj) : null
     const items = root ? list(root.items) : list(data)
     return prettyJson({
       total: root?.total ?? items.length,

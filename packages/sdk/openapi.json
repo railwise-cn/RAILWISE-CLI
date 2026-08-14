@@ -3681,15 +3681,16 @@
                                 "interleaved": {
                                   "anyOf": [
                                     {
-                                      "type": "boolean",
-                                      "const": true
+                                      "type": "boolean"
+                                    },
+                                    {
+                                      "type": "string"
                                     },
                                     {
                                       "type": "object",
                                       "properties": {
                                         "field": {
-                                          "type": "string",
-                                          "enum": ["reasoning_content", "reasoning_details"]
+                                          "type": "string"
                                         }
                                       },
                                       "required": ["field"],
@@ -10735,15 +10736,16 @@
                 "interleaved": {
                   "anyOf": [
                     {
-                      "type": "boolean",
-                      "const": true
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "string"
                     },
                     {
                       "type": "object",
                       "properties": {
                         "field": {
-                          "type": "string",
-                          "enum": ["reasoning_content", "reasoning_details"]
+                          "type": "string"
                         }
                       },
                       "required": ["field"],
@@ -11499,8 +11501,7 @@
               }
             }
           }
-        },
-        "additionalProperties": false
+        }
       },
       "BadRequestError": {
         "type": "object",
@@ -11705,8 +11706,7 @@
                     "type": "object",
                     "properties": {
                       "field": {
-                        "type": "string",
-                        "enum": ["reasoning_content", "reasoning_details"]
+                        "type": "string"
                       }
                     },
                     "required": ["field"]

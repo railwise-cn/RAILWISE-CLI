@@ -8,11 +8,17 @@ export default tool({
     title: tool.schema.string().optional().describe("Wiki memory title."),
     question: tool.schema.string().describe("Original question, task or knowledge gap."),
     answer: tool.schema.string().describe("Reviewed answer or conclusion to preserve."),
-    sources: tool.schema.array(tool.schema.unknown()).optional().describe("Optional citation/source list from gbrain or OS tools."),
+    sources: tool.schema
+      .array(tool.schema.unknown())
+      .optional()
+      .describe("Optional citation/source list from gbrain or OS tools."),
     evidenceChain: tool.schema.array(tool.schema.unknown()).optional().describe("Optional evidence chain."),
     actionItems: tool.schema.array(tool.schema.unknown()).optional().describe("Optional action items."),
     sync: tool.schema.boolean().optional().describe("Whether to sync native gbrain after saving."),
-    dedupe: tool.schema.boolean().optional().describe("Whether to update an existing memory with the same question/title."),
+    dedupe: tool.schema
+      .boolean()
+      .optional()
+      .describe("Whether to update an existing memory with the same question/title."),
   },
   async execute(args) {
     const data = await callOsApi("/knowledge/gbrain/memorize", {

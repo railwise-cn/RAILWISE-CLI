@@ -442,26 +442,26 @@ npm install -g railwise-ai@latest
 
 技能包（Skill）是注入 AI 上下文的专业知识文档，教会智能体"遇到这种场景该怎么做"。与工具互补——**技能教方法，工具做执行**。
 
-| 技能                                       | 用途                                                       |
-| ------------------------------------------ | ---------------------------------------------------------- |
-| `report-writing`                           | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照    |
-| `data-analysis`                            | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级     |
-| `bidding-knowledge`                        | 投标文件编制：评分办法、资质响应、报价策略                 |
+| 技能                                       | 用途                                                              |
+| ------------------------------------------ | ----------------------------------------------------------------- |
+| `report-writing`                           | 监测报告编制规范：行文原则、日报/总结报告结构、术语对照           |
+| `data-analysis`                            | 平差与变形分析：计算流程、趋势拟合、收敛判断、预警分级            |
+| `bidding-knowledge`                        | 投标文件编制：评分办法、资质响应、报价策略                        |
 | `standard-reference`                       | 工程规范速查：GB 50911/GB 50497/JGJ 8/GB 50026/GB 55017/TB 系索引 |
-| `monitoring-design`                        | 监测方案设计：16 章结构、四阶段、测点布设、频率与报警值    |
-| `report-dibao`                             | 地保日报/周报/月报规则：子表、点号、正负号、自动化人工对比 |
-| `di-bao-monitoring`                        | 地保监测全链路：方案、初始值、日报周报月报、预警消警、评审回复 |
-| `docx-generation`                          | Word 导出：Markdown→DOCX 映射、报告模板、命名规范          |
-| `excel-operations`                         | Excel 导出：Sheet 结构、标准列格式、多期对比表             |
-| `humanizer`                                | 报告润色：消除 AI 痕迹、注入工程判断、句式变化             |
-| `canvas-design`                            | 图表设计：趋势图配色、坐标轴规范、剖面图构造               |
-| `rail-monitoring-plan`                     | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订 |
-| `operational-monitoring`                   | 运营监测：长期变形监测作业、期报/年报、预警处置与归档      |
-| `docx` / `xlsx` / `pptx` / `pdf`           | 常用办公文档识读、编辑和输出                               |
-| `doc-coauthoring`                          | 多人协作文档审阅、修改和交付                               |
-| `webapp-testing` / `web-artifacts-builder` | Web 工具、看板和测试型产物构建                             |
-| `brand-guidelines` / `theme-factory`       | 品牌规范和主题系统                                         |
-| `mcp-builder` / `skill-creator`            | MCP 与 skill 开发                                          |
+| `monitoring-design`                        | 监测方案设计：16 章结构、四阶段、测点布设、频率与报警值           |
+| `report-dibao`                             | 地保日报/周报/月报规则：子表、点号、正负号、自动化人工对比        |
+| `di-bao-monitoring`                        | 地保监测全链路：方案、初始值、日报周报月报、预警消警、评审回复    |
+| `docx-generation`                          | Word 导出：Markdown→DOCX 映射、报告模板、命名规范                 |
+| `excel-operations`                         | Excel 导出：Sheet 结构、标准列格式、多期对比表                    |
+| `humanizer`                                | 报告润色：消除 AI 痕迹、注入工程判断、句式变化                    |
+| `canvas-design`                            | 图表设计：趋势图配色、坐标轴规范、剖面图构造                      |
+| `rail-monitoring-plan`                     | 地保监测方案：控制保护区监测方案编制、内审、专家评审与修订        |
+| `operational-monitoring`                   | 运营监测：长期变形监测作业、期报/年报、预警处置与归档             |
+| `docx` / `xlsx` / `pptx` / `pdf`           | 常用办公文档识读、编辑和输出                                      |
+| `doc-coauthoring`                          | 多人协作文档审阅、修改和交付                                      |
+| `webapp-testing` / `web-artifacts-builder` | Web 工具、看板和测试型产物构建                                    |
+| `brand-guidelines` / `theme-factory`       | 品牌规范和主题系统                                                |
+| `mcp-builder` / `skill-creator`            | MCP 与 skill 开发                                                 |
 
 需要“套 Word 模板”“参考企业模板导出”时，`docx-generation` 会优先走 `referenceDoc` + Pandoc 路线；模板可使用企业自有 `.docx`，也可使用 RAILWISE fork 的 `pandoc_docx_template` 中文参考模板。
 
@@ -469,20 +469,20 @@ npm install -g railwise-ai@latest
 
 ### 业务命令（SOP 工作流）
 
-| 命令                  | 用途                       |
-| --------------------- | -------------------------- |
+| 命令                  | 用途                           |
+| --------------------- | ------------------------------ |
 | `/daily-report`       | 地保监测日报，多子表和预警判定 |
-| `/weekly-report`      | 地保监测周报四件套         |
-| `/monthly-report`     | 监测月报 / 阶段报告        |
-| `/plan-draft`         | 16 章监测方案初稿          |
-| `/review-response`    | 内审/专家评审意见逐条闭合  |
-| `/data-check`         | 外业数据质检               |
-| `/trend-analysis`     | 沉降、位移、收敛等趋势分析 |
-| `/emergency-response` | 预警、报警和应急处置快报   |
-| `/bid-intel`          | 投标情报采集和机会预审     |
-| `/bid-prepare`        | 投标文件编制               |
-| `/safety-check`       | 安全巡检记录               |
-| `/payment-reminder`   | 结算对账、说明函和催款函   |
+| `/weekly-report`      | 地保监测周报四件套             |
+| `/monthly-report`     | 监测月报 / 阶段报告            |
+| `/plan-draft`         | 16 章监测方案初稿              |
+| `/review-response`    | 内审/专家评审意见逐条闭合      |
+| `/data-check`         | 外业数据质检                   |
+| `/trend-analysis`     | 沉降、位移、收敛等趋势分析     |
+| `/emergency-response` | 预警、报警和应急处置快报       |
+| `/bid-intel`          | 投标情报采集和机会预审         |
+| `/bid-prepare`        | 投标文件编制                   |
+| `/safety-check`       | 安全巡检记录                   |
+| `/payment-reminder`   | 结算对账、说明函和催款函       |
 
 开发维护命令（`/commit`、`/issues`、`/learn`、`/rmslop`、`/spellcheck`、`/ai-deps`）只在 Agent Pack `dev` profile 中安装。
 

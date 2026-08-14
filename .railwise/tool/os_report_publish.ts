@@ -5,7 +5,10 @@ import { callOsApi, prettyJson } from "../lib/os_api"
 export default tool({
   description: "Register a generated report or artifact back into OS agent runtime history.",
   args: {
-    runtimeSessionId: tool.schema.string().optional().describe("Runtime session id. Defaults to current RAILWISE session."),
+    runtimeSessionId: tool.schema
+      .string()
+      .optional()
+      .describe("Runtime session id. Defaults to current RAILWISE session."),
     name: tool.schema.string().describe("Artifact display name."),
     artifactType: tool.schema.string().optional().describe("Artifact type, for example markdown, docx, xlsx or json."),
     path: tool.schema.string().optional().describe("Artifact path in the agent workspace."),

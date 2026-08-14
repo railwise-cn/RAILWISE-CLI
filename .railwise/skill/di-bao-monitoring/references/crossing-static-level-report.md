@@ -11,23 +11,23 @@
 
 关键接口：
 
-| 接口 | 用途 | 关键参数 |
-|---|---|---|
-| `POST /API/finddateById` | 获取项目最新本期/上期时间 | `id` 项目 ID |
-| `POST /API/findSZByIdAndDate` | 获取沉降等“其他数据”本期变化和累计变化 | `id`、`statDate`、`endDate`、`type=2`、`direction=0`、`sampMinutes` |
-| `POST /API/historyCurveByprojectId` | 获取两个时间之间原始数据 | `id`、`statDate`、`endDate`、`decimalCount` |
+| 接口                                | 用途                                   | 关键参数                                                            |
+| ----------------------------------- | -------------------------------------- | ------------------------------------------------------------------- |
+| `POST /API/finddateById`            | 获取项目最新本期/上期时间              | `id` 项目 ID                                                        |
+| `POST /API/findSZByIdAndDate`       | 获取沉降等“其他数据”本期变化和累计变化 | `id`、`statDate`、`endDate`、`type=2`、`direction=0`、`sampMinutes` |
+| `POST /API/historyCurveByprojectId` | 获取两个时间之间原始数据               | `id`、`statDate`、`endDate`、`decimalCount`                         |
 
 `findSZByIdAndDate` 的 `type` 枚举中 `2` 为沉降；其他类型包括水位、固定测斜、倾角、收敛、自动测斜、GNSS 等。静力水准沉降快报固定使用 `type=2`，除非项目接口文档另行确认。
 
 ## 必需输入
 
-| 类别 | 内容 |
-|---|---|
-| 平台信息 | 平台 URL、项目 ID、登录账号或已登录 Cookie |
+| 类别     | 内容                                                         |
+| -------- | ------------------------------------------------------------ |
+| 平台信息 | 平台 URL、项目 ID、登录账号或已登录 Cookie                   |
 | 报表口径 | 出报间隔、报表截止时间、上期参考时间、取样时长 `sampMinutes` |
-| 项目信息 | 项目全称、监测单位、施工单位、涉及线路和结构、施工工况 |
-| 数据口径 | 静力水准测点列表、点名映射、分区、影响区、阈值、正负号说明 |
-| 模板资料 | 快报模板、完整报表模板、点位图、影响范围图、现场照片 |
+| 项目信息 | 项目全称、监测单位、施工单位、涉及线路和结构、施工工况       |
+| 数据口径 | 静力水准测点列表、点名映射、分区、影响区、阈值、正负号说明   |
+| 模板资料 | 快报模板、完整报表模板、点位图、影响范围图、现场照片         |
 
 用户只给平台和用户名时，先提示：
 
@@ -76,19 +76,19 @@ python scripts/fetch_shhh_static_level.py \
 
 优先使用 `assets/crossing-static-level-input-template.csv`。脚本输出字段与通用报表 CSV 兼容，核心字段如下：
 
-| 字段 | 含义 |
-|---|---|
-| `project_name` | 项目全称 |
-| `report_cadence` | 15min、2h、4h 或项目指定间隔 |
-| `previous_time`、`current_time` | 参考时间、本期时间 |
-| `monitoring_item` | 通常写 `结构沉降`、`道床沉降` 或 `沉降` |
-| `monitoring_method` | 固定写 `上海华桓静力水准自动化监测平台` 或项目确认名称 |
-| `point_id` | 报表点号，默认取接口 `name` |
-| `sensor_sn` | 传感器编号，取接口 `sn` |
-| `current_change_mm` | 本次变化量，取 `curOffset` |
-| `cumulative_mm` | 累计变化量，取 `totalOffset` |
-| `current_value`、`previous_value` | 本期测值、参考测值 |
-| `shhh_project_id`、`shhh_point_id` | 华桓项目和测点追溯 ID |
+| 字段                               | 含义                                                   |
+| ---------------------------------- | ------------------------------------------------------ |
+| `project_name`                     | 项目全称                                               |
+| `report_cadence`                   | 15min、2h、4h 或项目指定间隔                           |
+| `previous_time`、`current_time`    | 参考时间、本期时间                                     |
+| `monitoring_item`                  | 通常写 `结构沉降`、`道床沉降` 或 `沉降`                |
+| `monitoring_method`                | 固定写 `上海华桓静力水准自动化监测平台` 或项目确认名称 |
+| `point_id`                         | 报表点号，默认取接口 `name`                            |
+| `sensor_sn`                        | 传感器编号，取接口 `sn`                                |
+| `current_change_mm`                | 本次变化量，取 `curOffset`                             |
+| `cumulative_mm`                    | 累计变化量，取 `totalOffset`                           |
+| `current_value`、`previous_value`  | 本期测值、参考测值                                     |
+| `shhh_project_id`、`shhh_point_id` | 华桓项目和测点追溯 ID                                  |
 
 ## 报表表达
 

@@ -80,15 +80,11 @@ description: "RAILWISE-OS 员工周报整理、部门周报汇总、公司运行
   "weeklyInsight": {
     "summary": "string",
     "projectProgress": ["string"],
-    "risks": [
-      { "text": "string", "sourceRef": "string", "severity": "low|medium|high" }
-    ],
+    "risks": [{ "text": "string", "sourceRef": "string", "severity": "low|medium|high" }],
     "coordinationNeeds": ["string"],
     "managementAttention": ["string"],
     "nextWeekFocus": ["string"],
-    "followUpItems": [
-      { "title": "string", "owner": "string", "sourceRef": "string" }
-    ],
+    "followUpItems": [{ "title": "string", "owner": "string", "sourceRef": "string" }],
     "missingInputs": ["string"]
   }
 }

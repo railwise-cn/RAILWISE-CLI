@@ -230,7 +230,9 @@ async function main() {
       try {
         return await download(name)
       } catch (error) {
-        console.warn(`Could not install fallback binary ${name}: ${error instanceof Error ? error.message : String(error)}`)
+        console.warn(
+          `Could not install fallback binary ${name}: ${error instanceof Error ? error.message : String(error)}`,
+        )
         return undefined
       }
     }, Promise.resolve(undefined))

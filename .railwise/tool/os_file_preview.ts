@@ -26,14 +26,17 @@ export default tool({
       const data = await callOsApi(
         `/dibao/task-orders/${encodeURIComponent(args.dibaoProjectId)}/files/${encodeURIComponent(args.fileId)}/preview-text`,
       )
-      return clipText({
-        source: "dibao_project_file",
-        dibaoProjectId: args.dibaoProjectId,
-        fileId: args.fileId,
-        ...data,
-        downloadUrl: `/api/v1/dibao/task-orders/${encodeURIComponent(args.dibaoProjectId)}/files/${encodeURIComponent(args.fileId)}/download`,
-        previewUrl: `/api/v1/dibao/task-orders/${encodeURIComponent(args.dibaoProjectId)}/files/${encodeURIComponent(args.fileId)}/preview`,
-      }, args.maxChars || 12000)
+      return clipText(
+        {
+          source: "dibao_project_file",
+          dibaoProjectId: args.dibaoProjectId,
+          fileId: args.fileId,
+          ...data,
+          downloadUrl: `/api/v1/dibao/task-orders/${encodeURIComponent(args.dibaoProjectId)}/files/${encodeURIComponent(args.fileId)}/download`,
+          previewUrl: `/api/v1/dibao/task-orders/${encodeURIComponent(args.dibaoProjectId)}/files/${encodeURIComponent(args.fileId)}/preview`,
+        },
+        args.maxChars || 12000,
+      )
     }
 
     const data = await callOsApi(`/files/nas-info/${encodeURIComponent(args.fileId || "")}`)

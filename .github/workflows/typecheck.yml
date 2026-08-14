@@ -17,5 +17,8 @@ jobs:
       - name: Setup Bun
         uses: ./.github/actions/setup-bun
 
-      - name: Run typecheck
-        run: bun typecheck
+      - name: Typecheck Core and CLI
+        run: bun --cwd packages/railwise typecheck
+
+      - name: Typecheck JavaScript SDK
+        run: bun --cwd packages/sdk/js typecheck

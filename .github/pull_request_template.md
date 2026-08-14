@@ -13,8 +13,7 @@ Closes #
 
 - [ ] Core (`packages/railwise`, SDK contracts, server/API, tools, workflows)
 - [ ] CLI (`packages/railwise/src/cli`, command-line UX, scripting, CI/headless usage)
-- [ ] Desktop handoff / shared contract (changes consumed by standalone `railwise-desktop-app`)
-- [ ] App shell (`packages/app`, shared SolidJS UI used by browser preview and Desktop)
+- [ ] SDK (`packages/sdk/js`, generated clients and public contracts)
 - [ ] Docs only
 - [ ] CI / release infrastructure
 
@@ -27,10 +26,6 @@ Please provide a description of the issue, the changes you made to fix it, and w
 **If you paste a large clearly AI generated description here your PR may be IGNORED or CLOSED!**
 
 ### How did you verify your code works?
-
-### Screenshots / recordings
-
-_If this is a UI change, please include a screenshot or recording._
 
 ### Checklist
 

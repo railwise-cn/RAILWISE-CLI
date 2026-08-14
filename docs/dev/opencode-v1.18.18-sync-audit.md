@@ -2,6 +2,8 @@
 
 Generated from v1.17.8..v1.18.18.
 
+Scope note (2026-08-14): this report was generated before WorkWise replaced the client scope. The App/UI counts below are retained as historical audit data only; they are not RAILWISE-CLI migration candidates. Future reports exclude App/UI paths.
+
 ## Summary
 
 - Changed files in scoped paths: 1421
@@ -218,5 +220,5 @@ Generated from v1.17.8..v1.18.18.
 2. Config and schema: migrate tolerant parsing, permission/model/schema fixes, then regenerate SDK.
 3. Server and session runtime: migrate API shape fixes, session sync, question handling, and event stream fixes.
 4. Tool/plugin/provider layer: migrate MCP/tool compatibility and provider request fixes.
-5. App shell: migrate prompt input, terminal websocket, global sync, and settings fixes while preserving Railwise agent studio.
-6. Validation: run package typecheck, focused tests, desktop build, and installer smoke checks.
+5. SDK: regenerate the JavaScript client after the Core API is stable and review the generated diff.
+6. Validation: run Railwise tests, Core/CLI and SDK typecheck, cross-platform builds, and CLI install smoke checks.

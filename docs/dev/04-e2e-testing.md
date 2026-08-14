@@ -1,22 +1,13 @@
-# E2E 测试
+# CLI 验证
 
-Desktop E2E 已迁到独立 `railwise-desktop-app` 仓库执行；本仓库不再包含 `packages/desktop`。
+RAILWISE-CLI 只验证 Core、CLI 和 SDK。WorkWise 已代替原客户端产品，界面 E2E、桌面构建和客户端发布均由 WorkWise 仓库负责。
 
-CLI 仓库当前只保留 Core、CLI、SDK、共享 App Shell 和 Web 文档相关验证：
-
-```bash
-bun run typecheck
-bun run rebrand:audit
-```
-
-包级测试必须进入对应 package 后运行，不能从仓库根目录运行：
+本仓库的必需验证为：
 
 ```bash
-cd packages/railwise
-bun test
-
-cd ../app
-bun test
+bun --cwd packages/railwise test
+bun --cwd packages/railwise typecheck
+bun --cwd packages/sdk/js typecheck
 ```
 
-Desktop 的 Playwright、Tauri build、macOS smoke、SSE soak、视觉回归和 updater 端到端验收都在 `railwise-desktop-app` 仓库维护。
+包级测试不能从仓库根目录运行。`packages/app` 的 Playwright 和单元测试不参与 CLI 合并门禁；OpenCode App/Desktop 更新也不在本仓库移植。

@@ -102,7 +102,7 @@ jobs:
             - \`refactor:\` or \`refactor(scope):\` code refactoring
             - \`test:\` or \`test(scope):\` adding or updating tests
 
-            Where \`scope\` is the package name (e.g., \`app\`, \`desktop\`, \`railwise\`).
+            Where \`scope\` is the package name or product area (e.g., \`railwise\`, \`cli\`, \`sdk\`).
 
             See [CONTRIBUTING.md](${contributing}#pr-titles) for details.`);
               return;
@@ -239,7 +239,7 @@ jobs:
               const productContent = productMatch ? productMatch[1] : '';
               const hasCheckedBox = /- \[x\]/i.test(productContent);
               if (!hasCheckedBox) {
-                issues.push('No "Product line" checkbox is checked. Please select Core, CLI, Desktop, App shell, Docs, or CI/release infrastructure.');
+                issues.push('No "Product line" checkbox is checked. Please select Core, CLI, SDK, Docs, or CI/release infrastructure.');
               }
             }
 

@@ -1,302 +1,106 @@
-# RAILWISE 产品边界与开发实施文档
+# RAILWISE-CLI 产品边界
 
-**文档版本**: v2.0
-**编写日期**: 2026-04-30
-**适用范围**: RAILWISE Core / RAILWISE CLI / RAILWISE Desktop
-**执行仓库**: `railwise-cn/RAILWISE-CLI` + `railwise-cn/railwise-desktop-app`
-**当前原则**: 底层统一，产品分开
+- 文档版本: v3.0
+- 更新日期: 2026-08-14
+- 执行仓库: `railwise-cn/RAILWISE-CLI`
+- 默认分支: `dev`
 
----
+## 1. 现行决策
 
-## 1. 决策摘要
+RAILWISE-CLI 只维护 Core、CLI、JavaScript SDK、Agent Pack、自动化和 CLI 发布链路。
 
-RAILWISE 不再被定义为“CLI 的图形化桌面端”。这是错误叙事，会让开发、验收、发版和用户认知混在一起。
+WorkWise 是 RAILWISE 的客户端产品，独立负责界面、桌面壳、客户端 E2E、安装包和客户端发布。原先关于 `RAILWISE Desktop`、`railwise-desktop-app` 或共享 App Shell 作为客户端交付面的约定已被本决策取代。
 
-新的产品结构是：
+`packages/app` 暂时作为遗留代码保留，但不属于 RAILWISE-CLI 的活跃产品范围，不参与上游同步、必需 CI 或 CLI 发布验收。删除或迁移该目录应另行实施，不能与 Core/CLI 上游同步混在一个变更中。
 
-- **RAILWISE Core**: 共享引擎，负责智能体、工作流、规范 Wiki、测量工具、会话、交付包和 HTTP/SSE 服务。
-- **RAILWISE CLI**: 面向开发者、脚本、CI 和自动化的命令行产品。
-- **RAILWISE Desktop**: 面向工程测绘和监测业务用户的可视化桌面工作台。
+## 2. 维护范围
 
-实现上 Core、CLI、SDK 和共享 Web UI 留在 `RAILWISE-CLI`，Desktop 源码在 `railwise-desktop-app` 独立仓库。产品上必须分开定位、分开发版、分开验收。
-
----
-
-## 2. 为什么必须拆产品边界
-
-CLI 和 Desktop 使用同一套底层能力，但用户买单理由不同。
-
-CLI 用户关心：
-
-- 命令是否稳定
-- 能否接入脚本和 CI
-- 输出是否可复现
-- 配置是否可审计
-- 能否批量跑工作流
-
-Desktop 用户关心：
-
-- 是否打开就能用
-- 文件能否导入、预览、审阅、导出
-- 工作流状态是否看得见
-- 智能体结果是否能沉淀成交付包
-- 安装、更新、签名是否可靠
-
-如果继续把 Desktop 写成 CLI 外壳，团队会自然把命令行能力当作主线，把桌面体验当作包装层。结果是技术上很强，产品上很糊。用户看到的不是“工程智测工作台”，而是“命令行套了个窗口”。
-
----
-
-## 3. 产品线定义
-
-### 3.1 RAILWISE Core
-
-**定位**: 所有产品共享的本地智能工程引擎。
-
-**包含**:
-
-- 智能体定义和调度
-- Agent v2 工作流
-- 规范 Wiki 和知识库维护
-- 测量和平差工具
-- 会话、消息、权限和 Provider
-- 工作流交付包
-- HTTP API、SSE 事件流、SDK 类型
-
-**不包含**:
-
-- 终端交互体验
-- 桌面导航和业务页面
-- 安装器、签名、公证、自动更新
-- 面向用户的产品文案
-
-**代码边界**:
+### Core
 
 - 主目录: `packages/railwise`
-- SDK: `packages/sdk/js`
-- 共享 UI 类型和客户端契约由 Core 输出，不能反向依赖 Desktop。
+- 智能体、会话、Provider、MCP、配置、数据库和权限
+- HTTP API、SSE 事件流和工具执行
+- Railwise 专属 memory、scheduler、marketplace 和 Agent Pack 能力
 
-### 3.2 RAILWISE CLI
-
-**定位**: 工程自动化和开发者入口。
-
-**目标用户**:
-
-- 开发者
-- 自动化工程师
-- CI/CD 管理员
-- 高级实施顾问
-
-**核心场景**:
-
-- `railwise run` 批处理任务
-- `railwise serve` 本地服务
-- 配置、Provider、MCP、Agent 调试
-- CI 内执行规范检查和报告生成
-- 脚本化导入、导出、验收
-
-**产品标准**:
-
-- 命令稳定
-- 输出机器可读
-- 错误信息可定位
-- 支持无头运行
-- 支持 CI 环境
-
-**代码边界**:
+### CLI
 
 - 主目录: `packages/railwise/src/cli`
-- CLI 不能引入 Desktop-only 依赖。
-- CLI 文档不承诺桌面安装、可视化导航或本地文件预览体验。
+- 命令行与 TUI
+- 无头运行、脚本和 CI 集成
+- 跨平台二进制、npm 包、安装脚本和升级流程
 
-### 3.3 RAILWISE Desktop
+### SDK
 
-**定位**: 面向工程测绘和监测现场的一站式桌面工作台。
+- 主目录: `packages/sdk/js`
+- Core API 的生成客户端和公开类型
+- Core API 变化后运行 `./packages/sdk/js/script/build.ts` 重新生成
 
-**目标用户**:
+### 基础设施
 
-- 测绘项目经理
-- 监测工程师
-- 数据分析员
-- 报告编制和审核人员
+- Core/CLI/SDK 测试与 typecheck
+- 上游变更审计台账
+- npm 和 GitHub Release 发布
+- CLI 安装及 `railwise --version` 冒烟验证
 
-**核心场景**:
+## 3. 不在范围内
 
-- 智能体协作中枢
-- Agent Studio 可视化编排
-- 数据工作台
-- 文件导入、预览、对比和发送到智能体
-- 工作流执行、验收和交付包导出
-- 本地安装、离线使用、自动更新
+- `packages/app` 的功能开发和测试
+- OpenCode App、Web 或 Desktop 代码移植
+- 客户端界面、视觉回归和 Playwright E2E
+- Tauri/Electron 壳、签名、公证、安装器和客户端自动更新
+- WorkWise 的功能、CI 和发布
 
-**产品标准**:
+这些事项由 WorkWise 仓库独立决策。RAILWISE-CLI 只在 Core API 或 SDK 契约发生变化时提供清晰的兼容性说明，不在本仓库验证客户端实现。
 
-- 默认进入可视化工作台
-- 用户不需要知道 CLI 命令才能完成主流程
-- 所有关键流程有状态、历史和导出物
-- Windows/macOS 安装包可签名、可更新、可回滚
+## 4. 上游同步边界
 
-**代码边界**:
+OpenCode 稳定 Tag 是审计输入，不是直接合并源。每个稳定版本按以下范围评审：
 
-- 桌面壳: `railwise-desktop-app`
-- 复用前端: 通过发布后的 `@railwise/app`、`@railwise/ui`、`@railwise/sdk`、`@railwise/util` 产物消费
-- 本地能力: `railwise-desktop-app/src-tauri`
-- 桌面专属页面、文案和发布配置必须放在 Desktop 独立仓库内。
+- Core、CLI、TUI、Provider、MCP、Session、配置、数据库和事件流: 评审后选择性移植。
+- SDK: 在 Core API 稳定后重新生成，不直接覆盖 Railwise 生成结果。
+- App、Web、Desktop: 标记为 `not_applicable`。
+- OpenCode 自有品牌、发布、统计和仓库自动化: 标记为 `not_applicable`。
 
----
+每条上游发布说明和选中提交必须记录为 `ported`、`deferred` 或 `not_applicable`。版本号不能代替同步台账。
 
-## 4. 仓库分层
+## 5. CI 与合并门禁
 
-```text
-RAILWISE-CLI
-  ├─ packages/railwise        Core + CLI
-  │  ├─ src/agent             Core: 智能体和工作流
-  │  ├─ src/norm              Core: 规范 Wiki
-  │  ├─ src/tool              Core: 工程工具
-  │  ├─ src/server            Core: HTTP/SSE 服务
-  │  └─ src/cli               CLI 产品入口
-  ├─ packages/sdk/js          Core 对外 SDK
-  ├─ packages/app             共享 Web UI shell
-  ├─ docs/dev                 开发边界和架构文档
-  ├─ docs/user                用户文档，按产品拆分
-  └─ docs/admin               发布、部署、安全和运维文档
+必需检查仅覆盖：
 
-railwise-desktop-app
-  ├─ src                       Desktop SolidJS shell
-  ├─ src-tauri                 Tauri 本地能力
-  └─ e2e                       Desktop E2E / release acceptance
+```bash
+bun --cwd packages/railwise test
+bun --cwd packages/railwise typecheck
+bun --cwd packages/sdk/js typecheck
 ```
 
-`packages/app` 是共享 UI 层，不是独立商业产品。它可以服务 Web 预览和 Desktop，但用户叙事必须由 CLI 或 Desktop 承接。
+测试不能从仓库根目录运行。`test (linux)` 是受保护分支的汇总检查名，只汇总 Core/CLI 测试，不依赖客户端 E2E。
 
----
+涉及 Core API 或 SDK 的变更还必须执行：
 
-## 5. 开发泳道
+```bash
+./packages/sdk/js/script/build.ts
+git diff --exit-code -- packages/sdk/js
+```
 
-### 5.1 Core Engine Ready
+生成结果应随变更提交；若无差异，也应在 PR 验证记录中说明。
 
-目标：让底层能力稳定、可测、可复用。
+## 6. PR 与发布规则
 
-验收：
+PR 产品线只使用：
 
-- Agent v2 工作流可通过 Core API 创建、运行、恢复和验收。
-- 规范 Wiki 具备导入、索引、搜索、lint、diff 和报告能力。
-- 测量工具具备单元测试和明确输入输出契约。
-- 交付包具备 manifest、summary、artifact 列表和导出路径。
-- SDK 类型跟随 API 变更生成并通过 typecheck。
+- `core`
+- `cli`
+- `sdk`
+- `docs`
+- `ci/release`
 
-### 5.2 CLI Developer Workflow Ready
+CLI 从 `dev` 验证，通过后提升到 `main` 并发布 npm 和 GitHub Release。WorkWise 是否升级到新 CLI/SDK 版本由 WorkWise 自己的兼容性验证决定，不阻塞 CLI 发布。
 
-目标：让高级用户可以不用桌面 UI 也完成自动化。
+## 7. 验收标准
 
-验收：
-
-- CLI 命令可覆盖核心工作流启动、检查、导出。
-- CLI 输出适合脚本读取。
-- CI 可以使用 CLI 执行规范检查、测量工具验证和交付包生成。
-- CLI 文档独立成章，不混入 Desktop 安装和 UI 承诺。
-
-### 5.3 Desktop GA Ready
-
-目标：让业务用户可以通过桌面完成端到端工作。
-
-验收：
-
-- 默认落地页是 Desktop 工作台，不是 Web 调试页。
-- Agent Studio、Dashboard、Workspace、Session 形成完整闭环。
-- 用户能从文件导入到智能体分析，再到交付包导出。
-- 安装包、签名、公证、自动更新和崩溃恢复通过 GA 门禁。
-- Desktop 文案不要求用户理解 CLI。
-
----
-
-## 6. PR 和发版规则
-
-### 6.1 PR 分组
-
-每个 PR 必须声明所属产品线：
-
-- `core`: 底层引擎、工具、API、SDK
-- `cli`: 命令行入口、命令文档、自动化场景
-- `desktop`: 独立 Desktop 仓库消费的 shared contract 或 handoff
-- `app`: 共享 UI shell
-- `docs`: 产品边界、用户文档、发布说明
-
-PR 标题示例：
-
-- `feat(core): archive workflow deliveries`
-- `feat(cli): export workflow delivery package`
-- `feat(desktop): show delivery package in workspace`
-- `docs(product): define cli desktop core boundaries`
-
-### 6.2 发版分离
-
-CLI 和 Desktop 不共享版本承诺。
-
-- CLI 使用包版本和 npm/binary 发布节奏。
-- Desktop 使用 `desktop/vX.Y.Z` 标签和桌面 release workflow。
-- Core 变更通过兼容性说明影响两条产品线。
-
-Desktop GA 不应该被 CLI 新命令阻塞。CLI 发布也不应该等待 Desktop 签名、公证和安装包。
-
-### 6.3 验收分离
-
-Core 验收看 API、SDK、工具和测试。
-
-CLI 验收看命令、脚本、CI 和可读输出。
-
-Desktop 验收看可视化流程、安装、更新、本地文件、崩溃恢复和真实业务路径。
-
----
-
-## 7. 立即执行计划
-
-### P0: 文档和叙事修正
-
-- [x] 新增本产品边界文档。
-- [x] 根 README 改成 Core / CLI / Desktop 三产品线叙事。
-- [x] `docs/dev/01-architecture.md` 改成三产品线架构。
-- [x] `docs/dev/05-release-cadence.md` 明确 CLI 和 Desktop 发版分离。
-- [x] 独立 Desktop 仓库 README 改成业务桌面工作台说明。
-- [x] `packages/app/README.md` 改成共享 UI shell 说明。
-- [x] `packages/railwise/README.md` 改成 Core + CLI 说明。
-
-### P1: PR 和 backlog 重组
-
-- [x] 当前 draft PR 标注为 Core + Desktop mixed delivery，保持 draft。
-- [x] 从当前 PR 拆出后续 issue/任务：Core、CLI、Desktop、Docs 四类。
-- [x] Desktop GA blockers 只保留签名、公证、更新、E2E、视觉和安装器。
-- [x] CLI backlog 只保留命令、脚本、CI、无头运行和开发者文档。
-
-### P2: 代码边界硬化
-
-- [x] 检查 `packages/app` 中 Desktop-only 文案，迁移到独立 Desktop 仓库或通过平台元数据注入。
-- [x] 检查 CLI 命令是否依赖 Desktop 路径或桌面配置。
-- [x] 将 delivery package 的 Core API、Desktop UI、CLI export 分别归档。
-- [x] 为 PR 模板或提交规范增加产品线标签。
-
-### P3: 发版流水线分离
-
-- [x] CLI 发布文档独立。
-- [x] Desktop release runbook 迁入独立 Desktop 仓库，只描述桌面签名、公证、更新。
-- [x] Core 兼容性检查进入两条产品线共同前置门禁。
-
----
-
-## 8. 不做什么
-
-- 不复制 Core 代码给 Desktop；Desktop 通过 CLI 二进制和 npm/shared package 产物连接。
-- 不让 Desktop 依赖用户手动启动 CLI。
-- 不把 Web 预览当成 Desktop 产品验收。
-- 不在一个 PR 里继续混写 CLI、Desktop、Core 的用户承诺。
-
----
-
-## 9. 成功标准
-
-团队里的任何人看到一个任务，应能在 10 秒内判断它属于哪条产品线。
-
-用户看到 Desktop，不会感觉自己在用命令行包装器。
-
-开发者看到 CLI，不会被桌面安装和业务驾驶舱干扰。
-
-Core 的能力越强，两个产品都受益，但产品叙事不再混在一起。
+- `packages/railwise` 测试和 typecheck 通过。
+- `packages/sdk/js` typecheck 通过，生成结果完整。
+- 所有 CLI 目标平台构建成功。
+- npm 安装、GitHub Release 安装和 `railwise --version` 冒烟通过。
+- 现有 `.railwise/railwise.json`、记忆数据库、历史 Session、Agent Pack 和 Provider 凭据保持兼容。
+- GitHub Actions 不再因遗留 App/Desktop 或无效定时任务产生红灯。

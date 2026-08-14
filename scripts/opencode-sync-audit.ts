@@ -24,7 +24,7 @@ const baseTree = arg("--base-tree")
 const targetTree = arg("--target-tree")
 const baseLabel = arg("--base-label") ?? base
 const targetLabel = arg("--target-label") ?? target
-const prefixes = ["packages/opencode/", "packages/core/", "packages/app/", "packages/ui/", "packages/sdk/js/"]
+const prefixes = ["packages/opencode/", "packages/core/", "packages/sdk/js/"]
 const scoped = (file: string) =>
   file === "package.json" || file === "bun.lock" || prefixes.some((item) => file.startsWith(item))
 
@@ -60,7 +60,7 @@ const rows = trees
       })
     })()
   : (
-      await $`git diff --name-status ${base}..${target} -- package.json bun.lock packages/opencode packages/core packages/app packages/ui packages/sdk/js`.text()
+      await $`git diff --name-status ${base}..${target} -- package.json bun.lock packages/opencode packages/core packages/sdk/js`.text()
     )
       .trim()
       .split("\n")
@@ -77,14 +77,12 @@ const scopes: Record<string, number> = {}
 const statuses: Record<string, number> = {}
 const backend: Record<string, number> = {}
 const core: Record<string, number> = {}
-const app: Record<string, number> = {}
 
 for (const row of rows) {
   bump(statuses, row.status[0])
   bump(scopes, row.file.startsWith("packages/") ? row.file.split("/").slice(0, 2).join("/") : row.file)
   if (row.file.startsWith("packages/opencode/src/")) bump(backend, row.file.split("/")[3] ?? "(root)")
   if (row.file.startsWith("packages/core/src/")) bump(core, row.file.split("/")[3] ?? "(root)")
-  if (row.file.startsWith("packages/app/src/")) bump(app, row.file.split("/")[3] ?? "(root)")
 }
 
 const mapped = await Promise.all(
@@ -163,12 +161,6 @@ const report = [
   "| --- | ---: |",
   table(core),
   "",
-  "## App Areas Changed",
-  "",
-  "| packages/app/src area | Files |",
-  "| --- | ---: |",
-  table(app),
-  "",
   "## Railwise Mapping Coverage",
   "",
   `- Upstream packages/opencode and packages/core changes: ${mapped.length}`,
@@ -189,8 +181,8 @@ const report = [
   "2. Config and schema: migrate tolerant parsing, permission/model/schema fixes, then regenerate SDK.",
   "3. Server and session runtime: migrate API shape fixes, session sync, question handling, and event stream fixes.",
   "4. Tool/plugin/provider layer: migrate MCP/tool compatibility and provider request fixes.",
-  "5. App shell: migrate prompt input, terminal websocket, global sync, and settings fixes while preserving Railwise agent studio.",
-  "6. Validation: run package typecheck, focused tests, desktop build, and installer smoke checks.",
+  "5. SDK: regenerate the JavaScript client after the Core API is stable and review the generated diff.",
+  "6. Validation: run Railwise tests, Core/CLI and SDK typecheck, cross-platform builds, and CLI install smoke checks.",
   "",
 ].join("\n")
 
